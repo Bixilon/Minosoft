@@ -38,6 +38,13 @@ class WorldMesh(
     val minPosition = Vec3i(16)
     val maxPosition = Vec3i(0)
 
+    fun finish() {
+        this.opaqueMesh?.finish()
+        this.translucentMesh?.finish()
+        this.transparentMesh?.finish()
+        this.textMesh?.finish()
+    }
+
     @Synchronized
     fun load() {
         this.opaqueMesh?.load()

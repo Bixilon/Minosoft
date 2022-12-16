@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.gui
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -31,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.input.count.MouseClickCounter
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.BaseDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
+import de.bixilon.minosoft.gui.rendering.system.opengl.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -42,6 +42,7 @@ open class GUIMeshElement<T : Element>(
     override val guiRenderer: GUIRenderer = element.guiRenderer
     override val renderWindow: RenderWindow = guiRenderer.renderWindow
     private val clickCounter = MouseClickCounter()
+    private var _mesh: GUIMesh? = null
     var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, FloatListUtil.direct(1000))
     override val skipDraw: Boolean
         get() = if (element is BaseDrawable) element.skipDraw else false
@@ -88,25 +89,32 @@ open class GUIMeshElement<T : Element>(
     }
 
     protected fun createNewMesh() {
-        val mesh = this.mesh
-        if (mesh.state == Mesh.MeshStates.LOADED) {
-            mesh.unload()
-        }
+        if (this._mesh != null) throw MemoryLeakException("Mesh to unload is already set!")
+        this._mesh = this.mesh
         this.mesh = GUIMesh(renderWindow, guiRenderer.matrix, mesh.data)
+        this.mesh.finish()
     }
 
     fun prepare() = Unit
 
     fun prepareAsync(offset: Vec2i) {
         element.render(offset, mesh, null)
-    }
-
-    open fun postPrepare() {
         val revision = element.cache.revision
         if (revision != lastRevision) {
             createNewMesh()
-            this.mesh.load()
             this.lastRevision = revision
+        }
+    }
+
+    open fun postPrepare() {
+        val _mesh = this._mesh ?: return
+        if (_mesh.state == Mesh.MeshStates.LOADED) {
+            _mesh.unload()
+        }
+        this._mesh = null
+
+        if (this.mesh.state == Mesh.MeshStates.FINISHED) {
+            mesh.load()
         }
     }
 

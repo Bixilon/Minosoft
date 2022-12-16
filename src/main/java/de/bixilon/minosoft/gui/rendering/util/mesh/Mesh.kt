@@ -55,11 +55,21 @@ abstract class Mesh(
         protected set
 
 
-    fun load() {
+    fun finish() {
+        if (state != MeshStates.PREPARING) throw IllegalStateException("Mesh is not preparing: $state")
         val data = this.data
         buffer = renderWindow.renderSystem.createVertexBuffer(struct, data, primitiveType)
+        state = MeshStates.FINISHED
+    }
+
+    fun load() {
+        if (state == MeshStates.PREPARING) {
+            finish()
+        }
+        if (state != MeshStates.FINISHED) throw IllegalStateException("Mesh is not finished: $state")
         buffer.init()
         if (clearOnLoad) {
+            val data = data
             if (data is DirectArrayFloatList) {
                 data.unload()
             }
@@ -126,6 +136,7 @@ abstract class Mesh(
 
     enum class MeshStates {
         PREPARING,
+        FINISHED,
         LOADED,
         UNLOADED,
     }

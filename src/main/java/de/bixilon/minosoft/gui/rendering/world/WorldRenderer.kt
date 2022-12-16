@@ -484,6 +484,7 @@ class WorldRenderer(
             if (mesh.clearEmpty() == 0) {
                 return queueItemUnload(item)
             }
+            mesh.finish()
             item.mesh = mesh
             meshesToLoadLock.lock()
             if (meshesToLoadSet.remove(item)) {
