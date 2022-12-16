@@ -328,7 +328,7 @@ class RenderWindow(
                 runnable()
             } catch (error: Throwable) {
                 error.printStackTrace()
-                Exception("Exception in rendering: $connection", error).crash()
+                Exception("Exception in rendering: ${connection.connectionId}", error).crash()
             }
         }
     }

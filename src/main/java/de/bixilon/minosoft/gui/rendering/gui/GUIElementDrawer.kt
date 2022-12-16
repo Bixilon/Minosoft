@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
@@ -29,7 +30,7 @@ interface GUIElementDrawer {
     var lastTickTime: Long
 
     fun tickElements(elements: Collection<GUIElement>) {
-        val time = TimeUtil.millis
+        val time = millis()
         val latch = CountUpAndDownLatch(1)
         if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
             for (element in elements) {
@@ -71,7 +72,7 @@ interface GUIElementDrawer {
             if (element is LayoutedGUIElement<*>) {
                 latch.inc()
                 element.prepare()
-                DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGH) { element.prepareAsync(); latch.dec() }
+                guiRenderer.renderWindow.runAsync { element.prepareAsync(); latch.dec() }
             }
         }
         latch.dec()
