@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util.collections.floats
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil.copy
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import org.lwjgl.system.MemoryUtil.memFree
@@ -94,15 +95,16 @@ class FragmentedArrayFloatList(
         for (index in 0 until incomplete.size) {
             val fragment = incomplete[index + indexOffset]
             val remaining = fragment.limit() - fragment.position()
-            val copy = minOf(array.size, remaining) - offset
+            val copy = minOf(array.size - offset, remaining)
             fragment.put(array, offset, copy)
             offset += copy
             if (tryPush(fragment)) indexOffset--
 
 
-            if (array.size - offset < remaining) {
+            if (array.size == offset) {
                 // everything copied
                 size += array.size
+                // verifyPosition()
                 return
             }
         }
@@ -113,6 +115,7 @@ class FragmentedArrayFloatList(
         size += length
         next.position(length)
         tryPush(next)
+        // verifyPosition()
     }
 
     override fun add(buffer: FloatBuffer) {
@@ -125,14 +128,15 @@ class FragmentedArrayFloatList(
         for (index in 0 until incomplete.size) {
             val fragment = incomplete[index + indexOffset]
             val remaining = fragment.limit() - fragment.position()
-            val copy = minOf(position, remaining) - offset
+            val copy = minOf(position - offset, remaining)
             buffer.copy(offset, fragment, fragment.position(), copy)
             offset += copy
             if (tryPush(fragment)) indexOffset--
 
-            if (position - offset < remaining) {
+            if (position == offset) {
                 // everything copied
                 size += position
+                // verifyPosition()
                 return
             }
         }
@@ -143,6 +147,7 @@ class FragmentedArrayFloatList(
         next.position(length)
         size += length
         tryPush(next)
+        // verifyPosition()
     }
 
     override fun add(floatList: AbstractFloatList) {
@@ -241,7 +246,7 @@ class FragmentedArrayFloatList(
         forEach { it.copy(buffer) }
         if (buffer.position() != this.size) {
             // TODO: this should never happen, remove this check
-            throw Exception("Position mismatch: ${buffer.position()}, expected $size")
+            Broken("Position mismatch: ${buffer.position()}, expected $size")
         }
         this.buffer = buffer
         return buffer
@@ -253,6 +258,15 @@ class FragmentedArrayFloatList(
         }
         for (buffer in this.incomplete) {
             callable(buffer)
+        }
+    }
+
+    private fun verifyPosition() {
+        val expected = size
+        var actual = 0
+        forEach { actual += it.position() }
+        if (expected != actual) {
+            Broken("Buffer size mismatch: expected=$expected, actual=$actual")
         }
     }
 }
