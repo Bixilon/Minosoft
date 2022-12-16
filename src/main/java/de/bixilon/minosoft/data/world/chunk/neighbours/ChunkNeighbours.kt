@@ -55,9 +55,6 @@ class ChunkNeighbours(val chunk: Chunk) {
         neighbours[index] = null
         if (current != null) {
             count--
-            if (count < COUNT) {
-                giveUp()
-            }
         }
         chunk.lock.unlock()
     }
@@ -71,6 +68,9 @@ class ChunkNeighbours(val chunk: Chunk) {
     }
 
     private fun updateSectionNeighbours(neighbours: Array<Chunk>) {
+        if (chunk.sections == null) {
+            return
+        }
         for ((index, section) in chunk.sections!!.withIndex()) {
             if (section == null) {
                 continue
@@ -78,10 +78,6 @@ class ChunkNeighbours(val chunk: Chunk) {
             val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, index + chunk.minSection)
             section.neighbours = sectionNeighbours
         }
-    }
-
-    private fun giveUp() {
-
     }
 
     operator fun get(index: Int): Chunk? {

@@ -68,17 +68,15 @@ class ClientSettingsManager(
         if (connection.network.state != ProtocolStates.PLAY) {
             return
         }
-        connection.sendPacket(
-            SettingsC2SP(
-                locale = language,
-                chatColors = connection.profiles.gui.chat.chatColors,
-                viewDistance = connection.profiles.block.viewDistance,
-                chatMode = connection.profiles.gui.chat.chatMode,
-                skinParts = profile.skin.parts.toTypedArray(),
-                mainArm = profile.mainArm,
-                disableTextFiltering = !connection.profiles.gui.chat.textFiltering,
-                allowListing = profile.playerListing,
-            )
-        )
+        connection.sendPacket(SettingsC2SP(
+            locale = language,
+            chatColors = connection.profiles.gui.chat.chatColors,
+            viewDistance = connection.profiles.block.viewDistance,
+            chatMode = connection.profiles.gui.chat.chatMode,
+            skinParts = profile.skin.parts.toTypedArray(),
+            mainArm = profile.mainArm,
+            disableTextFiltering = !connection.profiles.gui.chat.textFiltering,
+            allowListing = profile.playerListing,
+        ))
     }
 }
