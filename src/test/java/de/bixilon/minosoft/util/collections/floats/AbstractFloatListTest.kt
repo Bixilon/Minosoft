@@ -440,6 +440,31 @@ abstract class AbstractFloatListTest {
         }
     }
 
+    @Test
+    fun clear() {
+        val list = create()
+        list.add(1.0f)
+        list.add(2.0f)
+        list.clear()
+        assertEquals(0, list.toArray().size)
+        list.add(3.0f)
+        list.add(4.0f)
+        assertContentEquals(floatArrayOf(3.0f, 4.0f), list.toArray())
+    }
+
+    @Test
+    fun clearBig() {
+        val list = create()
+        list.add(1.0f)
+        list.add(FloatArray(1000) { 1.0f + it })
+        list.add(FloatArray(2000) { 1001.0f + it })
+        list.clear()
+        assertEquals(0, list.toArray().size)
+        list.add(3.0f)
+        list.add(4.0f)
+        assertContentEquals(floatArrayOf(3.0f, 4.0f), list.toArray())
+    }
+
     private fun wrap(vararg array: Float): FloatBuffer {
         val buffer = FloatBuffer.wrap(array)
         buffer.position(array.size)

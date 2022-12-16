@@ -19,7 +19,7 @@ import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.FloatBuffer
 
 object FloatListUtil {
-    const val PREFER_FRAGMENTED = false
+    const val PREFER_FRAGMENTED = true
 
     val FLOAT_PUT_METHOD = ExceptionUtil.catchAll { FloatBuffer::class.java.getMethod("put", Int::class.java, FloatBuffer::class.java, Int::class.java, Int::class.java) }
     const val DEFAULT_INITIAL_SIZE = 1000

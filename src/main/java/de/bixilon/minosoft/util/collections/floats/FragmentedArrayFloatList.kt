@@ -100,7 +100,7 @@ class FragmentedArrayFloatList(
             if (tryPush(fragment)) indexOffset--
 
 
-            if (array.size - offset <= remaining) {
+            if (array.size - offset < remaining) {
                 // everything copied
                 size += array.size
                 return
@@ -130,7 +130,7 @@ class FragmentedArrayFloatList(
             offset += copy
             if (tryPush(fragment)) indexOffset--
 
-            if (position - offset <= remaining) {
+            if (position - offset < remaining) {
                 // everything copied
                 size += position
                 return
@@ -239,6 +239,10 @@ class FragmentedArrayFloatList(
         }
         val buffer = memAllocFloat(size)
         forEach { it.copy(buffer) }
+        if (buffer.position() != this.size) {
+            // TODO: this should never happen, remove this check
+            throw Exception("Position mismatch: ${buffer.position()}, expected $size")
+        }
         this.buffer = buffer
         return buffer
     }
