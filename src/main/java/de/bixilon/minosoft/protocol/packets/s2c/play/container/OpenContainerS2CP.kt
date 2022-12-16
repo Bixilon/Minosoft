@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
 import de.bixilon.minosoft.data.container.DefaultInventoryTypes
-import de.bixilon.minosoft.data.registries.other.containers.ContainerType
+import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.container.ContainerOpenEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

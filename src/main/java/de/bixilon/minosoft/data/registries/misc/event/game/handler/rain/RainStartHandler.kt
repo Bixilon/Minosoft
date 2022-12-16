@@ -11,17 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.game.event.handlers.gradients
+package de.bixilon.minosoft.data.registries.misc.event.game.handler.rain
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
+import de.bixilon.minosoft.data.registries.misc.event.game.GameEventHandler
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-object ThunderGradientSetGameEventHandler : GameEventHandler {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:thunder_gradient_set".toResourceLocation()
+object RainStartHandler : GameEventHandler {
+    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:rain_start".toResourceLocation()
 
     override fun handle(data: Float, connection: PlayConnection) {
-        connection.world.weather = connection.world.weather.copy(thunder = data)
+        connection.world.weather = connection.world.weather.copy(rain = 1.0f)
     }
 }

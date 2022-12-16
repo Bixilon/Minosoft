@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.container
 import de.bixilon.minosoft.data.container.sections.RangeSection
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.data.registries.other.containers.ContainerType
+import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 

@@ -11,12 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.game.event.handlers.win
+package de.bixilon.minosoft.data.registries.misc.event.game.handler.rain
 
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.misc.event.game.GameEventHandler
+import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class WinGameEvent(
-    connection: PlayConnection,
-    val showCredits: Boolean,
-) : PlayConnectionEvent(connection)
+object RainStopHandler : GameEventHandler {
+    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:rain_stop".toResourceLocation()
+
+    override fun handle(data: Float, connection: PlayConnection) {
+        connection.world.weather = WorldWeather(0.0f, 0.0f)
+    }
+}

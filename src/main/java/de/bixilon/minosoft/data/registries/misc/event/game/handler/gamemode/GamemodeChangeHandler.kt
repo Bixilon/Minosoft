@@ -11,14 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.containers
+package de.bixilon.minosoft.data.registries.misc.event.game.handler.gamemode
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.misc.event.game.GameEventHandler
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-interface ContainerFactory<T : Container> : CompanionResourceLocation {
+object GamemodeChangeHandler : GameEventHandler {
+    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:gamemode_change".toResourceLocation()
 
-    fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent? = null): T
+    override fun handle(data: Float, connection: PlayConnection) {
+        val previous = connection.player.additional.gamemode
+        val next = Gamemodes[data.toInt()]
+        if (previous == next) {
+            return
+        }
+        connection.player.additional.gamemode = next
+    }
 }

@@ -11,23 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode
+package de.bixilon.minosoft.data.registries.misc.event.game
 
-import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-object GamemodeChangeGameEventHandler : GameEventHandler {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:gamemode_change".toResourceLocation()
-
-    override fun handle(data: Float, connection: PlayConnection) {
-        val previous = connection.player.additional.gamemode
-        val next = Gamemodes[data.toInt()]
-        if (previous == next) {
-            return
-        }
-        connection.player.additional.gamemode = next
-    }
+interface GameEventHandler : CompanionResourceLocation {
+    fun handle(data: Float, connection: PlayConnection)
 }

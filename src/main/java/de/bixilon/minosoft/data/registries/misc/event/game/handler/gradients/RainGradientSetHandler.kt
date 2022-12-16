@@ -11,22 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.game.event.handlers.win
+package de.bixilon.minosoft.data.registries.misc.event.game.handler.gradients
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
+import de.bixilon.minosoft.data.registries.misc.event.game.GameEventHandler
+import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-object WinGameEventHandler : GameEventHandler {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:win_game".toResourceLocation()
+object RainGradientSetHandler : GameEventHandler {
+    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:rain_gradient_set".toResourceLocation()
 
     override fun handle(data: Float, connection: PlayConnection) {
-        val credits = data.toInt() == 0x01
-        connection.fire(WinGameEvent(connection, credits))
-        if (!credits) {
-            connection.sendPacket(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
-        }
+        val weather = connection.world.weather
+        connection.world.weather = WorldWeather(rain = data, thunder = if (data <= 0.0f) 0.0f else weather.thunder)
     }
 }

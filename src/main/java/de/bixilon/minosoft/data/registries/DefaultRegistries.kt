@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
+import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
-import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.Registry

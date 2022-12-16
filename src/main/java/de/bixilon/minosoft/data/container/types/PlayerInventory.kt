@@ -33,8 +33,8 @@ import de.bixilon.minosoft.data.container.slots.equipment.LegsSlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.containers.ContainerFactory
-import de.bixilon.minosoft.data.registries.other.containers.ContainerType
+import de.bixilon.minosoft.data.registries.containers.ContainerFactory
+import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation

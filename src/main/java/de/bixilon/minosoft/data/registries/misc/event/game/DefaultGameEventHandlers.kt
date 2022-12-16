@@ -11,11 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.world.event
+package de.bixilon.minosoft.data.registries.misc.event.game
 
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
-import de.bixilon.minosoft.data.registries.other.world.event.handlers.BlockDestroyedHandler
+import de.bixilon.minosoft.data.registries.misc.event.game.handler.gamemode.GamemodeChangeHandler
+import de.bixilon.minosoft.data.registries.misc.event.game.handler.gradients.RainGradientSetHandler
+import de.bixilon.minosoft.data.registries.misc.event.game.handler.gradients.ThunderGradientSetHandler
+import de.bixilon.minosoft.data.registries.misc.event.game.handler.rain.RainStartHandler
+import de.bixilon.minosoft.data.registries.misc.event.game.handler.rain.RainStopHandler
+import de.bixilon.minosoft.data.registries.misc.event.world.handler.win.WinGameHandler
 
-object DefaultWorldEventHandlers : DefaultFactory<WorldEventHandler>(
-    BlockDestroyedHandler,
+object DefaultGameEventHandlers : DefaultFactory<GameEventHandler>(
+    GamemodeChangeHandler,
+    RainStartHandler,
+    RainStopHandler,
+    RainGradientSetHandler,
+    ThunderGradientSetHandler,
+    WinGameHandler,
 )

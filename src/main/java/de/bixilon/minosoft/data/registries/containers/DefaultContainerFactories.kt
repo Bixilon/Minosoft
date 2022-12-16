@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.containers
+package de.bixilon.minosoft.data.registries.containers
 
 import de.bixilon.minosoft.data.container.types.CraftingContainer
 import de.bixilon.minosoft.data.container.types.EnchantingContainer

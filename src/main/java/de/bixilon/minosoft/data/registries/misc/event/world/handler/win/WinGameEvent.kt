@@ -11,13 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.world.event
+package de.bixilon.minosoft.data.registries.misc.event.world.handler.win
 
-import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-interface WorldEventHandler : CompanionResourceLocation {
-
-    fun handle(connection: PlayConnection, position: Vec3i, data: Int, isGlobal: Boolean)
-}
+class WinGameEvent(
+    connection: PlayConnection,
+    val showCredits: Boolean,
+) : PlayConnectionEvent(connection)

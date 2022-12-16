@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.win.WinGameEvent
+import de.bixilon.minosoft.data.registries.misc.event.world.handler.win.WinGameEvent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
