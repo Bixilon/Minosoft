@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world.view
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.array.ArrayUtil.isIndex
 import de.bixilon.kutil.array.BooleanArrayUtil.trySet
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.shapes.AABB
@@ -174,15 +175,18 @@ class WorldVisibilityGraph(
     }
 
 
-    private fun VisibilityGraph.getVisibility(chunkPosition: Vec2i): BooleanArray {
+    private fun VisibilityGraph.getVisibility(chunkPosition: Vec2i): BooleanArray? {
         val x = chunkPosition.x - chunkMin.x
         val y = chunkPosition.y - chunkMin.y
 
+        if (!this.isIndex(x)) return null
         var array = this[x]
         if (array == null) {
             array = arrayOfNulls(worldSize.y)
             this[x] = array
         }
+        if (!array.isIndex(y)) return null
+
         var innerArray = array[y]
         if (innerArray == null) {
             innerArray = BooleanArray(sections + 2) // below and above dimension height
@@ -237,9 +241,9 @@ class WorldVisibilityGraph(
 
         if (directionX <= 0 && (section?.isOccluded(inverted, Directions.WEST) != true) && chunkPosition.x > chunkMin.x) {
             val nextPosition = chunkPosition + Directions.WEST
-            val nextChunk = chunk.neighbours.get(ChunkNeighbours.WEST)
+            val nextChunk = chunk.neighbours[ChunkNeighbours.WEST]
             if (nextChunk != null) {
-                val nextVisibilities = getVisibility(nextPosition)
+                val nextVisibilities = getVisibility(nextPosition) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
                     nextVisibilities[visibilitySectionIndex] = true
                     checkSection(nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.WEST, -1, directionY, directionZ, false)
@@ -249,9 +253,9 @@ class WorldVisibilityGraph(
 
         if (directionX >= 0 && (section?.isOccluded(inverted, Directions.EAST) != true) && chunkPosition.x < chunkMax.x) {
             val nextPosition = chunkPosition + Directions.EAST
-            val nextChunk = chunk.neighbours.get(ChunkNeighbours.EAST)
+            val nextChunk = chunk.neighbours[ChunkNeighbours.EAST]
             if (nextChunk != null) {
-                val nextVisibilities = getVisibility(nextPosition)
+                val nextVisibilities = getVisibility(nextPosition) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
                     nextVisibilities[visibilitySectionIndex] = true
                     checkSection(nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.EAST, 1, directionY, directionZ, false)
@@ -274,9 +278,9 @@ class WorldVisibilityGraph(
 
         if (directionZ <= 0 && (section?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.y > chunkMin.y) {
             val nextPosition = chunkPosition + Directions.NORTH
-            val nextChunk = chunk.neighbours.get(ChunkNeighbours.NORTH)
+            val nextChunk = chunk.neighbours[ChunkNeighbours.NORTH]
             if (nextChunk != null) {
-                val nextVisibilities = getVisibility(nextPosition)
+                val nextVisibilities = getVisibility(nextPosition) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
                     nextVisibilities[visibilitySectionIndex] = true
                     checkSection(nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.NORTH, directionX, directionY, -1, false)
@@ -286,9 +290,9 @@ class WorldVisibilityGraph(
 
         if (directionZ >= 0 && (section?.isOccluded(inverted, Directions.SOUTH) != true) && chunkPosition.y < chunkMax.y) {
             val nextPosition = chunkPosition + Directions.SOUTH
-            val nextChunk = chunk.neighbours.get(ChunkNeighbours.SOUTH)
+            val nextChunk = chunk.neighbours[ChunkNeighbours.SOUTH]
             if (nextChunk != null) {
-                val nextVisibilities = getVisibility(nextPosition)
+                val nextVisibilities = getVisibility(nextPosition) ?: return
                 if (!nextVisibilities[visibilitySectionIndex]) {
                     nextVisibilities[visibilitySectionIndex] = true
                     checkSection(nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.SOUTH, directionX, directionY, 1, false)
@@ -303,7 +307,7 @@ class WorldVisibilityGraph(
         val nextChunk = connection.world[nextPosition] ?: return
         val nextVisibility = getVisibility(nextPosition)
         val vector = direction.vector
-        checkSection(nextPosition, cameraSectionIndex + vector.y, nextChunk, nextVisibility, direction, vector.x, vector.y, vector.z, true)
+        checkSection(nextPosition, cameraSectionIndex + vector.y, nextChunk, nextVisibility ?: return, direction, vector.x, vector.y, vector.z, true)
     }
 
     @Synchronized
@@ -339,7 +343,7 @@ class WorldVisibilityGraph(
         this.frustumCache = arrayOfNulls(worldSize.x)
 
         val graph: VisibilityGraph = arrayOfNulls(worldSize.x)
-        graph.getVisibility(chunkPosition).trySet(cameraSectionIndex + 1, true)
+        graph.getVisibility(chunkPosition)?.trySet(cameraSectionIndex + 1, true)
 
 
         for (direction in Directions.VALUES) {
