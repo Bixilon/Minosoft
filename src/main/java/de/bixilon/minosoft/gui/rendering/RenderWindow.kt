@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
@@ -21,6 +24,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
@@ -315,6 +319,17 @@ class RenderWindow(
             guiRenderer.pause()
         } else {
             guiRenderer.pause(pause)
+        }
+    }
+
+    fun runAsync(runnable: () -> Unit) {
+        DefaultThreadPool += ThreadPoolRunnable(ThreadPool.Priorities.HIGHER) {
+            try {
+                runnable()
+            } catch (error: Throwable) {
+                error.printStackTrace()
+                Exception("Exception in rendering: $connection", error).crash()
+            }
         }
     }
 }
