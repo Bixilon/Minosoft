@@ -44,5 +44,5 @@ object ParticleProfileManager : ProfileManager<ParticleProfile> {
             GlobalEventMaster.fire(ParticleProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = ParticleProfile(description ?: "Default particle profile")
+    override fun createProfile(description: String?) = ParticleProfile(description ?: "Default particle profile")
 }

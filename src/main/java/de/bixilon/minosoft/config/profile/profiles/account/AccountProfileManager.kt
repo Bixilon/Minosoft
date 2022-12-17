@@ -44,5 +44,5 @@ object AccountProfileManager : ProfileManager<AccountProfile> {
             GlobalEventMaster.fire(AccountProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = AccountProfile(description ?: "Default account profile")
+    override fun createProfile(description: String?) = AccountProfile(description ?: "Default account profile")
 }

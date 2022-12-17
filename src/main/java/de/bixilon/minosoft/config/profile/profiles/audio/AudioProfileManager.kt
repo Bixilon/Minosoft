@@ -45,5 +45,5 @@ object AudioProfileManager : ProfileManager<AudioProfile> {
             GlobalEventMaster.fire(AudioProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = AudioProfile(description ?: "Default audio profile")
+    override fun createProfile(description: String?) = AudioProfile(description ?: "Default audio profile")
 }

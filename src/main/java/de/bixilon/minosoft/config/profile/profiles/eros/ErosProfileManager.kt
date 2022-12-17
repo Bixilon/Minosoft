@@ -46,5 +46,5 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
             GlobalEventMaster.fire(ErosProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = ErosProfile(description ?: "Default eros profile")
+    override fun createProfile(description: String?) = ErosProfile(description ?: "Default eros profile")
 }

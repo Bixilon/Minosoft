@@ -44,7 +44,7 @@ object OtherProfileManager : ProfileManager<OtherProfile> {
             GlobalEventMaster.fire(OtherProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = OtherProfile(description ?: "Default profile for various things")
+    override fun createProfile(description: String?) = OtherProfile(description ?: "Default profile for various things")
 
     override fun migrate(from: Int, data: MutableMap<String, Any?>) {
         when (from) {

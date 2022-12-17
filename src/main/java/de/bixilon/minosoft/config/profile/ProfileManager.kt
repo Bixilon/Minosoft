@@ -92,7 +92,14 @@ interface ProfileManager<T : Profile> {
         selected = profiles[DEFAULT_PROFILE_NAME] ?: createProfile()
     }
 
-    fun createProfile(name: String = DEFAULT_PROFILE_NAME, description: String? = null): T
+    fun createProfile(description: String? = null): T
+    fun createProfile(name: String = DEFAULT_PROFILE_NAME, description: String? = null): T {
+        val profile = createProfile(description)
+        profiles[name] = profile
+        saveAndWatch(profile)
+
+        return profile
+    }
 
     fun initDefaultProfile(): T {
         profiles[DEFAULT_PROFILE_NAME]?.let { return it }

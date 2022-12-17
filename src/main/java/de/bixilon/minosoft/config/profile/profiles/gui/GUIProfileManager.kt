@@ -44,5 +44,5 @@ object GUIProfileManager : ProfileManager<GUIProfile> {
             GlobalEventMaster.fire(GUIProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = GUIProfile(description ?: "Default hud profile")
+    override fun createProfile(description: String?) = GUIProfile(description ?: "Default hud profile")
 }

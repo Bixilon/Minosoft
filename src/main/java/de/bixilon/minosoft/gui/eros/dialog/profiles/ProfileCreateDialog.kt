@@ -110,7 +110,6 @@ class ProfileCreateDialog<T : Profile>(
             GlobalProfileManager[typeFX.selectionModel.selectedItem]?.unsafeCast() ?: return
         }
         val profile = manager.createProfile(nameFX.text, descriptionFieldFX.text)
-        manager.saveAndWatch(profile)
         onCreate(manager, profile)
         close()
     }

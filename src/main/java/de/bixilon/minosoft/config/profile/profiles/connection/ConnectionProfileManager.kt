@@ -44,5 +44,5 @@ object ConnectionProfileManager : ProfileManager<ConnectionProfile> {
             GlobalEventMaster.fire(ConnectionProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = ConnectionProfile(description ?: "Default connection profile")
+    override fun createProfile(description: String?) = ConnectionProfile(description ?: "Default connection profile")
 }

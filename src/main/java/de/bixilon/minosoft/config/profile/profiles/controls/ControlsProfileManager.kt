@@ -45,5 +45,5 @@ object ControlsProfileManager : ProfileManager<ControlsProfile> {
             GlobalEventMaster.fire(ControlsProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = ControlsProfile(description ?: "Default controls profile")
+    override fun createProfile(description: String?) = ControlsProfile(description ?: "Default controls profile")
 }

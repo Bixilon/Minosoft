@@ -44,5 +44,5 @@ object BlockProfileManager : ProfileManager<BlockProfile> {
             GlobalEventMaster.fire(BlockProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = BlockProfile(description ?: "Default block profile")
+    override fun createProfile(description: String?) = BlockProfile(description ?: "Default block profile")
 }

@@ -45,5 +45,5 @@ object EntityProfileManager : ProfileManager<EntityProfile> {
             GlobalEventMaster.fire(EntityProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = EntityProfile(description ?: "Default entity profile")
+    override fun createProfile(description: String?) = EntityProfile(description ?: "Default entity profile")
 }

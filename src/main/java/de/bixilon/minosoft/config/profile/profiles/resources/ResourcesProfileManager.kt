@@ -44,5 +44,5 @@ object ResourcesProfileManager : ProfileManager<ResourcesProfile> {
             GlobalEventMaster.fire(ResourcesProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = ResourcesProfile(description ?: "Default resources profile")
+    override fun createProfile(description: String?) = ResourcesProfile(description ?: "Default resources profile")
 }

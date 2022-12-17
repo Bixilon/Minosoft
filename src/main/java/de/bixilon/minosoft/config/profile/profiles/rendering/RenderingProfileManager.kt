@@ -44,5 +44,5 @@ object RenderingProfileManager : ProfileManager<RenderingProfile> {
             GlobalEventMaster.fire(RenderingProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?) = RenderingProfile(description ?: "Default rendering profile")
+    override fun createProfile(description: String?) = RenderingProfile(description ?: "Default rendering profile")
 }
