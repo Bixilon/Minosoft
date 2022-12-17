@@ -17,18 +17,18 @@ import de.bixilon.minosoft.data.container.ArmorSlots
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 
 object HeadSlotType : EquipmentSlotType {
 
     override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
         val item = stack.item.item
-        if (item.resourceLocation == MinecraftBlocks.CARVED_PUMPKIN) {
+        if (item.resourceLocation == MinecraftBlocks.CARVED_PUMPKIN) { // TODO: remove edge case and implement carved pumpkin as wearable item
             return super.canPut(container, slot, stack)
         }
-        if (item !is ArmorItem) {
+        if (item !is WearableItem) {
             return false
         }
-        return item.equipmentSlot == ArmorSlots.HEAD && super.canPut(container, slot, stack)
+        return ArmorSlots.HEAD in item.armorSlot && super.canPut(container, slot, stack)
     }
 }

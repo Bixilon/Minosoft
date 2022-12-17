@@ -17,6 +17,9 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.armor.extra.ElytraItem
+import de.bixilon.minosoft.data.registries.item.items.armor.extra.TurtleHelmet
+import de.bixilon.minosoft.data.registries.item.items.armor.materials.*
 import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
 import de.bixilon.minosoft.data.registries.item.items.bucket.FilledBucketItem
 import de.bixilon.minosoft.data.registries.item.items.food.AppleItem
@@ -30,6 +33,39 @@ object ItemFactories : DefaultFactory<ItemFactory<*>>(
     BucketItem.EmptyBucketItem,
     FilledBucketItem.LavaBucketItem,
     FilledBucketItem.WaterBucketItem,
+
+    LeatherArmor.LeatherBoots,
+    LeatherArmor.LeatherChestplate,
+    LeatherArmor.LeatherLeggings,
+    LeatherArmor.LeatherHelmet,
+
+    ChainmailArmor.ChainmailBoots,
+    ChainmailArmor.ChainmailChestplate,
+    ChainmailArmor.ChainmailLeggings,
+    ChainmailArmor.ChainmailHelmet,
+
+    IronArmor.IronBoots,
+    IronArmor.IronChestplate,
+    IronArmor.IronLeggings,
+    IronArmor.IronHelmet,
+
+    GoldArmor.GoldBoots,
+    GoldArmor.GoldChestplate,
+    GoldArmor.GoldLeggings,
+    GoldArmor.GoldHelmet,
+
+    DiamondArmor.DiamondBoots,
+    DiamondArmor.DiamondChestplate,
+    DiamondArmor.DiamondLeggings,
+    DiamondArmor.DiamondHelmet,
+
+    NetheriteArmor.NetheriteBoots,
+    NetheriteArmor.NetheriteChestplate,
+    NetheriteArmor.NetheriteLeggings,
+    NetheriteArmor.NetheriteHelmet,
+
+    TurtleHelmet,
+    ElytraItem,
 ), IntegratedRegistry<Item> {
 
     override fun build(name: ResourceLocation, registries: Registries): Item? {

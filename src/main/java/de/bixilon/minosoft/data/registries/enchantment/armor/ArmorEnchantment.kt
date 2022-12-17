@@ -39,7 +39,7 @@ interface ArmorEnchantment : SlotSpecificEnchantment {
             EquipmentSlots.HEAD -> ArmorSlots.HEAD
             else -> return false
         }
-        if (item.equipmentSlot != armorSlot) {
+        if (armorSlot !in item.armorSlot) {
             return false
         }
         return armorSlot in this.slots

@@ -11,23 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.armor
+package de.bixilon.minosoft.data.registries.item.items.armor.extra
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
+import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
+import de.bixilon.minosoft.data.registries.item.items.armor.slots.ChestplateItem
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.util.KUtil.minecraft
 
-open class DyeableHorseArmorItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data) {
+open class ElytraItem(resourceLocation: ResourceLocation = this.resourceLocation) : Item(resourceLocation), WearableItem, ChestplateItem {
 
-    companion object : PixLyzerItemFactory<DyeableHorseArmorItem> {
+    companion object : ItemFactory<ElytraItem> {
+        override val resourceLocation = minecraft("elytra")
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): DyeableHorseArmorItem {
-            return DyeableHorseArmorItem(resourceLocation, registries, data)
-        }
+        override fun build(registries: Registries) = ElytraItem()
     }
 }

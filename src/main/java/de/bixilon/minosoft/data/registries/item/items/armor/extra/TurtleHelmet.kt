@@ -11,27 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.armor
+package de.bixilon.minosoft.data.registries.item.items.armor.extra
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
+import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
+import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.item.items.armor.DefendingItem
+import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
+import de.bixilon.minosoft.data.registries.item.items.armor.slots.HelmetItem
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.util.KUtil.minecraft
 
-open class HorseArmorItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data) {
-    val horseProtection = data["horse_protection"]?.toInt() ?: 0
-    val horseTexture = data["horse_texture"]?.nullCast<String>()
+open class TurtleHelmet(resourceLocation: ResourceLocation = this.resourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingItem, HelmetItem {
+    override val defense: Int get() = 2
 
-    companion object : PixLyzerItemFactory<HorseArmorItem> {
+    companion object : ItemFactory<TurtleHelmet> {
+        override val resourceLocation = minecraft("turtle_helmet")
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): HorseArmorItem {
-            return HorseArmorItem(resourceLocation, registries, data)
-        }
+        override fun build(registries: Registries) = TurtleHelmet()
     }
 }

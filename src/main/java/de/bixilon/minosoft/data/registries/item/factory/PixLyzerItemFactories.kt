@@ -33,7 +33,6 @@ object PixLyzerItemFactories : DefaultClassFactory<PixLyzerItemFactory<*>>(
 
     SpawnEggItem,
     DyeItem,
-    HorseArmorItem,
     ShieldItem,
     MusicDiscItem,
 
@@ -45,12 +44,6 @@ object PixLyzerItemFactories : DefaultClassFactory<PixLyzerItemFactory<*>>(
     PickaxeItem,
     HoeItem,
     AxeItem,
-
-
-    ArmorItem,
-    DyeableArmorItem,
-    DyeableHorseArmorItem,
-    ElytraItem,
 
     LingeringPotionItem,
     FireChargeItem,

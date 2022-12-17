@@ -16,15 +16,15 @@ package de.bixilon.minosoft.data.container.slots.equipment
 import de.bixilon.minosoft.data.container.ArmorSlots
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 
 object ChestSlotType : EquipmentSlotType {
 
     override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
         val item = stack.item.item
-        if (item !is ArmorItem) {
+        if (item !is WearableItem) {
             return false
         }
-        return item.equipmentSlot == ArmorSlots.CHEST && super.canPut(container, slot, stack)
+        return ArmorSlots.CHEST in item.armorSlot && super.canPut(container, slot, stack)
     }
 }

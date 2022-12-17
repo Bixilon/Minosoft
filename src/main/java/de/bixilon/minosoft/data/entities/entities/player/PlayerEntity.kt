@@ -32,7 +32,7 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.registries.item.items.armor.DyeableArmorItem
+import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.World
@@ -133,7 +133,7 @@ abstract class PlayerEntity(
                 return ChatColors.GREEN
             }
             val chestPlate = equipment[EquipmentSlots.CHEST]
-            if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
+            if (chestPlate != null && chestPlate.item.item is DyeableItem) {
                 chestPlate._display?.dyeColor?.let { return it }
             }
             val formattingCode = additional.team?.formattingCode

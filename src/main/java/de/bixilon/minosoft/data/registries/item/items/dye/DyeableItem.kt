@@ -11,13 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item
+package de.bixilon.minosoft.data.registries.item.items.dye
 
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
-
-@Deprecated("item factories")
-object MinecraftItems {
-    val LAPISLAZULI = "minecraft:lapis_lazuli".toResourceLocation()
-    val EGG = "minecraft:egg".toResourceLocation()
-    val COAL = "minecraft:coal".toResourceLocation()
-}
+interface DyeableItem

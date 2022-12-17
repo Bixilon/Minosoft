@@ -43,7 +43,7 @@ import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
-import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.item.items.armor.DefendingItem
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -573,9 +573,8 @@ abstract class Entity(
             for (equipment in equipment.unsafe.values) {
                 val item = equipment.item.item
 
-                if (item is ArmorItem) {
-                    // could also be a pumpkin or just trash
-                    protectionLevel += item.protection
+                if (item is DefendingItem) {
+                    protectionLevel += item.defense
                 }
             }
             this.equipment.lock.release()

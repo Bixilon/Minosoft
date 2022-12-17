@@ -11,13 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item
+package de.bixilon.minosoft.data.registries.item.items.armor.slots
 
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.data.container.ArmorSlots
+import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 
-@Deprecated("item factories")
-object MinecraftItems {
-    val LAPISLAZULI = "minecraft:lapis_lazuli".toResourceLocation()
-    val EGG = "minecraft:egg".toResourceLocation()
-    val COAL = "minecraft:coal".toResourceLocation()
+interface BootsItem : WearableItem {
+    override val armorSlot: Set<ArmorSlots> get() = FEET
+
+    companion object {
+        private val FEET = setOf(ArmorSlots.FEET)
+    }
 }

@@ -11,24 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.armor
+package de.bixilon.minosoft.data.registries.item.items.armor.slots
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
-import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.container.ArmorSlots
+import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 
-open class ElytraItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data) {
+interface HelmetItem : WearableItem {
+    override val armorSlot: Set<ArmorSlots> get() = HEAD
 
-
-    companion object : PixLyzerItemFactory<ElytraItem> {
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ElytraItem {
-            return ElytraItem(resourceLocation, registries, data)
-        }
+    companion object {
+        private val HEAD = setOf(ArmorSlots.HEAD)
     }
 }

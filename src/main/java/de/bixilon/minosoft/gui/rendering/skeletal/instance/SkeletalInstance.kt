@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -76,7 +75,7 @@ class SkeletalInstance(
         val matrix = Mat4()
             .translateAssign(position)
             .rotateAssign((180.0f - rotation.yaw).toFloat().rad, Vec3(0, 1, 0))
-            .translateAssign(Vec3(-0.5, 0, -0.5)) // move to center
+            .translateAssign(Vec3(-0.5, -0.5, -0.5)) // move to bottom center
 
         if (baseTransform != matrix) {
             baseTransform = matrix

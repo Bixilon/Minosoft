@@ -13,21 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
-
-open class DyeableArmorItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : ArmorItem(resourceLocation, registries, data) {
-
-
-    companion object : PixLyzerItemFactory<DyeableArmorItem> {
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): DyeableArmorItem {
-            return DyeableArmorItem(resourceLocation, registries, data)
-        }
-    }
+interface DefendingItem {
+    val defense: Int
 }

@@ -36,6 +36,8 @@ class DisplayProperty(
     val lore by observedList(lore) // ToDo: Lock
     var _customDisplayName = customDisplayName
     var customDisplayName by InventoryDelegate(stack, this::_customDisplayName)
+
+    @Deprecated("Should belong in DyeableItem")
     var _dyeColor = dyedColor
     var dyeColor by InventoryDelegate(stack, this::_dyeColor)
 
