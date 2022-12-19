@@ -397,4 +397,12 @@ class PlayInByteBuffer : InByteBuffer {
         parameters[ChatParameter.SENDER] = readChatComponent()
         readOptional { readChatComponent() }?.let { parameters[ChatParameter.TARGET] = it }
     }
+
+    fun readSoundPitch(): Float {
+        return if (versionId < ProtocolVersions.V_16W20A) {
+            readByte() * ProtocolDefinition.SOUND_PITCH_DIVIDER / 100.0f
+        } else {
+            readFloat()
+        }
+    }
 }

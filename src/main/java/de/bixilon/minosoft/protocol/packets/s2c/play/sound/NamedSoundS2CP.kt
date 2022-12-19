@@ -20,7 +20,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -56,11 +55,7 @@ class NamedSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             position = Vec3(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4)
         }
         volume = buffer.readFloat()
-        pitch = if (buffer.versionId < ProtocolVersions.V_16W20A) {
-            buffer.readByte() * ProtocolDefinition.PITCH_CALCULATION_CONSTANT / 100.0f
-        } else {
-            buffer.readFloat()
-        }
+        pitch = buffer.readSoundPitch()
 
         if (buffer.versionId >= ProtocolVersions.V_22W14A) {
             magicRandom = buffer.readLong()
