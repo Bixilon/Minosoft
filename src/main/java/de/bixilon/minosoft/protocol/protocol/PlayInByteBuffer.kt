@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.bit.BitByte.isBitMask
@@ -404,5 +405,12 @@ class PlayInByteBuffer : InByteBuffer {
         } else {
             readFloat()
         }
+    }
+
+    override fun readVec3d(): Vec3d {
+        if (versionId < ProtocolVersions.V_16W06A) {
+            return Vec3d(readFixedPointNumberInt(), readFixedPointNumberInt(), readFixedPointNumberInt())
+        }
+        return super.readVec3d()
     }
 }

@@ -49,11 +49,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             entityUUID = buffer.readUUID()
         }
 
-        val position: Vec3d = if (buffer.versionId < ProtocolVersions.V_16W06A) {
-            Vec3d(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
-        } else {
-            buffer.readVec3d()
-        }
+        val position: Vec3d = buffer.readVec3d()
 
         val yaw = buffer.readAngle()
         val pitch = buffer.readAngle()

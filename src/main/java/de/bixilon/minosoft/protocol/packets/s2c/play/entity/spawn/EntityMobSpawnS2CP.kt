@@ -44,11 +44,7 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             buffer.readVarInt()
         }
-        val position: Vec3d = if (buffer.versionId < ProtocolVersions.V_16W06A) {
-            Vec3d(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
-        } else {
-            buffer.readVec3d()
-        }
+        val position: Vec3d = buffer.readVec3d()
         val rotation = EntityRotation(buffer.readAngle().toDouble(), buffer.readAngle().toDouble())
         val headYaw = buffer.readAngle()
         val velocity = buffer.readVelocity()

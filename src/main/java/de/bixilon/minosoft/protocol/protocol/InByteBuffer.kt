@@ -295,7 +295,7 @@ open class InByteBuffer {
         return Vec3(readFloat(), readFloat(), readFloat())
     }
 
-    fun readVec3d(): Vec3d {
+    open fun readVec3d(): Vec3d {
         return Vec3d(readDouble(), readDouble(), readDouble())
     }
 
