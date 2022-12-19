@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 
+@Deprecated("Kutil")
 open class InByteBuffer {
     private val bytes: ByteArray
     var pointer = 0
@@ -279,7 +280,7 @@ open class InByteBuffer {
     }
 
     fun readAngle(): Int {
-        return (readByte() * ProtocolDefinition.ANGLE_CALCULATION_CONSTANT).toInt()
+        return (readByte() * ProtocolDefinition.ROTATION_ANGLE_DIVIDER).toInt()
     }
 
     fun readVec2f(): Vec2 {

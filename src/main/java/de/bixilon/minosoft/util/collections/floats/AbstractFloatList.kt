@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util.collections.floats
 import de.bixilon.minosoft.util.collections.AbstractPrimitiveList
 import java.nio.FloatBuffer
 
+@Deprecated("Kutil")
 abstract class AbstractFloatList : AbstractPrimitiveList<Float>() {
 
     abstract fun add(array: FloatArray)

@@ -24,8 +24,8 @@ public final class ProtocolDefinition {
     public static final int DEFAULT_PORT = 25565;
     public static final int SOCKET_TIMEOUT = 30000;
     public static final int STATUS_PROTOCOL_PACKET_MAX_SIZE = 1 << 16;
-    public static final float ANGLE_CALCULATION_CONSTANT = 360.0F / 256.0F;
-    public static final float PITCH_CALCULATION_CONSTANT = 100.0F / 63.0F;
+    public static final float ROTATION_ANGLE_DIVIDER = 360.0F / 256.0F;
+    public static final float SOUND_PITCH_DIVIDER = 100.0F / 63.0F;
 
     public static final int PLAYER_CONTAINER_ID = 0;
 

@@ -27,6 +27,7 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.*
 
+@Deprecated("Kutil")
 open class OutByteBuffer() {
     private val bytes = HeapArrayByteList()
 
@@ -183,6 +184,7 @@ open class OutByteBuffer() {
                 writeInt(tag.size)
                 writeBareByteArray(tag)
             }
+
             is CharSequence -> {
                 val bytes = tag.toString().toByteArray(Charsets.UTF_8)
                 if (bytes.size > Short.MAX_VALUE * 2) {
@@ -191,6 +193,7 @@ open class OutByteBuffer() {
                 writeShort(bytes.size)
                 writeBareByteArray(bytes)
             }
+
             is Collection<*> -> {
                 this.writeNBTTagType(
                     if (tag.isEmpty()) {
@@ -206,6 +209,7 @@ open class OutByteBuffer() {
                     writeNBTTag(element, false)
                 }
             }
+
             is Map<*, *> -> {
                 for ((key, value) in tag) {
                     val valueType = value.nbtType
@@ -218,10 +222,12 @@ open class OutByteBuffer() {
                 }
                 this.writeNBTTagType(NBTTagTypes.END)
             }
+
             is IntArray -> {
                 writeInt(tag.size)
                 writeBareIntArray(tag)
             }
+
             is LongArray -> {
                 writeInt(tag.size)
                 writeBareLongArray(tag)

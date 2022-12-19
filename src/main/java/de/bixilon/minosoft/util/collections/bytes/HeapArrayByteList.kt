@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.util.collections.bytes
 
+@Deprecated("Kutil")
 class HeapArrayByteList(
     initialSize: Int = DEFAULT_INITIAL_SIZE,
 ) : AbstractByteList() {

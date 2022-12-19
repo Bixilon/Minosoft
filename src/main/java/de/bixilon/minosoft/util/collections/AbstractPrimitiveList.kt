@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util.collections
 
+@Deprecated("Kutil")
 abstract class AbstractPrimitiveList<T> : Clearable {
     var finished: Boolean = false
         protected set

@@ -14,6 +14,7 @@ package de.bixilon.minosoft.util.collections.floats
 
 import java.nio.FloatBuffer
 
+@Deprecated("Kutil")
 class HeapArrayFloatList(
     initialSize: Int = FloatListUtil.DEFAULT_INITIAL_SIZE,
 ) : AbstractFloatList() {
