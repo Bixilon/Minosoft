@@ -413,4 +413,11 @@ class PlayInByteBuffer : InByteBuffer {
         }
         return super.readVec3d()
     }
+
+    fun readPositionDelta(): Vec3d {
+        if (versionId < ProtocolVersions.V_16W06A) {
+            return Vec3d(readFixedPointNumberByte(), readFixedPointNumberByte(), readFixedPointNumberByte())
+        }
+        return Vec3d(readShort() / 4096.0, readShort() / 4096.0, readShort() / 4096.0) // / 128 / 32
+    }
 }

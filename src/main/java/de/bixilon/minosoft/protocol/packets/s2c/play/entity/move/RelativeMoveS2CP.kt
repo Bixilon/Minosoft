@@ -25,11 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(threadSafe = false)
 class RelativeMoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
-    val delta: Vec3d = if (buffer.versionId < ProtocolVersions.V_16W06A) {
-        Vec3d(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte())
-    } else {
-        Vec3d(buffer.readShort() / 4096f, buffer.readShort() / 4096f, buffer.readShort() / 4096f) // / 128 / 32
-    }
+    val delta: Vec3d = buffer.readPositionDelta()
     val onGround = if (buffer.versionId >= ProtocolVersions.V_14W25B) {
         buffer.readBoolean()
     } else {
