@@ -30,7 +30,7 @@ object OverworldEffects : DimensionEffects {
 
     override val clouds: Boolean get() = true
     override fun getCloudHeight(connection: PlayConnection): IntRange {
-        val height = connection.world.dimension?.dataHeight ?: DimensionProperties.DEFAULT_HEIGHT
+        val height = connection.world.dimension?.height ?: DimensionProperties.DEFAULT_HEIGHT
         if (height > DimensionProperties.DEFAULT_HEIGHT) {
             return 192..196
         }

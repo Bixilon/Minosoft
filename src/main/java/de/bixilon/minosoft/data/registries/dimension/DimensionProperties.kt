@@ -34,23 +34,23 @@ data class DimensionProperties(
     //   val bedWorks: Boolean = true,
     val effects: DimensionEffects = OverworldEffects,
     //   val hasRaids: Boolean = true,
-    val logicalHeight: Int = DEFAULT_HEIGHT,
+    // val logicalHeight: Int = DEFAULT_HEIGHT,
     //   val coordinateScale: Double = 0.0,
     val minY: Int = 0,
     //   val hasCeiling: Boolean = false,
     val ultraWarm: Boolean = false,
-    val dataHeight: Int = DEFAULT_HEIGHT,
+    val height: Int = DEFAULT_HEIGHT,
     val supports3DBiomes: Boolean = true,
 ) {
-    val maxY = dataHeight + minY - 1
-    val sections = dataHeight / ProtocolDefinition.SECTION_HEIGHT_Y
+    val maxY = height + minY - 1
+    val sections = height / ProtocolDefinition.SECTION_HEIGHT_Y
     val minSection = minY shr 4
     val maxSection = (minSection + sections - 1)
 
     val brightness = FloatArray(16)
 
     init {
-        check(maxSection > minSection) { "Upper section can not be lower that the lower section ($minSection > $maxSection)" }
+        check(maxSection >= minSection) { "Upper section can not be lower that the lower section ($minSection > $maxSection)" }
         check(minSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Minimum section out of bounds: $minSection" }
         check(maxSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Maximum section out of bounds: $minSection" }
 
@@ -76,12 +76,12 @@ data class DimensionProperties(
                 //bedWorks = data["bed_works"]?.toBoolean() ?: false,
                 effects = data["effects"].nullCast<String>()?.let { DefaultDimensionEffects[it.toResourceLocation()] } ?: OverworldEffects,
                 //hasRaids = data["has_raids"]?.toBoolean() ?: false,
-                logicalHeight = data["logical_height"]?.toInt() ?: DEFAULT_MAX_Y,
+                // logicalHeight = data["logical_height"]?.toInt() ?: DEFAULT_MAX_Y,
                 //coordinateScale = data["coordinate_scale"].nullCast() ?: 0.0,
                 minY = data["min_y"]?.toInt() ?: 0,
                 //hasCeiling = data["has_ceiling"]?.toBoolean() ?: false,
                 ultraWarm = data["ultrawarm"]?.toBoolean() ?: false,
-                dataHeight = data["height"]?.toInt() ?: DEFAULT_MAX_Y,
+                height = data["height"]?.toInt() ?: DEFAULT_MAX_Y,
                 supports3DBiomes = data["supports_3d_biomes"]?.toBoolean() ?: true,
             )
         }
