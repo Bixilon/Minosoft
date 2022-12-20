@@ -50,7 +50,7 @@ data class DimensionProperties(
     val brightness = FloatArray(16)
 
     init {
-        check(maxSection >= minSection) { "Upper section can not be lower that the lower section ($minSection > $maxSection)" }
+        check(maxSection >= minSection) { "Upper section can not be lower that the lower section ($minSection >= $maxSection)" }
         check(minSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Minimum section out of bounds: $minSection" }
         check(maxSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Maximum section out of bounds: $minSection" }
 
