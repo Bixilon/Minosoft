@@ -63,7 +63,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.Pane
 
 
-class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable, ObservedReference<ServerCard> {
+class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable, ObservedReference<Any> {
     @FXML private lateinit var hideOfflineFX: CheckBox
     @FXML private lateinit var hideFullFX: CheckBox
     @FXML private lateinit var hideEmptyFX: CheckBox
@@ -410,8 +410,11 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable, Obse
         serverType!!.refresh(serverListViewFX.items)
     }
 
-    override fun isValid(value: ServerCard): Boolean {
-        return value === serverListViewFX.selectionModel.selectedItem
+    override fun isValid(value: Any): Boolean {
+        if (value is ServerCard) {
+            return value === serverListViewFX.selectionModel.selectedItem
+        }
+        return value === this
     }
 
 
