@@ -50,8 +50,16 @@ object LoaderUtil {
     }
 
     fun JarClassLoader.unloadAll() {
-        for (entry in this.classpathResources.contents) {
-            this.unloadClass(entry.key)
+        val content = this.classpathResources.contents.keys
+        val removing = ArrayList<String>(content.size)
+        for (name in content) {
+            if (name.startsWith("assets/") || !name.endsWith(".class")) {
+                continue
+            }
+            removing += name.removeSuffix(".class")
+        }
+        for (name in removing) {
+            this.unloadClass(name)
         }
     }
 }
