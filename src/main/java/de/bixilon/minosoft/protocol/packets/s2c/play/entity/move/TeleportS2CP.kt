@@ -30,8 +30,7 @@ class TeleportS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         buffer.readVec3d()
     }
-    val yaw: Int = buffer.readAngle()
-    val pitch: Int = buffer.readAngle()
+    val rotation = buffer.readEntityRotation()
     val onGround = if (buffer.versionId >= ProtocolVersions.V_14W25B) {
         buffer.readBoolean()
     } else {
@@ -41,13 +40,13 @@ class TeleportS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
         entity.position = position
-        entity.setRotation(yaw, pitch)
+        entity.forceSetRotation(rotation)
     }
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity teleport (entityId=$entityId, position=$position, yaw=$yaw, pitch=$pitch, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity teleport (entityId=$entityId, position=$position, rotation=$rotation, onGround=$onGround)" }
     }
 }

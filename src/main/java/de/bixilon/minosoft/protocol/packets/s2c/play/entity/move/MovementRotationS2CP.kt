@@ -26,8 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class MovementRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     var delta: Vec3d = buffer.readPositionDelta()
-    val yaw: Int = buffer.readAngle()
-    val pitch: Int = buffer.readAngle()
+    val rotation = buffer.readEntityRotation()
     val onGround = if (buffer.versionId >= ProtocolVersions.V_14W25B) {
         buffer.readBoolean()
     } else {
@@ -37,13 +36,13 @@ class MovementRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
         entity.forceMove(delta)
-        entity.setRotation(yaw, pitch)
+        entity.forceSetRotation(rotation)
     }
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity movement + rotate (entityId=$entityId, delta=$delta, yaw=$yaw, pitch=$pitch, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity movement + rotate (entityId=$entityId, delta=$delta, rotation=$rotation, onGround=$onGround)" }
     }
 }

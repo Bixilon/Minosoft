@@ -23,7 +23,7 @@ class PitchRotation(
     override val range: FloatRange,
 ) : RotationProperty {
 
-    override fun getValue(rotation: EntityRotation): Double {
+    override fun getValue(rotation: EntityRotation): Float {
         return rotation.pitch
     }
 

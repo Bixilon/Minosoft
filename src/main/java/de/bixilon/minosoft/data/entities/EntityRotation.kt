@@ -18,8 +18,8 @@ import de.bixilon.kotlinglm.func.sin
 import de.bixilon.kotlinglm.vec3.Vec3
 
 data class EntityRotation(
-    val yaw: Double,
-    val pitch: Double,
+    val yaw: Float,
+    val pitch: Float,
 ) {
     val front: Vec3
         get() = Vec3(
@@ -28,13 +28,12 @@ data class EntityRotation(
             (yaw + 90).rad.sin * (-pitch).rad.cos
         ).normalize()
 
-    constructor(bodyYaw: Float, pitch: Float) : this(bodyYaw.toDouble(), pitch.toDouble())
 
     override fun toString(): String {
         return "(yaw=$yaw, pitch=$pitch)"
     }
 
     companion object {
-        val EMPTY = EntityRotation(0.0, 0.0)
+        val EMPTY = EntityRotation(0.0f, 0.0f)
     }
 }

@@ -21,6 +21,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.tags.Tag
@@ -281,6 +282,10 @@ open class InByteBuffer {
 
     fun readAngle(): Int {
         return (readByte() * ProtocolDefinition.ROTATION_ANGLE_DIVIDER).toInt()
+    }
+
+    fun readEntityRotation(): EntityRotation {
+        return EntityRotation(readAngle().toFloat(), readAngle().toFloat())
     }
 
     fun readVec2f(): Vec2 {

@@ -85,7 +85,7 @@ class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
     val privateKey: PlayerPrivateKey?,
-) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation(0.0, 0.0), account.username, account.properties) {
+) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, account.username, account.properties) {
     var healthCondition by observed(HealthCondition())
     var experienceCondition by observed(ExperienceCondition())
     var compass by observed(CompassPosition())
@@ -117,7 +117,7 @@ class LocalPlayerEntity(
     // last state (for updating movement on server)
     private var lastPositionPacketSent = -1L
     private var lastSentPosition = Vec3d.EMPTY
-    private var lastRotation = EntityRotation(0.0, 0.0)
+    private var lastRotation = EntityRotation.EMPTY
     private var lastSprinting = false
     private var lastSneaking = false
     private var lastOnGround = false
@@ -269,7 +269,7 @@ class LocalPlayerEntity(
         val rotation = rotation.copy()
         val yawDiff = rotation.yaw - lastRotation.yaw
         val pitchDiff = rotation.pitch - lastRotation.pitch
-        val rotationChanged = yawDiff != 0.0 && pitchDiff != 0.0
+        val rotationChanged = yawDiff != 0.0f && pitchDiff != 0.0f
 
         val onGround = onGround
 
@@ -309,7 +309,7 @@ class LocalPlayerEntity(
         return flyingSpeed
     }
 
-    private fun calculateVelocity(sidewaysSpeed: Float, forwardSpeed: Float, speed: Double, yaw: Double): Vec3d {
+    private fun calculateVelocity(sidewaysSpeed: Float, forwardSpeed: Float, speed: Double, yaw: Float): Vec3d {
         if (sidewaysSpeed == 0.0f && forwardSpeed == 0.0f) {
             return Vec3d.EMPTY
         }

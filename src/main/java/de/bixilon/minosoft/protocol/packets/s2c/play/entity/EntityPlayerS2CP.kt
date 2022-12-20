@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
@@ -51,8 +50,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val position: Vec3d = buffer.readVec3d()
 
-        val yaw = buffer.readAngle()
-        val pitch = buffer.readAngle()
+        val rotation = buffer.readEntityRotation()
         if (buffer.versionId < ProtocolVersions.V_15W31A) {
             buffer.connection.registries.itemRegistry[buffer.readUnsignedShort()] // current item
         }
@@ -66,7 +64,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             entityType = buffer.connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!,
             data = EntityData(buffer.connection, data),
             position = position,
-            rotation = EntityRotation(yaw.toDouble(), pitch.toDouble()),
+            rotation = rotation,
             name = name,
             properties = properties,
         )

@@ -127,7 +127,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         tickStatusEffects()
 
         if (isSleeping) {
-            rotation = rotation.copy(pitch = 0.0)
+            rotation = rotation.copy(pitch = 0.0f)
         }
     }
 

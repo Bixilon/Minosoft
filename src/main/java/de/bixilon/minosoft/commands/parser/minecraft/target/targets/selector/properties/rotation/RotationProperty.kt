@@ -22,12 +22,12 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 interface RotationProperty : EntityTargetProperty {
     val range: FloatRange
 
-    fun getValue(rotation: EntityRotation): Double
+    fun getValue(rotation: EntityRotation): Float
 
 
     override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
         val rotation = getValue(entity.rotation)
 
-        return rotation.toFloat() in range
+        return rotation in range
     }
 }

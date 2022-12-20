@@ -48,7 +48,7 @@ abstract class PlayerEntity(
     entityType: EntityType,
     data: EntityData,
     position: Vec3d = Vec3d.EMPTY,
-    rotation: EntityRotation = EntityRotation(0.0, 0.0),
+    rotation: EntityRotation = EntityRotation.EMPTY,
     name: String = "",
     properties: PlayerProperties? = null,
     val additional: PlayerAdditional = PlayerAdditional(name = name, properties = properties),

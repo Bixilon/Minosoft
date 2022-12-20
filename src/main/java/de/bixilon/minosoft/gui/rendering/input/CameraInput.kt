@@ -107,7 +107,7 @@ class CameraInput(
         }
         yaw %= 180
         val pitch = GLM.clamp(delta.y + rotation.pitch, -89.9, 89.9)
-        return EntityRotation(yaw, pitch)
+        return EntityRotation(yaw.toFloat(), pitch.toFloat())
     }
 
     private companion object {

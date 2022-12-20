@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
@@ -45,7 +44,7 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readVarInt()
         }
         val position: Vec3d = buffer.readVec3d()
-        val rotation = EntityRotation(buffer.readAngle().toDouble(), buffer.readAngle().toDouble())
+        val rotation = buffer.readEntityRotation()
         val headYaw = buffer.readAngle()
         val velocity = buffer.readVelocity()
 

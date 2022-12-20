@@ -30,7 +30,7 @@ class RemotePlayerEntity(
     entityType: EntityType,
     data: EntityData,
     position: Vec3d = Vec3d.EMPTY,
-    rotation: EntityRotation = EntityRotation(0.0, 0.0),
+    rotation: EntityRotation = EntityRotation.EMPTY,
     name: String = "TBA",
     properties: PlayerProperties? = null,
     tabListItem: PlayerAdditional = PlayerAdditional(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),

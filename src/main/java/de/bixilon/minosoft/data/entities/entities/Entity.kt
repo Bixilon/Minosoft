@@ -186,8 +186,8 @@ abstract class Entity(
         _attachedEntity = vehicleId
     }
 
-    fun setRotation(yaw: Int, pitch: Int) {
-        rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
+    fun forceSetRotation(rotation: EntityRotation) {
+        this.rotation = rotation
     }
 
     fun setHeadRotation(headYaw: Int) {

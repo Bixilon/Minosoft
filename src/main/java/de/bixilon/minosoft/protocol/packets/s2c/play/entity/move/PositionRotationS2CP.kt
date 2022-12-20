@@ -29,7 +29,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(threadSafe = false)
 class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val position: Vec3d
+    val position: Vec3d = buffer.readVec3d()
     val rotation: EntityRotation
     var isOnGround = false
     private var flags: Int = 0
@@ -37,7 +37,6 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private var dismountVehicle = true
 
     init {
-        position = buffer.readVec3d()
         rotation = EntityRotation(buffer.readFloat(), buffer.readFloat())
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             isOnGround = buffer.readBoolean()
