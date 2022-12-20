@@ -18,7 +18,6 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 
@@ -29,31 +28,9 @@ class ServerCard(
     val connections: MutableSet<PlayConnection> = synchronizedSetOf()
     private var pinged = false
 
-    var statusReceiveInvoker: EventListener? = null
-        set(value) {
-            field = value
-            ping.register(value ?: return)
-        }
-    var statusErrorInvoker: EventListener? = null
-        set(value) {
-            field = value
-            ping.register(value ?: return)
-        }
-    var pongInvoker: EventListener? = null
-        set(value) {
-            field = value
-            ping.register(value ?: return)
-        }
 
     init {
         CARDS[server] = this
-    }
-
-
-    fun unregister() {
-        statusReceiveInvoker?.let { statusReceiveInvoker = null; ping.unregister(it) }
-        statusErrorInvoker?.let { statusErrorInvoker = null; ping.unregister(it) }
-        pongInvoker?.let { pongInvoker = null; ping.unregister(it) }
     }
 
     @Synchronized

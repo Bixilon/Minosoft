@@ -13,13 +13,14 @@
 package de.bixilon.minosoft.protocol.packets.s2c.status
 
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
+import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.status.StatusPong
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -29,16 +30,14 @@ class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     val pingId: Long = buffer.readLong()
 
     override fun handle(connection: StatusConnection) {
-        val pingQuery = connection.pingQuery ?: return
-        if (pingQuery.pingId != pingId) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown status pong (pingId=$pingId, expected=${pingQuery.pingId})" }
+        val ping = connection.ping ?: return
+        if (ping.pingId != pingId) {
+            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown status pong (pingId=$pingId, expected=${ping.pingId})" }
             // return ToDo: feather-rs is sending a wrong ping id back
         }
-        val latency = TimeUtil.nanos - pingQuery.nanos
+        val latency = nanos() - ping.nanos
         connection.network.disconnect()
-        val pongEvent = StatusPongReceiveEvent(connection, pingId, latency)
-        connection.lastPongEvent = pongEvent
-        connection.fire(pongEvent)
+        connection.pong = StatusPong(pingId, latency)
         connection.state = StatusConnectionStates.PING_DONE
     }
 

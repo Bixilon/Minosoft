@@ -24,9 +24,8 @@ class CallbackEventListener<E : Event> constructor(
     private val callback: (E) -> Unit,
     override val kEventType: KClass<out Event>,
     override val eventType: Class<out Event>,
-    override val instantFire: Boolean,
     priority: EventPriorities,
-) : EventListener(ignoreCancelled, priority), EventInstantFireable {
+) : EventListener(ignoreCancelled, priority) {
 
     override operator fun invoke(event: Event) {
         if (!this.ignoreCancelled && event is CancelableEvent && event.cancelled) {
@@ -41,19 +40,18 @@ class CallbackEventListener<E : Event> constructor(
             listen(callback = callback)
         }
 
-        inline fun <reified E : Event> AbstractEventMaster.listen(ignoreCancelled: Boolean = false, instantFire: Boolean = true, priority: EventPriorities = EventPriorities.NORMAL, noinline callback: (E) -> Unit): CallbackEventListener<E> {
-            val listener = of(ignoreCancelled, instantFire, priority, callback)
+        inline fun <reified E : Event> AbstractEventMaster.listen(ignoreCancelled: Boolean = false, priority: EventPriorities = EventPriorities.NORMAL, noinline callback: (E) -> Unit): CallbackEventListener<E> {
+            val listener = of(ignoreCancelled, priority, callback)
             register(listener)
             return listener
         }
 
-        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, instantFire: Boolean = true, priority: EventPriorities = EventPriorities.NORMAL, noinline callback: (E) -> Unit): CallbackEventListener<E> {
+        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, priority: EventPriorities = EventPriorities.NORMAL, noinline callback: (E) -> Unit): CallbackEventListener<E> {
             return CallbackEventListener(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,
                 kEventType = E::class,
                 eventType = E::class.java,
-                instantFire = instantFire,
                 priority = priority,
             )
         }

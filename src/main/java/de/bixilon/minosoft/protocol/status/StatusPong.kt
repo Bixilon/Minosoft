@@ -10,9 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.status
 
-package de.bixilon.minosoft.modding.event.listener
+import java.util.concurrent.ThreadLocalRandom
 
-interface EventInstantFireable {
-    val instantFire: Boolean
-}
+class StatusPong(
+    val pingId: Long = ThreadLocalRandom.current().nextLong(),
+    val latency: Long,
+)

@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.event.listener.EventInstantFireable
 import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.modding.event.listener.OneShotListener
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
@@ -33,8 +32,7 @@ class JavaFXEventListener<E : Event> constructor(
     override val oneShot: Boolean,
     override val kEventType: KClass<out Event>,
     override val eventType: Class<out Event>,
-    override val instantFire: Boolean,
-) : EventListener(ignoreCancelled, EventPriorities.NORMAL), EventInstantFireable, OneShotListener {
+) : EventListener(ignoreCancelled, EventPriorities.NORMAL), OneShotListener {
 
     override operator fun invoke(event: Event) {
         if (!this.ignoreCancelled && event is CancelableEvent && event.cancelled) {
@@ -47,20 +45,19 @@ class JavaFXEventListener<E : Event> constructor(
 
     companion object {
 
-        inline fun <reified E : Event> AbstractEventMaster.javaFX(ignoreCancelled: Boolean = false, instantFire: Boolean = true, oneShot: Boolean = false, noinline callback: (E) -> Unit): JavaFXEventListener<E> {
-            val listener = of(ignoreCancelled, instantFire, oneShot, callback)
+        inline fun <reified E : Event> AbstractEventMaster.javaFX(ignoreCancelled: Boolean = false, oneShot: Boolean = false, noinline callback: (E) -> Unit): JavaFXEventListener<E> {
+            val listener = of(ignoreCancelled, oneShot, callback)
             register(listener)
             return listener
         }
 
-        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, instantFire: Boolean = true, oneShot: Boolean = false, noinline callback: (E) -> Unit): JavaFXEventListener<E> {
+        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, oneShot: Boolean = false, noinline callback: (E) -> Unit): JavaFXEventListener<E> {
             return JavaFXEventListener(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,
                 oneShot = oneShot,
                 kEventType = E::class,
                 eventType = E::class.java,
-                instantFire = instantFire,
             )
         }
     }

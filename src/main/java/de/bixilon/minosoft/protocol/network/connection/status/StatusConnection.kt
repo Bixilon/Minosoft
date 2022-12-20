@@ -13,27 +13,22 @@
 
 package de.bixilon.minosoft.protocol.network.connection.status
 
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.protocol.versions.Versions
-import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
-import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionCreateEvent
-import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
-import de.bixilon.minosoft.modding.event.listener.EventInstantFireable
-import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
-import de.bixilon.minosoft.protocol.protocol.PingQuery
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.status.ServerStatus
+import de.bixilon.minosoft.protocol.status.StatusPing
+import de.bixilon.minosoft.protocol.status.StatusPong
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -43,13 +38,14 @@ class StatusConnection(
     var address: String,
     var forcedVersion: Version? = null,
 ) : Connection() {
-    var lastServerStatus: ServerStatus? by observed(null)
-    var pingQuery: PingQuery? by observed(null)
-    var lastPongEvent: StatusPongReceiveEvent? = null
+    var status: ServerStatus? by observed(null)
+    var ping: StatusPing? by observed(null)
+    var pong: StatusPong? by observed(null)
 
-    var tryAddress: ServerAddress? = null
+    var realAddress: ServerAddress? = null
         private set
     private var addresses: List<ServerAddress>? = null
+    private var addressIndex = 0
 
     var serverVersion: Version? = null
 
@@ -58,40 +54,35 @@ class StatusConnection(
     private var timeoutTask: TimeWorkerTask? = null
 
 
-    override var error: Throwable?
-        get() = super.error
-        set(value) {
-            pingQuery = null
-            lastServerStatus = null
-            super.error = value
-            value?.let {
-                state = StatusConnectionStates.ERROR
-                network.disconnect()
-            }
-        }
-
-
     init {
+        this::error.observe(this) {
+            if (it == null) return@observe
+            ping = null
+            status = null
+            state = StatusConnectionStates.ERROR
+            network.disconnect()
+        }
         network::connected.observe(this) {
             if (it) {
                 state = StatusConnectionStates.HANDSHAKING
-                network.send(HandshakeC2SP(tryAddress!!, ProtocolStates.STATUS, forcedVersion?.protocolId ?: Versions.AUTOMATIC.protocolId))
+                network.send(HandshakeC2SP(realAddress!!, ProtocolStates.STATUS, forcedVersion?.protocolId ?: Versions.AUTOMATIC.protocolId))
                 network.state = ProtocolStates.STATUS
                 return@observe
             }
-            if (lastServerStatus != null) {
+            if (status != null) {
                 return@observe
             }
 
-            val nextIndex = addresses!!.indexOf(tryAddress) + 1
-            if (addresses!!.size > nextIndex) {
-                val nextAddress = addresses!![nextIndex]
+            val addresses = this.addresses!!
+            val nextIndex = ++addressIndex
+            if (addresses.size >= nextIndex) {
+                val nextAddress = addresses[nextIndex]
                 Log.log(LogMessageType.NETWORK_RESOLVING) { "Could not connect to $address, trying next hostname: $nextAddress" }
-                tryAddress = nextAddress
-                ping()
+                realAddress = nextAddress
+                ping(nextAddress)
             } else {
                 // no connection and no servers available anymore... sorry, but you can not play today :(
-                error = Exception("Tried all hostnames")
+                error = Exception("Can not ping: Tried all hostnames")
             }
         }
 
@@ -106,10 +97,10 @@ class StatusConnection(
             }
         }
         this::state.observe(this) {
-            if (it == StatusConnectionStates.PING_DONE) {
+            if (it == StatusConnectionStates.PING_DONE || it == StatusConnectionStates.ERROR) {
                 val timeoutTask = timeoutTask ?: return@observe
                 timeoutTask.interrupt()
-                TimeWorker.removeTask(timeoutTask)
+                TimeWorker -= timeoutTask
                 this.timeoutTask = null
             }
         }
@@ -123,26 +114,29 @@ class StatusConnection(
         var addresses = this.addresses
         if (addresses == null) {
             addresses = DNSUtil.resolveServerAddress(address)
-            tryAddress = addresses.first()
+            realAddress = addresses.first()
             this.addresses = addresses
+            this.addressIndex = 0
         }
         return addresses
     }
 
-    fun ping() {
-        if (state == StatusConnectionStates.RESOLVING || state == StatusConnectionStates.ESTABLISHING || network.connected) {
-            error("Already connecting!")
-        }
-
-        tryAddress = null
+    fun reset() {
+        realAddress = null
         this.addresses = null
-        lastServerStatus = null
-        pingQuery = null
-        lastPongEvent = null
+        this.addressIndex = 0
+        status = null
+        ping = null
+        pong = null
         serverVersion = null
         error = null
-        state = StatusConnectionStates.RESOLVING
+        state = StatusConnectionStates.WAITING
+    }
 
+    fun ping(address: ServerAddress) {
+        if (state == StatusConnectionStates.ESTABLISHING || network.connected) {
+            error("Already connecting!")
+        }
         // timeout task
         timeoutTask = TimeWorker.runLater(30000) {
             if (state == StatusConnectionStates.ERROR) {
@@ -154,47 +148,28 @@ class StatusConnection(
                 state = StatusConnectionStates.ERROR
             }
         }
+        Log.log(LogMessageType.NETWORK_RESOLVING) { "Pinging $address (from ${this.address})" }
 
-        DefaultThreadPool += execute@{
-            try {
-                resolve()
-            } catch (exception: Exception) {
-                Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve $tryAddress" }
-                error = exception
-                network.disconnect()
-                return@execute
-            }
-            val tryAddress = tryAddress ?: return@execute
-
-            Log.log(LogMessageType.NETWORK_RESOLVING) { "Pinging $tryAddress (from $address)" }
-
-            state = StatusConnectionStates.ESTABLISHING
-            network.connect(tryAddress, false)
-        }
+        state = StatusConnectionStates.ESTABLISHING
+        network.connect(address, false)
     }
 
-    override fun <T : EventListener> register(invoker: T): T {
-        if (invoker is EventInstantFireable && !invoker.instantFire) {
-            return super.register(invoker)
+    fun ping() {
+        if (state == StatusConnectionStates.RESOLVING || state == StatusConnectionStates.ESTABLISHING || network.connected) {
+            error("Already connecting!")
         }
-
-        super.register(invoker)
-
-
-        when {
-            invoker.eventType.isAssignableFrom(ConnectionErrorEvent::class.java) -> {
-                error?.let { invoker.invoke(ConnectionErrorEvent(this, it)) }
-            }
-
-            invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) -> {
-                lastServerStatus?.let { invoker.invoke(ServerStatusReceiveEvent(this, it)) }
-            }
-
-            invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java) -> {
-                lastPongEvent?.let { invoker.invoke(it) }
-            }
+        reset()
+        state = StatusConnectionStates.RESOLVING
+        val addresses: List<ServerAddress>
+        try {
+            addresses = resolve()
+        } catch (exception: Exception) {
+            Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve $realAddress" }
+            error = exception
+            network.disconnect()
+            return
         }
-        return invoker
+        ping(addresses.first())
     }
 
     override fun disconnect() {

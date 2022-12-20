@@ -36,9 +36,8 @@ import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.fixer.MinecraftRegistryFixer
-import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.tags.DefaultTags
 import de.bixilon.minosoft.data.tags.Tag
@@ -62,6 +61,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicke
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.KUtil
@@ -108,19 +108,16 @@ class PlayConnection(
 
     var rootNode: RootNode? = null
 
-    override var error: Throwable?
-        get() = super.error
-        set(value) {
-            val previous = super.error
-            super.error = value
-            ERRORED_CONNECTIONS += this
-            value?.let { state = PlayConnectionStates.ERROR }
-            if (previous == null) {
-                error.report()
-            }
-        }
 
     init {
+        var errored = false
+        this::error.observe(this) {
+            if (errored || it == null) return@observe
+            ERRORED_CONNECTIONS += this
+            state = PlayConnectionStates.ERROR
+            error.report()
+            errored = true
+        }
         MinecraftRegistryFixer.register(this)
         DefaultChannelHandlers.register(this)
 
@@ -185,10 +182,10 @@ class PlayConnection(
             var error: Throwable? = null
             val taskWorker = TaskWorker(errorHandler = { _, exception -> if (error == null) error = exception }, criticalErrorHandler = { _, exception -> if (error == null) error = exception })
             taskWorker += {
-                fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
+                events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 version.load(profiles.resources, latch)
                 registries.parentRegistries = version.registries
-                fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
+                events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             }
 
             taskWorker += {

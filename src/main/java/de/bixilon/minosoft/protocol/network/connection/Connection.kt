@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.protocol.network.connection
 
-import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
-import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.modding.event.master.EventMaster
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
+import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class Connection : AbstractEventMaster {
     val network: ClientNetwork = NettyClient(this)
@@ -32,11 +32,7 @@ abstract class Connection : AbstractEventMaster {
     var wasConnected = false
     open val version: Version? = null
 
-    open var error: Throwable? = null
-        set(value) {
-            field = value
-            value?.let { events.fire(ConnectionErrorEvent(this, it)) }
-        }
+    var error: Throwable? by observed(null)
 
     open fun sendPacket(packet: C2SPacket) {
         val event = PacketSendEvent(this, packet)
@@ -51,7 +47,7 @@ abstract class Connection : AbstractEventMaster {
      * @param event The event to fire
      * @return if the event has been cancelled or not
      */
-    @Deprecated("events")
+    @Deprecated("events", ReplaceWith("events.fire(event)"))
     override fun fire(event: Event): Boolean {
         return events.fire(event)
     }
@@ -71,7 +67,7 @@ abstract class Connection : AbstractEventMaster {
         events.register(*invokers)
     }
 
-    @Deprecated("events")
+    @Deprecated("events", ReplaceWith("events.iterator()"))
     override fun iterator(): Iterator<EventListener> {
         return events.iterator()
     }

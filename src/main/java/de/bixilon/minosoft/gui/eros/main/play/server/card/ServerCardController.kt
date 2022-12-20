@@ -25,13 +25,10 @@ import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.main.play.server.ServerListController
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.favicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
-import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
-import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
-import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
@@ -42,7 +39,7 @@ import javafx.scene.image.Image
 import javafx.scene.text.TextFlow
 import java.io.ByteArrayInputStream
 
-class ServerCardController : AbstractCardController<ServerCard>(), ObservedReference<ServerCardController> {
+class ServerCardController : AbstractCardController<ServerCard>(), ObservedReference<StatusConnection> {
     @FXML private lateinit var faviconFX: PixelImageView
     @FXML private lateinit var serverNameFX: TextFlow
     @FXML private lateinit var motdFX: TextFlow
@@ -79,26 +76,30 @@ class ServerCardController : AbstractCardController<ServerCard>(), ObservedRefer
 
         serverNameFX.text = item.server.name
 
-        item.unregister()
         item.ping()
 
         item.server.favicon?.let { faviconFX.image = it }
 
-        item.statusReceiveInvoker = JavaFXEventListener.of<ServerStatusReceiveEvent> {
-            if (this.item != item || it.connection.error != null) {
-                // error already occurred, not setting any data
-                return@of
-            }
-            motdFX.text = it.status.motd ?: ChatComponent.EMPTY
-            playerCountFX.ctext = "${it.status.usedSlots?.thousands()} / ${it.status.slots?.thousands()}"
-            serverVersionFX.ctext = it.connection.serverVersion?.name
+        val ping = item.ping
 
-            val favicon = it.status.favicon
+
+        ping::status.observeFX(ping, instant = true) {
+            if (this.item != item || ping.error != null) {
+                // error already occurred, not setting any data
+                return@observeFX
+            }
+            if (it == null) return@observeFX // card already clear
+
+            motdFX.text = it.motd ?: ChatComponent.EMPTY
+            playerCountFX.ctext = "${it.usedSlots?.thousands()} / ${it.slots?.thousands()}"
+            serverVersionFX.ctext = ping.serverVersion?.name
+
+            val favicon = it.favicon
 
             if (favicon == null) {
                 item.server.faviconHash = null
             } else {
-                DefaultThreadPool += { item.server.saveFavicon(favicon) }  // ToDo: This is running every event?
+                DefaultThreadPool += { item.server.saveFavicon(favicon) }  // ToDo: This is running every time?
             }
 
             faviconFX.image = favicon?.let { Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
@@ -107,9 +108,8 @@ class ServerCardController : AbstractCardController<ServerCard>(), ObservedRefer
             serverList?.onPingUpdate(item)
         }
 
-        val ping = item.ping
-        ping::state.observeFX(this) { // ToDo: Don't register twice
-            if (this.item != item || ping.error != null || ping.lastServerStatus != null) {
+        ping::state.observeFX(ping, instant = true) {
+            if (this.item != item || ping.error != null || ping.status != null) {
                 return@observeFX
             }
 
@@ -117,28 +117,27 @@ class ServerCardController : AbstractCardController<ServerCard>(), ObservedRefer
             serverList?.onPingUpdate(item)
         }
 
-        item.statusErrorInvoker = JavaFXEventListener.of<ConnectionErrorEvent> {
-            if (this.item != item) {
-                return@of
+        ping::error.observeFX(ping, instant = true) {
+            if (this.item != item || it == null) {
+                return@observeFX
             }
-            motdFX.text = it.exception.text
+            motdFX.text = it.text
             resetPing()
 
             serverList?.onPingUpdate(item)
         }
-
-        item.pongInvoker = JavaFXEventListener.of<StatusPongReceiveEvent> {
-            if (this.item != item || it.connection.error != null) {
+        ping::pong.observeFX(ping, instant = true) {
+            if (this.item != item || ping.error != null || it == null) {
                 // error already occurred, not setting any data
-                return@of
+                return@observeFX
             }
             pingFX.text = it.latency.formatNanos()
             serverList?.onPingUpdate(item)
         }
     }
 
-    override fun isValid(value: ServerCardController): Boolean {
-        return value.item == item
+    override fun isValid(value: StatusConnection): Boolean {
+        return item.ping === value
     }
 
     companion object : CardFactory<ServerCardController> {

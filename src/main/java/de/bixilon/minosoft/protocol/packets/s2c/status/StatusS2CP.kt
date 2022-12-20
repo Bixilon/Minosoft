@@ -12,18 +12,17 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.status
 
-import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.protocol.versions.Versions
-import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.status.PingC2SP
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
-import de.bixilon.minosoft.protocol.protocol.PingQuery
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.status.ServerStatus
+import de.bixilon.minosoft.protocol.status.StatusPing
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -33,7 +32,7 @@ class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     val status: ServerStatus = ServerStatus(buffer.readJson())
 
     override fun handle(connection: StatusConnection) {
-        connection.lastServerStatus = status
+        connection.status = status
         val version: Version? = Versions.getByProtocol(status.protocolId ?: -1)
         if (version == null) {
             Log.log(LogMessageType.NETWORK_STATUS, LogLevels.WARN) { "Server is running on unknown version (protocolId=${status.protocolId})" }
@@ -41,12 +40,10 @@ class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
             connection.serverVersion = version
         }
 
-        connection.fire(ServerStatusReceiveEvent(connection, this))
-
-        val pingQuery = PingQuery()
-        connection.pingQuery = pingQuery
+        val ping = StatusPing()
+        connection.ping = ping
         connection.state = StatusConnectionStates.QUERYING_PING
-        connection.sendPacket(PingC2SP(pingQuery.pingId))
+        connection.sendPacket(PingC2SP(ping.pingId))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server.type.types
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
@@ -45,10 +46,12 @@ object CustomServerType : ServerType {
         for (serverCard in cards) {
             val ping = serverCard.ping
             if (ping.state != StatusConnectionStates.PING_DONE && ping.state != StatusConnectionStates.ERROR) {
-                return
+                continue
             }
-            ping.network.disconnect()
-            ping.ping()
+            async {
+                ping.network.disconnect()
+                ping.ping()
+            }
         }
     }
 }

@@ -10,15 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events.connection.status
+package de.bixilon.minosoft.protocol.status
 
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.nanos
+import java.util.concurrent.ThreadLocalRandom
 
-/**
- * Fired when a pong is received from the server or the pong has already arrived and the event got registered too late
- */
-class StatusPongReceiveEvent(
-    connection: StatusConnection,
-    val pingId: Long,
-    val latency: Long,
-) : StatusConnectionEvent(connection)
+class StatusPing(
+    val pingId: Long = ThreadLocalRandom.current().nextLong(),
+    val nanos: Long = nanos(),
+)

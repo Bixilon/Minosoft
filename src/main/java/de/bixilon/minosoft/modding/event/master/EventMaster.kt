@@ -17,15 +17,12 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.modding.event.EventInstantFire
 import de.bixilon.minosoft.modding.event.events.AsyncEvent
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.event.listener.EventInstantFireable
 import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.modding.event.listener.OneShotListener
 import java.util.*
-import kotlin.reflect.full.companionObjectInstance
 
 open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaster {
     private val parents: MutableSet<AbstractEventMaster> = mutableSetOf(*parents)
@@ -109,14 +106,6 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
         eventInvokerLock.lock()
         eventListeners += invoker
         eventInvokerLock.unlock()
-
-        if (invoker is EventInstantFireable && invoker.instantFire) {
-            val companion = invoker.kEventType?.companionObjectInstance ?: return invoker
-
-            if (companion is EventInstantFire<*>) {
-                invoker.invoke(companion.fire())
-            }
-        }
         return invoker
     }
 
