@@ -15,15 +15,12 @@ package de.bixilon.minosoft.gui.rendering.world
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
@@ -40,6 +37,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.world.mesh.VisibleMeshes
+import de.bixilon.minosoft.gui.rendering.world.queue.CulledQueue
 import de.bixilon.minosoft.gui.rendering.world.queue.loading.MeshLoadingQueue
 import de.bixilon.minosoft.gui.rendering.world.queue.loading.MeshUnloadingQueue
 import de.bixilon.minosoft.gui.rendering.world.queue.meshing.ChunkMeshingQueue
@@ -49,8 +47,8 @@ import de.bixilon.minosoft.gui.rendering.world.shader.WorldTextShader
 import de.bixilon.minosoft.gui.rendering.world.util.WorldRendererChangeListener
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class WorldRenderer(
     val connection: PlayConnection,
@@ -59,16 +57,15 @@ class WorldRenderer(
     private val profile = connection.profiles.block
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     val visibilityGraph = renderWindow.camera.visibilityGraph
-    private val shader = renderSystem.createShader("minosoft:world".toResourceLocation()) { WorldShader(it, false) }
-    private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation()) { WorldShader(it, true) }
-    private val textShader = renderSystem.createShader("minosoft:world/text".toResourceLocation()) { WorldTextShader(it) }
+    private val shader = renderSystem.createShader(minosoft("world")) { WorldShader(it, false) }
+    private val transparentShader = renderSystem.createShader(minosoft("world")) { WorldShader(it, true) }
+    private val textShader = renderSystem.createShader(minosoft("world/text")) { WorldTextShader(it) }
     val world: World = connection.world
 
     val loaded = LoadedMeshes(this)
 
     val meshingQueue = ChunkMeshingQueue(this)
-    val culledQueue: MutableMap<Vec2i, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
-    val culledQueueLock = SimpleLock()
+    val culledQueue = CulledQueue(this)
 
     val loadingQueue = MeshLoadingQueue(this)
     val unloadingQueue = MeshUnloadingQueue(this)
@@ -88,7 +85,6 @@ class WorldRenderer(
     var cameraChunkPosition = Vec2i.EMPTY
     var cameraSectionHeight = 0
 
-    @Deprecated("alias?") val culledQueuedSize: Int get() = culledQueue.size
 
     override fun init(latch: CountUpAndDownLatch) {
         renderWindow.modelLoader.load(latch)
@@ -131,22 +127,14 @@ class WorldRenderer(
             val distance = maxOf(viewDistance, profile.simulationDistance)
             if (distance < this.previousViewDistance) {
                 // Unload all chunks(-sections) that are out of view distance
-                culledQueueLock.lock()
+                culledQueue.lock()
                 meshingQueue.lock()
                 loadingQueue.lock()
                 unloadingQueue.lock()
                 loaded.lock()
 
                 loaded.cleanup(false)
-
-                val toRemove: MutableSet<Vec2i> = HashSet()
-                for (chunkPosition in culledQueue.keys) {
-                    if (visibilityGraph.isChunkVisible(chunkPosition)) {
-                        continue
-                    }
-                    toRemove += chunkPosition
-                }
-                culledQueue -= toRemove
+                culledQueue.cleanup(false)
 
                 meshingQueue.cleanup()
 
@@ -156,7 +144,7 @@ class WorldRenderer(
 
                 loaded.unlock()
                 meshingQueue.unlock()
-                culledQueueLock.unlock()
+                culledQueue.unlock()
                 loadingQueue.unlock()
                 unloadingQueue.unlock()
             } else {
@@ -178,7 +166,7 @@ class WorldRenderer(
     }
 
     fun unloadWorld() {
-        culledQueueLock.lock()
+        culledQueue.lock()
         meshingQueue.lock()
         loadingQueue.lock()
         loaded.lock()
@@ -190,7 +178,7 @@ class WorldRenderer(
         unloadingQueue.lock()
         loaded.clear(false)
 
-        culledQueue.clear()
+        culledQueue.clear(false)
         meshingQueue.clear(false)
         loadingQueue.clear(false)
 
@@ -198,12 +186,12 @@ class WorldRenderer(
 
         loaded.unlock()
         meshingQueue.unlock()
-        culledQueueLock.unlock()
+        culledQueue.unlock()
         loadingQueue.unlock()
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {
-        culledQueueLock.lock()
+        culledQueue.lock()
         meshingQueue.lock()
         loadingQueue.lock()
         unloadingQueue.lock()
@@ -212,7 +200,7 @@ class WorldRenderer(
 
         meshingQueue.tasks.interrupt(chunkPosition)
 
-        culledQueue.remove(chunkPosition)
+        culledQueue.remove(chunkPosition, false)
 
         meshingQueue.remove(chunkPosition)
 
@@ -222,7 +210,7 @@ class WorldRenderer(
         loaded.unload(chunkPosition, false)
 
         loaded.unlock()
-        culledQueueLock.unlock()
+        culledQueue.unlock()
         loadingQueue.unlock()
         unloadingQueue.unlock()
         meshingQueue.unlock()
@@ -230,19 +218,14 @@ class WorldRenderer(
 
 
     fun queueItemUnload(item: WorldQueueItem) {
-        culledQueueLock.lock()
+        culledQueue.lock()
         meshingQueue.lock()
         loadingQueue.lock()
         unloadingQueue.lock()
         loaded.lock()
         loaded.unload(item.chunkPosition, item.sectionHeight, false)
 
-        culledQueue[item.chunkPosition]?.let {
-            it.remove(item.sectionHeight)
-            if (it.isEmpty()) {
-                culledQueue -= item.chunkPosition
-            }
-        }
+        culledQueue.remove(item.chunkPosition, item.sectionHeight, false)
 
         meshingQueue.remove(item)
 
@@ -252,7 +235,7 @@ class WorldRenderer(
 
         loaded.unlock()
         meshingQueue.unlock()
-        culledQueueLock.unlock()
+        culledQueue.unlock()
         loadingQueue.unlock()
         unloadingQueue.unlock()
     }
@@ -335,61 +318,21 @@ class WorldRenderer(
 
         loaded.collect(visible)
 
-        culledQueueLock.acquire() // The queue method needs the full lock of the culledQueue
-        val nextQueue: MutableMap<Vec2i, Pair<Chunk, IntOpenHashSet>> = mutableMapOf()
-        world.chunks.lock.acquire()
-        for ((chunkPosition, sectionHeights) in this.culledQueue) {
-            if (!visibilityGraph.isChunkVisible(chunkPosition)) {
-                continue
-            }
-            val chunk = world.chunks.unsafe[chunkPosition] ?: continue
-            var chunkQueue: IntOpenHashSet? = null
-            for (sectionHeight in sectionHeights.intIterator()) {
-                val section = chunk[sectionHeight] ?: continue
-                if (!visibilityGraph.isSectionVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, false)) {
-                    continue
-                }
-                if (chunkQueue == null) {
-                    chunkQueue = IntOpenHashSet()
-                    nextQueue[chunkPosition] = Pair(chunk, chunkQueue)
-                }
-                chunkQueue += sectionHeight
-            }
-        }
-        world.chunks.lock.release()
-
-        culledQueueLock.release()
+        val nextQueue = culledQueue.collect()
 
 
-        for (pair in nextQueue.values) {
-            val (chunk, sectionHeights) = pair
+        for ((chunk, sectionHeight) in nextQueue) {
             val neighbours = chunk.neighbours.get() ?: continue
-            for (sectionHeight in sectionHeights.intIterator()) {
-                val section = chunk[sectionHeight] ?: continue
-                master.tryQueue(section, force = true, chunk = chunk, neighbours = neighbours)
-            }
+            val section = chunk[sectionHeight] ?: continue
+            master.tryQueue(section, force = true, chunk = chunk, neighbours = neighbours)
         }
+
         if (sortQueue && nextQueue.isNotEmpty()) {
             meshingQueue.sort()
         }
         if (nextQueue.isNotEmpty()) {
             meshingQueue.work()
         }
-
-        culledQueueLock.lock()
-        meshingQueue.lock.acquire()
-        // remove nextQueue from culledQueue
-        for ((chunkPosition, pair) in nextQueue) {
-            val originalSectionHeight = this.culledQueue[chunkPosition] ?: continue
-            for (sectionHeight in pair.second.intIterator()) {
-                originalSectionHeight -= sectionHeight
-            }
-            if (originalSectionHeight.isEmpty()) {
-                this.culledQueue -= chunkPosition
-            }
-        }
-        meshingQueue.lock.release()
-        culledQueueLock.unlock()
 
         visible.sort()
 
@@ -398,7 +341,7 @@ class WorldRenderer(
 
 
     companion object : RendererBuilder<WorldRenderer> {
-        override val RESOURCE_LOCATION = ResourceLocation("minosoft:world")
+        override val RESOURCE_LOCATION = minosoft("world")
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldRenderer {
             return WorldRenderer(connection, renderWindow)
