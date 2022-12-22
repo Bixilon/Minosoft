@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.network.network.client.netty
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 
+@Deprecated("Kutil")
 class NamedThreadFactory(
     val format: String,
 ) : ThreadFactory {
