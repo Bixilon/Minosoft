@@ -21,6 +21,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -53,7 +54,7 @@ class ModelLoader(
     private fun loadBlockStates(block: Block) {
         val blockStateJson = assetsManager[block.resourceLocation.blockState()].readJsonObject()
 
-        val model = RootModel(this, blockStateJson) ?: return
+        val model = RootModel(this, blockStateJson)
 
 
         for (state in block.states) {
@@ -71,6 +72,15 @@ class ModelLoader(
 
         unbakedBlockModels[name] = model
         return model
+    }
+
+    private fun loadFluid(fluid: Fluid) {
+        if (fluid.model != null) {
+            return
+        }
+        val model = fluid.createModel() ?: return
+        model.load(renderWindow)
+        fluid.model = model
     }
 
     fun loadItem(item: Item) {
@@ -104,6 +114,19 @@ class ModelLoader(
         blockLatch.await()
     }
 
+    private fun loadFluidModels(latch: CountUpAndDownLatch) {
+        val blockLatch = CountUpAndDownLatch(1, latch)
+        // ToDo: Optimize performance
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading fluid models..." }
+
+        for (fluid in registry.fluidRegistry) {
+            blockLatch.inc()
+            DefaultThreadPool += { loadFluid(fluid); blockLatch.dec() }
+        }
+        blockLatch.dec()
+        blockLatch.await()
+    }
+
     private fun loadItemModels(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading item models..." }
         val itemLatch = CountUpAndDownLatch(1, latch)
@@ -129,6 +152,7 @@ class ModelLoader(
 
     fun load(latch: CountUpAndDownLatch) {
         loadBlockModels(latch)
+        loadFluidModels(latch)
         loadItemModels(latch)
         loadEntityModels(latch)
 

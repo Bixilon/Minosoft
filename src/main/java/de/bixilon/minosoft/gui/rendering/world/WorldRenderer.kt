@@ -135,15 +135,6 @@ class WorldRenderer(
 
     override fun init(latch: CountUpAndDownLatch) {
         renderWindow.modelLoader.load(latch)
-
-        for (fluid in connection.registries.fluidRegistry) {
-            if (fluid.model != null) {
-                continue
-            }
-            val model = fluid.createModel() ?: continue
-            model.load(renderWindow)
-            fluid.model = model
-        }
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
