@@ -27,7 +27,7 @@ class MeshLoadingQueue(
 ) {
 
     private val meshes: MutableList<WorldMesh> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
-    private val positions: MutableSet<ChunkPosition> = HashSet()
+    private val positions: MutableSet<QueuePosition> = HashSet()
     private val lock = SimpleLock()
 
     val size: Int get() = meshes.size
@@ -50,7 +50,7 @@ class MeshLoadingQueue(
         var position: ChunkPosition? = null
         while (this.meshes.isNotEmpty() && (TimeUtil.millis() - start < maxTime)) {
             val mesh = this.meshes.removeAt(0)
-            this.positions -= mesh.chunkPosition
+            this.positions -= QueuePosition(mesh)
 
             mesh.load()
 
@@ -83,7 +83,7 @@ class MeshLoadingQueue(
 
     fun queue(mesh: WorldMesh) {
         lock.lock()
-        if (!this.positions.add(mesh.chunkPosition)) {
+        if (!this.positions.add(QueuePosition(mesh))) {
             // already inside, remove
             meshes.remove(mesh)
         }
@@ -98,26 +98,32 @@ class MeshLoadingQueue(
 
     fun abort(position: ChunkPosition, lock: Boolean = true) {
         if (lock) this.lock.lock()
-        if (this.positions.remove(position)) {
-            this.meshes.removeIf { it.chunkPosition == position }
+        val positions: MutableSet<QueuePosition> = mutableSetOf()
+        this.positions.removeAll {
+            if (it.position != position) {
+                return@removeAll false
+            }
+            positions += it
+            return@removeAll true
         }
+        this.meshes.removeAll { QueuePosition(it.chunkPosition, it.sectionHeight) in positions }
         if (lock) this.lock.unlock()
     }
 
 
     fun cleanup(lock: Boolean) {
-        val remove: MutableSet<ChunkPosition> = mutableSetOf()
+        val remove: MutableSet<QueuePosition> = mutableSetOf()
 
         if (lock) this.lock.lock()
         this.positions.removeAll {
-            if (renderer.visibilityGraph.isChunkVisible(it)) {
+            if (renderer.visibilityGraph.isChunkVisible(it.position)) {
                 return@removeAll false
             }
             remove += it
             return@removeAll true
         }
 
-        this.meshes.removeAll { it.chunkPosition in remove }
+        this.meshes.removeAll { QueuePosition(it) in remove }
         if (lock) this.lock.unlock()
     }
 

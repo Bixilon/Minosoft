@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.world.queue
 
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.world.WorldRendererUtil.maxBusyTime
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
@@ -24,7 +23,7 @@ class MeshUnloadingQueue(
     private val renderer: WorldRenderer,
 ) {
     private val meshes: MutableList<WorldMesh> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
-    private val positions: MutableSet<ChunkPosition> = mutableSetOf()
+    private val positions: MutableSet<QueuePosition> = mutableSetOf()
     private val lock = SimpleLock()
 
 
@@ -38,7 +37,7 @@ class MeshUnloadingQueue(
 
         while (meshes.isNotEmpty() && (TimeUtil.millis() - time < maxTime)) {
             val mesh = meshes.removeAt(0)
-            this.positions -= mesh.chunkPosition
+            this.positions -= QueuePosition(mesh)
             renderer.visible.removeMesh(mesh)
             mesh.unload()
         }
@@ -61,14 +60,16 @@ class MeshUnloadingQueue(
         } else {
             this.meshes += mesh
         }
-        this.positions += mesh.chunkPosition
+        this.positions += QueuePosition(mesh)
 
         if (lock) this.lock.unlock()
     }
 
     fun queue(mesh: WorldMesh, lock: Boolean = true) {
         if (lock) this.lock.lock()
-        if (mesh.chunkPosition in this.positions) {
+        if (QueuePosition(mesh) in this.positions) {
+            // already queued
+            // TODO: maybe camera chunk position changed?
             this.lock.unlock()
             return
         }
