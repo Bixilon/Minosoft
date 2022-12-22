@@ -17,13 +17,11 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.Chunk
@@ -39,41 +37,24 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.VisibleMeshes
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
-import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
-import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPreparer
-import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.queue.MeshLoadingQueue
 import de.bixilon.minosoft.gui.rendering.world.queue.MeshUnloadingQueue
 import de.bixilon.minosoft.gui.rendering.world.queue.meshing.ChunkMeshingQueue
-import de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.world.shader.WorldShader
 import de.bixilon.minosoft.gui.rendering.world.shader.WorldTextShader
-import de.bixilon.minosoft.modding.event.events.RespawnEvent
-import de.bixilon.minosoft.modding.event.events.blocks.BlockDataChangeEvent
-import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
-import de.bixilon.minosoft.modding.event.events.blocks.BlocksSetEvent
-import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
-import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkUnloadEvent
-import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
+import de.bixilon.minosoft.gui.rendering.world.util.WorldRendererChangeListener
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class WorldRenderer(
@@ -86,9 +67,7 @@ class WorldRenderer(
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation()) { WorldShader(it, false) }
     private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation()) { WorldShader(it, true) }
     private val textShader = renderSystem.createShader("minosoft:world/text".toResourceLocation()) { WorldTextShader(it) }
-    private val world: World = connection.world
-    private val solidSectionPreparer: SolidSectionPreparer = SolidCullSectionPreparer(renderWindow)
-    private val fluidSectionPreparer: FluidSectionPreparer = FluidCullSectionPreparer(renderWindow)
+    val world: World = connection.world
 
     val loaded = LoadedMeshes(this)
 
@@ -98,6 +77,8 @@ class WorldRenderer(
 
     val loadingQueue = MeshLoadingQueue(this)
     val unloadingQueue = MeshUnloadingQueue(this)
+
+    val mesher = ChunkMesher(this)
 
     // all meshes that will be rendered in the next frame (might be changed, when the frustum changes or a chunk gets loaded, ...)
     private var clearVisibleNextFrame = false
@@ -109,12 +90,7 @@ class WorldRenderer(
     var cameraChunkPosition = Vec2i.EMPTY
     var cameraSectionHeight = 0
 
-    @Deprecated("alias?", ReplaceWith("visible.sizeString")) val visibleSize: String get() = visible.sizeString
-    @Deprecated("alias?", ReplaceWith("loaded.size")) val loadedMeshesSize: Int get() = loaded.size
     @Deprecated("alias?") val culledQueuedSize: Int get() = culledQueue.size
-    @Deprecated("alias?", ReplaceWith("loadingQueue.size")) val meshesToLoadSize: Int get() = loadingQueue.size
-    @Deprecated("alias?", ReplaceWith("queue.size")) val queueSize: Int get() = queue.size
-    @Deprecated("alias?", ReplaceWith("queue.tasks.size")) val preparingTasksSize: Int get() = queue.tasks.size
 
     override fun init(latch: CountUpAndDownLatch) {
         renderWindow.modelLoader.load(latch)
@@ -128,93 +104,7 @@ class WorldRenderer(
 
         connection.events.listen<VisibilityGraphChangeEvent> { onFrustumChange() }
 
-        connection.events.listen<RespawnEvent> { if (it.dimensionChange) unloadWorld() }
-        connection.events.listen<ChunkDataChangeEvent> { queueChunk(it.chunkPosition, it.chunk) }
-        connection.events.listen<BlockSetEvent> {
-            val chunkPosition = it.blockPosition.chunkPosition
-            val sectionHeight = it.blockPosition.sectionHeight
-            val chunk = world[chunkPosition] ?: return@listen
-            val neighbours = chunk.neighbours.get() ?: return@listen
-            queueSection(chunkPosition, sectionHeight, chunk, neighbours = neighbours)
-            val inChunkSectionPosition = it.blockPosition.inChunkSectionPosition
-
-            if (inChunkSectionPosition.y == 0) {
-                queueSection(chunkPosition, sectionHeight - 1, chunk, neighbours = neighbours)
-            } else if (inChunkSectionPosition.y == ProtocolDefinition.SECTION_MAX_Y) {
-                queueSection(chunkPosition, sectionHeight + 1, chunk, neighbours = neighbours)
-            }
-            if (inChunkSectionPosition.z == 0) {
-                queueSection(Vec2i(chunkPosition.x, chunkPosition.y - 1), sectionHeight, chunk = neighbours[3])
-            } else if (inChunkSectionPosition.z == ProtocolDefinition.SECTION_MAX_Z) {
-                queueSection(Vec2i(chunkPosition.x, chunkPosition.y + 1), sectionHeight, chunk = neighbours[4])
-            }
-            if (inChunkSectionPosition.x == 0) {
-                queueSection(Vec2i(chunkPosition.x - 1, chunkPosition.y), sectionHeight, chunk = neighbours[1])
-            } else if (inChunkSectionPosition.x == ProtocolDefinition.SECTION_MAX_X) {
-                queueSection(Vec2i(chunkPosition.x + 1, chunkPosition.y), sectionHeight, chunk = neighbours[6])
-            }
-        }
-
-        connection.events.listen<LightChangeEvent> {
-            if (it.blockChange) {
-                // change is already covered
-                return@listen
-            }
-            queueSection(it.chunkPosition, it.sectionHeight, it.chunk)
-        }
-
-        connection.events.listen<BlocksSetEvent> {
-            val chunk = world[it.chunkPosition] ?: return@listen // should not happen
-            if (!chunk.isFullyLoaded) {
-                return@listen
-            }
-            val sectionHeights: Int2ObjectOpenHashMap<BooleanArray> = Int2ObjectOpenHashMap()
-            for (blockPosition in it.blocks.keys) {
-                val neighbours = sectionHeights.getOrPut(blockPosition.sectionHeight) { BooleanArray(Directions.SIZE) }
-                val inSectionHeight = blockPosition.y.inSectionHeight
-                if (inSectionHeight == 0) {
-                    neighbours[0] = true
-                } else if (inSectionHeight == ProtocolDefinition.SECTION_MAX_Y) {
-                    neighbours[1] = true
-                }
-                if (blockPosition.z == 0) {
-                    neighbours[2] = true
-                } else if (blockPosition.z == ProtocolDefinition.SECTION_MAX_Z) {
-                    neighbours[3] = true
-                }
-                if (blockPosition.x == 0) {
-                    neighbours[4] = true
-                } else if (blockPosition.x == ProtocolDefinition.SECTION_MAX_X) {
-                    neighbours[5] = true
-                }
-            }
-            val neighbours = chunk.neighbours.get() ?: return@listen
-            for ((sectionHeight, neighbourUpdates) in sectionHeights) {
-                queueSection(it.chunkPosition, sectionHeight, chunk, neighbours = neighbours)
-
-                if (neighbourUpdates[0]) {
-                    queueSection(it.chunkPosition, sectionHeight - 1, chunk, neighbours = neighbours)
-                }
-                if (neighbourUpdates[1]) {
-                    queueSection(it.chunkPosition, sectionHeight + 1, chunk, neighbours = neighbours)
-                }
-                if (neighbourUpdates[2]) {
-                    queueSection(Vec2i(it.chunkPosition.x, it.chunkPosition.y - 1), sectionHeight, chunk = neighbours[3])
-                }
-                if (neighbourUpdates[3]) {
-                    queueSection(Vec2i(it.chunkPosition.x, it.chunkPosition.y + 1), sectionHeight, chunk = neighbours[4])
-                }
-                if (neighbourUpdates[4]) {
-                    queueSection(Vec2i(it.chunkPosition.x - 1, it.chunkPosition.y), sectionHeight, chunk = neighbours[1])
-                }
-                if (neighbourUpdates[5]) {
-                    queueSection(Vec2i(it.chunkPosition.x + 1, it.chunkPosition.y), sectionHeight, chunk = neighbours[6])
-                }
-            }
-        }
-
-        connection.events.listen<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) }
-        connection::state.observe(this) { if (it == PlayConnectionStates.DISCONNECTED) unloadWorld() }
+        WorldRendererChangeListener.register(this)
 
         var paused = false
         renderWindow::state.observe(this) {
@@ -226,7 +116,6 @@ class WorldRenderer(
                 paused = false
             }
         }
-        connection.events.listen<BlockDataChangeEvent> { queueSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) }
 
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:clear_chunk_cache".toResourceLocation(),
@@ -298,7 +187,7 @@ class WorldRenderer(
         world.lock.release()
     }
 
-    private fun unloadWorld() {
+    fun unloadWorld() {
         culledQueueLock.lock()
         queue.lock()
         loadingQueue.lock()
@@ -323,7 +212,7 @@ class WorldRenderer(
         loadingQueue.unlock()
     }
 
-    private fun unloadChunk(chunkPosition: Vec2i) {
+    fun unloadChunk(chunkPosition: Vec2i) {
         culledQueueLock.lock()
         queue.lock()
         loadingQueue.lock()
@@ -349,42 +238,8 @@ class WorldRenderer(
         queue.unlock()
     }
 
-    fun prepareItem(item: WorldQueueItem, task: MeshPrepareTask, runnable: ThreadPoolRunnable) {
-        try {
-            val chunk = item.chunk ?: world[item.chunkPosition] ?: return
-            val section = chunk[item.sectionHeight] ?: return
-            if (section.blocks.isEmpty) {
-                return queueItemUnload(item)
-            }
-            val neighbourChunks: Array<Chunk> = chunk.neighbours.get() ?: return queueSection(item.chunkPosition, item.sectionHeight, chunk, section, neighbours = null)
-            val neighbours = item.neighbours ?: ChunkUtil.getDirectNeighbours(neighbourChunks, chunk, item.sectionHeight)
-            val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight, section.blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z)
-            solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
-            if (section.blocks.fluidCount > 0) {
-                fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
-            }
-            runnable.interruptable = false
-            if (Thread.interrupted()) return
-            if (mesh.clearEmpty() == 0) {
-                return queueItemUnload(item)
-            }
-            mesh.finish()
-            item.mesh = mesh
-            loadingQueue.queue(mesh)
-        } catch (exception: Throwable) {
-            if (exception !is InterruptedException) {
-                // otherwise task got interrupted (probably because of chunk unload)
-                throw exception
-            }
-        } finally {
-            task.runnable.interruptable = false
-            if (Thread.interrupted()) throw InterruptedException()
-            queue.tasks -= task
-            queue.work()
-        }
-    }
 
-    private fun queueItemUnload(item: WorldQueueItem) {
+    fun queueItemUnload(item: WorldQueueItem) {
         culledQueueLock.lock()
         queue.lock()
         loadingQueue.lock()
@@ -438,7 +293,7 @@ class WorldRenderer(
         return false
     }
 
-    private fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false, neighbours: Array<Chunk>? = chunk?.neighbours?.get()) {
+    fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false, neighbours: Array<Chunk>? = chunk?.neighbours?.get()) {
         if (chunk == null || neighbours == null || section == null || renderWindow.state == RenderingStates.PAUSED) {
             return
         }
@@ -450,7 +305,7 @@ class WorldRenderer(
         }
     }
 
-    private fun queueChunk(chunkPosition: Vec2i, chunk: Chunk) {
+    fun queueChunk(chunkPosition: Vec2i, chunk: Chunk) {
         val neighbours = chunk.neighbours.get()
         if (neighbours == null || !chunk.isFullyLoaded || renderWindow.state == RenderingStates.PAUSED) {
             return

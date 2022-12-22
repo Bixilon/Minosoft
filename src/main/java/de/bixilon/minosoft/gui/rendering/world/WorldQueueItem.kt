@@ -24,10 +24,11 @@ import java.util.*
 class WorldQueueItem(
     val chunkPosition: Vec2i,
     val sectionHeight: Int,
-    val chunk: Chunk?,
-    val section: ChunkSection?,
+    val chunk: Chunk,
+    val section: ChunkSection,
     val center: Vec3,
-    var neighbours: Array<ChunkSection?>?,
+    val chunkNeighbours: Array<Chunk>,
+    var neighbours: Array<ChunkSection?>,
 ) {
     val sectionPosition = Vec3i(chunkPosition.x, sectionHeight, chunkPosition.y)
     var mesh: WorldMesh? = null

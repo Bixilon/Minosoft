@@ -18,8 +18,8 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.world.WorldRendererUtil.maxBusyTime
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.util.WorldRendererUtil.maxBusyTime
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class MeshLoadingQueue(

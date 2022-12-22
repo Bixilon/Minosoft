@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.world.queue
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.world.WorldRendererUtil.maxBusyTime
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.util.WorldRendererUtil.maxBusyTime
 
 class MeshUnloadingQueue(
     private val renderer: WorldRenderer,
