@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world.queue
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -44,14 +45,20 @@ class MeshLoadingQueue(
         val maxTime = renderer.maxBusyTime // If the player is still, then we can load more chunks (to not cause lags)
 
 
-        renderer.loadedMeshesLock.lock()
-        while (meshes.isNotEmpty() && (TimeUtil.millis() - start < maxTime)) {
-            val mesh = meshes.removeAt(0)
+        renderer.loaded.lock()
+        var meshes: Int2ObjectOpenHashMap<WorldMesh> = unsafeNull()
+        var position: ChunkPosition? = null
+        while (this.meshes.isNotEmpty() && (TimeUtil.millis() - start < maxTime)) {
+            val mesh = this.meshes.removeAt(0)
             this.positions -= mesh.chunkPosition
 
             mesh.load()
 
-            val meshes = renderer.loadedMeshes.getOrPut(mesh.chunkPosition) { Int2ObjectOpenHashMap() }
+            if (position != mesh.chunkPosition) {
+                meshes = renderer.loaded.meshes.getOrPut(mesh.chunkPosition) { Int2ObjectOpenHashMap() }
+                position = mesh.chunkPosition
+            }
+
 
             meshes.put(mesh.sectionHeight, mesh)?.let {
                 renderer.visible.removeMesh(it)
@@ -64,7 +71,7 @@ class MeshLoadingQueue(
                 renderer.visible.addMesh(mesh)
             }
         }
-        renderer.loadedMeshesLock.unlock()
+        renderer.loaded.unlock()
 
         lock.unlock()
 
