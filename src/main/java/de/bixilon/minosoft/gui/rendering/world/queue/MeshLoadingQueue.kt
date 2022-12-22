@@ -25,7 +25,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 class MeshLoadingQueue(
     private val renderer: WorldRenderer,
 ) {
-
     private val meshes: MutableList<WorldMesh> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
     private val positions: MutableSet<QueuePosition> = HashSet()
     private val lock = SimpleLock()

@@ -11,25 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.queue
+package de.bixilon.minosoft.gui.rendering.world.queue.meshing
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.length2
-import de.bixilon.minosoft.gui.rendering.world.SectionPrepareTask
 import de.bixilon.minosoft.gui.rendering.world.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks.MeshPrepareTask
+import de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks.MeshPrepareTaskManager
 import de.bixilon.minosoft.util.SystemInformation
 
 class ChunkMeshingQueue(
     private val renderer: WorldRenderer,
 ) {
-    val maxPreparingTasks = maxOf(DefaultThreadPool.threadCount - 2, 1)
+    val tasks = MeshPrepareTaskManager(renderer)
     val maxMeshesToLoad = if (SystemInformation.RUNTIME.maxMemory() > 1_000_000_000) 150 else 80
 
     @Volatile
@@ -38,9 +37,6 @@ class ChunkMeshingQueue(
     private val set: MutableSet<WorldQueueItem> = HashSet() // queue, that is visible, and should be rendered
 
     val lock = SimpleLock()
-
-    val preparingTasks: MutableSet<SectionPrepareTask> = mutableSetOf() // current running section preparing tasks
-    val preparingTasksLock = SimpleLock()
 
 
     val size: Int get() = queue.size
@@ -64,8 +60,8 @@ class ChunkMeshingQueue(
 
     fun work() {
         if (working) return // do not work twice
-        val size = preparingTasks.size
-        if (queue.isEmpty() || size >= maxPreparingTasks || renderer.loadingQueue.size >= maxMeshesToLoad) {
+        val size = tasks.size
+        if (queue.isEmpty() || size >= tasks.max || renderer.loadingQueue.size >= maxMeshesToLoad) {
             return
         }
         working = true
@@ -73,24 +69,20 @@ class ChunkMeshingQueue(
 
         val items: MutableList<WorldQueueItem> = mutableListOf()
         lock.lock()
-        for (i in 0 until maxPreparingTasks - size) {
+        for (i in 0 until tasks.max - size) {
             if (queue.isEmpty()) {
                 break
             }
             val item = queue.removeFirst()
-            set.remove(item)
+            set -= item
             items += item
         }
         lock.unlock()
         for (item in items) {
-            val task = SectionPrepareTask(item.chunkPosition, item.sectionHeight, ThreadPoolRunnable(if (item.chunkPosition == renderer.cameraChunkPosition) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
-            task.runnable.runnable = Runnable {
-                renderer.prepareItem(item, task, task.runnable)
-            }
-            preparingTasksLock.lock()
-            preparingTasks += task
-            preparingTasksLock.unlock()
-            DefaultThreadPool += task.runnable
+            val runnable = ThreadPoolRunnable(if (item.chunkPosition == renderer.cameraChunkPosition) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true)  // Our own chunk is the most important one ToDo: Also make neighbour chunks important
+            val task = MeshPrepareTask(item.chunkPosition, item.sectionHeight, runnable)
+            task.runnable.runnable = Runnable { renderer.prepareItem(item, task, task.runnable) }
+            tasks += task
         }
         working = false
     }
@@ -128,66 +120,28 @@ class ChunkMeshingQueue(
         this.lock.unlock()
     }
 
-    fun interrupt(position: ChunkPosition) {
-        preparingTasksLock.acquire()
-        for (task in preparingTasks) {
-            if (task.chunkPosition == position) {
-                task.runnable.interrupt()
-            }
-        }
-        preparingTasksLock.release()
-    }
-
-    fun interrupt() {
-        preparingTasksLock.acquire()
-        for (task in preparingTasks) {
-            task.runnable.interrupt()
-        }
-        preparingTasksLock.release()
-    }
-
-    fun interrupt(position: ChunkPosition, height: SectionHeight) {
-        preparingTasksLock.acquire()
-        for (task in preparingTasks) {
-            if (task.chunkPosition == position && task.sectionHeight == height) {
-                task.runnable.interrupt()
-            }
-        }
-        preparingTasksLock.release()
-    }
-
-    fun interruptCleanup() {
-        preparingTasksLock.acquire()
-        for (task in preparingTasks) {
-            if (!renderer.visibilityGraph.isChunkVisible(task.chunkPosition)) {
-                task.runnable.interrupt()
-            }
-        }
-        preparingTasksLock.release()
-    }
 
     fun clear() {
-
+        this.lock.lock()
+        this.queue.clear()
+        this.set.clear()
+        this.lock.unlock()
     }
 
-    fun remove(task: SectionPrepareTask) {
-        preparingTasksLock.lock()
-        preparingTasks -= task
-        preparingTasksLock.unlock()
-    }
 
-    operator fun minusAssign(task: SectionPrepareTask) = remove(task)
-
-
-    fun remove(position: ChunkPosition, height: SectionHeight) {
-
+    fun remove(item: WorldQueueItem) {
+        this.lock.lock()
+        if (this.set.remove(item)) {
+            this.queue -= item
+        }
+        this.lock.unlock()
     }
 
 
     fun queue(item: WorldQueueItem) {
         lock.lock()
         if (set.remove(item)) {
-            queue.remove(item) // Prevent duplicated entries (to not prepare the same chunk twice (if it changed and was not prepared yet or ...)
+            queue -= item
         }
         if (item.chunkPosition == renderer.cameraChunkPosition) {
             queue.add(0, item)

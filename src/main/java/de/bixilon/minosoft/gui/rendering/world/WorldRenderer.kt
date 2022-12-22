@@ -54,9 +54,10 @@ import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
-import de.bixilon.minosoft.gui.rendering.world.queue.ChunkMeshingQueue
 import de.bixilon.minosoft.gui.rendering.world.queue.MeshLoadingQueue
 import de.bixilon.minosoft.gui.rendering.world.queue.MeshUnloadingQueue
+import de.bixilon.minosoft.gui.rendering.world.queue.meshing.ChunkMeshingQueue
+import de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.world.shader.WorldShader
 import de.bixilon.minosoft.gui.rendering.world.shader.WorldTextShader
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
@@ -108,12 +109,12 @@ class WorldRenderer(
     var cameraChunkPosition = Vec2i.EMPTY
     var cameraSectionHeight = 0
 
-    val visibleSize: String get() = visible.sizeString
-    val loadedMeshesSize: Int get() = loaded.size
-    val culledQueuedSize: Int get() = culledQueue.size
-    val meshesToLoadSize: Int get() = loadingQueue.size
-    val queueSize: Int get() = queue.size
-    val preparingTasksSize: Int get() = queue.preparingTasks.size
+    @Deprecated("alias?", ReplaceWith("visible.sizeString")) val visibleSize: String get() = visible.sizeString
+    @Deprecated("alias?", ReplaceWith("loaded.size")) val loadedMeshesSize: Int get() = loaded.size
+    @Deprecated("alias?") val culledQueuedSize: Int get() = culledQueue.size
+    @Deprecated("alias?", ReplaceWith("loadingQueue.size")) val meshesToLoadSize: Int get() = loadingQueue.size
+    @Deprecated("alias?", ReplaceWith("queue.size")) val queueSize: Int get() = queue.size
+    @Deprecated("alias?", ReplaceWith("queue.tasks.size")) val preparingTasksSize: Int get() = queue.tasks.size
 
     override fun init(latch: CountUpAndDownLatch) {
         renderWindow.modelLoader.load(latch)
@@ -262,8 +263,8 @@ class WorldRenderer(
 
                 queue.cleanup()
 
+                queue.tasks.cleanup()
                 loadingQueue.cleanup(false)
-                queue.interruptCleanup()
 
 
                 loaded.unlock()
@@ -305,7 +306,7 @@ class WorldRenderer(
 
 
 
-        queue.interrupt()
+        queue.tasks.interruptAll()
 
         unloadingQueue.lock()
         loaded.clear(false)
@@ -330,7 +331,7 @@ class WorldRenderer(
         loaded.lock()
 
 
-        queue.interrupt(chunkPosition)
+        queue.tasks.interrupt(chunkPosition)
 
         culledQueue.remove(chunkPosition)
 
@@ -348,7 +349,7 @@ class WorldRenderer(
         queue.unlock()
     }
 
-    fun prepareItem(item: WorldQueueItem, task: SectionPrepareTask, runnable: ThreadPoolRunnable) {
+    fun prepareItem(item: WorldQueueItem, task: MeshPrepareTask, runnable: ThreadPoolRunnable) {
         try {
             val chunk = item.chunk ?: world[item.chunkPosition] ?: return
             val section = chunk[item.sectionHeight] ?: return
@@ -378,7 +379,7 @@ class WorldRenderer(
         } finally {
             task.runnable.interruptable = false
             if (Thread.interrupted()) throw InterruptedException()
-            queue -= task
+            queue.tasks -= task
             queue.work()
         }
     }
@@ -398,11 +399,11 @@ class WorldRenderer(
             }
         }
 
-        queue.remove(item.chunkPosition, item.sectionHeight)
+        queue.remove(item)
 
         loadingQueue.abort(item.chunkPosition, false)
 
-        queue.interrupt(item.chunkPosition, item.sectionHeight)
+        queue.tasks.interrupt(item.chunkPosition, item.sectionHeight)
 
         loaded.unlock()
         queue.unlock()

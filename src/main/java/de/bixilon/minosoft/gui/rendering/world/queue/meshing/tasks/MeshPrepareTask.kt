@@ -11,12 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world
+package de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 
-class SectionPrepareTask(
+class MeshPrepareTask(
     val chunkPosition: Vec2i,
     val sectionHeight: Int,
     val runnable: ThreadPoolRunnable,
