@@ -17,7 +17,7 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.world.WorldRendererUtil.loadingTime
+import de.bixilon.minosoft.gui.rendering.world.WorldRendererUtil.maxBusyTime
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 class MeshUnloadingQueue(
@@ -34,7 +34,7 @@ class MeshUnloadingQueue(
         }
 
         val time = TimeUtil.millis()
-        val maxTime = renderer.loadingTime
+        val maxTime = renderer.maxBusyTime
 
         while (meshes.isNotEmpty() && (TimeUtil.millis() - time < maxTime)) {
             val mesh = meshes.removeAt(0)

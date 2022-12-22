@@ -21,5 +21,5 @@ object WorldRendererUtil {
 
 
     // If the player is still, then we can load more chunks (to not cause lags)
-    val WorldRenderer.loadingTime: Long get() = if (connection.player.velocity.empty) STILL_LOADING_TIME else MOVING_LOADING_TIME // TODO: get of camera
+    val WorldRenderer.maxBusyTime: Long get() = if (connection.player.velocity.empty) STILL_LOADING_TIME else MOVING_LOADING_TIME // TODO: get of camera
 }
