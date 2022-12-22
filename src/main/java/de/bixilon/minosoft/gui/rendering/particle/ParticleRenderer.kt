@@ -133,17 +133,17 @@ class ParticleRenderer(
             val cameraPosition = connection.player.positionInfo.chunkPosition
             val particleViewDistance = connection.world.view.particleViewDistance
 
-            val toRemove: MutableSet<Particle> = mutableSetOf()
 
             particlesLock.acquire()
             try {
                 val time = millis()
-                for (particle in particles) {
+                val iterator = particles.iterator()
+                for (particle in iterator) {
                     if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) { // ToDo: Check fog distance
                         particle.dead = true
-                        toRemove += particle
+                        iterator.remove()
                     } else if (particle.dead) {
-                        toRemove += particle
+                        iterator.remove()
                     } else {
                         particle.tryTick(time)
                     }
@@ -153,7 +153,6 @@ class ParticleRenderer(
             }
 
             particlesLock.lock()
-            particles -= toRemove
 
             particleQueueLock.lock()
             particles += particleQueue

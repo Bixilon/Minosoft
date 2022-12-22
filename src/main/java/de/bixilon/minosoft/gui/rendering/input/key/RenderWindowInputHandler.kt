@@ -19,6 +19,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -131,8 +132,9 @@ class RenderWindowInputHandler(
     private fun deactivateAll() {
         keysDown.clear()
         keysLastDownTime.clear()
-        val toRemove: MutableSet<ResourceLocation> = mutableSetOf()
-        for ((name, pair) in keyBindingCallbacks) {
+
+        val iterator = keyBindingCallbacks.iterator()
+        for ((name, pair) in iterator) {
             val down = keyBindingsDown.contains(name)
             if (!down || pair.defaultPressed) {
                 continue
@@ -150,9 +152,8 @@ class RenderWindowInputHandler(
             for (callback in pair.callback) {
                 callback(false)
             }
-            toRemove += name
+            iterator.remove()
         }
-        keyBindingsDown -= toRemove
     }
 
     private fun keyInput(keyCode: KeyCodes, keyChangeType: KeyChangeTypes) {
@@ -165,7 +166,7 @@ class RenderWindowInputHandler(
             KeyChangeTypes.REPEAT -> return
         }
 
-        val currentTime = TimeUtil.millis
+        val currentTime = millis()
 
         if (keyDown) {
             keysDown += keyCode
@@ -263,7 +264,7 @@ class RenderWindowInputHandler(
                 continue
             }
 
-            pair.lastChange = TimeUtil.millis
+            pair.lastChange = millis()
             for (callback in pair.callback) {
                 callback(thisKeyBindingDown)
             }
@@ -308,7 +309,7 @@ class RenderWindowInputHandler(
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, defaultPressed: Boolean = false, callback: ((keyDown: Boolean) -> Unit)) {
         val keyBinding = profile.keyBindings.getOrPut(resourceLocation) { defaultKeyBinding }
-        val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding, defaultKeyBinding, defaultPressed) }
+        val callbackPair = keyBindingCallbacks.synchronizedGetOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding, defaultKeyBinding, defaultPressed) }
         callbackPair.callback += callback
 
         if (keyBinding.action.containsKey(KeyActions.STICKY) && defaultPressed) {
@@ -318,7 +319,7 @@ class RenderWindowInputHandler(
 
     fun registerCheckCallback(vararg checks: Pair<ResourceLocation, KeyBinding>) {
         for ((resourceLocation, defaultKeyBinding) in checks) {
-            keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(profile.keyBindings.getOrPut(resourceLocation) { defaultKeyBinding }, defaultKeyBinding) }
+            keyBindingCallbacks.synchronizedGetOrPut(resourceLocation) { KeyBindingCallbackPair(profile.keyBindings.getOrPut(resourceLocation) { defaultKeyBinding }, defaultKeyBinding) }
         }
     }
 

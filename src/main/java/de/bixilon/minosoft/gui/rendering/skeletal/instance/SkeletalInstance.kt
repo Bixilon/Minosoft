@@ -85,15 +85,12 @@ class SkeletalInstance(
     fun calculateTransforms(base: Mat4 = this.baseTransform): List<Mat4> {
         val time = millis()
         if (animations.isNotEmpty()) {
-            val toRemove: MutableSet<SkeletalAnimationInstance> = mutableSetOf()
-            for (animation in animations) {
+            val iterator = animations.iterator()
+            for (animation in iterator) {
                 animation.draw(time)
                 if (animation.canClear()) {
-                    toRemove += animation
+                    iterator.remove()
                 }
-            }
-            if (toRemove.isNotEmpty()) {
-                this.animations -= toRemove
             }
         }
         if (animations.isEmpty()) {

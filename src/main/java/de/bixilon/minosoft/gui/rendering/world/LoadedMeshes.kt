@@ -31,17 +31,16 @@ class LoadedMeshes(
 
 
     fun cleanup(lock: Boolean) {
-        val remove: MutableSet<Vec2i> = HashSet()
         if (lock) this.lock.lock()
 
-        for ((chunkPosition, sections) in meshes) {
+        val iterator = meshes.iterator()
+        for ((chunkPosition, sections) in iterator) {
             if (renderer.visibilityGraph.isInViewDistance(chunkPosition)) {
                 continue
             }
-            remove += chunkPosition
+            iterator.remove()
             renderer.unloadingQueue.forceQueue(sections.values)
         }
-        meshes -= remove
 
         if (lock) this.lock.unlock()
     }
