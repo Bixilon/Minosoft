@@ -92,7 +92,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
         layout += AutoTextElement(guiRenderer, 1) { "FPS §d${renderWindow.renderStats.smoothAvgFPS.rounded10}" }
         renderWindow.renderer[WorldRenderer]?.apply {
-            layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, m=${loaded.size.format()}, cQ=${culledQueuedSize.format()}, q=${queue.size.format()}, pT=${queue.tasks.size.format()}/${queue.tasks.max.format()}, l=${loadingQueue.size.format()}/${queue.maxMeshesToLoad.format()}, w=${connection.world.chunks.size.format()}" }
+            layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, m=${loaded.size.format()}, cQ=${culledQueuedSize.format()}, q=${meshingQueue.size.format()}, pT=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, l=${loadingQueue.size.format()}/${meshingQueue.maxMeshesToLoad.format()}, w=${connection.world.chunks.size.format()}" }
         }
 
         layout += renderWindow.renderer[EntityRenderer]?.let {

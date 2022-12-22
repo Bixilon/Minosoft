@@ -81,7 +81,7 @@ class ChunkMeshingQueue(
         for (item in items) {
             val runnable = ThreadPoolRunnable(if (item.chunkPosition == renderer.cameraChunkPosition) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true)  // Our own chunk is the most important one ToDo: Also make neighbour chunks important
             val task = MeshPrepareTask(item.chunkPosition, item.sectionHeight, runnable)
-            task.runnable.runnable = Runnable { renderer.mesher.prepareItem(item, task, task.runnable) }
+            task.runnable.runnable = Runnable { renderer.mesher.tryMesh(item, task, task.runnable) }
             tasks += task
         }
         working = false
@@ -121,11 +121,11 @@ class ChunkMeshingQueue(
     }
 
 
-    fun clear() {
-        this.lock.lock()
+    fun clear(lock: Boolean) {
+        if (lock) this.lock.lock()
         this.queue.clear()
         this.set.clear()
-        this.lock.unlock()
+        if (lock) this.lock.unlock()
     }
 
 

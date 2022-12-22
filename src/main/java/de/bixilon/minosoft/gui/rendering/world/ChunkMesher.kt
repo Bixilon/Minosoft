@@ -62,8 +62,8 @@ class ChunkMesher(
         } finally {
             task.runnable.interruptable = false
             if (Thread.interrupted()) throw InterruptedException()
-            renderer.queue.tasks -= task
-            renderer.queue.work()
+            renderer.meshingQueue.tasks -= task
+            renderer.meshingQueue.work()
         }
     }
 }

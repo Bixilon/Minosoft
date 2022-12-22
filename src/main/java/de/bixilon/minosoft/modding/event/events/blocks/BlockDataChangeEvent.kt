@@ -14,11 +14,13 @@ package de.bixilon.minosoft.modding.event.events.blocks
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class BlockDataChangeEvent(
     connection: PlayConnection,
-    val blockPosition: Vec3i,
+    val chunk: Chunk,
+    val position: Vec3i,
     val blockEntity: BlockEntity,
 ) : PlayConnectionEvent(connection)

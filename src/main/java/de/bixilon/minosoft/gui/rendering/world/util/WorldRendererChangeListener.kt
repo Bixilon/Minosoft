@@ -13,13 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.world.util
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
 import de.bixilon.minosoft.modding.event.events.blocks.BlockDataChangeEvent
@@ -36,33 +35,36 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 object WorldRendererChangeListener {
 
     private fun listenBlockSet(renderer: WorldRenderer) {
+        val master = renderer.master
         renderer.connection.events.listen<BlockSetEvent> {
             val chunkPosition = it.blockPosition.chunkPosition
             val sectionHeight = it.blockPosition.sectionHeight
             val chunk = renderer.world[chunkPosition] ?: return@listen
             val neighbours = chunk.neighbours.get() ?: return@listen
-            renderer.queueSection(chunkPosition, sectionHeight, chunk, neighbours = neighbours)
-            val inChunkSectionPosition = it.blockPosition.inChunkSectionPosition
 
-            if (inChunkSectionPosition.y == 0) {
-                renderer.queueSection(chunkPosition, sectionHeight - 1, chunk, neighbours = neighbours)
-            } else if (inChunkSectionPosition.y == ProtocolDefinition.SECTION_MAX_Y) {
-                renderer.queueSection(chunkPosition, sectionHeight + 1, chunk, neighbours = neighbours)
+            master.tryQueue(chunk, sectionHeight, neighbours = neighbours)
+            val inPosition = it.blockPosition.inChunkSectionPosition
+
+            if (inPosition.y == 0) {
+                master.tryQueue(chunk, sectionHeight - 1, neighbours = neighbours)
+            } else if (inPosition.y == ProtocolDefinition.SECTION_MAX_Y) {
+                master.tryQueue(chunk, sectionHeight + 1, neighbours = neighbours)
             }
-            if (inChunkSectionPosition.z == 0) {
-                renderer.queueSection(Vec2i(chunkPosition.x, chunkPosition.y - 1), sectionHeight, chunk = neighbours[3])
-            } else if (inChunkSectionPosition.z == ProtocolDefinition.SECTION_MAX_Z) {
-                renderer.queueSection(Vec2i(chunkPosition.x, chunkPosition.y + 1), sectionHeight, chunk = neighbours[4])
+            if (inPosition.z == 0) {
+                master.tryQueue(chunk = neighbours[3], sectionHeight)
+            } else if (inPosition.z == ProtocolDefinition.SECTION_MAX_Z) {
+                master.tryQueue(chunk = neighbours[4], sectionHeight)
             }
-            if (inChunkSectionPosition.x == 0) {
-                renderer.queueSection(Vec2i(chunkPosition.x - 1, chunkPosition.y), sectionHeight, chunk = neighbours[1])
-            } else if (inChunkSectionPosition.x == ProtocolDefinition.SECTION_MAX_X) {
-                renderer.queueSection(Vec2i(chunkPosition.x + 1, chunkPosition.y), sectionHeight, chunk = neighbours[6])
+            if (inPosition.x == 0) {
+                master.tryQueue(chunk = neighbours[1], sectionHeight)
+            } else if (inPosition.x == ProtocolDefinition.SECTION_MAX_X) {
+                master.tryQueue(chunk = neighbours[6], sectionHeight)
             }
         }
     }
 
     fun listenBlocksSet(renderer: WorldRenderer) {
+        val master = renderer.master
         renderer.connection.events.listen<BlocksSetEvent> {
             val chunk = renderer.world[it.chunkPosition] ?: return@listen // should not happen
             if (!chunk.isFullyLoaded) {
@@ -90,25 +92,25 @@ object WorldRendererChangeListener {
             }
             val neighbours = chunk.neighbours.get() ?: return@listen
             for ((sectionHeight, neighbourUpdates) in sectionHeights) {
-                renderer.queueSection(it.chunkPosition, sectionHeight, chunk, neighbours = neighbours)
+                master.tryQueue(chunk, sectionHeight, neighbours = neighbours)
 
                 if (neighbourUpdates[0]) {
-                    renderer.queueSection(it.chunkPosition, sectionHeight - 1, chunk, neighbours = neighbours)
+                    master.tryQueue(chunk, sectionHeight - 1, neighbours = neighbours)
                 }
                 if (neighbourUpdates[1]) {
-                    renderer.queueSection(it.chunkPosition, sectionHeight + 1, chunk, neighbours = neighbours)
+                    master.tryQueue(chunk, sectionHeight + 1, neighbours = neighbours)
                 }
                 if (neighbourUpdates[2]) {
-                    renderer.queueSection(Vec2i(it.chunkPosition.x, it.chunkPosition.y - 1), sectionHeight, chunk = neighbours[3])
+                    master.tryQueue(neighbours[3], sectionHeight)
                 }
                 if (neighbourUpdates[3]) {
-                    renderer.queueSection(Vec2i(it.chunkPosition.x, it.chunkPosition.y + 1), sectionHeight, chunk = neighbours[4])
+                    master.tryQueue(neighbours[4], sectionHeight)
                 }
                 if (neighbourUpdates[4]) {
-                    renderer.queueSection(Vec2i(it.chunkPosition.x - 1, it.chunkPosition.y), sectionHeight, chunk = neighbours[1])
+                    master.tryQueue(neighbours[1], sectionHeight)
                 }
                 if (neighbourUpdates[5]) {
-                    renderer.queueSection(Vec2i(it.chunkPosition.x + 1, it.chunkPosition.y), sectionHeight, chunk = neighbours[6])
+                    master.tryQueue(neighbours[6], sectionHeight)
                 }
             }
         }
@@ -121,19 +123,19 @@ object WorldRendererChangeListener {
         listenBlocksSet(renderer)
 
         events.listen<RespawnEvent> { if (it.dimensionChange) renderer.unloadWorld() }
-        events.listen<ChunkDataChangeEvent> { renderer.queueChunk(it.chunkPosition, it.chunk) }
+        events.listen<ChunkDataChangeEvent> { renderer.master.tryQueue(it.chunk) }
 
         events.listen<LightChangeEvent> {
             if (it.blockChange) {
                 // change is already covered
                 return@listen
             }
-            renderer.queueSection(it.chunkPosition, it.sectionHeight, it.chunk)
+            renderer.master.tryQueue(it.chunk, it.sectionHeight)
         }
 
 
         events.listen<ChunkUnloadEvent> { renderer.unloadChunk(it.chunkPosition) }
         renderer.connection::state.observe(this) { if (it == PlayConnectionStates.DISCONNECTED) renderer.unloadWorld() }
-        events.listen<BlockDataChangeEvent> { renderer.queueSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) }
+        events.listen<BlockDataChangeEvent> { renderer.master.tryQueue(it.chunk, it.position.sectionHeight) }
     }
 }

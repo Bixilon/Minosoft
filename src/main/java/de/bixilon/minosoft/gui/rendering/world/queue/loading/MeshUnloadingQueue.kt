@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.queue
+package de.bixilon.minosoft.gui.rendering.world.queue.loading
 
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.world.util.WorldRendererUtil.maxBusyTime
 
 class MeshUnloadingQueue(

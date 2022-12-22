@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.modding.event.events.blocks.BlockDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -43,9 +44,10 @@ class BlockDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (nbt == null) {
             return
         }
-        val blockEntity = connection.world.getOrPutBlockEntity(position)
-        blockEntity?.updateNBT(nbt) ?: return
-        connection.fire(BlockDataChangeEvent(connection, position, blockEntity))
+        val chunk = connection.world[position.chunkPosition] ?: return
+        val blockEntity = chunk.getOrPutBlockEntity(position) ?: return
+        blockEntity.updateNBT(nbt)
+        connection.events.fire(BlockDataChangeEvent(connection, chunk, position, blockEntity))
     }
 
     override fun log(reducedLog: Boolean) {

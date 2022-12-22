@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.queue
+package de.bixilon.minosoft.gui.rendering.world.queue.loading
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
@@ -19,6 +19,7 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.world.util.WorldRendererUtil.maxBusyTime
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -43,10 +44,10 @@ class MeshLoadingQueue(
         val start = TimeUtil.millis()
         val maxTime = renderer.maxBusyTime // If the player is still, then we can load more chunks (to not cause lags)
 
-
-        renderer.loaded.lock()
         var meshes: Int2ObjectOpenHashMap<WorldMesh> = unsafeNull()
         var position: ChunkPosition? = null
+
+        renderer.loaded.lock()
         while (this.meshes.isNotEmpty() && (TimeUtil.millis() - start < maxTime)) {
             val mesh = this.meshes.removeAt(0)
             this.positions -= QueuePosition(mesh)
