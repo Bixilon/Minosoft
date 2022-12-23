@@ -70,11 +70,11 @@ class ChunkQueueMaster(
         tryQueue(section, force, chunk, neighbours)
     }
 
-    fun tryQueue(chunk: Chunk, force: Boolean = false) {
+    fun tryQueue(chunk: Chunk, ignoreLoaded: Boolean = false, force: Boolean = false) {
         if (!canQueue() || !chunk.isFullyLoaded) return
         val neighbours: Array<Chunk> = chunk.neighbours.get() ?: return
 
-        if (!force && chunk.chunkPosition in renderer.loaded) {
+        if (!ignoreLoaded && chunk.chunkPosition in renderer.loaded) {
             // chunks only get queued when the server sends them, we normally do not want to queue them again.
             // that happens when e.g. light data arrives
             return
@@ -96,7 +96,7 @@ class ChunkQueueMaster(
     fun tryQueue(world: World) {
         world.lock.acquire()
         for (chunk in world.chunks.unsafe.values) {
-            tryQueue(chunk, true)
+            tryQueue(chunk, ignoreLoaded = true)
         }
         world.lock.release()
     }
