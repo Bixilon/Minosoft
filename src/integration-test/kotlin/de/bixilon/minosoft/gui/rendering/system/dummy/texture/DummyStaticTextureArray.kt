@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
@@ -23,10 +24,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
-class DummyStaticTextureArray : StaticTextureArray {
+class DummyStaticTextureArray(renderSystem: RenderSystem) : StaticTextureArray {
     override val textures: MutableMap<ResourceLocation, AbstractTexture> = synchronizedMapOf()
-    override val animator: SpriteAnimator
-        get() = TODO("Not yet implemented")
+    override val animator: SpriteAnimator = SpriteAnimator(renderSystem)
     override val state: TextureArrayStates = TextureArrayStates.DECLARED
 
     override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: () -> AbstractTexture): AbstractTexture {
@@ -40,6 +40,7 @@ class DummyStaticTextureArray : StaticTextureArray {
     }
 
     override fun load(latch: CountUpAndDownLatch) {
+        animator.init()
     }
 
     override fun activate() {

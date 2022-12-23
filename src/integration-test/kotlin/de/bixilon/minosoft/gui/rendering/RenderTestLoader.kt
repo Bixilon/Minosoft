@@ -26,5 +26,6 @@ class RenderTestLoader {
         RenderTestUtil.rendering.start(latch)
         latch.dec()
         latch.await()
+        RenderTestUtil.context = RenderTestUtil.rendering.renderWindow
     }
 }

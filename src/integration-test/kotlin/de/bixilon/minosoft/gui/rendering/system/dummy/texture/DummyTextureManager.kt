@@ -20,5 +20,5 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 
 class DummyTextureManager(val context: RenderWindow) : TextureManager() {
     override val dynamicTextures: DynamicTextureArray = DummyDynamicTextureArray()
-    override val staticTextures: StaticTextureArray = DummyStaticTextureArray()
+    override val staticTextures: StaticTextureArray = DummyStaticTextureArray(context.renderSystem)
 }

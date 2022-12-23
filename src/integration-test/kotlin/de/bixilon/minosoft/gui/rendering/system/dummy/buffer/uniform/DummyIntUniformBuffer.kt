@@ -18,48 +18,35 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferType
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-class DummyIntUniformBuffer : IntUniformBuffer {
-    override val bindingIndex: Int
-        get() = TODO("Not yet implemented")
+class DummyIntUniformBuffer(
+    override var data: IntArray,
+) : IntUniformBuffer {
+    override val bindingIndex: Int = 0
 
     override fun upload(range: IntRange) {
-        TODO("Not yet implemented")
     }
 
     override fun upload() {
-        TODO("Not yet implemented")
     }
 
     override fun use(shader: NativeShader, bufferName: String) {
-        TODO("Not yet implemented")
     }
 
-    override val state: RenderableBufferStates
-        get() = TODO("Not yet implemented")
-    override val type: RenderableBufferTypes
-        get() = TODO("Not yet implemented")
+    override val state: RenderableBufferStates = RenderableBufferStates.UPLOADED
+    override val type: RenderableBufferTypes = RenderableBufferTypes.UNIFORM_BUFFER
 
     override fun init() {
-        TODO("Not yet implemented")
     }
 
     override fun initialUpload() {
-        TODO("Not yet implemented")
     }
 
     override fun bind() {
-        TODO("Not yet implemented")
     }
 
     override fun unbind() {
-        TODO("Not yet implemented")
     }
 
     override fun unload() {
-        TODO("Not yet implemented")
     }
-
-    override var data: IntArray
-        get() = TODO("Not yet implemented")
-        set(value) {}
 }

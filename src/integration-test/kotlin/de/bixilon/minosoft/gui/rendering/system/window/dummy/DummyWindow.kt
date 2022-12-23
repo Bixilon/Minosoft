@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.window.dummy
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
@@ -35,8 +36,8 @@ class DummyWindow : BaseWindow {
     override var title: String = ""
     override val version: String = "dummy"
     override val time: Double get() = TimeUtil.millis() / 1000.0
-    override val iconified: Boolean = false
-    override val focused: Boolean = false
+    override val iconified: Boolean by observed(false)
+    override val focused: Boolean by observed(false)
 
     override fun destroy() = Unit
 

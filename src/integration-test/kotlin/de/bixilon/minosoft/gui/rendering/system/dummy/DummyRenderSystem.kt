@@ -95,11 +95,11 @@ class DummyRenderSystem(
     }
 
     override fun createIntUniformBuffer(data: IntArray): IntUniformBuffer {
-        return DummyIntUniformBuffer()
+        return DummyIntUniformBuffer(data)
     }
 
     override fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer {
-        return DummyFloatUniformBuffer()
+        return DummyFloatUniformBuffer(data)
     }
 
     override fun createFramebuffer(): Framebuffer {
