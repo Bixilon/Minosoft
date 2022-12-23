@@ -35,16 +35,16 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager.Companion.registerDefault
 import de.bixilon.minosoft.gui.rendering.shader.ShaderManager
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
-import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
+import de.bixilon.minosoft.gui.rendering.system.window.BaseWindowFactory
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.gui.rendering.world.light.RenderLight
@@ -53,6 +53,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.ignoreAll
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.logging.Log
@@ -66,8 +67,8 @@ class RenderWindow(
     private val profile = connection.profiles.rendering
     val preferQuads = profile.advanced.preferQuads
 
-    val window = BaseWindow.createWindow(this)
-    val renderSystem = RenderSystem.createRenderSystem(this)
+    val window = BaseWindowFactory.create(this)
+    val renderSystem = RenderSystemFactory.create(this)
     val camera = Camera(this)
 
     val inputHandler = RenderWindowInputHandler(this)
@@ -122,7 +123,9 @@ class RenderWindow(
             }
         }
         profile.performance::slowRendering.observe(this) { this.slowRendering = it }
-        renderer.registerDefault(connection.profiles)
+        for (builder in DefaultRenderer.list) {
+            this.renderer.register(builder)
+        }
 
         var paused = false
         this::state.observe(this) {
@@ -144,7 +147,7 @@ class RenderWindow(
         val stopwatch = Stopwatch()
 
         window.init(connection.profiles.rendering)
-        window.setDefaultIcon(connection.assetsManager)
+        ignoreAll { window.setDefaultIcon(connection.assetsManager) }
 
         camera.init()
 

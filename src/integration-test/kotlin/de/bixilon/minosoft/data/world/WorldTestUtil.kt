@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.ChunkData
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.TEST_WORLD_VIEW
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -41,6 +42,7 @@ object WorldTestUtil {
         world.chunkMax = Vec2i.EMPTY
         world.chunkSize = Vec2i.EMPTY
         world::view.forceSet(TEST_WORLD_VIEW)
+        world::time.forceSet(DataObserver(WorldTime()))
 
         return world
     }

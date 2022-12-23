@@ -54,6 +54,9 @@ import org.kamranzafar.jtar.TarHeader
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 
 object KUtil {
@@ -326,5 +329,19 @@ object KUtil {
     fun secureRandomUUID(): UUID {
         val random = SecureRandom()
         return UUID(random.nextLong(), random.nextLong())
+    }
+
+    @Deprecated("Kutil")
+    @OptIn(ExperimentalContracts::class)
+    inline fun <T> ignoreAll(executor: () -> T): T? {
+        contract {
+            callsInPlace(executor, InvocationKind.EXACTLY_ONCE)
+        }
+        try {
+            return executor()
+        } catch (error: Throwable) {
+            error.printStackTrace()
+        }
+        return null
     }
 }

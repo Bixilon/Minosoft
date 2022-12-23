@@ -41,6 +41,7 @@ class Frustum(
     var revision = 0
         private set
 
+
     fun recalculate() {
         val matrix = matrixHandler.viewProjectionMatrix.transpose()
         val planes = arrayOf(

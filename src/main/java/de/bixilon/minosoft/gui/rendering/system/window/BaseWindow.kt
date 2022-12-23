@@ -17,8 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.window.glfw.GLFWWindow
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
@@ -99,10 +97,5 @@ interface BaseWindow {
             get() = Vec2i(300, 100)
         val DEFAULT_MAXIMUM_WINDOW_SIZE: Vec2i
             get() = Vec2i(-1, -1)
-
-
-        fun createWindow(renderWindow: RenderWindow): BaseWindow {
-            return GLFWWindow(renderWindow)
-        }
     }
 }

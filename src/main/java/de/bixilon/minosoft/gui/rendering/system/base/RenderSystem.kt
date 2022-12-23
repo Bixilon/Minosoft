@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
@@ -26,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
@@ -118,12 +116,12 @@ interface RenderSystem {
 
     fun createNativeShader(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): NativeShader
 
-    fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer
-    fun createVertexBuffer(structure: MeshStruct, data: AbstractFloatList, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer {
+    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer
+    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer {
         if (data is DirectArrayFloatList) {
-            return createVertexBuffer(structure, data.toBuffer(), primitiveType)
+            return createVertexBuffer(struct, data.toBuffer(), primitiveType)
         }
-        return createVertexBuffer(structure, FloatBuffer.wrap(data.toArray()), primitiveType)
+        return createVertexBuffer(struct, FloatBuffer.wrap(data.toArray()), primitiveType)
     }
 
     fun createIntUniformBuffer(data: IntArray = IntArray(0)): IntUniformBuffer
@@ -149,14 +147,6 @@ interface RenderSystem {
         val copy = shaders.toMutableSet()
         for (shader in copy) {
             shader.reload()
-        }
-    }
-
-
-    companion object {
-
-        fun createRenderSystem(renderWindow: RenderWindow): RenderSystem {
-            return OpenGLRenderSystem(renderWindow)
         }
     }
 }

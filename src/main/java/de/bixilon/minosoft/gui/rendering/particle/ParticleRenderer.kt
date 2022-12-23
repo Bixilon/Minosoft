@@ -264,7 +264,10 @@ class ParticleRenderer(
     companion object : RendererBuilder<ParticleRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:particle")
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): ParticleRenderer {
+        override fun build(connection: PlayConnection, renderWindow: RenderWindow): ParticleRenderer? {
+            if (connection.profiles.particle.skipLoading) {
+                return null
+            }
             return ParticleRenderer(connection, renderWindow)
         }
     }

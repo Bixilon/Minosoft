@@ -85,7 +85,6 @@ class WorldVisibilityGraph(
     // always show current section
 
     init {
-        calculateGraph()
         connection.world.occlusionUpdateCallback = this
 
         connection.events.listen<ChunkDataChangeEvent> { recalculateNextFrame = true }

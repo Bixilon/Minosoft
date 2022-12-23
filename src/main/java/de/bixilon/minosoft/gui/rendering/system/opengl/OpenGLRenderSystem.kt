@@ -258,8 +258,8 @@ class OpenGLRenderSystem(
         return OpenGLNativeShader(renderWindow, vertex.shader(), geometry?.shader(), fragment.shader())
     }
 
-    override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatOpenGLVertexBuffer {
-        return FloatOpenGLVertexBuffer(this, structure, data, primitiveType)
+    override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatOpenGLVertexBuffer {
+        return FloatOpenGLVertexBuffer(this, struct, data, primitiveType)
     }
 
     override fun createFloatUniformBuffer(data: FloatBuffer): FloatOpenGLUniformBuffer {

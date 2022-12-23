@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
+import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.assets.TestAssetsManager
+import de.bixilon.minosoft.config.profile.ProfileTestUtil.createProfiles
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -41,6 +44,9 @@ object ConnectionTestUtil {
         connection::player.forceSet(LocalPlayerEntity(connection.account, connection, null))
         connection::network.forceSet(TestNetwork())
         connection::events.forceSet(EventMaster())
+        connection::profiles.forceSet(createProfiles())
+        connection::assetsManager.forceSet(TestAssetsManager)
+        connection::state.forceSet(DataObserver(PlayConnectionStates.PLAYING))
 
         if (worldSize > 0) {
             connection.world.initialize(worldSize)

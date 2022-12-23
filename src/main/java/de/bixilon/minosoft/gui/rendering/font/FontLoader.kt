@@ -34,7 +34,7 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
 
 
     fun load(renderWindow: RenderWindow, latch: CountUpAndDownLatch): Font {
-        val fontIndex = renderWindow.connection.assetsManager[FONT_INDEX].readJsonObject()
+        val fontIndex = renderWindow.connection.assetsManager.getOrNull(FONT_INDEX)?.readJsonObject() ?: return Font(arrayOf())
 
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
         val providers: Array<FontProvider?> = arrayOfNulls(providersRaw.size)

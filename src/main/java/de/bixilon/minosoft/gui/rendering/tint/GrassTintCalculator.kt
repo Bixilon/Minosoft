@@ -21,13 +21,14 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.util.KUtil.ignoreAll
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GrassTintCalculator : TintProvider {
     private lateinit var colorMap: IntArray
 
     fun init(assetsManager: AssetsManager) {
-        colorMap = assetsManager["minecraft:colormap/grass".toResourceLocation().texture()].readRGBArray()
+        colorMap = ignoreAll { assetsManager["minecraft:colormap/grass".toResourceLocation().texture()].readRGBArray() } ?: IntArray(256)
     }
 
     inline fun getColor(downfall: Int, temperature: Int): Int {

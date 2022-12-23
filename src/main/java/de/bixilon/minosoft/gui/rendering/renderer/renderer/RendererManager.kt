@@ -19,22 +19,12 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
-import de.bixilon.minosoft.gui.rendering.sky.clouds.CloudRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
-import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.world.border.WorldBorderRenderer
-import de.bixilon.minosoft.gui.rendering.world.chunk.ChunkBorderRenderer
-import de.bixilon.minosoft.gui.rendering.world.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -186,24 +176,6 @@ class RendererManager(
             }
             renderSystem.polygonMode = renderer.polygonMode
             renderer.drawPost()
-        }
-    }
-
-    companion object {
-
-        fun RendererManager.registerDefault(profiles: ConnectionProfiles) {
-            // order dependent (from back to front)
-            register(SkyRenderer)
-            register(WorldRenderer)
-            register(BlockOutlineRenderer)
-            if (!profiles.particle.skipLoading) {
-                register(ParticleRenderer)
-            }
-            register(EntityRenderer)
-            register(CloudRenderer)
-            register(ChunkBorderRenderer)
-            register(WorldBorderRenderer)
-            register(GUIRenderer)
         }
     }
 }
