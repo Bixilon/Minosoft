@@ -59,7 +59,7 @@ class FluidCullSectionPreparer(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
+    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: WorldMesh) {
         val blocks = section.blocks
 
         val random = Random(0L)
@@ -268,7 +268,7 @@ class FluidCullSectionPreparer(
         for (side in 0 until 4) {
             val blockPosition = position + Vec3i(-(side and 0x01), 0, -(side shr 1 and 0x01))
             val offset = blockPosition.chunkPosition - providedChunkPosition
-            val chunk = neighbours[offset]!!
+            val chunk = neighbours[offset] ?: continue
 
             val inChunkPosition = blockPosition.inChunkPosition
             if (fluid.matches(chunk.unsafeGet(inChunkPosition + Directions.UP))) {

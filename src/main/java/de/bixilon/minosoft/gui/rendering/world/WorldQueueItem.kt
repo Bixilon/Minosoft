@@ -27,8 +27,6 @@ class WorldQueueItem(
     val chunk: Chunk,
     val section: ChunkSection,
     val center: Vec3,
-    val chunkNeighbours: Array<Chunk>,
-    var neighbours: Array<ChunkSection?>,
 ) {
     val sectionPosition = Vec3i(chunkPosition.x, sectionHeight, chunkPosition.y)
     var mesh: WorldMesh? = null

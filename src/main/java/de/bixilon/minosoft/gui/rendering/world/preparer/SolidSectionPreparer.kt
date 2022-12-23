@@ -20,5 +20,5 @@ import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 interface SolidSectionPreparer {
 
-    fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh)
+    fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: WorldMesh)
 }

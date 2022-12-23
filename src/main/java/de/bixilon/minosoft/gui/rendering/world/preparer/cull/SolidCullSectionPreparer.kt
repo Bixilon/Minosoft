@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.preparer.cull
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
@@ -57,8 +58,14 @@ class SolidCullSectionPreparer(
         profile.performance::fastBedrock.observe(this, true) { this.fastBedrock = it }
     }
 
-    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
+    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: WorldMesh) {
         val random = Random(0L)
+
+        for (chunk in neighbourChunks) {
+            if (chunk == null || chunk.sections == null || chunk.light == null) {
+                Broken("null!!!")
+            }
+        }
 
         val randomBlockModels = profile.antiMoirePattern
         val isLowestSection = sectionHeight == chunk.minSection

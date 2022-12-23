@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.chunk.ChunkUtil
 
 class ChunkQueueMaster(
     private val renderer: WorldRenderer,
@@ -41,8 +40,7 @@ class ChunkQueueMaster(
         val visible = force || renderer.visibilityGraph.isSectionVisible(chunk.chunkPosition, section.sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {
             val center = Vec3i.of(chunk.chunkPosition, section.sectionHeight).toVec3() + CHUNK_CENTER
-            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, section.sectionHeight)
-            val item = WorldQueueItem(chunk.chunkPosition, section.sectionHeight, chunk, section, center, neighbours, sectionNeighbours)
+            val item = WorldQueueItem(chunk.chunkPosition, section.sectionHeight, chunk, section, center)
             renderer.meshingQueue.queue(item)
             return true
         }

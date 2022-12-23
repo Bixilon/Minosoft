@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPre
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.world.util.WorldRendererUtil.smallMesh
+import de.bixilon.minosoft.util.chunk.ChunkUtil
 
 class ChunkMesher(
     private val renderer: WorldRenderer,
@@ -33,11 +34,17 @@ class ChunkMesher(
             renderer.queueItemUnload(item)
             return null
         }
+        val neighbours = item.chunk.neighbours.get()
+        if (neighbours == null) {
+            renderer.queueItemUnload(item)
+            return null
+        }
+        val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, item.chunk, item.section.sectionHeight)
         val mesh = WorldMesh(renderer.renderWindow, item.chunkPosition, item.sectionHeight, item.section.smallMesh)
-        solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, item.chunk, item.section, item.neighbours, item.chunkNeighbours, mesh)
+        solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
 
         if (item.section.blocks.fluidCount > 0) {
-            fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, item.chunk, item.section, item.neighbours, item.chunkNeighbours, mesh)
+            fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
         }
 
         return mesh
