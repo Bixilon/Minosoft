@@ -33,6 +33,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
@@ -85,6 +87,8 @@ class WorldVisibilityGraph(
     init {
         calculateGraph()
         connection.world.occlusionUpdateCallback = this
+
+        connection.events.listen<ChunkDataChangeEvent> { recalculateNextFrame = true }
     }
 
     fun isInViewDistance(chunkPosition: Vec2i): Boolean {
@@ -313,7 +317,7 @@ class WorldVisibilityGraph(
     @Synchronized
     private fun calculateGraph() {
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
-            connection.fire(VisibilityGraphChangeEvent(renderWindow))
+            connection.events.fire(VisibilityGraphChangeEvent(renderWindow))
             return
         }
         connection.world.chunks.lock.acquire()
@@ -355,7 +359,7 @@ class WorldVisibilityGraph(
 
         connection.world.chunks.lock.release()
 
-        connection.fire(VisibilityGraphChangeEvent(renderWindow))
+        connection.events.fire(VisibilityGraphChangeEvent(renderWindow))
     }
 
     override fun onOcclusionChange() {
