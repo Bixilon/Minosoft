@@ -13,15 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.check.CheckUtil.check
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.provider.*
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.KUtil.trim
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 object FontLoader : DefaultFactory<FontProviderFactory<*>>(
@@ -39,18 +41,22 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
         val providers: Array<FontProvider?> = arrayOfNulls(providersRaw.size)
 
-        val fontLatch = CountUpAndDownLatch(providersRaw.size, latch)
+        val worker = UnconditionalWorker()
         for ((index, provider) in providersRaw.withIndex()) {
             val type = provider["type"].toResourceLocation()
-            DefaultThreadPool += {
-                providers[index] = this[type].check { "Unknown font provider type $type" }.build(renderWindow, provider)
-                fontLatch.dec()
+            worker += add@{
+                val factory = this[type]
+                if (factory == null) {
+                    Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Unknown font provider: $type" }
+                    return@add
+                }
+                providers[index] = factory.build(renderWindow, provider)
             }
         }
-        fontLatch.await()
+        worker.work(latch)
 
         return Font(
-            providers = providers.unsafeCast(),
+            providers = providers.trim(),
         )
     }
 }

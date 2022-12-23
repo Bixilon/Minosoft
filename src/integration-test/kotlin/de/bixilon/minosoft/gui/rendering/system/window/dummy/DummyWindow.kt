@@ -45,7 +45,9 @@ class DummyWindow : BaseWindow {
 
     override fun forceClose() = Unit
 
-    override fun swapBuffers() = Unit
+    override fun swapBuffers() {
+        Thread.sleep(20)
+    }
 
     override fun pollEvents() = Unit
 

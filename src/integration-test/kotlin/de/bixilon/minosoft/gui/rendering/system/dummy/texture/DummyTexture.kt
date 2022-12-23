@@ -32,11 +32,8 @@ class DummyTexture(
     override var singlePixelSize: Vec2 = Vec2(1.0f)
     override var state: TextureStates = TextureStates.DECLARED
     override val size: Vec2i = Vec2i(1, 1)
-    override val transparency: TextureTransparencies
-        get() = TODO("Not yet implemented")
-    override var properties: ImageProperties
-        get() = TODO("Not yet implemented")
-        set(value) {}
+    override val transparency: TextureTransparencies get() = TextureTransparencies.OPAQUE
+    override var properties: ImageProperties = ImageProperties()
     override var renderData: TextureRenderData = DummyTextureRenderData
     override var data: ByteBuffer?
         get() = TODO("Not yet implemented")
@@ -44,9 +41,7 @@ class DummyTexture(
     override var mipmapData: Array<ByteBuffer>?
         get() = TODO("Not yet implemented")
         set(value) {}
-    override var generateMipMaps: Boolean
-        get() = TODO("Not yet implemented")
-        set(value) {}
+    override var generateMipMaps: Boolean = false
 
-    override fun load(assetsManager: AssetsManager) = TODO()
+    override fun load(assetsManager: AssetsManager) = Unit
 }

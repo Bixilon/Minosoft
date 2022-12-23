@@ -14,15 +14,23 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.assets.AssetsLoader
+import de.bixilon.minosoft.gui.rendering.font.FontLoader
+import de.bixilon.minosoft.gui.rendering.font.provider.BitmapFontProvider
+import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import org.testng.annotations.Test
 
 @Test(priority = 100, groups = ["rendering"])
 class RenderTestLoader {
 
     fun init() {
-        RenderTestUtil.rendering = Rendering(ConnectionTestUtil.createConnection(4))
+        val connection = createConnection(5)
         val latch = CountUpAndDownLatch(1)
+        connection::assetsManager.forceSet(AssetsLoader.create(connection.profiles.resources, connection.version, latch))
+        FontLoader.remove(BitmapFontProvider) // TODO: remove
+        connection.assetsManager.load(latch)
+        RenderTestUtil.rendering = Rendering(connection)
         RenderTestUtil.rendering.start(latch, audio = false)
         latch.dec()
         latch.await()

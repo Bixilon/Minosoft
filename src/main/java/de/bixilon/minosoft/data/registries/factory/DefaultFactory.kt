@@ -18,14 +18,11 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 
 open class DefaultFactory<T : ResourceLocationAble>(private vararg val factories: T) : Iterable<T> {
-    private val mapped: Map<ResourceLocation, T>
+    private val map: MutableMap<ResourceLocation, T> = mutableMapOf()
 
     val size: Int = factories.size
 
     init {
-        val map: MutableMap<ResourceLocation, T> = mutableMapOf()
-
-
         for (factory in factories) {
             map[factory.resourceLocation] = factory
             if (factory is MultiResourceLocationAble) {
@@ -34,12 +31,22 @@ open class DefaultFactory<T : ResourceLocationAble>(private vararg val factories
                 }
             }
         }
+    }
 
-        mapped = map
+    fun add(factory: T) {
+        map[factory.resourceLocation] = factory
+    }
+
+    fun remove(name: ResourceLocation) {
+        map -= name
+    }
+
+    fun remove(factory: ResourceLocationAble) {
+        map -= factory.resourceLocation
     }
 
     operator fun get(resourceLocation: ResourceLocation): T? {
-        return mapped[resourceLocation]
+        return map[resourceLocation]
     }
 
     operator fun get(index: Int): T {

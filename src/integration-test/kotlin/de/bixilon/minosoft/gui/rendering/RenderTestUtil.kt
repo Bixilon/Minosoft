@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.test.IT.reference
 
 
@@ -25,5 +27,14 @@ object RenderTestUtil {
         DefaultRenderer.reference()
         DefaultRenderer.list.clear()
         reference()
+    }
+
+    fun Renderer.frame() {
+        this.prePrepareDraw()
+        if (this is AsyncRenderer) {
+            this.prepareDrawAsync()
+        }
+        this.postPrepareDraw()
+        // TODO: render normal
     }
 }

@@ -344,4 +344,15 @@ object KUtil {
         }
         return null
     }
+
+    inline fun <reified T> Array<T?>.trim(): Array<T> {
+        val list: MutableList<T> = mutableListOf()
+        for (entry in this) {
+            if (entry == null) {
+                continue
+            }
+            list += entry
+        }
+        return list.toTypedArray()
+    }
 }

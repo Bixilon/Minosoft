@@ -13,11 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.world
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.minosoft.data.registries.blocks.StoneTestO
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil
+import de.bixilon.minosoft.gui.rendering.RenderTestUtil.frame
 import org.testng.Assert
 import org.testng.annotations.Test
 
-@Test(groups = ["world_renderer"], dependsOnGroups = ["rendering"])
+@Test(groups = ["world_renderer"], dependsOnGroups = ["rendering", "block"])
 class WorldRendererTest {
 
     private fun create(): WorldRenderer {
@@ -26,7 +31,45 @@ class WorldRendererTest {
         return renderer
     }
 
+    private fun WorldRenderer.awaitQueue(count: Int) {
+        for (i in 0 until 1000) {
+            Thread.sleep(10)
+            frame()
+            if (loaded.size == 1) {
+                break
+            }
+        }
+    }
+
+    @Test(priority = -1)
+    fun loadModels() {
+        val latch = CountUpAndDownLatch(1)
+        RenderTestUtil.context.modelLoader.load(latch)
+        latch.dec()
+        latch.await()
+    }
+
     fun testCreation() {
         Assert.assertNotNull(create())
+    }
+
+    fun queueEmptyChunk() {
+        val chunk = RenderTestUtil.context.connection.world[Vec2i(0, 0)]!!
+        val renderer = create()
+        renderer.master.tryQueue(chunk, ignoreLoaded = true, force = true)
+        Thread.sleep(50)
+        renderer.frame()
+        renderer.awaitQueue(0)
+        Assert.assertEquals(renderer.loaded.size, 0)
+    }
+
+    fun queueSingleChunk() {
+        val chunk = RenderTestUtil.context.connection.world[Vec2i(0, 0)]!!
+        chunk[Vec3i(0, 0, 0)] = StoneTestO.state
+        val renderer = create()
+        renderer.master.tryQueue(chunk, ignoreLoaded = true, force = true)
+        renderer.awaitQueue(1)
+        chunk[Vec3i(0, 0, 0)] = null
+        Assert.assertEquals(renderer.loaded.size, 1)
     }
 }

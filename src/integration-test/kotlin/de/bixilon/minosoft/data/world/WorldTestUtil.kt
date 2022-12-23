@@ -20,6 +20,7 @@ import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.ChunkData
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -51,7 +52,7 @@ object WorldTestUtil {
         for (x in -size..size) {
             for (z in -size..size) {
                 val chunk = getOrCreateChunk(ChunkPosition(x, z))
-                chunk.setData(ChunkData(blocks = arrayOfNulls(16)))
+                chunk.setData(ChunkData(blocks = arrayOfNulls(16), biomeSource = DummyBiomeSource(null)))
             }
         }
     }

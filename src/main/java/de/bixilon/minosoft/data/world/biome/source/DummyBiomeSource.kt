@@ -16,13 +16,13 @@ package de.bixilon.minosoft.data.world.biome.source
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.biomes.Biome
 
-class DummyBiomeSource(private val biome: Biome) : BiomeSource {
+class DummyBiomeSource(private val biome: Biome?) : BiomeSource {
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
         return biome
     }
 
-    override fun getBiome(position: Vec3i): Biome {
+    override fun getBiome(position: Vec3i): Biome? {
         return biome
     }
 }
