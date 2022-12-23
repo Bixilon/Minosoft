@@ -14,10 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.world.mesh
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.util.KUtil.format
@@ -58,12 +57,12 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMesh
 
 
     fun sort() {
-        val latch = CountUpAndDownLatch(4)
-        DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGHER) { opaque.sortBy { it.distance };latch.dec() }
-        DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGHER) { translucent.sortBy { -it.distance };latch.dec() }
-        DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGHER) { transparent.sortBy { it.distance };latch.dec() }
-        DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGHER) { text.sortBy { it.distance };latch.dec() }
-        latch.await()
+        val worker = UnconditionalWorker()
+        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sortBy { it.distance } }
+        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sortBy { -it.distance } }
+        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { transparent.sortBy { it.distance } }
+        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sortBy { it.distance } }
+        worker.work()
     }
 
 

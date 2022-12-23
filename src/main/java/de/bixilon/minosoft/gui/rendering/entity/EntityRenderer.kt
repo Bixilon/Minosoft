@@ -17,9 +17,12 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -100,7 +103,7 @@ class EntityRenderer(
     override fun prePrepareDraw() {
         val count = AtomicInteger()
         runAsync {
-            it.entity.draw(TimeUtil.millis)
+            it.entity.draw(millis())
             it.update = it.checkUpdate()
             it.prepareAsync()
             if (it.visible) {
@@ -136,17 +139,15 @@ class EntityRenderer(
     }
 
     private fun runAsync(executor: ((EntityModel<*>) -> Unit)) {
-        val latch = CountUpAndDownLatch(0)
+        val worker = UnconditionalWorker()
         models.lock.acquire()
         for (model in models.unsafe.values) {
-            latch.inc()
-            DefaultThreadPool += {
+            worker += UnconditionalTask(ThreadPool.Priorities.HIGH) {
                 executor(model)
-                latch.dec()
             }
         }
         models.lock.release()
-        latch.await()
+        worker.work()
     }
 
 
