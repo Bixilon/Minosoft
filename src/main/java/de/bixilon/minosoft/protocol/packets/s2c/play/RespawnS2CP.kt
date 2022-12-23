@@ -47,7 +47,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         private set
     var keepAttributes = false
         private set
-    var keepFlags: Byte = 0
+    var keepFlags: Byte = 0xFF.toByte()
         private set
     var world: ResourceLocation? = null
         private set
@@ -107,13 +107,15 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         connection.util.prepareSpawn()
         connection.player.additional.gamemode = gamemode
-        val dimensionChange = this.dimension != connection.world.dimension
+        val dimensionChange = this.dimension != connection.world.dimension || this.world != connection.world.name
         if (dimensionChange) {
             connection.world.clear()
         }
         connection.world.dimension = dimension
+        connection.world.name = world
+
         connection.state = PlayConnectionStates.SPAWNING
-        connection.fire(RespawnEvent(connection, dimensionChange))
+        connection.events.fire(RespawnEvent(connection, dimensionChange))
     }
 
     override fun log(reducedLog: Boolean) {

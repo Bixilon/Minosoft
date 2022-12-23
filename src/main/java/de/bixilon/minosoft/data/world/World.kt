@@ -22,6 +22,7 @@ import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
@@ -77,6 +78,9 @@ class World(
     var weather by observed(WorldWeather.NONE)
     val view = WorldView(connection)
     val border = WorldBorder()
+
+    var name: ResourceLocation? by observed(null)
+
     private val random = Random()
 
     override var audioPlayer: AbstractAudioPlayer? = null

@@ -42,6 +42,8 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int
     val isHardcore: Boolean
     val gamemode: Gamemodes
+    var world: ResourceLocation? = null
+        private set
     var dimensionProperties: DimensionProperties? = null
         private set
     var dimensionType: ResourceLocation? = null
@@ -106,7 +108,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 } else {
                     dimensionProperties = DimensionProperties.deserialize(buffer.readNBT().asJsonObject())
                 }
-                buffer.readResourceLocation() // dimension id
+                this.world = buffer.readResourceLocation() // dimension id
             }
 
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {
@@ -159,6 +161,8 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         registries?.let { connection.registries.update(it) }
         connection.world.dimension = dimensionProperties ?: connection.registries.dimensionRegistry[dimensionType]?.type ?: throw NullPointerException("Can not find dimension: $dimensionType")
+        connection.world.name = world
+
 
         connection.world.entities.getId(playerEntity)?.let { connection.world.entities.remove(it) } // e.g. bungeecord sends this packet twice
         connection.world.entities.add(entityId, null, playerEntity)
