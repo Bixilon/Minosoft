@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
@@ -60,6 +61,7 @@ class WorldRenderer(
     private val shader = renderSystem.createShader(minosoft("world")) { WorldShader(it, false) }
     private val transparentShader = renderSystem.createShader(minosoft("world")) { WorldShader(it, true) }
     private val textShader = renderSystem.createShader(minosoft("world/text")) { WorldTextShader(it) }
+    val lock = SimpleLock()
     val world: World = connection.world
 
     val loaded = LoadedMeshes(this)
@@ -111,13 +113,10 @@ class WorldRenderer(
             }
         }
 
-        renderWindow.inputHandler.registerKeyCallback(
-            "minosoft:clear_chunk_cache".toResourceLocation(),
-            KeyBinding(
-                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
-                KeyActions.PRESS to setOf(KeyCodes.KEY_A),
-            )
-        ) { clearChunkCache() }
+        renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
+            KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
+            KeyActions.PRESS to setOf(KeyCodes.KEY_A),
+        )) { clearChunkCache() }
 
         profile.rendering::antiMoirePattern.observe(this) { clearChunkCache() }
         val rendering = connection.profiles.rendering
@@ -127,26 +126,17 @@ class WorldRenderer(
             val distance = maxOf(viewDistance, profile.simulationDistance)
             if (distance < this.previousViewDistance) {
                 // Unload all chunks(-sections) that are out of view distance
-                culledQueue.lock()
-                meshingQueue.lock()
-                loadingQueue.lock()
-                unloadingQueue.lock()
-                loaded.lock()
+                lock.lock()
 
                 loaded.cleanup(false)
                 culledQueue.cleanup(false)
 
-                meshingQueue.cleanup()
+                meshingQueue.cleanup(false)
 
                 meshingQueue.tasks.cleanup()
                 loadingQueue.cleanup(false)
 
-
-                loaded.unlock()
-                meshingQueue.unlock()
-                culledQueue.unlock()
-                loadingQueue.unlock()
-                unloadingQueue.unlock()
+                lock.unlock()
             } else {
                 master.tryQueue(world)
             }
@@ -166,16 +156,10 @@ class WorldRenderer(
     }
 
     fun unloadWorld() {
-        culledQueue.lock()
-        meshingQueue.lock()
-        loadingQueue.lock()
-        loaded.lock()
-
-
+        lock.lock()
 
         meshingQueue.tasks.interruptAll()
 
-        unloadingQueue.lock()
         loaded.clear(false)
 
         culledQueue.clear(false)
@@ -184,19 +168,11 @@ class WorldRenderer(
 
         clearVisibleNextFrame = true
 
-        loaded.unlock()
-        meshingQueue.unlock()
-        culledQueue.unlock()
-        loadingQueue.unlock()
+        lock.unlock()
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {
-        culledQueue.lock()
-        meshingQueue.lock()
-        loadingQueue.lock()
-        unloadingQueue.lock()
-        loaded.lock()
-
+        lock.lock()
 
         meshingQueue.tasks.interrupt(chunkPosition)
 
@@ -209,20 +185,13 @@ class WorldRenderer(
 
         loaded.unload(chunkPosition, false)
 
-        loaded.unlock()
-        culledQueue.unlock()
-        loadingQueue.unlock()
-        unloadingQueue.unlock()
-        meshingQueue.unlock()
+        lock.unlock()
     }
 
 
     fun queueItemUnload(item: WorldQueueItem) {
-        culledQueue.lock()
-        meshingQueue.lock()
-        loadingQueue.lock()
-        unloadingQueue.lock()
-        loaded.lock()
+        lock.lock()
+
         loaded.unload(item.chunkPosition, item.sectionHeight, false)
 
         culledQueue.remove(item.chunkPosition, item.sectionHeight, false)
@@ -233,11 +202,7 @@ class WorldRenderer(
 
         meshingQueue.tasks.interrupt(item.chunkPosition, item.sectionHeight)
 
-        loaded.unlock()
-        meshingQueue.unlock()
-        culledQueue.unlock()
-        loadingQueue.unlock()
-        unloadingQueue.unlock()
+        lock.unlock()
     }
 
 

@@ -31,7 +31,7 @@ class LoadedMeshes(
 
 
     fun cleanup(lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
 
         val iterator = meshes.iterator()
         for ((chunkPosition, sections) in iterator) {
@@ -42,21 +42,22 @@ class LoadedMeshes(
             renderer.unloadingQueue.forceQueue(sections.values)
         }
 
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun clear(lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
 
         for (sections in meshes.values) {
             renderer.unloadingQueue.forceQueue(sections.values, lock)
         }
+        this.meshes.clear()
 
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun unload(position: ChunkPosition, lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
 
         val meshes = this.meshes.remove(position)
 
@@ -64,11 +65,11 @@ class LoadedMeshes(
             renderer.unloadingQueue.forceQueue(meshes.values, lock)
         }
 
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun unload(position: ChunkPosition, sectionHeight: Int, lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
 
         val meshes = this.meshes[position]
 
@@ -82,7 +83,7 @@ class LoadedMeshes(
             }
         }
 
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
 
@@ -113,10 +114,12 @@ class LoadedMeshes(
     }
 
     fun lock() {
+        renderer.lock.acquire()
         this.lock.lock()
     }
 
     fun unlock() {
         this.lock.unlock()
+        renderer.lock.release()
     }
 }

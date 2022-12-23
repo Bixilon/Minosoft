@@ -33,17 +33,17 @@ class ChunkMeshingQueue(
 
     @Volatile
     private var working = false
-    private val queue: MutableList<WorldQueueItem> = mutableListOf() // queue, that is visible, and should be rendered
-    private val set: MutableSet<WorldQueueItem> = HashSet() // queue, that is visible, and should be rendered
+    private val queue: MutableList<WorldQueueItem> = mutableListOf()
+    private val set: MutableSet<WorldQueueItem> = HashSet()
 
-    val lock = SimpleLock()
+    private val lock = SimpleLock()
 
 
     val size: Int get() = queue.size
 
 
     fun sort() {
-        lock.lock()
+        lock()
         val position = renderer.cameraChunkPosition
         val height = renderer.cameraSectionHeight
         val cameraSectionPosition = Vec3i(position.x, height, position.y)
@@ -54,7 +54,7 @@ class ChunkMeshingQueue(
             }
             (it.sectionPosition - cameraSectionPosition).length2()
         }
-        lock.unlock()
+        unlock()
     }
 
 
@@ -68,7 +68,7 @@ class ChunkMeshingQueue(
 
 
         val items: MutableList<WorldQueueItem> = mutableListOf()
-        lock.lock()
+        lock()
         for (i in 0 until tasks.max - size) {
             if (queue.isEmpty()) {
                 break
@@ -77,9 +77,9 @@ class ChunkMeshingQueue(
             set -= item
             items += item
         }
-        lock.unlock()
+        unlock()
         for (item in items) {
-            val runnable = ThreadPoolRunnable(if (item.chunkPosition == renderer.cameraChunkPosition) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true)  // Our own chunk is the most important one ToDo: Also make neighbour chunks important
+            val runnable = ThreadPoolRunnable(if (item.chunkPosition == renderer.cameraChunkPosition) ThreadPool.HIGH else ThreadPool.LOW, interruptable = true) // ToDo: Also make neighbour chunks important
             val task = MeshPrepareTask(item.chunkPosition, item.sectionHeight, runnable)
             task.runnable.runnable = Runnable { renderer.mesher.tryMesh(item, task, task.runnable) }
             tasks += task
@@ -100,7 +100,8 @@ class ChunkMeshingQueue(
         set -= remove
     }
 
-    fun cleanup() {
+    fun cleanup(lock: Boolean) {
+        if (lock) lock()
         val remove: MutableSet<WorldQueueItem> = mutableSetOf()
         queue.removeAll {
             if (renderer.visibilityGraph.isChunkVisible(it.chunkPosition)) {
@@ -110,36 +111,39 @@ class ChunkMeshingQueue(
             return@removeAll true
         }
         set -= remove
+        if (lock) unlock()
     }
 
     fun lock() {
+        renderer.lock.acquire()
         this.lock.lock()
     }
 
     fun unlock() {
         this.lock.unlock()
+        renderer.lock.release()
     }
 
 
     fun clear(lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
         this.queue.clear()
         this.set.clear()
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
 
     fun remove(item: WorldQueueItem, lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
         if (this.set.remove(item)) {
             this.queue -= item
         }
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
 
     fun queue(item: WorldQueueItem) {
-        lock.lock()
+        lock()
         if (set.remove(item)) {
             queue -= item
         }
@@ -149,6 +153,6 @@ class ChunkMeshingQueue(
             queue += item
         }
         set += item
-        lock.unlock()
+        unlock()
     }
 }

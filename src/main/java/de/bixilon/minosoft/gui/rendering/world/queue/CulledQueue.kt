@@ -31,7 +31,7 @@ class CulledQueue(
 
 
     fun cleanup(lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
         val iterator = queue.iterator()
         for ((chunkPosition, _) in iterator) {
             if (renderer.visibilityGraph.isChunkVisible(chunkPosition)) {
@@ -39,34 +39,36 @@ class CulledQueue(
             }
             iterator.remove()
         }
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun lock() {
+        renderer.lock.acquire()
         this.lock.lock()
     }
 
     fun unlock() {
         this.lock.unlock()
+        renderer.lock.release()
     }
 
 
     fun clear(lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
         this.queue.clear()
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun remove(position: ChunkPosition, lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
 
         queue -= position
 
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun remove(position: ChunkPosition, height: SectionHeight, lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
 
         queue[position]?.let {
             if (it.remove(height) && it.isEmpty()) {
@@ -74,7 +76,7 @@ class CulledQueue(
             }
         }
 
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
 

@@ -45,16 +45,16 @@ class MeshUnloadingQueue(
     }
 
     fun work() {
-        lock.lock()
+        lock()
         try {
             forceWork()
         } finally {
-            lock.unlock()
+            unlock()
         }
     }
 
     fun forceQueue(mesh: WorldMesh, lock: Boolean = true) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
 
         if (mesh.chunkPosition == renderer.connection.player.positionInfo.chunkPosition) { // TODO: camera
             this.meshes.add(0, mesh)
@@ -63,42 +63,44 @@ class MeshUnloadingQueue(
         }
         this.positions += QueuePosition(mesh)
 
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun queue(mesh: WorldMesh, lock: Boolean = true) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
         if (QueuePosition(mesh) in this.positions) {
             // already queued
             // TODO: maybe camera chunk position changed?
-            this.lock.unlock()
+            unlock()
             return
         }
         forceQueue(mesh, false)
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun forceQueue(meshes: Collection<WorldMesh>, lock: Boolean = true) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
         for (mesh in meshes) {
             forceQueue(mesh, false)
         }
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun queue(meshes: Collection<WorldMesh>) {
-        this.lock.lock()
+        lock()
         for (mesh in meshes) {
             queue(mesh, false)
         }
-        this.lock.unlock()
+        unlock()
     }
 
     fun lock() {
-        lock.lock()
+        renderer.lock.acquire()
+        this.lock.lock()
     }
 
     fun unlock() {
-        lock.unlock()
+        this.lock.unlock()
+        renderer.lock.release()
     }
 }

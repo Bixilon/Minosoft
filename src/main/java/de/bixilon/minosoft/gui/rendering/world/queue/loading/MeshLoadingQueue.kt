@@ -34,9 +34,9 @@ class MeshLoadingQueue(
 
 
     fun work() {
-        lock.lock()
+        lock()
         if (meshes.isEmpty()) {
-            lock.unlock()
+            unlock()
             return
         }
 
@@ -73,7 +73,7 @@ class MeshLoadingQueue(
         }
         renderer.loaded.unlock()
 
-        lock.unlock()
+        unlock()
 
         if (count > 0) {
             renderer.visible.sort()
@@ -82,7 +82,7 @@ class MeshLoadingQueue(
 
 
     fun queue(mesh: WorldMesh) {
-        lock.lock()
+        lock()
         if (!this.positions.add(QueuePosition(mesh))) {
             // already inside, remove
             meshes.remove(mesh)
@@ -93,11 +93,11 @@ class MeshLoadingQueue(
         } else {
             meshes += mesh
         }
-        lock.unlock()
+        unlock()
     }
 
     fun abort(position: ChunkPosition, lock: Boolean = true) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
         val positions: MutableSet<QueuePosition> = mutableSetOf()
         this.positions.removeAll {
             if (it.position != position) {
@@ -107,14 +107,14 @@ class MeshLoadingQueue(
             return@removeAll true
         }
         this.meshes.removeAll { QueuePosition(it.chunkPosition, it.sectionHeight) in positions }
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
 
     fun cleanup(lock: Boolean) {
         val remove: MutableSet<QueuePosition> = mutableSetOf()
 
-        if (lock) this.lock.lock()
+        if (lock) lock()
         this.positions.removeAll {
             if (renderer.visibilityGraph.isChunkVisible(it.position)) {
                 return@removeAll false
@@ -124,22 +124,24 @@ class MeshLoadingQueue(
         }
 
         this.meshes.removeAll { QueuePosition(it) in remove }
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
     fun clear(lock: Boolean) {
-        if (lock) this.lock.lock()
+        if (lock) lock()
         this.positions.clear()
         this.meshes.clear()
-        if (lock) this.lock.unlock()
+        if (lock) unlock()
     }
 
 
     fun lock() {
+        renderer.lock.acquire()
         this.lock.lock()
     }
 
     fun unlock() {
         this.lock.unlock()
+        renderer.lock.release()
     }
 }
