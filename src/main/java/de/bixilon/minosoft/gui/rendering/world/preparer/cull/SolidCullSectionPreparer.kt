@@ -79,12 +79,12 @@ class SolidCullSectionPreparer(
         val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
         val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
 
-        for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+        for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             position.y = offsetY + y
             val fastBedrock = y == 0 && isLowestSection && fastBedrock
-            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+            for (x in blocks.minPosition.x..blocks.maxPosition.x) {
                 position.x = offsetX + x
-                for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
+                for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                     val baseIndex = (z shl 4) or x
                     val index = (y shl 8) or baseIndex
                     blockState = blocks.unsafeGet(index) ?: continue

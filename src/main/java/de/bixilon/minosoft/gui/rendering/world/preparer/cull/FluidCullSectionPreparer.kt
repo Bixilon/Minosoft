@@ -72,9 +72,9 @@ class FluidCullSectionPreparer(
         val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
         val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
 
-        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-            for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-                for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
+        for (x in blocks.minPosition.x..blocks.maxPosition.x) {
+            for (y in blocks.minPosition.y..blocks.maxPosition.y) {
+                for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                     blockState = blocks.unsafeGet(x, y, z) ?: continue
                     val block = blockState.block
                     val fluid = when {
