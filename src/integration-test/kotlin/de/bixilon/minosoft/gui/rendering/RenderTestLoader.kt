@@ -23,7 +23,7 @@ class RenderTestLoader {
     fun init() {
         RenderTestUtil.rendering = Rendering(ConnectionTestUtil.createConnection(4))
         val latch = CountUpAndDownLatch(1)
-        RenderTestUtil.rendering.start(latch)
+        RenderTestUtil.rendering.start(latch, audio = false)
         latch.dec()
         latch.await()
         RenderTestUtil.context = RenderTestUtil.rendering.renderWindow

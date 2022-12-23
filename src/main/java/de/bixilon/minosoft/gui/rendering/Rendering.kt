@@ -26,11 +26,11 @@ class Rendering(private val connection: PlayConnection) {
     val renderWindow: RenderWindow = RenderWindow(connection, this)
     val audioPlayer: AudioPlayer = AudioPlayer(connection, this)
 
-    fun start(latch: CountUpAndDownLatch) {
+    fun start(latch: CountUpAndDownLatch, render: Boolean = true, audio: Boolean = true) {
         Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
         latch.inc()
-        startAudioPlayerThread(latch)
-        startRenderWindowThread(latch)
+        if (audio) startAudioPlayerThread(latch)
+        if (render) startRenderWindowThread(latch)
     }
 
     private fun startAudioPlayerThread(latch: CountUpAndDownLatch) {
@@ -72,7 +72,7 @@ class Rendering(private val connection: PlayConnection) {
             exception.printStackTrace()
             try {
                 renderWindow.window.destroy()
-                connection.fire(WindowCloseEvent(renderWindow, window = renderWindow.window))
+                connection.events.fire(WindowCloseEvent(renderWindow, window = renderWindow.window))
             } catch (ignored: Throwable) {
             }
             connection.network.disconnect()
