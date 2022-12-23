@@ -81,6 +81,7 @@ class CulledQueue(
 
 
     fun collect(): MutableList<Pair<Chunk, Int>> {
+        renderer.lock.acquire()
         lock.acquire() // The queue method needs the full lock of the culledQueue
 
         val world = renderer.world
@@ -112,6 +113,7 @@ class CulledQueue(
         world.chunks.lock.release()
 
         lock.release()
+        renderer.lock.release()
 
 
         return list

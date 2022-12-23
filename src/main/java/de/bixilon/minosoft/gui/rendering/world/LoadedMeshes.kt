@@ -88,14 +88,17 @@ class LoadedMeshes(
 
 
     operator fun contains(position: ChunkPosition): Boolean {
+        renderer.lock.acquire()
         lock.acquire()
         val contains = position in this.meshes
         lock.release()
+        renderer.lock.release()
         return contains
     }
 
 
     fun collect(visible: VisibleMeshes) {
+        renderer.lock.acquire()
         lock.acquire()
         for ((chunkPosition, meshes) in this.meshes) {
             if (!renderer.visibilityGraph.isChunkVisible(chunkPosition)) {
@@ -111,6 +114,7 @@ class LoadedMeshes(
             }
         }
         lock.release()
+        renderer.lock.release()
     }
 
     fun lock() {

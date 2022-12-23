@@ -144,6 +144,7 @@ class ChunkMeshingQueue(
 
     fun queue(item: WorldQueueItem) {
         lock()
+        // TODO: don't remove and readd
         if (set.remove(item)) {
             queue -= item
         }
