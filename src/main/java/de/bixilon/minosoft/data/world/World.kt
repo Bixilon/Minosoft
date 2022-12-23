@@ -181,12 +181,11 @@ class World(
         blockState?.block?.onPlace(connection, blockPosition, blockState)
         chunk[inChunkPosition] = blockState
         chunk.getOrPutBlockEntity(inChunkPosition)
-        connection.fire(
-            BlockSetEvent(
-                connection = connection,
-                blockPosition = blockPosition,
-                blockState = blockState,
-            )
+        connection.events.fire(BlockSetEvent(
+            connection = connection,
+            blockPosition = blockPosition,
+            blockState = blockState,
+        )
         )
     }
 
@@ -232,10 +231,10 @@ class World(
             val offset = ChunkNeighbours.OFFSETS[index]
             val neighbourPosition = chunkPosition + offset
             neighbour.neighbours.remove(-offset)
-            connection.fire(ChunkDataChangeEvent(connection, neighbourPosition, neighbour))
+            connection.events.fire(ChunkDataChangeEvent(connection, neighbourPosition, neighbour))
         }
         // connection.world.view.updateServerViewDistance(chunkPosition, false)
-        connection.fire(ChunkUnloadEvent(connection, chunkPosition, chunk))
+        connection.events.fire(ChunkUnloadEvent(connection, chunkPosition, chunk))
         if (chunkPosition.x <= chunkMin.x || chunkPosition.y <= chunkMin.y || chunkPosition.x >= chunkMax.x || chunkPosition.y >= chunkMax.y) {
             recalculateChunkExtreme()
         }
@@ -379,7 +378,7 @@ class World(
 
         chunk.light.recalculate(false)
         chunk.light.propagateFromNeighbours()
-        connection.fire(ChunkDataChangeEvent(connection, chunk.chunkPosition, chunk))
+        connection.events.fire(ChunkDataChangeEvent(connection, chunk.chunkPosition, chunk))
     }
 
     fun onChunkUpdate(chunkPosition: ChunkPosition, chunk: Chunk, checkNeighbours: Boolean = true) {
@@ -394,6 +393,7 @@ class World(
             }
             val offset = ChunkNeighbours.OFFSETS[index]
             val neighbour = this[chunkPosition + offset] ?: continue
+            if (neighbour.sections == null) continue
             chunk.neighbours[index] = neighbour
             neighbour.neighbours[-offset] = chunk
         }
@@ -410,7 +410,7 @@ class World(
         }
 
         if (chunk.neighbours.complete) {
-            connection.fire(ChunkDataChangeEvent(connection, chunkPosition, chunk))
+            connection.events.fire(ChunkDataChangeEvent(connection, chunkPosition, chunk))
         }
     }
 
