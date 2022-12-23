@@ -134,7 +134,7 @@ class ParticleRenderer(
             val particleViewDistance = connection.world.view.particleViewDistance
 
 
-            particlesLock.acquire()
+            particlesLock.lock()
             try {
                 val time = millis()
                 val iterator = particles.iterator()
@@ -148,18 +148,14 @@ class ParticleRenderer(
                         particle.tryTick(time)
                     }
                 }
+
+                particleQueueLock.lock()
+                particles += particleQueue
+                particleQueue.clear()
+                particleQueueLock.unlock()
             } finally {
-                particlesLock.release()
+                particlesLock.unlock()
             }
-
-            particlesLock.lock()
-
-            particleQueueLock.lock()
-            particles += particleQueue
-            particleQueue.clear()
-            particleQueueLock.unlock()
-
-            particlesLock.unlock()
         }
         TimeWorker += particleTask
 
