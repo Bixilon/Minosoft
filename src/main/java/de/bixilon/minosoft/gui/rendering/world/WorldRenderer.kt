@@ -39,6 +39,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.world.mesh.VisibleMeshes
 import de.bixilon.minosoft.gui.rendering.world.queue.CulledQueue
+import de.bixilon.minosoft.gui.rendering.world.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.world.queue.loading.MeshLoadingQueue
 import de.bixilon.minosoft.gui.rendering.world.queue.loading.MeshUnloadingQueue
 import de.bixilon.minosoft.gui.rendering.world.queue.meshing.ChunkMeshingQueue
@@ -189,18 +190,15 @@ class WorldRenderer(
     }
 
 
-    fun queueItemUnload(item: WorldQueueItem) {
+    fun unload(item: WorldQueueItem) = unload(QueuePosition(item.chunkPosition, item.sectionHeight))
+    fun unload(position: QueuePosition) {
         lock.lock()
 
-        loaded.unload(item.chunkPosition, item.sectionHeight, false)
-
-        culledQueue.remove(item.chunkPosition, item.sectionHeight, false)
-
-        meshingQueue.remove(item, false)
-
-        loadingQueue.abort(item.chunkPosition, false)
-
-        meshingQueue.tasks.interrupt(item.chunkPosition, item.sectionHeight)
+        loaded.unload(position.position, position.sectionHeight, false)
+        culledQueue.remove(position.position, position.sectionHeight, false)
+        meshingQueue.remove(position, false)
+        loadingQueue.abort(position.position, false)
+        meshingQueue.tasks.interrupt(position.position, position.sectionHeight)
 
         lock.unlock()
     }
@@ -287,9 +285,9 @@ class WorldRenderer(
 
 
         for ((chunk, sectionHeight) in nextQueue) {
-            val neighbours = chunk.neighbours.get() ?: continue
+            chunk.neighbours.get() ?: continue
             val section = chunk[sectionHeight] ?: continue
-            master.tryQueue(section, force = true, chunk = chunk, neighbours = neighbours)
+            master.tryQueue(section, force = true, chunk = chunk)
         }
 
         if (sortQueue && nextQueue.isNotEmpty()) {

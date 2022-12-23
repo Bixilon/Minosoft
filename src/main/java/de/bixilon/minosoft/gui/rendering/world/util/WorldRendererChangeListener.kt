@@ -42,13 +42,13 @@ object WorldRendererChangeListener {
             val chunk = renderer.world[chunkPosition] ?: return@listen
             val neighbours = chunk.neighbours.get() ?: return@listen
 
-            master.tryQueue(chunk, sectionHeight, neighbours = neighbours)
+            master.tryQueue(chunk, sectionHeight)
             val inPosition = it.blockPosition.inChunkSectionPosition
 
             if (inPosition.y == 0) {
-                master.tryQueue(chunk, sectionHeight - 1, neighbours = neighbours)
+                master.tryQueue(chunk, sectionHeight - 1)
             } else if (inPosition.y == ProtocolDefinition.SECTION_MAX_Y) {
-                master.tryQueue(chunk, sectionHeight + 1, neighbours = neighbours)
+                master.tryQueue(chunk, sectionHeight + 1)
             }
             if (inPosition.z == 0) {
                 master.tryQueue(chunk = neighbours[3], sectionHeight)
@@ -92,13 +92,13 @@ object WorldRendererChangeListener {
             }
             val neighbours = chunk.neighbours.get() ?: return@listen
             for ((sectionHeight, neighbourUpdates) in sectionHeights) {
-                master.tryQueue(chunk, sectionHeight, neighbours = neighbours)
+                master.tryQueue(chunk, sectionHeight)
 
                 if (neighbourUpdates[0]) {
-                    master.tryQueue(chunk, sectionHeight - 1, neighbours = neighbours)
+                    master.tryQueue(chunk, sectionHeight - 1)
                 }
                 if (neighbourUpdates[1]) {
-                    master.tryQueue(chunk, sectionHeight + 1, neighbours = neighbours)
+                    master.tryQueue(chunk, sectionHeight + 1)
                 }
                 if (neighbourUpdates[2]) {
                     master.tryQueue(neighbours[3], sectionHeight)

@@ -24,16 +24,16 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.world.queue.QueuePosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ChunkQueueMaster(
     private val renderer: WorldRenderer,
 ) {
 
-    private fun queue(section: ChunkSection, chunk: Chunk, force: Boolean, neighbours: Array<Chunk>): Boolean {
+    private fun queue(section: ChunkSection, chunk: Chunk, force: Boolean): Boolean {
         if (section.blocks.isEmpty) {
-            // TODO: unload
-
+            renderer.unload(QueuePosition(chunk.chunkPosition, section.sectionHeight))
             return false
         }
 
@@ -50,27 +50,27 @@ class ChunkQueueMaster(
         return false
     }
 
-    fun tryQueue(section: ChunkSection, force: Boolean = false, chunk: Chunk? = null, neighbours: Array<Chunk>? = null) {
+    fun tryQueue(section: ChunkSection, force: Boolean = false, chunk: Chunk? = null) {
         if (!canQueue()) return
         val chunk = chunk ?: section.chunk ?: return
         if (!chunk.isFullyLoaded) return
 
-        val neighbours = neighbours ?: chunk.neighbours.get() ?: return
+        chunk.neighbours.get() ?: return
 
-        if (queue(section, chunk, force, neighbours)) {
+        if (queue(section, chunk, force)) {
             renderer.meshingQueue.sort()
             renderer.meshingQueue.work()
         }
     }
 
-    fun tryQueue(chunk: Chunk, sectionHeight: SectionHeight, force: Boolean = false, neighbours: Array<Chunk>? = null) {
+    fun tryQueue(chunk: Chunk, sectionHeight: SectionHeight, force: Boolean = false) {
         val section = chunk[sectionHeight] ?: return
-        tryQueue(section, force, chunk, neighbours)
+        tryQueue(section, force, chunk)
     }
 
     fun tryQueue(chunk: Chunk, ignoreLoaded: Boolean = false, force: Boolean = false) {
         if (!canQueue() || !chunk.isFullyLoaded) return
-        val neighbours: Array<Chunk> = chunk.neighbours.get() ?: return
+        chunk.neighbours.get() ?: return
 
         if (!ignoreLoaded && chunk.chunkPosition in renderer.loaded) {
             // chunks only get queued when the server sends them, we normally do not want to queue them again.
@@ -81,7 +81,7 @@ class ChunkQueueMaster(
         var changes = 0
         for (sectionHeight in chunk.minSection..chunk.maxSection) { // TODO .. or until?
             val section = chunk[sectionHeight] ?: continue
-            if (queue(section, chunk, force, neighbours)) {
+            if (queue(section, chunk, force)) {
                 changes++
             }
         }

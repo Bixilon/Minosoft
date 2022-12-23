@@ -14,12 +14,29 @@
 package de.bixilon.minosoft.gui.rendering.world.queue
 
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.gui.rendering.world.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import java.util.*
 
-data class QueuePosition(
+class QueuePosition(
     val position: ChunkPosition,
     val sectionHeight: Int,
 ) {
 
     constructor(mesh: WorldMesh) : this(mesh.chunkPosition, mesh.sectionHeight)
+
+
+    override fun equals(other: Any?): Boolean {
+        if (other is WorldQueueItem) {
+            return position == other.chunkPosition && sectionHeight == other.sectionHeight
+        }
+        if (other is QueuePosition) {
+            return position == other.position && sectionHeight == other.sectionHeight
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(position, sectionHeight)
+    }
 }

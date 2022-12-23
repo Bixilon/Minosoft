@@ -31,12 +31,12 @@ class ChunkMesher(
 
     private fun mesh(item: WorldQueueItem): WorldMesh? {
         if (item.section.blocks.isEmpty) {
-            renderer.queueItemUnload(item)
+            renderer.unload(item)
             return null
         }
         val neighbours = item.chunk.neighbours.get()
         if (neighbours == null) {
-            renderer.queueItemUnload(item)
+            renderer.unload(item)
             return null
         }
         val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, item.chunk, item.section.sectionHeight)
@@ -55,7 +55,7 @@ class ChunkMesher(
         runnable.interruptable = false
         if (Thread.interrupted()) return
         if (mesh.clearEmpty() == 0) {
-            return renderer.queueItemUnload(item)
+            return renderer.unload(item)
         }
         mesh.finish()
         item.mesh = mesh

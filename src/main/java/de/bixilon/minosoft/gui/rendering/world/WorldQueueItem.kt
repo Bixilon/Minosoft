@@ -19,6 +19,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.queue.QueuePosition
 import java.util.*
 
 class WorldQueueItem(
@@ -32,11 +33,13 @@ class WorldQueueItem(
     var mesh: WorldMesh? = null
 
     override fun equals(other: Any?): Boolean {
-        if (other !is WorldQueueItem) {
-            return false
+        if (other is WorldQueueItem) {
+            return chunkPosition == other.chunkPosition && sectionHeight == other.sectionHeight
         }
-
-        return chunkPosition == other.chunkPosition && sectionHeight == other.sectionHeight
+        if (other is QueuePosition) {
+            return chunkPosition == other.position && sectionHeight == other.sectionHeight
+        }
+        return false
     }
 
     override fun hashCode(): Int {

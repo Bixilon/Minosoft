@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.world.queue.meshing
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.length2
 import de.bixilon.minosoft.gui.rendering.world.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.world.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks.MeshPrepareTaskManager
 import de.bixilon.minosoft.util.SystemInformation
@@ -137,6 +139,15 @@ class ChunkMeshingQueue(
         if (lock) lock()
         if (this.set.remove(item)) {
             this.queue -= item
+        }
+        if (lock) unlock()
+    }
+
+    fun remove(position: QueuePosition, lock: Boolean) {
+        if (lock) lock()
+        // dirty hacking
+        if (this.set.unsafeCast<MutableSet<QueuePosition>>().remove(position)) {
+            this.queue.unsafeCast<MutableList<QueuePosition>>() -= position
         }
         if (lock) unlock()
     }
