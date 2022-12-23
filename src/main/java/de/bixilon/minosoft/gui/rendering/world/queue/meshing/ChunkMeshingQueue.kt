@@ -129,12 +129,12 @@ class ChunkMeshingQueue(
     }
 
 
-    fun remove(item: WorldQueueItem) {
-        this.lock.lock()
+    fun remove(item: WorldQueueItem, lock: Boolean) {
+        if (lock) this.lock.lock()
         if (this.set.remove(item)) {
             this.queue -= item
         }
-        this.lock.unlock()
+        if (lock) this.lock.unlock()
     }
 
 

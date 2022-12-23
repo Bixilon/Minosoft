@@ -55,7 +55,6 @@ class CulledQueue(
         if (lock) this.lock.lock()
         this.queue.clear()
         if (lock) this.lock.unlock()
-
     }
 
     fun remove(position: ChunkPosition, lock: Boolean) {
@@ -108,9 +107,10 @@ class CulledQueue(
                 queueIterator.remove()
             }
         }
+        world.chunks.lock.release()
+
         lock.release()
 
-        world.chunks.lock.acquire()
 
         return list
     }

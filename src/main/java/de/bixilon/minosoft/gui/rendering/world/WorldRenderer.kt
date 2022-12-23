@@ -227,7 +227,7 @@ class WorldRenderer(
 
         culledQueue.remove(item.chunkPosition, item.sectionHeight, false)
 
-        meshingQueue.remove(item)
+        meshingQueue.remove(item, false)
 
         loadingQueue.abort(item.chunkPosition, false)
 
