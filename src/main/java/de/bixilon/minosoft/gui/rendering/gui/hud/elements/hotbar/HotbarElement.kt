@@ -106,7 +106,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
         val size = Vec2i(core.size)
 
-        renderOffhand = guiRenderer.renderWindow.connection.player.inventory[EquipmentSlots.OFF_HAND] != null
+        renderOffhand = guiRenderer.context.connection.player.inventory[EquipmentSlots.OFF_HAND] != null
 
         if (renderOffhand) {
             size.x += offhand.size.x
@@ -114,7 +114,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         }
 
 
-        if (renderWindow.connection.player.gamemode != Gamemodes.SPECTATOR) {
+        if (context.connection.player.gamemode != Gamemodes.SPECTATOR) {
             itemTextShown = !itemText.hidden
             if (itemTextShown) {
                 size.y += itemText.size.y + ITEM_NAME_OFFSET
@@ -135,8 +135,8 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
     }
 
     override fun silentApply(): Boolean {
-        val itemSlot = guiRenderer.renderWindow.connection.player.selectedHotbarSlot
-        val currentItem = guiRenderer.renderWindow.connection.player.inventory.getHotbarSlot(itemSlot)
+        val itemSlot = guiRenderer.context.connection.player.selectedHotbarSlot
+        val currentItem = guiRenderer.context.connection.player.inventory.getHotbarSlot(itemSlot)
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
             lastItemStackNameShown = currentItem
             lastItemSlot = itemSlot
@@ -169,7 +169,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
     override fun postInit() {
         prefMaxSize = Vec2i(-1, -1)
 
-        val connection = renderWindow.connection
+        val connection = context.connection
         val player = connection.player
 
         player::experienceCondition.observeRendering(this) { core.experience.apply() }

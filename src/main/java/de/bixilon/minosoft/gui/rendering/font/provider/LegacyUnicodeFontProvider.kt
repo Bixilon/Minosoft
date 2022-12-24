@@ -18,21 +18,21 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class LegacyUnicodeFontProvider(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     data: Map<String, Any>,
 ) : FontProvider {
     private val chars: Array<CharData?> = arrayOfNulls(1 shl Char.SIZE_BITS)
 
     init {
         val template = data["template"].unsafeCast<String>()
-        val sizes = renderWindow.connection.assetsManager[data["sizes"].toResourceLocation()]
+        val sizes = context.connection.assetsManager[data["sizes"].toResourceLocation()]
 
         var char = 0
         for (page in 0 until UNICODE_PAGES) {
@@ -43,7 +43,7 @@ class LegacyUnicodeFontProvider(
                 char += UNICODE_PAGE_SIZE
                 continue
             }
-            val texture = renderWindow.textureManager.staticTextures.createTexture(template.replace("%s", page.toHex(2)).toResourceLocation().texture(), mipmaps = false)
+            val texture = context.textureManager.staticTextures.createTexture(template.replace("%s", page.toHex(2)).toResourceLocation().texture(), mipmaps = false)
             for (y in 0 until UNICODE_PAGE_SIZE / CHAR_SIZE) {
                 val yStart = PIXEL.y * y * CHAR_SIZE
                 val yEnd = PIXEL.y * (y + 1) * CHAR_SIZE
@@ -68,7 +68,7 @@ class LegacyUnicodeFontProvider(
                     val scaledWidth = (width * HEIGHT_SCALE).toInt()
 
                     val charData = CharData(
-                        renderWindow = renderWindow,
+                        context = context,
                         texture = texture,
                         width = width,
                         scaledWidth = scaledWidth,
@@ -103,8 +103,8 @@ class LegacyUnicodeFontProvider(
         private const val HEIGHT_SCALE = Font.CHAR_HEIGHT.toFloat() / CHAR_SIZE
         private val PIXEL = Vec2(1.0f) / UNICODE_PAGE_SIZE
 
-        override fun build(renderWindow: RenderWindow, data: Map<String, Any>): LegacyUnicodeFontProvider {
-            return LegacyUnicodeFontProvider(renderWindow, data)
+        override fun build(context: RenderContext, data: Map<String, Any>): LegacyUnicodeFontProvider {
+            return LegacyUnicodeFontProvider(context, data)
         }
     }
 }

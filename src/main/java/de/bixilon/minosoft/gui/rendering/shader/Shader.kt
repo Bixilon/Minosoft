@@ -21,7 +21,7 @@ abstract class Shader : AbstractShader {
 
     fun unload() {
         native.unload()
-        native.renderWindow.renderSystem.shaders -= this
+        native.context.renderSystem.shaders -= this
     }
 
     fun load() {
@@ -29,7 +29,7 @@ abstract class Shader : AbstractShader {
             native.defines["TRANSPARENT"] = " "
         }
         native.load()
-        native.renderWindow.renderSystem.shaders += this
+        native.context.renderSystem.shaders += this
         for (uniform in uniforms.values) {
             uniform.upload()
         }

@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.input.DraggableHandler
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 
 interface GUIElement : InputHandler, DraggableHandler {
     val guiRenderer: GUIRenderer
-    val renderWindow: RenderWindow
+    val context: RenderContext
     var enabled: Boolean
     val activeWhenHidden: Boolean
         get() = false

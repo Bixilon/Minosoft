@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
 abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Initializable, Drawable, AbstractLayout<Element> {
-    protected val connection = renderWindow.connection
+    protected val connection = context.connection
     protected val profile = connection.profiles.gui
     protected val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@AbstractChatElement }
     override var activeElement: Element? = null

@@ -17,8 +17,8 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
@@ -72,7 +72,7 @@ interface GUIElementDrawer {
             if (element is LayoutedGUIElement<*>) {
                 latch.inc()
                 element.prepare()
-                guiRenderer.renderWindow.runAsync { element.prepareAsync(); latch.dec() }
+                guiRenderer.context.runAsync { element.prepareAsync(); latch.dec() }
             }
         }
         latch.dec()

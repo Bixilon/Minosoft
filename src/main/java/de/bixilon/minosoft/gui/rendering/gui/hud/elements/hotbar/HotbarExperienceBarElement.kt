@@ -75,7 +75,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
         val jumping = false // ToDo
 
         if (!jumping) {
-            val experienceCondition = guiRenderer.renderWindow.connection.player.experienceCondition
+            val experienceCondition = guiRenderer.context.connection.player.experienceCondition
             if (this.jumping != jumping || progress != experienceCondition.bar || this.level != experienceCondition.level) {
                 this.progress = experienceCondition.bar
                 this.jumping = jumping

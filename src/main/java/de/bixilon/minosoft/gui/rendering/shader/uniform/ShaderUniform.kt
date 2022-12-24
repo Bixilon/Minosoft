@@ -50,7 +50,7 @@ class ShaderUniform<T>(
         }
         this.value = value
         upload = true
-        if (Thread.currentThread() == native.renderWindow.thread) {
+        if (Thread.currentThread() == native.context.thread) {
             upload()
         }
     }

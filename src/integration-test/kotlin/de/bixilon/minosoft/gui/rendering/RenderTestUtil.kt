@@ -21,7 +21,7 @@ import de.bixilon.minosoft.test.IT.reference
 
 object RenderTestUtil {
     lateinit var rendering: Rendering
-    lateinit var context: RenderWindow
+    lateinit var context: RenderContext
 
     init {
         DefaultRenderer.reference()

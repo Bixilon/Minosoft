@@ -17,17 +17,17 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultKeyCombinations {
 
-    fun registerAll(renderWindow: RenderWindow) {
-        val inputHandler = renderWindow.inputHandler
-        val window = renderWindow.window
-        val connection = renderWindow.connection
+    fun registerAll(context: RenderContext) {
+        val inputHandler = context.inputHandler
+        val window = context.window
+        val connection = context.connection
 
         inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(),
             KeyBinding(
@@ -35,7 +35,7 @@ object DefaultKeyCombinations {
                 KeyActions.STICKY to setOf(KeyCodes.KEY_P),
             )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
-            renderWindow.framebufferManager.world.polygonMode = nextMode
+            context.framebufferManager.world.polygonMode = nextMode
             connection.util.sendDebugMessage("Polygon mode: ${nextMode.format()}")
         }
 
@@ -43,7 +43,7 @@ object DefaultKeyCombinations {
             KeyBinding(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_F2),
                 ignoreConsumer = true,
-            )) { renderWindow.screenshotTaker.takeScreenshot() }
+            )) { context.screenshotTaker.takeScreenshot() }
 
         inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(),
             KeyBinding(

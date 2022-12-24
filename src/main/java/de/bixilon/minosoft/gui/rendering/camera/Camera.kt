@@ -16,18 +16,19 @@ package de.bixilon.minosoft.gui.rendering.camera
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
 import de.bixilon.minosoft.gui.rendering.camera.view.ViewManager
 import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
 
 class Camera(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
 ) {
-    val fogManager = FogManager(renderWindow)
-    val matrixHandler = MatrixHandler(renderWindow, fogManager, this)
-    val targetHandler = TargetHandler(renderWindow, this)
-    val visibilityGraph = WorldVisibilityGraph(renderWindow, this)
+    val fogManager = FogManager(context)
+    val matrixHandler = MatrixHandler(context, fogManager, this)
+    val targetHandler = TargetHandler(context, this)
+    val visibilityGraph = WorldVisibilityGraph(context, this)
 
     val view = ViewManager(this)
 
@@ -46,8 +47,8 @@ class Camera(
         view.draw()
         matrixHandler.draw()
         val latch = CountUpAndDownLatch(2)
-        renderWindow.runAsync { visibilityGraph.draw();latch.dec() }
-        renderWindow.runAsync { targetHandler.raycast();latch.dec() }
+        context.runAsync { visibilityGraph.draw();latch.dec() }
+        context.runAsync { targetHandler.raycast();latch.dec() }
         fogManager.draw()
         latch.await()
     }

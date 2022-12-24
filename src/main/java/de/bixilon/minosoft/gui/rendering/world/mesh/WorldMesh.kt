@@ -16,22 +16,22 @@ package de.bixilon.minosoft.gui.rendering.world.mesh
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class WorldMesh(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     val chunkPosition: Vec2i,
     val sectionHeight: Int,
     smallMesh: Boolean = false,
 ) {
     val center: Vec3 = Vec3(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)))
-    var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 3000 else 100000)
-    var translucentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 3000 else 10000, onDemand = true)
-    var transparentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 3000 else 20000, onDemand = true)
-    var textMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 5000 else 50000, onDemand = true)
+    var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(context, if (smallMesh) 3000 else 100000)
+    var translucentMesh: SingleWorldMesh? = SingleWorldMesh(context, if (smallMesh) 3000 else 10000, onDemand = true)
+    var transparentMesh: SingleWorldMesh? = SingleWorldMesh(context, if (smallMesh) 3000 else 20000, onDemand = true)
+    var textMesh: SingleWorldMesh? = SingleWorldMesh(context, if (smallMesh) 5000 else 50000, onDemand = true)
     var blockEntities: Set<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling

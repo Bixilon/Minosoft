@@ -40,7 +40,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
         gravityStrength = 1.0f
         color = 0.6f.asGray()
 
-        connection.rendering!!.renderWindow.tintManager.getParticleTint(data.blockState, blockPosition)?.asRGBColor()?.let {
+        connection.rendering!!.context.tintManager.getParticleTint(data.blockState, blockPosition)?.asRGBColor()?.let {
             color = RGBColor(color.floatRed * it.floatRed, color.floatGreen * it.floatGreen, color.floatBlue * it.floatBlue)
         }
         scale /= 2.0f

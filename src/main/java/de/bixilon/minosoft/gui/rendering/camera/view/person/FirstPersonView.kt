@@ -16,13 +16,13 @@ package de.bixilon.minosoft.gui.rendering.camera.view.person
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.CameraView
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 class FirstPersonView(override val camera: Camera) : PersonView {
-    override val renderWindow: RenderWindow get() = camera.renderWindow
+    override val context: RenderContext get() = camera.context
 
     override val renderSelf: Boolean get() = false
     override val renderArm: Boolean get() = true

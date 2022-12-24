@@ -133,7 +133,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     }
 
     override fun tick() {
-        val healthCondition = guiRenderer.renderWindow.connection.player.healthCondition
+        val healthCondition = guiRenderer.context.connection.player.healthCondition
 
         animate = healthCondition.saturation <= 0.0f && ticks++ % (healthCondition.hunger * 3 + 1) == 0
 
@@ -141,12 +141,12 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     }
 
     override fun poll(): Boolean {
-        val healthCondition = guiRenderer.renderWindow.connection.player.healthCondition
+        val healthCondition = guiRenderer.context.connection.player.healthCondition
 
         val hunger = healthCondition.hunger
         val saturation = healthCondition.saturation
 
-        val hungerEffect = guiRenderer.renderWindow.connection.player.effects[OtherEffect.Hunger] != null
+        val hungerEffect = guiRenderer.context.connection.player.effects[OtherEffect.Hunger] != null
 
         if (this.hunger == hunger && this.saturation == saturation && this.hungerEffect == hungerEffect) {
             return false

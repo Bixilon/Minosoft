@@ -17,10 +17,11 @@ import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.world.border.WorldBorderState
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
@@ -33,26 +34,26 @@ import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldBorderRenderer(
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : Renderer, TranslucentDrawable {
-    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    override val renderSystem: RenderSystem = context.renderSystem
     private val shader = renderSystem.createShader(minosoft("world/border")) { WorldBorderShader(it) }
-    private val borderMesh = WorldBorderMesh(renderWindow)
-    private val border = renderWindow.connection.world.border
+    private val borderMesh = WorldBorderMesh(context)
+    private val border = context.connection.world.border
     private lateinit var texture: AbstractTexture
-    private var offsetReset = TimeUtil.millis
+    private var offsetReset = millis()
     override val skipTranslucent: Boolean
-        get() = border.getDistanceTo(renderWindow.connection.player.position) > MAX_DISTANCE
+        get() = border.getDistanceTo(context.connection.player.position) > MAX_DISTANCE
 
     override fun init(latch: CountUpAndDownLatch) {
         shader.load()
         borderMesh.load()
 
-        texture = renderWindow.textureManager.staticTextures.createTexture(TEXTURE)
+        texture = context.textureManager.staticTextures.createTexture(TEXTURE)
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
-        renderWindow.textureManager.staticTextures.use(shader)
+        context.textureManager.staticTextures.use(shader)
         shader.textureIndexLayer = texture.renderData.shaderTextureId
     }
 
@@ -69,15 +70,15 @@ class WorldBorderRenderer(
             polygonOffsetUnit = -3.0f,
         )
         shader.use()
-        val time = TimeUtil.millis
+        val time = millis()
         if (offsetReset - time > ANIMATION_SPEED) {
             offsetReset = time
         }
         val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
         shader.textureOffset = 1.0f - textureOffset
-        shader.cameraHeight = renderWindow.camera.matrixHandler.entity.eyePosition.y
+        shader.cameraHeight = context.camera.matrixHandler.entity.eyePosition.y
 
-        val distance = border.getDistanceTo(renderWindow.connection.player.position)
+        val distance = border.getDistanceTo(context.connection.player.position)
         val strength = 1.0f - (distance.toFloat().clamp(0.0f, 100.0f) / 100.0f)
         var color = when (border.state) {
             WorldBorderState.GROWING -> GROWING_COLOR
@@ -104,8 +105,8 @@ class WorldBorderRenderer(
 
         private val TEXTURE = "minecraft:misc/forcefield".toResourceLocation().texture()
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldBorderRenderer {
-            return WorldBorderRenderer(renderWindow)
+        override fun build(connection: PlayConnection, context: RenderContext): WorldBorderRenderer {
+            return WorldBorderRenderer(context)
         }
     }
 }

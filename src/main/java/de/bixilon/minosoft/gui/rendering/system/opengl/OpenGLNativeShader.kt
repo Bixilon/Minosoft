@@ -20,7 +20,7 @@ import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -32,7 +32,7 @@ import org.lwjgl.system.MemoryUtil
 import java.io.FileNotFoundException
 
 class OpenGLNativeShader(
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
     private val vertex: ResourceLocation,
     private val geometry: ResourceLocation?,
     private val fragment: ResourceLocation,
@@ -44,7 +44,7 @@ class OpenGLNativeShader(
     private val uniformLocations: Object2IntOpenHashMap<String> = Object2IntOpenHashMap()
 
     private fun load(resourceLocation: ResourceLocation, shaderType: Int): Int {
-        val code = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager[resourceLocation].readAsString())
+        val code = GLSLShaderCode(context, context.connection.assetsManager[resourceLocation].readAsString())
 
         code.defines += defines
 
@@ -97,7 +97,7 @@ class OpenGLNativeShader(
         }
         loaded = true
 
-        renderWindow.renderSystem.nativeShaders += this
+        context.renderSystem.nativeShaders += this
     }
 
     override fun unload() {
@@ -105,7 +105,7 @@ class OpenGLNativeShader(
         glDeleteProgram(this.shader)
         loaded = false
         this.shader = -1
-        renderWindow.renderSystem.nativeShaders -= this
+        context.renderSystem.nativeShaders -= this
     }
 
     override fun reload() {

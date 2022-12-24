@@ -123,6 +123,6 @@ class MarkTextElement(
         if (markedText.isEmpty()) {
             return
         }
-        renderWindow.window.clipboardText = markedText
+        context.window.clipboardText = markedText
     }
 }

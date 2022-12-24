@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.arm
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.entities.player.Arms
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-open class ArmMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType) : Mesh(renderWindow, ArmMeshStruct, primitiveType, initialCacheSize = 2 * 3 * ArmMeshStruct.FLOATS_PER_VERTEX), SkeletalVertexConsumer {
+open class ArmMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.renderSystem.preferredPrimitiveType) : Mesh(context, ArmMeshStruct, primitiveType, initialCacheSize = 2 * 3 * ArmMeshStruct.FLOATS_PER_VERTEX), SkeletalVertexConsumer {
 
 
     fun addVertex(position: FloatArray, uv: Vec2) {

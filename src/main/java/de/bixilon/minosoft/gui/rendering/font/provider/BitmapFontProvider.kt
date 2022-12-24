@@ -20,7 +20,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
@@ -28,7 +28,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class BitmapFontProvider(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     data: Map<String, Any>,
 ) : FontProvider {
     val ascent = data["ascent"].toDouble()
@@ -38,8 +38,8 @@ class BitmapFontProvider(
 
     init {
         val charRows = data["chars"].asJsonList()
-        val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture(), mipmaps = false)
-        texture.load(renderWindow.connection.assetsManager)
+        val texture = context.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture(), mipmaps = false)
+        texture.load(context.connection.assetsManager)
 
         val height = texture.size.y / charRows.size
         val heightScale = Font.CHAR_HEIGHT.toFloat() / height
@@ -98,7 +98,7 @@ class BitmapFontProvider(
                 }
 
                 val charData = CharData(
-                    renderWindow = renderWindow,
+                    context = context,
                     texture = texture,
                     width = width,
                     scaledWidth = scaledWidth,
@@ -130,8 +130,8 @@ class BitmapFontProvider(
         private const val CHARS_PER_ROW = 16
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:bitmap".toResourceLocation()
 
-        override fun build(renderWindow: RenderWindow, data: Map<String, Any>): BitmapFontProvider {
-            return BitmapFontProvider(renderWindow, data)
+        override fun build(context: RenderContext, data: Map<String, Any>): BitmapFontProvider {
+            return BitmapFontProvider(context, data)
         }
     }
 }

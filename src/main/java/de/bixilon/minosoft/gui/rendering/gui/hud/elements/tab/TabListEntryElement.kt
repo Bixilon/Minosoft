@@ -52,7 +52,7 @@ class TabListEntryElement(
 
     private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8), parent = this)
 
-    // private val skinElement = ImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
+    // private val skinElement = ImageElement(guiRenderer, guiRenderer.context.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
     private lateinit var pingElement: AtlasImageElement
 
@@ -81,7 +81,7 @@ class TabListEntryElement(
 
     init {
         background = ColorElement(guiRenderer, size, RGBColor(120, 120, 120, 130))
-        DefaultThreadPool += { skinElement.texture = renderWindow.textureManager.skins.getSkin(uuid, item.properties, fetch = guiRenderer.connection.network.encrypted)?.texture }
+        DefaultThreadPool += { skinElement.texture = context.textureManager.skins.getSkin(uuid, item.properties, fetch = guiRenderer.connection.network.encrypted)?.texture }
         forceSilentApply()
     }
 

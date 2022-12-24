@@ -18,7 +18,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
@@ -40,11 +40,11 @@ import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import java.nio.ByteBuffer
 
 class OpenGLTextureArray(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
     private val loadTexturesAsync: Boolean = true,
     override val textures: MutableMap<ResourceLocation, AbstractTexture> = mutableMapOf(),
 ) : StaticTextureArray {
-    override val animator = SpriteAnimator(renderWindow.renderSystem)
+    override val animator = SpriteAnimator(context.renderSystem)
     private var textureIds = IntArray(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
     override var state: TextureArrayStates = TextureArrayStates.DECLARED
         private set
@@ -73,7 +73,7 @@ class OpenGLTextureArray(
         texture.properties = properties
         textures[resourceLocation] = texture
         if (loadTexturesAsync) {
-            DefaultThreadPool += { texture.load(renderWindow.connection.assetsManager) }
+            DefaultThreadPool += { texture.load(context.connection.assetsManager) }
         }
 
         return texture
@@ -81,7 +81,7 @@ class OpenGLTextureArray(
 
     private fun readImageProperties(texture: ResourceLocation): ImageProperties? {
         try {
-            val data = renderWindow.connection.assetsManager.getOrNull("$texture.mcmeta".toResourceLocation())?.readAsString() ?: return null
+            val data = context.connection.assetsManager.getOrNull("$texture.mcmeta".toResourceLocation())?.readAsString() ?: return null
             return Jackson.MAPPER.readValue(data, ImageProperties::class.java)
         } catch (error: Throwable) {
             error.printStackTrace()
@@ -97,7 +97,7 @@ class OpenGLTextureArray(
         var lastAnimationIndex = 0
         for (texture in textures.values) {
             if (texture.state == TextureStates.DECLARED) {
-                texture.load(renderWindow.connection.assetsManager)
+                texture.load(context.connection.assetsManager)
             }
 
             check(texture.size.x <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.x}" }

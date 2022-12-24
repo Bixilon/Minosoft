@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 
-class FramebufferMesh(renderWindow: RenderWindow) : Mesh(renderWindow, DefaultFramebufferMeshStruct) {
+class FramebufferMesh(context: RenderContext) : Mesh(context, DefaultFramebufferMeshStruct) {
 
     init {
         val vertices = arrayOf(

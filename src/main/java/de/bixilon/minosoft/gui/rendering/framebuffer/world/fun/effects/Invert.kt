@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class Invert(override val renderWindow: RenderWindow) : FunEffect {
+class Invert(override val context: RenderContext) : FunEffect {
     override val resourceLocation: ResourceLocation get() = RESOURCE_LOCATION
     override val shader: FramebufferShader = createShader(fragment = "minosoft:framebuffer/world/fun/invert.fsh".toResourceLocation()) { FramebufferShader(it) }
 
@@ -28,8 +28,8 @@ class Invert(override val renderWindow: RenderWindow) : FunEffect {
     companion object : FunEffectFactory<Invert> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:invert".toResourceLocation()
 
-        override fun build(renderWindow: RenderWindow): Invert {
-            return Invert(renderWindow)
+        override fun build(context: RenderContext): Invert {
+            return Invert(context)
         }
     }
 }

@@ -123,7 +123,7 @@ open class TextElement(
                     scale = scale,
                     shadow = shadow,
                 )
-                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, InfiniteSizeElement(guiRenderer), renderWindow, null, null, renderInfo, value)
+                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, InfiniteSizeElement(guiRenderer), context, null, null, renderInfo, value)
             }
             _prefSize = prefSize
         }
@@ -157,7 +157,7 @@ open class TextElement(
             shadow = shadow,
         )
         if (!emptyMessage) {
-            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, this, renderWindow, null, null, renderInfo, chatComponent)
+            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, this, context, null, null, renderInfo, chatComponent)
             renderInfo.lineIndex = 0
         }
         if (renderInfo.lines.size > 1 && size.y > Font.CHAR_HEIGHT) {
@@ -181,7 +181,7 @@ open class TextElement(
         if (background) {
             for ((line, info) in renderInfo.lines.withIndex()) {
                 val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * charHeight)
-                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), renderWindow.textureManager.whiteTexture, backgroundColor, options)
+                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), context.textureManager.whiteTexture, backgroundColor, options)
             }
         }
 
@@ -190,7 +190,7 @@ open class TextElement(
             vertices *= 2
         }
         consumer.ensureSize(vertices)
-        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, this, renderWindow, consumer, options, renderInfo, chatComponent)
+        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, this, context, consumer, options, renderInfo, chatComponent)
         renderInfo.lineIndex = 0
     }
 
@@ -208,7 +208,7 @@ open class TextElement(
         activeElement = pair.first
         pair.first.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute)
         if (pair.first.clickEvent != null) {
-            renderWindow.window.cursorShape = CursorShapes.HAND
+            context.window.cursorShape = CursorShapes.HAND
         }
         return true
     }
@@ -220,9 +220,9 @@ open class TextElement(
             val activeElement = activeElement
             this.activeElement = pair?.first
             if (pair?.first?.clickEvent == null) {
-                renderWindow.window.resetCursor()
+                context.window.resetCursor()
             } else {
-                renderWindow.window.cursorShape = CursorShapes.HAND
+                context.window.cursorShape = CursorShapes.HAND
             }
             return (activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: false) || (pair?.first?.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute) ?: false)
         }
@@ -233,7 +233,7 @@ open class TextElement(
         val activeElement = activeElement ?: return false
         this.activeElement = null
         if (activeElement.clickEvent != null) {
-            renderWindow.window.resetCursor()
+            context.window.resetCursor()
         }
         activeElement.hoverEvent?.onMouseLeave(guiRenderer) ?: return false
         return true

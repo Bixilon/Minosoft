@@ -28,7 +28,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
@@ -46,11 +46,11 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class EntityRenderer(
     val connection: PlayConnection,
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : Renderer, OpaqueDrawable {
-    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    override val renderSystem: RenderSystem = context.renderSystem
     val profile = connection.profiles.entity
-    val visibilityGraph = renderWindow.camera.visibilityGraph
+    val visibilityGraph = context.camera.visibilityGraph
     private val models: LockMap<Entity, EntityModel<*>> = lockMapOf()
     private lateinit var localModel: LocalPlayerModel
     private var toUnload: MutableList<EntityModel<*>> = synchronizedListOf()
@@ -74,7 +74,7 @@ class EntityRenderer(
 
         profile.hitbox::enabled.observe(this) { this.hitboxes = it }
 
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             HITBOX_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
@@ -88,7 +88,7 @@ class EntityRenderer(
     }
 
     override fun postAsyncInit(latch: CountUpAndDownLatch) {
-        localModel = renderWindow.connection.player.createModel(this)
+        localModel = context.connection.player.createModel(this)
 
         models[connection.player] = localModel
     }
@@ -123,7 +123,7 @@ class EntityRenderer(
     }
 
     override fun setupOpaque() {
-        renderWindow.renderSystem.reset(faceCulling = false)
+        context.renderSystem.reset(faceCulling = false)
     }
 
     override fun drawOpaque() {
@@ -156,8 +156,8 @@ class EntityRenderer(
         private val HITBOX_TOGGLE_KEY_COMBINATION = "minosoft:toggle_hitboxes".toResourceLocation()
 
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): EntityRenderer {
-            return EntityRenderer(connection, renderWindow)
+        override fun build(connection: PlayConnection, context: RenderContext): EntityRenderer {
+            return EntityRenderer(connection, context)
         }
     }
 }

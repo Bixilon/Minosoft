@@ -19,7 +19,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.effects.OverworldEffects
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
@@ -38,9 +38,9 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class SkyRenderer(
     val connection: PlayConnection,
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : Renderer, PreDrawable, AsyncRenderer {
-    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    override val renderSystem: RenderSystem = context.renderSystem
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
@@ -98,7 +98,7 @@ class SkyRenderer(
     }
 
     override fun drawPre() {
-        renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL, depthMask = false)
+        context.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL, depthMask = false)
         for (renderer in renderer) {
             renderer.draw()
         }
@@ -112,8 +112,8 @@ class SkyRenderer(
     companion object : RendererBuilder<SkyRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:sky")
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): SkyRenderer {
-            return SkyRenderer(connection, renderWindow)
+        override fun build(connection: PlayConnection, context: RenderContext): SkyRenderer {
+            return SkyRenderer(connection, context)
         }
     }
 }

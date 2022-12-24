@@ -18,12 +18,12 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class DummyNativeShader(
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : NativeShader {
     override val loaded: Boolean = true
     override val defines: MutableMap<String, Any> = mutableMapOf()

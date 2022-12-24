@@ -19,22 +19,22 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.world.light.debug.LightmapDebugWindow
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 
-class RenderLight(val renderWindow: RenderWindow) {
-    private val connection = renderWindow.connection
+class RenderLight(val context: RenderContext) {
+    private val connection = context.connection
     val map = Lightmap(this)
     private val debugWindow = if (DebugOptions.LIGHTMAP_DEBUG_WINDOW) LightmapDebugWindow(map) else null
 
     fun init() {
         map.init()
 
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             "minosoft:recalculate_light".toResourceLocation(),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
@@ -43,11 +43,11 @@ class RenderLight(val renderWindow: RenderWindow) {
         ) {
             DefaultThreadPool += {
                 connection.world.recalculateLight()
-                renderWindow.renderer[WorldRenderer]?.silentlyClearChunkCache()
+                context.renderer[WorldRenderer]?.silentlyClearChunkCache()
                 connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
             }
         }
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             "minosoft:toggle_fullbright".toResourceLocation(),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
@@ -59,7 +59,7 @@ class RenderLight(val renderWindow: RenderWindow) {
             connection.util.sendDebugMessage("Fullbright: $it")
         }
         if (DebugOptions.LIGHTMAP_DEBUG_WINDOW) {
-            renderWindow::state.observeFX(this) {
+            context::state.observeFX(this) {
                 if (it == RenderingStates.RUNNING) {
                     JavaFXUtil.runLater { debugWindow?.show() }
                 } else if (it == RenderingStates.QUITTING) {

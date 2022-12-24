@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
 
-class ParticleMesh(renderWindow: RenderWindow, data: AbstractFloatList) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT, -1, clearOnLoad = false, data = data) {
+class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(context, ParticleMeshStruct, PrimitiveTypes.POINT, -1, clearOnLoad = false, data = data) {
 
     fun addVertex(position: Vec3d, scale: Float, texture: AbstractTexture, tintColor: RGBColor, uvMin: FloatArray? = null, uvMax: FloatArray? = null, light: Int) {
         val minTransformedUV = if (uvMin == null) {

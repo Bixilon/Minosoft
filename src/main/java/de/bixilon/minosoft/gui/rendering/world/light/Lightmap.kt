@@ -23,8 +23,8 @@ import de.bixilon.minosoft.gui.rendering.world.light.updater.LightmapUpdater
 import de.bixilon.minosoft.gui.rendering.world.light.updater.normal.NormalLightmapUpdater
 
 class Lightmap(private val light: RenderLight) {
-    private val profile = light.renderWindow.connection.profiles.rendering
-    val buffer = LightmapBuffer(light.renderWindow.renderSystem)
+    private val profile = light.context.connection.profiles.rendering
+    val buffer = LightmapBuffer(light.context.renderSystem)
     private var updater: LightmapUpdater = FullbrightLightUpdater
         set(value) {
             field = value
@@ -35,8 +35,8 @@ class Lightmap(private val light: RenderLight) {
     private lateinit var defaultUpdater: LightmapUpdater
 
     fun init() {
-        defaultUpdater = NormalLightmapUpdater(light.renderWindow.connection, light.renderWindow.renderer[SkyRenderer])
-        // defaultUpdater = LegacyLightmapUpdater(light.renderWindow.connection)
+        defaultUpdater = NormalLightmapUpdater(light.context.connection, light.context.renderer[SkyRenderer])
+        // defaultUpdater = LegacyLightmapUpdater(light.context.connection)
         buffer.init()
         profile.light::fullbright.observe(this) { setLightmapUpdater() }
         setLightmapUpdater()

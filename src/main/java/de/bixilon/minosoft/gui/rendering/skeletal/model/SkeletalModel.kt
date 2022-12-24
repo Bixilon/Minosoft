@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
@@ -34,7 +34,7 @@ data class SkeletalModel(
     val animations: List<SkeletalAnimation> = emptyList(),
 ) {
 
-    fun bake(renderWindow: RenderWindow, textureOverride: Map<Int, ShaderTexture>): BakedSkeletalModel {
+    fun bake(context: RenderContext, textureOverride: Map<Int, ShaderTexture>): BakedSkeletalModel {
         val textures: Int2ObjectOpenHashMap<ShaderTexture> = Int2ObjectOpenHashMap()
         for (entry in this.textures) {
             val override = textureOverride[entry.id]
@@ -42,7 +42,7 @@ data class SkeletalModel(
                 textures[entry.id] = override
                 continue
             }
-            val texture = renderWindow.textureManager.staticTextures.createTexture(entry.resourceLocation)
+            val texture = context.textureManager.staticTextures.createTexture(entry.resourceLocation)
             textures[entry.id] = texture
         }
         return BakedSkeletalModel(this, textures)

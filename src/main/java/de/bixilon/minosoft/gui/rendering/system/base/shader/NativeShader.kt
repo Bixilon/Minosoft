@@ -20,14 +20,14 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.util.Previous
 import kotlin.math.max
 
 interface NativeShader {
     val loaded: Boolean
-    val renderWindow: RenderWindow
+    val context: RenderContext
     val defines: MutableMap<String, Any>
 
     val log: String
@@ -38,7 +38,7 @@ interface NativeShader {
     fun reload()
 
     fun use(): NativeShader {
-        renderWindow.renderSystem.shader = this
+        context.renderSystem.shader = this
         return this
     }
 
@@ -84,7 +84,7 @@ interface NativeShader {
     }
 
     companion object {
-        val DEFAULT_DEFINES: Map<String, (renderWindow: RenderWindow) -> Any?> = mapOf(
+        val DEFAULT_DEFINES: Map<String, (context: RenderContext) -> Any?> = mapOf(
             "ANIMATED_TEXTURE_COUNT" to {
                 max(it.textureManager.staticTextures.animator.size, 1)
             }

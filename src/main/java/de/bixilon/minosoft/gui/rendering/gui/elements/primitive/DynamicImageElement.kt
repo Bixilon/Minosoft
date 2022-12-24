@@ -85,9 +85,9 @@ open class DynamicImageElement(
     }
 
     private fun getAvailableTexture(): ShaderIdentifiable {
-        val texture = texture ?: return renderWindow.textureManager.whiteTexture.texture
+        val texture = texture ?: return context.textureManager.whiteTexture.texture
         if (texture.state != DynamicTextureState.LOADED) {
-            return renderWindow.textureManager.whiteTexture.texture
+            return context.textureManager.whiteTexture.texture
         }
         return texture
     }

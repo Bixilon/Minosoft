@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.world.entities
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 
 interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
@@ -22,7 +22,7 @@ interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, S
         get() = 0
         set(value) {}
 
-    override fun draw(renderWindow: RenderWindow) = Unit
+    override fun draw(context: RenderContext) = Unit
     override fun load() = Unit
     override fun unload() = Unit
 

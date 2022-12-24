@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
@@ -39,7 +39,7 @@ import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
 class DummyRenderSystem(
-    private val context: RenderWindow,
+    private val context: RenderContext,
 ) : RenderSystem {
     override val nativeShaders: MutableSet<NativeShader> = mutableSetOf()
     override val shaders: MutableSet<Shader> = mutableSetOf()

@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 
-class DummyTextureManager(val context: RenderWindow) : TextureManager() {
+class DummyTextureManager(val context: RenderContext) : TextureManager() {
     override val dynamicTextures: DynamicTextureArray = DummyDynamicTextureArray()
     override val staticTextures: StaticTextureArray = DummyStaticTextureArray(context.renderSystem)
 }

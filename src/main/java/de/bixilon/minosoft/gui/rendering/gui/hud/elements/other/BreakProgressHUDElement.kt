@@ -31,7 +31,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BreakProgressHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable {
     private val textElement = TextElement(guiRenderer, "").apply { parent = this@BreakProgressHUDElement }
-    private val breakInteractionHandler = guiRenderer.renderWindow.inputHandler.interactionManager.`break`
+    private val breakInteractionHandler = guiRenderer.context.inputHandler.interactionManager.`break`
     private var previousProgress = -1.0
 
     override val layoutOffset: Vec2i

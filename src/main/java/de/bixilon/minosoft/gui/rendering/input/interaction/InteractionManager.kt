@@ -16,20 +16,20 @@ package de.bixilon.minosoft.gui.rendering.input.interaction
 import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
 
 class InteractionManager(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
 ) {
-    private val connection = renderWindow.connection
-    val hotbar = HotbarInteractionHandler(renderWindow, this)
-    val pick = ItemPickInteractionHandler(renderWindow, this)
-    val attack = AttackInteractionHandler(renderWindow, this)
-    val `break` = BreakInteractionHandler(renderWindow)
-    val use = InteractInteractionHandler(renderWindow, this)
-    val drop = DropInteractionManager(renderWindow)
-    val spectate = SpectateInteractionManager(renderWindow)
+    private val connection = context.connection
+    val hotbar = HotbarInteractionHandler(context, this)
+    val pick = ItemPickInteractionHandler(context, this)
+    val attack = AttackInteractionHandler(context, this)
+    val `break` = BreakInteractionHandler(context)
+    val use = InteractInteractionHandler(context, this)
+    val drop = DropInteractionManager(context)
+    val spectate = SpectateInteractionManager(context)
 
     private val swingArmRateLimiter = RateLimiter()
 

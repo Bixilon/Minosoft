@@ -18,13 +18,13 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
 class CharData(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
     val texture: AbstractTexture?,
     val width: Int,
     val scaledWidth: Int,
@@ -100,7 +100,7 @@ class CharData(
         if (bold) {
             vertexConsumer.addQuad(startPosition + Vec2(boldOffset, 0.0f), endPosition + Vec2(boldOffset, 0.0f), texture, uvStart, uvEnd, italic, color, options)
         }
-        val whiteTexture = renderWindow.textureManager.whiteTexture
+        val whiteTexture = context.textureManager.whiteTexture
 
         if (strikethrough) {
             vertexConsumer.addQuad(startPosition + Vec2(-horizontalSpacing, charHeight / 2.0f - scale / 2), Vec2(endPosition.x + horizontalSpacing, startPosition.y + charHeight / 2.0f + scale / 2), whiteTexture.texture, whiteTexture.uvStart, whiteTexture.uvEnd, italic, color, options)

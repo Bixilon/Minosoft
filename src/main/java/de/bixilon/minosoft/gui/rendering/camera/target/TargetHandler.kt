@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.world.chunk.Chunk
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
@@ -36,10 +36,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 
 class TargetHandler(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
     private var camera: Camera,
 ) {
-    private val connection = renderWindow.connection
+    private val connection = context.connection
 
     /**
      * Can ba a BlockTarget or an EntityTarget. Not a FluidTarget

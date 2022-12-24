@@ -37,7 +37,7 @@ class RenderTestLoader {
         RenderTestUtil.rendering.start(latch, audio = false)
         latch.dec()
         latch.await()
-        val context = RenderTestUtil.rendering.renderWindow
+        val context = RenderTestUtil.rendering.context
         assertTrue(context.window is DummyWindow)
         assertTrue(context.renderSystem is DummyRenderSystem)
         RenderTestUtil.context = context

@@ -29,7 +29,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     private val base = AtlasImageElement(guiRenderer, baseAtlasElement)
     private val frame = AtlasImageElement(guiRenderer, guiRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
 
-    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.renderWindow.connection.player.inventory, baseAtlasElement.slots)
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.inventory, baseAtlasElement.slots)
 
     private var selectedSlot = 0
 
@@ -53,7 +53,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     }
 
     override fun poll(): Boolean {
-        val selectedSlot = guiRenderer.renderWindow.connection.player.selectedHotbarSlot
+        val selectedSlot = guiRenderer.context.connection.player.selectedHotbarSlot
 
         if (this.selectedSlot != selectedSlot || containerElement.silentApply()) {
             this.selectedSlot = selectedSlot

@@ -20,11 +20,11 @@ import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
-open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow) {
+open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
 
     fun drawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor) {
         data.ensureSize(4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)

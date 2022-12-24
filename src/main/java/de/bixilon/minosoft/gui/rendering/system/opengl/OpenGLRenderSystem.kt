@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.*
@@ -49,7 +49,7 @@ import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
 class OpenGLRenderSystem(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
 ) : RenderSystem {
     private var thread: Thread? = null
     override val nativeShaders: MutableSet<NativeShader> = mutableSetOf()
@@ -65,7 +65,7 @@ class OpenGLRenderSystem(
     var blendingDestination = BlendingFunctions.ZERO
         private set
 
-    override var preferredPrimitiveType: PrimitiveTypes = if (renderWindow.preferQuads) {
+    override var preferredPrimitiveType: PrimitiveTypes = if (context.preferQuads) {
         PrimitiveTypes.QUAD
     } else {
         PrimitiveTypes.TRIANGLE
@@ -126,15 +126,15 @@ class OpenGLRenderSystem(
             vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor
             else -> OtherOpenGLVendor
         }
-        if (renderWindow.preferQuads && vendor.strictSpecification) {
+        if (context.preferQuads && vendor.strictSpecification) {
             throw IllegalStateException("Your GPU driver strictly follows the open gl specification. The setting `prefer_quads` is not working!")
         }
 
         this.version = glGetString(GL_VERSION) ?: "UNKNOWN"
         this.gpuType = glGetString(GL_RENDERER) ?: "UNKNOWN"
 
-        renderWindow.connection.events.listen<ResizeWindowEvent> {
-            renderWindow.queue += {
+        context.connection.events.listen<ResizeWindowEvent> {
+            context.queue += {
                 glViewport(0, 0, it.size.x, it.size.y)
             }
         }
@@ -255,7 +255,7 @@ class OpenGLRenderSystem(
     }
 
     override fun createNativeShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): OpenGLNativeShader {
-        return OpenGLNativeShader(renderWindow, vertex.shader(), geometry?.shader(), fragment.shader())
+        return OpenGLNativeShader(context, vertex.shader(), geometry?.shader(), fragment.shader())
     }
 
     override fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatOpenGLVertexBuffer {
@@ -271,11 +271,11 @@ class OpenGLRenderSystem(
     }
 
     override fun createFramebuffer(): OpenGLFramebuffer {
-        return OpenGLFramebuffer(this, renderWindow.window.size)
+        return OpenGLFramebuffer(this, context.window.size)
     }
 
     override fun createTextureManager(): OpenGLTextureManager {
-        return OpenGLTextureManager(renderWindow)
+        return OpenGLTextureManager(context)
     }
 
     override var clearColor: RGBColor = Colors.TRUE_BLACK

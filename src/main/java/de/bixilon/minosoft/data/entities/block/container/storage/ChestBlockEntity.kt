@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.ChestTypes
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.DoubleChestRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer
@@ -27,15 +27,15 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
-    override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*>? {
+    override fun createRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*>? {
         val type = blockState.properties[BlockProperties.CHEST_TYPE] ?: return null
         if (type == ChestTypes.SINGLE) {
-            return SingleChestRenderer(this, renderWindow, blockState, blockPosition, renderWindow.modelLoader.entities.skeletal[getSingleModel()] ?: return null, light)
+            return SingleChestRenderer(this, context, blockState, blockPosition, context.modelLoader.entities.skeletal[getSingleModel()] ?: return null, light)
         }
 
         if (type == ChestTypes.LEFT) {
             // only left chest will be rendered (the model is the double chest), reduces drawing overhead
-            return DoubleChestRenderer(this, renderWindow, blockState, blockPosition, renderWindow.modelLoader.entities.skeletal[getDoubleModel()] ?: return null, light)
+            return DoubleChestRenderer(this, context, blockState, blockPosition, context.modelLoader.entities.skeletal[getDoubleModel()] ?: return null, light)
         }
 
         return null

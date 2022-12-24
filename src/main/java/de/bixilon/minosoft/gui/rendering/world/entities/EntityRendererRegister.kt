@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.world.entities
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 
 interface EntityRendererRegister {
 
-    fun register(renderWindow: RenderWindow, modelLoader: ModelLoader) = Unit
+    fun register(context: RenderContext, modelLoader: ModelLoader) = Unit
 }

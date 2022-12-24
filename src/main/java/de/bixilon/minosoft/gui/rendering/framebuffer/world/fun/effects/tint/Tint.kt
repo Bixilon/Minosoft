@@ -16,13 +16,13 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.tint
 import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-class Tint(override val renderWindow: RenderWindow) : FunEffect {
+class Tint(override val context: RenderContext) : FunEffect {
     override val resourceLocation: ResourceLocation get() = RESOURCE_LOCATION
     override val shader = createShader(fragment = "minosoft:framebuffer/world/fun/tint.fsh".toResourceLocation()) { TintShader(it) }
     private var updateUniform = true
@@ -43,8 +43,8 @@ class Tint(override val renderWindow: RenderWindow) : FunEffect {
     companion object : FunEffectFactory<Tint> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:tint".toResourceLocation()
 
-        override fun build(renderWindow: RenderWindow): Tint {
-            return Tint(renderWindow)
+        override fun build(context: RenderContext): Tint {
+            return Tint(context)
         }
     }
 }

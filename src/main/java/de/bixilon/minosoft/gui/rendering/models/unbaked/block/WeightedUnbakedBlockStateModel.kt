@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.baked.WeightedBakedModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
@@ -24,11 +24,11 @@ class WeightedUnbakedBlockStateModel(
 ) : AbstractUnbakedBlockModel {
     override val textures: Map<String, String> = emptyMap()
 
-    override fun bake(renderWindow: RenderWindow): BakedBlockModel {
+    override fun bake(context: RenderContext): BakedBlockModel {
         val baked: MutableMap<BakedBlockModel, Int> = mutableMapOf()
 
         for (model in models) {
-            baked[model.bake(renderWindow)] = model.weight
+            baked[model.bake(context)] = model.weight
         }
 
         return WeightedBakedModel(baked)

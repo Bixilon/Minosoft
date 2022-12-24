@@ -15,13 +15,13 @@ package de.bixilon.minosoft.gui.rendering.world.entities
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 
 interface BlockEntityRenderer<E : BlockEntity> {
     val blockState: BlockState
     var light: Int
 
-    fun draw(renderWindow: RenderWindow)
+    fun draw(context: RenderContext)
 
     fun unload() {}
     fun load() {}

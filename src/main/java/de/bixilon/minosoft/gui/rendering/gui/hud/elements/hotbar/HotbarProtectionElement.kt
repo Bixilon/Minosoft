@@ -56,7 +56,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
     }
 
     override fun poll(): Boolean {
-        val protection = guiRenderer.renderWindow.connection.player.protectionLevel // ToDo: Check for equipment change
+        val protection = guiRenderer.context.connection.player.protectionLevel // ToDo: Check for equipment change
 
 
         if (this.protection == protection) {

@@ -96,7 +96,7 @@ class AudioPlayer(
         connection.events.listen<CameraPositionChangeEvent> {
             queue += {
                 listener.position = Vec3(it.newPosition)
-                listener.setOrientation(it.renderWindow.camera.view.view.front, CAMERA_UP_VEC3)
+                listener.setOrientation(it.context.camera.view.view.front, CAMERA_UP_VEC3)
             }
         }
 

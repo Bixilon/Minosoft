@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 
 interface OverlayFactory<T : Overlay> {
 
-    fun build(renderWindow: RenderWindow): T?
+    fun build(context: RenderContext): T?
 }

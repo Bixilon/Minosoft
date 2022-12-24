@@ -23,7 +23,7 @@ import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
@@ -44,16 +44,16 @@ import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
 
 class ParticleRenderer(
     private val connection: PlayConnection,
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : AsyncRenderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
-    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    override val renderSystem: RenderSystem = context.renderSystem
     private val profile = connection.profiles.particle
     private val transparentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, true) }
     private val translucentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, false) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    private var transparentMesh = ParticleMesh(renderWindow, BufferedArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
-    private var translucentMesh = ParticleMesh(renderWindow, BufferedArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    private var transparentMesh = ParticleMesh(context, BufferedArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    private var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
 
     private val particlesLock = SimpleLock()
     private var particles: MutableList<Particle> = mutableListOf()
@@ -113,7 +113,7 @@ class ParticleRenderer(
         translucentMesh.load()
         for (particle in connection.registries.particleTypeRegistry) {
             for (resourceLocation in particle.textures) {
-                renderWindow.textureManager.staticTextures.createTexture(resourceLocation)
+                context.textureManager.staticTextures.createTexture(resourceLocation)
             }
         }
 
@@ -127,7 +127,7 @@ class ParticleRenderer(
         connection.world.particleRenderer = this
 
         particleTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-            if (!renderWindow.state.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {
+            if (!context.state.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {
                 return@TimeWorkerTask
             }
             val cameraPosition = connection.player.positionInfo.chunkPosition
@@ -168,7 +168,7 @@ class ParticleRenderer(
     }
 
     override fun addParticle(particle: Particle) {
-        if (!renderWindow.state.running || !enabled) {
+        if (!context.state.running || !enabled) {
             return
         }
         val particleCount = particles.size + particleQueue.size
@@ -188,7 +188,7 @@ class ParticleRenderer(
     }
 
     private fun updateShaders() {
-        val matrix = renderWindow.camera.matrixHandler.viewProjectionMatrix
+        val matrix = context.camera.matrixHandler.viewProjectionMatrix
         val cameraRight = Vec3(matrix[0][0], matrix[1][0], matrix[2][0])
         val cameraUp = Vec3(matrix[0][1], matrix[1][1], matrix[2][1])
 
@@ -211,8 +211,8 @@ class ParticleRenderer(
     override fun prepareDrawAsync() {
         transparentMesh.data.clear()
         translucentMesh.data.clear()
-        transparentMesh = ParticleMesh(renderWindow, transparentMesh.data)
-        translucentMesh = ParticleMesh(renderWindow, translucentMesh.data)
+        transparentMesh = ParticleMesh(context, transparentMesh.data)
+        translucentMesh = ParticleMesh(context, translucentMesh.data)
 
         particlesLock.acquire()
 
@@ -264,11 +264,11 @@ class ParticleRenderer(
     companion object : RendererBuilder<ParticleRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:particle")
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): ParticleRenderer? {
+        override fun build(connection: PlayConnection, context: RenderContext): ParticleRenderer? {
             if (connection.profiles.particle.skipLoading) {
                 return null
             }
-            return ParticleRenderer(connection, renderWindow)
+            return ParticleRenderer(connection, context)
         }
     }
 }

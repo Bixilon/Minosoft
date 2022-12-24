@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.fluids
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.FlowableFluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
@@ -27,7 +27,7 @@ class WaterFluidModel : FlowableFluidModel {
     override var still: AbstractTexture? = null
     override var flowing: AbstractTexture? = null
 
-    override fun load(context: RenderWindow) {
+    override fun load(context: RenderContext) {
         still = context.textureManager.staticTextures.createTexture(STILL)
         flowing = context.textureManager.staticTextures.createTexture(FLOWING)
     }

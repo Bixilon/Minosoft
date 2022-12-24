@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.framebuffer.gui.GUIFramebuffer
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.WorldFramebuffer
@@ -22,17 +22,17 @@ import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 
 class FramebufferManager(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
 ) : Drawable {
-    val world = WorldFramebuffer(renderWindow)
-    val gui = GUIFramebuffer(renderWindow)
+    val world = WorldFramebuffer(context)
+    val gui = GUIFramebuffer(context)
 
 
     fun init() {
         world.init()
         gui.init()
 
-        renderWindow.connection.events.listen<ResizeWindowEvent> {
+        context.connection.events.listen<ResizeWindowEvent> {
             world.framebuffer.resize(it.size)
             gui.framebuffer.resize(it.size)
         }
@@ -51,7 +51,7 @@ class FramebufferManager(
 
 
     override fun draw() {
-        renderWindow.renderSystem.polygonMode = PolygonModes.FILL
+        context.renderSystem.polygonMode = PolygonModes.FILL
         world.draw()
         gui.draw()
     }

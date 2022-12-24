@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
@@ -64,7 +65,7 @@ class DraggedManager(
     }
 
     private fun applyCursor() {
-        val window = guiRenderer.renderWindow.window
+        val window = guiRenderer.context.window
         if (window.cursorMode == CursorModes.DISABLED) {
             return
         }
@@ -73,7 +74,7 @@ class DraggedManager(
 
     override fun drawAsync() {
         val element = element ?: return
-        val time = TimeUtil.millis
+        val time = millis()
         val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
         if (tick) {
             lastTickTime = time
@@ -131,7 +132,7 @@ class DraggedManager(
 
         val mouseAction = MouseActions[type] ?: return false
 
-        element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, guiRenderer.currentMousePosition, TimeUtil.millis), target)
+        element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, guiRenderer.currentMousePosition, millis()), target)
         return true
     }
 

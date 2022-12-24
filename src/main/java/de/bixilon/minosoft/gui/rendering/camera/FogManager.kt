@@ -22,15 +22,15 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation.interpolateSine
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class FogManager(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
 ) {
-    private val player = renderWindow.connection.player
+    private val player = context.connection.player
 
     private var fogChange = -1L
 
@@ -63,11 +63,11 @@ class FogManager(
     }
 
     private fun calculateFog(): Boolean {
-        val sky = renderWindow.connection.world.dimension?.effects
-        var fogStart = if (!renderWindow.connection.profiles.rendering.fog.enabled || sky == null || !sky.fog) {
+        val sky = context.connection.world.dimension?.effects
+        var fogStart = if (!context.connection.profiles.rendering.fog.enabled || sky == null || !sky.fog) {
             Float.MAX_VALUE
         } else {
-            (renderWindow.connection.world.view.viewDistance - 2.0f) * ProtocolDefinition.SECTION_WIDTH_X  // could be improved? basically view distance in blocks and then the center of that chunk
+            (context.connection.world.view.viewDistance - 2.0f) * ProtocolDefinition.SECTION_WIDTH_X  // could be improved? basically view distance in blocks and then the center of that chunk
         }
         var fogEnd = fogStart + 15.0f
         var color: RGBColor? = null
@@ -139,7 +139,7 @@ class FogManager(
         val color = interpolatedFogColor
         val distance = end - start
 
-        for (shader in renderWindow.renderSystem.shaders) {
+        for (shader in context.renderSystem.shaders) {
             if (shader !is FogShader || shader.fog != this) {
                 continue
             }

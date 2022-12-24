@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 
 object RenderSystemFactory {
 
-    fun create(renderWindow: RenderWindow): RenderSystem {
-        return DummyRenderSystem(renderWindow)
+    fun create(context: RenderContext): RenderSystem {
+        return DummyRenderSystem(context)
     }
 }

@@ -22,6 +22,6 @@ class ColorElement(
     guiRenderer: GUIRenderer,
     size: Vec2i,
     color: RGBColor = ChatColors.WHITE,
-) : AtlasImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.whiteTexture, size, color) {
+) : AtlasImageElement(guiRenderer, guiRenderer.context.textureManager.whiteTexture, size, color) {
     var color by this::tint
 }

@@ -20,6 +20,7 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -50,7 +51,7 @@ class GUIManager(
     private val elementCache: MutableMap<GUIBuilder<*>, GUIElement> = mutableMapOf()
     private var orderLock = SimpleLock()
     var elementOrder: MutableList<GUIElement> = mutableListOf()
-    private val renderWindow = guiRenderer.renderWindow
+    private val context = guiRenderer.context
     internal var paused = false
     private var lastTickTime: Long = -1L
 
@@ -71,7 +72,7 @@ class GUIManager(
     }
 
     override fun postInit() {
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             "minosoft:back".toResourceLocation(),
             KeyBinding(
                 KeyActions.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
@@ -111,7 +112,7 @@ class GUIManager(
         this.order = elementOrder.reversed()
         orderLock.release()
 
-        val time = TimeUtil.millis
+        val time = millis()
         val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
         if (tick) {
             lastTickTime = time
@@ -266,7 +267,7 @@ class GUIManager(
 
     private fun _push(element: GUIElement) {
         if (elementOrder.isEmpty()) {
-            renderWindow.inputHandler.inputHandler = guiRenderer
+            context.inputHandler.inputHandler = guiRenderer
         }
         orderLock.acquire()
         val copy = elementOrder.toList()
@@ -313,7 +314,7 @@ class GUIManager(
 
         orderLock.acquire()
         if (elementOrder.isEmpty()) {
-            renderWindow.inputHandler.inputHandler = null
+            context.inputHandler.inputHandler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
         }
@@ -337,7 +338,7 @@ class GUIManager(
         toPop.onClose()
         orderLock.acquire()
         if (elementOrder.isEmpty()) {
-            renderWindow.inputHandler.inputHandler = null
+            context.inputHandler.inputHandler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
             orderLock.release()
@@ -365,7 +366,7 @@ class GUIManager(
         orderLock.unlock()
         guiRenderer.popper.clear()
         guiRenderer.dragged.element = null
-        renderWindow.inputHandler.inputHandler = null
+        context.inputHandler.inputHandler = null
     }
 
     operator fun <T : GUIElement> get(builder: GUIBuilder<T>): T {

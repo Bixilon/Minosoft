@@ -39,7 +39,7 @@ class BakedItemModel(
         val percent = (durability / maxDurability.toFloat())
         val width = size.x
         val fillWidth = width * percent
-        val whiteTexture = guiRenderer.renderWindow.textureManager.whiteTexture
+        val whiteTexture = guiRenderer.context.textureManager.whiteTexture
 
         consumer.addQuad(offset + Vec2i(2, size.y - 3), offset + Vec2i(size.x, size.y - 1), whiteTexture, tint = ChatColors.BLACK, options = options)
 
@@ -54,7 +54,7 @@ class BakedItemModel(
         renderDurability(guiRenderer, offset, consumer, options, size, stack)
 
         if (stack._enchanting?.enchantments?.isNotEmpty() == true) {
-            consumer.addQuad(offset, offset + size, guiRenderer.renderWindow.textureManager.whiteTexture, tint = ChatColors.BLUE, options = options.copy(alpha = 0.5f))
+            consumer.addQuad(offset, offset + size, guiRenderer.context.textureManager.whiteTexture, tint = ChatColors.BLUE, options = options.copy(alpha = 0.5f))
         }
     }
 }

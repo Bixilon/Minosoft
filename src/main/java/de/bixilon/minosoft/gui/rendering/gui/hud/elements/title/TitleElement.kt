@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -86,7 +87,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val time = TimeUtil.millis
+        val time = millis()
         if (time > fadeOutTime) {
             return
         }
@@ -126,7 +127,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     }
 
     override fun init() {
-        val connection = renderWindow.connection
+        val connection = context.connection
 
         connection.events.listen<TitleResetEvent> {
             this.reset()

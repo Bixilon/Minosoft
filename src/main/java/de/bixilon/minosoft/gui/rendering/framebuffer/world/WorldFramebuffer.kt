@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMesh
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
@@ -24,15 +24,15 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldFramebuffer(
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : IntegratedFramebuffer {
-    private val overlay = OverlayManager(renderWindow)
-    val `fun` = FunEffectManager(renderWindow)
-    private val defaultShader = renderWindow.renderSystem.createShader("minosoft:framebuffer/world".toResourceLocation()) { FramebufferShader(it) }
+    private val overlay = OverlayManager(context)
+    val `fun` = FunEffectManager(context)
+    private val defaultShader = context.renderSystem.createShader("minosoft:framebuffer/world".toResourceLocation()) { FramebufferShader(it) }
     override val shader: FramebufferShader
         get() = `fun`.shader ?: defaultShader
-    override val framebuffer: Framebuffer = renderWindow.renderSystem.createFramebuffer()
-    override val mesh = FramebufferMesh(renderWindow)
+    override val framebuffer: Framebuffer = context.renderSystem.createFramebuffer()
+    override val mesh = FramebufferMesh(context)
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT
 
     override fun init() {

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.builtin.BuiltinModels
 import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
@@ -38,13 +38,13 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ModelLoader(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
 ) {
-    private val assetsManager = renderWindow.connection.assetsManager
+    private val assetsManager = context.connection.assetsManager
     private val unbakedBlockModels: SynchronizedMap<ResourceLocation, GenericUnbakedModel> = BuiltinModels.BUILTIN_MODELS.toSynchronizedMap()
-    val entities = EntityModels(renderWindow)
+    val entities = EntityModels(context)
 
-    private val registry: Registries = renderWindow.connection.registries
+    private val registry: Registries = context.connection.registries
 
 
     private fun cleanup() {
@@ -58,7 +58,7 @@ class ModelLoader(
 
 
         for (state in block.states) {
-            state.blockModel = model.getModelForState(state).bake(renderWindow).unsafeCast()
+            state.blockModel = model.getModelForState(state).bake(context).unsafeCast()
         }
     }
 
@@ -79,14 +79,14 @@ class ModelLoader(
             return
         }
         val model = fluid.createModel() ?: return
-        model.load(renderWindow)
+        model.load(context)
         fluid.model = model
     }
 
     fun loadItem(item: Item) {
         val model = loadItemModel(item.resourceLocation.prefix("item/"))
 
-        item.model = model.bake(renderWindow).unsafeCast()
+        item.model = model.bake(context).unsafeCast()
     }
 
     fun loadItemModel(name: ResourceLocation): GenericUnbakedModel {
@@ -145,7 +145,7 @@ class ModelLoader(
         val innerLatch = CountUpAndDownLatch(DefaultEntityModels.MODELS.size, latch)
 
         for (register in DefaultEntityModels.MODELS) {
-            DefaultThreadPool += { register.register(renderWindow, this); innerLatch.dec() }
+            DefaultThreadPool += { register.register(context, this); innerLatch.dec() }
         }
         innerLatch.await()
     }

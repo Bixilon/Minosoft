@@ -19,20 +19,20 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class CameraInput(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
     val matrixHandler: MatrixHandler,
 ) {
-    private val connection = renderWindow.connection
+    private val connection = context.connection
     private val controlsProfile = connection.profiles.controls
 
     private fun registerKeyBindings() {
-        renderWindow.inputHandler.registerCheckCallback(
+        context.inputHandler.registerCheckCallback(
             MOVE_SPRINT_KEYBINDING to KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_CONTROL),
             ),
@@ -66,7 +66,7 @@ class CameraInput(
         )
 
 
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             ZOOM_KEYBINDING, KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_C),
             )
@@ -79,22 +79,22 @@ class CameraInput(
 
     fun updateInput(delta: Double) {
         val input = MovementInput(
-            pressingForward = renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
-            pressingBack = renderWindow.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
-            pressingLeft = renderWindow.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
-            pressingRight = renderWindow.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
-            jumping = renderWindow.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
-            sneaking = renderWindow.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
-            sprinting = renderWindow.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
-            flyDown = renderWindow.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
-            flyUp = renderWindow.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
-            toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
+            pressingForward = context.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
+            pressingBack = context.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
+            pressingLeft = context.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
+            pressingRight = context.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
+            jumping = context.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
+            sneaking = context.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
+            sprinting = context.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
+            flyDown = context.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
+            flyUp = context.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
+            toggleFlyDown = context.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
         )
-        renderWindow.camera.view.view.onInput(input, delta)
+        context.camera.view.view.onInput(input, delta)
     }
 
     fun updateMouse(movement: Vec2d) {
-        renderWindow.camera.view.view.onMouse(movement)
+        context.camera.view.view.onMouse(movement)
     }
 
     fun calculateRotation(delta: Vec2d, rotation: EntityRotation): EntityRotation {

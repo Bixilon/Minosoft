@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.WallSignBlock
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
@@ -41,7 +41,7 @@ import java.util.*
 
 class SignBlockEntityRenderer(
     val sign: SignBlockEntity,
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
     override val blockState: BlockState,
 ) : OnlyMeshedBlockEntityRenderer<SignBlockEntity> {
 
@@ -67,7 +67,7 @@ class SignBlockEntityRenderer(
         textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
 
         for (line in sign.lines) {
-            ChatComponentRenderer.render3dFlat(renderWindow, textPosition, TEXT_SCALE, Vec3(0.0f, -yRotation, 0.0f), Vec2i(SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE), mesh, line, light)
+            ChatComponentRenderer.render3dFlat(context, textPosition, TEXT_SCALE, Vec3(0.0f, -yRotation, 0.0f), Vec2i(SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE), mesh, line, light)
             textPosition.y -= 0.11f
         }
     }

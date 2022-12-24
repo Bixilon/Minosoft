@@ -31,8 +31,8 @@ abstract class PlanetRenderer(
     protected val sky: SkyRenderer,
 ) : SkyChildRenderer {
     protected abstract val texture: AbstractTexture
-    protected val shader = sky.renderWindow.renderSystem.createShader(minosoft("sky/planet")) { PlanetShader(it) }
-    private var mesh = PlanetMesh(sky.renderWindow)
+    protected val shader = sky.context.renderSystem.createShader(minosoft("sky/planet")) { PlanetShader(it) }
+    private var mesh = PlanetMesh(sky.context)
     protected var day = -1L
     protected var matrix = Mat4()
     private var matrixUpdate = true
@@ -115,7 +115,7 @@ abstract class PlanetRenderer(
         }
         if (meshInvalid) {
             this.mesh.unload()
-            this.mesh = PlanetMesh(sky.renderWindow)
+            this.mesh = PlanetMesh(sky.context)
             prepareMesh()
         }
 

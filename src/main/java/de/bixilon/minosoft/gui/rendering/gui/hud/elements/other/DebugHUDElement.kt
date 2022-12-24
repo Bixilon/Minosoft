@@ -60,7 +60,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.SystemInformation
 
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
-    private val connection = renderWindow.connection
+    private val connection = context.connection
     private val layout = GridLayout(guiRenderer, Vec2i(3, 1)).apply { parent = this@DebugHUDElement }
     override val layoutOffset: Vec2i = Vec2i.EMPTY
 
@@ -90,16 +90,16 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         val layout = RowLayout(guiRenderer)
         layout.margin = Vec4i(2)
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
-        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${renderWindow.renderStats.smoothAvgFPS.rounded10}" }
-        renderWindow.renderer[WorldRenderer]?.apply {
+        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}" }
+        context.renderer[WorldRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, l=${loaded.size.format()}, cQ=${culledQueue.size.format()}, q=${meshingQueue.size.format()}, pT=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lQ=${loadingQueue.size.format()}/${meshingQueue.maxMeshesToLoad.format()}, w=${connection.world.chunks.size.format()}" }
         }
 
-        layout += renderWindow.renderer[EntityRenderer]?.let {
+        layout += context.renderer[EntityRenderer]?.let {
             AutoTextElement(guiRenderer, 1) { BaseComponent("E v=", it.visibleCount, ", m=", it.modelCount, ", w=", connection.world.entities.size) }
         } ?: AutoTextElement(guiRenderer, 1) { "E w=${connection.world.entities.size.format()}" }
 
-        renderWindow.renderer[ParticleRenderer]?.apply {
+        context.renderer[ParticleRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "P t=${size.format()}" }
         }
 
@@ -111,7 +111,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 if (connection.profiles.audio.skipLoading || !audioProfile.enabled) {
                     this += "§cdisabled"
                 } else {
-                    val audioPlayer = renderWindow.rendering.audioPlayer
+                    val audioPlayer = context.rendering.audioPlayer
 
                     val sources = audioPlayer.sourcesCount
 
@@ -140,13 +140,13 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 
-                Directions.byDirection(guiRenderer.renderWindow.camera.matrixHandler.entity.rotation.front).apply {
+                Directions.byDirection(guiRenderer.context.camera.matrixHandler.entity.rotation.front).apply {
                     text += this
                     text += " "
                     text += vector
                 }
 
-                guiRenderer.renderWindow.connection.player.rotation.apply {
+                guiRenderer.context.connection.player.rotation.apply {
                     text += " yaw=§d${yaw.rounded10}§r, pitch=§d${pitch.rounded10}"
                 }
 
@@ -186,7 +186,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             }
         }
 
-        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation.format() }
+        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + context.framebufferManager.world.`fun`.effect?.resourceLocation.format() }
 
         return layout
     }
@@ -221,12 +221,12 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += LineSpacerElement(guiRenderer)
 
         layout += TextElement(guiRenderer, "Display <?>", HorizontalAlignments.RIGHT).apply {
-            guiRenderer.renderWindow.connection.events.listen<ResizeWindowEvent> {
+            guiRenderer.context.connection.events.listen<ResizeWindowEvent> {
                 text = "Display ${it.size.x.format()}x${it.size.y.format()}"
             }
         }
 
-        renderWindow.renderSystem.apply {
+        context.renderSystem.apply {
             layout += TextElement(guiRenderer, "GPU $gpuType", HorizontalAlignments.RIGHT)
             layout += TextElement(guiRenderer, "Version $version", HorizontalAlignments.RIGHT)
         }
@@ -245,7 +245,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        renderWindow.camera.targetHandler.apply {
+        context.camera.targetHandler.apply {
             layout += AutoTextElement(guiRenderer, 1, HorizontalAlignments.RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"
@@ -257,8 +257,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     private class DebugWorldInfo(guiRenderer: GUIRenderer) : RowLayout(guiRenderer) {
         private val chunk = Reference<Chunk?>(null)
         private var lastChunk = Reference<Chunk?>(null)
-        private val world = guiRenderer.renderWindow.connection.world
-        private val entity = guiRenderer.renderWindow.connection.player
+        private val world = guiRenderer.context.connection.world
+        private val entity = guiRenderer.context.connection.player
 
         // TODO: Cleanup this class
 

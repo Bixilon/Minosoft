@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -47,10 +47,10 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet
  *  - https://tomcc.github.io/2014/08/31/visibility-1.html
  */
 class WorldVisibilityGraph(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
     camera: Camera,
 ) : OcclusionUpdateCallback {
-    private val connection = renderWindow.connection
+    private val connection = context.connection
     private val frustum = camera.matrixHandler.frustum
     private var cameraChunkPosition = Vec2i.EMPTY
     private var cameraSectionHeight = 0
@@ -316,7 +316,7 @@ class WorldVisibilityGraph(
     @Synchronized
     private fun calculateGraph() {
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
-            connection.events.fire(VisibilityGraphChangeEvent(renderWindow))
+            connection.events.fire(VisibilityGraphChangeEvent(context))
             return
         }
         connection.world.chunks.lock.acquire()
@@ -358,7 +358,7 @@ class WorldVisibilityGraph(
 
         connection.world.chunks.lock.release()
 
-        connection.events.fire(VisibilityGraphChangeEvent(renderWindow))
+        connection.events.fire(VisibilityGraphChangeEvent(context))
     }
 
     override fun onOcclusionChange() {

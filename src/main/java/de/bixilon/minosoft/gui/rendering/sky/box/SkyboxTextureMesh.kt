@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SkyboxTextureMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SkyboxTextureMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * SkyboxTextureMeshStruct.FLOATS_PER_VERTEX) {
+class SkyboxTextureMesh(context: RenderContext) : Mesh(context, SkyboxTextureMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * SkyboxTextureMeshStruct.FLOATS_PER_VERTEX) {
 
     init {
         data.add(

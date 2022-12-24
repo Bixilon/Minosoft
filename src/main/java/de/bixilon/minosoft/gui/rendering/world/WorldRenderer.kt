@@ -22,7 +22,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
@@ -54,11 +54,11 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldRenderer(
     val connection: PlayConnection,
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : Renderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
     private val profile = connection.profiles.block
-    override val renderSystem: RenderSystem = renderWindow.renderSystem
-    val visibilityGraph = renderWindow.camera.visibilityGraph
+    override val renderSystem: RenderSystem = context.renderSystem
+    val visibilityGraph = context.camera.visibilityGraph
     private val shader = renderSystem.createShader(minosoft("world")) { WorldShader(it, false) }
     private val transparentShader = renderSystem.createShader(minosoft("world")) { WorldShader(it, true) }
     private val textShader = renderSystem.createShader(minosoft("world/text")) { WorldTextShader(it) }
@@ -90,7 +90,7 @@ class WorldRenderer(
 
 
     override fun init(latch: CountUpAndDownLatch) {
-        renderWindow.modelLoader.load(latch)
+        context.modelLoader.load(latch)
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
@@ -104,7 +104,7 @@ class WorldRenderer(
         WorldRendererChangeListener.register(this)
 
         var paused = false
-        renderWindow::state.observe(this) {
+        context::state.observe(this) {
             if (it == RenderingStates.PAUSED) {
                 unloadWorld()
                 paused = true
@@ -114,7 +114,7 @@ class WorldRenderer(
             }
         }
 
-        renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
+        context.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
             KeyActions.PRESS to setOf(KeyCodes.KEY_A),
         )) { clearChunkCache() }
@@ -224,9 +224,9 @@ class WorldRenderer(
             mesh.draw()
         }
 
-        renderWindow.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
+        context.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
         for (blockEntity in visible.blockEntities) {
-            blockEntity.draw(renderWindow)
+            blockEntity.draw(context)
         }
     }
 
@@ -251,9 +251,9 @@ class WorldRenderer(
             mesh.draw()
         }
 
-        renderWindow.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
-        renderWindow.renderSystem[RenderingCapabilities.POLYGON_OFFSET] = true
-        renderWindow.renderSystem.polygonOffset(-2.5f, -2.5f)
+        context.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
+        context.renderSystem[RenderingCapabilities.POLYGON_OFFSET] = true
+        context.renderSystem.polygonOffset(-2.5f, -2.5f)
         textShader.use()
         for (mesh in visible.text) {
             mesh.draw()
@@ -306,8 +306,8 @@ class WorldRenderer(
     companion object : RendererBuilder<WorldRenderer> {
         override val RESOURCE_LOCATION = minosoft("world")
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldRenderer {
-            return WorldRenderer(connection, renderWindow)
+        override fun build(connection: PlayConnection, context: RenderContext): WorldRenderer {
+            return WorldRenderer(connection, context)
         }
     }
 }

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.events
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 
 abstract class RenderEvent(
-    val renderWindow: RenderWindow,
-) : PlayConnectionEvent(renderWindow.connection)
+    val context: RenderContext,
+) : PlayConnectionEvent(context.connection)

@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.events.input
 
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 class RawKeyInputEvent(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     val keyCode: KeyCodes,
     val keyChangeType: KeyChangeTypes,
-) : RenderEvent(renderWindow)
+) : RenderEvent(context)

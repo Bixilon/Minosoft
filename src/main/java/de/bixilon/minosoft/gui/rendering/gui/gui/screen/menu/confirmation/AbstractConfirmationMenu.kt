@@ -40,7 +40,7 @@ abstract class AbstractConfirmationMenu(
 
     protected fun createCopyToClipboardButton(text: String): ButtonElement {
         return ButtonElement(guiRenderer, "Copy to clipboard") {
-            renderWindow.window.clipboardText = text
+            context.window.clipboardText = text
             close()
         }
     }

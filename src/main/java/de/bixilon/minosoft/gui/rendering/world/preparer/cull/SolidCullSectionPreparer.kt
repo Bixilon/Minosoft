@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
@@ -44,16 +44,16 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 class SolidCullSectionPreparer(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
 ) : SolidSectionPreparer {
-    private val profile = renderWindow.connection.profiles.block.rendering
-    private val bedrock = renderWindow.connection.registries.blockRegistry[MinecraftBlocks.BEDROCK]?.defaultState
-    private val someFullBlock = renderWindow.connection.registries.blockRegistry[MinecraftBlocks.COMMAND_BLOCK]?.defaultState
-    private val tintColorCalculator = renderWindow.tintManager
+    private val profile = context.connection.profiles.block.rendering
+    private val bedrock = context.connection.registries.blockRegistry[MinecraftBlocks.BEDROCK]?.defaultState
+    private val someFullBlock = context.connection.registries.blockRegistry[MinecraftBlocks.COMMAND_BLOCK]?.defaultState
+    private val tintColorCalculator = context.tintManager
     private var fastBedrock = false
 
     init {
-        val profile = renderWindow.connection.profiles.rendering
+        val profile = context.connection.profiles.rendering
         profile.performance::fastBedrock.observe(this, true) { this.fastBedrock = it }
     }
 
@@ -101,7 +101,7 @@ class SolidCullSectionPreparer(
                     }
 
                     blockEntity = section.blockEntities.unsafeGet(index)
-                    val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position, light[SELF_LIGHT_INDEX].toInt())
+                    val blockEntityModel = blockEntity?.getRenderer(context, blockState, position, light[SELF_LIGHT_INDEX].toInt())
                     if (blockEntityModel != null && (blockEntityModel !is OnlyMeshedBlockEntityRenderer)) {
                         blockEntities += blockEntityModel
                         mesh.addBlock(x, y, z)

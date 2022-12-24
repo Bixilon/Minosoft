@@ -21,15 +21,15 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import java.util.*
 
-class WallOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
-    private val player = renderWindow.connection.player
+class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
+    private val player = context.connection.player
     override var texture: AbstractTexture = unsafeNull()
     private var blockState: BlockState? = null
     private var position: Vec3i = Vec3i.EMPTY
@@ -48,13 +48,13 @@ class WallOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
             return true
         }
     override var uvEnd: Vec2
-        get() = Vec2(0.3f, renderWindow.window.sizef.x / renderWindow.window.sizef.y / 3.0f) // To make pixels squares and make it look more like minecraft
+        get() = Vec2(0.3f, context.window.sizef.x / context.window.sizef.y / 3.0f) // To make pixels squares and make it look more like minecraft
         set(value) {}
     private val random = Random()
 
     override fun update() {
         position = player.eyePosition.blockPosition
-        blockState = renderWindow.connection.world[position]
+        blockState = context.connection.world[position]
     }
 
     override fun draw() {
@@ -69,8 +69,8 @@ class WallOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
 
     companion object : OverlayFactory<WallOverlay> {
 
-        override fun build(renderWindow: RenderWindow): WallOverlay {
-            return WallOverlay(renderWindow)
+        override fun build(context: RenderContext): WallOverlay {
+            return WallOverlay(context)
         }
     }
 }

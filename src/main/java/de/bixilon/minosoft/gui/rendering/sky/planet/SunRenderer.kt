@@ -26,10 +26,10 @@ import kotlin.math.pow
 class SunRenderer(
     sky: SkyRenderer,
 ) : PlanetRenderer(sky) {
-    override val texture = sky.renderWindow.textureManager.staticTextures.createTexture(SUN)
+    override val texture = sky.context.textureManager.staticTextures.createTexture(SUN)
 
     public override fun calculateAngle(): Float {
-        val time = sky.renderWindow.connection.world.time
+        val time = sky.context.connection.world.time
 
         // 270: sunrise (23k-0k)
         // 0: day (0-12k)
@@ -41,7 +41,7 @@ class SunRenderer(
     }
 
     override fun calculateIntensity(): Float {
-        val time = sky.renderWindow.connection.world.time
+        val time = sky.context.connection.world.time
         return when (time.phase) {
             DayPhases.NIGHT -> 0.0f
             DayPhases.DAY -> 1.0f

@@ -17,14 +17,14 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class SpaceFontProvider(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     data: Map<String, Any>,
 ) : FontProvider {
     private val chars: Int2ObjectOpenHashMap<CharData> = Int2ObjectOpenHashMap()
@@ -33,7 +33,7 @@ class SpaceFontProvider(
         data["advances"]?.toJsonObject()?.let {
             for ((charData, spacing) in it) {
                 val char = charData.codePoints().iterator().nextInt()
-                chars[char] = CharData(renderWindow, null, spacing.toInt(), spacing.toInt(), Vec2.EMPTY, Vec2.EMPTY)
+                chars[char] = CharData(context, null, spacing.toInt(), spacing.toInt(), Vec2.EMPTY, Vec2.EMPTY)
             }
         }
     }
@@ -47,8 +47,8 @@ class SpaceFontProvider(
     companion object : FontProviderFactory<SpaceFontProvider> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:space".toResourceLocation()
 
-        override fun build(renderWindow: RenderWindow, data: Map<String, Any>): SpaceFontProvider {
-            return SpaceFontProvider(renderWindow, data)
+        override fun build(context: RenderContext, data: Map<String, Any>): SpaceFontProvider {
+            return SpaceFontProvider(context, data)
         }
     }
 }

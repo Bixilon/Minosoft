@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.events.input
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 
 class RawCharInputEvent(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     val char: Int,
-) : RenderEvent(renderWindow)
+) : RenderEvent(context)

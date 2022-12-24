@@ -20,13 +20,13 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2i
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-class AtlasManager(private val renderWindow: RenderWindow) {
+class AtlasManager(private val context: RenderContext) {
     private lateinit var elements: Map<ResourceLocation, AtlasElement>
     var initialized = false
         private set
@@ -34,8 +34,8 @@ class AtlasManager(private val renderWindow: RenderWindow) {
     @Synchronized
     fun init() {
         check(!initialized)
-        val data = renderWindow.connection.assetsManager[ATLAS_DATA].readJsonObject()
-        val versionId = renderWindow.connection.version.versionId
+        val data = context.connection.assetsManager[ATLAS_DATA].readJsonObject()
+        val versionId = context.connection.version.versionId
 
         val elements: MutableMap<ResourceLocation, AtlasElement> = mutableMapOf()
 
@@ -58,7 +58,7 @@ class AtlasManager(private val renderWindow: RenderWindow) {
             }
             val versionData = versions[versionToUse.toString()].asJsonObject()
 
-            val texture = renderWindow.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation().texture(), mipmaps = false)
+            val texture = context.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation().texture(), mipmaps = false)
             val start = versionData["start"].toVec2i()
             val end = versionData["end"].toVec2i()
             val slots: Int2ObjectOpenHashMap<AtlasSlot> = Int2ObjectOpenHashMap()

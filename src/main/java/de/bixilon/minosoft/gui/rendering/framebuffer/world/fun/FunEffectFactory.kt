@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`
 
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 
 interface FunEffectFactory<T : FunEffect> : CompanionResourceLocation {
 
-    fun build(renderWindow: RenderWindow): T
+    fun build(context: RenderContext): T
 }

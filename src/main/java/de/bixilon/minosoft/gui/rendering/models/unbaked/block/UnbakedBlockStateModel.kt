@@ -22,7 +22,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
@@ -60,10 +60,10 @@ class UnbakedBlockStateModel(
     }
 
     @Synchronized
-    override fun bake(renderWindow: RenderWindow): BakedBlockModel {
+    override fun bake(context: RenderContext): BakedBlockModel {
         baked?.let { return it }
 
-        val textures = TextureUtil.resolveTextures(renderWindow.textureManager.staticTextures, model.textures)
+        val textures = TextureUtil.resolveTextures(context.textureManager.staticTextures, model.textures)
 
         val particleTexture = textures["particle"]
 

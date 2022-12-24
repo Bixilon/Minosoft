@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEnt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -33,22 +33,22 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class SingleChestRenderer(
     val entity: StorageBlockEntity,
-    renderWindow: RenderWindow,
+    context: RenderContext,
     blockState: BlockState,
     blockPosition: Vec3i,
     model: BakedSkeletalModel,
     light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    SkeletalInstance(renderWindow, model, blockPosition.toVec3, (blockState.properties[BlockProperties.FACING]?.nullCast() ?: Directions.NORTH).rotatedMatrix),
+    SkeletalInstance(context, model, blockPosition.toVec3, (blockState.properties[BlockProperties.FACING]?.nullCast() ?: Directions.NORTH).rotatedMatrix),
     light,
 ) {
 
     companion object {
         val SINGLE_MODEL = "minecraft:block/entities/single_chest".toResourceLocation().bbModel()
 
-        fun register(renderWindow: RenderWindow, modelLoader: ModelLoader, textureName: ResourceLocation, model: ResourceLocation) {
-            val texture = renderWindow.textureManager.staticTextures.createTexture(textureName)
+        fun register(context: RenderContext, modelLoader: ModelLoader, textureName: ResourceLocation, model: ResourceLocation) {
+            val texture = context.textureManager.staticTextures.createTexture(textureName)
             modelLoader.entities.loadModel(model, SINGLE_MODEL, mutableMapOf(0 to texture))
         }
     }
@@ -58,8 +58,8 @@ class SingleChestRenderer(
         val TEXTURE = "minecraft:entity/chest/normal".toResourceLocation().texture()
         val TEXTURE_CHRISTMAS = "minecraft:entity/chest/christmas".toResourceLocation().texture()
 
-        override fun register(renderWindow: RenderWindow, modelLoader: ModelLoader) {
-            register(renderWindow, modelLoader, if (DateUtil.christmas) TEXTURE_CHRISTMAS else TEXTURE, MODEL)
+        override fun register(context: RenderContext, modelLoader: ModelLoader) {
+            register(context, modelLoader, if (DateUtil.christmas) TEXTURE_CHRISTMAS else TEXTURE, MODEL)
         }
     }
 
@@ -67,8 +67,8 @@ class SingleChestRenderer(
         val MODEL = "minecraft:models/block/entities/trapped_chest".toResourceLocation()
         val TEXTURE = "minecraft:entity/chest/trapped".toResourceLocation().texture()
 
-        override fun register(renderWindow: RenderWindow, modelLoader: ModelLoader) {
-            register(renderWindow, modelLoader, TEXTURE, MODEL)
+        override fun register(context: RenderContext, modelLoader: ModelLoader) {
+            register(context, modelLoader, TEXTURE, MODEL)
         }
     }
 
@@ -76,8 +76,8 @@ class SingleChestRenderer(
         val MODEL = "minecraft:models/block/entities/ender_chest".toResourceLocation()
         val TEXTURE = "minecraft:entity/chest/ender".toResourceLocation().texture()
 
-        override fun register(renderWindow: RenderWindow, modelLoader: ModelLoader) {
-            register(renderWindow, modelLoader, TEXTURE, MODEL)
+        override fun register(context: RenderContext, modelLoader: ModelLoader) {
+            register(context, modelLoader, TEXTURE, MODEL)
         }
     }
 }

@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -26,12 +26,12 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class FireOverlay(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
 ) : Overlay {
-    private val config = renderWindow.connection.profiles.rendering.overlay.fire
-    private val player = renderWindow.connection.player
-    private val shader = renderWindow.shaderManager.genericTexture2dShader
-    private var texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
+    private val config = context.connection.profiles.rendering.overlay.fire
+    private val player = context.connection.player
+    private val shader = context.shaderManager.genericTexture2dShader
+    private var texture: AbstractTexture = context.textureManager.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
     override val render: Boolean
         get() {
             if (!config.enabled) {
@@ -50,7 +50,7 @@ class FireOverlay(
 
 
     override fun postInit() {
-        mesh = SimpleTextureMesh(renderWindow)
+        mesh = SimpleTextureMesh(context)
 
         // ToDo: Minecraft does this completely different...
         mesh.addQuad(arrayOf(
@@ -75,7 +75,7 @@ class FireOverlay(
     override fun draw() {
         mesh.unload()
         postInit()
-        renderWindow.renderSystem.reset(blending = true, depthTest = false)
+        context.renderSystem.reset(blending = true, depthTest = false)
         shader.use()
         mesh.draw()
     }
@@ -83,8 +83,8 @@ class FireOverlay(
 
     companion object : OverlayFactory<FireOverlay> {
 
-        override fun build(renderWindow: RenderWindow): FireOverlay {
-            return FireOverlay(renderWindow)
+        override fun build(context: RenderContext): FireOverlay {
+            return FireOverlay(context)
         }
     }
 }

@@ -19,7 +19,7 @@ class CloudArray(
     val layer: CloudLayer,
     val offset: Vec2i,
 ) {
-    private val mesh: CloudMesh = CloudMesh(layer.clouds.renderWindow)
+    private val mesh: CloudMesh = CloudMesh(layer.clouds.context)
 
     init {
         build()

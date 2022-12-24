@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.events
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 
 class CameraMatrixChangeEvent(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     viewMatrix: Mat4,
     projectionMatrix: Mat4,
     viewProjectionMatrix: Mat4,
-) : RenderEvent(renderWindow) {
+) : RenderEvent(context) {
     val viewMatrix: Mat4 = viewMatrix
         get() = Mat4(field)
 

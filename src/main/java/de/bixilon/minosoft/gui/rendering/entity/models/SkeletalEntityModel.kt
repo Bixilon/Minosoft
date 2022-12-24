@@ -26,7 +26,7 @@ abstract class SkeletalEntityModel<E : Entity>(renderer: EntityRenderer, entity:
     override fun prepare() {
         super.prepare()
         if (instance?.model?.state != SkeletalModelStates.LOADED) {
-            instance?.model?.preload(renderWindow) // ToDo: load async
+            instance?.model?.preload(context) // ToDo: load async
             instance?.model?.load()
         }
     }

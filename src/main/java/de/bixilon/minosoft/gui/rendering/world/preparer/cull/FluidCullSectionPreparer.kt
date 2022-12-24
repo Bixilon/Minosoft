@@ -31,7 +31,7 @@ import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.FlowableFluidModel
@@ -52,10 +52,10 @@ import java.util.*
 import kotlin.math.atan2
 
 class FluidCullSectionPreparer(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
 ) : FluidSectionPreparer {
-    private val water = renderWindow.connection.registries.fluidRegistry[DefaultFluids.WATER]
-    private val tintManager = renderWindow.tintManager
+    private val water = context.connection.registries.fluidRegistry[DefaultFluids.WATER]
+    private val tintManager = context.tintManager
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
@@ -131,7 +131,7 @@ class FluidCullSectionPreparer(
                     )
 
                     if (!skip[Directions.O_UP]) {
-                        val velocity = if (fluid is FlowableFluid) fluid.getVelocity(renderWindow.connection, blockState, position, section, neighbours) else null
+                        val velocity = if (fluid is FlowableFluid) fluid.getVelocity(context.connection, blockState, position, section, neighbours) else null
                         val still = velocity == null || velocity.x == 0.0 && velocity.z == 0.0
                         val texture: AbstractTexture
                         val minUV = Vec2.EMPTY

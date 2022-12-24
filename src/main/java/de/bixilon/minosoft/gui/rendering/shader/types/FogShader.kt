@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 interface FogShader : AbstractShader, CameraPositionShader {
     var fog: FogManager
 
-    fun fog(default: FogManager = native.renderWindow.camera.fogManager): ShaderUniform<FogManager> {
+    fun fog(default: FogManager = native.context.camera.fogManager): ShaderUniform<FogManager> {
         return uniform("fog", default) { native, _, value -> value.use(native) }
     }
 }

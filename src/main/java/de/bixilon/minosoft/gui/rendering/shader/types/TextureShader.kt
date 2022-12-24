@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 interface TextureShader : AbstractShader {
     var textures: TextureManager
 
-    fun textureManager(name: String = "uTextures", textureManager: TextureManager = native.renderWindow.textureManager, animated: Boolean = this is AnimatedShader): ShaderUniform<TextureManager> {
+    fun textureManager(name: String = "uTextures", textureManager: TextureManager = native.context.textureManager, animated: Boolean = this is AnimatedShader): ShaderUniform<TextureManager> {
         return uniform(name, textureManager) { native, name, value: TextureManager ->
             value.use(native, name)
             if (animated) {

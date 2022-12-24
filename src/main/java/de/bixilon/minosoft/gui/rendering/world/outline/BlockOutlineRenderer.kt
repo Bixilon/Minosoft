@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
@@ -37,10 +37,10 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class BlockOutlineRenderer(
     val connection: PlayConnection,
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : AsyncRenderer, OtherDrawable, MeshSwapper {
     private val profile = connection.profiles.block.outline
-    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    override val renderSystem: RenderSystem = context.renderSystem
     private var currentOutlinePosition: Vec3i? = null
     private var currentOutlineBlockState: BlockState? = null
 
@@ -72,11 +72,11 @@ class BlockOutlineRenderer(
     }
 
     override fun setupOther() {
-        renderWindow.renderSystem.reset()
+        context.renderSystem.reset()
         if (profile.showThroughWalls) {
-            renderWindow.renderSystem.depth = DepthFunctions.ALWAYS
+            context.renderSystem.depth = DepthFunctions.ALWAYS
         }
-        renderWindow.shaderManager.genericColorShader.use()
+        context.shaderManager.genericColorShader.use()
     }
 
     override fun postPrepareDraw() {
@@ -89,7 +89,7 @@ class BlockOutlineRenderer(
 
 
     override fun prepareDrawAsync() {
-        val target = renderWindow.camera.targetHandler.target.nullCast<BlockTarget>()
+        val target = context.camera.targetHandler.target.nullCast<BlockTarget>()
 
         if (target == null || connection.world.border.isOutside(target.blockPosition)) {
             unload = true
@@ -116,7 +116,7 @@ class BlockOutlineRenderer(
             return
         }
 
-        val mesh = LineMesh(renderWindow)
+        val mesh = LineMesh(context)
 
         val blockOffset = target.blockPosition.toVec3d + target.blockPosition.getWorldOffset(target.blockState.block)
 
@@ -138,8 +138,8 @@ class BlockOutlineRenderer(
     companion object : RendererBuilder<BlockOutlineRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:block_outline")
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): BlockOutlineRenderer {
-            return BlockOutlineRenderer(connection, renderWindow)
+        override fun build(connection: PlayConnection, context: RenderContext): BlockOutlineRenderer {
+            return BlockOutlineRenderer(connection, context)
         }
     }
 }

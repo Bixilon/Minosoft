@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.events.input
 
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 
 class MouseMoveEvent(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     position: Vec2d,
     previous: Vec2d,
     delta: Vec2d,
-) : RenderEvent(renderWindow) {
+) : RenderEvent(context) {
     val position: Vec2d = position
         get() = Vec2d(field)
 

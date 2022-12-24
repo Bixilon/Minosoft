@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -45,9 +45,9 @@ import kotlin.math.sin
 class CloudRenderer(
     private val sky: SkyRenderer,
     val connection: PlayConnection,
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : Renderer, OpaqueDrawable, AsyncRenderer {
-    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    override val renderSystem: RenderSystem = context.renderSystem
     val shader = renderSystem.createShader(minosoft("sky/clouds")) { CloudShader(it) }
     val matrix = CloudMatrix()
     private val layers: MutableList<CloudLayer> = mutableListOf()
@@ -216,7 +216,7 @@ class CloudRenderer(
 
 
     private fun setYOffset() {
-        val y = renderWindow.camera.matrixHandler.entity.eyePosition.y
+        val y = context.camera.matrixHandler.entity.eyePosition.y
         var yOffset = 0.0f
         if (baseHeight - y > maxDistance) {
             yOffset = y - baseHeight + maxDistance
@@ -248,9 +248,9 @@ class CloudRenderer(
         private val NIGHT_COLOR = Vec3(0.08f, 0.13f, 0.18f)
 
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): CloudRenderer? {
-            val sky = renderWindow.renderer[SkyRenderer] ?: return null
-            return CloudRenderer(sky, connection, renderWindow)
+        override fun build(connection: PlayConnection, context: RenderContext): CloudRenderer? {
+            val sky = context.renderer[SkyRenderer] ?: return null
+            return CloudRenderer(sky, connection, context)
         }
     }
 }

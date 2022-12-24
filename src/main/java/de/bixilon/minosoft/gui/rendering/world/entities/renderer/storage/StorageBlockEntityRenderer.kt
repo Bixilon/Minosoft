@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage
 
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 
@@ -25,7 +25,7 @@ abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
     override var light: Int,
 ) : BlockEntityRenderer<E> {
 
-    override fun draw(renderWindow: RenderWindow) {
+    override fun draw(context: RenderContext) {
         skeletal?.light = light
         skeletal?.draw()
     }

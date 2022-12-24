@@ -67,8 +67,8 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     init {
         messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
-        chatProfile::width.observeRendering(this, context = renderWindow) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
-        chatProfile::height.observeRendering(this, context = renderWindow) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
+        chatProfile::width.observeRendering(this, context = context) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
+        chatProfile::height.observeRendering(this, context = context) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
         forceSilentApply()
         input.onChangeCallback = {
             while (input._value.startsWith(' ')) {
@@ -94,7 +94,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             DefaultThreadPool += { messages += it.message.text }
         }
 
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             "minosoft:open_chat".toResourceLocation(), KeyBinding(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_T),
             )

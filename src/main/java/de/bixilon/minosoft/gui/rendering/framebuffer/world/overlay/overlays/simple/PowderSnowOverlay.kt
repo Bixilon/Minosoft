@@ -14,21 +14,21 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class PowderSnowOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
-    private val config = renderWindow.connection.profiles.rendering.overlay
-    override val texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
+class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
+    private val config = context.connection.profiles.rendering.overlay
+    override val texture: AbstractTexture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     private var ticksFrozen: Int = 0
     override val render: Boolean
         get() = config.powderSnow && ticksFrozen > 0
 
     override fun update() {
-        ticksFrozen = renderWindow.connection.player.ticksFrozen
+        ticksFrozen = context.connection.player.ticksFrozen
         tintColor = RGBColor(1.0f, 1.0f, 1.0f, minOf(ticksFrozen, FREEZE_DAMAGE_TICKS) / FREEZE_DAMAGE_TICKS.toFloat()) // ToDo: Fade out
     }
 
@@ -37,12 +37,12 @@ class PowderSnowOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow
         private const val FREEZE_DAMAGE_TICKS = 140
         private val OVERLAY_TEXTURE = "misc/powder_snow_outline".toResourceLocation().texture()
 
-        override fun build(renderWindow: RenderWindow): PowderSnowOverlay? {
-            if (!renderWindow.connection.assetsManager.contains(OVERLAY_TEXTURE)) {
+        override fun build(context: RenderContext): PowderSnowOverlay? {
+            if (!context.connection.assetsManager.contains(OVERLAY_TEXTURE)) {
                 // overlay not yet available (< 1.17)
                 return null
             }
-            return PowderSnowOverlay(renderWindow)
+            return PowderSnowOverlay(context)
         }
     }
 }

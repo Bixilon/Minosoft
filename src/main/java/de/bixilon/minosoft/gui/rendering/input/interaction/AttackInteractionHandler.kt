@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.registries.enchantment.tool.WeaponEnchantment
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.emitter.EntityEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.CritParticle
@@ -34,16 +34,16 @@ import de.bixilon.minosoft.util.KUtil.setTicks
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class AttackInteractionHandler(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
     val interactionManager: InteractionManager,
 ) {
-    private val player = renderWindow.connection.player
+    private val player = context.connection.player
     private val rateLimiter = RateLimiter()
     val cooldown = Cooldown()
 
     fun init() {
-        renderWindow.inputHandler.registerKeyCallback(ATTACK_ENTITY_KEYBINDING, KeyBinding(
-                KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
+        context.inputHandler.registerKeyCallback(ATTACK_ENTITY_KEYBINDING, KeyBinding(
+            KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
         ), false) { tryAttack() }
     }
 
@@ -66,7 +66,7 @@ class AttackInteractionHandler(
         if (player.activelyRiding) {
             return
         }
-        val target = renderWindow.camera.targetHandler.target
+        val target = context.camera.targetHandler.target
         if (target !is EntityTarget || target.distance >= player.reachDistance) {
             return // ToDo: set cooldown
         }
@@ -78,7 +78,7 @@ class AttackInteractionHandler(
             return
         }
 
-        renderWindow.connection.sendPacket(EntityAttackC2SP(target.entity.id ?: return, player.isSneaking))
+        context.connection.sendPacket(EntityAttackC2SP(target.entity.id ?: return, player.isSneaking))
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return
         }
@@ -88,12 +88,12 @@ class AttackInteractionHandler(
         val critical = cooldown.progress > 0.9f && player.fallDistance != 0.0 && !player.onGround && !player.isClimbing && (player.fluidHeights[DefaultFluids.WATER] ?: 0.0f) <= 0.0f && player.effects[VisionEffect.Blindness] == null && player.vehicle == null && entity is LivingEntity
 
         if (critical) {
-            renderWindow.connection.world.addParticle(EntityEmitterParticle(renderWindow.connection, entity, CritParticle))
+            context.connection.world.addParticle(EntityEmitterParticle(context.connection, entity, CritParticle))
         }
 
         if (sharpnessLevel > 0) {
             // ToDo: Entity animations
-            renderWindow.connection.world.addParticle(EntityEmitterParticle(renderWindow.connection, entity, EnchantedHitParticle))
+            context.connection.world.addParticle(EntityEmitterParticle(context.connection, entity, EnchantedHitParticle))
         }
 
     }

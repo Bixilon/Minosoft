@@ -56,9 +56,9 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         val mesh = mesh ?: return
 
         if (crosshairProfile.complementaryColor) {
-            renderWindow.renderSystem.reset(blending = true, sourceRGB = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
+            context.renderSystem.reset(blending = true, sourceRGB = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
         } else {
-            renderWindow.renderSystem.reset()
+            context.renderSystem.reset()
         }
 
         guiRenderer.shader.use()
@@ -68,8 +68,8 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
     private val needsDraw: Boolean
         get() {
             // Custom draw to make the crosshair inverted
-            if (renderWindow.connection.player.gamemode == Gamemodes.SPECTATOR) {
-                val target = renderWindow.camera.targetHandler.target
+            if (context.connection.player.gamemode == Gamemodes.SPECTATOR) {
+                val target = context.camera.targetHandler.target
                 if (target !is EntityTarget && (target !is BlockTarget || target.blockState.block !is BlockWithEntity<*>)) {
                     return false
                 }
@@ -90,7 +90,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         mesh?.unload()
         this.mesh = null
 
-        val mesh = GUIMesh(renderWindow, guiRenderer.matrix, BufferedArrayFloatList(42))
+        val mesh = GUIMesh(context, guiRenderer.matrix, BufferedArrayFloatList(42))
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
         mesh.addQuad(start, start + CROSSHAIR_SIZE, crosshairAtlasElement, crosshairProfile.color, null)
 

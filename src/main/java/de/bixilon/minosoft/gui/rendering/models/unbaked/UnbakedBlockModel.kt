@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.unbaked
 
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 
 class UnbakedBlockModel(
@@ -23,7 +23,7 @@ class UnbakedBlockModel(
 ) : GenericUnbakedModel(parent, json) {
     val ambientOcclusion: Boolean = json["ambientocclusion"]?.toBoolean() ?: parent?.let { return@let if (parent is UnbakedBlockModel) parent.ambientOcclusion else null } ?: true
 
-    override fun bake(renderWindow: RenderWindow): BakedModel {
+    override fun bake(context: RenderContext): BakedModel {
         return object : BakedModel {} // ToDo
     }
 }

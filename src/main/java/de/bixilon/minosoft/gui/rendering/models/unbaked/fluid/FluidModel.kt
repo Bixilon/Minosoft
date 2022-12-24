@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.fluid
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
@@ -21,5 +21,5 @@ interface FluidModel {
     val tint: TintProvider? get() = null
     val still: AbstractTexture?
 
-    fun load(context: RenderWindow)
+    fun load(context: RenderContext)
 }

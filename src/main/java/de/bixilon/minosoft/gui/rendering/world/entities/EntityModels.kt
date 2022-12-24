@@ -17,23 +17,23 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 
-class EntityModels(val renderWindow: RenderWindow) {
+class EntityModels(val context: RenderContext) {
     private val unbakedModels: MutableMap<ResourceLocation, SkeletalModel> = mutableMapOf()
     val skeletal: MutableMap<ResourceLocation, BakedSkeletalModel> = mutableMapOf()
 
     @Synchronized
     fun loadUnbakedModel(path: ResourceLocation): SkeletalModel {
-        return unbakedModels.getOrPut(path) { renderWindow.connection.assetsManager[path].readJson() }
+        return unbakedModels.getOrPut(path) { context.connection.assetsManager[path].readJson() }
     }
 
     @Synchronized
     fun loadModel(name: ResourceLocation, path: ResourceLocation, textureOverride: MutableMap<Int, ShaderTexture> = mutableMapOf()): BakedSkeletalModel {
-        return skeletal.getOrPut(name) { loadUnbakedModel(path).bake(renderWindow, textureOverride) }
+        return skeletal.getOrPut(name) { loadUnbakedModel(path).bake(context, textureOverride) }
     }
 
     fun cleanup() {
@@ -44,7 +44,7 @@ class EntityModels(val renderWindow: RenderWindow) {
         val latch = CountUpAndDownLatch(1)
         for (model in skeletal.values) {
             latch.inc()
-            DefaultThreadPool += { model.preload(renderWindow); latch.dec() }
+            DefaultThreadPool += { model.preload(context); latch.dec() }
         }
         latch.dec()
         latch.await()

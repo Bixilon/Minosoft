@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.gui
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMesh
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
@@ -22,10 +22,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GUIFramebuffer(
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : IntegratedFramebuffer {
-    override val shader = renderWindow.renderSystem.createShader("minosoft:framebuffer/gui".toResourceLocation()) { FramebufferShader(it) }
-    override val framebuffer: Framebuffer = renderWindow.renderSystem.createFramebuffer()
-    override val mesh = FramebufferMesh(renderWindow)
+    override val shader = context.renderSystem.createShader("minosoft:framebuffer/gui".toResourceLocation()) { FramebufferShader(it) }
+    override val framebuffer: Framebuffer = context.renderSystem.createFramebuffer()
+    override val mesh = FramebufferMesh(context)
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT
 }

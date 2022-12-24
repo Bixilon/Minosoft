@@ -20,7 +20,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
@@ -44,11 +44,11 @@ import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class GUIRenderer(
     val connection: PlayConnection,
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : AsyncRenderer, InputHandler, OtherDrawable {
     private val profile = connection.profiles.gui
-    override val renderSystem = renderWindow.renderSystem
-    var scaledSize: Vec2i by observed(renderWindow.window.size)
+    override val renderSystem = context.renderSystem
+    var scaledSize: Vec2i by observed(context.window.size)
     val gui = GUIManager(this)
     val hud = HUDManager(this)
     val popper = PopperManager(this)
@@ -57,11 +57,11 @@ class GUIRenderer(
         private set
     var matrixChange = true
     override val framebuffer: Framebuffer
-        get() = renderWindow.framebufferManager.gui.framebuffer
+        get() = context.framebufferManager.gui.framebuffer
     override val polygonMode: PolygonModes
-        get() = renderWindow.framebufferManager.gui.polygonMode
-    val shader = renderWindow.renderSystem.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
-    val atlasManager = AtlasManager(renderWindow)
+        get() = context.framebufferManager.gui.polygonMode
+    val shader = context.renderSystem.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
+    val atlasManager = AtlasManager(context)
 
     var currentMousePosition: Vec2i by observed(Vec2i.EMPTY)
         private set
@@ -87,7 +87,7 @@ class GUIRenderer(
         dragged.postInit()
     }
 
-    private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
+    private fun recalculateMatrices(windowSize: Vec2i = context.window.size, scale: Float = profile.scale) {
         scaledSize = windowSize.scale(scale)
         matrix = GLM.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
         matrixChange = true
@@ -158,18 +158,18 @@ class GUIRenderer(
     }
 
     fun isKeyDown(vararg keyCodes: KeyCodes): Boolean {
-        return renderWindow.inputHandler.isKeyDown(*keyCodes)
+        return context.inputHandler.isKeyDown(*keyCodes)
     }
 
     fun isKeyDown(modifier: ModifierKeys): Boolean {
-        return renderWindow.inputHandler.isKeyDown(modifier)
+        return context.inputHandler.isKeyDown(modifier)
     }
 
     companion object : RendererBuilder<GUIRenderer> {
         override val RESOURCE_LOCATION = "minosoft:gui".toResourceLocation()
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): GUIRenderer {
-            return GUIRenderer(connection, renderWindow)
+        override fun build(connection: PlayConnection, context: RenderContext): GUIRenderer {
+            return GUIRenderer(connection, context)
         }
     }
 }

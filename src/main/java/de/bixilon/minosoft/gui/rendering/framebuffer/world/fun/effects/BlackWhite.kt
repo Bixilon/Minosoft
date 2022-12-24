@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class BlackWhite(override val renderWindow: RenderWindow) : FunEffect {
+class BlackWhite(override val context: RenderContext) : FunEffect {
     override val resourceLocation: ResourceLocation get() = RESOURCE_LOCATION
     override val shader = createShader(fragment = "minosoft:framebuffer/world/fun/black_white.fsh".toResourceLocation()) { FramebufferShader(it) }
 
@@ -28,8 +28,8 @@ class BlackWhite(override val renderWindow: RenderWindow) : FunEffect {
     companion object : FunEffectFactory<BlackWhite> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:black_white".toResourceLocation()
 
-        override fun build(renderWindow: RenderWindow): BlackWhite {
-            return BlackWhite(renderWindow)
+        override fun build(context: RenderContext): BlackWhite {
+            return BlackWhite(context)
         }
     }
 }

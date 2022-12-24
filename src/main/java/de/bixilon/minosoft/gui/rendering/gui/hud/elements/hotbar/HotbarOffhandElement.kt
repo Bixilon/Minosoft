@@ -30,11 +30,11 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         guiRenderer.atlasManager["minecraft:offhand_left_arm_frame"],
     )
 
-    val offArm = guiRenderer.renderWindow.connection.player.mainArm.opposite // ToDo: Support arm change
+    val offArm = guiRenderer.context.connection.player.mainArm.opposite // ToDo: Support arm change
     private val frame = frames[offArm.ordinal]!!
 
     private var frameImage = AtlasImageElement(guiRenderer, frame)
-    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.renderWindow.connection.player.inventory, frame.slots)
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.inventory, frame.slots)
 
     init {
         _size = frame.size

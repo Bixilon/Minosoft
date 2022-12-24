@@ -20,13 +20,14 @@ import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.events.click.ClickCallbackClickEvent
 import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.data.text.events.hover.TextHoverEvent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.DeleteScreenshotDialog
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
@@ -38,15 +39,15 @@ import javax.imageio.ImageIO
 
 
 class ScreenshotTaker(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
 ) {
     fun takeScreenshot() {
         try {
-            val width = renderWindow.window.size.x
-            val height = renderWindow.window.size.y
-            val buffer = renderWindow.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
+            val width = context.window.size.x
+            val height = context.window.size.y
+            val buffer = context.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
 
-            val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(TimeUtil.millis)}"
+            val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${context.connection.address.hostname}/${DATE_FORMATTER.format(millis())}"
             var path = "$basePath.png"
             var i = 1
             while (File(path).exists()) {
@@ -92,7 +93,7 @@ class ScreenshotTaker(
                             if (deleted) {
                                 return@ClickCallbackClickEvent
                             }
-                            DeleteScreenshotDialog(renderWindow.renderer[GUIRenderer] ?: return@ClickCallbackClickEvent, file) {
+                            DeleteScreenshotDialog(context.renderer[GUIRenderer] ?: return@ClickCallbackClickEvent, file) {
                                 deleted = true
                                 hoverEvent = TextHoverEvent("§cAlready deleted!")
                                 clickEvent = null
@@ -101,7 +102,7 @@ class ScreenshotTaker(
                         }
                         hoverEvent = TextHoverEvent("Click to delete screenshot")
                     }
-                    renderWindow.connection.util.sendInternal(component)
+                    context.connection.util.sendInternal(component)
                 } catch (exception: Exception) {
                     exception.fail()
                 }
@@ -113,7 +114,7 @@ class ScreenshotTaker(
 
     private fun Throwable?.fail() {
         this?.printStackTrace()
-        renderWindow.connection.util.sendInternal("§cFailed to make a screenshot: ${this?.message}")
+        context.connection.util.sendInternal("§cFailed to make a screenshot: ${this?.message}")
     }
 
     companion object {

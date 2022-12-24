@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -26,10 +26,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.orthoTimes
 import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
 
 class GUIMesh(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     val matrix: Mat4,
     data: AbstractFloatList,
-) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
+) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
 
     override fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         addVertex(data, matrix, position, texture, uv, tint, options)

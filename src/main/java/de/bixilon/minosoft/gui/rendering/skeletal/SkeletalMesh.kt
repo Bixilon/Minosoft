@@ -15,13 +15,13 @@ package de.bixilon.minosoft.gui.rendering.skeletal
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, SkeletalMeshStruct, initialCacheSize = initialCacheSize), SkeletalVertexConsumer {
+class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize), SkeletalVertexConsumer {
 
     override fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int) {
         val transformedUV = texture.transformUV(uv)

@@ -29,7 +29,7 @@ class CopyToClipboardClickEvent(
             return
         }
         if (!guiRenderer.connection.profiles.gui.confirmation.copyToClipboard) {
-            guiRenderer.renderWindow.window.clipboardText = text
+            guiRenderer.context.window.clipboardText = text
             return
         }
         val dialog = CopyToClipboardDialog(guiRenderer, text)

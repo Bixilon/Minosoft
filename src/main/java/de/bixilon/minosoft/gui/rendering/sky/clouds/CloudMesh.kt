@@ -17,12 +17,12 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class CloudMesh(renderWindow: RenderWindow) : Mesh(renderWindow, CloudMeshStruct, renderWindow.renderSystem.preferredPrimitiveType) {
+class CloudMesh(context: RenderContext) : Mesh(context, CloudMeshStruct, context.renderSystem.preferredPrimitiveType) {
 
     fun addVertex(start: Vec3, side: Directions) {
         data.add(start.array)

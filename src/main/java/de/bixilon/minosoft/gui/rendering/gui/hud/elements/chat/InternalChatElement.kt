@@ -40,8 +40,8 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
     init {
         messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
-        chatProfile::width.observeRendering(this, context = renderWindow) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
-        chatProfile::height.observeRendering(this, context = renderWindow) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
+        chatProfile::width.observeRendering(this, context = context) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
+        chatProfile::height.observeRendering(this, context = context) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
         forceSilentApply()
     }
 

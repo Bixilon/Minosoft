@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
 abstract class CustomHUDElement(final override val guiRenderer: GUIRenderer) : HUDElement, Drawable {
-    override val renderWindow: RenderWindow = guiRenderer.renderWindow
+    override val context: RenderContext = guiRenderer.context
     override var enabled = true
 
     /**

@@ -23,7 +23,7 @@ import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
@@ -55,8 +55,8 @@ import java.nio.ByteBuffer
 
 
 class GLFWWindow(
-    private val renderWindow: RenderWindow,
-    private val eventMaster: AbstractEventMaster = renderWindow.connection,
+    private val context: RenderContext,
+    private val eventMaster: AbstractEventMaster = context.connection,
 ) : BaseWindow {
     private var mousePosition = Vec2d.EMPTY
     private var skipNextMouseEvent = true
@@ -182,7 +182,7 @@ class GLFWWindow(
     override fun init(profile: RenderingProfile) {
         initLatch.await() // wait for async glfw init
         glfwDefaultWindowHints()
-        if (renderWindow.preferQuads) {
+        if (context.preferQuads) {
             // yes, this is dirty. for using a geometry shader we need 3.3+. The thing is 3.3+ does not allow us to use GL_QUAD.
             // we can still bind it to a lower version and use features that need a more recent version of opengl.
             // most drivers allow us to do this, if not it'll crash
@@ -252,7 +252,7 @@ class GLFWWindow(
     }
 
     override fun close() {
-        if (fireGLFWEvent(WindowCloseEvent(renderWindow, window = this))) {
+        if (fireGLFWEvent(WindowCloseEvent(context, window = this))) {
             return
         }
         forceClose()
@@ -301,7 +301,7 @@ class GLFWWindow(
         if (window != this.window) {
             return
         }
-        val cancelled = fireGLFWEvent(WindowCloseEvent(renderWindow, window = this))
+        val cancelled = fireGLFWEvent(WindowCloseEvent(context, window = this))
 
         if (cancelled) {
             glfwSetWindowShouldClose(window, false)
@@ -316,7 +316,7 @@ class GLFWWindow(
         val scale = getWindowScale()
         val nextSize = Vec2i(width * scale.x, height * scale.y)
         _size = nextSize
-        fireGLFWEvent(ResizeWindowEvent(renderWindow, previousSize = previousSize, size = _size))
+        fireGLFWEvent(ResizeWindowEvent(context, previousSize = previousSize, size = _size))
         this.skipNextMouseEvent = true
     }
 
@@ -340,14 +340,14 @@ class GLFWWindow(
             }
         }
 
-        fireGLFWEvent(RawKeyInputEvent(renderWindow, keyCode = keyCode, keyChangeType = keyAction))
+        fireGLFWEvent(RawKeyInputEvent(context, keyCode = keyCode, keyChangeType = keyAction))
     }
 
     private fun charInput(windowId: Long, char: Int) {
         if (windowId != window) {
             return
         }
-        fireGLFWEvent(RawCharInputEvent(renderWindow, char = char))
+        fireGLFWEvent(RawCharInputEvent(context, char = char))
     }
 
     private fun mouseMove(windowId: Long, x: Double, y: Double) {
@@ -361,7 +361,7 @@ class GLFWWindow(
         val delta = position - previous
         this.mousePosition = position
         if (!skipNextMouseEvent) {
-            fireGLFWEvent(MouseMoveEvent(renderWindow, position = position, previous = previous, delta = delta))
+            fireGLFWEvent(MouseMoveEvent(context, position = position, previous = previous, delta = delta))
         } else {
             skipNextMouseEvent = false
         }
@@ -372,7 +372,7 @@ class GLFWWindow(
             return
         }
 
-        fireGLFWEvent(MouseScrollEvent(renderWindow, offset = Vec2d(xOffset, yOffset)))
+        fireGLFWEvent(MouseScrollEvent(context, offset = Vec2d(xOffset, yOffset)))
     }
 
     override fun setIcon(size: Vec2i, buffer: ByteBuffer) {
@@ -396,8 +396,8 @@ class GLFWWindow(
 
     private fun fireGLFWEvent(event: RenderEvent): Boolean {
         // ToDo: It looks like glfwPollEvents is mixing threads. This should not happen.
-        if (Rendering.currentContext != event.renderWindow) {
-            event.renderWindow.queue += { eventMaster.fire(event) }
+        if (Rendering.currentContext != event.context) {
+            event.context.queue += { eventMaster.fire(event) }
             return false
         }
         return eventMaster.fire(event)

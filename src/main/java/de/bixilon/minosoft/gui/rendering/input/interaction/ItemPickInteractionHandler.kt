@@ -21,23 +21,23 @@ import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ItemPickInteractionHandler(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
     val interactionManager: InteractionManager,
 ) {
-    private val connection = renderWindow.connection
+    private val connection = context.connection
     val rateLimiter = RateLimiter()
 
 
     fun init() {
-        renderWindow.inputHandler.registerKeyCallback("minosoft:pick_item".toResourceLocation(), KeyBinding(
-                KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_MIDDLE),
+        context.inputHandler.registerKeyCallback("minosoft:pick_item".toResourceLocation(), KeyBinding(
+            KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_MIDDLE),
         )) {
             pickItem(true) // ToDo: Combination for not copying nbt
         }
@@ -47,7 +47,7 @@ class ItemPickInteractionHandler(
         if (!connection.player.baseAbilities.creative) {
             return
         }
-        val target = renderWindow.camera.targetHandler.target ?: return
+        val target = context.camera.targetHandler.target ?: return
 
         if (target.distance > connection.player.reachDistance) {
             return

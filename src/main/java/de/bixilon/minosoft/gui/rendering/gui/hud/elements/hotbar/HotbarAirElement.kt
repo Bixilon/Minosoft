@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
-    private val water = guiRenderer.renderWindow.connection.registries.fluidRegistry[DefaultFluids.WATER]!!
+    private val water = guiRenderer.context.connection.registries.fluidRegistry[DefaultFluids.WATER]!!
     private val airBubble = guiRenderer.atlasManager["minecraft:air_bubble"]
     private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]
 
@@ -55,7 +55,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
     }
 
     override fun poll(): Boolean {
-        val player = guiRenderer.renderWindow.connection.player
+        val player = guiRenderer.context.connection.player
 
         val air = player.airSupply
 

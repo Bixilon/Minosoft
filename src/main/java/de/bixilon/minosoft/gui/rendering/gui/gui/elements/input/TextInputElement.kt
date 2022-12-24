@@ -234,7 +234,7 @@ open class TextInputElement(
         when (key) {
             KeyCodes.KEY_V -> {
                 if (controlDown) {
-                    insert(guiRenderer.renderWindow.window.clipboardText)
+                    insert(guiRenderer.context.window.clipboardText)
                 }
             }
             KeyCodes.KEY_X -> {
@@ -319,12 +319,12 @@ open class TextInputElement(
     }
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
-        renderWindow.window.cursorShape = CursorShapes.IBEAM
+        context.window.cursorShape = CursorShapes.IBEAM
         return true
     }
 
     override fun onMouseLeave(): Boolean {
-        renderWindow.window.resetCursor()
+        context.window.resetCursor()
         return true
     }
 
@@ -344,7 +344,7 @@ open class TextInputElement(
                 continue
             }
             val charDelta = position.x - line.width
-            val width = guiRenderer.renderWindow.font[value.codePointAtOrNull(pointer) ?: break]?.width ?: break
+            val width = guiRenderer.context.font[value.codePointAtOrNull(pointer) ?: break]?.width ?: break
             if (charDelta != 0 && charDelta >= width / 2) {
                 pointer++
             }

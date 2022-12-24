@@ -67,7 +67,7 @@ class ItemInfoPopper(
                 return@let
             }
             text += "\n"
-            val language = renderWindow.connection.language
+            val language = context.connection.language
             for ((enchantment, level) in it) {
                 text += ChatComponent.of(enchantment, translator = language).apply { this.setFallbackColor(ChatColors.BLUE) }
                 text += TextComponent(" $level", color = ChatColors.BLUE)

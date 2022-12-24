@@ -54,9 +54,9 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
 
 
     private fun createModel(properties: PlayerProperties?): SkeletalInstance? {
-        val skin = renderWindow.textureManager.skins.getSkin(entity, properties) ?: return null
+        val skin = context.textureManager.skins.getSkin(entity, properties) ?: return null
         val skinModel = skin.model
-        val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(if (skinModel == SkinModel.SLIM) SLIM_MODEL else WIDE_MODEL)
+        val unbaked = context.modelLoader.entities.loadUnbakedModel(if (skinModel == SkinModel.SLIM) SLIM_MODEL else WIDE_MODEL)
 
         val elements: MutableList<SkeletalElement> = mutableListOf()
         elementLoop@ for (element in unbaked.elements) {
@@ -73,11 +73,11 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
         this.skin = skin
         skin.texture += this
 
-        val skinTexture = if (skin.texture.state != DynamicTextureState.LOADED) renderWindow.textureManager.skins.default[entity.uuid] ?: return null else skin
+        val skinTexture = if (skin.texture.state != DynamicTextureState.LOADED) context.textureManager.skins.default[entity.uuid] ?: return null else skin
 
-        val model = unbaked.copy(elements = elements, animations = animations).bake(renderWindow, mapOf(0 to skinTexture.texture))
+        val model = unbaked.copy(elements = elements, animations = animations).bake(context, mapOf(0 to skinTexture.texture))
 
-        val instance = SkeletalInstance(renderWindow, model)
+        val instance = SkeletalInstance(context, model)
 
         for (animation in animations) {
             instance.playAnimation(animation)

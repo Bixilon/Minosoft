@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 
 interface Renderer {
-    val renderWindow: RenderWindow
+    val context: RenderContext
     val renderSystem: RenderSystem
     val framebuffer: Framebuffer?
-        get() = renderWindow.framebufferManager.world.framebuffer
+        get() = context.framebufferManager.world.framebuffer
     val polygonMode: PolygonModes
-        get() = renderWindow.framebufferManager.world.polygonMode
+        get() = context.framebufferManager.world.polygonMode
 
     fun preAsyncInit(latch: CountUpAndDownLatch) = Unit
     fun init(latch: CountUpAndDownLatch) = Unit

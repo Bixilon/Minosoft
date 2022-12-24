@@ -44,7 +44,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class HUDManager(
     override val guiRenderer: GUIRenderer,
 ) : GUIElementDrawer, Initializable, AsyncDrawable, Drawable {
-    val renderWindow = guiRenderer.renderWindow
+    val context = guiRenderer.context
     private val hudElements: LockMap<ResourceLocation, HUDElement> = lockMapOf()
 
     override var lastTickTime = 0L
@@ -60,7 +60,7 @@ class HUDManager(
         val toggleKeyBinding = hudBuilder.ENABLE_KEY_BINDING ?: return
         val toggleKeyBindingName = hudBuilder.ENABLE_KEY_BINDING_NAME ?: return
 
-        renderWindow.inputHandler.registerKeyCallback(toggleKeyBindingName, toggleKeyBinding, defaultPressed = hudBuilder.DEFAULT_ENABLED) { hudElement.enabled = it }
+        context.inputHandler.registerKeyCallback(toggleKeyBindingName, toggleKeyBinding, defaultPressed = hudBuilder.DEFAULT_ENABLED) { hudElement.enabled = it }
     }
 
     private fun registerDefaultElements() {
@@ -92,9 +92,9 @@ class HUDManager(
             element.init()
         }
 
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             "minosoft:enable_hud".toResourceLocation(), KeyBinding(
-                    KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
             ), defaultPressed = enabled
         ) { enabled = it }
     }

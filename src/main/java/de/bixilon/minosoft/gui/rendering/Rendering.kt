@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.minosoft.gui.RenderLoop
+import de.bixilon.minosoft.gui.rendering.RenderLoader.awaitPlaying
+import de.bixilon.minosoft.gui.rendering.RenderLoader.load
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -23,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.Version
 
 class Rendering(private val connection: PlayConnection) {
-    val renderWindow: RenderWindow = RenderWindow(connection, this)
+    val context: RenderContext = RenderContext(connection, this)
     val audioPlayer: AudioPlayer = AudioPlayer(connection, this)
 
     fun start(latch: CountUpAndDownLatch, render: Boolean = true, audio: Boolean = true) {
@@ -64,15 +67,17 @@ class Rendering(private val connection: PlayConnection) {
     private fun startRenderWindow(latch: CountUpAndDownLatch) {
         try {
             Thread.currentThread().priority = Thread.MAX_PRIORITY
-            CONTEXT_MAP[Thread.currentThread()] = renderWindow
-            renderWindow.init(latch)
-            renderWindow.startLoop()
+            CONTEXT_MAP[Thread.currentThread()] = context
+            context.load(latch)
+            val loop = RenderLoop(context)
+            context.awaitPlaying()
+            loop.startLoop()
         } catch (exception: Throwable) {
             CONTEXT_MAP.remove(Thread.currentThread())
             exception.printStackTrace()
             try {
-                renderWindow.window.destroy()
-                connection.events.fire(WindowCloseEvent(renderWindow, window = renderWindow.window))
+                context.window.destroy()
+                connection.events.fire(WindowCloseEvent(context, window = context.window))
             } catch (ignored: Throwable) {
             }
             connection.network.disconnect()
@@ -81,9 +86,9 @@ class Rendering(private val connection: PlayConnection) {
     }
 
     companion object {
-        private val CONTEXT_MAP: MutableMap<Thread, RenderWindow> = mutableMapOf()
+        private val CONTEXT_MAP: MutableMap<Thread, RenderContext> = mutableMapOf()
 
-        val currentContext: RenderWindow?
+        val currentContext: RenderContext?
             get() = CONTEXT_MAP[Thread.currentThread()]
     }
 }

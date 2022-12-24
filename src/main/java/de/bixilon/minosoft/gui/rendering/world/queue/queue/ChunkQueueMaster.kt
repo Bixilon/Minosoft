@@ -100,7 +100,7 @@ class ChunkQueueMaster(
     }
 
     private fun canQueue(): Boolean {
-        val state = renderer.renderWindow.state
+        val state = renderer.context.state
         if (state == RenderingStates.PAUSED || state == RenderingStates.STOPPED || state == RenderingStates.QUITTING) {
             return false
         }

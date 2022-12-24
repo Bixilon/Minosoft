@@ -16,20 +16,20 @@ package de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class GLSLShaderCode(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
     private val rawCode: String,
 ) {
     val defines: MutableMap<String, Any> = mutableMapOf()
 
     init {
         for ((name, value) in NativeShader.DEFAULT_DEFINES) {
-            value(renderWindow)?.let { defines[name] = it }
+            value(context)?.let { defines[name] = it }
         }
-        defines[renderWindow.renderSystem.vendor.shaderDefine] = ""
+        defines[context.renderSystem.vendor.shaderDefine] = ""
     }
 
     val code: String
@@ -54,7 +54,7 @@ class GLSLShaderCode(
 
                         val include = ResourceLocation(reader.readString()!!)
 
-                        val includeCode = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
+                        val includeCode = GLSLShaderCode(context, context.connection.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
 
                         code.append('\n')
                         code.append(includeCode.code)

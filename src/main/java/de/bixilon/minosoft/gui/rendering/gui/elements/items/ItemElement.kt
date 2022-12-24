@@ -58,7 +58,7 @@ class ItemElement(
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (raw.stack == null) {
             if (hovered) {
-                ImageElement(guiRenderer, renderWindow.textureManager.whiteTexture.texture, size = this.size, tint = HOVERED_COLOR).forceRender(offset, consumer, options)
+                ImageElement(guiRenderer, context.textureManager.whiteTexture.texture, size = this.size, tint = HOVERED_COLOR).forceRender(offset, consumer, options)
             }
         }
         var options = options
@@ -73,7 +73,7 @@ class ItemElement(
     }
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
-        renderWindow.window.cursorShape = CursorShapes.HAND
+        context.window.cursorShape = CursorShapes.HAND
         val stack = this.stack
         if (stack != null) {
             popper = ItemInfoPopper(guiRenderer, absolute, stack).apply { show() }
@@ -84,7 +84,7 @@ class ItemElement(
     }
 
     override fun onMouseLeave(): Boolean {
-        renderWindow.window.resetCursor()
+        context.window.resetCursor()
         popper?.hide()
         popper = null
         hovered = false

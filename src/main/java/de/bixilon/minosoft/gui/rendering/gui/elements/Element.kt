@@ -34,7 +34,7 @@ import de.bixilon.minosoft.util.collections.DirectList
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
     var ignoreDisplaySize = false
-    val renderWindow = guiRenderer.renderWindow
+    val context = guiRenderer.context
     open val activeWhenHidden = false
     open var canPop: Boolean = true
 
@@ -67,7 +67,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         }
 
     @Deprecated("Warning: Should not be directly accessed!")
-    open val cache = GUIMeshCache(guiRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder, initialCacheSize)
+    open val cache = GUIMeshCache(guiRenderer.matrix, context.renderSystem.primitiveMeshOrder, initialCacheSize)
 
     private var previousMaxSize = Vec2i.EMPTY
 

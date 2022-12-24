@@ -20,7 +20,7 @@ import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
@@ -31,12 +31,12 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class RendererManager(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
 ) {
     private val renderers: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
-    private val connection = renderWindow.connection
-    private val renderSystem = renderWindow.renderSystem
-    private val framebufferManager = renderWindow.framebufferManager
+    private val connection = context.connection
+    private val renderSystem = context.renderSystem
+    private val framebufferManager = context.framebufferManager
 
 
     fun <T : Renderer> register(builder: RendererBuilder<T>): T? {
@@ -44,7 +44,7 @@ class RendererManager(
         if (resourceLocation in RunConfiguration.SKIP_RENDERERS) {
             return null
         }
-        val renderer = builder.build(connection, renderWindow) ?: return null
+        val renderer = builder.build(connection, context) ?: return null
         val previous = renderers.put(resourceLocation, renderer)
         if (previous != null) {
             Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Renderer $previous(${builder.resourceLocation}) got replaced by $renderer!" }

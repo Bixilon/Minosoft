@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.item.items.UsableItem
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
@@ -35,10 +36,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class InteractInteractionHandler(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
     val interactionManager: InteractionManager,
 ) {
-    val connection = renderWindow.connection
+    val connection = context.connection
     private var lastUse = -1L
 
     private var interactingItem: ItemStack? = null
@@ -50,7 +51,7 @@ class InteractInteractionHandler(
 
 
     fun init() {
-        renderWindow.inputHandler.registerCheckCallback(
+        context.inputHandler.registerCheckCallback(
             USE_ITEM_KEYBINDING to KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_RIGHT),
             )
@@ -173,7 +174,7 @@ class InteractInteractionHandler(
         // if riding: return
 
         val selectedSlot = connection.player.selectedHotbarSlot
-        val target = renderWindow.camera.targetHandler.target
+        val target = context.camera.targetHandler.target
 
         for (hand in Hands.VALUES) {
             val item = connection.player.inventory[hand]
@@ -239,12 +240,12 @@ class InteractInteractionHandler(
     }
 
     fun draw(delta: Double) {
-        val time = TimeUtil.millis
+        val time = millis()
         if (time - lastUse < ProtocolDefinition.TICK_TIME) {
             return
         }
         lastUse = time
-        val keyDown = renderWindow.inputHandler.isKeyBindingDown(USE_ITEM_KEYBINDING)
+        val keyDown = context.inputHandler.isKeyBindingDown(USE_ITEM_KEYBINDING)
         if (keyDown) {
             autoInteractionDelay++
 

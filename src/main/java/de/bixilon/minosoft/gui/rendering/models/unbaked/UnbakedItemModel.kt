@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.GUILights
 import de.bixilon.minosoft.gui.rendering.models.baked.item.BakedItemModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -27,8 +27,8 @@ class UnbakedItemModel(
 
     // ToDo: Overrides (predicates)
 
-    override fun bake(renderWindow: RenderWindow): BakedItemModel {
-        val textures = TextureUtil.resolveTextures(renderWindow.textureManager.staticTextures, textures)
+    override fun bake(context: RenderContext): BakedItemModel {
+        val textures = TextureUtil.resolveTextures(context.textureManager.staticTextures, textures)
 
         var itemTexture: AbstractTexture? = null
         textures.iterator().let {

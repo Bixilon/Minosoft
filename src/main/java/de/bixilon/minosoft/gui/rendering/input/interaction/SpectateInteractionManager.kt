@@ -20,19 +20,19 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.modding.event.events.CameraSetEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class SpectateInteractionManager(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
 ) {
-    private val connection = renderWindow.connection
+    private val connection = context.connection
     private val rateLimiter = RateLimiter()
 
     fun init() {
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             STOP_SPECTATING, KeyBinding(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_LEFT_SHIFT),
             )
@@ -48,7 +48,7 @@ class SpectateInteractionManager(
         if (connection.player.gamemode != Gamemodes.SPECTATOR) {
             entity = connection.player
         }
-        renderWindow.camera.matrixHandler.entity = entity
+        context.camera.matrixHandler.entity = entity
     }
 
     fun draw(delta: Double) {

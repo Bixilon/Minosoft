@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
@@ -24,15 +24,15 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 
 abstract class Mesh(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
     private val struct: MeshStruct,
-    private val primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType,
+    private val primitiveType: PrimitiveTypes = context.renderSystem.preferredPrimitiveType,
     var initialCacheSize: Int = 10000,
     val clearOnLoad: Boolean = true,
     data: AbstractFloatList? = null,
     val onDemand: Boolean = false,
 ) : AbstractVertexConsumer {
-    override val order = renderWindow.renderSystem.primitiveMeshOrder
+    override val order = context.renderSystem.primitiveMeshOrder
     val reversedOrder = order.reversedArray()
     private var _data: AbstractFloatList? = data ?: if (onDemand) null else FloatListUtil.direct(initialCacheSize)
     var data: AbstractFloatList
@@ -58,7 +58,7 @@ abstract class Mesh(
     fun finish() {
         if (state != MeshStates.PREPARING) throw IllegalStateException("Mesh is not preparing: $state")
         val data = this.data
-        buffer = renderWindow.renderSystem.createVertexBuffer(struct, data, primitiveType)
+        buffer = context.renderSystem.createVertexBuffer(struct, data, primitiveType)
         state = MeshStates.FINISHED
     }
 

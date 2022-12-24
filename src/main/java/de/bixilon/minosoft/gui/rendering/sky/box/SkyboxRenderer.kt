@@ -58,14 +58,14 @@ class SkyboxRenderer(
     private val textureCache: MutableMap<ResourceLocation, AbstractTexture> = mutableMapOf()
     private val colorShader = sky.renderSystem.createShader(minosoft("sky/skybox")) { SkyboxColorShader(it) }
     private val textureShader = sky.renderSystem.createShader(minosoft("sky/skybox/texture")) { SkyboxTextureShader(it) }
-    private val colorMesh = SkyboxMesh(sky.renderWindow)
-    private val textureMesh = SkyboxTextureMesh(sky.renderWindow)
+    private val colorMesh = SkyboxMesh(sky.context)
+    private val textureMesh = SkyboxTextureMesh(sky.context)
     private var updateColor = true
     private var updateTexture = true
     private var updateMatrix = true
     private var color: RGBColor by observed(ChatColors.BLUE)
 
-    private var time: WorldTime = sky.renderWindow.connection.world.time
+    private var time: WorldTime = sky.context.connection.world.time
 
     private var lastStrike = -1L
     private var strikeDuration = -1L
@@ -86,13 +86,13 @@ class SkyboxRenderer(
         this::color.observe(this) { updateColor = true }
 
         // ToDo: Sync with lightmap, lightnings, etc
-        sky.renderWindow.connection.world.entities::entities.observeSet(this) {
+        sky.context.connection.world.entities::entities.observeSet(this) {
             val lightnings = it.adds.filterIsInstance<LightningBolt>()
             if (lightnings.isEmpty()) return@observeSet
             lastStrike = millis()
             strikeDuration = lightnings.maxOf(LightningBolt::duration)
         }
-        sky.renderWindow.connection.events.listen<CameraPositionChangeEvent> {
+        sky.context.connection.events.listen<CameraPositionChangeEvent> {
             val blockPosition = it.newPosition.blockPosition
             if (blockPosition == this.cameraPosition) {
                 return@listen
@@ -101,12 +101,12 @@ class SkyboxRenderer(
             val chunkPosition = blockPosition.chunkPosition
             if (chunkPosition != this.chunkPosition) {
                 this.chunkPosition = chunkPosition
-                this.chunk = sky.renderWindow.connection.world[chunkPosition]
+                this.chunk = sky.context.connection.world[chunkPosition]
             }
             recalculateBaseColor()
         }
 
-        sky.renderWindow.connection.events.listen<ChunkDataChangeEvent> {
+        sky.context.connection.events.listen<ChunkDataChangeEvent> {
             if (!it.chunk.neighbours.complete) {
                 return@listen
             }
@@ -132,7 +132,7 @@ class SkyboxRenderer(
     override fun init() {
         for (properties in DefaultDimensionEffects) {
             val texture = properties.fixedTexture ?: continue
-            textureCache[texture] = sky.renderWindow.textureManager.staticTextures.createTexture(texture)
+            textureCache[texture] = sky.context.textureManager.staticTextures.createTexture(texture)
         }
     }
 
@@ -142,7 +142,7 @@ class SkyboxRenderer(
 
         colorMesh.load()
         textureMesh.load()
-        sky.renderWindow.textureManager.staticTextures.use(textureShader)
+        sky.context.textureManager.staticTextures.use(textureShader)
     }
 
     private fun updateColorShader() {
@@ -348,7 +348,7 @@ class SkyboxRenderer(
         }
         // TODO: Check if wither is present
 
-        var weather = sky.renderWindow.connection.world.weather
+        var weather = sky.context.connection.world.weather
         if (!properties.weather) {
             weather = WorldWeather.NONE
         }

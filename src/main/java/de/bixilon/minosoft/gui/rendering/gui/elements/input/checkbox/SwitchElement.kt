@@ -86,7 +86,7 @@ open class SwitchElement(
             disabled -> disabledAtlas
             hovered -> hoveredAtlas
             else -> normalAtlas
-        } ?: guiRenderer.renderWindow.textureManager.whiteTexture
+        } ?: guiRenderer.context.textureManager.whiteTexture
 
         val size = size
         val background = AtlasImageElement(guiRenderer, texture)
@@ -143,14 +143,14 @@ open class SwitchElement(
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
         hovered = true
-        renderWindow.window.cursorShape = CursorShapes.HAND
+        context.window.cursorShape = CursorShapes.HAND
 
         return true
     }
 
     override fun onMouseLeave(): Boolean {
         hovered = false
-        renderWindow.window.resetCursor()
+        context.window.resetCursor()
 
         return true
     }

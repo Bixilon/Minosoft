@@ -21,7 +21,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.Arms
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
@@ -34,12 +34,12 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.minosoft
 
-class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
-    private val config = renderWindow.connection.profiles.rendering.overlay
-    private val shader = renderWindow.renderSystem.createShader(minosoft("arm")) { ArmOverlayShader(it) }
+class ArmOverlay(private val context: RenderContext) : Overlay {
+    private val config = context.connection.profiles.rendering.overlay
+    private val shader = context.renderSystem.createShader(minosoft("arm")) { ArmOverlayShader(it) }
     override val render: Boolean
-        get() = renderWindow.camera.view.view.renderArm && config.arm.render
-    private var arm = renderWindow.connection.player.mainArm // TODO: camera player entity
+        get() = context.camera.view.view.renderArm && config.arm.render
+    private var arm = context.connection.player.mainArm // TODO: camera player entity
     private var skin: PlayerSkin? = null
     private var model: PlayerModel? = null
     private var mesh: ArmMesh = unsafeNull()
@@ -49,12 +49,12 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
     private var refreshTransform = true
 
     override fun init() {
-        renderWindow.connection.profiles.connection::mainArm.observe(this, true) { this.arm = it; refresh = true;refreshTransform = true }
-        renderWindow.connection.events.listen<ResizeWindowEvent> { this.refreshTransform = true }
+        context.connection.profiles.connection::mainArm.observe(this, true) { this.arm = it; refresh = true;refreshTransform = true }
+        context.connection.events.listen<ResizeWindowEvent> { this.refreshTransform = true }
     }
 
     private fun poll() {
-        val model = renderWindow.connection.player.model.nullCast<PlayerModel>()
+        val model = context.connection.player.model.nullCast<PlayerModel>()
         val skin = model?.skin
         // TODO: check skin parts
         if (this.model == model && this.skin == skin) {
@@ -74,7 +74,7 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
     }
 
     private fun createMesh() {
-        this.mesh = ArmMesh(renderWindow)
+        this.mesh = ArmMesh(context)
         val skin = this.skin
         val model = this.model?.instance?.model?.model
         if (model != null && skin != null) {
@@ -95,7 +95,7 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
     }
 
     private fun calculateTransform(): Mat4 {
-        val screen = renderWindow.window.sizef
+        val screen = context.window.sizef
         val aspect = screen.x / screen.y
         val projection = GLM.perspective(60.0f.rad, aspect, CameraDefinition.NEAR_PLANE, CameraDefinition.FAR_PLANE)
 
@@ -120,12 +120,12 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
 
     override fun draw() {
         val skin = this.skin ?: return
-        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
+        context.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
 
-        renderWindow.renderSystem.disable(RenderingCapabilities.FACE_CULLING)
-        renderWindow.renderSystem.enable(RenderingCapabilities.DEPTH_TEST)
-        renderWindow.renderSystem.enable(RenderingCapabilities.BLENDING)
-        renderWindow.renderSystem.depthMask = true
+        context.renderSystem.disable(RenderingCapabilities.FACE_CULLING)
+        context.renderSystem.enable(RenderingCapabilities.DEPTH_TEST)
+        context.renderSystem.enable(RenderingCapabilities.BLENDING)
+        context.renderSystem.depthMask = true
 
         shader.use()
         shader.textureIndexLayer = skin.texture.shaderId
@@ -135,13 +135,13 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
         }
 
         mesh.draw()
-        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
+        context.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
     }
 
 
     companion object : OverlayFactory<ArmOverlay> {
-        override fun build(renderWindow: RenderWindow): ArmOverlay {
-            return ArmOverlay(renderWindow)
+        override fun build(context: RenderContext): ArmOverlay {
+            return ArmOverlay(context)
         }
     }
 }

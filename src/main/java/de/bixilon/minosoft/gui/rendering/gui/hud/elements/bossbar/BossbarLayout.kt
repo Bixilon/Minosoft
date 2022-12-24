@@ -29,7 +29,7 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, HorizontalAlignments.CENTER, 2), LayoutedElement, Initializable {
-    private val connection = renderWindow.connection
+    private val connection = context.connection
     private val bossbars: MutableMap<Bossbar, BossbarElement> = synchronizedMapOf()
 
     override val layoutOffset: Vec2i

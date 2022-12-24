@@ -18,7 +18,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyActions
@@ -26,7 +25,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
 import de.bixilon.minosoft.gui.rendering.events.input.RawCharInputEvent
@@ -45,10 +44,10 @@ import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class RenderWindowInputHandler(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
 ) {
-    val connection: PlayConnection = renderWindow.connection
-    val cameraInput = CameraInput(renderWindow, renderWindow.camera.matrixHandler)
+    val connection: PlayConnection = context.connection
+    val cameraInput = CameraInput(context, context.camera.matrixHandler)
     private val profile = connection.profiles.controls
 
     private val keyBindingCallbacks: SynchronizedMap<ResourceLocation, KeyBindingCallbackPair> = synchronizedMapOf()
@@ -61,14 +60,14 @@ class RenderWindowInputHandler(
         private set
 
 
-    val interactionManager = InteractionManager(renderWindow)
+    val interactionManager = InteractionManager(context)
     var inputHandler: InputHandler? = null
         set(value) {
             field = value
 
             deactivateAll()
 
-            renderWindow.window.cursorMode = if (value == null) {
+            context.window.cursorMode = if (value == null) {
                 CursorModes.DISABLED
             } else {
                 CursorModes.NORMAL
@@ -84,12 +83,12 @@ class RenderWindowInputHandler(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_M),
                 ignoreConsumer = true,
             ), defaultPressed = StaticConfiguration.DEBUG_MODE) {
-            val nextMode = when (renderWindow.window.cursorMode) {
+            val nextMode = when (context.window.cursorMode) {
                 CursorModes.DISABLED -> CursorModes.NORMAL
                 CursorModes.NORMAL -> CursorModes.DISABLED
                 CursorModes.HIDDEN -> CursorModes.NORMAL
             }
-            renderWindow.window.cursorMode = nextMode
+            context.window.cursorMode = nextMode
             connection.util.sendDebugMessage("Cursor mode: ${nextMode.format()}")
         }
     }
@@ -341,7 +340,7 @@ class RenderWindowInputHandler(
     }
 
     fun isKeyDown(modifier: ModifierKeys): Boolean {
-        return renderWindow.inputHandler.isKeyDown(*when (modifier) {
+        return context.inputHandler.isKeyDown(*when (modifier) {
             ModifierKeys.CONTROL -> arrayOf(KeyCodes.KEY_LEFT_CONTROL, KeyCodes.KEY_RIGHT_CONTROL)
             ModifierKeys.ALT -> arrayOf(KeyCodes.KEY_LEFT_ALT, KeyCodes.KEY_RIGHT_ALT)
             ModifierKeys.SHIFT -> arrayOf(KeyCodes.KEY_LEFT_SHIFT, KeyCodes.KEY_RIGHT_SHIFT)

@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.DefaultOverlays
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
 class OverlayManager(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
 ) : Drawable {
     private val overlays: MutableList<Overlay> = mutableListOf()
 
     fun init() {
         for (factory in DefaultOverlays.OVERLAYS) {
-            overlays += factory.build(renderWindow) ?: continue
+            overlays += factory.build(context) ?: continue
         }
 
         for (overlay in overlays) {
@@ -44,7 +44,7 @@ class OverlayManager(
             if (!overlay.render) {
                 continue
             }
-            renderWindow.renderSystem.reset(blending = true, depthTest = false)
+            context.renderSystem.reset(blending = true, depthTest = false)
             overlay.draw()
         }
     }

@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.DeltaDrawable
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalModelStates
@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import java.util.*
 
 class SkeletalInstance(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
     val model: BakedSkeletalModel,
     position: Vec3 = Vec3.EMPTY,
     transform: Mat4 = Mat4(),
@@ -68,7 +68,7 @@ class SkeletalInstance(
     }
 
     fun draw() {
-        renderWindow.skeletalManager.draw(this, light)
+        context.skeletalManager.draw(this, light)
     }
 
     fun updatePosition(position: Vec3, rotation: EntityRotation) {

@@ -28,8 +28,8 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 object ContainerGUIManager {
 
     private fun registerLocalContainerEvent(guiRenderer: GUIRenderer) {
-        guiRenderer.renderWindow.inputHandler.registerKeyCallback("minosoft:local_inventory".toResourceLocation(), KeyBinding(
-                KeyActions.PRESS to setOf(KeyCodes.KEY_E),
+        guiRenderer.context.inputHandler.registerKeyCallback("minosoft:local_inventory".toResourceLocation(), KeyBinding(
+            KeyActions.PRESS to setOf(KeyCodes.KEY_E),
         )) { guiRenderer.gui.open(LocalInventoryScreen) }
     }
 

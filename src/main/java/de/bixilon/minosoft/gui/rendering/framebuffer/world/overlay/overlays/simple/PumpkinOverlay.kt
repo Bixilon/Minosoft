@@ -15,15 +15,15 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.sim
 
 import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class PumpkinOverlay(renderWindow: RenderWindow) : FirstPersonOverlay(renderWindow) {
-    private val config = renderWindow.connection.profiles.rendering.overlay
-    override val texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
+class PumpkinOverlay(context: RenderContext) : FirstPersonOverlay(context) {
+    private val config = context.connection.profiles.rendering.overlay
+    override val texture: AbstractTexture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     override val render: Boolean
         get() {
             if (!config.pumpkin) {
@@ -43,8 +43,8 @@ class PumpkinOverlay(renderWindow: RenderWindow) : FirstPersonOverlay(renderWind
     companion object : OverlayFactory<PumpkinOverlay> {
         private val OVERLAY_TEXTURE = "misc/pumpkinblur".toResourceLocation().texture()
 
-        override fun build(renderWindow: RenderWindow): PumpkinOverlay {
-            return PumpkinOverlay(renderWindow)
+        override fun build(context: RenderContext): PumpkinOverlay {
+            return PumpkinOverlay(context)
         }
     }
 }

@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.events
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 
 class WindowCloseEvent(
-    renderWindow: RenderWindow,
+    context: RenderContext,
     val window: BaseWindow,
-) : RenderEvent(renderWindow), CancelableEvent
+) : RenderEvent(context), CancelableEvent

@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
         if (text.message.isEmpty()) {
             return false
         }
@@ -145,7 +145,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 continue
             }
 
-            val charData = renderWindow.font[char] ?: continue
+            val charData = context.font[char] ?: continue
 
             val charWidth = charData.calculateWidth(renderInfo.scale, renderInfo.shadow)
             var width = charWidth
@@ -203,7 +203,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return count
     }
 
-    override fun render3dFlat(renderWindow: RenderWindow, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: TextComponent, light: Int) {
+    override fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: TextComponent, light: Int) {
         val color = text.color ?: ChatColors.BLACK
         val italic = text.formatting.contains(PreChatFormattingCodes.ITALIC)
         val bold = text.formatting.contains(PreChatFormattingCodes.BOLD)
@@ -211,7 +211,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         val underlined = text.formatting.contains(PreChatFormattingCodes.UNDERLINED)
 
         for (char in text.message.codePoints()) {
-            val data = renderWindow.font[char] ?: continue
+            val data = context.font[char] ?: continue
             val expectedWidth = ((data.width + Font.HORIZONTAL_SPACING) * scale).toInt()
             if (maxSize.x - offset.x < expectedWidth) { // ToDo
                 return

@@ -16,14 +16,14 @@ package de.bixilon.minosoft.gui.rendering.camera.view
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 class DebugView(private val camera: Camera) : CameraView {
-    override val renderWindow: RenderWindow get() = camera.renderWindow
+    override val context: RenderContext get() = camera.context
     override val updateFrustum: Boolean get() = false
 
     override var eyePosition = Vec3.EMPTY
@@ -33,7 +33,7 @@ class DebugView(private val camera: Camera) : CameraView {
 
 
     override fun onInput(input: MovementInput, delta: Double) {
-        camera.renderWindow.connection.player.input = MovementInput()
+        camera.context.connection.player.input = MovementInput()
         var speedMultiplier = 10
         if (input.sprinting) {
             speedMultiplier *= 3
@@ -62,7 +62,7 @@ class DebugView(private val camera: Camera) : CameraView {
     }
 
     override fun onMouse(delta: Vec2d) {
-        val rotation = renderWindow.inputHandler.cameraInput.calculateRotation(delta, this.rotation)
+        val rotation = context.inputHandler.cameraInput.calculateRotation(delta, this.rotation)
         if (rotation == this.rotation) {
             return
         }

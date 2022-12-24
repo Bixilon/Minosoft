@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager.Companion.OVERLAY_Z
@@ -30,12 +30,12 @@ import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-class WeatherOverlay(private val renderWindow: RenderWindow) : Overlay {
-    private val world = renderWindow.connection.world
-    private val config = renderWindow.connection.profiles.rendering.overlay.weather
-    private val rain = renderWindow.textureManager.staticTextures.createTexture(RAIN)
-    private val snow = renderWindow.textureManager.staticTextures.createTexture(SNOW)
-    private val precipitation get() = renderWindow.connection.player.positionInfo.biome?.precipitation ?: BiomePrecipitation.NONE
+class WeatherOverlay(private val context: RenderContext) : Overlay {
+    private val world = context.connection.world
+    private val config = context.connection.profiles.rendering.overlay.weather
+    private val rain = context.textureManager.staticTextures.createTexture(RAIN)
+    private val snow = context.textureManager.staticTextures.createTexture(SNOW)
+    private val precipitation get() = context.connection.player.positionInfo.biome?.precipitation ?: BiomePrecipitation.NONE
     override val render: Boolean
         get() = world.dimension?.effects?.weather == true && world.weather.raining && when (precipitation) { // ToDo: Check if exposed to the sky
             BiomePrecipitation.NONE -> false
@@ -49,8 +49,8 @@ class WeatherOverlay(private val renderWindow: RenderWindow) : Overlay {
             BiomePrecipitation.SNOW -> snow
         }
 
-    private val shader = renderWindow.renderSystem.createShader(minosoft("weather/overlay")) { WeatherOverlayShader(it) }
-    private var mesh = WeatherOverlayMesh(renderWindow)
+    private val shader = context.renderSystem.createShader(minosoft("weather/overlay")) { WeatherOverlayShader(it) }
+    private var mesh = WeatherOverlayMesh(context)
     private var windowSize = Vec2.EMPTY
 
 
@@ -58,7 +58,7 @@ class WeatherOverlay(private val renderWindow: RenderWindow) : Overlay {
         if (mesh.state == Mesh.MeshStates.LOADED) {
             mesh.unload()
         }
-        mesh = WeatherOverlayMesh(renderWindow)
+        mesh = WeatherOverlayMesh(context)
 
         val texture = texture!!
         val scale = windowSize.y / texture.size.y
@@ -92,7 +92,7 @@ class WeatherOverlay(private val renderWindow: RenderWindow) : Overlay {
 
     override fun postInit() {
         shader.use()
-        renderWindow.textureManager.staticTextures.use(shader)
+        context.textureManager.staticTextures.use(shader)
     }
 
     private fun updateShader() {
@@ -103,7 +103,7 @@ class WeatherOverlay(private val renderWindow: RenderWindow) : Overlay {
     }
 
     override fun draw() {
-        val windowSize = renderWindow.window.sizef
+        val windowSize = context.window.sizef
         if (this.windowSize != windowSize) {
             updateMesh(windowSize)
         }
@@ -116,8 +116,8 @@ class WeatherOverlay(private val renderWindow: RenderWindow) : Overlay {
         private val RAIN = "environment/rain".toResourceLocation().texture()
         private val SNOW = "environment/snow".toResourceLocation().texture()
 
-        override fun build(renderWindow: RenderWindow): WeatherOverlay {
-            return WeatherOverlay(renderWindow)
+        override fun build(context: RenderContext): WeatherOverlay {
+            return WeatherOverlay(context)
         }
     }
 }

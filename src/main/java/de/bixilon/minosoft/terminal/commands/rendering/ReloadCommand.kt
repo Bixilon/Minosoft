@@ -18,7 +18,7 @@ import de.bixilon.minosoft.commands.nodes.LiteralNode
 object ReloadCommand : RenderingCommand {
     override var node = LiteralNode("reload", setOf("rl"))
         .addChild(LiteralNode("shaders", executor = {
-            it.connection.rendering!!.renderWindow.renderSystem.reloadShaders()
+            it.connection.rendering!!.context.renderSystem.reloadShaders()
             it.connection.util.sendDebugMessage("Shaders reloaded!")
         }))
 }

@@ -17,7 +17,7 @@ import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.provider.*
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.trim
@@ -35,8 +35,8 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
     private val FONT_INDEX = "font/default.json".toResourceLocation()
 
 
-    fun load(renderWindow: RenderWindow, latch: CountUpAndDownLatch): Font {
-        val fontIndex = renderWindow.connection.assetsManager.getOrNull(FONT_INDEX)?.readJsonObject() ?: return Font(arrayOf())
+    fun load(context: RenderContext, latch: CountUpAndDownLatch): Font {
+        val fontIndex = context.connection.assetsManager.getOrNull(FONT_INDEX)?.readJsonObject() ?: return Font(arrayOf())
 
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
         val providers: Array<FontProvider?> = arrayOfNulls(providersRaw.size)
@@ -50,7 +50,7 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
                     Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Unknown font provider: $type" }
                     return@add
                 }
-                providers[index] = factory.build(renderWindow, provider)
+                providers[index] = factory.build(context, provider)
             }
         }
         worker.work(latch)

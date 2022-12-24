@@ -25,7 +25,7 @@ abstract class EntityModel<E : Entity>(
     val renderer: EntityRenderer,
     val entity: E,
 ) : ModelUpdater {
-    val renderWindow = renderer.renderWindow
+    val context = renderer.context
     open var update = true
     var aabb = AABB.EMPTY
     open var hitbox: EntityHitbox = EntityHitbox(this)
@@ -80,12 +80,12 @@ abstract class EntityModel<E : Entity>(
             return
         }
         if (renderer.profile.hitbox.showThroughWalls) {
-            renderWindow.renderSystem.reset(faceCulling = false, depth = DepthFunctions.ALWAYS)
+            context.renderSystem.reset(faceCulling = false, depth = DepthFunctions.ALWAYS)
         } else {
-            renderWindow.renderSystem.reset(faceCulling = false)
+            context.renderSystem.reset(faceCulling = false)
         }
 
-        renderWindow.shaderManager.genericColorShader.use()
+        context.shaderManager.genericColorShader.use()
 
         hitbox.draw()
     }

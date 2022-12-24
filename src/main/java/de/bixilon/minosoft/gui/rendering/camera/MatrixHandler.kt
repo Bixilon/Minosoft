@@ -19,7 +19,7 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.FAR_PLANE
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.NEAR_PLANE
@@ -36,16 +36,16 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 
 class MatrixHandler(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
     private val fogManager: FogManager,
     private val camera: Camera,
 ) {
-    private val connection = renderWindow.connection
-    private val profile = renderWindow.connection.profiles.rendering.camera
+    private val connection = context.connection
+    private val profile = context.connection.profiles.rendering.camera
     val frustum = Frustum(this, connection.world)
 
     @Deprecated("outsource to connection")
-    var entity: Entity = renderWindow.connection.player
+    var entity: Entity = context.connection.player
         set(value) {
             field = value
             upToDate = false
@@ -88,7 +88,7 @@ class MatrixHandler(
         viewMatrix = GLM.lookAt(position, position + front, CAMERA_UP_VEC3)
     }
 
-    private fun calculateProjectionMatrix(screenDimensions: Vec2 = renderWindow.window.sizef) {
+    private fun calculateProjectionMatrix(screenDimensions: Vec2 = context.window.sizef) {
         projectionMatrix = GLM.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, NEAR_PLANE, FAR_PLANE)
     }
 
@@ -127,15 +127,14 @@ class MatrixHandler(
             camera.visibilityGraph.updateCamera(cameraBlockPosition.chunkPosition, cameraBlockPosition.sectionHeight)
         }
 
-        connection.fire(CameraPositionChangeEvent(renderWindow, usePosition))
+        connection.events.fire(CameraPositionChangeEvent(context, usePosition))
 
-        connection.fire(
-            CameraMatrixChangeEvent(
-                renderWindow = renderWindow,
-                viewMatrix = viewMatrix,
-                projectionMatrix = projectionMatrix,
-                viewProjectionMatrix = viewProjectionMatrix,
-            )
+        connection.events.fire(CameraMatrixChangeEvent(
+            context = context,
+            viewMatrix = viewMatrix,
+            projectionMatrix = projectionMatrix,
+            viewProjectionMatrix = viewProjectionMatrix,
+        )
         )
 
         updateShaders(usePosition)
@@ -153,7 +152,7 @@ class MatrixHandler(
     }
 
     private fun updateShaders(cameraPosition: Vec3) {
-        for (shader in renderWindow.renderSystem.shaders) {
+        for (shader in context.renderSystem.shaders) {
             if (shader is ViewProjectionShader) {
                 shader.viewProjectionMatrix = viewProjectionMatrix
             }

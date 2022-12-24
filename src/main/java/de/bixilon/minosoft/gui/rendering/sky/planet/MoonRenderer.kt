@@ -29,7 +29,7 @@ import java.util.*
 class MoonRenderer(
     sky: SkyRenderer,
 ) : PlanetRenderer(sky) {
-    override val texture = sky.renderWindow.textureManager.staticTextures.createTexture(MOON_PHASES)
+    override val texture = sky.context.textureManager.staticTextures.createTexture(MOON_PHASES)
     private var phase = MoonPhases.FULL_MOON
 
     private fun updateUV(phases: MoonPhases) {
@@ -45,13 +45,13 @@ class MoonRenderer(
     }
 
     override fun calculateAngle(): Float {
-        val time = sky.renderWindow.connection.world.time
+        val time = sky.context.connection.world.time
 
         return ((time.time / ProtocolDefinition.TICKS_PER_DAYf) - 0.75f) * 360.0f
     }
 
     override fun calculateIntensity(): Float {
-        val time = sky.renderWindow.connection.world.time
+        val time = sky.context.connection.world.time
         return when (time.phase) {
             DayPhases.NIGHT -> 1.0f
             DayPhases.DAY -> 0.0f

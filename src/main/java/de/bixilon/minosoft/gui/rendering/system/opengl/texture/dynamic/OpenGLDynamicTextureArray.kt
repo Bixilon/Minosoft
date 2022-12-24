@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
@@ -38,7 +38,7 @@ import java.nio.ByteBuffer
 import java.util.*
 
 class OpenGLDynamicTextureArray(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
     val renderSystem: OpenGLRenderSystem,
     val index: Int = 7,
     val initialSize: Int = 32,
@@ -70,7 +70,7 @@ class OpenGLDynamicTextureArray(
         }
 
         texture.state = DynamicTextureState.LOADED
-        renderWindow.textureManager.staticTextures.activate()
+        context.textureManager.staticTextures.activate()
     }
 
     override fun pushBuffer(identifier: UUID, force: Boolean, data: () -> TextureData): OpenGLDynamicTexture {
@@ -102,7 +102,7 @@ class OpenGLDynamicTextureArray(
             if (force) {
                 load(texture, index, mipmaps) // thread check already done
             } else {
-                renderWindow.queue += { load(texture, index, mipmaps) }
+                context.queue += { load(texture, index, mipmaps) }
             }
         }
 
@@ -189,7 +189,7 @@ class OpenGLDynamicTextureArray(
             textures[index] = texture
         }
         this.textures = textures
-        renderWindow.queue += { reload() }
+        context.queue += { reload() }
         lock.unlock()
     }
 

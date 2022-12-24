@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class Gray(override val renderWindow: RenderWindow) : FunEffect {
+class Gray(override val context: RenderContext) : FunEffect {
     override val resourceLocation: ResourceLocation get() = RESOURCE_LOCATION
     override val shader = createShader(fragment = "minosoft:framebuffer/world/fun/gray.fsh".toResourceLocation()) { FramebufferShader(it) }
 
@@ -28,8 +28,8 @@ class Gray(override val renderWindow: RenderWindow) : FunEffect {
     companion object : FunEffectFactory<Gray> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:gray".toResourceLocation()
 
-        override fun build(renderWindow: RenderWindow): Gray {
-            return Gray(renderWindow)
+        override fun build(context: RenderContext): Gray {
+            return Gray(context)
         }
     }
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 interface IntegratedFramebuffer : Drawable {
-    val renderWindow: RenderWindow
+    val context: RenderContext
     val shader: FramebufferShader
     val framebuffer: Framebuffer
     val mesh: Mesh
@@ -39,13 +39,13 @@ interface IntegratedFramebuffer : Drawable {
     fun postInit() {}
 
     fun clear() {
-        renderWindow.renderSystem.framebuffer = framebuffer
-        renderWindow.renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+        context.renderSystem.framebuffer = framebuffer
+        context.renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
     }
 
     override fun draw() {
-        renderWindow.renderSystem.framebuffer = null
-        renderWindow.renderSystem.reset(
+        context.renderSystem.framebuffer = null
+        context.renderSystem.reset(
             blending = true,
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,
             destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,

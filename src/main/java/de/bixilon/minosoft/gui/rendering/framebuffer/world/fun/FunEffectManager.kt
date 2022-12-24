@@ -17,12 +17,12 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class FunEffectManager(
-    private val renderWindow: RenderWindow,
+    private val context: RenderContext,
 ) {
     private val effects: MutableMap<ResourceLocation, FunEffect> = mutableMapOf()
     var effect: FunEffect? = null
@@ -33,7 +33,7 @@ class FunEffectManager(
 
 
     init {
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             "minosoft:switch_fun_settings".toResourceLocation(),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
@@ -57,7 +57,7 @@ class FunEffectManager(
             this.effect = null
             return
         }
-        this.effect = this.effects.getOrPut(effect.resourceLocation) { effect.build(renderWindow) }
+        this.effect = this.effects.getOrPut(effect.resourceLocation) { effect.build(context) }
     }
 
     fun preDraw() {

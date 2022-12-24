@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
@@ -40,10 +40,10 @@ open class GUIMeshElement<T : Element>(
     val element: T,
 ) : HUDElement, AsyncDrawable, Drawable {
     override val guiRenderer: GUIRenderer = element.guiRenderer
-    override val renderWindow: RenderWindow = guiRenderer.renderWindow
+    override val context: RenderContext = guiRenderer.context
     private val clickCounter = MouseClickCounter()
     private var _mesh: GUIMesh? = null
-    var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, FloatListUtil.direct(1000))
+    var mesh: GUIMesh = GUIMesh(context, guiRenderer.matrix, FloatListUtil.direct(1000))
     override val skipDraw: Boolean
         get() = if (element is BaseDrawable) element.skipDraw else false
     protected var lastRevision = 0L
@@ -91,7 +91,7 @@ open class GUIMeshElement<T : Element>(
     protected fun createNewMesh() {
         if (this._mesh != null) throw MemoryLeakException("Mesh to unload is already set!")
         this._mesh = this.mesh
-        this.mesh = GUIMesh(renderWindow, guiRenderer.matrix, mesh.data)
+        this.mesh = GUIMesh(context, guiRenderer.matrix, mesh.data)
         this.mesh.finish()
     }
 

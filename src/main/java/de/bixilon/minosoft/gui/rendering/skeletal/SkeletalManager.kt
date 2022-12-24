@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.util.KUtil.minosoft
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 
 class SkeletalManager(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
 ) {
-    private val uniformBuffer = renderWindow.renderSystem.createFloatUniformBuffer(memAllocFloat(TRANSFORMS * MAT4_SIZE))
-    val shader = renderWindow.renderSystem.createShader(minosoft("skeletal")) { SkeletalShader(it, uniformBuffer) }
+    private val uniformBuffer = context.renderSystem.createFloatUniformBuffer(memAllocFloat(TRANSFORMS * MAT4_SIZE))
+    val shader = context.renderSystem.createShader(minosoft("skeletal")) { SkeletalShader(it, uniformBuffer) }
 
     fun init() {
         uniformBuffer.init()
@@ -35,11 +35,11 @@ class SkeletalManager(
     }
 
     private fun prepareDraw() {
-        if (renderWindow.renderSystem.shader == shader.native) {
+        if (context.renderSystem.shader == shader.native) {
             // probably already prepared
             return
         }
-        renderWindow.renderSystem.reset()
+        context.renderSystem.reset()
         shader.use()
     }
 

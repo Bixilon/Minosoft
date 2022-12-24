@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.renderer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -23,18 +23,18 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: BaseComponent): Boolean {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: BaseComponent): Boolean {
         for (part in text.parts) {
-            if (ChatComponentRenderer.render(initialOffset, offset, size, element, renderWindow, consumer, options, renderInfo, part)) {
+            if (ChatComponentRenderer.render(initialOffset, offset, size, element, context, consumer, options, renderInfo, part)) {
                 return true
             }
         }
         return false
     }
 
-    override fun render3dFlat(renderWindow: RenderWindow, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: BaseComponent, light: Int) {
+    override fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: BaseComponent, light: Int) {
         for (part in text.parts) {
-            ChatComponentRenderer.render3dFlat(renderWindow, offset, scale, maxSize, consumer, part, light)
+            ChatComponentRenderer.render3dFlat(context, offset, scale, maxSize, consumer, part, light)
         }
     }
 

@@ -212,8 +212,8 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
     }
 
     override fun poll(): Boolean {
-        val player = guiRenderer.renderWindow.connection.player
-        val hardcode = guiRenderer.renderWindow.connection.world.hardcore
+        val player = guiRenderer.context.connection.player
+        val hardcode = guiRenderer.context.connection.world.hardcore
         val poison = player.effects[DamageEffect.Poison] != null
         val wither = player.effects[DamageEffect.Wither] != null
         val frozen = player.ticksFrozen > 0

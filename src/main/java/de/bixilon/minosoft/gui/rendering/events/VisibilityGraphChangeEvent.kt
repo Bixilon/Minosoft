@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.events
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.modding.event.events.AsyncEvent
 
 class VisibilityGraphChangeEvent(
-    renderWindow: RenderWindow,
-) : RenderEvent(renderWindow), AsyncEvent
+    context: RenderContext,
+) : RenderEvent(context), AsyncEvent

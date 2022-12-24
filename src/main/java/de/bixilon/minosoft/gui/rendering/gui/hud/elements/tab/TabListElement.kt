@@ -201,7 +201,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     }
 
     fun update(uuid: UUID) {
-        val item = guiRenderer.renderWindow.connection.tabList.uuid[uuid] ?: return
+        val item = guiRenderer.context.connection.tabList.uuid[uuid] ?: return
         val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, uuid, item, 0) }
         lock.lock()
         entry.silentApply()
@@ -220,7 +220,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
 
     override fun init() {
-        val connection = renderWindow.connection
+        val connection = context.connection
         connection.tabList::header.observe(this) { header.text = it }
         connection.tabList::footer.observe(this) { footer.text = it }
         connection.events.listen<TabListEntryChangeEvent> {

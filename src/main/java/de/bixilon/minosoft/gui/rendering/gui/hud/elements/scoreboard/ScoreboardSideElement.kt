@@ -162,7 +162,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     }
 
     override fun init() {
-        val connection = renderWindow.connection
+        val connection = context.connection
         connection.events.listen<ObjectivePositionSetEvent> {
             if (it.position != ScoreboardPositions.SIDEBAR) {
                 return@listen

@@ -25,7 +25,7 @@ interface PersonView : CameraView {
 
     override fun onInput(input: MovementInput, delta: Double) {
         val isCamera = camera.matrixHandler.entity is LocalPlayerEntity
-        camera.renderWindow.connection.player.input = if (isCamera) input else MovementInput()
+        camera.context.connection.player.input = if (isCamera) input else MovementInput()
     }
 
     fun handleMouse(delta: Vec2d): EntityRotation? {
@@ -33,7 +33,7 @@ interface PersonView : CameraView {
         if (entity !is LocalPlayerEntity) {
             return null
         }
-        val rotation = camera.renderWindow.inputHandler.cameraInput.calculateRotation(delta, entity.rotation)
+        val rotation = camera.context.inputHandler.cameraInput.calculateRotation(delta, entity.rotation)
         entity.rotation = rotation
         return rotation
     }

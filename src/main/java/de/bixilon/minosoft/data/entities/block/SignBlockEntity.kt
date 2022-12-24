@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -40,8 +40,8 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
         }
     }
 
-    override fun createMeshedRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i): SignBlockEntityRenderer {
-        return SignBlockEntityRenderer(this, renderWindow, blockState)
+    override fun createMeshedRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i): SignBlockEntityRenderer {
+        return SignBlockEntityRenderer(this, context, blockState)
     }
 
     companion object : BlockEntityFactory<SignBlockEntity> {

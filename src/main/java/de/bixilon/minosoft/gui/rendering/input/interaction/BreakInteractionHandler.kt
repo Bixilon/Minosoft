@@ -30,7 +30,7 @@ import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.item.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.registries.misc.event.world.handler.BlockDestroyedHandler
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.modding.event.events.LegacyBlockBreakAckEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -40,9 +40,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BreakInteractionHandler(
-    val renderWindow: RenderWindow,
+    val context: RenderContext,
 ) {
-    private val connection = renderWindow.connection
+    private val connection = context.connection
 
     private var breakPosition: Vec3i? = null
     private var breakBlockState: BlockState? = null
@@ -95,7 +95,7 @@ class BreakInteractionHandler(
             cancelDigging()
             return false
         }
-        val target = renderWindow.camera.targetHandler.target
+        val target = context.camera.targetHandler.target
 
         if (target !is BlockTarget) {
             cancelDigging()
@@ -246,7 +246,7 @@ class BreakInteractionHandler(
     }
 
     fun init() {
-        renderWindow.inputHandler.registerCheckCallback(
+        context.inputHandler.registerCheckCallback(
             DESTROY_BLOCK_KEYBINDING to KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
             )
@@ -281,7 +281,7 @@ class BreakInteractionHandler(
     }
 
     fun draw(deltaTime: Double) {
-        val isKeyDown = renderWindow.inputHandler.isKeyBindingDown(DESTROY_BLOCK_KEYBINDING)
+        val isKeyDown = context.inputHandler.isKeyBindingDown(DESTROY_BLOCK_KEYBINDING)
         // ToDo: Entity attacking
         val consumed = checkBreaking(isKeyDown, deltaTime)
 

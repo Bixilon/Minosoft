@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 
-abstract class FirstPersonOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
-    protected val player = renderWindow.connection.player
+abstract class FirstPersonOverlay(context: RenderContext) : SimpleOverlay(context) {
+    protected val player = context.connection.player
     override val render: Boolean
-        get() = renderWindow.camera.view.view.renderOverlays
+        get() = context.camera.view.view.renderOverlays
 }

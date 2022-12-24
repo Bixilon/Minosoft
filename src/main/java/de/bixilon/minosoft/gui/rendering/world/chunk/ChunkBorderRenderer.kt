@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -41,10 +41,10 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ChunkBorderRenderer(
     val connection: PlayConnection,
-    override val renderWindow: RenderWindow,
+    override val context: RenderContext,
 ) : AsyncRenderer, OpaqueDrawable, MeshSwapper {
     private val profile = connection.profiles.rendering
-    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    override val renderSystem: RenderSystem = context.renderSystem
     private var chunkPosition: Vec2i? = null
     private var sectionHeight: Int = Int.MIN_VALUE
 
@@ -57,7 +57,7 @@ class ChunkBorderRenderer(
         get() = mesh == null || !profile.chunkBorder.enabled
 
     override fun init(latch: CountUpAndDownLatch) {
-        renderWindow.inputHandler.registerKeyCallback(
+        context.inputHandler.registerKeyCallback(
             CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
@@ -74,16 +74,16 @@ class ChunkBorderRenderer(
             this.unload = true
             return
         }
-        val eyePosition = renderWindow.camera.matrixHandler.entity.eyePosition.blockPosition
+        val eyePosition = context.camera.matrixHandler.entity.eyePosition.blockPosition
         val chunkPosition = eyePosition.chunkPosition
         val sectionHeight = eyePosition.sectionHeight
         if (chunkPosition == this.chunkPosition && sectionHeight == this.sectionHeight && mesh != null) {
             return
         }
         unload = true
-        val mesh = LineMesh(renderWindow)
+        val mesh = LineMesh(context)
 
-        val dimension = renderWindow.connection.world.dimension ?: return
+        val dimension = context.connection.world.dimension ?: return
         val basePosition = chunkPosition * Vec2i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_WIDTH_Z)
 
         mesh.drawInnerChunkLines(basePosition, dimension)
@@ -186,8 +186,8 @@ class ChunkBorderRenderer(
     }
 
     override fun setupOpaque() {
-        renderWindow.renderSystem.reset()
-        renderWindow.shaderManager.genericColorShader.use()
+        context.renderSystem.reset()
+        context.shaderManager.genericColorShader.use()
     }
 
     override fun drawOpaque() {
@@ -210,8 +210,8 @@ class ChunkBorderRenderer(
         private const val OUTER_CHUNK_SIZE = 3
 
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): ChunkBorderRenderer {
-            return ChunkBorderRenderer(connection, renderWindow)
+        override fun build(connection: PlayConnection, context: RenderContext): ChunkBorderRenderer {
+            return ChunkBorderRenderer(connection, context)
         }
     }
 }

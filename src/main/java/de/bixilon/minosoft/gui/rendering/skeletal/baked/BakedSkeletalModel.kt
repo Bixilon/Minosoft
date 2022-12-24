@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.Companion.BLOCK_RESOLUTION
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
@@ -62,9 +62,9 @@ class BakedSkeletalModel(
         return mapping
     }
 
-    fun preload(renderWindow: RenderWindow) {
+    fun preload(context: RenderContext) {
         check(state == SkeletalModelStates.DECLARED) { "Can not preload model in $state" }
-        val mesh = SkeletalMesh(renderWindow, 1000)
+        val mesh = SkeletalMesh(context, 1000)
 
         val outlinerMapping = calculateOutlinerMapping()
 

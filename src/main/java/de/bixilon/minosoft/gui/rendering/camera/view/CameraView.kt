@@ -16,11 +16,11 @@ package de.bixilon.minosoft.gui.rendering.camera.view
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 
 interface CameraView {
-    val renderWindow: RenderWindow
+    val context: RenderContext
 
     val renderSelf: Boolean get() = true
     val renderArm: Boolean get() = false

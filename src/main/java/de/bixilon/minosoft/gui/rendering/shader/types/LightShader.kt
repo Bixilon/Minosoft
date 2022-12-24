@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 interface LightShader : AbstractShader {
     val lightmap: LightmapBuffer
 
-    fun lightmap(name: String = "uLightMapBuffer", buffer: LightmapBuffer = native.renderWindow.light.map.buffer): ShaderUniform<LightmapBuffer> {
+    fun lightmap(name: String = "uLightMapBuffer", buffer: LightmapBuffer = native.context.light.map.buffer): ShaderUniform<LightmapBuffer> {
         return uniform(name, buffer) { native, name, value -> value.use(native, name) }
     }
 }

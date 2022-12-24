@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class Flip(override val renderWindow: RenderWindow) : FunEffect {
+class Flip(override val context: RenderContext) : FunEffect {
     override val resourceLocation: ResourceLocation get() = RESOURCE_LOCATION
     override val shader = createShader(fragment = "minosoft:framebuffer/world/fun/flip.fsh".toResourceLocation()) { FramebufferShader(it) }
 
@@ -28,8 +28,8 @@ class Flip(override val renderWindow: RenderWindow) : FunEffect {
     companion object : FunEffectFactory<Flip> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:flip".toResourceLocation()
 
-        override fun build(renderWindow: RenderWindow): Flip {
-            return Flip(renderWindow)
+        override fun build(context: RenderContext): Flip {
+            return Flip(context)
         }
     }
 }

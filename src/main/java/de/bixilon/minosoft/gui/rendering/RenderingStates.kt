@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering
 
 enum class RenderingStates {
     LOADING,
+    AWAITING,
     RUNNING,
     SLOW,
     PAUSED,

@@ -52,7 +52,7 @@ class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     override fun poll(): Boolean {
         val debugHUDElement = guiRenderer.hud[DebugHUDElement]
         val hide = debugHUDElement?.enabled == true
-        val fps = guiRenderer.renderWindow.renderStats.smoothAvgFPS.rounded10
+        val fps = guiRenderer.context.renderStats.smoothAvgFPS.rounded10
         if (this.hide == hide && this.fps == fps) {
             return false
         }
