@@ -18,7 +18,10 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
 import de.bixilon.minosoft.gui.rendering.font.provider.BitmapFontProvider
+import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(priority = 100, groups = ["rendering"])
@@ -34,6 +37,9 @@ class RenderTestLoader {
         RenderTestUtil.rendering.start(latch, audio = false)
         latch.dec()
         latch.await()
-        RenderTestUtil.context = RenderTestUtil.rendering.renderWindow
+        val context = RenderTestUtil.rendering.renderWindow
+        assertTrue(context.window is DummyWindow)
+        assertTrue(context.renderSystem is DummyRenderSystem)
+        RenderTestUtil.context = context
     }
 }
