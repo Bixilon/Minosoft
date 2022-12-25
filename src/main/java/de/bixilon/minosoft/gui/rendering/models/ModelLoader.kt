@@ -79,8 +79,8 @@ class ModelLoader(
             return
         }
         val model = fluid.createModel() ?: return
-        model.load(context)
         fluid.model = model
+        model.load(context)
     }
 
     fun loadItem(item: Item) {
@@ -114,17 +114,12 @@ class ModelLoader(
         blockLatch.await()
     }
 
-    private fun loadFluidModels(latch: CountUpAndDownLatch) {
-        val blockLatch = CountUpAndDownLatch(1, latch)
-        // ToDo: Optimize performance
+    private fun loadFluidModels() {
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading fluid models..." }
 
         for (fluid in registry.fluidRegistry) {
-            blockLatch.inc()
-            DefaultThreadPool += { loadFluid(fluid); blockLatch.dec() }
+            loadFluid(fluid)
         }
-        blockLatch.dec()
-        blockLatch.await()
     }
 
     private fun loadItemModels(latch: CountUpAndDownLatch) {
@@ -152,7 +147,7 @@ class ModelLoader(
 
     fun load(latch: CountUpAndDownLatch) {
         loadBlockModels(latch)
-        loadFluidModels(latch)
+        loadFluidModels()
         loadItemModels(latch)
         loadEntityModels(latch)
 

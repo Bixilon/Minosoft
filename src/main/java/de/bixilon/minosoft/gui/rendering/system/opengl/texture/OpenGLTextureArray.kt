@@ -55,19 +55,15 @@ class OpenGLTextureArray(
 
     @Synchronized
     override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: () -> AbstractTexture): AbstractTexture {
-        var texture = textures[resourceLocation]
+        textures[resourceLocation]?.let { return it }
 
         // load .mcmeta
         val properties = readImageProperties(resourceLocation) ?: ImageProperties()
 
-        if (texture == null) {
-            texture = if (properties.animation == null) {
-                default()
-            } else {
-                SpriteTexture(default().apply { generateMipMaps = false })
-            }
+        val texture = if (properties.animation == null) {
+            default()
         } else {
-            return texture
+            SpriteTexture(default().apply { generateMipMaps = false })
         }
 
         texture.properties = properties
