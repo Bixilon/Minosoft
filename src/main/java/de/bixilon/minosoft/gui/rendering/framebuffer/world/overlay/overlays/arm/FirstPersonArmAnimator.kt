@@ -33,8 +33,8 @@ class FirstPersonArmAnimator(private val player: PlayerModel) : SkeletalAnimatio
             return null
         }
         if (player.entity.mainArm == Arms.LEFT) {
-            return Vec3(120, 20, 0)
+            return Vec3(-120, -20, 0)
         }
-        return Vec3(120, -20, -10)
+        return Vec3(-120, 20, 10)
     }
 }

@@ -112,7 +112,7 @@ class ArmOverlay(private val context: RenderContext) : Overlay {
         }
         screenMatrix.translateAssign(translation) // move inner side of arm to 0|0|0
 
-        screenMatrix.translateAssign(Vec3(if (arm == Arms.LEFT) -18 else -12, -54, -10).fromBlockCoordinates())
+        screenMatrix.translateAssign(Vec3(if (arm == Arms.LEFT) -18 else -12, -38, -10).fromBlockCoordinates())
 
         this.refreshTransform = false
         return projection * screenMatrix * matrix
