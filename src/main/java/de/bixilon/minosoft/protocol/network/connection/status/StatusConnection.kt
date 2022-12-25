@@ -75,7 +75,7 @@ class StatusConnection(
 
             val addresses = this.addresses!!
             val nextIndex = ++addressIndex
-            if (addresses.size >= nextIndex) {
+            if (addresses.size > nextIndex) {
                 val nextAddress = addresses[nextIndex]
                 Log.log(LogMessageType.NETWORK_RESOLVING) { "Could not connect to $address, trying next hostname: $nextAddress" }
                 realAddress = nextAddress

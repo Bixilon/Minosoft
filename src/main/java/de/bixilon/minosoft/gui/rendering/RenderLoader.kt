@@ -150,7 +150,6 @@ object RenderLoader {
         }
 
         val time = measureNanoTime {
-            latch.dec()
             latch.await()
             state = RenderingStates.RUNNING
             window.visible = true
