@@ -55,9 +55,9 @@ interface SkeletalAnimation {
         val rotation = get(KeyframeChannels.ROTATION, outliner, tweakedTime)
         if (rotation != null && rotation != Vec3.EMPTY_INSTANCE) {
             transform.translateAssign(outliner.origin.fromBlockCoordinates())
-            transform.rotateAssign(rotation.x.rad, Vec3(1, 0, 0))
-            transform.rotateAssign(rotation.y.rad, Vec3(0, 1, 0))
-            transform.rotateAssign(rotation.z.rad, Vec3(0, 0, 1))
+            transform.rotateAssign(-rotation.x.rad, Vec3(1, 0, 0))
+            transform.rotateAssign(-rotation.y.rad, Vec3(0, 1, 0))
+            transform.rotateAssign(-rotation.z.rad, Vec3(0, 0, 1))
             transform.translateAssign(-outliner.origin.fromBlockCoordinates())
         }
         val scale = get(KeyframeChannels.SCALE, outliner, tweakedTime)
