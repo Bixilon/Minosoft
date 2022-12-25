@@ -63,6 +63,9 @@ class RenderWindowInputHandler(
     val interactionManager = InteractionManager(context)
     var inputHandler: InputHandler? = null
         set(value) {
+            if (field == value) {
+                return
+            }
             field = value
 
             deactivateAll()
@@ -132,9 +135,8 @@ class RenderWindowInputHandler(
         keysDown.clear()
         keysLastDownTime.clear()
 
-        val iterator = keyBindingCallbacks.iterator()
-        for ((name, pair) in iterator) {
-            val down = keyBindingsDown.contains(name)
+        for ((name, pair) in keyBindingCallbacks) {
+            val down = name in keyBindingsDown
             if (!down || pair.defaultPressed) {
                 continue
             }
@@ -151,7 +153,7 @@ class RenderWindowInputHandler(
             for (callback in pair.callback) {
                 callback(false)
             }
-            iterator.remove()
+            keyBindingsDown -= name
         }
     }
 
