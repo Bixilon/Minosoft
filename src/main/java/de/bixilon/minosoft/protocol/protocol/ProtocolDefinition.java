@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.kotlinglm.vec3.Vec3i;
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors;
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor;
+import kotlin.text.Regex;
 
 import java.util.regex.Pattern;
 
@@ -40,6 +41,8 @@ public final class ProtocolDefinition {
 
     public static final String DEFAULT_NAMESPACE = "minecraft";
     public static final String MINOSOFT_NAMESPACE = "minosoft";
+    public static final Regex ALLOWED_NAMESPACE_PATTERN = new Regex("[a-z0-9_.\\-]+");
+    public static final Regex ALLOWED_PATH_PATTERN = new Regex("(?!.*//)[a-z0-9_./\\-]+");
     public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '\u00A7';
 
     public static final int DEFAULT_BUFFER_SIZE = 4096;

@@ -36,4 +36,45 @@ internal class ProtocolDefinitionTest {
     fun testSectionSize() {
         assertEquals(ProtocolDefinition.BLOCKS_PER_SECTION, 4096)
     }
+
+    /**
+     * @see [de.bixilon.minosoft.data.registries.ResourceLocation]
+     */
+    @Test
+    fun testAllowedNamespaces() {
+        // Should Pass
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("minecraft"), true)
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("min1234567890craft"), true)
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("mine-craft"), true)
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("mine_craft"), true)
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("mine.craft"), true)
+        // Should Fail
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("MineCraft"), false)
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("mine craft"), false)
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("minecraft!"), false)
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("^minecraft"), false)
+        assertEquals(ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches("mine/craft"), false)
+    }
+
+    /**
+     * @see [de.bixilon.minosoft.data.registries.ResourceLocation]
+     */
+    @Test
+    fun testAllowedResourceLocationPaths() {
+        // Should Pass
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("minecraft"), true)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("min1234567890craft"), true)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("mine-craft"), true)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("mine_craft"), true)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("mine.craft"), true)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("mine/craft"), true)
+        // Should Fail
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("MineCraft"), false)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("mine craft"), false)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("minecraft!"), false)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("^minecraft"), false)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("mine//craft"), false)
+        assertEquals(ProtocolDefinition.ALLOWED_PATH_PATTERN.matches("mine///craft"), false)
+    }
+
 }
