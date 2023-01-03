@@ -34,7 +34,7 @@ object RegistriesUtil {
             if (Clearable::class.java.isAssignableFrom(field.type)) {
                 clearable += field
             }
-            if (Parentable::class.java.isAssignableFrom(field.type)) {
+            if (Parentable::class.java.isAssignableFrom(field.type) && field.name != Parentable<*>::parent.name) {
                 parentable += field
             }
             if (Registry::class.java.isAssignableFrom(field.type)) {
