@@ -45,7 +45,7 @@ data class Biome(
     }
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     companion object : ResourceLocationCodec<Biome> {

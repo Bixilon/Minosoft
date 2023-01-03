@@ -20,11 +20,11 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLoc
 
 data class VillagerProfession(
     override val identifier: ResourceLocation,
-    // ToDo
+    // TODO
 ) : RegistryItem() {
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     companion object : ResourceLocationCodec<VillagerProfession> {

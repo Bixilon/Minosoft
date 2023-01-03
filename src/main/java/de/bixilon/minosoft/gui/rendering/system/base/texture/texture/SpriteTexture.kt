@@ -57,7 +57,7 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
         val bytesPerTexture = size.x * size.y * PNGDecoder.Format.RGBA.numComponents
 
         for (i in 0 until animationProperties.frameCount) {
-            val splitTexture = MemoryTexture(resourceLocation = ResourceLocation.of(resourceLocation.full + "_animated_$i"), size)
+            val splitTexture = MemoryTexture(resourceLocation = ResourceLocation.of(resourceLocation.toString() + "_animated_$i"), size)
 
             splitTexture.data!!.let {
                 it.copyFrom(original.data!!, bytesPerTexture * i, 0, bytesPerTexture)

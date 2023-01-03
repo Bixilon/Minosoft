@@ -27,7 +27,7 @@ open class Statistic(
 ) : RegistryItem(), Translatable {
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     companion object : ResourceLocationCodec<Statistic> {

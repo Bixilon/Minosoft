@@ -33,7 +33,7 @@ open class Fluid(override val identifier: ResourceLocation) : RegistryItem() {
     open var model: FluidModel? = null
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     open fun matches(other: Fluid): Boolean {

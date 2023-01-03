@@ -18,7 +18,7 @@ abstract class Enchantment : RegistryItem() {
     override val injectable: Boolean get() = false
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     override fun hashCode(): Int {

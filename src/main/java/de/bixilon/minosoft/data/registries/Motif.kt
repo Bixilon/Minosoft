@@ -24,7 +24,7 @@ data class Motif(
 ) : RegistryItem() {
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     companion object : ResourceLocationCodec<Motif> {

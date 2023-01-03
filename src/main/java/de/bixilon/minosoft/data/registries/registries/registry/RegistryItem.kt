@@ -62,6 +62,6 @@ abstract class RegistryItem : Identified {
 
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 }

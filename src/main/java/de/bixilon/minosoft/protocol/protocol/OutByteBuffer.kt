@@ -294,7 +294,7 @@ open class OutByteBuffer() {
     }
 
     fun writeResourceLocation(resourceLocation: ResourceLocation) {
-        writeString(resourceLocation.full)
+        writeString(resourceLocation.toString())
     }
 
     fun writeVec3d(vec3: Vec3) {

@@ -25,6 +25,6 @@ abstract class AbstractEntityVariant(
     val texture = data["texture"].toResourceLocation().texture()
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 }

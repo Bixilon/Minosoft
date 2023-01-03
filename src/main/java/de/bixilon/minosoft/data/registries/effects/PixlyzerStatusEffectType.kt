@@ -29,7 +29,7 @@ class PixlyzerStatusEffectType(
 ) : StatusEffectType(), Colored, CategorizedEffect {
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     companion object : ResourceLocationCodec<StatusEffectType> {

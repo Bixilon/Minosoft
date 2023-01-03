@@ -72,7 +72,7 @@ open class Block(
     }
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     open fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? = defaultState

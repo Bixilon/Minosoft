@@ -40,7 +40,7 @@ object ResourceLocationSerializer : SimpleModule() {
     object Serializer : StdSerializer<ResourceLocation>(ResourceLocation::class.java) {
 
         override fun serialize(value: ResourceLocation?, generator: JsonGenerator, provider: SerializerProvider?) {
-            generator.writeString(value?.full)
+            generator.writeString(value?.toString())
         }
     }
 }

@@ -34,7 +34,7 @@ data class ParticleType(
 ) : RegistryItem() {
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     fun default(): ParticleData {
