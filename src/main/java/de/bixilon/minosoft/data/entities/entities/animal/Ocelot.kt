@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Ocelot(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
@@ -30,7 +31,7 @@ class Ocelot(connection: PlayConnection, entityType: EntityType, data: EntityDat
 
 
     companion object : EntityFactory<Ocelot> {
-        override val identifier: ResourceLocation = ResourceLocation("ocelot")
+        override val identifier: ResourceLocation = KUtil.minecraft("ocelot")
         private val IS_TRUSTED_DATA = EntityDataField("OCELOT_IS_TRUSTING")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Ocelot {

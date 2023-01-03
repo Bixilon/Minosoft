@@ -91,7 +91,7 @@ interface NativeShader {
         )
 
         fun ResourceLocation.shader(): ResourceLocation {
-            return ResourceLocation(namespace, "rendering/shader/${path.replace("(\\w+)\\.\\w+".toRegex(), "$1")}/${path.split("/").last()}")
+            return ResourceLocation.of(namespace, "rendering/shader/${path.replace("(\\w+)\\.\\w+".toRegex(), "$1")}/${path.split("/").last()}")
         }
     }
 }

@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -95,7 +96,7 @@ class WorldBorderRenderer(
     }
 
     companion object : RendererBuilder<WorldBorderRenderer> {
-        override val identifier = ResourceLocation("minosoft:world_border")
+        override val identifier = minosoft("world_border")
         val GROWING_COLOR = "#40FF80".asColor()
         val SHRINKING_COLOR = "#FF3030".asColor()
         val STATIC_COLOR = "#20A0FF".asColor()

@@ -37,6 +37,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
@@ -262,7 +263,7 @@ class ParticleRenderer(
 
 
     companion object : RendererBuilder<ParticleRenderer> {
-        override val identifier = ResourceLocation("minosoft:particle")
+        override val identifier = minosoft("particle")
 
         override fun build(connection: PlayConnection, context: RenderContext): ParticleRenderer? {
             if (connection.profiles.particle.skipLoading) {

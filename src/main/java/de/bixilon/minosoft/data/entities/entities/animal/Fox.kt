@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 import java.util.*
 
 class Fox(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
@@ -84,7 +85,7 @@ class Fox(connection: PlayConnection, entityType: EntityType, data: EntityData, 
     }
 
     companion object : EntityFactory<Fox> {
-        override val identifier: ResourceLocation = ResourceLocation("fox")
+        override val identifier: ResourceLocation = KUtil.minecraft("fox")
         private val VARIANT_DATA = EntityDataField("FOX_VARIANT")
         private val FLAGS_DATA = EntityDataField("FOX_FLAGS")
         private val OWNER_DATA = EntityDataField("FOX_TRUSTED_1")

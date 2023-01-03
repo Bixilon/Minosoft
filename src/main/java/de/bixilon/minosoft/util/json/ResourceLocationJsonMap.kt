@@ -22,7 +22,7 @@ object ResourceLocationJsonMap {
         val ret: MutableMap<ResourceLocation, Any> = mutableMapOf()
 
         for ((key, value) in this) {
-            ret[ResourceLocation(key.unsafeCast<String>())] = value.unsafeCast<Any>()
+            ret[ResourceLocation.of(key.unsafeCast<String>())] = value.unsafeCast<Any>()
         }
 
         return ret

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil
 
 class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, data, position, rotation) {
 
@@ -45,7 +46,7 @@ class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityD
 
 
     companion object : EntityFactory<Enderman> {
-        override val identifier: ResourceLocation = ResourceLocation("enderman")
+        override val identifier: ResourceLocation = KUtil.minecraft("enderman")
         private val CARRIED_BLOCK_DATA = EntityDataField("ENDERMAN_CARRIED_BLOCK")
         private val SCREAMING_DATA = EntityDataField("ENDERMAN_IS_SCREAMING")
         private val STARRING_DATA = EntityDataField("ENDERMAN_IS_STARRING")

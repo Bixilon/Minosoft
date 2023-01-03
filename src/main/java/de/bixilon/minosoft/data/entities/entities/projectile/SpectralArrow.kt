@@ -19,12 +19,13 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class SpectralArrow(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractArrow(connection, entityType, data, position, rotation) {
 
 
     companion object : EntityFactory<SpectralArrow> {
-        override val identifier: ResourceLocation = ResourceLocation("spectral_arrow")
+        override val identifier: ResourceLocation = KUtil.minecraft("spectral_arrow")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): SpectralArrow {
             return SpectralArrow(connection, entityType, data, position, rotation)

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(connection, entityType, data, position, rotation) {
 
@@ -35,7 +36,7 @@ class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType, d
 
 
     companion object : EntityFactory<CommandBlockMinecart> {
-        override val identifier: ResourceLocation = ResourceLocation("command_block_minecart")
+        override val identifier: ResourceLocation = KUtil.minecraft("command_block_minecart")
         private val COMMAND_DATA = EntityDataField("MINECART_COMMAND_BLOCK_COMMAND")
         private val LAST_OUTPUT_DATA = EntityDataField("MINECART_COMMAND_BLOCK_LAST_OUTPUT")
 

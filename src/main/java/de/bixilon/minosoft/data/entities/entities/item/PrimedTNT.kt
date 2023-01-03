@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
@@ -31,7 +32,7 @@ class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: Entity
 
 
     companion object : EntityFactory<PrimedTNT> {
-        override val identifier: ResourceLocation = ResourceLocation("tnt")
+        override val identifier: ResourceLocation = KUtil.minecraft("tnt")
         private val FUSE_TIME_DATA = EntityDataField("PRIMED_TNT_FUSE_TIME")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PrimedTNT {

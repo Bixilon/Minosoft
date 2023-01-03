@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 open class Llama(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractChestedHorse(connection, entityType, data, position, rotation) {
 
@@ -53,7 +54,7 @@ open class Llama(connection: PlayConnection, entityType: EntityType, data: Entit
     }
 
     companion object : EntityFactory<Llama> {
-        override val identifier: ResourceLocation = ResourceLocation("llama")
+        override val identifier: ResourceLocation = KUtil.minecraft("llama")
         private val STRENGTH_DATA = EntityDataField("LLAMA_STRENGTH")
         private val CARPET_COLOR_DATA = EntityDataField("LLAMA_CARPET_COLOR")
         private val VARIANT_DATA = EntityDataField("LLAMA_VARIANT")

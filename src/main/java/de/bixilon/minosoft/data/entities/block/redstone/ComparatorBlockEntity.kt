@@ -17,11 +17,12 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ComparatorBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<ComparatorBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:comparator")
+        override val identifier: ResourceLocation = KUtil.minecraft("comparator")
 
         override fun build(connection: PlayConnection): ComparatorBlockEntity {
             return ComparatorBlockEntity(connection)

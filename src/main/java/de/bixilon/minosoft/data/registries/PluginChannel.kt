@@ -31,7 +31,7 @@ data class PluginChannel(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): PluginChannel {
             return PluginChannel(
                 identifier = resourceLocation,
-                name = ResourceLocation(data["name"].unsafeCast())
+                name = ResourceLocation.of(data["name"].unsafeCast())
             )
         }
     }

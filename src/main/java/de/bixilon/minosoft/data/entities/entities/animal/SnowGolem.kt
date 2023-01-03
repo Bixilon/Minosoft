@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class SnowGolem(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, data, position, rotation) {
 
@@ -33,7 +34,7 @@ class SnowGolem(connection: PlayConnection, entityType: EntityType, data: Entity
         get() = getSnowGolemFlags(0x10)
 
     companion object : EntityFactory<SnowGolem> {
-        override val identifier: ResourceLocation = ResourceLocation("snow_golem")
+        override val identifier: ResourceLocation = KUtil.minecraft("snow_golem")
         private val FLAGS_DATA = EntityDataField("SNOW_GOLEM_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): SnowGolem {

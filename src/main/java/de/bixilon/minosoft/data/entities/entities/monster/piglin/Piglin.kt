@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil
 
 class Piglin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractPiglin(connection, entityType, data, position, rotation) {
 
@@ -47,7 +48,7 @@ class Piglin(connection: PlayConnection, entityType: EntityType, data: EntityDat
 
 
     companion object : EntityFactory<Piglin> {
-        override val identifier: ResourceLocation = ResourceLocation("piglin")
+        override val identifier: ResourceLocation = KUtil.minecraft("piglin")
         private val IMMUNE_TO_ZOMBIFICATION_DATA = EntityDataField("PIGLIN_IMMUNE_TO_ZOMBIFICATION")
         private val IS_BABY_DATA = EntityDataField("PIGLIN_IS_BABY")
         private val IS_CHARGING_CROSSBOW_DATA = EntityDataField("PIGLIN_IS_CHARGING_CROSSBOW")

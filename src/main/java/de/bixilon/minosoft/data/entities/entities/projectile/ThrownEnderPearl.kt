@@ -19,14 +19,15 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ThrownEnderPearl(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, data, position, rotation) {
     override val defaultItemType: ResourceLocation
         get() = DEFAULT_ITEM
 
     companion object : EntityFactory<ThrownEnderPearl> {
-        private val DEFAULT_ITEM = ResourceLocation("ender_pearl")
-        override val identifier: ResourceLocation = ResourceLocation("ender_pearl")
+        private val DEFAULT_ITEM = KUtil.minecraft("ender_pearl")
+        override val identifier: ResourceLocation = KUtil.minecraft("ender_pearl")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownEnderPearl {
             return ThrownEnderPearl(connection, entityType, data, position, rotation)

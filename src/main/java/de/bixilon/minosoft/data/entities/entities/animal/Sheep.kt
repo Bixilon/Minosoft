@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Sheep(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
@@ -37,7 +38,7 @@ class Sheep(connection: PlayConnection, entityType: EntityType, data: EntityData
 
 
     companion object : EntityFactory<Sheep> {
-        override val identifier: ResourceLocation = ResourceLocation("sheep")
+        override val identifier: ResourceLocation = KUtil.minecraft("sheep")
         private val FLAGS_DATA = EntityDataField("SHEEP_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Sheep {

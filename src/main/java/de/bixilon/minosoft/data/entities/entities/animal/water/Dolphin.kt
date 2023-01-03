@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Dolphin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : WaterAnimal(connection, entityType, data, position, rotation) {
 
@@ -39,7 +40,7 @@ class Dolphin(connection: PlayConnection, entityType: EntityType, data: EntityDa
 
 
     companion object : EntityFactory<Dolphin> {
-        override val identifier: ResourceLocation = ResourceLocation("dolphin")
+        override val identifier: ResourceLocation = KUtil.minecraft("dolphin")
         private val TREASURE_POSITION_DATA = EntityDataField("DOLPHIN_TREASURE_POSITION")
         private val HAS_FISH_DATA = EntityDataField("DOLPHIN_HAS_FISH")
         private val MOISTNESS_LEVEL_DATA = EntityDataField("DOLPHIN_MOISTNESS_LEVEL")

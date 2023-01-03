@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ThrownExperienceBottle(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, data, position, rotation) {
     override val gravity: Float = 0.07f
@@ -26,8 +27,8 @@ class ThrownExperienceBottle(connection: PlayConnection, entityType: EntityType,
         get() = DEFAULT_ITEM
 
     companion object : EntityFactory<ThrownExperienceBottle> {
-        private val DEFAULT_ITEM = ResourceLocation("experience_bottle")
-        override val identifier: ResourceLocation = ResourceLocation("experience_bottle")
+        private val DEFAULT_ITEM = KUtil.minecraft("experience_bottle")
+        override val identifier: ResourceLocation = KUtil.minecraft("experience_bottle")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownExperienceBottle {
             return ThrownExperienceBottle(connection, entityType, data, position, rotation)

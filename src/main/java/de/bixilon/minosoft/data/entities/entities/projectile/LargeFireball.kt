@@ -19,14 +19,15 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class LargeFireball(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Fireball(connection, entityType, data, position, rotation) {
     override val defaultItemType: ResourceLocation
         get() = DEFAULT_ITEM
 
     companion object : EntityFactory<LargeFireball> {
-        private val DEFAULT_ITEM = ResourceLocation("fire_charge")
-        override val identifier: ResourceLocation = ResourceLocation("fireball")
+        private val DEFAULT_ITEM = KUtil.minecraft("fire_charge")
+        override val identifier: ResourceLocation = KUtil.minecraft("fireball")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LargeFireball {
             return LargeFireball(connection, entityType, data, position, rotation)

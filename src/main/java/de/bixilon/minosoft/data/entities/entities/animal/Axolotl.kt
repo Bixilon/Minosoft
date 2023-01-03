@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Axolotl(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
@@ -53,7 +54,7 @@ class Axolotl(connection: PlayConnection, entityType: EntityType, data: EntityDa
     }
 
     companion object : EntityFactory<Axolotl> {
-        override val identifier: ResourceLocation = ResourceLocation("axolotl")
+        override val identifier: ResourceLocation = KUtil.minecraft("axolotl")
         private val VARIANT_DATA = EntityDataField("AXOLOTL_VARIANT")
         private val PLAYING_DEAD_DATA = EntityDataField("AXOLOTL_PLAYING_DEAD")
         private val FROM_BUCKET_DATA = EntityDataField("AXOLOTL_FROM_BUCKET")

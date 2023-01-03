@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Pig(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
@@ -34,7 +35,7 @@ class Pig(connection: PlayConnection, entityType: EntityType, data: EntityData, 
 
 
     companion object : EntityFactory<Pig> {
-        override val identifier: ResourceLocation = ResourceLocation("pig")
+        override val identifier: ResourceLocation = KUtil.minecraft("pig")
         private val HAS_SADDLE_DATA = EntityDataField("PIG_HAS_SADDLE")
         private val BOOST_TIME_DATA = EntityDataField("PIG_BOOST_TIME")
 

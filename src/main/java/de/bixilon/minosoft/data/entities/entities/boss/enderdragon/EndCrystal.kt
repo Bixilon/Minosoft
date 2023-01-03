@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class EndCrystal(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
@@ -36,7 +37,7 @@ class EndCrystal(connection: PlayConnection, entityType: EntityType, data: Entit
 
 
     companion object : EntityFactory<EndCrystal> {
-        override val identifier: ResourceLocation = ResourceLocation("end_crystal")
+        override val identifier: ResourceLocation = KUtil.minecraft("end_crystal")
         private val BEAM_TARGET_DATA = EntityDataField("END_CRYSTAL_BEAM_TARGET")
         private val SHOW_BOTTOM_DATA = EntityDataField("END_CRYSTAL_SHOW_BOTTOM")
 

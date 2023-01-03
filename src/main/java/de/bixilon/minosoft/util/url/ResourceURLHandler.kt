@@ -33,7 +33,7 @@ object ResourceURLHandler : URLStreamHandler() {
         }
 
         override fun getInputStream(): InputStream {
-            return Minosoft.MINOSOFT_ASSETS_MANAGER[ResourceLocation(url.path)]
+            return Minosoft.MINOSOFT_ASSETS_MANAGER[ResourceLocation.of(url.path)]
         }
     }
 }

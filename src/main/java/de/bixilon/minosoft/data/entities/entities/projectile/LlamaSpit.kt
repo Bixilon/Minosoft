@@ -19,11 +19,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class LlamaSpit(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<LlamaSpit> {
-        override val identifier: ResourceLocation = ResourceLocation("llama_spit")
+        override val identifier: ResourceLocation = KUtil.minecraft("llama_spit")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LlamaSpit {
             return LlamaSpit(connection, entityType, data, position, rotation)

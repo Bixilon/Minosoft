@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class EndGatewayBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
 
@@ -29,7 +30,7 @@ class EndGatewayBlockEntity(connection: PlayConnection) : BlockEntity(connection
     }
 
     companion object : BlockEntityFactory<EndGatewayBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:end_gateway")
+        override val identifier: ResourceLocation = KUtil.minecraft("end_gateway")
 
         override fun build(connection: PlayConnection): EndGatewayBlockEntity {
             return EndGatewayBlockEntity(connection)

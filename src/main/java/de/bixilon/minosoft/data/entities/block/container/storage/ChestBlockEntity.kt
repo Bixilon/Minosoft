@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.DoubleChestRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
@@ -50,7 +51,7 @@ open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
     }
 
     companion object : BlockEntityFactory<ChestBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:chest")
+        override val identifier: ResourceLocation = KUtil.minecraft("chest")
 
         override fun build(connection: PlayConnection): ChestBlockEntity {
             return ChestBlockEntity(connection)

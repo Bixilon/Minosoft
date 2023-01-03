@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class BlockOutlineRenderer(
     val connection: PlayConnection,
@@ -136,7 +137,7 @@ class BlockOutlineRenderer(
 
 
     companion object : RendererBuilder<BlockOutlineRenderer> {
-        override val identifier = ResourceLocation("minosoft:block_outline")
+        override val identifier = KUtil.minosoft("block_outline")
 
         override fun build(connection: PlayConnection, context: RenderContext): BlockOutlineRenderer {
             return BlockOutlineRenderer(connection, context)

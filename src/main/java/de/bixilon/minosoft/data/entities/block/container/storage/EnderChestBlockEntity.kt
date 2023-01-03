@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
@@ -31,7 +32,7 @@ class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
     }
 
     companion object : BlockEntityFactory<EnderChestBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:ender_chest")
+        override val identifier: ResourceLocation = KUtil.minecraft("ender_chest")
 
         override fun build(connection: PlayConnection): EnderChestBlockEntity {
             return EnderChestBlockEntity(connection)

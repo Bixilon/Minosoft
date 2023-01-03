@@ -19,11 +19,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class HopperMinecart(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractMinecartContainer(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<HopperMinecart> {
-        override val identifier: ResourceLocation = ResourceLocation("hopper_minecart")
+        override val identifier: ResourceLocation = KUtil.minecraft("hopper_minecart")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): HopperMinecart {
             return HopperMinecart(connection, entityType, data, position, rotation)

@@ -298,7 +298,7 @@ open class StringReader(val string: String) {
         read()
         val path = readWord() ?: return null
 
-        return ResourceLocation(namespace, path)
+        return ResourceLocation.of(namespace, path)
     }
 
     fun <T> readResult(reader: StringReader.() -> T): ReadResult<T> {

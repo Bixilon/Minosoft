@@ -19,11 +19,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class GlowItemFrame(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ItemFrame(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<GlowItemFrame> {
-        override val identifier: ResourceLocation = ResourceLocation("glow_item_frame")
+        override val identifier: ResourceLocation = KUtil.minecraft("glow_item_frame")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): GlowItemFrame {
             return GlowItemFrame(connection, entityType, data, position, rotation)

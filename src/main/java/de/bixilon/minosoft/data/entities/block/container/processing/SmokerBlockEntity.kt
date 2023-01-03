@@ -16,11 +16,12 @@ package de.bixilon.minosoft.data.entities.block.container.processing
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class SmokerBlockEntity(connection: PlayConnection) : ProcessingBlockEntity(connection) {
 
     companion object : BlockEntityFactory<SmokerBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:smoker")
+        override val identifier: ResourceLocation = KUtil.minecraft("smoker")
 
         override fun build(connection: PlayConnection): SmokerBlockEntity {
             return SmokerBlockEntity(connection)

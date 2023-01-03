@@ -26,5 +26,5 @@ data class SkeletalTexture(
     val id: Int,
     val uuid: UUID,
 ) {
-    val resourceLocation = ResourceLocation(namespace, path).texture()
+    val resourceLocation = ResourceLocation.of(namespace, path).texture()
 }

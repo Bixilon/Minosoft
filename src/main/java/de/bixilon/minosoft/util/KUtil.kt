@@ -70,18 +70,18 @@ object KUtil {
 
     fun Any?.toResourceLocation(): ResourceLocation {
         return when (this) {
-            is String -> ResourceLocation(this)
+            is String -> ResourceLocation.of(this)
             is ResourceLocation -> this
             else -> throw IllegalArgumentException("Don't know how to turn $this into a resource location!")
         }
     }
 
     fun minecraft(path: String): ResourceLocation {
-        return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, path)
+        return ResourceLocation.of(ProtocolDefinition.DEFAULT_NAMESPACE, path)
     }
 
     fun minosoft(path: String): ResourceLocation {
-        return ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, path)
+        return ResourceLocation.of(ProtocolDefinition.MINOSOFT_NAMESPACE, path)
     }
 
     fun <T> T.synchronizedDeepCopy(): T {

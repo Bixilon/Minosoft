@@ -31,6 +31,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.minecraft
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.logging.Log
@@ -38,8 +39,8 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 object DefaultRegistries {
-    private val ENUM_RESOURCE_LOCATION = ResourceLocation("minosoft:mapping/enums.json")
-    private val REGISTRIES_RESOURCE_LOCATION = ResourceLocation("minosoft:mapping/default_registries.json")
+    private val ENUM_RESOURCE_LOCATION = KUtil.minosoft("mapping/enums.json")
+    private val REGISTRIES_RESOURCE_LOCATION = KUtil.minosoft("mapping/default_registries.json")
     private var initialized = false
 
     val EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)
@@ -77,34 +78,34 @@ object DefaultRegistries {
 
         val enumJson = Minosoft.MINOSOFT_ASSETS_MANAGER[ENUM_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
 
-        EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("equipment_slots")].asJsonObject())
-        HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("hand_equipment_slots")].asJsonObject())
-        ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_equipment_slots")].asJsonObject())
-        ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_stand_equipment_slots")].asJsonObject())
+        EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("equipment_slots")].asJsonObject())
+        HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("hand_equipment_slots")].asJsonObject())
+        ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("armor_equipment_slots")].asJsonObject())
+        ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("armor_stand_equipment_slots")].asJsonObject())
 
-        ENTITY_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_data_data_types")].asJsonObject()) // ToDo
+        ENTITY_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation.of("entity_data_data_types")].asJsonObject()) // ToDo
 
-        TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("title_actions")].asJsonObject())
+        TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation.of("title_actions")].asJsonObject())
 
-        ENTITY_ANIMATION_REGISTRY.initialize(enumJson[ResourceLocation("entity_animations")].asJsonObject())
-        ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("entity_actions")].asJsonObject())
+        ENTITY_ANIMATION_REGISTRY.initialize(enumJson[ResourceLocation.of("entity_animations")].asJsonObject())
+        ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation.of("entity_actions")].asJsonObject())
 
 
         val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER[REGISTRIES_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
 
-        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_channels")].asJsonObject(), PluginChannel)
+        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation.of("default_channels")].asJsonObject(), PluginChannel)
 
-        ENTITY_OBJECT_REGISTRY.rawUpdate(registriesJson[ResourceLocation("entity_objects")].asJsonObject(), null)
+        ENTITY_OBJECT_REGISTRY.rawUpdate(registriesJson[ResourceLocation.of("entity_objects")].asJsonObject(), null)
 
-        BLOCK_DATA_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_data_data_types")].asJsonObject(), BlockDataDataType)
+        BLOCK_DATA_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("block_data_data_types")].asJsonObject(), BlockDataDataType)
 
-        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("container_types")].asJsonObject(), ContainerType)
+        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("container_types")].asJsonObject(), ContainerType)
 
-        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("game_events")].asJsonObject(), null)
-        WORLD_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("world_events")].asJsonObject(), null)
+        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation.of("game_events")].asJsonObject(), null)
+        WORLD_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation.of("world_events")].asJsonObject(), null)
 
 
-        CAT_VARIANT_REGISTRY.initialize(registriesJson[ResourceLocation("variants/cat")].asJsonObject(), CatVariant)
+        CAT_VARIANT_REGISTRY.initialize(registriesJson[ResourceLocation.of("variants/cat")].asJsonObject(), CatVariant)
 
         MESSAGE_TYPES_REGISTRY.initialize(registriesJson[minecraft("message_types")].asJsonObject(), ChatMessageType)
 

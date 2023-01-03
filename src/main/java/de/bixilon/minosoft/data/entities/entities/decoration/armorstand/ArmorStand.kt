@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ArmorStand(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
 
@@ -72,7 +73,7 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
 
 
     companion object : EntityFactory<ArmorStand> {
-        override val identifier: ResourceLocation = ResourceLocation("armor_stand")
+        override val identifier: ResourceLocation = KUtil.minecraft("armor_stand")
         private val FLAGS_DATA = EntityDataField("ARMOR_STAND_FLAGS")
         private val HEAD_ROTATION_DATA = EntityDataField("ARMOR_STAND_HEAD_ROTATION")
         private val BODY_ROTATION_DATA = EntityDataField("ARMOR_STAND_BODY_ROTATION")

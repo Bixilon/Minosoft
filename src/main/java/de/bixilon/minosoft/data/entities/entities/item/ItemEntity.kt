@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ItemEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
@@ -62,7 +63,7 @@ class ItemEntity(connection: PlayConnection, entityType: EntityType, data: Entit
 
 
     companion object : EntityFactory<ItemEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("item")
+        override val identifier: ResourceLocation = KUtil.minecraft("item")
         private val ITEM_DATA = EntityDataField("ITEM_ITEM")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ItemEntity {

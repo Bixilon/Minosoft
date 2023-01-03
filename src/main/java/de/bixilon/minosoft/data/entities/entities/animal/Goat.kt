@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Goat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
@@ -37,7 +38,7 @@ class Goat(connection: PlayConnection, entityType: EntityType, data: EntityData,
         get() = data.getBoolean(RIGHT_HORN_DATA, false)
 
     companion object : EntityFactory<Goat> {
-        override val identifier: ResourceLocation = ResourceLocation("goat")
+        override val identifier: ResourceLocation = KUtil.minecraft("goat")
         private val SCREAMING_DATA = EntityDataField("GOAT_IS_SCREAMING")
         private val LEFT_HORN_DATA = EntityDataField("LEFT_HORN")
         private val RIGHT_HORN_DATA = EntityDataField("RIGHT_HORN")

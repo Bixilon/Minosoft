@@ -19,11 +19,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class LeashFenceKnotEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<LeashFenceKnotEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("leash_knot")
+        override val identifier: ResourceLocation = KUtil.minecraft("leash_knot")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LeashFenceKnotEntity {
             return LeashFenceKnotEntity(connection, entityType, data, position, rotation)

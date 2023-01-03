@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 open class PistonBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
     var state: PistonStates = PistonStates.PULL
@@ -34,7 +35,7 @@ open class PistonBlockEntity(connection: PlayConnection) : BlockEntity(connectio
     }
 
     companion object : BlockEntityFactory<PistonBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:piston")
+        override val identifier: ResourceLocation = KUtil.minecraft("piston")
 
         override fun build(connection: PlayConnection): PistonBlockEntity {
             return PistonBlockEntity(connection)

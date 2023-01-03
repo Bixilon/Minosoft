@@ -52,7 +52,7 @@ open class Block(
 ) : RegistryItem() {
     open val explosionResistance: Float = data["explosion_resistance"]?.toFloat() ?: 0.0f
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
-    open val tint: ResourceLocation? = data["tint"].nullCast<String>()?.let { ResourceLocation(it) }
+    open val tint: ResourceLocation? = data["tint"].nullCast<String>()?.let { ResourceLocation.of(it) }
 
     open lateinit var states: Set<BlockState>
         protected set

@@ -19,11 +19,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Ravager(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Raider(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<Ravager> {
-        override val identifier: ResourceLocation = ResourceLocation("ravager")
+        override val identifier: ResourceLocation = KUtil.minecraft("ravager")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Ravager {
             return Ravager(connection, entityType, data, position, rotation)

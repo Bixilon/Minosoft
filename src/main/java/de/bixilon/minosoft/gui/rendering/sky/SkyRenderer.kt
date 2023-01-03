@@ -35,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class SkyRenderer(
     val connection: PlayConnection,
@@ -110,7 +111,7 @@ class SkyRenderer(
     }
 
     companion object : RendererBuilder<SkyRenderer> {
-        override val identifier = ResourceLocation("minosoft:sky")
+        override val identifier = KUtil.minosoft("sky")
 
         override fun build(connection: PlayConnection, context: RenderContext): SkyRenderer {
             return SkyRenderer(connection, context)

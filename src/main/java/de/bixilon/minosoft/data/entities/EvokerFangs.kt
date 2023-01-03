@@ -19,11 +19,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class EvokerFangs(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<EvokerFangs> {
-        override val identifier: ResourceLocation = ResourceLocation("evoker_fangs")
+        override val identifier: ResourceLocation = KUtil.minecraft("evoker_fangs")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): EvokerFangs {
             return EvokerFangs(connection, entityType, data, position, rotation)

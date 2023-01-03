@@ -133,7 +133,7 @@ object FileAssetsUtil {
         if (split.size != 2) {
             return null
         }
-        return ResourceLocation(split[0], split[1])
+        return ResourceLocation.of(split[0], split[1])
     }
 
     fun verifyAsset(hash: String, file: File = File(getPath(hash)), verify: Boolean, hashType: HashTypes = HashTypes.SHA256, compress: Boolean = true): Boolean {

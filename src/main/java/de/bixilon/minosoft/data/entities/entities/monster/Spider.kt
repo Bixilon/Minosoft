@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 open class Spider(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
     private fun getSpiderFlag(bitMask: Int): Boolean {
@@ -33,7 +34,7 @@ open class Spider(connection: PlayConnection, entityType: EntityType, data: Enti
 
 
     companion object : EntityFactory<Spider> {
-        override val identifier: ResourceLocation = ResourceLocation("spider")
+        override val identifier: ResourceLocation = KUtil.minecraft("spider")
         private val FLAGS_DATA = EntityDataField("SPIDER_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Spider {

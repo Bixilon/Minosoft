@@ -49,7 +49,7 @@ object LanguageUtil {
         val data: LanguageData = mutableMapOf()
 
         for ((key, value) in json) {
-            val path = ResourceLocation(key).path
+            val path = ResourceLocation.of(key).path
             data[path] = value.toString().correctValue()
         }
 
@@ -64,7 +64,7 @@ object LanguageUtil {
                 continue
             }
             val (key, value) = line.split('=', limit = 2)
-            val path = ResourceLocation(key).path
+            val path = ResourceLocation.of(key).path
             data[path] = value.correctValue()
         }
         return data
@@ -82,7 +82,9 @@ object LanguageUtil {
     }
 
     fun loadLanguage(language: String, assetsManager: AssetsManager, json: Boolean, path: ResourceLocation): Translator {
-        val assets = assetsManager.getAll(ResourceLocation(path.namespace, path.path + language + if (json) ".json" else ".lang"))
+        val assets = assetsManager.getAll(
+            ResourceLocation.of(path.namespace, path.path + language + if (json) ".json" else ".lang")
+        )
         val languages: MutableList<Language> = mutableListOf()
 
         for (asset in assets) {
@@ -98,7 +100,7 @@ object LanguageUtil {
     }
 
 
-    fun load(language: String, version: Version?, assetsManager: AssetsManager, path: ResourceLocation = ResourceLocation("lang/")): Translator {
+    fun load(language: String, version: Version?, assetsManager: AssetsManager, path: ResourceLocation = ResourceLocation.of("lang/")): Translator {
         val name = language.lowercase()
         val json = version != null && version.jsonLanguage
 
@@ -119,6 +121,6 @@ object LanguageUtil {
 
 
     fun ResourceLocation.translation(name: String): ResourceLocation {
-        return ResourceLocation(this.namespace, "item.$namespace.$path")
+        return ResourceLocation.of(this.namespace, "item.$namespace.$path")
     }
 }

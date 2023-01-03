@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Frog(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
@@ -33,7 +34,7 @@ class Frog(connection: PlayConnection, entityType: EntityType, data: EntityData,
         get() = data.get(TARGET_DATA, null)
 
     companion object : EntityFactory<Frog> {
-        override val identifier: ResourceLocation = ResourceLocation("frog")
+        override val identifier: ResourceLocation = KUtil.minecraft("frog")
         private val VARIANT_DATA = EntityDataField("FROG_VARIANT", "FROG_TYPE")
         private val TARGET_DATA = EntityDataField("FROG_TARGET")
 

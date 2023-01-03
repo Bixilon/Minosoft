@@ -36,6 +36,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -196,7 +197,7 @@ class ChunkBorderRenderer(
 
 
     companion object : RendererBuilder<ChunkBorderRenderer> {
-        override val identifier = ResourceLocation("minosoft:chunk_borders")
+        override val identifier = KUtil.minosoft("chunk_borders")
         private val CHUNK_BORDER_TOGGLE_KEY_COMBINATION = "minosoft:toggle_chunk_borders".toResourceLocation()
         private const val SECTION_LINE_WIDTH = RenderConstants.DEFAULT_LINE_WIDTH * 3
         private const val INNER_CHUNK_LINE_WIDTH = SECTION_LINE_WIDTH * 3

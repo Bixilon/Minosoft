@@ -20,7 +20,7 @@ object DataFixerUtil {
     fun Map<String, String>.asResourceLocationMap(): Map<ResourceLocation, ResourceLocation> {
         val out: MutableMap<ResourceLocation, ResourceLocation> = mutableMapOf()
         for ((key, value) in this) {
-            out[ResourceLocation(key)] = ResourceLocation(value)
+            out[ResourceLocation.of(key)] = ResourceLocation.of(value)
         }
         return out
     }

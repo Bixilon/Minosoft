@@ -111,7 +111,7 @@ data class EntityType(
 
             data["attributes"]?.toJsonObject()?.let {
                 for ((attributeResourceLocation, value) in it) {
-                    attributes[ResourceLocation.getResourceLocation(attributeResourceLocation).fix()] = value.unsafeCast()
+                    attributes[ResourceLocation.of(attributeResourceLocation).fix()] = value.unsafeCast()
                 }
             }
 

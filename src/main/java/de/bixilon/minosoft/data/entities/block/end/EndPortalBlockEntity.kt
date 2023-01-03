@@ -18,12 +18,13 @@ import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.entities.block.JukeboxBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class EndPortalBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
 
     companion object : BlockEntityFactory<JukeboxBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:end_portal")
+        override val identifier: ResourceLocation = KUtil.minecraft("end_portal")
 
         override fun build(connection: PlayConnection): JukeboxBlockEntity {
             return JukeboxBlockEntity(connection)

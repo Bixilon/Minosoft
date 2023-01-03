@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ThrownSnowball(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, data, position, rotation) {
 
@@ -26,8 +27,8 @@ class ThrownSnowball(connection: PlayConnection, entityType: EntityType, data: E
         get() = DEFAULT_ITEM
 
     companion object : EntityFactory<ThrownSnowball> {
-        private val DEFAULT_ITEM = ResourceLocation("snowball")
-        override val identifier: ResourceLocation = ResourceLocation("snowball")
+        private val DEFAULT_ITEM = KUtil.minecraft("snowball")
+        override val identifier: ResourceLocation = KUtil.minecraft("snowball")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownSnowball {
             return ThrownSnowball(connection, entityType, data, position, rotation)

@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 import java.util.*
 
 class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
@@ -63,7 +64,7 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
     }
 
     companion object : BlockEntityFactory<MobSpawnerBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:mob_spawner")
+        override val identifier: ResourceLocation = KUtil.minecraft("mob_spawner")
 
         override fun build(connection: PlayConnection): MobSpawnerBlockEntity {
             return MobSpawnerBlockEntity(connection)

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Turtle(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
@@ -51,7 +52,7 @@ class Turtle(connection: PlayConnection, entityType: EntityType, data: EntityDat
 
 
     companion object : EntityFactory<Turtle> {
-        override val identifier: ResourceLocation = ResourceLocation("turtle")
+        override val identifier: ResourceLocation = KUtil.minecraft("turtle")
         private val HOME_POSITION_DATA = EntityDataField("TURTLE_HOME_POSITION")
         private val HAS_EGG_DATA = EntityDataField("TURTLE_HAS_EGG")
         private val IS_LAYING_EGG_DATA = EntityDataField("TURTLE_IS_LAYING_EGG")

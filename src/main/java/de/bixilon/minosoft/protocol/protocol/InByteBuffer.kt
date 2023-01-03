@@ -317,7 +317,7 @@ open class InByteBuffer {
     }
 
     fun readResourceLocation(): ResourceLocation {
-        return ResourceLocation.getResourceLocation(readString())
+        return ResourceLocation.of(readString())
     }
 
     fun readChunkPosition(): Vec2i {

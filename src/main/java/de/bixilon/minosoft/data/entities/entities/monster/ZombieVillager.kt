@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ZombieVillager(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, data, position, rotation) {
 
@@ -35,7 +36,7 @@ class ZombieVillager(connection: PlayConnection, entityType: EntityType, data: E
 
 
     companion object : EntityFactory<ZombieVillager> {
-        override val identifier: ResourceLocation = ResourceLocation("zombie_villager")
+        override val identifier: ResourceLocation = KUtil.minecraft("zombie_villager")
         private val IS_CONVERTING_DATA = EntityDataField("ZOMBIE_VILLAGER_IS_CONVERTING")
         private val VILLAGER_DATA_DATA = EntityDataField("ZOMBIE_VILLAGER_DATA")
 

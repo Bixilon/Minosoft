@@ -17,6 +17,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.colors.DyeColors
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var color = DyeColors.RED
@@ -28,7 +29,7 @@ class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     }
 
     companion object : BlockEntityFactory<BedBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:bed")
+        override val identifier: ResourceLocation = KUtil.minecraft("bed")
 
         override fun build(connection: PlayConnection): BedBlockEntity {
             return BedBlockEntity(connection)

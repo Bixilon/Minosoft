@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Vex(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
@@ -34,7 +35,7 @@ class Vex(connection: PlayConnection, entityType: EntityType, data: EntityData, 
 
 
     companion object : EntityFactory<Vex> {
-        override val identifier: ResourceLocation = ResourceLocation("vex")
+        override val identifier: ResourceLocation = KUtil.minecraft("vex")
         private val FLAGS_DATA = EntityDataField("VEX_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Vex {

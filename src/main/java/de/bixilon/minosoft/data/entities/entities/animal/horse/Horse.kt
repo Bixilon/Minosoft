@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil
 
 class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, data, position, rotation) {
 
@@ -85,13 +86,13 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
     }
 
     companion object : EntityFactory<Horse> {
-        override val identifier: ResourceLocation = ResourceLocation("horse")
+        override val identifier: ResourceLocation = KUtil.minecraft("horse")
         private val VARIANT_DATA = EntityDataField("HORSE_VARIANT")
         private val LEGACY_ARMOR_DATA = EntityDataField("LEGACY_HORSE_ARMOR")
 
-        private val LEGACY_IRON_ARMOR = ResourceLocation("iron_horse_armor")
-        private val LEGACY_GOLD_ARMOR = ResourceLocation("golden_horse_armor")
-        private val LEGACY_DIAMOND_ARMOR = ResourceLocation("diamond_horse_armor")
+        private val LEGACY_IRON_ARMOR = KUtil.minecraft("iron_horse_armor")
+        private val LEGACY_GOLD_ARMOR = KUtil.minecraft("golden_horse_armor")
+        private val LEGACY_DIAMOND_ARMOR = KUtil.minecraft("diamond_horse_armor")
 
         private val LEGACY_SPECIAL_TYPE_DATA = EntityDataField("LEGACY_HORSE_SPECIAL_TYPE")
 

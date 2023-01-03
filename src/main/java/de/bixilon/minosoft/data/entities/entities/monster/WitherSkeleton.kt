@@ -19,11 +19,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class WitherSkeleton(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<WitherSkeleton> {
-        override val identifier: ResourceLocation = ResourceLocation("wither_skeleton")
+        override val identifier: ResourceLocation = KUtil.minecraft("wither_skeleton")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): WitherSkeleton {
             return WitherSkeleton(connection, entityType, data, position, rotation)

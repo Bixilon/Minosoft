@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Cat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, data, position, rotation) {
 
@@ -54,7 +55,7 @@ class Cat(connection: PlayConnection, entityType: EntityType, data: EntityData, 
         get() = ChatColors.VALUES.getOrNull(data.get(COLLAR_COLOR_DATA, 0x0C)) ?: ChatColors.RED
 
     companion object : EntityFactory<Cat> {
-        override val identifier: ResourceLocation = ResourceLocation("cat")
+        override val identifier: ResourceLocation = KUtil.minecraft("cat")
         private val VARIANT_DATA = EntityDataField("CAT_VARIANT")
         private val IS_LYING_DATA = EntityDataField("CAT_IS_LYING")
         private val IS_RELAXED_DATA = EntityDataField("CAT_IS_RELAXED")

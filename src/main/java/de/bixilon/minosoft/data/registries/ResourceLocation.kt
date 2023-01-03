@@ -104,12 +104,18 @@ open class ResourceLocation private constructor (
                 return split[1]
             }
 
-        fun getResourceLocation(resourceLocation: String): ResourceLocation {
+        fun of(resourceLocation: String): ResourceLocation {
             return ResourceLocation(resourceLocation.namespace, resourceLocation.path)
         }
 
-        fun getResourceLocation(namespace: String, path: String): ResourceLocation {
+        fun of(namespace: String, path: String): ResourceLocation {
             return ResourceLocation(namespace, path)
+        }
+
+        fun ofPath(path: String): ResourceLocation {
+            if (path.contains(':') || !path.contains('/')) return of(path)
+            val split = path.split('/', limit = 2)
+            return ResourceLocation(split[0], split[1])
         }
     }
 

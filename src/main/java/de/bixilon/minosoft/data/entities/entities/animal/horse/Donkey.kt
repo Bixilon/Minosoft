@@ -20,12 +20,13 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Donkey(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractChestedHorse(connection, entityType, data, position, rotation) {
 
 
     companion object : EntityFactory<Donkey> {
-        override val identifier: ResourceLocation = ResourceLocation("donkey")
+        override val identifier: ResourceLocation = KUtil.minecraft("donkey")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Donkey {
             return Donkey(connection, entityType, data, position, rotation)

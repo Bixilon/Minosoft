@@ -16,11 +16,12 @@ package de.bixilon.minosoft.data.entities.block.container.storage
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class BarrelBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
     companion object : BlockEntityFactory<BarrelBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:barrel")
+        override val identifier: ResourceLocation = KUtil.minecraft("barrel")
 
         override fun build(connection: PlayConnection): BarrelBlockEntity {
             return BarrelBlockEntity(connection)

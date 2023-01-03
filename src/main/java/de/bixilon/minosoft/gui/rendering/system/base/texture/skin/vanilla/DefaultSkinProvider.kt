@@ -55,7 +55,7 @@ class DefaultSkinProvider(
     }
 
     private fun loadLegacy(skin: DefaultLegacySkin) {
-        val path = ResourceLocation(skin.name.namespace, "entity/${skin.name.path}").texture()
+        val path = ResourceLocation.of(skin.name.namespace, "entity/${skin.name.path}").texture()
         val texture = load(path) ?: return
         this[skin.model][skin.name] = texture
 
@@ -72,7 +72,7 @@ class DefaultSkinProvider(
     }
 
     private fun ResourceLocation.skin(prefix: String): ResourceLocation {
-        return ResourceLocation(namespace, "entity/player/$prefix/$path")
+        return ResourceLocation.of(namespace, "entity/player/$prefix/$path")
     }
 
     operator fun get(name: ResourceLocation, slim: Boolean): DynamicTexture? {

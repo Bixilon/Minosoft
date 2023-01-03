@@ -13,10 +13,11 @@
 package de.bixilon.minosoft.modding.channels
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.minecraft
 
 object DefaultPluginChannels {
-    val REGISTER = ResourceLocation("minecraft:register")
-    val UNREGISTER = ResourceLocation("minecraft:unregister")
-    val BRAND = ResourceLocation("minecraft:brand")
-    val STOP_SOUND = ResourceLocation("minecraft:stop_sound")
+    val REGISTER = minecraft("register")
+    val UNREGISTER = minecraft("unregister")
+    val BRAND = minecraft("brand")
+    val STOP_SOUND = minecraft("stop_sound")
 }

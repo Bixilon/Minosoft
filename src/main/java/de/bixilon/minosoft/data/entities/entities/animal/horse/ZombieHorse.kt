@@ -19,11 +19,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ZombieHorse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ZombieHorse> {
-        override val identifier: ResourceLocation = ResourceLocation("zombie_horse")
+        override val identifier: ResourceLocation = KUtil.minecraft("zombie_horse")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ZombieHorse {
             return ZombieHorse(connection, entityType, data, position, rotation)
