@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -53,7 +53,7 @@ open class Llama(connection: PlayConnection, entityType: EntityType, data: Entit
     }
 
     companion object : EntityFactory<Llama> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("llama")
+        override val identifier: ResourceLocation = ResourceLocation("llama")
         private val STRENGTH_DATA = EntityDataField("LLAMA_STRENGTH")
         private val CARPET_COLOR_DATA = EntityDataField("LLAMA_CARPET_COLOR")
         private val VARIANT_DATA = EntityDataField("LLAMA_VARIANT")

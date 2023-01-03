@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,15 +18,15 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 class OfflineAccount(username: String) : Account(username) {
     override val id: String = username
     override val uuid: UUID = UUID("OfflinePlayer:$username".hashCode().toLong(), 0L) // ToDo
-    override val type: ResourceLocation = RESOURCE_LOCATION
+    override val type: ResourceLocation = identifier
     override var state: AccountStates
         get() = AccountStates.WORKING
         set(value) {}
@@ -46,7 +46,7 @@ class OfflineAccount(username: String) : Account(username) {
         return "OfflineAccount{$username}"
     }
 
-    companion object : CompanionResourceLocation {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:offline_account".toResourceLocation()
+    companion object : Identified {
+        override val identifier: ResourceLocation = "minosoft:offline_account".toResourceLocation()
     }
 }

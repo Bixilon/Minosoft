@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,11 +22,11 @@ import de.bixilon.minosoft.data.registries.item.items.armor.slots.HelmetItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.minecraft
 
-open class TurtleHelmet(resourceLocation: ResourceLocation = this.resourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingItem, HelmetItem {
+open class TurtleHelmet(resourceLocation: ResourceLocation = this.identifier) : ArmorItem(resourceLocation), WearableItem, DefendingItem, HelmetItem {
     override val defense: Int get() = 2
 
     companion object : ItemFactory<TurtleHelmet> {
-        override val resourceLocation = minecraft("turtle_helmet")
+        override val identifier = minecraft("turtle_helmet")
 
         override fun build(registries: Registries) = TurtleHelmet()
     }

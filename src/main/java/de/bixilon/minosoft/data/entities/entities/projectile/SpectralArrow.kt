@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ class SpectralArrow(connection: PlayConnection, entityType: EntityType, data: En
 
 
     companion object : EntityFactory<SpectralArrow> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("spectral_arrow")
+        override val identifier: ResourceLocation = ResourceLocation("spectral_arrow")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): SpectralArrow {
             return SpectralArrow(connection, entityType, data, position, rotation)

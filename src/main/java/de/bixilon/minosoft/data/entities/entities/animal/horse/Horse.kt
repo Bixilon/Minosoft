@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -85,7 +85,7 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
     }
 
     companion object : EntityFactory<Horse> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("horse")
+        override val identifier: ResourceLocation = ResourceLocation("horse")
         private val VARIANT_DATA = EntityDataField("HORSE_VARIANT")
         private val LEGACY_ARMOR_DATA = EntityDataField("LEGACY_HORSE_ARMOR")
 
@@ -102,7 +102,7 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
 
         override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
             if (data == null || versionId <= ProtocolVersions.V_1_8_9) {
-                return RESOURCE_LOCATION
+                return identifier
             }
             val specialType = data.get(LEGACY_SPECIAL_TYPE_DATA, 0)
             return when (specialType) {
@@ -111,7 +111,7 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
                 3 -> ZombieHorse
                 4 -> SkeletonHorse
                 else -> this
-            }.RESOURCE_LOCATION
+            }.identifier
         }
     }
 }

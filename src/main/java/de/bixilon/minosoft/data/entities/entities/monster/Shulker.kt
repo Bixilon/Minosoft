@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,7 +47,7 @@ class Shulker(connection: PlayConnection, entityType: EntityType, data: EntityDa
 
 
     companion object : EntityFactory<Shulker> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("shulker")
+        override val identifier: ResourceLocation = ResourceLocation("shulker")
         private val ATTACH_FACE_DATA = EntityDataField("SHULKER_ATTACH_FACE")
         private val ATTACH_POSITION_DATA = EntityDataField("SHULKER_ATTACHMENT_POSITION")
         private val PEEK_DATA = EntityDataField("SHULKER_PEEK")

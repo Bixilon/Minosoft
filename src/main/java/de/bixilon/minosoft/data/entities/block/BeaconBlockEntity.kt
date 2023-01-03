@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection), B
     }
 
     companion object : BlockEntityFactory<BeaconBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:beacon")
+        override val identifier: ResourceLocation = ResourceLocation("minecraft:beacon")
 
         override fun build(connection: PlayConnection): BeaconBlockEntity {
             return BeaconBlockEntity(connection)

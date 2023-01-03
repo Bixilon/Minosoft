@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import java.util.*
 
 data class Material(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
     val color: RGBColor?,
     val pushReaction: PushReactions,
     val blockMotion: Boolean,
@@ -37,13 +37,13 @@ data class Material(
 ) : RegistryItem() {
 
     override fun toString(): String {
-        return resourceLocation.full
+        return identifier.full
     }
 
     companion object : ResourceLocationCodec<Material> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Material {
             return Material(
-                resourceLocation = resourceLocation,
+                identifier = resourceLocation,
                 color = TintManager.getJsonColor(data["color"]?.toInt() ?: 0),
                 pushReaction = data["push_reaction"].nullCast<String>()?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
                 blockMotion = data["blocks_motion"]?.toBoolean() ?: false,

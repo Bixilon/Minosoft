@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -42,7 +42,7 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: E
     }
 
     companion object : EntityFactory<ItemFrame> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("item_frame")
+        override val identifier: ResourceLocation = ResourceLocation("item_frame")
         private val ITEM_DATA = EntityDataField("ITEM_FRAME_ITEM")
         private val ROTATION_DATA = EntityDataField("ITEM_FRAME_ROTATION")
 

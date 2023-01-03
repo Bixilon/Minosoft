@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -186,7 +186,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             }
         }
 
-        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + context.framebufferManager.world.`fun`.effect?.resourceLocation.format() }
+        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + context.framebufferManager.world.`fun`.effect?.identifier.format() }
 
         return layout
     }
@@ -333,7 +333,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<DebugHUDElement>> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:debug_hud".toResourceLocation()
+        override val identifier: ResourceLocation = "minosoft:debug_hud".toResourceLocation()
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_debug_hud".toResourceLocation()
         override val DEFAULT_ENABLED: Boolean = false
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(

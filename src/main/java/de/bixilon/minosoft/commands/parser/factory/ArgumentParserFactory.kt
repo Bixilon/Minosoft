@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.commands.parser.factory
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-interface ArgumentParserFactory<T : ArgumentParser<*>> : CompanionResourceLocation {
+interface ArgumentParserFactory<T : ArgumentParser<*>> : Identified {
 
     fun read(buffer: PlayInByteBuffer): T
 }

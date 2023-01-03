@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,10 +25,10 @@ abstract class BucketItem(
     resourceLocation: ResourceLocation,
 ) : Item(resourceLocation) {
 
-    open class EmptyBucketItem(resourceLocation: ResourceLocation = this.resourceLocation) : BucketItem(resourceLocation), FluidDrainable {
+    open class EmptyBucketItem(resourceLocation: ResourceLocation = this.identifier) : BucketItem(resourceLocation), FluidDrainable {
 
         companion object : ItemFactory<BucketItem> {
-            override val resourceLocation = minecraft("bucket")
+            override val identifier = minecraft("bucket")
 
             override fun build(registries: Registries) = EmptyBucketItem()
         }

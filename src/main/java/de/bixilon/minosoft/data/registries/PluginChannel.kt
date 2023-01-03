@@ -19,18 +19,18 @@ import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 
 data class PluginChannel(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
     val name: ResourceLocation,
 ) : RegistryItem() {
 
     override fun toString(): String {
-        return resourceLocation.full
+        return identifier.full
     }
 
     companion object : ResourceLocationCodec<PluginChannel> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): PluginChannel {
             return PluginChannel(
-                resourceLocation = resourceLocation,
+                identifier = resourceLocation,
                 name = ResourceLocation(data["name"].unsafeCast())
             )
         }

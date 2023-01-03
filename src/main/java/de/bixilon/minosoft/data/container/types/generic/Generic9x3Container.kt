@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class Generic9x3Container(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : GenericContainer(3, connection, type, title) {
 
     companion object : ContainerFactory<Generic9x3Container> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:generic_9x3".toResourceLocation()
+        override val identifier: ResourceLocation = "minecraft:generic_9x3".toResourceLocation()
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): Generic9x3Container {
             return Generic9x3Container(connection, type, title)

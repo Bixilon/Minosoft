@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -66,7 +66,7 @@ class PortalParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
 
 
     companion object : ParticleFactory<PortalParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:portal".toResourceLocation()
+        override val identifier: ResourceLocation = "minecraft:portal".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): PortalParticle {
             return PortalParticle(connection, position, velocity, data)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintManager.Companion.jsonTint
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 data class Biome(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
     val temperature: Float,
     val downfall: Float,
     val skyColor: RGBColor?,
@@ -34,7 +34,7 @@ data class Biome(
     val waterFogColor: RGBColor?,
     val precipitation: BiomePrecipitation,
 ) : RegistryItem() {
-    val grassColorModifier = GrassColorModifiers.BIOME_MAP[resourceLocation] ?: GrassColorModifiers.NONE
+    val grassColorModifier = GrassColorModifiers.BIOME_MAP[identifier] ?: GrassColorModifiers.NONE
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
     val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
     val colorMapPixelIndex = downfallColorMapCoordinate shl 8 or temperatureColorMapCoordinate
@@ -45,7 +45,7 @@ data class Biome(
     }
 
     override fun toString(): String {
-        return resourceLocation.full
+        return identifier.full
     }
 
     companion object : ResourceLocationCodec<Biome> {
@@ -63,7 +63,7 @@ data class Biome(
             val waterFogColor = (data["water_fog_color"] ?: effects?.get("water_fog_color"))?.jsonTint()
 
             return Biome(
-                resourceLocation = resourceLocation,
+                identifier = resourceLocation,
                 temperature = data["temperature"]?.toFloat() ?: 0.0f,
                 downfall = data["downfall"]?.toFloat() ?: 0.0f,
                 skyColor = skyColor,

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,11 +16,11 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Instruments
+import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -64,10 +64,10 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         }
     }
 
-    companion object : BlockEntityFactory<NoteBlockBlockEntity>, MultiResourceLocationAble {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:note_block")
+    companion object : BlockEntityFactory<NoteBlockBlockEntity>, AliasedIdentified {
+        override val identifier: ResourceLocation = ResourceLocation("minecraft:note_block")
 
-        override val resourceLocations: Set<ResourceLocation> = setOf("minecraft:noteblock".toResourceLocation())
+        override val identifiers: Set<ResourceLocation> = setOf("minecraft:noteblock".toResourceLocation())
 
         override fun build(connection: PlayConnection): NoteBlockBlockEntity {
             return NoteBlockBlockEntity(connection)

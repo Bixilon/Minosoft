@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -68,7 +68,7 @@ class CampfireSmokeParticle(connection: PlayConnection, position: Vec3d, velocit
 
 
     object CosyFactory : ParticleFactory<CampfireSmokeParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:campfire_cosy_smoke".toResourceLocation()
+        override val identifier: ResourceLocation = "minecraft:campfire_cosy_smoke".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): CampfireSmokeParticle {
             return CampfireSmokeParticle(connection, position, velocity, data, false)
@@ -77,7 +77,7 @@ class CampfireSmokeParticle(connection: PlayConnection, position: Vec3d, velocit
 
 
     object SignalFactory : ParticleFactory<CampfireSmokeParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:campfire_signal_smoke".toResourceLocation()
+        override val identifier: ResourceLocation = "minecraft:campfire_signal_smoke".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): CampfireSmokeParticle {
             return CampfireSmokeParticle(connection, position, velocity, data, true)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -117,14 +117,14 @@ class PlayInByteBuffer : InByteBuffer {
     fun readParticleData(type: ParticleType): ParticleData {
         // ToDo: Replace with dynamic particle type calling
         if (this.versionId < V_17W45A) {
-            return when (type.resourceLocation.full) {
+            return when (type.identifier.full) {
                 "minecraft:iconcrack" -> ItemParticleData.read(this, type)
                 "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> BlockParticleData.read(this, type)
                 else -> ParticleData(type)
             }
         }
 
-        return when (type.resourceLocation.full) {
+        return when (type.identifier.full) {
             "minecraft:block", "minecraft:falling_dust" -> BlockParticleData.read(this, type)
             "minecraft:dust" -> DustParticleData.read(this, type)
             "minecraft:item" -> ItemParticleData.read(this, type)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,13 +55,13 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             position = buffer.readBlockPosition()
             direction = byId(buffer.readUnsignedByte())
         }
-        entity = Painting(buffer.connection, buffer.connection.registries.entityTypeRegistry[Painting.RESOURCE_LOCATION]!!, EntityData(buffer.connection), position, direction, motif!!)
+        entity = Painting(buffer.connection, buffer.connection.registries.entityTypeRegistry[Painting.identifier]!!, EntityData(buffer.connection), position, direction, motif!!)
     }
 
     override fun handle(connection: PlayConnection) {
         connection.world.entities.add(entityId, entityUUID, entity)
 
-        connection.fire(EntitySpawnEvent(connection, this))
+        connection.events.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

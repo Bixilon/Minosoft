@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,10 +21,10 @@ import de.bixilon.minosoft.data.registries.item.items.armor.slots.ChestplateItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.minecraft
 
-open class ElytraItem(resourceLocation: ResourceLocation = this.resourceLocation) : Item(resourceLocation), WearableItem, ChestplateItem {
+open class ElytraItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), WearableItem, ChestplateItem {
 
     companion object : ItemFactory<ElytraItem> {
-        override val resourceLocation = minecraft("elytra")
+        override val identifier = minecraft("elytra")
 
         override fun build(registries: Registries) = ElytraItem()
     }

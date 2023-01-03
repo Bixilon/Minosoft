@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,6 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
+import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.fluids.WaterFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle
@@ -37,7 +37,7 @@ import de.bixilon.minosoft.util.KUtil.minecraft
 import java.util.*
 import kotlin.math.min
 
-class WaterFluid(resourceLocation: ResourceLocation = this.resourceLocation) : FlowableFluid(resourceLocation) {
+class WaterFluid(resourceLocation: ResourceLocation = this.identifier) : FlowableFluid(resourceLocation) {
 
     override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double {
         return VELOCITY_MULTIPLIER
@@ -122,9 +122,9 @@ class WaterFluid(resourceLocation: ResourceLocation = this.resourceLocation) : F
         return WaterFluidModel()
     }
 
-    companion object : FluidFactory<WaterFluid>, MultiResourceLocationAble {
-        override val resourceLocation = minecraft("water")
-        override val resourceLocations = setOf(minecraft("flowing_water"))
+    companion object : FluidFactory<WaterFluid>, AliasedIdentified {
+        override val identifier = minecraft("water")
+        override val identifiers = setOf(minecraft("flowing_water"))
         private const val VELOCITY_MULTIPLIER = 0.014
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries) = WaterFluid()

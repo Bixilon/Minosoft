@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,7 +45,7 @@ class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType, d
     override fun onAttack(attacker: Entity): Boolean = false
 
     companion object : EntityFactory<FireworkRocketEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("firework_rocket")
+        override val identifier: ResourceLocation = ResourceLocation("firework_rocket")
         private val ITEM_DATA = EntityDataField("FIREWORK_ROCKET_ENTITY_ITEM")
         private val ATTACHED_ENTITY_DATA = EntityDataField("FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY")
         private val SHOT_AT_ANGLE_DATA = EntityDataField("FIREWORK_ROCKET_ENTITY_SHOT_AT_ANGLE")

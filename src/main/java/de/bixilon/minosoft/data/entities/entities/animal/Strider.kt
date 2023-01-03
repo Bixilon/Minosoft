@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -38,7 +38,7 @@ class Strider(connection: PlayConnection, entityType: EntityType, data: EntityDa
 
 
     companion object : EntityFactory<Strider> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("strider")
+        override val identifier: ResourceLocation = ResourceLocation("strider")
         private val TIME_TO_BOOST_DATA = EntityDataField("STRIDER_TIME_TO_BOOST")
         private val IS_SUFFOCATING_DATA = EntityDataField("STRIDER_IS_SUFFOCATING")
         private val HAS_SADDLE_DATA = EntityDataField("STRIDER_HAS_SADDLE")

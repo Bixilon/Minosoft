@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 class Tint(override val context: RenderContext) : FunEffect {
-    override val resourceLocation: ResourceLocation get() = RESOURCE_LOCATION
+    override val identifier: ResourceLocation get() = Tint.identifier
     override val shader = createShader(fragment = "minosoft:framebuffer/world/fun/tint.fsh".toResourceLocation()) { TintShader(it) }
     private var updateUniform = true
     var color = Random().let { RGBColor(it.nextInt(20, 255), it.nextInt(20, 255), it.nextInt(20, 255), 0xFF) }
@@ -41,7 +41,7 @@ class Tint(override val context: RenderContext) : FunEffect {
 
 
     companion object : FunEffectFactory<Tint> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:tint".toResourceLocation()
+        override val identifier: ResourceLocation = "minosoft:tint".toResourceLocation()
 
         override fun build(context: RenderContext): Tint {
             return Tint(context)

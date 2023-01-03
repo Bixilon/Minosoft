@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,14 +23,14 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLoc
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 
 class ChatMessageType(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
     val chat: TypeProperties,
     val narration: TypeProperties?,
     val position: ChatTextPositions,
 ) : RegistryItem() {
 
     override fun toString(): String {
-        return resourceLocation.toString()
+        return identifier.toString()
     }
 
     companion object : ResourceLocationCodec<ChatMessageType> {
@@ -38,7 +38,7 @@ class ChatMessageType(
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ChatMessageType {
             return ChatMessageType(
-                resourceLocation = resourceLocation,
+                identifier = resourceLocation,
                 chat = data["chat"]?.asJsonObject()?.let { TypeProperties.deserialize(it) } ?: DEFAULT_PROPERTIES,
                 narration = data["narration"]?.asJsonObject()?.let { TypeProperties.deserialize(it) },
                 position = data["position"]?.let { ChatTextPositions[it] } ?: ChatTextPositions.CHAT,

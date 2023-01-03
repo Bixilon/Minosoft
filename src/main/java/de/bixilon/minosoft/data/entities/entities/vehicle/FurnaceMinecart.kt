@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ class FurnaceMinecart(connection: PlayConnection, entityType: EntityType, data: 
         get() = data.getBoolean(HAS_FUEL_DATA, false)
 
     companion object : EntityFactory<FurnaceMinecart> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("furnace_minecart")
+        override val identifier: ResourceLocation = ResourceLocation("furnace_minecart")
         private val HAS_FUEL_DATA = EntityDataField("MINECART_FURNACE_HAS_FUEL")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): FurnaceMinecart {

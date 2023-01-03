@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -48,7 +48,7 @@ class NoteParticle(connection: PlayConnection, position: Vec3d, colorModifier: F
 
 
     companion object : ParticleFactory<NoteParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:note".toResourceLocation()
+        override val identifier: ResourceLocation = "minecraft:note".toResourceLocation()
         private const val ONE_THIRD = 1.0f / 3
         private const val TWO_THIRD = ONE_THIRD * 2
 

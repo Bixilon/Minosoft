@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -151,7 +150,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<TitleElement>> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:title".toResourceLocation()
+        override val identifier: ResourceLocation = "minosoft:title".toResourceLocation()
         const val SUBTITLE_VERTICAL_OFFSET = 10
         const val DEFAULT_FADE_IN_TIME = 20L * ProtocolDefinition.TICK_TIME
         const val DEFAULT_STAY_TIME = 60L * ProtocolDefinition.TICK_TIME

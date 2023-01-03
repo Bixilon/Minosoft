@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,7 +39,7 @@ class Dolphin(connection: PlayConnection, entityType: EntityType, data: EntityDa
 
 
     companion object : EntityFactory<Dolphin> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("dolphin")
+        override val identifier: ResourceLocation = ResourceLocation("dolphin")
         private val TREASURE_POSITION_DATA = EntityDataField("DOLPHIN_TREASURE_POSITION")
         private val HAS_FISH_DATA = EntityDataField("DOLPHIN_HAS_FISH")
         private val MOISTNESS_LEVEL_DATA = EntityDataField("DOLPHIN_MOISTNESS_LEVEL")

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ class Pillager(connection: PlayConnection, entityType: EntityType, data: EntityD
         get() = data.getBoolean(IS_CHARGING_CROSSBOW_DATA, false)
 
     companion object : EntityFactory<Pillager> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("pillager")
+        override val identifier: ResourceLocation = ResourceLocation("pillager")
         private val IS_CHARGING_CROSSBOW_DATA = EntityDataField("PILLAGER_IS_CHARGING_CROSSBOW")
 
 

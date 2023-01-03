@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,12 +30,12 @@ class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType, d
         get() = data.get(COMMAND_DATA, "")
 
     @get:SynchronizedEntityData
-    val lastOutput: ChatComponent?
+    val lastOutput: ChatComponent
         get() = data.getChatComponent(LAST_OUTPUT_DATA, "")
 
 
     companion object : EntityFactory<CommandBlockMinecart> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("command_block_minecart")
+        override val identifier: ResourceLocation = ResourceLocation("command_block_minecart")
         private val COMMAND_DATA = EntityDataField("MINECART_COMMAND_BLOCK_COMMAND")
         private val LAST_OUTPUT_DATA = EntityDataField("MINECART_COMMAND_BLOCK_LAST_OUTPUT")
 

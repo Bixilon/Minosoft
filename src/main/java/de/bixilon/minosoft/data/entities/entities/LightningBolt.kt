@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ class LightningBolt(connection: PlayConnection, entityType: EntityType, data: En
     val duration = random.nextLong(100, 250)
 
     companion object : EntityFactory<LightningBolt> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("lightning_bolt")
+        override val identifier: ResourceLocation = ResourceLocation("lightning_bolt")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LightningBolt {
             return LightningBolt(connection, entityType, data, position)

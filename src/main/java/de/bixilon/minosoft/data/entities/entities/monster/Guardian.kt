@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,7 +39,7 @@ open class Guardian(connection: PlayConnection, entityType: EntityType, data: En
 
 
     companion object : EntityFactory<Guardian> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("guardian")
+        override val identifier: ResourceLocation = ResourceLocation("guardian")
         private val IS_MOVING_DATA = EntityDataField("GUARDIAN_IS_MOVING")
         private val TARGET_DATA = EntityDataField("GUARDIAN_TARGET_ENTITY_ID")
         private val LEGACY_FLAGS_DATA = EntityDataField("LEGACY_GUARDIAN_FLAGS")
@@ -51,13 +51,13 @@ open class Guardian(connection: PlayConnection, entityType: EntityType, data: En
 
         override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
             if (data == null || versionId <= ProtocolVersions.V_1_8_9) {
-                return RESOURCE_LOCATION
+                return identifier
             }
             val specialType = data.getBitMask(LEGACY_FLAGS_DATA, 0x02, 0)
             if (specialType) {
-                return ElderGuardian.RESOURCE_LOCATION
+                return ElderGuardian.identifier
             }
-            return RESOURCE_LOCATION
+            return identifier
         }
     }
 }

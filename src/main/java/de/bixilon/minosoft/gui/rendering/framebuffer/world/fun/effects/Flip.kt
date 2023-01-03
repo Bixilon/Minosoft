@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,12 +21,12 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactor
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class Flip(override val context: RenderContext) : FunEffect {
-    override val resourceLocation: ResourceLocation get() = RESOURCE_LOCATION
+    override val identifier: ResourceLocation get() = Flip.identifier
     override val shader = createShader(fragment = "minosoft:framebuffer/world/fun/flip.fsh".toResourceLocation()) { FramebufferShader(it) }
 
 
     companion object : FunEffectFactory<Flip> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:flip".toResourceLocation()
+        override val identifier: ResourceLocation = "minosoft:flip".toResourceLocation()
 
         override fun build(context: RenderContext): Flip {
             return Flip(context)

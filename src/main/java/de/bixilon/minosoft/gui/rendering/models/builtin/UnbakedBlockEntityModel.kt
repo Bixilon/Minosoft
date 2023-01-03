@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.models.builtin
 
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 @Deprecated("TODO")
-object UnbakedBlockEntityModel : GenericUnbakedModel(null, emptyMap()), CompanionResourceLocation {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:builtin/entity".toResourceLocation()
+object UnbakedBlockEntityModel : GenericUnbakedModel(null, emptyMap()), Identified {
+    override val identifier: ResourceLocation = "minecraft:builtin/entity".toResourceLocation()
 
     override fun bake(context: RenderContext): BakedModel {
         TODO("Not yet implemented")

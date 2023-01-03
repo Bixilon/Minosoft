@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,20 +13,20 @@
 
 package de.bixilon.minosoft.data.registries.factory
 
-import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
+import de.bixilon.minosoft.data.registries.identified.Identified
 
-open class DefaultFactory<T : ResourceLocationAble>(private vararg val factories: T) : Iterable<T> {
+open class DefaultFactory<T : Identified>(private vararg val factories: T) : Iterable<T> {
     private val map: MutableMap<ResourceLocation, T> = mutableMapOf()
 
     val size: Int = factories.size
 
     init {
         for (factory in factories) {
-            map[factory.resourceLocation] = factory
-            if (factory is MultiResourceLocationAble) {
-                for (resourceLocation in factory.resourceLocations) {
+            map[factory.identifier] = factory
+            if (factory is AliasedIdentified) {
+                for (resourceLocation in factory.identifiers) {
                     map[resourceLocation] = factory
                 }
             }
@@ -34,15 +34,15 @@ open class DefaultFactory<T : ResourceLocationAble>(private vararg val factories
     }
 
     fun add(factory: T) {
-        map[factory.resourceLocation] = factory
+        map[factory.identifier] = factory
     }
 
     fun remove(name: ResourceLocation) {
         map -= name
     }
 
-    fun remove(factory: ResourceLocationAble) {
-        map -= factory.resourceLocation
+    fun remove(factory: Identified) {
+        map -= factory.identifier
     }
 
     operator fun get(resourceLocation: ResourceLocation): T? {

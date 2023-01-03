@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -105,7 +105,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
 
     companion object : HUDBuilder<CrosshairHUDElement> {
         const val CROSSHAIR_SIZE = 16
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:crosshair".toResourceLocation()
+        override val identifier: ResourceLocation = "minosoft:crosshair".toResourceLocation()
 
         private val ATLAS_NAME = "minecraft:crosshair".toResourceLocation()
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,14 +40,14 @@ class RendererManager(
 
 
     fun <T : Renderer> register(builder: RendererBuilder<T>): T? {
-        val resourceLocation = builder.RESOURCE_LOCATION
+        val resourceLocation = builder.identifier
         if (resourceLocation in RunConfiguration.SKIP_RENDERERS) {
             return null
         }
         val renderer = builder.build(connection, context) ?: return null
         val previous = renderers.put(resourceLocation, renderer)
         if (previous != null) {
-            Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Renderer $previous(${builder.resourceLocation}) got replaced by $renderer!" }
+            Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Renderer $previous(${builder.identifier}) got replaced by $renderer!" }
         }
         return renderer
     }
@@ -57,7 +57,7 @@ class RendererManager(
     }
 
     operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
-        return this[renderer.RESOURCE_LOCATION].unsafeCast()
+        return this[renderer.identifier].unsafeCast()
     }
 
     operator fun get(resourceLocation: ResourceLocation): Renderer? {

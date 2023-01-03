@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,41 +28,41 @@ import de.bixilon.minosoft.util.KUtil.minecraft
 abstract class IronArmor(resourceLocation: ResourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingItem {
 
 
-    open class IronBoots(resourceLocation: ResourceLocation = this.resourceLocation) : IronArmor(resourceLocation), BootsItem {
+    open class IronBoots(resourceLocation: ResourceLocation = this.identifier) : IronArmor(resourceLocation), BootsItem {
         override val defense: Int get() = 2
 
         companion object : ItemFactory<IronBoots> {
-            override val resourceLocation = minecraft("iron_boots")
+            override val identifier = minecraft("iron_boots")
 
             override fun build(registries: Registries) = IronBoots()
         }
     }
 
-    open class IronLeggings(resourceLocation: ResourceLocation = this.resourceLocation) : IronArmor(resourceLocation), LeggingsItem {
+    open class IronLeggings(resourceLocation: ResourceLocation = this.identifier) : IronArmor(resourceLocation), LeggingsItem {
         override val defense: Int get() = 5
 
         companion object : ItemFactory<IronLeggings> {
-            override val resourceLocation = minecraft("iron_leggings")
+            override val identifier = minecraft("iron_leggings")
 
             override fun build(registries: Registries) = IronLeggings()
         }
     }
 
-    open class IronChestplate(resourceLocation: ResourceLocation = this.resourceLocation) : IronArmor(resourceLocation), ChestplateItem {
+    open class IronChestplate(resourceLocation: ResourceLocation = this.identifier) : IronArmor(resourceLocation), ChestplateItem {
         override val defense: Int get() = 6
 
         companion object : ItemFactory<IronChestplate> {
-            override val resourceLocation = minecraft("iron_chestplate")
+            override val identifier = minecraft("iron_chestplate")
 
             override fun build(registries: Registries) = IronChestplate()
         }
     }
 
-    open class IronHelmet(resourceLocation: ResourceLocation = this.resourceLocation) : IronArmor(resourceLocation), HelmetItem {
+    open class IronHelmet(resourceLocation: ResourceLocation = this.identifier) : IronArmor(resourceLocation), HelmetItem {
         override val defense: Int get() = 2
 
         companion object : ItemFactory<IronHelmet> {
-            override val resourceLocation = minecraft("iron_helmet")
+            override val identifier = minecraft("iron_helmet")
 
             override fun build(registries: Registries) = IronHelmet()
         }

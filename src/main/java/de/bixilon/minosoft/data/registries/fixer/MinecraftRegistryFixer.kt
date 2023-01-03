@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ object MinecraftRegistryFixer {
             }
             // add minecraft:flower_pot as block entity, even if it's not a real entity, but we need it for setting the flower type (in earlier versions of the game)
 
-            connection.registries.blockEntityTypeRegistry[FlowerPotBlockEntity] = BlockEntityType(FlowerPotBlockEntity.RESOURCE_LOCATION, setOf(connection.registries.blockRegistry[FlowerPotBlockEntity]!!), FlowerPotBlockEntity)
+            connection.registries.blockEntityTypeRegistry[FlowerPotBlockEntity] = BlockEntityType(FlowerPotBlockEntity.identifier, setOf(connection.registries.blockRegistry[FlowerPotBlockEntity]!!), FlowerPotBlockEntity)
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,7 +55,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             velocity = buffer.readVelocity()
         }
         entity = if (buffer.versionId < ProtocolVersions.V_19W05A) {
-            val entityResourceLocation = ENTITY_OBJECT_REGISTRY[type].resourceLocation
+            val entityResourceLocation = ENTITY_OBJECT_REGISTRY[type].identifier
             buffer.connection.registries.entityTypeRegistry[entityResourceLocation]!!.build(buffer.connection, position, rotation, null, buffer.versionId)!! // ToDo: Entity meta data tweaking
         } else {
             buffer.connection.registries.entityTypeRegistry[type].build(buffer.connection, position, rotation, null, buffer.versionId)!!
@@ -67,7 +67,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.world.entities.add(entityId, entityUUID, entity)
         velocity?.let { entity.velocity = it }
 
-        connection.fire(EntitySpawnEvent(connection, this))
+        connection.events.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

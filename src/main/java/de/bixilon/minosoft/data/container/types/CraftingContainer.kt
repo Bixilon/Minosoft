@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,10 +22,10 @@ import de.bixilon.minosoft.data.container.sections.RangeSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.RemoveOnlySlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
-import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
+import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -51,9 +51,9 @@ class CraftingContainer(connection: PlayConnection, type: ContainerType, title: 
     }
 
 
-    companion object : ContainerFactory<CraftingContainer>, MultiResourceLocationAble {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:crafting".toResourceLocation()
-        override val resourceLocations: Set<ResourceLocation> = setOf("minecraft:crafting_table".toResourceLocation())
+    companion object : ContainerFactory<CraftingContainer>, AliasedIdentified {
+        override val identifier: ResourceLocation = "minecraft:crafting".toResourceLocation()
+        override val identifiers: Set<ResourceLocation> = setOf("minecraft:crafting_table".toResourceLocation())
         const val CRAFTING_SLOTS = 3 * 3
         val SECTIONS: Array<ContainerSection> = arrayOf(
             // crafting slots are not shift clickable, no section

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ open class PistonBlockEntity(connection: PlayConnection) : BlockEntity(connectio
     }
 
     companion object : BlockEntityFactory<PistonBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:piston")
+        override val identifier: ResourceLocation = ResourceLocation("minecraft:piston")
 
         override fun build(connection: PlayConnection): PistonBlockEntity {
             return PistonBlockEntity(connection)

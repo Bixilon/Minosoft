@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,28 +19,28 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.minecraft
 
-open class AppleItem(resourceLocation: ResourceLocation = this.resourceLocation) : Item(resourceLocation), FoodItem {
+open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), FoodItem {
     override val nutrition: Int get() = 4
 
     companion object : ItemFactory<AppleItem> {
-        override val resourceLocation = minecraft("apple")
+        override val identifier = minecraft("apple")
 
         override fun build(registries: Registries) = AppleItem()
     }
 
-    open class GoldenAppleItem(resourceLocation: ResourceLocation = this.resourceLocation) : AppleItem(resourceLocation) {
+    open class GoldenAppleItem(resourceLocation: ResourceLocation = this.identifier) : AppleItem(resourceLocation) {
 
         companion object : ItemFactory<GoldenAppleItem> {
-            override val resourceLocation = minecraft("golden_apple")
+            override val identifier = minecraft("golden_apple")
 
             override fun build(registries: Registries) = GoldenAppleItem()
         }
     }
 
-    open class EnchantedGoldenAppleItem(resourceLocation: ResourceLocation = this.resourceLocation) : GoldenAppleItem(resourceLocation) {
+    open class EnchantedGoldenAppleItem(resourceLocation: ResourceLocation = this.identifier) : GoldenAppleItem(resourceLocation) {
 
         companion object : ItemFactory<EnchantedGoldenAppleItem> {
-            override val resourceLocation = minecraft("enchanted_golden_apple")
+            override val identifier = minecraft("enchanted_golden_apple")
 
             override fun build(registries: Registries) = EnchantedGoldenAppleItem()
         }

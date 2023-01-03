@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ class WitherSkull(connection: PlayConnection, entityType: EntityType, data: Enti
 
 
     companion object : EntityFactory<WitherSkull> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wither_skull")
+        override val identifier: ResourceLocation = ResourceLocation("wither_skull")
         private val IS_DANGEROUS_DATA = EntityDataField("WITHER_SKULL_DANGEROUS")
 
 

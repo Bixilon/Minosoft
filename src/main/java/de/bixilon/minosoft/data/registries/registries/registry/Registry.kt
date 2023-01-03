@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,9 +17,9 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
@@ -53,7 +53,7 @@ open class Registry<T : RegistryItem>(
             is Number -> getOrNull(any.toInt())
             is ResourceLocation -> get(any)
             is String -> get(any)
-            is ResourceLocationAble -> get(any.resourceLocation)
+            is Identified -> get(any.identifier)
             else -> TODO()
         }
     }
@@ -70,9 +70,9 @@ open class Registry<T : RegistryItem>(
             }
 
             is ResourceLocation -> resourceLocationMap[any] = value
-            is ResourceLocationAble -> resourceLocationMap[any.resourceLocation] = value
-            is MultiResourceLocationAble -> {
-                for (resourceLocation in any.resourceLocations) {
+            is Identified -> resourceLocationMap[any.identifier] = value
+            is AliasedIdentified -> {
+                for (resourceLocation in any.identifiers) {
                     resourceLocationMap[resourceLocation] = value
                 }
             }
@@ -85,8 +85,8 @@ open class Registry<T : RegistryItem>(
         return get(resourceLocation.toResourceLocation())
     }
 
-    open operator fun get(resourceLocation: ResourceLocationAble): T? {
-        return get(resourceLocation.resourceLocation)
+    open operator fun get(resourceLocation: Identified): T? {
+        return get(resourceLocation.identifier)
     }
 
     override fun getOrNull(id: Int): T? {

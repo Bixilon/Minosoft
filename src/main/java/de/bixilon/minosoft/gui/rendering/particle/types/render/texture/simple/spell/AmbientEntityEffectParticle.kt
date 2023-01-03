@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ class AmbientEntityEffectParticle(connection: PlayConnection, position: Vec3d, c
     }
 
     companion object : ParticleFactory<AmbientEntityEffectParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:ambient_entity_effect".toResourceLocation()
+        override val identifier: ResourceLocation = "minecraft:ambient_entity_effect".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): AmbientEntityEffectParticle {
             return AmbientEntityEffectParticle(connection, position, color = RGBColor(velocity.x, velocity.y, velocity.z), data)

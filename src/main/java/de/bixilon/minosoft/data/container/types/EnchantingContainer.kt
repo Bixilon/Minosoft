@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,11 +24,11 @@ import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.EnchantableSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -69,14 +69,14 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
 
     private object LapislazuliSlot : SlotType {
         override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-            return stack.item.item.resourceLocation == MinecraftItems.LAPISLAZULI
+            return stack.item.item.identifier == MinecraftItems.LAPISLAZULI
         }
     }
 
 
-    companion object : ContainerFactory<EnchantingContainer>, MultiResourceLocationAble {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:enchantment".toResourceLocation()
-        override val resourceLocations: Set<ResourceLocation> = setOf("minecraft:enchanting_table".toResourceLocation(), "EnchantTable".toResourceLocation())
+    companion object : ContainerFactory<EnchantingContainer>, AliasedIdentified {
+        override val identifier: ResourceLocation = "minecraft:enchantment".toResourceLocation()
+        override val identifiers: Set<ResourceLocation> = setOf("minecraft:enchanting_table".toResourceLocation(), "EnchantTable".toResourceLocation())
         const val LAPISLAZULI_SLOT = 1
         const val ENCHANTING_SLOTS = 2
         const val ENCHANTING_OPTIONS = 3

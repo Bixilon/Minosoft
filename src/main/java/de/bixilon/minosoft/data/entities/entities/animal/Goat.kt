@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,7 +37,7 @@ class Goat(connection: PlayConnection, entityType: EntityType, data: EntityData,
         get() = data.getBoolean(RIGHT_HORN_DATA, false)
 
     companion object : EntityFactory<Goat> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("goat")
+        override val identifier: ResourceLocation = ResourceLocation("goat")
         private val SCREAMING_DATA = EntityDataField("GOAT_IS_SCREAMING")
         private val LEFT_HORN_DATA = EntityDataField("LEFT_HORN")
         private val RIGHT_HORN_DATA = EntityDataField("RIGHT_HORN")

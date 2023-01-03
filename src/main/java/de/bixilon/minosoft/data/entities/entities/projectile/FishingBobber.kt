@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ class FishingBobber(connection: PlayConnection, entityType: EntityType, data: En
 
 
     companion object : EntityFactory<FishingBobber> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("fishing_bobber")
+        override val identifier: ResourceLocation = ResourceLocation("fishing_bobber")
         private val HOOKED_ENTITY_DATA = EntityDataField("FISHING_HOOK_HOOKED_ENTITY")
         private val CATCHABLE_DATA = EntityDataField("FISHING_HOOK_CATCHABLE")
 

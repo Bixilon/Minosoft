@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.registries.dimension.effects
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-interface DimensionEffects : ResourceLocationAble {
+interface DimensionEffects : Identified {
     val daylightCycle: Boolean
     val skylight: Boolean
     val fixedTexture: ResourceLocation? get() = null

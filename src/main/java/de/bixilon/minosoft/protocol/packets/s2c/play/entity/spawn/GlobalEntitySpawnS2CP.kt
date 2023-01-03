@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,13 +33,13 @@ class GlobalEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         val position: Vec3d = buffer.readVec3d()
 
-        entity = LightningBolt(buffer.connection, buffer.connection.registries.entityTypeRegistry[LightningBolt.RESOURCE_LOCATION]!!, EntityData(buffer.connection), position)
+        entity = LightningBolt(buffer.connection, buffer.connection.registries.entityTypeRegistry[LightningBolt.identifier]!!, EntityData(buffer.connection), position)
     }
 
     override fun handle(connection: PlayConnection) {
         connection.world.entities.add(entityId, null, entity)
 
-        connection.fire(EntitySpawnEvent(connection, this))
+        connection.events.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

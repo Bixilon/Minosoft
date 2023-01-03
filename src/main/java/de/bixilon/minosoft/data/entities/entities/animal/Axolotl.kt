@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -53,7 +53,7 @@ class Axolotl(connection: PlayConnection, entityType: EntityType, data: EntityDa
     }
 
     companion object : EntityFactory<Axolotl> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("axolotl")
+        override val identifier: ResourceLocation = ResourceLocation("axolotl")
         private val VARIANT_DATA = EntityDataField("AXOLOTL_VARIANT")
         private val PLAYING_DEAD_DATA = EntityDataField("AXOLOTL_PLAYING_DEAD")
         private val FROM_BUCKET_DATA = EntityDataField("AXOLOTL_FROM_BUCKET")

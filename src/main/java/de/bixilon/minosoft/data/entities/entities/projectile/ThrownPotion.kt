@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ class ThrownPotion(connection: PlayConnection, entityType: EntityType, data: Ent
 
     @get:SynchronizedEntityData
     override val item: ItemStack?
-        get() = if (versionId > ProtocolVersions.V_20W09A) {
+        get() = if (connection.version.versionId > ProtocolVersions.V_20W09A) {
             super.item
         } else {
             data.get<ItemStack?>(POTION_ITEM_DATA, null) ?: defaultItem
@@ -40,7 +40,7 @@ class ThrownPotion(connection: PlayConnection, entityType: EntityType, data: Ent
     override val defaultItem: ItemStack? = null
 
     companion object : EntityFactory<ThrownPotion> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("potion")
+        override val identifier: ResourceLocation = ResourceLocation("potion")
         private val POTION_ITEM_DATA = EntityDataField("THROWN_POTION_ITEM")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownPotion {

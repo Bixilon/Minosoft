@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ class SmokingRecipe(
 ) : HeatRecipe {
 
     companion object : HeatRecipeFactory<SmokingRecipe> {
-        override val RESOURCE_LOCATION = "smoking".toResourceLocation()
+        override val identifier = "smoking".toResourceLocation()
 
         override fun build(group: String, category: RecipeCategories?, ingredient: Ingredient, result: ItemStack?, experience: Float, cookingTime: Int): SmokingRecipe {
             return SmokingRecipe(group, category, ingredient, result, experience, cookingTime)

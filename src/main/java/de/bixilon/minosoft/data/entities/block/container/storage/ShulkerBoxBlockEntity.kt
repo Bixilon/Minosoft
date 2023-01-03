@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,17 +14,17 @@
 package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocationList
 
 class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
 
-    companion object : BlockEntityFactory<ShulkerBoxBlockEntity>, MultiResourceLocationAble {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:shulker_box")
-        override val resourceLocations: Set<ResourceLocation> = setOf(
+    companion object : BlockEntityFactory<ShulkerBoxBlockEntity>, AliasedIdentified {
+        override val identifier: ResourceLocation = ResourceLocation("minecraft:shulker_box")
+        override val identifiers: Set<ResourceLocation> = setOf(
             "minecraft:white_shulker_box", "minecraft:orange_shulker_box", "minecraft:magenta_shulker_box", "minecraft:light_blue_shulker_box",
             "minecraft:yellow_shulker_box", "minecraft:lime_shulker_box", "minecraft:pink_shulker_box", "minecraft:gray_shulker_box",
             "minecraft:silver_shulker_box", "minecraft:cyan_shulker_box", "minecraft:purple_shulker_box", "minecraft:blue_shulker_box",

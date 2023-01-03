@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLoc
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 data class BlockEntityType<T : BlockEntity>(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
     val blocks: Set<Block>,
     val factory: BlockEntityFactory<T>,
 ) : RegistryItem() {
@@ -47,7 +47,7 @@ data class BlockEntityType<T : BlockEntity>(
             }
 
             return BlockEntityType(
-                resourceLocation = resourceLocation,
+                identifier = resourceLocation,
                 blocks = blocks,
                 factory = factory,
             )

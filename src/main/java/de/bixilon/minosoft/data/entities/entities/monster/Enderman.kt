@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,8 +29,8 @@ class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityD
     // ToDo: No clue here
     @get:SynchronizedEntityData
     val carriedBlock: BlockState?
-        get() = if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo: No clue here
-            connection.registries.blockStateRegistry[data.get(CARRIED_BLOCK_DATA, 0) shl 4 or data.get(LEGACY_BLOCK_DATA_DATA, 0)]
+        get() = if (connection.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo: No clue here
+            connection.registries.blockStateRegistry.getOrNull(data.get(CARRIED_BLOCK_DATA, 0) shl 4 or data.get(LEGACY_BLOCK_DATA_DATA, 0))
         } else {
             data.get<BlockState?>(CARRIED_BLOCK_DATA, null)
         }
@@ -45,7 +45,7 @@ class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityD
 
 
     companion object : EntityFactory<Enderman> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("enderman")
+        override val identifier: ResourceLocation = ResourceLocation("enderman")
         private val CARRIED_BLOCK_DATA = EntityDataField("ENDERMAN_CARRIED_BLOCK")
         private val SCREAMING_DATA = EntityDataField("ENDERMAN_IS_SCREAMING")
         private val STARRING_DATA = EntityDataField("ENDERMAN_IS_STARRING")

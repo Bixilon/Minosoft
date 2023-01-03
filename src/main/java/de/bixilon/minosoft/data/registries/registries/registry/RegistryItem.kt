@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,12 +15,12 @@ package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.registries.Registries
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.javaField
 
-abstract class RegistryItem : ResourceLocationAble {
+abstract class RegistryItem : Identified {
     open val injectable: Boolean get() = true
     private val injects: MutableMap<KProperty<RegistryItem?>, List<Any>> = if (injectable) mutableMapOf() else unsafeNull()
 
@@ -62,6 +62,6 @@ abstract class RegistryItem : ResourceLocationAble {
 
 
     override fun toString(): String {
-        return resourceLocation.full
+        return identifier.full
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ class Skeleton(connection: PlayConnection, entityType: EntityType, data: EntityD
 
 
     companion object : EntityFactory<Skeleton> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("skeleton")
+        override val identifier: ResourceLocation = ResourceLocation("skeleton")
         private val CONVERTING_DATA = EntityDataField("SKELETON_STRAY_FREEZE_CONVERTING")
         private val LEGACY_TYPE_DATA = EntityDataField("LEGACY_SKELETON_TYPE")
 
@@ -39,13 +39,13 @@ class Skeleton(connection: PlayConnection, entityType: EntityType, data: EntityD
 
         override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
             if (data == null || versionId <= ProtocolVersions.V_1_8_9) {
-                return RESOURCE_LOCATION
+                return identifier
             }
             val specialType = data.get(LEGACY_TYPE_DATA, 0)
             if (specialType == 1) {
-                return WitherSkeleton.RESOURCE_LOCATION
+                return WitherSkeleton.identifier
             }
-            return RESOURCE_LOCATION
+            return identifier
         }
     }
 }

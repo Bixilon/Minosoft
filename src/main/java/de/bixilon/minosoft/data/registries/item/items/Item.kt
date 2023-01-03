@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class Item(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
 ) : RegistryItem(), Translatable {
     @Deprecated("interface")
     open val rarity: Rarities get() = Rarities.COMMON
@@ -39,13 +39,13 @@ abstract class Item(
     @Deprecated("interface")
     open val maxDurability: Int get() = -1
 
-    override val translationKey: ResourceLocation = resourceLocation.translation("item")
+    override val translationKey: ResourceLocation = identifier.translation("item")
 
     open var model: BakedItemModel? = null
     var tintProvider: TintProvider? = null
 
     override fun toString(): String {
-        return resourceLocation.toString()
+        return identifier.toString()
     }
 
     open fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float {

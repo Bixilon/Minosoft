@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,8 +22,8 @@ import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.http.HTTP2.postJson
@@ -45,7 +45,7 @@ class MojangAccount(
 ) : Account(username) {
     @Transient
     private var refreshed: Boolean = false
-    override val type: ResourceLocation = RESOURCE_LOCATION
+    override val type: ResourceLocation get() = identifier
 
     override fun join(serverId: String) {
         AccountUtil.joinMojangServer(username, accessToken, uuid, serverId)
@@ -109,11 +109,11 @@ class MojangAccount(
         return "MojangAccount{$username}"
     }
 
-    companion object : CompanionResourceLocation {
+    companion object : Identified {
         private const val MOJANG_URL_LOGIN = "https://authserver.mojang.com/authenticate"
         private const val MOJANG_URL_REFRESH = "https://authserver.mojang.com/refresh"
         private const val MOJANG_URL_INVALIDATE = "https://authserver.mojang.com/invalidate"
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:mojang_account".toResourceLocation()
+        override val identifier: ResourceLocation = "minosoft:mojang_account".toResourceLocation()
 
         fun login(clientToken: String, email: String, password: String): MojangAccount {
             val response = mutableMapOf(

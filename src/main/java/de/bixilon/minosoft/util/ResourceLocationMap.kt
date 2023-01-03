@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
+import de.bixilon.minosoft.data.registries.identified.Identified
 
-open class ResourceLocationMap<T : ResourceLocationAble>(vararg entries: T) : Iterable<T> {
+open class ResourceLocationMap<T : Identified>(vararg entries: T) : Iterable<T> {
     private val entries: MutableMap<ResourceLocation, T> = mutableMapOf()
 
     init {
         for (factory in entries) {
-            this.entries[factory.resourceLocation] = factory
-            if (factory is MultiResourceLocationAble) {
-                for (resourceLocation in factory.resourceLocations) {
+            this.entries[factory.identifier] = factory
+            if (factory is AliasedIdentified) {
+                for (resourceLocation in factory.identifiers) {
                     this.entries[resourceLocation] = factory
                 }
             }

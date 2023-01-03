@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -43,7 +43,7 @@ class WitherBoss(connection: PlayConnection, entityType: EntityType, data: Entit
 
 
     companion object : EntityFactory<WitherBoss> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wither")
+        override val identifier: ResourceLocation = ResourceLocation("wither")
         private val CENTER_TARGET_DATA = EntityDataField("WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID")
         private val LEFT_TARGET_DATA = EntityDataField("WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID")
         private val RIGHT_TARGET_DATA = EntityDataField("WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID")

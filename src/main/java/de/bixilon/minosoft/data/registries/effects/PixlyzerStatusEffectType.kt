@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,13 +23,13 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 
 class PixlyzerStatusEffectType(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
     override val color: RGBColor,
     override val category: StatusEffectCategories,
 ) : StatusEffectType(), Colored, CategorizedEffect {
 
     override fun toString(): String {
-        return resourceLocation.full
+        return identifier.full
     }
 
     companion object : ResourceLocationCodec<StatusEffectType> {
@@ -37,7 +37,7 @@ class PixlyzerStatusEffectType(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): PixlyzerStatusEffectType {
 
             return PixlyzerStatusEffectType(
-                resourceLocation = resourceLocation,
+                identifier = resourceLocation,
                 category = data["category"]?.unsafeCast<String>()?.let { return@let StatusEffectCategories[it] } ?: StatusEffectCategories.NEUTRAL,
                 color = data["color"].unsafeCast<Int>().asRGBColor(),
             )

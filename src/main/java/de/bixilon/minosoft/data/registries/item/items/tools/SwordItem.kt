@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,7 +31,7 @@ open class SwordItem(
     override val attackDamage = data["attack_damage"]?.toFloat() ?: -1.0f
 
     override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float {
-        if (blockState.block.resourceLocation == MinecraftBlocks.COBWEB) {
+        if (blockState.block.identifier == MinecraftBlocks.COBWEB) {
             return 15.0f
         }
         return super.getMiningSpeedMultiplier(connection, blockState, stack)

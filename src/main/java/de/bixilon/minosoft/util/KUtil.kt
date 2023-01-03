@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
@@ -182,7 +182,7 @@ object KUtil {
                 is Double -> "§d%.4f".format(this)
                 is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
                 is ResourceLocation -> TextComponent(this.toString()).color(ChatColors.GOLD)
-                is ResourceLocationAble -> resourceLocation.format()
+                is Identified -> identifier.format()
                 is Vec4t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()} ${this.w.format()})"
                 is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
                 is Vec2t<*> -> "(${this.x.format()} ${this.y.format()})"
@@ -207,11 +207,11 @@ object KUtil {
         get() = TextComponent(this::class.java.realName + ": " + this.message).color(ChatColors.DARK_RED)
 
 
-    fun <T : ResourceLocationAble> List<T>.asResourceLocationMap(): Map<ResourceLocation, T> {
+    fun <T : Identified> List<T>.asResourceLocationMap(): Map<ResourceLocation, T> {
         val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
 
         for (value in this) {
-            ret[value.resourceLocation] = value
+            ret[value.identifier] = value
         }
 
         return ret

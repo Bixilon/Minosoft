@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ class EntityExperienceOrbS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     val entity: ExperienceOrb = ExperienceOrb(
         connection = buffer.connection,
-        entityType = buffer.connection.registries.entityTypeRegistry[ExperienceOrb.RESOURCE_LOCATION]!!,
+        entityType = buffer.connection.registries.entityTypeRegistry[ExperienceOrb.identifier]!!,
         data = EntityData(buffer.connection),
         position = buffer.readVec3d(),
         count = buffer.readUnsignedShort(),
@@ -37,7 +37,7 @@ class EntityExperienceOrbS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         connection.world.entities.add(entityId, null, entity)
 
-        connection.fire(EntitySpawnEvent(connection, this))
+        connection.events.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

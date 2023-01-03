@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,7 +37,7 @@ class Sheep(connection: PlayConnection, entityType: EntityType, data: EntityData
 
 
     companion object : EntityFactory<Sheep> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("sheep")
+        override val identifier: ResourceLocation = ResourceLocation("sheep")
         private val FLAGS_DATA = EntityDataField("SHEEP_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Sheep {

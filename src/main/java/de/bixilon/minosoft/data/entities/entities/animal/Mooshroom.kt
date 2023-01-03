@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class Mooshroom(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Cow(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
-    val variant: MooshroomVariants?
+    val variant: MooshroomVariants
         get() = MooshroomVariants.NAME_MAP[data.get(VARIANT_DATA, MooshroomVariants.RED.name).lowercase()] ?: MooshroomVariants.RED
 
 
@@ -43,7 +43,7 @@ class Mooshroom(connection: PlayConnection, entityType: EntityType, data: Entity
     }
 
     companion object : EntityFactory<Mooshroom> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("mooshroom")
+        override val identifier: ResourceLocation = ResourceLocation("mooshroom")
         private val VARIANT_DATA = EntityDataField("MOOSHROOM_VARIANT")
 
 

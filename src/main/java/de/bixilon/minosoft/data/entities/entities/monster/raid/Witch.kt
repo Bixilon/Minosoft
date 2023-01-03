@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ class Witch(connection: PlayConnection, entityType: EntityType, data: EntityData
         get() = data.getBoolean(LEGACY_IS_AGGRESSIVE_DATA, false)
 
     companion object : EntityFactory<Witch> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("witch")
+        override val identifier: ResourceLocation = ResourceLocation("witch")
         private val IS_DRINKING_POTION_DATA = EntityDataField("WITCH_IS_DRINKING_POTION")
         private val LEGACY_IS_AGGRESSIVE_DATA = EntityDataField("LEGACY_WITCH_IS_AGGRESSIVE")
 

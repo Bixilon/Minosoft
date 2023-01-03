@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -91,7 +91,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         accountListViewFX.items.clear()
         val profile = ErosProfileManager.selected.general.accountProfile
         for (account in profile.entries.values) {
-            if (account.type != type.resourceLocation) {
+            if (account.type != type.identifier) {
                 continue
             }
             accountListViewFX.items += account
@@ -99,7 +99,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         profile::entries.observeMapFX(this) {
             accountListViewFX.items.removeAll(it.removes.values())
             for ((_, value) in it.adds) {
-                if (value.type != type.resourceLocation) {
+                if (value.type != type.identifier) {
                     continue
                 }
                 accountListViewFX.items += value
@@ -257,7 +257,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
 
         val ACCOUNT_TYPES = listOf(
             ErosAccountType<MicrosoftAccount>(
-                resourceLocation = MicrosoftAccount.RESOURCE_LOCATION,
+                identifier = MicrosoftAccount.identifier,
                 translationKey = "minosoft:main.account.type.microsoft".toResourceLocation(),
                 additionalDetails = listOf(
                     "minosoft:main.account.account_info.uuid".toResourceLocation() to { it.uuid },
@@ -267,13 +267,13 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 refreshHandler = { controller, account -> MicrosoftAddController(controller, account).request() }
             ),
             ErosAccountType<OfflineAccount>(
-                resourceLocation = OfflineAccount.RESOURCE_LOCATION,
+                identifier = OfflineAccount.identifier,
                 translationKey = "minosoft:main.account.type.offline".toResourceLocation(),
                 icon = FontAwesomeSolid.MAP,
                 addHandler = { OfflineAddController(it).show() },
             ),
             ErosAccountType<MojangAccount>(
-                resourceLocation = MojangAccount.RESOURCE_LOCATION,
+                identifier = MojangAccount.identifier,
                 translationKey = "minosoft:main.account.type.mojang".toResourceLocation(),
                 additionalDetails = listOf(
                     "minosoft:main.account.account_info.email".toResourceLocation() to { it.email },
@@ -287,7 +287,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         val <T : Account>T.erosType: ErosAccountType<T>?
             get() {
                 for (type in ACCOUNT_TYPES) {
-                    if (type.resourceLocation == this.type) {
+                    if (type.identifier == this.type) {
                         return type.unsafeCast()
                     }
                 }

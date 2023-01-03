@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -196,7 +196,7 @@ class ChunkBorderRenderer(
 
 
     companion object : RendererBuilder<ChunkBorderRenderer> {
-        override val RESOURCE_LOCATION = ResourceLocation("minosoft:chunk_borders")
+        override val identifier = ResourceLocation("minosoft:chunk_borders")
         private val CHUNK_BORDER_TOGGLE_KEY_COMBINATION = "minosoft:toggle_chunk_borders".toResourceLocation()
         private const val SECTION_LINE_WIDTH = RenderConstants.DEFAULT_LINE_WIDTH * 3
         private const val INNER_CHUNK_LINE_WIDTH = SECTION_LINE_WIDTH * 3

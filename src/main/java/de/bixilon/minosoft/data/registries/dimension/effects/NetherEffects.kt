@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minecraft
 
 object NetherEffects : DimensionEffects {
-    override val resourceLocation = minecraft("the_nether")
+    override val identifier = minecraft("the_nether")
 
     override val daylightCycle: Boolean get() = false
     override val skylight: Boolean get() = false

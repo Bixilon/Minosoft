@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,7 +39,7 @@ open class Zombie(connection: PlayConnection, entityType: EntityType, data: Enti
 
 
     companion object : EntityFactory<Zombie> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombie")
+        override val identifier: ResourceLocation = ResourceLocation("zombie")
         private val IS_BABY_DATA = EntityDataField("ZOMBIE_IS_BABY")
         private val SPECIAL_TYPE_DATA = EntityDataField("ZOMBIE_SPECIAL_TYPE")
         private val DROWNING_CONVERSION_DATA = EntityDataField("ZOMBIE_DROWNING_CONVERSION")
@@ -50,13 +50,13 @@ open class Zombie(connection: PlayConnection, entityType: EntityType, data: Enti
 
         override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
             if (data == null || versionId <= ProtocolVersions.V_1_8_9) {
-                return RESOURCE_LOCATION
+                return identifier
             }
             val specialType = data.get(SPECIAL_TYPE_DATA, 0)
             if (specialType == 1) {
-                return ZombieVillager.RESOURCE_LOCATION
+                return ZombieVillager.identifier
             }
-            return RESOURCE_LOCATION
+            return identifier
         }
     }
 }

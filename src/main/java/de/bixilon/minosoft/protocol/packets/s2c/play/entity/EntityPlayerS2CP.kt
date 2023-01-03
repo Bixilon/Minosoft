@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -61,7 +61,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         entity = RemotePlayerEntity(
             connection = buffer.connection,
-            entityType = buffer.connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!,
+            entityType = buffer.connection.registries.entityTypeRegistry[RemotePlayerEntity.identifier]!!,
             data = EntityData(buffer.connection, data),
             position = position,
             rotation = rotation,
@@ -74,7 +74,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         // connection.tabList.tabListItemsByUUID[entityUUID]?.let { entity.tabListItem = it }
         connection.world.entities.add(entityId, entityUUID, entity)
 
-        connection.fire(EntitySpawnEvent(connection, this))
+        connection.events.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

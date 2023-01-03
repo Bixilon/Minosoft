@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,7 +41,7 @@ class ResourceOrTagParser(
     }
 
     companion object : ArgumentParserFactory<ResourceOrTagParser> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:resource_or_tag".toResourceLocation()
+        override val identifier: ResourceLocation = "minecraft:resource_or_tag".toResourceLocation()
 
 
         override fun read(buffer: PlayInByteBuffer): ResourceOrTagParser {

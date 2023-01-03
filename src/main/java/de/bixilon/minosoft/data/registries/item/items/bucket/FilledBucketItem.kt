@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,22 +31,22 @@ open class FilledBucketItem<T : Fluid>(
     override val fluid: Fluid = CastUtil.unsafeNull()
 
     init {
-        this::fluid.inject(factory.resourceLocation)
+        this::fluid.inject(factory.identifier)
     }
 
-    open class LavaBucketItem(resourceLocation: ResourceLocation = this.resourceLocation) : FilledBucketItem<LavaFluid>(resourceLocation, LavaFluid) {
+    open class LavaBucketItem(resourceLocation: ResourceLocation = this.identifier) : FilledBucketItem<LavaFluid>(resourceLocation, LavaFluid) {
 
         companion object : ItemFactory<LavaBucketItem> {
-            override val resourceLocation = minecraft("lava_bucket")
+            override val identifier = minecraft("lava_bucket")
 
             override fun build(registries: Registries) = LavaBucketItem()
         }
     }
 
-    open class WaterBucketItem(resourceLocation: ResourceLocation = this.resourceLocation) : FilledBucketItem<WaterFluid>(resourceLocation, WaterFluid) {
+    open class WaterBucketItem(resourceLocation: ResourceLocation = this.identifier) : FilledBucketItem<WaterFluid>(resourceLocation, WaterFluid) {
 
         companion object : ItemFactory<WaterBucketItem> {
-            override val resourceLocation = minecraft("water_bucket")
+            override val identifier = minecraft("water_bucket")
 
             override fun build(registries: Registries) = WaterBucketItem()
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -54,7 +54,7 @@ class Cat(connection: PlayConnection, entityType: EntityType, data: EntityData, 
         get() = ChatColors.VALUES.getOrNull(data.get(COLLAR_COLOR_DATA, 0x0C)) ?: ChatColors.RED
 
     companion object : EntityFactory<Cat> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("cat")
+        override val identifier: ResourceLocation = ResourceLocation("cat")
         private val VARIANT_DATA = EntityDataField("CAT_VARIANT")
         private val IS_LYING_DATA = EntityDataField("CAT_IS_LYING")
         private val IS_RELAXED_DATA = EntityDataField("CAT_IS_RELAXED")

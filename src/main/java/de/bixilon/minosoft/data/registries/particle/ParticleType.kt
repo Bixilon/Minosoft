@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,14 +27,14 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 data class ParticleType(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
     val textures: List<ResourceLocation>,
     val overrideLimiter: Boolean = false,
     val factory: ParticleFactory<out Particle>? = null,
 ) : RegistryItem() {
 
     override fun toString(): String {
-        return resourceLocation.full
+        return identifier.full
     }
 
     fun default(): ParticleData {
@@ -52,7 +52,7 @@ data class ParticleType(
             }
             val factory = DefaultParticleFactory[resourceLocation]
             return ParticleType(
-                resourceLocation = resourceLocation,
+                identifier = resourceLocation,
                 textures = textures,
                 overrideLimiter = data["override_limiter"]?.toBoolean() ?: false,
                 factory = factory,

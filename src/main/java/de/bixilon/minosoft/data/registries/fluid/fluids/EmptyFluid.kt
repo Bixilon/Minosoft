@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.minecraft
 
 @Deprecated("null")
-class EmptyFluid(resourceLocation: ResourceLocation = this.resourceLocation) : Fluid(resourceLocation) {
+class EmptyFluid(resourceLocation: ResourceLocation = this.identifier) : Fluid(resourceLocation) {
 
     override fun matches(other: Fluid): Boolean {
         return other is EmptyFluid
@@ -36,7 +36,7 @@ class EmptyFluid(resourceLocation: ResourceLocation = this.resourceLocation) : F
     }
 
     companion object : FluidFactory<EmptyFluid> {
-        override val resourceLocation = minecraft("empty")
+        override val identifier = minecraft("empty")
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries) = EmptyFluid()
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class ChestMinecart(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ChestMinecart> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("chest_minecart")
+        override val identifier: ResourceLocation = ResourceLocation("chest_minecart")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ChestMinecart {
             return ChestMinecart(connection, entityType, data, position, rotation)

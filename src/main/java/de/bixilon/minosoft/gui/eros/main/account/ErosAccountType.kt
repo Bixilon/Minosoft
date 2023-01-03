@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,14 +16,14 @@ package de.bixilon.minosoft.gui.eros.main.account
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.identified.Identified
 import org.kordamp.ikonli.Ikon
 
 data class ErosAccountType<T : Account>(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
     override val translationKey: ResourceLocation? = null,
     val icon: Ikon,
     val additionalDetails: List<Pair<ResourceLocation, (account: T) -> Any?>> = emptyList(),
     val addHandler: ((accountController: AccountController) -> Unit)? = null,
     val refreshHandler: ((accountController: AccountController, account: T) -> Unit)? = null,
-) : ResourceLocationAble, Translatable
+) : Identified, Translatable

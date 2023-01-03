@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,7 +55,7 @@ class HUDManager(
 
     fun registerElement(hudBuilder: HUDBuilder<*>) {
         val hudElement = hudBuilder.build(guiRenderer)
-        hudElements[hudBuilder.RESOURCE_LOCATION] = hudElement
+        hudElements[hudBuilder.identifier] = hudElement
 
         val toggleKeyBinding = hudBuilder.ENABLE_KEY_BINDING ?: return
         val toggleKeyBindingName = hudBuilder.ENABLE_KEY_BINDING_NAME ?: return
@@ -121,7 +121,7 @@ class HUDManager(
     }
 
     operator fun <T : HUDElement> get(hudBuilder: HUDBuilder<T>): T? {
-        return hudElements[hudBuilder.RESOURCE_LOCATION]?.unsafeCast()
+        return hudElements[hudBuilder.identifier]?.unsafeCast()
     }
 
 

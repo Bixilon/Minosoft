@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,41 +29,41 @@ import de.bixilon.minosoft.util.KUtil.minecraft
 abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingItem, DyeableItem {
 
 
-    open class LeatherBoots(resourceLocation: ResourceLocation = this.resourceLocation) : LeatherArmor(resourceLocation), BootsItem {
+    open class LeatherBoots(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), BootsItem {
         override val defense: Int get() = 1
 
         companion object : ItemFactory<LeatherBoots> {
-            override val resourceLocation = minecraft("leather_boots")
+            override val identifier = minecraft("leather_boots")
 
             override fun build(registries: Registries) = LeatherBoots()
         }
     }
 
-    open class LeatherLeggings(resourceLocation: ResourceLocation = this.resourceLocation) : LeatherArmor(resourceLocation), LeggingsItem {
+    open class LeatherLeggings(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), LeggingsItem {
         override val defense: Int get() = 2
 
         companion object : ItemFactory<LeatherLeggings> {
-            override val resourceLocation = minecraft("leather_leggings")
+            override val identifier = minecraft("leather_leggings")
 
             override fun build(registries: Registries) = LeatherLeggings()
         }
     }
 
-    open class LeatherChestplate(resourceLocation: ResourceLocation = this.resourceLocation) : LeatherArmor(resourceLocation), ChestplateItem {
+    open class LeatherChestplate(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), ChestplateItem {
         override val defense: Int get() = 3
 
         companion object : ItemFactory<LeatherChestplate> {
-            override val resourceLocation = minecraft("leather_chestplate")
+            override val identifier = minecraft("leather_chestplate")
 
             override fun build(registries: Registries) = LeatherChestplate()
         }
     }
 
-    open class LeatherHelmet(resourceLocation: ResourceLocation = this.resourceLocation) : LeatherArmor(resourceLocation), HelmetItem {
+    open class LeatherHelmet(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), HelmetItem {
         override val defense: Int get() = 1
 
         companion object : ItemFactory<LeatherHelmet> {
-            override val resourceLocation = minecraft("leather_helmet")
+            override val identifier = minecraft("leather_helmet")
 
             override fun build(registries: Registries) = LeatherHelmet()
         }

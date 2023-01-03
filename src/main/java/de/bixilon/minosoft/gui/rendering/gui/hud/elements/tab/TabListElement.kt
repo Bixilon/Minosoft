@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -250,7 +250,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         private const val ENTRY_VERTICAL_SPACING = 1
         private const val BACKGROUND_PADDING = 3
         private const val MAX_ENTRIES = 80
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:tab_list".toResourceLocation()
+        override val identifier: ResourceLocation = "minosoft:tab_list".toResourceLocation()
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_tab_list".toResourceLocation()
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_TAB),

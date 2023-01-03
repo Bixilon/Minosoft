@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -72,7 +72,7 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
 
 
     companion object : EntityFactory<ArmorStand> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("armor_stand")
+        override val identifier: ResourceLocation = ResourceLocation("armor_stand")
         private val FLAGS_DATA = EntityDataField("ARMOR_STAND_FLAGS")
         private val HEAD_ROTATION_DATA = EntityDataField("ARMOR_STAND_HEAD_ROTATION")
         private val BODY_ROTATION_DATA = EntityDataField("ARMOR_STAND_BODY_ROTATION")

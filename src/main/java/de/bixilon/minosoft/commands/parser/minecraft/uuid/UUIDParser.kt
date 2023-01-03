@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 object UUIDParser : ArgumentParser<UUID>, ArgumentParserFactory<UUIDParser> {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:uuid".toResourceLocation()
+    override val identifier: ResourceLocation = "minecraft:uuid".toResourceLocation()
     override val examples: List<Any> = listOf("9e6ce7c5-40d3-483e-8e5a-b6350987d65f")
     override val placeholder = ChatComponent.of("<uuid>")
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,41 +28,41 @@ import de.bixilon.minosoft.util.KUtil.minecraft
 abstract class ChainmailArmor(resourceLocation: ResourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingItem {
 
 
-    open class ChainmailBoots(resourceLocation: ResourceLocation = this.resourceLocation) : ChainmailArmor(resourceLocation), BootsItem {
+    open class ChainmailBoots(resourceLocation: ResourceLocation = this.identifier) : ChainmailArmor(resourceLocation), BootsItem {
         override val defense: Int get() = 1
 
         companion object : ItemFactory<ChainmailBoots> {
-            override val resourceLocation = minecraft("chainmail_boots")
+            override val identifier = minecraft("chainmail_boots")
 
             override fun build(registries: Registries) = ChainmailBoots()
         }
     }
 
-    open class ChainmailLeggings(resourceLocation: ResourceLocation = this.resourceLocation) : ChainmailArmor(resourceLocation), LeggingsItem {
+    open class ChainmailLeggings(resourceLocation: ResourceLocation = this.identifier) : ChainmailArmor(resourceLocation), LeggingsItem {
         override val defense: Int get() = 4
 
         companion object : ItemFactory<ChainmailLeggings> {
-            override val resourceLocation = minecraft("chainmail_leggings")
+            override val identifier = minecraft("chainmail_leggings")
 
             override fun build(registries: Registries) = ChainmailLeggings()
         }
     }
 
-    open class ChainmailChestplate(resourceLocation: ResourceLocation = this.resourceLocation) : ChainmailArmor(resourceLocation), ChestplateItem {
+    open class ChainmailChestplate(resourceLocation: ResourceLocation = this.identifier) : ChainmailArmor(resourceLocation), ChestplateItem {
         override val defense: Int get() = 5
 
         companion object : ItemFactory<ChainmailChestplate> {
-            override val resourceLocation = minecraft("chainmail_chestplate")
+            override val identifier = minecraft("chainmail_chestplate")
 
             override fun build(registries: Registries) = ChainmailChestplate()
         }
     }
 
-    open class ChainmailHelmet(resourceLocation: ResourceLocation = this.resourceLocation) : ChainmailArmor(resourceLocation), HelmetItem {
+    open class ChainmailHelmet(resourceLocation: ResourceLocation = this.identifier) : ChainmailArmor(resourceLocation), HelmetItem {
         override val defense: Int get() = 2
 
         companion object : ItemFactory<ChainmailHelmet> {
-            override val resourceLocation = minecraft("chainmail_helmet")
+            override val identifier = minecraft("chainmail_helmet")
 
             override fun build(registries: Registries) = ChainmailHelmet()
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,7 +41,7 @@ import kotlin.reflect.full.companionObject
 import kotlin.reflect.jvm.javaField
 
 data class EntityType(
-    override val resourceLocation: ResourceLocation,
+    override val identifier: ResourceLocation,
     override val translationKey: ResourceLocation?,
     val width: Float,
     val height: Float,
@@ -53,7 +53,7 @@ data class EntityType(
 ) : RegistryItem(), Translatable {
 
     override fun toString(): String {
-        return resourceLocation.toString()
+        return identifier.toString()
     }
 
     fun build(connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, versionId: Int): Entity? {
@@ -116,7 +116,7 @@ data class EntityType(
             }
 
             return EntityType(
-                resourceLocation = resourceLocation,
+                identifier = resourceLocation,
                 translationKey = data["translation_key"]?.toResourceLocation(),
                 width = data["width"].unsafeCast(),
                 height = data["height"].unsafeCast(),

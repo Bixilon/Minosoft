@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -85,7 +85,7 @@ class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
     val privateKey: PlayerPrivateKey?,
-) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, account.username, account.properties) {
+) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, account.username, account.properties) {
     var healthCondition by observed(HealthCondition())
     var experienceCondition by observed(ExperienceCondition())
     var compass by observed(CompassPosition())
@@ -197,7 +197,7 @@ class LocalPlayerEntity(
             connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]?.get(CLIMBABLE_TAG).nullCast<Tag<Block>>()?.let {
                 return it.entries.contains(blockState.block)
             }
-            return DefaultBlockTags.CLIMBABLE.contains(blockState.block.resourceLocation)
+            return DefaultBlockTags.CLIMBABLE.contains(blockState.block.identifier)
         }
 
     override var velocityMultiplier: Double
@@ -215,7 +215,7 @@ class LocalPlayerEntity(
 
             val blockStateBelow = connection.world[positionInfo.blockPosition] ?: return 1.0
 
-            if (blockStateBelow.block.resourceLocation == MinecraftBlocks.WATER || blockStateBelow.block.resourceLocation == MinecraftBlocks.BUBBLE_COLUMN) {
+            if (blockStateBelow.block.identifier == MinecraftBlocks.WATER || blockStateBelow.block.identifier == MinecraftBlocks.BUBBLE_COLUMN) {
                 if (blockStateBelow.block.velocityMultiplier == 1.0) {
                     return connection.world[positionInfo.blockPosition]?.block?.velocityMultiplier ?: 1.0
                 }
@@ -337,7 +337,7 @@ class LocalPlayerEntity(
             y = max(velocity.y, -CLIMBING_CLAMP_VALUE),
             z = velocity.z.clamp(-CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE)
         )
-        if (returnVelocity.y < 0.0 && connection.world[positionInfo.blockPosition]?.block?.resourceLocation != MinecraftBlocks.SCAFFOLDING && isSneaking) {
+        if (returnVelocity.y < 0.0 && connection.world[positionInfo.blockPosition]?.block?.identifier != MinecraftBlocks.SCAFFOLDING && isSneaking) {
             returnVelocity.y = 0.0
         }
         return returnVelocity

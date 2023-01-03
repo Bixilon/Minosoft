@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -83,7 +83,7 @@ class Panda(connection: PlayConnection, entityType: EntityType, data: EntityData
     }
 
     companion object : EntityFactory<Panda> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("panda")
+        override val identifier: ResourceLocation = ResourceLocation("panda")
         private val BAMBOO_ASK_TIMER_DATA = EntityDataField("PANDA_UNHAPPY_TIMER")
         private val SNEEZE_TIMER_DATA = EntityDataField("PANDA_SNEEZE_TIMER")
         private val EATING_TICKS_DATA = EntityDataField("PANDA_EAT_TIMER")

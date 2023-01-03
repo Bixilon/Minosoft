@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -96,7 +96,7 @@ class LegacyUnicodeFontProvider(
 
     companion object : FontProviderFactory<LegacyUnicodeFontProvider> {
         private val MISSING_UNICODE_PAGES = listOf(0x08, 0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF, 0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA, 0xEB, 0xEC, 0xEE, 0xED, 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8)
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:legacy_unicode".toResourceLocation()
+        override val identifier: ResourceLocation = "minecraft:legacy_unicode".toResourceLocation()
         private const val UNICODE_PAGE_SIZE = 256
         private const val UNICODE_PAGES = 256
         private const val CHAR_SIZE = 16

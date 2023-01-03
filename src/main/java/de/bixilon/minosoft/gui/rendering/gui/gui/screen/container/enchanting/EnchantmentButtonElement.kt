@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -69,7 +69,7 @@ class EnchantmentButtonElement(
     fun update(disabled: Boolean, cost: Int, enchantment: Enchantment?, level: Int) {
         _disabled = disabled || cost <= 0
         levelText.text = TextComponent(cost).color(RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR)
-        textElement._chatComponent = if (enchantment == null) ChatComponent.EMPTY else TextComponent(enchantment.resourceLocation.toMinifiedString() + " $level").color(ChatColors.BLUE)
+        textElement._chatComponent = if (enchantment == null) ChatComponent.EMPTY else TextComponent(enchantment.identifier.toMinifiedString() + " $level").color(ChatColors.BLUE)
         textElement.forceSilentApply()
 
         forceSilentApply()

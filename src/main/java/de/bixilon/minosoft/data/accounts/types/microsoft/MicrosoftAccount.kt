@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,8 +20,8 @@ import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
@@ -43,7 +43,7 @@ class MicrosoftAccount(
     override val properties: PlayerProperties?,
 ) : Account(username) {
     override val id: String = uuid.toString()
-    override val type: ResourceLocation = RESOURCE_LOCATION
+    override val type: ResourceLocation = identifier
 
     @Synchronized
     override fun join(serverId: String) {
@@ -157,7 +157,7 @@ class MicrosoftAccount(
         return "MicrosoftAccount{$username}"
     }
 
-    companion object : CompanionResourceLocation {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:microsoft_account".toResourceLocation()
+    companion object : Identified {
+        override val identifier: ResourceLocation = "minosoft:microsoft_account".toResourceLocation()
     }
 }
