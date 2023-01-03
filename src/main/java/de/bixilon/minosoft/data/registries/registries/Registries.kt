@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.json.JsonObject
@@ -26,7 +25,6 @@ import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 import de.bixilon.minosoft.data.registries.Motif
-import de.bixilon.minosoft.data.registries.RegistryUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistry
@@ -48,7 +46,6 @@ import de.bixilon.minosoft.data.registries.fluid.FluidFactories
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.PixLyzerFluid
 import de.bixilon.minosoft.data.registries.item.ItemRegistry
-import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.misc.MiscData
 import de.bixilon.minosoft.data.registries.particle.ParticleType
@@ -63,14 +60,14 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.recipes.RecipeRegistry
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.RegistriesUtil
+import de.bixilon.minosoft.util.RegistriesUtil.postInit
+import de.bixilon.minosoft.util.RegistriesUtil.setParent
 import de.bixilon.minosoft.util.Stopwatch
-import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
-import java.lang.reflect.Field
-import kotlin.reflect.jvm.javaField
 
 
 class Registries : Parentable<Registries> {
@@ -138,12 +135,7 @@ class Registries : Parentable<Registries> {
     override var parent: Registries? = null
         set(value) {
             field = value
-
-            for (field in PARENTABLE_FIELDS) {
-                val method = field.get(this) ?: continue
-                val value = value?.let { field.get(it) }
-                PARENTABLE_SET_PARENT_METHOD(method, value)
-            }
+            this.setParent(value)
         }
 
     fun getEntityDataIndex(field: EntityDataField): Int? {
@@ -225,10 +217,7 @@ class Registries : Parentable<Registries> {
 
         // post init
         inner.inc()
-        for (field in TYPE_MAP.values) {
-            inner.inc()
-            DefaultThreadPool += { field.get(this).unsafeCast<Registry<*>>().postInit(this); inner.dec() }
-        }
+        postInit(inner)
         inner.dec()
         inner.await()
         isFullyLoaded = true
@@ -236,24 +225,8 @@ class Registries : Parentable<Registries> {
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
     }
 
-
-    fun clear() {
-        for (field in this::class.java.fields) {
-            if (!field.type.isAssignableFrom(Clearable::class.java)) {
-                continue
-            }
-            field.javaClass.getMethod("clear")(this)
-        }
-    }
-
     operator fun <T : RegistryItem> get(type: Class<T>): Registry<T>? {
-        var currentField: Field?
-        var currentClass: Class<*> = type
-        do {
-            currentField = TYPE_MAP[currentClass]
-            currentClass = currentClass.superclass
-        } while (currentField == null && currentClass != Any::class.java)
-        return currentField?.get(this).unsafeCast()
+        return RegistriesUtil.getRegistry(this, type).unsafeCast()
     }
 
     private fun <T, R : AbstractRegistry<T>> register(name: String, registry: R): R {
@@ -289,52 +262,5 @@ class Registries : Parentable<Registries> {
 
     companion object {
         val IGNORED_REGISTRIES: Set<ResourceLocation> = setOf()
-        private val PARENTABLE_FIELDS: List<Field>
-        private val PARENTABLE_SET_PARENT_METHOD = Parentable::class.java.getDeclaredMethod("setParent", Any::class.java)
-        private val TYPE_MAP: Map<Class<*>, Field>
-
-        init {
-            val fields: MutableList<Field> = mutableListOf()
-
-            for (field in Registries::class.java.declaredFields) {
-                if (!Parentable::class.java.isAssignableFrom(field.type)) {
-                    continue
-                }
-                fields.add(field)
-            }
-
-            PARENTABLE_FIELDS = fields
-        }
-
-        init {
-            val types: MutableMap<Class<*>, Field> = mutableMapOf()
-
-
-            for (field in Registries::class.java.declaredFields) {
-                if (!Registry::class.java.isAssignableFrom(field.type)) {
-                    continue
-                }
-                field.isAccessible = true
-
-                var generic = field.genericType
-
-                if (field.type != Registry::class.java) {
-                    var type = field.type
-                    while (type != Object::class.java) {
-                        if (type.superclass == Registry::class.java) {
-                            generic = type.genericSuperclass
-                            break
-                        }
-                        type = type.superclass
-                    }
-                }
-
-                types[RegistryUtil.getClassOfFactory(generic)] = field
-            }
-
-            types[Item::class.java] = Registries::item.javaField!!
-
-            TYPE_MAP = types
-        }
     }
 }

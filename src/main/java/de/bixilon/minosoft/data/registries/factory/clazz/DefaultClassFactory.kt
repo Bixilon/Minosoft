@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.factory.clazz
 
-import de.bixilon.minosoft.data.registries.RegistryUtil
+import de.bixilon.minosoft.data.registries.GenericUtil
 import java.lang.reflect.ParameterizedType
 import kotlin.reflect.jvm.javaType
 
@@ -25,7 +25,7 @@ open class DefaultClassFactory<T : ClassFactory<*>>(vararg factories: T) {
 
 
         for (factory in factories) {
-            val className = RegistryUtil.getClassOfFactory(factory::class.supertypes[0].javaType as ParameterizedType).simpleName
+            val className = GenericUtil.getClassOfFactory(factory::class.supertypes[0].javaType as ParameterizedType).simpleName
             ret[className] = factory
             if (factory is MultiClassFactory<*>) {
                 for (name in factory.ALIASES) {
