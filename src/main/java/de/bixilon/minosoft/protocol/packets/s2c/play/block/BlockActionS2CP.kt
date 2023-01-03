@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
     val data1: Byte = buffer.readByte()
     val data2: Byte = buffer.readByte()
-    val block: Block = buffer.readRegistryItem(buffer.connection.registries.blockRegistry)
+    val block: Block = buffer.readRegistryItem(buffer.connection.registries.block)
 
     override fun handle(connection: PlayConnection) {
         val blockEntity = connection.world.getOrPutBlockEntity(position) ?: return

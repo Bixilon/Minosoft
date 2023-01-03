@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,11 +29,11 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val type: ParticleType = if (buffer.versionId < ProtocolVersions.V_14W19A) {
-        buffer.readLegacyRegistryItem(buffer.connection.registries.particleTypeRegistry)!!
+        buffer.readLegacyRegistryItem(buffer.connection.registries.particleType)!!
     } else if (buffer.versionId >= ProtocolVersions.V_22W17A) { // ToDo: maybe this was even earlier, should only differ some snapshots
-        buffer.readRegistryItem(buffer.connection.registries.particleTypeRegistry)
+        buffer.readRegistryItem(buffer.connection.registries.particleType)
     } else {
-        buffer.connection.registries.particleTypeRegistry[buffer.readInt()]
+        buffer.connection.registries.particleType[buffer.readInt()]
     }
     val longDistance = if (buffer.versionId >= ProtocolVersions.V_14W29A) {
         buffer.readBoolean()
@@ -55,7 +55,7 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (!connection.profiles.particle.types.packet) {
             return
         }
-        if (connection.fire(ParticleSpawnEvent(connection, this))) {
+        if (connection.events.fire(ParticleSpawnEvent(connection, this))) {
             return
         }
     }

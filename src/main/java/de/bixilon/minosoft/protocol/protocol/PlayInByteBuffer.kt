@@ -109,7 +109,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readParticleData(): ParticleData {
-        val type = connection.registries.particleTypeRegistry[readVarInt()]
+        val type = connection.registries.particleType[readVarInt()]
         return readParticleData(type)
     }
 
@@ -149,7 +149,7 @@ class PlayInByteBuffer : InByteBuffer {
             }
             val nbt = readNBTTag(versionId < V_14W28B)?.toMutableJsonObject()
             return ItemStackUtil.of(
-                item = connection.registries.itemRegistry[id shl 16 or metaData],
+                item = connection.registries.item[id shl 16 or metaData],
                 connection = connection,
                 count = count,
                 durability = metaData,
@@ -159,7 +159,7 @@ class PlayInByteBuffer : InByteBuffer {
 
         return readOptional {
             ItemStackUtil.of(
-                item = connection.registries.itemRegistry[readVarInt()],
+                item = connection.registries.item[readVarInt()],
                 connection = connection,
                 count = readUnsignedByte(),
                 nbt = readNBT()?.toMutableJsonObject() ?: mutableMapOf(),
@@ -188,7 +188,7 @@ class PlayInByteBuffer : InByteBuffer {
             } else {
                 readInt()
             }
-            biomes[i] = connection.registries.biomeRegistry[biomeId]
+            biomes[i] = connection.registries.biome[biomeId]
         }
         return biomes.cast()
     }
@@ -199,7 +199,7 @@ class PlayInByteBuffer : InByteBuffer {
             var item = readUnsignedByte()
             while (item != 0x7F) {
                 val index = item and 0x1F
-                val type = connection.registries.entityDataTypesRegistry[item and 0xFF shr 5]!!
+                val type = connection.registries.entityDataTypes[item and 0xFF shr 5]!!
                 data[index] = type.type.read(this)
                 item = readUnsignedByte()
             }
@@ -211,7 +211,7 @@ class PlayInByteBuffer : InByteBuffer {
                 } else {
                     readVarInt()
                 }
-                val type = connection.registries.entityDataTypesRegistry[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
+                val type = connection.registries.entityDataTypes[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
                 data[index] = type.type.read(this)
                 index = readUnsignedByte()
             }
@@ -300,7 +300,7 @@ class PlayInByteBuffer : InByteBuffer {
             builder.name = readString()
         }
         if (type == ArgumentNodes.ARGUMENT) {
-            val parserName = if (versionId >= ProtocolVersions.V_22W12A) connection.registries.argumentTypeRegistry[readVarInt()] else readResourceLocation()
+            val parserName = if (versionId >= ProtocolVersions.V_22W12A) connection.registries.argumentType[readVarInt()] else readResourceLocation()
             val parser = ArgumentParserFactories[parserName]
             if (parser == null) {
                 Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find parser: $parserName" }

@@ -29,8 +29,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
 class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
-    private val smokeParticleType = connection.registries.particleTypeRegistry[SmokeParticle]
-    private val flameParticleType = connection.registries.particleTypeRegistry[FlameParticle]
+    private val smokeParticleType = connection.registries.particleType[SmokeParticle]
+    private val flameParticleType = connection.registries.particleType[FlameParticle]
     private var requiredPlayerRange = 16
 
 

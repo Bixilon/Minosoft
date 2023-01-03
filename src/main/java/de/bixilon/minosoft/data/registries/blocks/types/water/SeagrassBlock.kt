@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class SeagrassBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data), FluidFilled {
-    override val fluid: Fluid = registries.fluidRegistry[DefaultFluids.WATER]!!
+    override val fluid: Fluid = registries.fluid[DefaultFluids.WATER]!!
 
     companion object : BlockFactory<SeagrassBlock>, MultiClassFactory<SeagrassBlock> {
         override val ALIASES: Set<String> = setOf("TallSeagrassBlock")

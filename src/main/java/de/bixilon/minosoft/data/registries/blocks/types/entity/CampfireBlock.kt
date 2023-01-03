@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,10 +41,10 @@ import java.util.*
 open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<CampfireBlockEntity>(resourceLocation, registries, data) {
     val lavaParticles = data["lava_particles"]?.toBoolean() ?: true
 
-    private val cosySmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.CosyFactory]!!
-    private val signalSmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.SignalFactory]!!
-    private val lavaParticle = registries.particleTypeRegistry[LavaParticle]!!
-    private val smokeParticle = registries.particleTypeRegistry[SmokeParticle]!!
+    private val cosySmokeParticle = registries.particleType[CampfireSmokeParticle.CosyFactory]!!
+    private val signalSmokeParticle = registries.particleType[CampfireSmokeParticle.SignalFactory]!!
+    private val lavaParticle = registries.particleType[LavaParticle]!!
+    private val smokeParticle = registries.particleType[SmokeParticle]!!
 
     private fun extinguish(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         for (i in 0 until 20) {

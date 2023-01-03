@@ -65,7 +65,7 @@ open class Block(
     open val jumpVelocityMultiplier = data["jump_velocity_multiplier"]?.toDouble() ?: 1.0
     var tintProvider: TintProvider? = null
 
-    var soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroupRegistry[it] }
+    var soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] }
 
     init {
         this::item.inject(data["item"])
@@ -125,7 +125,7 @@ open class Block(
             for ((stateId, stateJson) in data["states"].asAnyMap()) {
                 check(stateJson is Map<*, *>) { "Not a state element!" }
                 val state = BlockState.deserialize(block, registries, stateJson.asJsonObject())
-                registries.blockStateRegistry[stateId.toInt()] = state
+                registries.blockState[stateId.toInt()] = state
                 states.add(state)
                 for ((property, value) in state.properties) {
                     properties.getOrPut(property) { mutableSetOf() } += value
@@ -139,7 +139,7 @@ open class Block(
             }
 
             block.states = states
-            block.defaultState = registries.blockStateRegistry.forceGet(data["default_state"].unsafeCast())!!
+            block.defaultState = registries.blockState.forceGet(data["default_state"].unsafeCast())!!
             block.properties = propertiesOut
 
             return block

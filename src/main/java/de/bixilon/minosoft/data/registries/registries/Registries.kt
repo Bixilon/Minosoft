@@ -78,54 +78,54 @@ import kotlin.reflect.jvm.javaField
 class Registries : Parentable<Registries> {
     val registries: MutableMap<ResourceLocation, AbstractRegistry<*>> = mutableMapOf()
     var shapes: Array<VoxelShape> = emptyArray()
-    val motifRegistry: Registry<Motif> = register("motif", Registry(codec = Motif))
-    val blockRegistry: Registry<Block> = register("block", Registry(flattened = true, codec = Block, metaType = MetaTypes.BLOCKS))
-    val itemRegistry: ItemRegistry = register("item", ItemRegistry())
-    val enchantmentRegistry: Registry<Enchantment> = register("enchantment", Registry(codec = PixLyzerEnchantment, integrated = IntegratedEnchantments))
-    val particleTypeRegistry: Registry<ParticleType> = register("particle_type", Registry(codec = ParticleType))
-    val statusEffectRegistry: Registry<StatusEffectType> = register("mob_effect", Registry(codec = PixlyzerStatusEffectType, integrated = IntegratedStatusEffects))
-    val statisticRegistry: Registry<Statistic> = register("custom_stat", Registry(codec = Statistic))
-    val biomeRegistry: Registry<Biome> = register("biome", Registry(codec = Biome))
-    val dimensionRegistry: Registry<Dimension> = register("dimension_type", Registry(codec = Dimension))
-    val materialRegistry: Registry<Material> = register("material", Registry(codec = Material))
-    val fluidRegistry: Registry<Fluid> = register("fluid", Registry(codec = PixLyzerFluid, integrated = FluidFactories))
-    val soundEventRegistry: ResourceLocationRegistry = register("sound_event", ResourceLocationRegistry())
+    val motif: Registry<Motif> = register("motif", Registry(codec = Motif))
+    val block: Registry<Block> = register("block", Registry(flattened = true, codec = Block, metaType = MetaTypes.BLOCKS))
+    val item: ItemRegistry = register("item", ItemRegistry())
+    val enchantment: Registry<Enchantment> = register("enchantment", Registry(codec = PixLyzerEnchantment, integrated = IntegratedEnchantments))
+    val particleType: Registry<ParticleType> = register("particle_type", Registry(codec = ParticleType))
+    val statusEffect: Registry<StatusEffectType> = register("mob_effect", Registry(codec = PixlyzerStatusEffectType, integrated = IntegratedStatusEffects))
+    val statistic: Registry<Statistic> = register("custom_stat", Registry(codec = Statistic))
+    val biome: Registry<Biome> = register("biome", Registry(codec = Biome))
+    val dimension: Registry<Dimension> = register("dimension_type", Registry(codec = Dimension))
+    val material: Registry<Material> = register("material", Registry(codec = Material))
+    val fluid: Registry<Fluid> = register("fluid", Registry(codec = PixLyzerFluid, integrated = FluidFactories))
+    val soundEvent: ResourceLocationRegistry = register("sound_event", ResourceLocationRegistry())
     val recipes = RecipeRegistry()
 
-    val villagerProfessionRegistry: Registry<VillagerProfession> = register("villager_profession", Registry(codec = VillagerProfession))
-    val villagerTypeRegistry: ResourceLocationRegistry = register("villager_type", ResourceLocationRegistry())
+    val villagerProfession: Registry<VillagerProfession> = register("villager_profession", Registry(codec = VillagerProfession))
+    val villagerType: ResourceLocationRegistry = register("villager_type", ResourceLocationRegistry())
 
     val catVariants: Registry<CatVariant> = register("cat_variant", Registry(codec = CatVariant))
     val frogVariants: Registry<FrogVariant> = register("frog_variant", Registry(codec = FrogVariant))
 
-    val equipmentSlotRegistry: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
-    val handEquipmentSlotRegistry: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
-    val armorEquipmentSlotRegistry: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
-    val armorStandEquipmentSlotRegistry: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
+    val equipmentSlot: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
+    val handEquipmentSlot: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
+    val armorEquipmentSlot: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
+    val armorStandEquipmentSlot: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
 
-    val entityDataTypesRegistry: EnumRegistry<EntityDataTypes> = EnumRegistry(values = EntityDataTypes, fixer = EntityDataTypesFixer)
+    val entityDataTypes: EnumRegistry<EntityDataTypes> = EnumRegistry(values = EntityDataTypes, fixer = EntityDataTypesFixer)
 
-    val titleActionsRegistry: EnumRegistry<TitleS2CF.TitleActions> = EnumRegistry(values = TitleS2CF.TitleActions)
+    val titleActions: EnumRegistry<TitleS2CF.TitleActions> = EnumRegistry(values = TitleS2CF.TitleActions)
 
-    val entityAnimationRegistry: EnumRegistry<EntityAnimations> = EnumRegistry(values = EntityAnimations)
-    val entityActionsRegistry: EnumRegistry<EntityActionC2SP.EntityActions> = EnumRegistry(values = EntityActionC2SP.EntityActions)
+    val entityAnimation: EnumRegistry<EntityAnimations> = EnumRegistry(values = EntityAnimations)
+    val entityActions: EnumRegistry<EntityActionC2SP.EntityActions> = EnumRegistry(values = EntityActionC2SP.EntityActions)
 
-    val soundGroupRegistry: FakeEnumRegistry<SoundGroup> = FakeEnumRegistry(codec = SoundGroup)
+    val soundGroup: FakeEnumRegistry<SoundGroup> = FakeEnumRegistry(codec = SoundGroup)
 
-    val blockStateRegistry = BlockStateRegistry(false)
+    val blockState = BlockStateRegistry(false)
 
     val entityDataIndexMap: MutableMap<EntityDataField, Int> = mutableMapOf()
-    val entityTypeRegistry: Registry<EntityType> = register("entity_type", Registry(codec = EntityType))
+    val entityType: Registry<EntityType> = register("entity_type", Registry(codec = EntityType))
 
-    val blockEntityTypeRegistry = BlockEntityTypeRegistry()
-    val blockDataTypeRegistry: Registry<BlockDataDataType> = Registry(codec = BlockDataDataType)
+    val blockEntityType = BlockEntityTypeRegistry()
+    val blockDataType: Registry<BlockDataDataType> = Registry(codec = BlockDataDataType)
 
-    val containerTypeRegistry: Registry<ContainerType> = Registry(codec = ContainerType)
-    val gameEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
-    val worldEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
+    val containerType: Registry<ContainerType> = Registry(codec = ContainerType)
+    val gameEvent: ResourceLocationRegistry = ResourceLocationRegistry()
+    val worldEvent: ResourceLocationRegistry = ResourceLocationRegistry()
 
-    val argumentTypeRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
-    val messageTypeRegistry: Registry<ChatMessageType> = register("chat_type", Registry(codec = ChatMessageType))
+    val argumentType: ResourceLocationRegistry = ResourceLocationRegistry()
+    val messageType: Registry<ChatMessageType> = register("chat_type", Registry(codec = ChatMessageType))
 
     val misc = MiscData()
 
@@ -152,9 +152,9 @@ class Registries : Parentable<Registries> {
 
     fun load(version: Version, pixlyzerData: Map<String, Any>, latch: CountUpAndDownLatch) {
         isFlattened = version.flattened
-        blockRegistry.flattened = isFlattened
-        blockStateRegistry.flattened = isFlattened
-        itemRegistry.flattened = isFlattened
+        block.flattened = isFlattened
+        blockState.flattened = isFlattened
+        item.flattened = isFlattened
 
         var error: Throwable? = null
         val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it }, criticalErrorHandler = { _, it -> if (error == null) error = it })
@@ -162,54 +162,54 @@ class Registries : Parentable<Registries> {
         // enums
         worker += WorkerTask(this::shapes) { loadShapes(pixlyzerData["shapes"]?.toJsonObject()) }
 
-        worker += WorkerTask(this::equipmentSlotRegistry) { equipmentSlotRegistry.initialize(pixlyzerData["equipment_slots"]) }
-        worker += WorkerTask(this::handEquipmentSlotRegistry) { handEquipmentSlotRegistry.initialize(pixlyzerData["hand_equipment_slots"]) }
-        worker += WorkerTask(this::armorEquipmentSlotRegistry) { armorEquipmentSlotRegistry.initialize(pixlyzerData["armor_equipment_slots"]) }
-        worker += WorkerTask(this::armorStandEquipmentSlotRegistry) { armorStandEquipmentSlotRegistry.initialize(pixlyzerData["armor_stand_equipment_slots"]) }
+        worker += WorkerTask(this::equipmentSlot) { equipmentSlot.initialize(pixlyzerData["equipment_slots"]) }
+        worker += WorkerTask(this::handEquipmentSlot) { handEquipmentSlot.initialize(pixlyzerData["hand_equipment_slots"]) }
+        worker += WorkerTask(this::armorEquipmentSlot) { armorEquipmentSlot.initialize(pixlyzerData["armor_equipment_slots"]) }
+        worker += WorkerTask(this::armorStandEquipmentSlot) { armorStandEquipmentSlot.initialize(pixlyzerData["armor_stand_equipment_slots"]) }
 
-        worker += WorkerTask(this::entityDataTypesRegistry) { entityDataTypesRegistry.initialize(pixlyzerData["entity_data_data_types"]) }
+        worker += WorkerTask(this::entityDataTypes) { entityDataTypes.initialize(pixlyzerData["entity_data_data_types"]) }
 
-        worker += WorkerTask(this::titleActionsRegistry) { titleActionsRegistry.initialize(pixlyzerData["title_actions"]) }
-        worker += WorkerTask(this::entityAnimationRegistry) { entityAnimationRegistry.initialize(pixlyzerData["entity_animations"]) }
-        worker += WorkerTask(this::entityActionsRegistry) { entityActionsRegistry.initialize(pixlyzerData["entity_actions"]) }
+        worker += WorkerTask(this::titleActions) { titleActions.initialize(pixlyzerData["title_actions"]) }
+        worker += WorkerTask(this::entityAnimation) { entityAnimation.initialize(pixlyzerData["entity_animations"]) }
+        worker += WorkerTask(this::entityActions) { entityActions.initialize(pixlyzerData["entity_actions"]) }
 
         // id stuff
         // id resource location stuff
-        worker += WorkerTask(this::containerTypeRegistry) { containerTypeRegistry.rawUpdate(pixlyzerData["container_types"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::gameEventRegistry) { gameEventRegistry.rawUpdate(pixlyzerData["game_events"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::worldEventRegistry) { worldEventRegistry.rawUpdate(pixlyzerData["world_events"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::argumentTypeRegistry) { argumentTypeRegistry.rawUpdate(pixlyzerData["argument_type"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::messageTypeRegistry) { messageTypeRegistry.rawUpdate(pixlyzerData["message_types"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::containerType) { containerType.rawUpdate(pixlyzerData["container_types"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::gameEvent) { gameEvent.rawUpdate(pixlyzerData["game_events"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::worldEvent) { worldEvent.rawUpdate(pixlyzerData["world_events"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::argumentType) { argumentType.rawUpdate(pixlyzerData["argument_type"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::messageType) { messageType.rawUpdate(pixlyzerData["message_types"]?.toJsonObject(), this) }
 
 
-        worker += WorkerTask(this::entityTypeRegistry) { entityTypeRegistry.rawUpdate(pixlyzerData["entities"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::entityType) { entityType.rawUpdate(pixlyzerData["entities"]?.toJsonObject(), this) }
 
-        worker += WorkerTask(this::motifRegistry) { motifRegistry.rawUpdate(pixlyzerData["motives"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::soundEventRegistry) { soundEventRegistry.rawUpdate(pixlyzerData["sound_events"]?.toJsonObject(), null) }
-        worker += WorkerTask(this::soundGroupRegistry, dependencies = arrayOf(this::soundEventRegistry)) { soundGroupRegistry.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
-        worker += WorkerTask(this::particleTypeRegistry) { particleTypeRegistry.rawUpdate(pixlyzerData["particles"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::materialRegistry) { materialRegistry.rawUpdate(pixlyzerData["materials"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::enchantmentRegistry) { enchantmentRegistry.rawUpdate(pixlyzerData["enchantments"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::statusEffectRegistry) { statusEffectRegistry.rawUpdate(pixlyzerData["status_effects"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::biomeRegistry) { biomeRegistry.rawUpdate(pixlyzerData["biomes"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::dimensionRegistry) { dimensionRegistry.rawUpdate(pixlyzerData["dimensions"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::fluidRegistry) { fluidRegistry.rawUpdate(pixlyzerData["fluids"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::blockRegistry, dependencies = arrayOf(this::materialRegistry, this::fluidRegistry, this::shapes, this::soundGroupRegistry, this::particleTypeRegistry)) { blockRegistry.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::itemRegistry, dependencies = arrayOf(this::materialRegistry, this::blockRegistry, this::entityTypeRegistry, this::fluidRegistry, this::statusEffectRegistry, this::soundEventRegistry)) { itemRegistry.rawUpdate(pixlyzerData["items"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::motif) { motif.rawUpdate(pixlyzerData["motives"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::soundEvent) { soundEvent.rawUpdate(pixlyzerData["sound_events"]?.toJsonObject(), null) }
+        worker += WorkerTask(this::soundGroup, dependencies = arrayOf(this::soundEvent)) { soundGroup.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
+        worker += WorkerTask(this::particleType) { particleType.rawUpdate(pixlyzerData["particles"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::material) { material.rawUpdate(pixlyzerData["materials"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::enchantment) { enchantment.rawUpdate(pixlyzerData["enchantments"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::statusEffect) { statusEffect.rawUpdate(pixlyzerData["status_effects"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::biome) { biome.rawUpdate(pixlyzerData["biomes"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::dimension) { dimension.rawUpdate(pixlyzerData["dimensions"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::fluid) { fluid.rawUpdate(pixlyzerData["fluids"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::block, dependencies = arrayOf(this::material, this::fluid, this::shapes, this::soundGroup, this::particleType)) { block.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::item, dependencies = arrayOf(this::material, this::block, this::entityType, this::fluid, this::statusEffect, this::soundEvent)) { item.rawUpdate(pixlyzerData["items"]?.toJsonObject(), this) }
 
-        worker += WorkerTask(this::blockEntityTypeRegistry, dependencies = arrayOf(this::blockRegistry)) { blockEntityTypeRegistry.rawUpdate(pixlyzerData["block_entities"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::blockEntityType, dependencies = arrayOf(this::block)) { blockEntityType.rawUpdate(pixlyzerData["block_entities"]?.toJsonObject(), this) }
 
-        worker += WorkerTask(this::villagerProfessionRegistry) { villagerProfessionRegistry.rawUpdate(pixlyzerData["villager_professions"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::villagerTypeRegistry) { villagerTypeRegistry.rawUpdate(pixlyzerData["villager_types"]?.toJsonObject(), null) }
+        worker += WorkerTask(this::villagerProfession) { villagerProfession.rawUpdate(pixlyzerData["villager_professions"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::villagerType) { villagerType.rawUpdate(pixlyzerData["villager_types"]?.toJsonObject(), null) }
 
 
-        worker += WorkerTask(this::blockDataTypeRegistry) { blockDataTypeRegistry.rawUpdate(pixlyzerData["block_data_data_types"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::blockDataType) { blockDataType.rawUpdate(pixlyzerData["block_data_data_types"]?.toJsonObject(), this) }
 
         worker += WorkerTask(this::catVariants) { catVariants.rawUpdate(pixlyzerData["variant/cat"]?.toJsonObject(), this) }
         worker += WorkerTask(this::frogVariants) { frogVariants.rawUpdate(pixlyzerData["variant/frog"]?.toJsonObject(), this) }
 
-        worker += WorkerTask(this::statisticRegistry) { statisticRegistry.rawUpdate(pixlyzerData["statistics"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::misc, dependencies = arrayOf(this::itemRegistry)) { misc.rawUpdate(pixlyzerData["misc"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::statistic) { statistic.rawUpdate(pixlyzerData["statistics"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::misc, dependencies = arrayOf(this::item)) { misc.rawUpdate(pixlyzerData["misc"]?.toJsonObject(), this) }
 
         val inner = CountUpAndDownLatch(1, latch)
         worker.work(inner)
@@ -352,7 +352,7 @@ class Registries : Parentable<Registries> {
                 types[RegistryUtil.getClassOfFactory(generic)] = field
             }
 
-            types[Item::class.java] = Registries::itemRegistry.javaField!!
+            types[Item::class.java] = Registries::item.javaField!!
 
             TYPE_MAP = types
         }

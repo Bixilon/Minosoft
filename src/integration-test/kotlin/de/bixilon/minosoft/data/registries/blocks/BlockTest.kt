@@ -32,7 +32,7 @@ abstract class BlockTest<T : Block> {
     }
 
     fun retrieveBlock(name: ResourceLocation) {
-        val block = IT.REGISTRIES.blockRegistry[name]
+        val block = IT.REGISTRIES.block[name]
         Assert.assertNotNull(block)
         block!!
         assertEquals(block.identifier, name)

@@ -39,7 +39,7 @@ class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, dat
     override fun onAttack(attacker: Entity): Boolean = false
 
     override fun setObjectData(data: Int) {
-        blockState = connection.registries.blockStateRegistry.getOrNull(data)
+        blockState = connection.registries.blockState.getOrNull(data)
     }
 
     override fun tick() {

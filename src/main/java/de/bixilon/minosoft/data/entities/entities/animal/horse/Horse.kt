@@ -44,7 +44,7 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
     val armor: Item?
         get() {
             if (connection.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo
-                return connection.registries.itemRegistry[when (this.data.get(LEGACY_ARMOR_DATA, 0)) {
+                return connection.registries.item[when (this.data.get(LEGACY_ARMOR_DATA, 0)) {
                     1 -> LEGACY_IRON_ARMOR
                     2 -> LEGACY_GOLD_ARMOR
                     3 -> LEGACY_DIAMOND_ARMOR

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class LegacyBlockBreakS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val blockPosition: Vec3i = buffer.readBlockPosition()
-    val blockState: BlockState? = buffer.connection.registries.blockStateRegistry.getOrNull(buffer.readVarInt())
+    val blockState: BlockState? = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt())
     val actions: Actions = Actions[buffer.readVarInt()]
     val successful: Boolean = buffer.readBoolean()
 
@@ -36,7 +36,7 @@ class LegacyBlockBreakS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             // never happens?
             connection.world[blockPosition] = blockState
         }
-        connection.fire(LegacyBlockBreakAckEvent(connection, this))
+        connection.events.fire(LegacyBlockBreakAckEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

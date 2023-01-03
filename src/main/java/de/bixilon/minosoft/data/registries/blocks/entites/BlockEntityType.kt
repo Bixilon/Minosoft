@@ -43,7 +43,7 @@ data class BlockEntityType<T : BlockEntity>(
             val blocks: MutableSet<Block> = mutableSetOf()
 
             for (block in data["blocks"].asAnyCollection()) {
-                blocks += registries.blockRegistry[block] ?: continue
+                blocks += registries.block[block] ?: continue
             }
 
             return BlockEntityType(

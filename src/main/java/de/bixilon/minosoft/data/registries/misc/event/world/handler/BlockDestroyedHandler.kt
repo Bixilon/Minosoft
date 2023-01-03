@@ -30,7 +30,7 @@ object BlockDestroyedHandler : WorldEventHandler {
     override val identifier: ResourceLocation = "minecraft:block_destroyed".toResourceLocation()
 
     override fun handle(connection: PlayConnection, position: Vec3i, data: Int, isGlobal: Boolean) {
-        val state = connection.registries.blockStateRegistry.getOrNull(data) ?: return
+        val state = connection.registries.blockState.getOrNull(data) ?: return
         handleDestroy(connection, position, state)
     }
 
@@ -44,7 +44,7 @@ object BlockDestroyedHandler : WorldEventHandler {
 
     private fun addBlockBreakParticles(connection: PlayConnection, position: Vec3i, state: BlockState) {
         val particleRenderer = connection.world.particleRenderer ?: return
-        val type = connection.registries.particleTypeRegistry[BlockDustParticle] ?: return
+        val type = connection.registries.particleType[BlockDustParticle] ?: return
         val shape = state.outlineShape
         val particleData = BlockParticleData(state, type)
 

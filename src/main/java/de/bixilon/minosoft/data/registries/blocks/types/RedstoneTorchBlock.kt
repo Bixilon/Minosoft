@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
 open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : TorchBlock(resourceLocation, registries, data) {
-    private val redstoneDustParticle = registries.particleTypeRegistry[DustParticle]
+    private val redstoneDustParticle = registries.particleType[DustParticle]
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         if (blockState.properties[BlockProperties.LIT] != true) {

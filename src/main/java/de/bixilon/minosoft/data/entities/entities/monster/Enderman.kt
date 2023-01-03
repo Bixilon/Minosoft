@@ -30,7 +30,7 @@ class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityD
     @get:SynchronizedEntityData
     val carriedBlock: BlockState?
         get() = if (connection.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo: No clue here
-            connection.registries.blockStateRegistry.getOrNull(data.get(CARRIED_BLOCK_DATA, 0) shl 4 or data.get(LEGACY_BLOCK_DATA_DATA, 0))
+            connection.registries.blockState.getOrNull(data.get(CARRIED_BLOCK_DATA, 0) shl 4 or data.get(LEGACY_BLOCK_DATA_DATA, 0))
         } else {
             data.get<BlockState?>(CARRIED_BLOCK_DATA, null)
         }

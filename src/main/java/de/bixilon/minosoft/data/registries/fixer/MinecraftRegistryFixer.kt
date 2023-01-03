@@ -29,7 +29,7 @@ object MinecraftRegistryFixer {
             }
             // add minecraft:flower_pot as block entity, even if it's not a real entity, but we need it for setting the flower type (in earlier versions of the game)
 
-            connection.registries.blockEntityTypeRegistry[FlowerPotBlockEntity] = BlockEntityType(FlowerPotBlockEntity.identifier, setOf(connection.registries.blockRegistry[FlowerPotBlockEntity]!!), FlowerPotBlockEntity)
+            connection.registries.blockEntityType[FlowerPotBlockEntity] = BlockEntityType(FlowerPotBlockEntity.identifier, setOf(connection.registries.block[FlowerPotBlockEntity]!!), FlowerPotBlockEntity)
         }
     }
 }

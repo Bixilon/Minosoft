@@ -52,7 +52,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val rotation = buffer.readEntityRotation()
         if (buffer.versionId < ProtocolVersions.V_15W31A) {
-            buffer.connection.registries.itemRegistry[buffer.readUnsignedShort()] // current item
+            buffer.connection.registries.item[buffer.readUnsignedShort()] // current item
         }
 
         var data: Int2ObjectOpenHashMap<Any?>? = null
@@ -61,7 +61,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         entity = RemotePlayerEntity(
             connection = buffer.connection,
-            entityType = buffer.connection.registries.entityTypeRegistry[RemotePlayerEntity.identifier]!!,
+            entityType = buffer.connection.registries.entityType[RemotePlayerEntity.identifier]!!,
             data = EntityData(buffer.connection, data),
             position = position,
             rotation = rotation,

@@ -25,12 +25,12 @@ class IntegratedRegistryIT {
 
     fun integratedSharpness() {
         val expected = WeaponEnchantment.Sharpness
-        val current = IT.REGISTRIES.enchantmentRegistry["minecraft:sharpness".toResourceLocation()]
+        val current = IT.REGISTRIES.enchantment["minecraft:sharpness".toResourceLocation()]
         Assert.assertSame(current, expected)
     }
 
     fun goldenApple() {
-        val current = IT.REGISTRIES.itemRegistry["minecraft:golden_apple".toResourceLocation()]
+        val current = IT.REGISTRIES.item["minecraft:golden_apple".toResourceLocation()]
         if (current !is AppleItem.GoldenAppleItem) {
             Assert.fail("Not an golden apple: $current")
         }

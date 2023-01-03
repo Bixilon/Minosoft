@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,11 +35,11 @@ class EntitySoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     private fun PlayInByteBuffer.readSound(): ResourceLocation {
         if (versionId < ProtocolVersions.V_1_19_3_RC1) {
-            return readRegistryItem(connection.registries.soundEventRegistry)
+            return readRegistryItem(connection.registries.soundEvent)
         }
         val id = readVarInt()
         if (id == 0) {
-            return connection.registries.soundEventRegistry[id]
+            return connection.registries.soundEvent[id]
         }
         val name = readResourceLocation()
         attenuationDistance = readOptional { readFloat() }

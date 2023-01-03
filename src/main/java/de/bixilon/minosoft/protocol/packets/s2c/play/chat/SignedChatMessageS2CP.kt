@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -56,7 +56,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private fun PlayInByteBuffer.readLegacySignedMessage(): SignedChatMessage {
         val message = readChatComponent()
         val unsignedContent = if (versionId >= ProtocolVersions.V_22W19A) readOptional { readChatComponent() } else null
-        var type = readRegistryItem(connection.registries.messageTypeRegistry)
+        var type = readRegistryItem(connection.registries.messageType)
         val sender = readChatMessageSender()
         val sendingTime = readInstant()
         val salt = readLong()
@@ -96,7 +96,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (versionId >= ProtocolVersions.V_1_19_1_RC3) {
             filter = ChatFilter[readVarInt()].reader.invoke(this)
         }
-        val type = readRegistryItem(connection.registries.messageTypeRegistry)
+        val type = readRegistryItem(connection.registries.messageType)
 
         readChatMessageParameters(parameters)
 
@@ -133,7 +133,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 return
             }
         }
-        connection.fire(ChatMessageReceiveEvent(connection, message))
+        connection.events.fire(ChatMessageReceiveEvent(connection, message))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -102,7 +102,7 @@ data class BlockState(
                 getProperties(it)
             } ?: emptyMap()
 
-            val material = registries.materialRegistry[ResourceLocation(data["material"].unsafeCast())]!!
+            val material = registries.material[ResourceLocation(data["material"].unsafeCast())]!!
 
 
             fun Any.asShape(): VoxelShape {

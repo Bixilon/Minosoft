@@ -28,7 +28,7 @@ class EntityExperienceOrbS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     val entity: ExperienceOrb = ExperienceOrb(
         connection = buffer.connection,
-        entityType = buffer.connection.registries.entityTypeRegistry[ExperienceOrb.identifier]!!,
+        entityType = buffer.connection.registries.entityType[ExperienceOrb.identifier]!!,
         data = EntityData(buffer.connection),
         position = buffer.readVec3d(),
         count = buffer.readUnsignedShort(),

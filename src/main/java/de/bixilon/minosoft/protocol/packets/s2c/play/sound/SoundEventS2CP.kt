@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -44,11 +44,11 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             this.category = SoundCategories[buffer.readVarInt()]
         }
         if (buffer.versionId < ProtocolVersions.V_1_19_3_PRE3) {
-            sound = buffer.readRegistryItem(buffer.connection.registries.soundEventRegistry)
+            sound = buffer.readRegistryItem(buffer.connection.registries.soundEvent)
         } else {
             val id = buffer.readVarInt()
             if (id == 0) {
-                sound = buffer.connection.registries.soundEventRegistry[id]
+                sound = buffer.connection.registries.soundEvent[id]
             } else {
                 sound = buffer.readResourceLocation()
                 attenuationDistance = buffer.readOptional { readFloat() }
@@ -74,7 +74,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (!connection.profiles.audio.types.packet) {
             return
         }
-        connection.fire(PlaySoundEvent(connection, this))
+        connection.events.fire(PlaySoundEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

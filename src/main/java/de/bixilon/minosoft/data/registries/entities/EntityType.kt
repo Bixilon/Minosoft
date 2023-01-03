@@ -124,7 +124,7 @@ data class EntityType(
                 sizeFixed = data["size_fixed"]?.toBoolean() ?: false,
                 attributes = attributes,
                 factory = factory,
-                spawnEgg = registries.itemRegistry[data["spawn_egg_item"]]?.nullCast(), // ToDo: Not yet in PixLyzer
+                spawnEgg = registries.item[data["spawn_egg_item"]]?.nullCast(), // ToDo: Not yet in PixLyzer
             )
         }
     }

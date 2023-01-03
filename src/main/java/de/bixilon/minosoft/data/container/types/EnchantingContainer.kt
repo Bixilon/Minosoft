@@ -62,7 +62,7 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
         when (property) {
             0, 1, 2 -> costs[property] = value
             3 -> seed = value
-            4, 5, 6 -> enchantments[property - 4] = connection.registries.enchantmentRegistry.getOrNull(value)
+            4, 5, 6 -> enchantments[property - 4] = connection.registries.enchantment.getOrNull(value)
             7, 8, 9 -> enchantmentLevels[property - 7] = value
         }
     }

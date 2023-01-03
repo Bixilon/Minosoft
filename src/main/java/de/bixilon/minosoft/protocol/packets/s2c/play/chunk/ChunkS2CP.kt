@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -114,7 +114,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         val nbt = buffer.readNBT().asJsonObject()
                         val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
                         val resourceLocation = (nbt["id"]?.toResourceLocation() ?: continue).fix()
-                        val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation]
+                        val type = buffer.connection.registries.blockEntityType[resourceLocation]
                         if (type == null) {
                             Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
                             continue
@@ -134,7 +134,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         val y = buffer.readShort()
                         val typeId = buffer.readVarInt()
                         val nbt = buffer.readNBT()?.asJsonObject()
-                        val type = buffer.connection.registries.blockEntityTypeRegistry.getOrNull(typeId) ?: continue
+                        val type = buffer.connection.registries.blockEntityType.getOrNull(typeId) ?: continue
                         val entity = type.build(buffer.connection)
                         if (nbt != null) {
                             entity.updateNBT(nbt)

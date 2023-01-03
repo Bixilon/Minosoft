@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -65,7 +65,7 @@ class EnchantingProperty(
         nbt.remove(REPAIR_COST_TAG)?.toInt()?.let { _repairCost = it }
 
         nbt.remove(*ENCHANTMENTS_TAG)?.listCast<JsonObject>()?.let {
-            val registry = stack.holder?.connection?.registries?.enchantmentRegistry ?: return@let
+            val registry = stack.holder?.connection?.registries?.enchantment ?: return@let
             for (tag in it) {
                 val enchantmentName = tag[ENCHANTMENT_ID_TAG]
                 val enchantment = registry[enchantmentName] ?: throw IllegalArgumentException("Unknown enchantment: $enchantmentName")

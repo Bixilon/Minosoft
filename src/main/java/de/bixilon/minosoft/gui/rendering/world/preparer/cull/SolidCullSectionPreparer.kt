@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,8 +47,8 @@ class SolidCullSectionPreparer(
     val context: RenderContext,
 ) : SolidSectionPreparer {
     private val profile = context.connection.profiles.block.rendering
-    private val bedrock = context.connection.registries.blockRegistry[MinecraftBlocks.BEDROCK]?.defaultState
-    private val someFullBlock = context.connection.registries.blockRegistry[MinecraftBlocks.COMMAND_BLOCK]?.defaultState
+    private val bedrock = context.connection.registries.block[MinecraftBlocks.BEDROCK]?.defaultState
+    private val someFullBlock = context.connection.registries.block[MinecraftBlocks.COMMAND_BLOCK]?.defaultState
     private val tintColorCalculator = context.tintManager
     private var fastBedrock = false
 

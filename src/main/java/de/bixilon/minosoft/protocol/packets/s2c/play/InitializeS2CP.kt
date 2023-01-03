@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -83,7 +83,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
-            dimensionProperties = buffer.connection.registries.dimensionRegistry[buffer.readByte().toInt()].type
+            dimensionProperties = buffer.connection.registries.dimension[buffer.readByte().toInt()].type
             difficulty = Difficulties[buffer.readUnsignedByte()]
             maxPlayers = buffer.readUnsignedByte()
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
@@ -100,7 +100,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 buffer.readArray { buffer.readResourceLocation() } // list of dimensions
             }
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
-                dimensionProperties = buffer.connection.registries.dimensionRegistry[buffer.readInt()].type
+                dimensionProperties = buffer.connection.registries.dimension[buffer.readInt()].type
             } else {
                 registries = buffer.readNBT().asJsonObject()
                 if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A) {
@@ -160,7 +160,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.world.hardcore = isHardcore
 
         registries?.let { connection.registries.update(it) }
-        connection.world.dimension = dimensionProperties ?: connection.registries.dimensionRegistry[dimensionType]?.type ?: throw NullPointerException("Can not find dimension: $dimensionType")
+        connection.world.dimension = dimensionProperties ?: connection.registries.dimension[dimensionType]?.type ?: throw NullPointerException("Can not find dimension: $dimensionType")
         connection.world.name = world
 
 

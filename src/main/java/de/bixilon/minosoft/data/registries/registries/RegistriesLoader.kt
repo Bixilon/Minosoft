@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,20 +40,20 @@ object RegistriesLoader {
 
         registries.load(version, pixlyzerData, latch)
 
-        registries.equipmentSlotRegistry.parent = DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
-        registries.handEquipmentSlotRegistry.parent = DefaultRegistries.HAND_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
-        registries.armorEquipmentSlotRegistry.parent = DefaultRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
-        registries.armorStandEquipmentSlotRegistry.parent = DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
-        registries.entityDataTypesRegistry.parent = DefaultRegistries.ENTITY_DATA_TYPES_REGISTRY.forVersion(version)
-        registries.titleActionsRegistry.parent = DefaultRegistries.TITLE_ACTIONS_REGISTRY.forVersion(version)
-        registries.entityAnimationRegistry.parent = DefaultRegistries.ENTITY_ANIMATION_REGISTRY.forVersion(version)
-        registries.entityActionsRegistry.parent = DefaultRegistries.ENTITY_ACTIONS_REGISTRY.forVersion(version)
-        registries.messageTypeRegistry.parent = DefaultRegistries.MESSAGE_TYPES_REGISTRY.forVersion(version)
+        registries.equipmentSlot.parent = DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
+        registries.handEquipmentSlot.parent = DefaultRegistries.HAND_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
+        registries.armorEquipmentSlot.parent = DefaultRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
+        registries.armorStandEquipmentSlot.parent = DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
+        registries.entityDataTypes.parent = DefaultRegistries.ENTITY_DATA_TYPES_REGISTRY.forVersion(version)
+        registries.titleActions.parent = DefaultRegistries.TITLE_ACTIONS_REGISTRY.forVersion(version)
+        registries.entityAnimation.parent = DefaultRegistries.ENTITY_ANIMATION_REGISTRY.forVersion(version)
+        registries.entityActions.parent = DefaultRegistries.ENTITY_ACTIONS_REGISTRY.forVersion(version)
+        registries.messageType.parent = DefaultRegistries.MESSAGE_TYPES_REGISTRY.forVersion(version)
 
-        registries.containerTypeRegistry.parent = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version)
-        registries.gameEventRegistry.parent = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version)
-        registries.worldEventRegistry.parent = DefaultRegistries.WORLD_EVENT_REGISTRY.forVersion(version)
-        registries.blockDataTypeRegistry.parent = DefaultRegistries.BLOCK_DATA_TYPE_REGISTRY.forVersion(version)
+        registries.containerType.parent = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version)
+        registries.gameEvent.parent = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version)
+        registries.worldEvent.parent = DefaultRegistries.WORLD_EVENT_REGISTRY.forVersion(version)
+        registries.blockDataType.parent = DefaultRegistries.BLOCK_DATA_TYPE_REGISTRY.forVersion(version)
         registries.catVariants.parent = DefaultRegistries.CAT_VARIANT_REGISTRY.forVersion(version)
 
         return registries

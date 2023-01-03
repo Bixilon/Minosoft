@@ -333,7 +333,7 @@ abstract class Entity(
             velocity = Vec3d(velocity.x * -4.0, 1.5, velocity.z * -4.0),
             data = BlockParticleData(
                 blockState = blockState,
-                type = connection.registries.particleTypeRegistry[BlockDustParticle]!!,
+                type = connection.registries.particleType[BlockDustParticle]!!,
             )
         )
     }
@@ -541,7 +541,7 @@ abstract class Entity(
             return // ToDo
         }
 
-        for (fluid in connection.registries.fluidRegistry) {
+        for (fluid in connection.registries.fluid) {
             updateFluidState(fluid.identifier)
         }
 

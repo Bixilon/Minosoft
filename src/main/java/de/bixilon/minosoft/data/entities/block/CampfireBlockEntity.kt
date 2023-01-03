@@ -50,7 +50,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
                 continue
             }
             val itemStack = ItemStackUtil.of(
-                item = connection.registries.itemRegistry[slot["id"].unsafeCast<String>()]!!,
+                item = connection.registries.item[slot["id"].unsafeCast<String>()]!!,
                 connection = connection,
                 count = slot["Count"]?.toInt() ?: 1,
             )

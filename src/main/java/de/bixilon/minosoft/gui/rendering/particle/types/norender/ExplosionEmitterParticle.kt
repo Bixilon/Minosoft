@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : NoRenderParticle(connection, position, Vec3d.EMPTY, data) {
-    private val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionParticle]
+    private val explosionParticleType = connection.registries.particleType[ExplosionParticle]
 
     init {
         maxAge = MAX_AGE

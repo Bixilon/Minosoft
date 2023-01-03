@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(threadSafe = false)
 class UnsignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val text: ChatComponent = buffer.readChatComponent()
-    val type = buffer.readRegistryItem(buffer.connection.registries.messageTypeRegistry)
+    val type = buffer.readRegistryItem(buffer.connection.registries.messageType)
     val parameters: Map<ChatParameter, ChatComponent> = mutableMapOf<ChatParameter, ChatComponent>().apply {
         buffer.readChatMessageParameters(this)
         this[ChatParameter.CONTENT] = text
@@ -35,7 +35,7 @@ class UnsignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val message = FormattedChatMessage(connection, type, parameters)
-        connection.fire(ChatMessageReceiveEvent(connection, message))
+        connection.events.fire(ChatMessageReceiveEvent(connection, message))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -85,7 +85,7 @@ class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
     val privateKey: PlayerPrivateKey?,
-) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, account.username, account.properties) {
+) : PlayerEntity(connection, connection.registries.entityType[RemotePlayerEntity.identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, account.username, account.properties) {
     var healthCondition by observed(HealthCondition())
     var experienceCondition by observed(ExperienceCondition())
     var compass by observed(CompassPosition())
@@ -208,7 +208,7 @@ class LocalPlayerEntity(
             }
             val onSoulSpeedBlock = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]?.get(SOUL_SPEED_BLOCKS).nullCast<Tag<Block>>()?.entries?.contains(connection.world[positionInfo.velocityPosition]?.block) ?: false
 
-            if (onSoulSpeedBlock && getEquipmentEnchant(connection.registries.enchantmentRegistry[ArmorEnchantment.SoulSpeed]) > 0) {
+            if (onSoulSpeedBlock && getEquipmentEnchant(connection.registries.enchantment[ArmorEnchantment.SoulSpeed]) > 0) {
                 // ToDo
                 return 1.0
             }
@@ -400,7 +400,7 @@ class LocalPlayerEntity(
             fluidHeights.isNotEmpty() && canSwimInFluids -> {
                 for ((fluidType, _) in fluidHeights) {
                     // ToDo: Sort fluids, water has a higher priority than lava
-                    val fluid = connection.registries.fluidRegistry[fluidType] ?: continue
+                    val fluid = connection.registries.fluid[fluidType] ?: continue
 
                     fluid.travel(this, sidewaysSpeed, forwardSpeed, gravity, falling)
                     break

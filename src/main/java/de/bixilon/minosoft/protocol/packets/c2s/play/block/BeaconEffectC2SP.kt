@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ class BeaconEffectC2SP(
     val secondaryEffect: Int?,
 ) : PlayC2SPacket {
 
-    constructor(connection: PlayConnection, primaryEffect: StatusEffectType, secondaryEffect: StatusEffectType) : this(connection.registries.statusEffectRegistry.getId(primaryEffect), connection.registries.statusEffectRegistry.getId(secondaryEffect))
+    constructor(connection: PlayConnection, primaryEffect: StatusEffectType, secondaryEffect: StatusEffectType) : this(connection.registries.statusEffect.getId(primaryEffect), connection.registries.statusEffect.getId(secondaryEffect))
 
     override fun write(buffer: PlayOutByteBuffer) {
         if (buffer.versionId < ProtocolVersions.V_22W15A) {

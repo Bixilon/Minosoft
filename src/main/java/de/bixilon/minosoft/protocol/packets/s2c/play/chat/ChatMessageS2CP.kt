@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,7 +35,7 @@ import java.util.*
 @LoadPacket(threadSafe = false)
 class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val text: ChatComponent = buffer.readChatComponent()
-    var type: ChatMessageType = buffer.connection.registries.messageTypeRegistry[DefaultMessageTypes.CHAT]!!
+    var type: ChatMessageType = buffer.connection.registries.messageType[DefaultMessageTypes.CHAT]!!
         private set
     var sender: UUID? = null
         private set
@@ -47,7 +47,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE2) {
                 overlay = buffer.readBoolean()
             } else {
-                type = buffer.readRegistryItem(buffer.connection.registries.messageTypeRegistry)
+                type = buffer.readRegistryItem(buffer.connection.registries.messageType)
                 if (buffer.versionId >= ProtocolVersions.V_20W21A && buffer.versionId < ProtocolVersions.V_22W17A) {
                     sender = buffer.readUUID()
                 }
@@ -57,14 +57,14 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        val type = if (overlay) connection.registries.messageTypeRegistry[DefaultMessageTypes.GAME]!! else type
+        val type = if (overlay) connection.registries.messageType[DefaultMessageTypes.GAME]!! else type
         val sender = sender
         val message: ChatMessage = if (sender == null || sender == KUtil.NULL_UUID) {
             SimpleChatMessage(text, type)
         } else {
             PlayerChatMessage(text, type, connection.getMessageSender(sender))
         }
-        connection.fire(ChatMessageReceiveEvent(connection, message))
+        connection.events.fire(ChatMessageReceiveEvent(connection, message))
     }
 
     override fun log(reducedLog: Boolean) {

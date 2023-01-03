@@ -42,9 +42,9 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         val motif: Motif? = if (buffer.versionId < ProtocolVersions.V_18W02A) {
-            buffer.readLegacyRegistryItem(buffer.connection.registries.motifRegistry)
+            buffer.readLegacyRegistryItem(buffer.connection.registries.motif)
         } else {
-            buffer.readRegistryItem(buffer.connection.registries.motifRegistry)
+            buffer.readRegistryItem(buffer.connection.registries.motif)
         }
         val position: Vec3i
         val direction: Directions
@@ -55,7 +55,7 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             position = buffer.readBlockPosition()
             direction = byId(buffer.readUnsignedByte())
         }
-        entity = Painting(buffer.connection, buffer.connection.registries.entityTypeRegistry[Painting.identifier]!!, EntityData(buffer.connection), position, direction, motif!!)
+        entity = Painting(buffer.connection, buffer.connection.registries.entityType[Painting.identifier]!!, EntityData(buffer.connection), position, direction, motif!!)
     }
 
     override fun handle(connection: PlayConnection) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,12 +35,12 @@ class StatisticsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 val name = buffer.readResourceLocation()
                 val value = buffer.readVarInt()
             } else {
-                val type = buffer.readRegistryItem(buffer.connection.registries.statisticRegistry)
+                val type = buffer.readRegistryItem(buffer.connection.registries.statistic)
                 val keyId = buffer.readVarInt()
                 val key: Any = when (type.unit) {
-                    StatisticUnits.BLOCK -> buffer.connection.registries.blockRegistry[keyId]
-                    StatisticUnits.ITEM -> buffer.connection.registries.itemRegistry[keyId]
-                    StatisticUnits.ENTITY_TYPE -> buffer.connection.registries.entityTypeRegistry[keyId]
+                    StatisticUnits.BLOCK -> buffer.connection.registries.block[keyId]
+                    StatisticUnits.ITEM -> buffer.connection.registries.item[keyId]
+                    StatisticUnits.ENTITY_TYPE -> buffer.connection.registries.entityType[keyId]
                     StatisticUnits.CUSTOM -> keyId
                 }
                 val value = buffer.readVarInt()

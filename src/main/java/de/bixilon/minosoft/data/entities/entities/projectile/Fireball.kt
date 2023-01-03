@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,7 +32,7 @@ abstract class Fireball(connection: PlayConnection, entityType: EntityType, data
     protected abstract val defaultItemType: ResourceLocation
 
     val defaultItem: ItemStack
-        get() = ItemStackUtil.of(connection.registries.itemRegistry[defaultItemType]!!, connection = connection)
+        get() = ItemStackUtil.of(connection.registries.item[defaultItemType]!!, connection = connection)
 
     companion object {
         private val ITEM_DATA = EntityDataField("FIREBALL_ITEM")

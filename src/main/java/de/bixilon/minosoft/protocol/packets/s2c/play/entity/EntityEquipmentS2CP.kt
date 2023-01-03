@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,12 +37,12 @@ class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 buffer.readVarInt()
             }
             buffer.readItemStack()?.let {
-                equipment[buffer.connection.registries.equipmentSlotRegistry[slotId]!!] = it
+                equipment[buffer.connection.registries.equipmentSlot[slotId]!!] = it
             }
         } else {
             while (true) {
                 val slotId = buffer.readByte().toInt()
-                equipment[buffer.connection.registries.equipmentSlotRegistry[slotId and 0x7F]!!] = buffer.readItemStack()
+                equipment[buffer.connection.registries.equipmentSlot[slotId and 0x7F]!!] = buffer.readItemStack()
                 if (slotId >= 0) {
                     break
                 }

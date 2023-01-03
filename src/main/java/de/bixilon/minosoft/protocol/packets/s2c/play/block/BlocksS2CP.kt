@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -51,7 +51,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     val y = (raw and 0xFF0000 ushr 16)
                     val z = (raw and 0x0F000000 ushr 24)
                     val x = (raw and -0x10000000 ushr 28)
-                    blocks[Vec3i(x, y, z)] = buffer.connection.registries.blockStateRegistry.getOrNull((blockId shl 4) or meta)
+                    blocks[Vec3i(x, y, z)] = buffer.connection.registries.blockState.getOrNull((blockId shl 4) or meta)
                 }
             }
             buffer.versionId < ProtocolVersions.V_20W28A -> {
@@ -61,7 +61,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     val position = buffer.readByte().toInt()
                     val y = buffer.readUnsignedByte()
                     val blockId = buffer.readVarInt()
-                    blocks[Vec3i(position and 0xF0 ushr 4 and 0xF, y, position and 0x0F)] = buffer.connection.registries.blockStateRegistry.getOrNull(blockId)
+                    blocks[Vec3i(position and 0xF0 ushr 4 and 0xF, y, position and 0x0F)] = buffer.connection.registries.blockState.getOrNull(blockId)
                 }
             }
             else -> {
@@ -72,7 +72,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     buffer.readBoolean() // ToDo
                 }
                 for (data in buffer.readVarLongArray()) {
-                    blocks[Vec3i((data shr 8 and 0x0F).toInt(), yOffset + (data and 0x0F).toInt(), (data shr 4 and 0xF).toInt())] = buffer.connection.registries.blockStateRegistry.getOrNull((data ushr 12).toInt())
+                    blocks[Vec3i((data shr 8 and 0x0F).toInt(), yOffset + (data and 0x0F).toInt(), (data shr 4 and 0xF).toInt())] = buffer.connection.registries.blockState.getOrNull((data ushr 12).toInt())
                 }
             }
         }
@@ -88,7 +88,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         chunk.setBlocks(blocks)
 
-        connection.fire(BlocksSetEvent(connection, this))
+        connection.events.fire(BlocksSetEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

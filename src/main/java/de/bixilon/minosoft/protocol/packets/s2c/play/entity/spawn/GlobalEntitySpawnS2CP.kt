@@ -33,7 +33,7 @@ class GlobalEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         val position: Vec3d = buffer.readVec3d()
 
-        entity = LightningBolt(buffer.connection, buffer.connection.registries.entityTypeRegistry[LightningBolt.identifier]!!, EntityData(buffer.connection), position)
+        entity = LightningBolt(buffer.connection, buffer.connection.registries.entityType[LightningBolt.identifier]!!, EntityData(buffer.connection), position)
     }
 
     override fun handle(connection: PlayConnection) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,11 +36,11 @@ class SoundGroup(
         override fun deserialize(registries: Registries, data: Map<String, Any>): SoundGroup {
             return SoundGroup(
                 name = data["name"]?.toString()!!,
-                destroy = data["break_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                step = data["step_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                place = data["place_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                hit = data["hit_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                fall = data["fall_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
+                destroy = data["break_sound_type"]?.toInt()?.let { registries.soundEvent[it] },
+                step = data["step_sound_type"]?.toInt()?.let { registries.soundEvent[it] },
+                place = data["place_sound_type"]?.toInt()?.let { registries.soundEvent[it] },
+                hit = data["hit_sound_type"]?.toInt()?.let { registries.soundEvent[it] },
+                fall = data["fall_sound_type"]?.toInt()?.let { registries.soundEvent[it] },
                 volume = data["sound_type_volume"]?.toFloat() ?: 1.0f,
                 pitch = data["sound_type_pitch"]?.toFloat() ?: 1.0f,
             )

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,8 +25,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
 open class TorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
-    protected val smokeParticle = registries.particleTypeRegistry[SmokeParticle]
-    protected val flameParticle = registries.particleTypeRegistry[data["flame_particle"]]
+    protected val smokeParticle = registries.particleType[SmokeParticle]
+    protected val flameParticle = registries.particleType[data["flame_particle"]]
 
 
     private fun spawnSmokeParticles(connection: PlayConnection, blockPosition: Vec3i) {

@@ -30,7 +30,7 @@ class EntityEmitterParticle(
     velocity: Vec3d = Vec3d.EMPTY,
     maxAge: Int = 3,
 ) : NoRenderParticle(connection, entity.velocity, velocity, null) {
-    private val particleData = connection.registries.particleTypeRegistry[particleFactory.identifier]!!.default()
+    private val particleData = connection.registries.particleType[particleFactory.identifier]!!.default()
 
 
     init {

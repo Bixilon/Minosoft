@@ -106,7 +106,7 @@ class ModelLoader(
         // ToDo: Optimize performance
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading block models..." }
 
-        for (block in registry.blockRegistry) {
+        for (block in registry.block) {
             blockLatch.inc()
             DefaultThreadPool += { loadBlockStates(block); blockLatch.dec() }
         }
@@ -117,7 +117,7 @@ class ModelLoader(
     private fun loadFluidModels() {
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading fluid models..." }
 
-        for (fluid in registry.fluidRegistry) {
+        for (fluid in registry.fluid) {
             loadFluid(fluid)
         }
     }
@@ -127,7 +127,7 @@ class ModelLoader(
         val itemLatch = CountUpAndDownLatch(1, latch)
 
 
-        for (item in registry.itemRegistry) {
+        for (item in registry.item) {
             itemLatch.inc()
             DefaultThreadPool += { loadItem(item); itemLatch.dec() }
         }

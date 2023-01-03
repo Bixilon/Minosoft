@@ -28,7 +28,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
-    private val noteParticleType = connection.registries.particleTypeRegistry[NoteParticle]
+    private val noteParticleType = connection.registries.particleType[NoteParticle]
     var instrument: Instruments? = null
         private set
     var pitch: Int? = null

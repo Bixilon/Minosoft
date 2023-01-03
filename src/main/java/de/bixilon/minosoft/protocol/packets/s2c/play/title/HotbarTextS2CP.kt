@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,7 @@ class HotbarTextS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
 
     override fun handle(connection: PlayConnection) {
         Log.log(LogMessageType.CHAT_IN) { "[HOTBAR] $text" }
-        val message = SimpleChatMessage(text, connection.registries.messageTypeRegistry[DefaultMessageTypes.GAME]!!)
-        connection.fire(ChatMessageReceiveEvent(connection, message))
+        val message = SimpleChatMessage(text, connection.registries.messageType[DefaultMessageTypes.GAME]!!)
+        connection.events.fire(ChatMessageReceiveEvent(connection, message))
     }
 }

@@ -28,9 +28,9 @@ class PixLyzerLoadingTest {
 
     private fun VersionRegistry.test() {
         val registries = this.registries
-        Assert.assertNotNull(registries.blockRegistry[MinecraftBlocks.DIRT])
-        Assert.assertNotNull(registries.itemRegistry[MinecraftItems.COAL])
-        Assert.assertNotNull(registries.entityTypeRegistry[Zombie])
+        Assert.assertNotNull(registries.block[MinecraftBlocks.DIRT])
+        Assert.assertNotNull(registries.item[MinecraftItems.COAL])
+        Assert.assertNotNull(registries.entityType[Zombie])
     }
 
     fun `1_14_4`() {

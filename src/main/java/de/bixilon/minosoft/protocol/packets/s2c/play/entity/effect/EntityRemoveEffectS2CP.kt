@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class EntityRemoveEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
-    val effect: StatusEffectType = buffer.connection.registries.statusEffectRegistry[if (buffer.versionId >= ProtocolVersions.V_1_18_2_PRE1) buffer.readVarInt() else buffer.readUnsignedByte()]
+    val effect: StatusEffectType = buffer.connection.registries.statusEffect[if (buffer.versionId >= ProtocolVersions.V_1_18_2_PRE1) buffer.readVarInt() else buffer.readUnsignedByte()]
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return

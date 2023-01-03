@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,7 +31,7 @@ class ItemParticleData(val itemStack: ItemStack?, type: ParticleType) : Particle
             } else {
                 buffer.readVarInt()
             }
-            return ItemParticleData(ItemStackUtil.of(buffer.connection.registries.itemRegistry[itemId], connection = buffer.connection), type)
+            return ItemParticleData(ItemStackUtil.of(buffer.connection.registries.item[itemId], connection = buffer.connection), type)
         }
     }
 }

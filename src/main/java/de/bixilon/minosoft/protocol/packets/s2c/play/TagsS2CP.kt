@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,11 +31,11 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = mutableMapOf()
         if (buffer.versionId < ProtocolVersions.V_20W51A) {
-            tags[BLOCK_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.blockRegistry[it] } }))
-            tags[ITEM_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.itemRegistry[it] } }))
-            tags[FLUID_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.fluidRegistry[it] } })) // ToDo: when was this added? Was not available in 18w01
+            tags[BLOCK_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.block[it] } }))
+            tags[ITEM_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.item[it] } }))
+            tags[FLUID_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.fluid[it] } })) // ToDo: when was this added? Was not available in 18w01
             if (buffer.versionId >= ProtocolVersions.V_18W43A) {
-                tags[ENTITY_TYPE_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.entityTypeRegistry[it] } }))
+                tags[ENTITY_TYPE_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.entityType[it] } }))
             }
             if (buffer.versionId >= ProtocolVersions.V_20W49A) {
                 tags[GAME_EVENT_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { it } }))
@@ -44,10 +44,10 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             for (i in 0 until buffer.readVarInt()) {
                 val resourceLocation = buffer.readResourceLocation()
                 tags[resourceLocation] = when (resourceLocation) {
-                    BLOCK_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.blockRegistry[it] } }))
-                    ITEM_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.itemRegistry[it] } }))
-                    FLUID_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.fluidRegistry[it] } }))
-                    ENTITY_TYPE_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.entityTypeRegistry[it] } }))
+                    BLOCK_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.block[it] } }))
+                    ITEM_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.item[it] } }))
+                    FLUID_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.fluid[it] } }))
+                    ENTITY_TYPE_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.entityType[it] } }))
                     // GAME_EVENT_TAG_RESOURCE_LOCATION -> buffer.readTagArray { it }
                     else -> mapOf(*(buffer.readArray { buffer.readTag { it } }))
                 }

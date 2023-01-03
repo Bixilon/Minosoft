@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -51,7 +51,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
                 writeShort(-1)
                 return
             }
-            writeShort(connection.registries.itemRegistry.getId(itemStack.item.item))
+            writeShort(connection.registries.item.getId(itemStack.item.item))
             writeByte(itemStack.item.count)
             writeShort(itemStack._durability?.durability ?: 0) // ToDo: This is meta data in general and not just durability
             writeNBT(itemStack.getNBT())
@@ -63,7 +63,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
             return
         }
         itemStack!!
-        writeVarInt(connection.registries.itemRegistry.getId(itemStack.item.item))
+        writeVarInt(connection.registries.item.getId(itemStack.item.item))
         writeByte(itemStack.item.count)
         writeNBT(itemStack.getNBT())
     }

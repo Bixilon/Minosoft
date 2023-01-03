@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
-    private val water = guiRenderer.context.connection.registries.fluidRegistry[DefaultFluids.WATER]!!
+    private val water = guiRenderer.context.connection.registries.fluid[DefaultFluids.WATER]!!
     private val airBubble = guiRenderer.atlasManager["minecraft:air_bubble"]
     private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]
 

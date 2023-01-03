@@ -32,7 +32,7 @@ class ThrownEyeOfEnder(connection: PlayConnection, entityType: EntityType, data:
         get() = data.get(ITEM_DATA, defaultItem)
 
     val defaultItem: ItemStack
-        get() = ItemStackUtil.of(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection = connection)
+        get() = ItemStackUtil.of(connection.registries.item[DEFAULT_ITEM]!!, connection = connection)
 
     override fun onAttack(attacker: Entity): Boolean = false
 

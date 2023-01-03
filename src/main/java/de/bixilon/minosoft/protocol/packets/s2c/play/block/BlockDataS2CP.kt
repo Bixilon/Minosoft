@@ -35,9 +35,9 @@ class BlockDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         buffer.readBlockPosition()
     }
     val type = if (buffer.versionId >= V_21W37A) {
-        buffer.readRegistryItem(buffer.connection.registries.blockEntityTypeRegistry).identifier
+        buffer.readRegistryItem(buffer.connection.registries.blockEntityType).identifier
     } else {
-        buffer.connection.registries.blockDataTypeRegistry.getOrNull(buffer.readUnsignedByte())?.identifier
+        buffer.connection.registries.blockDataType.getOrNull(buffer.readUnsignedByte())?.identifier
     }
     val nbt = buffer.readNBT().toJsonObject()
 

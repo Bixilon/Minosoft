@@ -21,6 +21,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface ParticleFactory<T : Particle> : Identified {
 
-    fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData = connection.registries.particleTypeRegistry[identifier]!!.default()): T?
+    fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData = connection.registries.particleType[identifier]!!.default()): T?
 
 }

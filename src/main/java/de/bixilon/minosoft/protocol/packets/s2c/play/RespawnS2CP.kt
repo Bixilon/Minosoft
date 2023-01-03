@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -57,7 +57,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         dimension = when {
             buffer.versionId < ProtocolVersions.V_20W21A -> {
-                buffer.connection.registries.dimensionRegistry[if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
+                buffer.connection.registries.dimension[if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
                     buffer.readByte().toInt()
                 } else {
                     buffer.readInt()
@@ -65,7 +65,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
 
             buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A -> {
-                buffer.readLegacyRegistryItem(buffer.connection.registries.dimensionRegistry)!!.type
+                buffer.readLegacyRegistryItem(buffer.connection.registries.dimension)!!.type
             }
 
             else -> {
