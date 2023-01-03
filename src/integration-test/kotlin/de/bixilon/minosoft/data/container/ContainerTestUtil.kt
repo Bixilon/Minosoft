@@ -28,8 +28,8 @@ import de.bixilon.minosoft.util.KUtil.minosoft
 
 object ContainerTestUtil {
     private val container = ContainerType(minosoft("test"), factory = GenericContainerFactory)
-    private val chest = IT.VERSION.registries!!.containerTypeRegistry[Generic9x3Container]!!
-    private val furnace = IT.VERSION.registries!!.containerTypeRegistry[FurnaceContainer]!!
+    private val chest = IT.REGISTRIES.containerTypeRegistry[Generic9x3Container]!!
+    private val furnace = IT.REGISTRIES.containerTypeRegistry[FurnaceContainer]!!
 
 
     init {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -75,7 +75,7 @@ import java.lang.reflect.Field
 import kotlin.reflect.jvm.javaField
 
 
-class Registries {
+class Registries : Parentable<Registries> {
     val registries: MutableMap<ResourceLocation, AbstractRegistry<*>> = mutableMapOf()
     var shapes: Array<VoxelShape> = emptyArray()
     val motifRegistry: Registry<Motif> = register("motif", Registry(codec = Motif))
@@ -135,17 +135,19 @@ class Registries {
     private var isFlattened = false
 
 
-    var parentRegistries: Registries? = null
+    override var parent: Registries? = null
         set(value) {
             field = value
 
-            for (parentableField in PARENTABLE_FIELDS) {
-                PARENTABLE_SET_PARENT_METHOD(parentableField.get(this), value?.let { parentableField.get(it) })
+            for (field in PARENTABLE_FIELDS) {
+                val method = field.get(this) ?: continue
+                val value = value?.let { field.get(it) }
+                PARENTABLE_SET_PARENT_METHOD(method, value)
             }
         }
 
     fun getEntityDataIndex(field: EntityDataField): Int? {
-        return entityDataIndexMap[field] ?: parentRegistries?.getEntityDataIndex(field)
+        return entityDataIndexMap[field] ?: parent?.getEntityDataIndex(field)
     }
 
     fun load(version: Version, pixlyzerData: Map<String, Any>, latch: CountUpAndDownLatch) {

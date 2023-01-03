@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,22 +35,10 @@ class Version(
     val c2sPackets: Map<ProtocolStates, AbstractBiMap<C2SPacketType, Int>>,
 ) {
     val sortingId: Int = (versionId == -1).decide(Int.MAX_VALUE, versionId)
-    var registries: Registries? = null
-        private set
 
 
-    @Synchronized
-    fun load(profile: ResourcesProfile, latch: CountUpAndDownLatch) {
-        if (registries != null) {
-            // already loaded
-            return
-        }
-        registries = RegistriesLoader.load(profile, this, latch)
-    }
-
-    @Synchronized
-    fun unload() {
-        this.registries = null
+    fun load(profile: ResourcesProfile, latch: CountUpAndDownLatch): Registries {
+        return RegistriesLoader.load(profile, this, latch)
     }
 
     override fun toString(): String {

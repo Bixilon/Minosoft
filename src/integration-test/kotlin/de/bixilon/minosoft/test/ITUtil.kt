@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,8 @@ package de.bixilon.minosoft.test
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
+import de.bixilon.minosoft.data.registries.VersionRegistry
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 
@@ -25,18 +27,13 @@ object ITUtil {
         return ResourcesProfile()
     }
 
-    fun loadPixlyzerData(name: String): Version {
+    fun loadPixlyzerData(name: String): VersionRegistry {
         val version = Versions[name]!!
-        if (version.registries != null) {
-            // already loaded
-            return version
-        }
-
-        loadPixlyzerData(version)
-        return version
+        val registries = loadPixlyzerData(version)
+        return VersionRegistry(version, registries)
     }
 
-    fun loadPixlyzerData(version: Version) {
-        version.load(profile, CountUpAndDownLatch(0))
+    fun loadPixlyzerData(version: Version): Registries {
+        return version.load(profile, CountUpAndDownLatch(0))
     }
 }

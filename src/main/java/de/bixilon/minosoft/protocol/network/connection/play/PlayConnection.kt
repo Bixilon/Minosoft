@@ -183,8 +183,7 @@ class PlayConnection(
             val taskWorker = TaskWorker(errorHandler = { _, exception -> if (error == null) error = exception }, criticalErrorHandler = { _, exception -> if (error == null) error = exception })
             taskWorker += {
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
-                version.load(profiles.resources, latch)
-                registries.parentRegistries = version.registries
+                registries.parent = version.load(profiles.resources, latch)
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             }
 
@@ -230,7 +229,6 @@ class PlayConnection(
             state = PlayConnectionStates.ESTABLISHING
         } catch (exception: Throwable) {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
-            version.unload()
             if (this::assetsManager.isInitialized) {
                 assetsManager.unload()
             }

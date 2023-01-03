@@ -31,7 +31,7 @@ abstract class ItemTest<T : Item> {
     }
 
     fun retrieveItem(name: ResourceLocation) {
-        val item = IT.VERSION.registries!!.itemRegistry[name]
+        val item = IT.REGISTRIES.itemRegistry[name]
         Assert.assertNotNull(item)
         item!!
         assertEquals(item.identifier, name)
@@ -39,7 +39,7 @@ abstract class ItemTest<T : Item> {
     }
 
     fun retrieveItem(factory: ItemFactory<T>) {
-        val item = IT.VERSION.registries!!.itemRegistry[factory]
+        val item = IT.REGISTRIES.itemRegistry[factory]
         Assert.assertNotNull(item)
         item!!
         assertEquals(item.identifier, factory.identifier)

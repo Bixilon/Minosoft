@@ -11,26 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.test
+package de.bixilon.minosoft.data.registries
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
-import org.objenesis.ObjenesisStd
 
-object IT {
-    val OBJENESIS = ObjenesisStd()
-    const val TEST_VERSION_NAME = "1.18.2"
-    var VERSION: Version = unsafeNull()
-    var REGISTRIES: Registries = unsafeNull()
-
-    val references: MutableList<Any> = mutableListOf()
-
-    init {
-        reference()
-    }
-
-    fun Any.reference() {
-        references += this
-    }
-}
+data class VersionRegistry(
+    val version: Version,
+    val registries: Registries,
+)

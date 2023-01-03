@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,7 +39,7 @@ object ConnectionTestUtil {
         connection::account.forceSet(OfflineAccount("dummy"))
         connection::version.forceSet(IT.VERSION)
         connection::registries.forceSet(Registries())
-        connection.registries.parentRegistries = IT.VERSION.registries
+        connection.registries.parent = IT.REGISTRIES
         connection::world.forceSet(createWorld(connection))
         connection::player.forceSet(LocalPlayerEntity(connection.account, connection, null))
         connection::network.forceSet(TestNetwork())

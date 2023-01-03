@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.data.registries.versions
 
 import de.bixilon.minosoft.data.entities.entities.monster.Zombie
+import de.bixilon.minosoft.data.registries.VersionRegistry
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.protocol.protocol.VersionSupport
-import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.test.ITUtil
 import org.testng.Assert
@@ -26,10 +26,8 @@ import org.testng.annotations.Test
 @Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], singleThreaded = false, threadPoolSize = 8)
 class PixLyzerLoadingTest {
 
-    private fun Version.test() {
+    private fun VersionRegistry.test() {
         val registries = this.registries
-        Assert.assertNotNull(this.registries)
-        registries!!
         Assert.assertNotNull(registries.blockRegistry[MinecraftBlocks.DIRT])
         Assert.assertNotNull(registries.itemRegistry[MinecraftItems.COAL])
         Assert.assertNotNull(registries.entityTypeRegistry[Zombie])
@@ -102,7 +100,7 @@ class PixLyzerLoadingTest {
     fun latest() {
         val version = Versions.getById(VersionSupport.LATEST_VERSION)!!
         println("Latest version $version")
-        ITUtil.loadPixlyzerData(version)
-        version.test()
+        val registries = ITUtil.loadPixlyzerData(version)
+        VersionRegistry(version, registries).test()
     }
 }
