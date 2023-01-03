@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries
 
-import de.bixilon.kutil.string.StringUtil.isLowercase
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
@@ -40,9 +39,6 @@ open class ResourceLocation(
         }
         if (hashCode() != other.hashCode()) {
             return false
-        }
-        if (other is LegacyResourceLocation) {
-            return path == other.path
         }
         if (other !is ResourceLocation) {
             return false
@@ -81,13 +77,7 @@ open class ResourceLocation(
             }
 
         fun getResourceLocation(resourceLocation: String): ResourceLocation {
-            // if (!ProtocolDefinition.RESOURCE_LOCATION_PATTERN.matcher(resourceLocation).matches()) {
-            //     throw new IllegalArgumentException(String.format("%s in not a valid resource location!", resourceLocation));
-            // }
-            return if (!resourceLocation.isLowercase()) {
-                // just a string but wrapped into a resourceLocation (like old plugin channels MC|BRAND or ...)
-                LegacyResourceLocation(resourceLocation)
-            } else ResourceLocation(resourceLocation)
+            return ResourceLocation(resourceLocation)
         }
 
         fun getPathResourceLocation(resourceLocation: String): ResourceLocation {
