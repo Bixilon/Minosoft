@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.registries
 
-import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
@@ -54,8 +53,7 @@ import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.misc.MiscData
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.registry.*
-import de.bixilon.minosoft.data.registries.shapes.AABB
-import de.bixilon.minosoft.data.registries.shapes.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
@@ -77,7 +75,9 @@ import kotlin.reflect.jvm.javaField
 
 class Registries : Parentable<Registries> {
     val registries: MutableMap<ResourceLocation, AbstractRegistry<*>> = mutableMapOf()
-    var shapes: Array<VoxelShape> = emptyArray()
+
+    val shape = ShapeRegistry()
+
     val motif: Registry<Motif> = register("motif", Registry(codec = Motif))
     val block: Registry<Block> = register("block", Registry(flattened = true, codec = Block, metaType = MetaTypes.BLOCKS))
     val item: ItemRegistry = register("item", ItemRegistry())
@@ -160,7 +160,7 @@ class Registries : Parentable<Registries> {
         val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it }, criticalErrorHandler = { _, it -> if (error == null) error = it })
         val stopwatch = Stopwatch()
         // enums
-        worker += WorkerTask(this::shapes) { loadShapes(pixlyzerData["shapes"]?.toJsonObject()) }
+        worker += WorkerTask(this::shape) { this.shape.load(pixlyzerData["shapes"]?.toJsonObject()) }
 
         worker += WorkerTask(this::equipmentSlot) { equipmentSlot.initialize(pixlyzerData["equipment_slots"]) }
         worker += WorkerTask(this::handEquipmentSlot) { handEquipmentSlot.initialize(pixlyzerData["hand_equipment_slots"]) }
@@ -194,7 +194,7 @@ class Registries : Parentable<Registries> {
         worker += WorkerTask(this::biome) { biome.rawUpdate(pixlyzerData["biomes"]?.toJsonObject(), this) }
         worker += WorkerTask(this::dimension) { dimension.rawUpdate(pixlyzerData["dimensions"]?.toJsonObject(), this) }
         worker += WorkerTask(this::fluid) { fluid.rawUpdate(pixlyzerData["fluids"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::block, dependencies = arrayOf(this::material, this::fluid, this::shapes, this::soundGroup, this::particleType)) { block.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::block, dependencies = arrayOf(this::material, this::fluid, this::shape, this::soundGroup, this::particleType)) { block.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }
         worker += WorkerTask(this::item, dependencies = arrayOf(this::material, this::block, this::entityType, this::fluid, this::statusEffect, this::soundEvent)) { item.rawUpdate(pixlyzerData["items"]?.toJsonObject(), this) }
 
         worker += WorkerTask(this::blockEntityType, dependencies = arrayOf(this::block)) { blockEntityType.rawUpdate(pixlyzerData["block_entities"]?.toJsonObject(), this) }
@@ -232,30 +232,10 @@ class Registries : Parentable<Registries> {
         inner.dec()
         inner.await()
         isFullyLoaded = true
-        shapes = emptyArray()
+        shape.cleanup()
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
     }
 
-    private fun loadShapes(data: Map<String, Any>?) {
-        data ?: return
-        val aabbs = loadAABBs(data["aabbs"].unsafeCast())
-        loadVoxelShapes(data["shapes"].unsafeCast(), aabbs)
-    }
-
-    private fun loadVoxelShapes(data: Collection<Any>, aabbs: Array<AABB>) {
-        this.shapes = arrayOfNulls<VoxelShape>(data.size).cast()
-        for ((index, shape) in data.withIndex()) {
-            this.shapes[index] = VoxelShape(shape, aabbs)
-        }
-    }
-
-    private fun loadAABBs(data: Collection<Map<String, Any>>): Array<AABB> {
-        val aabbs: Array<AABB?> = arrayOfNulls(data.size)
-        for ((index, aabb) in data.withIndex()) {
-            aabbs[index] = AABB(aabb)
-        }
-        return aabbs.cast()
-    }
 
     fun clear() {
         for (field in this::class.java.fields) {

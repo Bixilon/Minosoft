@@ -107,9 +107,9 @@ data class BlockState(
 
             fun Any.asShape(): VoxelShape {
                 return if (this is Int) {
-                    registries.shapes[this]
+                    registries.shape[this]
                 } else {
-                    VoxelShape(registries.shapes, this)
+                    VoxelShape(registries.shape, this)
                 }
             }
 
