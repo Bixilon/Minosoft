@@ -149,6 +149,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
         }
 
     companion object : ContainerFactory<PlayerInventory> {
+        const val CONTAINER_ID = 0
         override val identifier: ResourceLocation = "minecraft:player_inventory".toResourceLocation()
         val TYPE = ContainerType(
             identifier = identifier,

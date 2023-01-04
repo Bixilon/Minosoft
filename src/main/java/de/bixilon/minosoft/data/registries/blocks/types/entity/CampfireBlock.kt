@@ -105,6 +105,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
     companion object : BlockFactory<CampfireBlock> {
         private val CAMPFIRE_CRACKLE_SOUND = "minecraft:block.campfire.crackle".toResourceLocation()
+        const val MAX_ITEMS = 4
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CampfireBlock {
             return CampfireBlock(resourceLocation, registries, data)

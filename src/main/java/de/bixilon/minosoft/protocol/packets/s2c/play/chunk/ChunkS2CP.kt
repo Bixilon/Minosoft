@@ -32,6 +32,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A
@@ -107,21 +108,16 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
             // block entities
             when {
-                buffer.versionId < V_1_9_4 -> {
-                }
-
+                buffer.versionId < V_1_9_4 -> Unit
                 buffer.versionId < V_21W37A -> {
                     val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
                     val positionOffset = Vec3i.of(position, dimension.minSection, Vec3i.EMPTY)
                     for (i in 0 until buffer.readVarInt()) {
                         val nbt = buffer.readNBT().asJsonObject()
                         val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
-                        val resourceLocation = (nbt["id"]?.toResourceLocation() ?: continue).fix()
-                        val type = buffer.connection.registries.blockEntityType[resourceLocation]
-                        if (type == null) {
-                            Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
-                            continue
-                        }
+                        val id = (nbt["id"]?.toResourceLocation() ?: continue).fix()
+                        val type = buffer.connection.registries.blockEntityType[id] ?: continue
+
                         val entity = type.build(buffer.connection)
                         entity.updateNBT(nbt)
                         blockEntities[position] = entity
@@ -162,7 +158,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     fun PlayInByteBuffer.readBiomeArray(): Array<Biome> {
         val length = when {
             versionId >= ProtocolVersions.V_20W28A -> readVarInt()
-            versionId >= ProtocolVersions.V_19W36A -> 1024
+            versionId >= ProtocolVersions.V_19W36A -> ProtocolDefinition.BLOCKS_PER_SECTION / 4 // 1024, 4x4 blocks
             else -> 0
         }
 

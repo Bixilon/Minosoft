@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
 import de.bixilon.minosoft.data.container.DefaultInventoryTypes
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.container.ContainerOpenEvent
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W11A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14
@@ -66,7 +66,7 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (containerId == ProtocolDefinition.PLAYER_CONTAINER_ID) {
+        if (containerId == PlayerInventory.CONTAINER_ID) {
             return
         }
         val title = if (hasTitle) title else null

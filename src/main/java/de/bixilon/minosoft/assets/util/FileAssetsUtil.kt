@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.assets.util
 import com.github.luben.zstd.ZstdInputStream
 import com.github.luben.zstd.ZstdOutputStream
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
+import de.bixilon.kutil.buffer.BufferDefinition
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.hex.HexUtil.isHexString
@@ -23,7 +24,6 @@ import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.HashTypes.Companion.hashType
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil
 import java.io.*
@@ -75,7 +75,7 @@ object FileAssetsUtil {
             output = ZstdOutputStream(output, 5)
         }
 
-        val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
+        val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
         var length: Int
         while (true) {
             length = stream.read(buffer, 0, buffer.size)
@@ -149,7 +149,7 @@ object FileAssetsUtil {
 
             val input = openStream(file, compress)
 
-            val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
+            val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
             var length: Int
             while (true) {
                 length = input.read(buffer, 0, buffer.size)
@@ -200,7 +200,7 @@ object FileAssetsUtil {
             val input = openStream(file, compress)
             val output = ByteArrayOutputStream(if (compress) input.available() else maxOf(1000, input.available()))
 
-            val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
+            val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
             var length: Int
             while (true) {
                 length = input.read(buffer, 0, buffer.size)

@@ -95,7 +95,7 @@ class LocalPlayerEntity(
     val inventory = PlayerInventory(connection)
     val incompleteContainers: SynchronizedMap<Int, IncompleteContainer> = synchronizedMapOf()
     val containers: SynchronizedBiMap<Int, Container> = synchronizedBiMapOf(
-        ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
+        PlayerInventory.CONTAINER_ID to inventory,
     )
 
     var selectedHotbarSlot: Int by observed(0)

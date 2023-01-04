@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -59,7 +59,7 @@ object Vec3iUtil {
     fun Any?.toVec3iN(): Vec3i? {
         return when (this) {
             is List<*> -> Vec3i(this[0].toInt(), this[1].toInt(), this[2].toInt())
-            is Map<*, *> -> Vec3i(this["x"]?.toInt() ?: 0.0f, this["y"]?.toInt() ?: 0.0f, this["z"]?.toInt() ?: 0.0f)
+            is Map<*, *> -> Vec3i(this["x"]?.toInt() ?: 0, this["y"]?.toInt() ?: 0, this["z"]?.toInt() ?: 0)
             is IntArray -> Vec3i(this[0], this[1], this[2])
             is Number -> Vec3i(this.toInt())
             else -> null

@@ -27,13 +27,13 @@ import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.stack.property.HolderProperty
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -219,7 +219,7 @@ open class Container(
         floatingItem = null // ToDo: Does not seem correct
         val id = id ?: return
 
-        if (id != ProtocolDefinition.PLAYER_CONTAINER_ID) {
+        if (id != PlayerInventory.CONTAINER_ID) {
             connection.player.containers -= id
         }
         // minecraft behavior, when opening the inventory an open packet is never sent, but a close is

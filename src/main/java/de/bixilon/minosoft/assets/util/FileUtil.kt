@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,9 @@ package de.bixilon.minosoft.assets.util
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.luben.zstd.ZstdInputStream
+import de.bixilon.kutil.buffer.BufferDefinition
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.mbf.MBFBinaryReader
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.kamranzafar.jtar.TarInputStream
@@ -56,7 +56,7 @@ object FileUtil {
     fun InputStream.readAsString(close: Boolean = true): String {
         val builder = StringBuilder()
 
-        val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
+        val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
         var length: Int
 
         while (true) {

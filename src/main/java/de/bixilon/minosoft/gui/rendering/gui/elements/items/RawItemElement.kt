@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
 
 class RawItemElement(
@@ -101,14 +100,15 @@ class RawItemElement(
     }
 
     override fun forceSilentApply() {
-        val count = _stack?.item?.count
+        val item = _stack?.item
+        val count = item?.count
         countText.text = when {
             count == null || count == 1 -> ChatComponent.EMPTY
             count < -99 -> NEGATIVE_INFINITE_TEXT
             count < 0 -> TextComponent(count, color = ChatColors.RED) // No clue why I do this...
             count == 0 -> ZERO_TEXT
             count > 99 -> INFINITE_TEXT
-            count > ProtocolDefinition.ITEM_STACK_MAX_SIZE -> TextComponent(count, color = ChatColors.RED)
+            count > item.item.maxStackSize -> TextComponent(count, color = ChatColors.RED)
             else -> TextComponent(count)
         }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,6 +29,10 @@ import java.net.*
 import java.nio.charset.StandardCharsets
 
 object LANServerListener {
+    const val BROADCAST_PORT = 4445
+    const val BROADCAST_ADDRESS = "224.0.2.60"
+    const val MAXIMUM_SERVERS = 100 // maximum number of lan servers, set because otherwise dos attacks would be easy
+
     val SERVERS: HashBiMap<InetAddress, AbstractServer> = HashBiMap.create()
     private const val MOTD_START_STRING = "[MOTD]"
     private const val MOTD_END_STRING = "[/MOTD]"
@@ -66,9 +70,9 @@ object LANServerListener {
         stop = false
         val thread = Thread({
             try {
-                val socket = MulticastSocket(ProtocolDefinition.LAN_SERVER_BROADCAST_PORT)
-                val inetAddress = InetAddress.getByName(ProtocolDefinition.LAN_SERVER_BROADCAST_ADDRESS)
-                socket.joinGroup(InetSocketAddress(inetAddress, ProtocolDefinition.LAN_SERVER_BROADCAST_PORT), NetworkInterface.getByInetAddress(inetAddress))
+                val socket = MulticastSocket(BROADCAST_PORT)
+                val inetAddress = InetAddress.getByName(BROADCAST_ADDRESS)
+                socket.joinGroup(InetSocketAddress(inetAddress, BROADCAST_PORT), NetworkInterface.getByInetAddress(inetAddress))
                 val buffer = ByteArray(256) // this should be enough, if the packet is longer, it is probably invalid
                 Log.log(LogMessageType.NETWORK_STATUS, LogLevels.VERBOSE) { "Listening for LAN servers..." }
                 latch?.dec()
@@ -87,7 +91,7 @@ object LANServerListener {
                         if (SERVERS.containsValue(server)) {
                             continue
                         }
-                        if (SERVERS.size > ProtocolDefinition.LAN_SERVER_MAXIMUM_SERVERS) {
+                        if (SERVERS.size > MAXIMUM_SERVERS) {
                             continue
                         }
                         Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Discovered LAN servers: ${server.address}" }

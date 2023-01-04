@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.RegistriesLoader
 import de.bixilon.minosoft.protocol.packets.factory.C2SPacketType
 import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
@@ -49,7 +48,7 @@ class Version(
         return this.versionId.compareTo(versionId)
     }
 
-    val flattened: Boolean get() = versionId >= ProtocolDefinition.FLATTING_VERSION_ID
+    val flattened: Boolean get() = versionId >= ProtocolVersions.V_17W47A
     val hasOffhand: Boolean get() = versionId >= V_15W31A
     val maxPacketLength get() = if (versionId < ProtocolVersions.V_1_17_1_RC2) 1 shl 21 else 1 shl 23
     val maxChatMessageSize get() = if (versionId < ProtocolVersions.V_16W38A) 100 else 256

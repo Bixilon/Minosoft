@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.particle.types.TypesC
-import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 
 /**
  * Profile for particle
@@ -61,9 +61,9 @@ class ParticleProfile(
      * Limits the number of particles.
      * Particles that exceed that count will be ignored
      * Must not be negative or exceed $RenderConstants.MAXIMUM_PARTICLE_AMOUNT
-     * @see RenderConstants.MAXIMUM_PARTICLE_AMOUNT
+     * @see ParticleRenderer.MAXIMUM_AMOUNT
      */
-    var maxAmount by IntDelegate(this, RenderConstants.MAXIMUM_PARTICLE_AMOUNT, "", arrayOf(0..RenderConstants.MAXIMUM_PARTICLE_AMOUNT))
+    var maxAmount by IntDelegate(this, ParticleRenderer.MAXIMUM_AMOUNT, "", arrayOf(0..ParticleRenderer.MAXIMUM_AMOUNT))
     val types = TypesC(this)
 
     override fun toString(): String {

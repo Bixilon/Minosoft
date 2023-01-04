@@ -22,7 +22,6 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
@@ -52,8 +51,8 @@ class ParticleRenderer(
     private val translucentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, false) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    private var transparentMesh = ParticleMesh(context, BufferedArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
-    private var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    private var transparentMesh = ParticleMesh(context, BufferedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    private var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
 
     private val particlesLock = SimpleLock()
     private var particles: MutableList<Particle> = mutableListOf()
@@ -81,7 +80,7 @@ class ParticleRenderer(
             }
             field = value
         }
-    private var maxAmount = RenderConstants.MAXIMUM_PARTICLE_AMOUNT
+    private var maxAmount = MAXIMUM_AMOUNT
         set(value) {
             check(value > 1) { "Can not have negative particle max amount" }
             particlesLock.lock()
@@ -102,7 +101,7 @@ class ParticleRenderer(
         get() = particles.size
 
     override fun init(latch: CountUpAndDownLatch) {
-        profile::maxAmount.observe(this, true) { maxAmount = minOf(it, RenderConstants.MAXIMUM_PARTICLE_AMOUNT) }
+        profile::maxAmount.observe(this, true) { maxAmount = minOf(it, MAXIMUM_AMOUNT) }
         profile::enabled.observe(this, true) { enabled = it }
 
         connection.events.listen<CameraMatrixChangeEvent> {
@@ -263,6 +262,7 @@ class ParticleRenderer(
 
     companion object : RendererBuilder<ParticleRenderer> {
         override val identifier = ResourceLocation("minosoft:particle")
+        const val MAXIMUM_AMOUNT = 50000
 
         override fun build(connection: PlayConnection, context: RenderContext): ParticleRenderer? {
             if (connection.profiles.particle.skipLoading) {

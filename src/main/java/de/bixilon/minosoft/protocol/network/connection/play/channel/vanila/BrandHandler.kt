@@ -22,9 +22,10 @@ import de.bixilon.minosoft.protocol.network.connection.play.channel.play.PlayCha
 import de.bixilon.minosoft.protocol.packets.c2s.play.ChannelC2SP
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 object BrandHandler {
+    const val VANILLA = "vanilla"
+    const val MINOSOFT = "minosoft"
 
     fun register(connection: PlayConnection) {
         connection.channels.play[connection.getBrandChannel()] = BrandChannelHandler(connection)
@@ -41,7 +42,7 @@ object BrandHandler {
     }
 
     fun PlayConnection.sendBrand() {
-        sendBrand(getBrandChannel(), if (profiles.connection.fakeBrand) ProtocolDefinition.VANILLA_BRAND else ProtocolDefinition.MINOSOFT_BRAND)
+        sendBrand(getBrandChannel(), if (profiles.connection.fakeBrand) VANILLA else MINOSOFT)
     }
 
 

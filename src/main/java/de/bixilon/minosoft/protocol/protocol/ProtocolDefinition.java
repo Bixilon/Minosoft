@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,22 +27,14 @@ public final class ProtocolDefinition {
     public static final float ROTATION_ANGLE_DIVIDER = 360.0F / 256.0F;
     public static final float SOUND_PITCH_DIVIDER = 100.0F / 63.0F;
 
-    public static final int PLAYER_CONTAINER_ID = 0;
-
-    public static final int FLATTING_VERSION_ID = ProtocolVersions.V_17W47A;
-    public static final int PRE_FLATTENING_VERSION_ID = ProtocolVersions.V_17W46A;
 
     public static final int QUERY_PROTOCOL_VERSION_ID = -1;
 
-    public static final int LAN_SERVER_BROADCAST_PORT = 4445;
-    public static final String LAN_SERVER_BROADCAST_ADDRESS = "224.0.2.60";
-    public static final int LAN_SERVER_MAXIMUM_SERVERS = 100; // maximum number of lan servers, set because otherwise dos attacks would be easy
-
-    public static final String DEFAULT_NAMESPACE = "minecraft";
+    public static final String MINECRAFT_NAMESPACE = "minecraft";
     public static final String MINOSOFT_NAMESPACE = "minosoft";
-    public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '\u00A7';
+    public static final String DEFAULT_NAMESPACE = MINECRAFT_NAMESPACE;
 
-    public static final int DEFAULT_BUFFER_SIZE = 4096;
+    public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '§';
 
     public static final int AIR_BLOCK_ID = 0;
 
@@ -65,8 +57,8 @@ public final class ProtocolDefinition {
     public static final int CHUNK_MAX_SECTION = CHUNK_MAX_Y / SECTION_HEIGHT_Y;
     public static final int CHUNK_MAX_HEIGHT = CHUNK_MAX_Y - CHUNK_MIN_Y;
     public static final int CHUNK_MAX_SECTIONS = CHUNK_MAX_HEIGHT / SECTION_HEIGHT_Y;
-    public static final int ITEM_STACK_MAX_SIZE = 64;
 
+    @Deprecated
     public static final char[] OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray();
 
 
@@ -89,8 +81,4 @@ public final class ProtocolDefinition {
     public static final byte LIGHT_LEVELS = 16;
     public static final byte MAX_LIGHT_LEVEL = LIGHT_LEVELS - 1;
     public static final int MAX_LIGHT_LEVEL_I = MAX_LIGHT_LEVEL;
-
-
-    public static final String VANILLA_BRAND = "vanilla";
-    public static final String MINOSOFT_BRAND = "minosoft";
 }

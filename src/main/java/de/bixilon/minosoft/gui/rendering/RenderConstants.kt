@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,11 +18,6 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 
 object RenderConstants {
-    val BLACK_COLOR = "#000000".asColor()
-
-    val GRASS_FAILOVER_COLOR = "#48B518".asColor()
-
-
     val EXPERIENCE_BAR_LEVEL_COLOR = "#80ff20".asColor()
 
     const val COLORMAP_SIZE = 255
@@ -42,13 +37,9 @@ object RenderConstants {
 
     val DEBUG_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minosoft:textures/debug.png")
 
-
-    const val CAMPFIRE_ITEMS = 4
-
     const val DOUBLE_PRESS_KEY_PRESS_MAX_DELAY = 300
     const val DOUBLE_PRESS_DELAY_BETWEEN_PRESSED = 500
 
-    const val MAXIMUM_PARTICLE_AMOUNT = 50000
 
     const val DEFAULT_LINE_WIDTH = 1.0f / 128.0f
 
