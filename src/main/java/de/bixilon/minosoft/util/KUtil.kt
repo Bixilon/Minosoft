@@ -77,11 +77,11 @@ object KUtil {
     }
 
     fun minecraft(path: String): ResourceLocation {
-        return ResourceLocation.of(ProtocolDefinition.DEFAULT_NAMESPACE, path)
+        return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, path) // TODO: Use MINECRAFT_NAMESPACE
     }
 
     fun minosoft(path: String): ResourceLocation {
-        return ResourceLocation.of(ProtocolDefinition.MINOSOFT_NAMESPACE, path)
+        return ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, path)
     }
 
     fun <T> T.synchronizedDeepCopy(): T {

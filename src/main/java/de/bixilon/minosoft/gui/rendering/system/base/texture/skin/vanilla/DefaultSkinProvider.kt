@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,7 +55,7 @@ class DefaultSkinProvider(
     }
 
     private fun loadLegacy(skin: DefaultLegacySkin) {
-        val path = ResourceLocation.of(skin.name.namespace, "entity/${skin.name.path}").texture()
+        val path = ResourceLocation(skin.name.namespace, "entity/${skin.name.path}").texture()
         val texture = load(path) ?: return
         this[skin.model][skin.name] = texture
 
@@ -72,7 +72,7 @@ class DefaultSkinProvider(
     }
 
     private fun ResourceLocation.skin(prefix: String): ResourceLocation {
-        return ResourceLocation.of(namespace, "entity/player/$prefix/$path")
+        return ResourceLocation(namespace, "entity/player/$prefix/$path")
     }
 
     operator fun get(name: ResourceLocation, slim: Boolean): DynamicTexture? {

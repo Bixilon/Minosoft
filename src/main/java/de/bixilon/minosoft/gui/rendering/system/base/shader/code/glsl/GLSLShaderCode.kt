@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -54,7 +54,7 @@ class GLSLShaderCode(
 
                         val include = ResourceLocation.of(reader.readString()!!)
 
-                        val includeCode = GLSLShaderCode(context, context.connection.assetsManager[ResourceLocation.of(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
+                        val includeCode = GLSLShaderCode(context, context.connection.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
 
                         code.append('\n')
                         code.append(includeCode.code)

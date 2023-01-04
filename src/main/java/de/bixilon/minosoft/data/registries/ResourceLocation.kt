@@ -13,8 +13,9 @@
 package de.bixilon.minosoft.data.registries
 
 import de.bixilon.minosoft.data.language.translate.Translatable
+import de.bixilon.minosoft.data.registries.ResourceLocation.Companion.ALLOWED_NAMESPACE_PATTERN
+import de.bixilon.minosoft.data.registries.ResourceLocation.Companion.ALLOWED_PATH_PATTERN
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.length
 import java.util.*
 
 /**
@@ -24,22 +25,23 @@ import java.util.*
  * @param namespace The namespace of the resource location
  * @param path The path of the resource location
  *
- * @throws IllegalArgumentException If the namespace or path does not match the allowed pattern. See [ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN] and [ProtocolDefinition.ALLOWED_PATH_PATTERN]
+ * @throws IllegalArgumentException If the namespace or path does not match the allowed pattern. See [ALLOWED_NAMESPACE_PATTERN] and [ALLOWED_PATH_PATTERN]
  *
  * @see <a href="https://minecraft.fandom.com/wiki/Resource_location">Resource location</a>
  */
-open class ResourceLocation private constructor(
+open class ResourceLocation(
     val namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE,
-    val path: String
-) : Comparable<ResourceLocation>, Translatable { // compare is for moshi
+    val path: String,
+) : Translatable {
     private val hashCode = Objects.hash(namespace, path)
 
     override val translationKey: ResourceLocation
         get() = this
 
     init {
-        if (!ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches(namespace) && namespace != "")
-            throw IllegalArgumentException("Namespace '$namespace' is not allowed!")
+        if (namespace.isBlank() || !ALLOWED_NAMESPACE_PATTERN.matches(namespace)) {
+            throw IllegalArgumentException("Invalid namespace: $namespace")
+        }
         //if (!ProtocolDefinition.ALLOWED_PATH_PATTERN.matches(path) && path != "")
         //    throw IllegalArgumentException("Path '$path' is not allowed!")
     }
@@ -57,8 +59,8 @@ open class ResourceLocation private constructor(
      * @return If the namespace is "minecraft", the path is returned. Otherwise, the full string is returned.
      */
     fun toMinifiedString(): String {
-        return  if (namespace == ProtocolDefinition.DEFAULT_NAMESPACE) path
-                else toString()
+        return if (namespace == ProtocolDefinition.DEFAULT_NAMESPACE) path
+        else toString()
     }
 
     override fun toString(): String {
@@ -67,10 +69,6 @@ open class ResourceLocation private constructor(
 
     override fun hashCode(): Int {
         return hashCode
-    }
-
-    override fun compareTo(other: ResourceLocation): Int {
-        return hashCode() - other.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -87,19 +85,22 @@ open class ResourceLocation private constructor(
     }
 
     companion object {
-        fun of(resourceLocation: String): ResourceLocation {
-            var split = resourceLocation.split(':', limit = 2)
-            if (split.length == 1)
-                split = arrayOf(ProtocolDefinition.DEFAULT_NAMESPACE, split[0]).toList()
+        val ALLOWED_NAMESPACE_PATTERN = Regex("[a-z0-9_.\\-]+")
+        val ALLOWED_PATH_PATTERN = Regex("(?!.*//)[a-z0-9_./\\-]+")
+
+        fun of(string: String): ResourceLocation {
+            val split = string.split(':', limit = 2)
+            if (split.size == 1) {
+                return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, string)
+            }
             return ResourceLocation(split[0], split[1])
         }
 
-        fun of(namespace: String, path: String): ResourceLocation {
-            return ResourceLocation(namespace, path)
-        }
-
+        @Deprecated("Use case??")
         fun ofPath(path: String): ResourceLocation {
-            if (path.contains(':') || !path.contains('/')) return of(path)
+            if (path.contains(':') || !path.contains('/')) {
+                return of(path)
+            }
             val split = path.split('/', limit = 2)
             return ResourceLocation(split[0], split[1])
         }

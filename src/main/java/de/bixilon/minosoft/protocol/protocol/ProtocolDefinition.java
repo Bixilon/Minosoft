@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.kotlinglm.vec3.Vec3i;
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors;
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor;
-import kotlin.text.Regex;
 
 import java.util.regex.Pattern;
 
@@ -41,8 +40,6 @@ public final class ProtocolDefinition {
 
     public static final String DEFAULT_NAMESPACE = "minecraft";
     public static final String MINOSOFT_NAMESPACE = "minosoft";
-    public static final Regex ALLOWED_NAMESPACE_PATTERN = new Regex("[a-z0-9_.\\-]+");
-    public static final Regex ALLOWED_PATH_PATTERN = new Regex("(?!.*//)[a-z0-9_./\\-]+");
     public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '\u00A7';
 
     public static final int DEFAULT_BUFFER_SIZE = 4096;

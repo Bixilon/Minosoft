@@ -159,15 +159,15 @@ class ModelLoader(
     companion object {
 
         fun ResourceLocation.model(): ResourceLocation {
-            return ResourceLocation.of(this.namespace, "models/" + this.path + ".json")
+            return ResourceLocation(this.namespace, "models/" + this.path + ".json")
         }
 
         fun ResourceLocation.blockState(): ResourceLocation {
-            return ResourceLocation.of(this.namespace, "blockstates/" + this.path + ".json")
+            return ResourceLocation(this.namespace, "blockstates/" + this.path + ".json")
         }
 
         fun ResourceLocation.bbModel(): ResourceLocation {
-            return ResourceLocation.of(this.namespace, "models/" + this.path + ".bbmodel")
+            return ResourceLocation(this.namespace, "models/" + this.path + ".bbmodel")
         }
     }
 }
