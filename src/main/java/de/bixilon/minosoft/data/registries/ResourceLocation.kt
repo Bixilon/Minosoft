@@ -59,8 +59,10 @@ open class ResourceLocation(
      * @return If the namespace is "minecraft", the path is returned. Otherwise, the full string is returned.
      */
     fun toMinifiedString(): String {
-        return if (namespace == ProtocolDefinition.DEFAULT_NAMESPACE) path
-        else toString()
+        if (namespace == ProtocolDefinition.DEFAULT_NAMESPACE) {
+            return path
+        }
+        return toString()
     }
 
     override fun toString(): String {
@@ -72,15 +74,9 @@ open class ResourceLocation(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other === this) {
-            return true
-        }
-        if (hashCode() != other.hashCode()) {
-            return false
-        }
-        if (other !is ResourceLocation) {
-            return false
-        }
+        if (other === this) return true
+        if (other !is ResourceLocation) return false
+        if (hashCode() != other.hashCode()) return false
         return path == other.path && namespace == other.namespace
     }
 
@@ -105,5 +101,4 @@ open class ResourceLocation(
             return ResourceLocation(split[0], split[1])
         }
     }
-
 }
