@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.minecraft
 
 class RemotePlayerEntity(
     connection: PlayConnection,
@@ -38,7 +38,7 @@ class RemotePlayerEntity(
 ) : PlayerEntity(connection, entityType, data, position, rotation, name, properties, tabListItem) {
 
     companion object : EntityFactory<PlayerEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("minecraft:player")
+        override val identifier: ResourceLocation = minecraft("player")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): RemotePlayerEntity? {
             throw IllegalAccessError("Can not build player entity!")
