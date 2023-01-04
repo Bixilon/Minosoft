@@ -35,7 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
@@ -102,13 +102,11 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         ) { guiRenderer.gui.open(ChatElement) }
 
         context.inputHandler.registerKeyCallback(
-            KUtil.minosoft("open_command"),
-            KeyBinding(
-                KeyActions.PRESS to setOf(KeyCodes.KEY_SLASH),
-            )
+            minosoft("open_command_chat"),
+            KeyBinding(KeyActions.PRESS to setOf(KeyCodes.KEY_SLASH))
         ) {
             guiRenderer.gui.open(ChatElement)
-            this.onCharPress('/'.code)
+            this.input.value = "/"
         }
 
         internal.init()
