@@ -27,7 +27,7 @@ import java.util.*
  *
  * @see <a href="https://minecraft.fandom.com/wiki/Resource_location">Resource location</a>
  */
-open class ResourceLocation private constructor (
+open class ResourceLocation private constructor(
     val namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE,
     val path: String
 ) : Comparable<ResourceLocation>, Translatable { // compare is for moshi
@@ -36,11 +36,13 @@ open class ResourceLocation private constructor (
     override val translationKey: ResourceLocation
         get() = this
 
+    constructor(resourceLocation: String) : this(resourceLocation.namespace, resourceLocation.path)
+
     init {
-        if (!ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches(namespace))
+        if (!ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches(namespace) && namespace != "")
             throw IllegalArgumentException("Namespace '$namespace' is not allowed!")
-        if (!ProtocolDefinition.ALLOWED_PATH_PATTERN.matches(path))
-            throw IllegalArgumentException("Path '$path' is not allowed!")
+        //if (!ProtocolDefinition.ALLOWED_PATH_PATTERN.matches(path) && path != "")
+        //    throw IllegalArgumentException("Path '$path' is not allowed!")
     }
 
     /**
