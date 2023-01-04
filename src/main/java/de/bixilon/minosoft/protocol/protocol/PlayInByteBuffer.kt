@@ -14,22 +14,13 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.array.ArrayUtil.cast
-import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
-import de.bixilon.minosoft.commands.nodes.NamedNode
-import de.bixilon.minosoft.commands.nodes.builder.ArgumentNodes
-import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
-import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactories
-import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
-import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
 import de.bixilon.minosoft.data.chat.signature.*
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTextures
-import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
@@ -49,10 +40,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28B
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.KUtil
@@ -167,32 +156,6 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
-    @Deprecated("Use readArray", ReplaceWith("readArray(length) { readItemStack() }"))
-    fun readItemStackArray(length: Int = readVarInt()): Array<ItemStack?> {
-        return readArray(length) { readItemStack() }
-    }
-
-    fun readBiomeArray(): Array<Biome> {
-        val length = when {
-            versionId >= V_20W28A -> readVarInt()
-            versionId >= V_19W36A -> 1024
-            else -> 0
-        }
-
-        check(length <= this.size) { "Trying to allocate too much memory" }
-
-        val biomes: Array<Biome?> = arrayOfNulls(length)
-        for (i in biomes.indices) {
-            val biomeId: Int = if (versionId >= V_20W28A) {
-                readVarInt()
-            } else {
-                readInt()
-            }
-            biomes[i] = connection.registries.biome[biomeId]
-        }
-        return biomes.cast()
-    }
-
     fun readEntityData(): Int2ObjectOpenHashMap<Any?> {
         val data: Int2ObjectOpenHashMap<Any?> = Int2ObjectOpenHashMap()
         if (versionId < V_15W31A) { // ToDo: This version was 48, but this one does not exist!
@@ -221,11 +184,6 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun readIngredient(): Ingredient {
         return Ingredient(readArray { readItemStack() })
-    }
-
-    @Deprecated("Use readArray", ReplaceWith("readArray(length) { readIngredient() }"))
-    fun readIngredientArray(length: Int = readVarInt()): Array<Ingredient> {
-        return readArray(length) { readIngredient() }
     }
 
     fun readEntityId(): Int {
@@ -288,41 +246,6 @@ class PlayInByteBuffer : InByteBuffer {
         return Instant.ofEpochSecond(time)
     }
 
-    fun readCommandNode(): CommandNodeBuilder {
-        val builder = CommandNodeBuilder()
-        val flags = readUnsignedByte()
-        val type = ArgumentNodes.VALUES[flags and 0x03]
-        builder.type = type
-        builder.children = readVarIntArray()
-        builder.redirectNode = if (flags.isBitMask(0x08)) readVarInt() else null
-        builder.executable = flags.isBitMask(0x04)
-        if (NamedNode::class.java.isAssignableFrom(type.klass.java)) {
-            builder.name = readString()
-        }
-        if (type == ArgumentNodes.ARGUMENT) {
-            val parserName = if (versionId >= ProtocolVersions.V_22W12A) connection.registries.argumentType[readVarInt()] else readResourceLocation()
-            val parser = ArgumentParserFactories[parserName]
-            if (parser == null) {
-                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find parser: $parserName" }
-                builder.parser = DummyParser
-            } else {
-                builder.parser = parser.read(this)
-            }
-
-            if (flags.isBitMask(0x10)) {
-                val suggestionName = readResourceLocation()
-                val suggestionType = SuggestionFactories[suggestionName]
-                if (suggestionType == null) {
-                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find suggestion type: $suggestionName" }
-                } else {
-                    builder.suggestionType = suggestionType.build(this.connection, this)
-                }
-            }
-        }
-
-        return builder
-    }
-
     fun readBitSet(): BitSet {
         return if (versionId < ProtocolVersions.V_20W49A) {
             KUtil.bitSetOf(readVarLong())
@@ -349,20 +272,11 @@ class PlayInByteBuffer : InByteBuffer {
         return registry[readVarInt()]
     }
 
-
-    fun readChatMessageSender(): ChatMessageSender {
-        return ChatMessageSender(readUUID(), readChatComponent(), if (versionId >= ProtocolVersions.V_22W18A) readOptional { readChatComponent() } else null)
-    }
-
     fun readSignatureData(): ByteArray {
         if (versionId < ProtocolVersions.V_22W42A) {
             return readByteArray()
         }
         return readByteArray(ChatSignatureProperties.SIGNATURE_SIZE)
-    }
-
-    private fun _readPlayerPublicKey(): PlayerPublicKey {
-        return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
     }
 
     fun readPlayerPublicKey(): PlayerPublicKey? {
@@ -373,9 +287,11 @@ class PlayInByteBuffer : InByteBuffer {
             val uuid = readUUID()
         }
         if (versionId < ProtocolVersions.V_22W43A) {
-            return readOptional { _readPlayerPublicKey() }
+            if (!readBoolean()) {
+                return null
+            }
         }
-        return _readPlayerPublicKey()
+        return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
     }
 
     fun readMessageHeader(): MessageHeader {

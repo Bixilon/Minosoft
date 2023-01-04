@@ -37,7 +37,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
         super.writeBareByteArray(data)
     }
 
-    fun writePosition(position: Vec3i?) {
+    fun writeBlockPosition(position: Vec3i?) {
         when {
             position == null -> writeLong(0L) // 0,0,0
             versionId < V_18W43A -> writeLong(position.x.toLong() and 0x3FFFFFF shl 38 or (position.z.toLong() and 0x3FFFFFF) or (position.y.toLong() and 0xFFF shl 26))

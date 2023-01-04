@@ -14,12 +14,14 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.chunk.ChunkData
@@ -30,6 +32,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W34C
@@ -153,6 +156,28 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 }
             }
         }
+    }
+
+
+    fun PlayInByteBuffer.readBiomeArray(): Array<Biome> {
+        val length = when {
+            versionId >= ProtocolVersions.V_20W28A -> readVarInt()
+            versionId >= ProtocolVersions.V_19W36A -> 1024
+            else -> 0
+        }
+
+        check(length <= this.size) { "Trying to allocate too much memory" }
+
+        val biomes: Array<Biome?> = arrayOfNulls(length)
+        for (i in biomes.indices) {
+            val biomeId: Int = if (versionId >= ProtocolVersions.V_20W28A) {
+                readVarInt()
+            } else {
+                readInt()
+            }
+            biomes[i] = connection.registries.biome[biomeId]
+        }
+        return biomes.cast()
     }
 
     private fun ChunkReadingData.readChunkData() {

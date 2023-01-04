@@ -27,6 +27,7 @@ import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.ChatMessageSender
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
@@ -38,6 +39,11 @@ import java.util.*
 @LoadPacket(threadSafe = false)
 class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val message = buffer.readSignedMessage()
+
+
+    fun PlayInByteBuffer.readSender(): ChatMessageSender {
+        return ChatMessageSender(readUUID(), readChatComponent(), if (versionId >= ProtocolVersions.V_22W18A) readOptional { readChatComponent() } else null)
+    }
 
 
     fun PlayInByteBuffer.readLastSeenMessage(): LastSeenMessage {
@@ -60,7 +66,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val unsigned = if (versionId >= ProtocolVersions.V_22W19A) readOptional { readString() } else null
         val type = readRegistryItem(connection.registries.messageType)
-        val sender = readChatMessageSender()
+        val sender = readSender()
 
         parameters[ChatParameter.SENDER] = sender.name
         sender.team?.let { parameters[ChatParameter.TARGET] = it }

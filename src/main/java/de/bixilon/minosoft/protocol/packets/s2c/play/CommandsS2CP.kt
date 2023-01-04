@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,16 +12,23 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.commands.nodes.CommandNode
+import de.bixilon.minosoft.commands.nodes.NamedNode
 import de.bixilon.minosoft.commands.nodes.RootNode
+import de.bixilon.minosoft.commands.nodes.builder.ArgumentNodes
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
+import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactories
+import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
+import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -55,6 +62,42 @@ class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
 
         return nodes.unsafeCast()
+    }
+
+
+    fun PlayInByteBuffer.readCommandNode(): CommandNodeBuilder {
+        val builder = CommandNodeBuilder()
+        val flags = readUnsignedByte()
+        val type = ArgumentNodes.VALUES[flags and 0x03]
+        builder.type = type
+        builder.children = readVarIntArray()
+        builder.redirectNode = if (flags.isBitMask(0x08)) readVarInt() else null
+        builder.executable = flags.isBitMask(0x04)
+        if (NamedNode::class.java.isAssignableFrom(type.klass.java)) {
+            builder.name = readString()
+        }
+        if (type == ArgumentNodes.ARGUMENT) {
+            val parserName = if (versionId >= ProtocolVersions.V_22W12A) connection.registries.argumentType[readVarInt()] else readResourceLocation()
+            val parser = ArgumentParserFactories[parserName]
+            if (parser == null) {
+                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find parser: $parserName" }
+                builder.parser = DummyParser
+            } else {
+                builder.parser = parser.read(this)
+            }
+
+            if (flags.isBitMask(0x10)) {
+                val suggestionName = readResourceLocation()
+                val suggestionType = SuggestionFactories[suggestionName]
+                if (suggestionType == null) {
+                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find suggestion type: $suggestionName" }
+                } else {
+                    builder.suggestionType = suggestionType.build(this.connection, this)
+                }
+            }
+        }
+
+        return builder
     }
 
     override fun log(reducedLog: Boolean) {
