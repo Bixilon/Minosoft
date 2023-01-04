@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,8 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.ElementStates
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
-import de.bixilon.minosoft.modding.event.events.RespawnEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 
 class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
@@ -72,10 +71,12 @@ class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
                     guiRenderer.gui.pop(element)
                 }
             }
-            guiRenderer.connection.events.listen<RespawnEvent> {
+            guiRenderer.connection::state.observe(this) {
+                if (it != PlayConnectionStates.SPAWNING) return@observe
+
                 val element = guiRenderer.gui[this]
                 if (element.state == ElementStates.CLOSED) {
-                    return@listen
+                    return@observe
                 }
                 element.layout.canPop = true
                 guiRenderer.gui.pop(element)

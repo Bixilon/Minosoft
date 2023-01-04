@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
-import de.bixilon.minosoft.modding.event.events.RespawnEvent
+import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.modding.event.events.blocks.BlockDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.blocks.BlocksSetEvent
@@ -122,7 +122,7 @@ object WorldRendererChangeListener {
         listenBlockSet(renderer)
         listenBlocksSet(renderer)
 
-        events.listen<RespawnEvent> { if (it.dimensionChange) renderer.unloadWorld() }
+        events.listen<DimensionChangeEvent> { renderer.unloadWorld() }
         events.listen<ChunkDataChangeEvent> { renderer.master.tryQueue(it.chunk) }
 
         events.listen<LightChangeEvent> {

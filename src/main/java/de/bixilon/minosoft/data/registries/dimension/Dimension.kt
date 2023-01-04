@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLoc
 
 data class Dimension(
     override val identifier: ResourceLocation,
-    val type: DimensionProperties,
+    val properties: DimensionProperties,
 ) : RegistryItem() {
 
     override fun toString(): String {
@@ -30,7 +30,7 @@ data class Dimension(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Dimension {
             return Dimension(
                 identifier = resourceLocation,
-                type = DimensionProperties.deserialize(data)
+                properties = DimensionProperties.deserialize(data)
             )
         }
     }

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.entities.data.types.GlobalPositionEntityDataType
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
-import de.bixilon.minosoft.modding.event.events.RespawnEvent
+import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -37,13 +37,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var difficulty: Difficulties = Difficulties.NORMAL
         private set
     val gamemode: Gamemodes
-    var levelType: String? = null
-        private set
     var hashedSeed = 0L
-        private set
-    var isDebug = false
-        private set
-    var isFlat = false
         private set
     var keepAttributes = false
         private set
@@ -57,20 +51,19 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         dimension = when {
             buffer.versionId < ProtocolVersions.V_20W21A -> {
-                buffer.connection.registries.dimension[if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
+                val id = if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
                     buffer.readByte().toInt()
                 } else {
                     buffer.readInt()
-                }].type
+                }
+                buffer.connection.registries.dimension[id].properties
             }
 
             buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A -> {
-                buffer.readLegacyRegistryItem(buffer.connection.registries.dimension)!!.type
+                buffer.readLegacyRegistryItem(buffer.connection.registries.dimension)!!.properties
             }
 
-            else -> {
-                DimensionProperties.deserialize(buffer.readNBT().asJsonObject()) // current dimension data
-            }
+            else -> DimensionProperties.deserialize(buffer.readNBT().asJsonObject()) // current dimension data
         }
         if (buffer.versionId < ProtocolVersions.V_19W11A) {
             difficulty = Difficulties[buffer.readUnsignedByte()]
@@ -86,11 +79,11 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readByte() // previous game mode
         }
         if (buffer.versionId >= ProtocolVersions.V_13W42B && buffer.versionId < ProtocolVersions.V_20W20A) {
-            levelType = buffer.readString()
+            buffer.readString() // level type
         }
         if (buffer.versionId >= ProtocolVersions.V_20W20A) {
-            isDebug = buffer.readBoolean()
-            isFlat = buffer.readBoolean()
+            buffer.readBoolean() // debug
+            buffer.readBoolean() // flat
         }
         if (buffer.versionId >= ProtocolVersions.V_20W18A) {
             if (buffer.versionId >= ProtocolVersions.V_1_19_3_RC3) {
@@ -115,10 +108,12 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.world.name = world
 
         connection.state = PlayConnectionStates.SPAWNING
-        connection.events.fire(RespawnEvent(connection, dimensionChange))
+        if (dimensionChange) {
+            connection.events.fire(DimensionChangeEvent(connection))
+        }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Respawn (dimension=$dimension, difficulty=$difficulty, gamemode=$gamemode, levelType=$levelType)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Respawn (dimension=$dimension, difficulty=$difficulty, gamemode=$gamemode)" }
     }
 }

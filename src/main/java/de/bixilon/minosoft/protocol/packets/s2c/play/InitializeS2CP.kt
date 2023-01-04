@@ -44,21 +44,17 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val gamemode: Gamemodes
     var world: ResourceLocation? = null
         private set
-    var dimensionProperties: DimensionProperties? = null
+    var dimension: DimensionProperties? = null
         private set
-    var dimensionType: ResourceLocation? = null
+    var dimensionName: ResourceLocation? = null
         private set
     var difficulty: Difficulties = Difficulties.NORMAL
         private set
     var viewDistance = 0
         private set
-    var maxPlayers = 0
+    var reducedDebugScreen = false
         private set
-    var levelType: String? = null
-        private set
-    var isReducedDebugScreen = false
-        private set
-    var isEnableRespawnScreen = true
+    var respawnScreen = true
         private set
     var hashedSeed: Long = 0L
         private set
@@ -83,32 +79,32 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
-            dimensionProperties = buffer.connection.registries.dimension[buffer.readByte().toInt()].type
+            dimension = buffer.connection.registries.dimension[buffer.readByte().toInt()].properties
             difficulty = Difficulties[buffer.readUnsignedByte()]
-            maxPlayers = buffer.readUnsignedByte()
+            buffer.readUnsignedByte() // max players
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
-                levelType = buffer.readString()
+                buffer.readString() // level type
             }
             if (buffer.versionId >= ProtocolVersions.V_14W29A) {
-                isReducedDebugScreen = buffer.readBoolean()
+                reducedDebugScreen = buffer.readBoolean()
             }
         } else {
             if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6) {
                 buffer.readByte() // previous game mode
             }
             if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-                buffer.readArray { buffer.readResourceLocation() } // list of dimensions
+                buffer.readArray { buffer.readResourceLocation() } // list of worlds
             }
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
-                dimensionProperties = buffer.connection.registries.dimension[buffer.readInt()].type
+                dimension = buffer.connection.registries.dimension[buffer.readInt()].properties
             } else {
                 registries = buffer.readNBT().asJsonObject()
                 if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A) {
-                    dimensionType = buffer.readResourceLocation() // dimension type
+                    dimensionName = buffer.readResourceLocation() // dimension type
                 } else {
-                    dimensionProperties = DimensionProperties.deserialize(buffer.readNBT().asJsonObject())
+                    dimension = DimensionProperties.deserialize(buffer.readNBT().asJsonObject())
                 }
-                this.world = buffer.readResourceLocation() // dimension id
+                this.world = buffer.readResourceLocation()
             }
 
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {
@@ -117,13 +113,13 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId < ProtocolVersions.V_19W11A) {
                 difficulty = Difficulties[buffer.readUnsignedByte()]
             }
-            maxPlayers = if (buffer.versionId < ProtocolVersions.V_1_16_2_RC1) {
-                buffer.readByte().toInt()
+            if (buffer.versionId < ProtocolVersions.V_1_16_2_RC1) {
+                buffer.readUnsignedByte() // max players
             } else {
-                buffer.readVarInt()
+                buffer.readVarInt() // max players
             }
             if (buffer.versionId < ProtocolVersions.V_20W20A) {
-                levelType = buffer.readString()
+                buffer.readString() // level type
             }
             if (buffer.versionId >= ProtocolVersions.V_19W13A) {
                 viewDistance = buffer.readVarInt()
@@ -133,13 +129,11 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
             if (buffer.versionId >= ProtocolVersions.V_20W20A) {
                 buffer.readBoolean() // isDebug
-                if (buffer.readBoolean()) {
-                    levelType = "flat"
-                }
+                buffer.readBoolean() // flat
             }
-            isReducedDebugScreen = buffer.readBoolean()
+            reducedDebugScreen = buffer.readBoolean()
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {
-                isEnableRespawnScreen = buffer.readBoolean()
+                respawnScreen = buffer.readBoolean()
             }
             if (buffer.versionId >= ProtocolVersions.V_1_19_PRE2) {
                 lastDeathPosition = buffer.readPlayOptional { GlobalPositionEntityDataType.read(this) }
@@ -160,7 +154,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.world.hardcore = isHardcore
 
         registries?.let { connection.registries.update(it) }
-        connection.world.dimension = dimensionProperties ?: connection.registries.dimension[dimensionType]?.type ?: throw NullPointerException("Can not find dimension: $dimensionType")
+        connection.world.dimension = dimension ?: connection.registries.dimension[dimensionName]?.properties ?: throw NullPointerException("Can not find dimension: $dimensionName")
         connection.world.name = world
 
 
@@ -184,7 +178,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Initialize (entityId=$entityId, gamemode=$gamemode, dimensionType=$dimensionProperties, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Initialize (entityId=$entityId, gamemode=$gamemode, dimension=$dimension, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
     }
 
     companion object : PacketErrorHandler {
