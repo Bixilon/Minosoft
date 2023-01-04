@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -52,17 +52,17 @@ abstract class Connection : AbstractEventMaster {
         return events.fire(event)
     }
 
-    @Deprecated("events")
+    @Deprecated("events", ReplaceWith("events.unregister(invoker)"))
     override fun unregister(invoker: EventListener?) {
         events.unregister(invoker)
     }
 
-    @Deprecated("events")
+    @Deprecated("events", ReplaceWith("events.register(invoker)"))
     override fun <T : EventListener> register(invoker: T): T {
         return events.register(invoker)
     }
 
-    @Deprecated("events")
+    @Deprecated("events", ReplaceWith("events.register(*invokers)"))
     override fun register(vararg invokers: EventListener) {
         events.register(*invokers)
     }

@@ -54,15 +54,27 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun PlayInByteBuffer.readLegacySignedMessage(): SignedChatMessage {
-        val message = readChatComponent()
-        val unsignedContent = if (versionId >= ProtocolVersions.V_22W19A) readOptional { readChatComponent() } else null
-        var type = readRegistryItem(connection.registries.messageType)
-        val sender = readChatMessageSender()
-        val sendingTime = readInstant()
-        val salt = readLong()
-        val signatureData = readSignatureData()
+        val parameters: MutableMap<ChatParameter, ChatComponent> = mutableMapOf()
+        val message = readString()
+        parameters[ChatParameter.CONTENT] = TextComponent(message)
 
-        TODO("return message, refactor")
+        val unsigned = if (versionId >= ProtocolVersions.V_22W19A) readOptional { readString() } else null
+        val type = readRegistryItem(connection.registries.messageType)
+        val sender = readChatMessageSender()
+
+        parameters[ChatParameter.SENDER] = sender.name
+        sender.team?.let { parameters[ChatParameter.TARGET] = it }
+
+        val sent = readInstant()
+        val salt = readLong()
+        val signature = readSignatureData()
+
+        val received = Instant.now()
+
+        val error = verifyMessage(sent, received, versionId, salt, message, sender.uuid)
+
+
+        return SignedChatMessage(connection, message, type, connection.getMessageSender(sender.uuid), parameters, null, error, sent, received)
     }
 
     fun PlayInByteBuffer.readSignedMessage(): SignedChatMessage {
@@ -103,13 +115,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val sender = connection.getMessageSender(senderUUID)
         val received = Instant.now()
 
-        var error: Exception? = null
-        if (received.toEpochMilli() - sent.toEpochMilli() > ChatSignatureProperties.MESSAGE_TTL) {
-            // expired
-            error = MessageExpiredError(sent, received)
-        } else {
-            // ToDo: check signature
-        }
+        val error = verifyMessage(sent, received, versionId, salt, message, senderUUID)
 
         return SignedChatMessage(
             connection = connection,
@@ -122,6 +128,28 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             sent = sent,
             received = received
         )
+    }
+
+    private fun checkExpired(sent: Instant, received: Instant): Exception? {
+        if (received.toEpochMilli() - sent.toEpochMilli() > ChatSignatureProperties.MESSAGE_TTL) {
+            return MessageExpiredError(sent, received)
+        }
+        return null
+    }
+
+    private fun verifyMessage(
+        sent: Instant,
+        received: Instant,
+        versionId: Int,
+        seed: Long,
+        content: String,
+        sender: UUID,
+    ): Exception? {
+        checkExpired(sent, received)?.let { return it }
+
+        // TODO: Verify signature
+
+        return null
     }
 
     override fun handle(connection: PlayConnection) {
