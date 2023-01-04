@@ -24,11 +24,12 @@ import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.versions.Version
+import java.util.concurrent.atomic.AtomicInteger
 
 abstract class Connection : AbstractEventMaster {
     val network: ClientNetwork = NettyClient(this)
     val events = EventMaster(GlobalEventMaster)
-    val connectionId = lastConnectionId++
+    val connectionId = id.getAndIncrement()
     var wasConnected = false
     open val version: Version? = null
 
@@ -82,6 +83,6 @@ abstract class Connection : AbstractEventMaster {
     }
 
     companion object {
-        var lastConnectionId: Int = 0
+        private val id = AtomicInteger()
     }
 }
