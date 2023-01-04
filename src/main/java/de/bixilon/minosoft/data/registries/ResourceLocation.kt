@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.registries
 
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.length
 import java.util.*
 
 /**
@@ -35,8 +36,6 @@ open class ResourceLocation private constructor(
 
     override val translationKey: ResourceLocation
         get() = this
-
-    constructor(resourceLocation: String) : this(resourceLocation.namespace, resourceLocation.path)
 
     init {
         if (!ProtocolDefinition.ALLOWED_NAMESPACE_PATTERN.matches(namespace) && namespace != "")
@@ -88,26 +87,11 @@ open class ResourceLocation private constructor(
     }
 
     companion object {
-        val String.namespace: String
-            get() {
-                val split = this.split(':', limit = 2)
-                if (split.size == 1) {
-                    return ProtocolDefinition.DEFAULT_NAMESPACE
-                }
-                return split[0]
-            }
-
-        val String.path: String
-            get() {
-                val split = this.split(':', limit = 2)
-                if (split.size == 1) {
-                    return split[0]
-                }
-                return split[1]
-            }
-
         fun of(resourceLocation: String): ResourceLocation {
-            return ResourceLocation(resourceLocation.namespace, resourceLocation.path)
+            var split = resourceLocation.split(':', limit = 2)
+            if (split.length == 1)
+                split = arrayOf(ProtocolDefinition.DEFAULT_NAMESPACE, split[0]).toList()
+            return ResourceLocation(split[0], split[1])
         }
 
         fun of(namespace: String, path: String): ResourceLocation {
