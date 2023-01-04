@@ -28,19 +28,31 @@ object ResourceLocationSerializer : SimpleModule() {
     init {
         addDeserializer(ResourceLocation::class.java, Deserializer)
         addSerializer(ResourceLocation::class.java, Serializer)
+        addKeyDeserializer(ResourceLocation::class.java, KeyDeserializer)
+        addKeySerializer(ResourceLocation::class.java, KeySerializer)
     }
 
     object Deserializer : StdDeserializer<ResourceLocation>(ResourceLocation::class.java) {
-
         override fun deserialize(parser: JsonParser, context: DeserializationContext?): ResourceLocation {
             return parser.valueAsString.toResourceLocation()
         }
     }
 
     object Serializer : StdSerializer<ResourceLocation>(ResourceLocation::class.java) {
-
         override fun serialize(value: ResourceLocation?, generator: JsonGenerator, provider: SerializerProvider?) {
             generator.writeString(value?.full)
+        }
+    }
+
+    object KeyDeserializer : com.fasterxml.jackson.databind.KeyDeserializer() {
+        override fun deserializeKey(key: String, ctxt: DeserializationContext?): Any {
+            return key.toResourceLocation()
+        }
+    }
+
+    object KeySerializer : com.fasterxml.jackson.databind.JsonSerializer<ResourceLocation>() {
+        override fun serialize(value: ResourceLocation?, gen: JsonGenerator, serializers: SerializerProvider?) {
+            gen.writeFieldName(value?.toString())
         }
     }
 }
