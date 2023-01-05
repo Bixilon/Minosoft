@@ -468,9 +468,9 @@
   ],
   "textures": [
     {
-      "path": "",
-      "name": "",
-      "namespace": "",
+      "path": "player",
+      "name": "player",
+      "namespace": "minecraft",
       "id": 0,
       "uuid": "1f404026-8fa3-4dc9-b101-772d2994f4e6"
     }
