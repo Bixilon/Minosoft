@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
-    kotlin("jvm") version "1.7.21"
+    kotlin("jvm") version "1.8.0"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.0.0"
@@ -143,7 +143,7 @@ testing {
                 implementation(project())
                 // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:1.7.21")
+                implementation("org.jetbrains.kotlin:kotlin-test:1.8.0")
             }
 
             targets {
@@ -187,7 +187,7 @@ testing {
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
-                implementation("it.unimi.dsi:fastutil-core:8.5.9")
+                implementation("it.unimi.dsi:fastutil-core:8.5.11")
 
                 jacksonCore("core")
                 jacksonCore("databind")
@@ -316,7 +316,7 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 }
 
 dependencies {
-    implementation("org.slf4j", "slf4j-api", "2.0.5")
+    implementation("org.slf4j", "slf4j-api", "2.0.6")
     implementation("com.google.guava", "guava", "31.1-jre")
     implementation("dnsjava", "dnsjava", "3.5.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
