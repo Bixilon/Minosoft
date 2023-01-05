@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.recipes
 
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.util.KUtil.toResourceLocation

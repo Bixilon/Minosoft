@@ -19,12 +19,14 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil
 
 class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, data, position, rotation) {
 
@@ -85,13 +87,13 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
     }
 
     companion object : EntityFactory<Horse> {
-        override val identifier: ResourceLocation = ResourceLocation("horse")
+        override val identifier: ResourceLocation = minecraft("horse")
         private val VARIANT_DATA = EntityDataField("HORSE_VARIANT")
         private val LEGACY_ARMOR_DATA = EntityDataField("LEGACY_HORSE_ARMOR")
 
-        private val LEGACY_IRON_ARMOR = ResourceLocation("iron_horse_armor")
-        private val LEGACY_GOLD_ARMOR = ResourceLocation("golden_horse_armor")
-        private val LEGACY_DIAMOND_ARMOR = ResourceLocation("diamond_horse_armor")
+        private val LEGACY_IRON_ARMOR = minecraft("iron_horse_armor")
+        private val LEGACY_GOLD_ARMOR = minecraft("golden_horse_armor")
+        private val LEGACY_DIAMOND_ARMOR = minecraft("diamond_horse_armor")
 
         private val LEGACY_SPECIAL_TYPE_DATA = EntityDataField("LEGACY_HORSE_SPECIAL_TYPE")
 

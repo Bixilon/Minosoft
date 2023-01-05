@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class BannerBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<BannerBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:banner")
+        override val identifier: ResourceLocation = minecraft("banner")
 
         override fun build(connection: PlayConnection): BannerBlockEntity {
             return BannerBlockEntity(connection)

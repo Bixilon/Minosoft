@@ -20,12 +20,14 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.AbstractGolem
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Shulker(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, data, position, rotation) {
 
@@ -47,7 +49,7 @@ class Shulker(connection: PlayConnection, entityType: EntityType, data: EntityDa
 
 
     companion object : EntityFactory<Shulker> {
-        override val identifier: ResourceLocation = ResourceLocation("shulker")
+        override val identifier: ResourceLocation = minecraft("shulker")
         private val ATTACH_FACE_DATA = EntityDataField("SHULKER_ATTACH_FACE")
         private val ATTACH_POSITION_DATA = EntityDataField("SHULKER_ATTACHMENT_POSITION")
         private val PEEK_DATA = EntityDataField("SHULKER_PEEK")

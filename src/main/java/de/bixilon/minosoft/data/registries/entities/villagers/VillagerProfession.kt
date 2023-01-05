@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.registries.entities.villagers
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 
 data class VillagerProfession(
     override val identifier: ResourceLocation,
-    // ToDo
+    // TODO
 ) : RegistryItem() {
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     companion object : ResourceLocationCodec<VillagerProfession> {

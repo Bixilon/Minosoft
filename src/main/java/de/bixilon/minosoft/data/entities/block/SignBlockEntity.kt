@@ -15,14 +15,16 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection) {
     var lines: Array<ChatComponent> = Array(LINES) { ChatComponent.of("") }
@@ -45,7 +47,7 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
     }
 
     companion object : BlockEntityFactory<SignBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:sign")
+        override val identifier: ResourceLocation = minecraft("sign")
         const val LINES = 4
 
         override fun build(connection: PlayConnection): SignBlockEntity {

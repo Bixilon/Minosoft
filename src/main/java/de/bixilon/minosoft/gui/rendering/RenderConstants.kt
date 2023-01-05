@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.util.KUtil
 
 object RenderConstants {
     val EXPERIENCE_BAR_LEVEL_COLOR = "#80ff20".asColor()
@@ -35,7 +36,7 @@ object RenderConstants {
     const val MAXIMUM_QUEUE_TIME_PER_FRAME = 20L
 
 
-    val DEBUG_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minosoft:textures/debug.png")
+    val DEBUG_TEXTURE_RESOURCE_LOCATION = minosoft("textures/debug.png")
 
     const val DOUBLE_PRESS_KEY_PRESS_MAX_DELAY = 300
     const val DOUBLE_PRESS_DELAY_BETWEEN_PRESSED = 500

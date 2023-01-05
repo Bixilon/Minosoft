@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class BeehiveBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<BeehiveBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:beehive")
+        override val identifier: ResourceLocation = minecraft("beehive")
 
         override fun build(connection: PlayConnection): BeehiveBlockEntity {
             return BeehiveBlockEntity(connection)

@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.registries.effects.properties.categories.Benefic
 import de.bixilon.minosoft.data.registries.effects.properties.categories.HarmfulEffect
 import de.bixilon.minosoft.data.registries.effects.properties.categories.NeutralEffect
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.formatting.color.Colored
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
-import de.bixilon.minosoft.util.KUtil.minecraft
 
 interface OtherEffect {
 

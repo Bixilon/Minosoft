@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
 import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 

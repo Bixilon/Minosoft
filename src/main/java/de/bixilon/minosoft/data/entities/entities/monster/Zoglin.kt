@@ -17,10 +17,12 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Zoglin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
@@ -30,7 +32,7 @@ class Zoglin(connection: PlayConnection, entityType: EntityType, data: EntityDat
 
 
     companion object : EntityFactory<Zoglin> {
-        override val identifier: ResourceLocation = ResourceLocation("zoglin")
+        override val identifier: ResourceLocation = minecraft("zoglin")
         private val ZOGLIN_DATA = EntityDataField("ZOGLIN_IS_BABY")
 
 

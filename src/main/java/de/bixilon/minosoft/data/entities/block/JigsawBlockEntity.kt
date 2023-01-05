@@ -14,32 +14,34 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var joint: String = "rollable"
         private set
-    var name: ResourceLocation = ResourceLocation("minecraft:empty")
+    var name: ResourceLocation = minecraft("empty")
         private set
-    var pool: ResourceLocation = ResourceLocation("minecraft:empty")
+    var pool: ResourceLocation = minecraft("empty")
         private set
-    var finalState: ResourceLocation = ResourceLocation("minecraft:empty")
+    var finalState: ResourceLocation = minecraft("empty")
         private set
-    var target: ResourceLocation = ResourceLocation("minecraft:empty")
+    var target: ResourceLocation = minecraft("empty")
         private set
 
 
     override fun updateNBT(nbt: Map<String, Any>) {
         nbt["joint"]?.nullCast<String>()?.let { joint = it }
-        nbt["name"]?.nullCast<String>()?.let { name = ResourceLocation.getPathResourceLocation(it) }
-        nbt["pool"]?.nullCast<String>()?.let { pool = ResourceLocation.getPathResourceLocation(it) }
-        nbt["finalState"]?.nullCast<String>()?.let { finalState = ResourceLocation.getPathResourceLocation(it) }
-        nbt["target"]?.nullCast<String>()?.let { target = ResourceLocation.getPathResourceLocation(it) }
+        nbt["name"]?.nullCast<String>()?.let { name = ResourceLocation.ofPath(it) }
+        nbt["pool"]?.nullCast<String>()?.let { pool = ResourceLocation.ofPath(it) }
+        nbt["finalState"]?.nullCast<String>()?.let { finalState = ResourceLocation.ofPath(it) }
+        nbt["target"]?.nullCast<String>()?.let { target = ResourceLocation.ofPath(it) }
     }
 
     companion object : BlockEntityFactory<JigsawBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:jigsaw")
+        override val identifier: ResourceLocation = minecraft("jigsaw")
 
         override fun build(connection: PlayConnection): JigsawBlockEntity {
             return JigsawBlockEntity(connection)

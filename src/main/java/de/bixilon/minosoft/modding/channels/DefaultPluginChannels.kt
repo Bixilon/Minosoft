@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,11 +12,11 @@
  */
 package de.bixilon.minosoft.modding.channels
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 
 object DefaultPluginChannels {
-    val REGISTER = ResourceLocation("minecraft:register")
-    val UNREGISTER = ResourceLocation("minecraft:unregister")
-    val BRAND = ResourceLocation("minecraft:brand")
-    val STOP_SOUND = ResourceLocation("minecraft:stop_sound")
+    val REGISTER = minecraft("register")
+    val UNREGISTER = minecraft("unregister")
+    val BRAND = minecraft("brand")
+    val STOP_SOUND = minecraft("stop_sound")
 }

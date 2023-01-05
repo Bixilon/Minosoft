@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
@@ -24,14 +25,14 @@ data class PluginChannel(
 ) : RegistryItem() {
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     companion object : ResourceLocationCodec<PluginChannel> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): PluginChannel {
             return PluginChannel(
                 identifier = resourceLocation,
-                name = ResourceLocation(data["name"].unsafeCast())
+                name = ResourceLocation.of(data["name"].unsafeCast())
             )
         }
     }

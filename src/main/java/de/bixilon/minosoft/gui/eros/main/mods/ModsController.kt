@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.eros.main.mods
 
 import de.bixilon.kutil.collections.CollectionUtil.toNull
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
-import de.bixilon.minosoft.util.KUtil.minosoft
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
 import javafx.scene.layout.Pane

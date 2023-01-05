@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.sound
 
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryFakeEnumerable
 import de.bixilon.minosoft.data.registries.registries.registry.codec.IdCodec

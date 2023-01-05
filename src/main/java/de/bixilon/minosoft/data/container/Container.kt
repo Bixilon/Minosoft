@@ -28,13 +28,13 @@ import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.stack.property.HolderProperty
 import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 open class Container(
@@ -241,7 +241,7 @@ open class Container(
     open fun readProperty(property: Int, value: Int) = Unit
 
     companion object : ContainerFactory<Container> {
-        override val identifier: ResourceLocation = "minecraft:container".toResourceLocation()
+        override val identifier: ResourceLocation = minecraft("container")
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): Container {
             return Container(connection, type, title)

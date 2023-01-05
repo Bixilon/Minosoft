@@ -16,15 +16,15 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Instruments
 import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
@@ -65,9 +65,9 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
     }
 
     companion object : BlockEntityFactory<NoteBlockBlockEntity>, AliasedIdentified {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:note_block")
+        override val identifier: ResourceLocation = minecraft("note_block")
 
-        override val identifiers: Set<ResourceLocation> = setOf("minecraft:noteblock".toResourceLocation())
+        override val identifiers: Set<ResourceLocation> = setOf(minecraft("noteblock"))
 
         override fun build(connection: PlayConnection): NoteBlockBlockEntity {
             return NoteBlockBlockEntity(connection)

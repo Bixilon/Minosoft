@@ -17,11 +17,13 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
@@ -51,7 +53,7 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: 
 
 
     companion object : EntityFactory<AreaEffectCloud> {
-        override val identifier: ResourceLocation = ResourceLocation("area_effect_cloud")
+        override val identifier: ResourceLocation = minecraft("area_effect_cloud")
         private val IGNORE_RADIUS_DATA = EntityDataField("AREA_EFFECT_CLOUD_IGNORE_RADIUS")
         private val RADIUS_DATA = EntityDataField("AREA_EFFECT_CLOUD_RADIUS")
         private val COLOR_DATA = EntityDataField("AREA_EFFECT_CLOUD_COLOR")

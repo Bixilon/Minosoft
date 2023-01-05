@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
 open class ResourceLocationMap<T : Identified>(vararg entries: T) : Iterable<T> {
     private val entries: MutableMap<ResourceLocation, T> = mutableMapOf()

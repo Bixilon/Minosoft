@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ConduitBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<ConduitBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:conduit")
+        override val identifier: ResourceLocation = minecraft("conduit")
 
         override fun build(connection: PlayConnection): ConduitBlockEntity {
             return ConduitBlockEntity(connection)

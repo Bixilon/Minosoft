@@ -15,16 +15,18 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class SpectralArrow(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractArrow(connection, entityType, data, position, rotation) {
 
 
     companion object : EntityFactory<SpectralArrow> {
-        override val identifier: ResourceLocation = ResourceLocation("spectral_arrow")
+        override val identifier: ResourceLocation = minecraft("spectral_arrow")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): SpectralArrow {
             return SpectralArrow(connection, entityType, data, position, rotation)

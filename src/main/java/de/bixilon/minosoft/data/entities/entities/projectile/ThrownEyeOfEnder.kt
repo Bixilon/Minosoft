@@ -20,10 +20,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class ThrownEyeOfEnder(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
@@ -37,8 +39,8 @@ class ThrownEyeOfEnder(connection: PlayConnection, entityType: EntityType, data:
     override fun onAttack(attacker: Entity): Boolean = false
 
     companion object : EntityFactory<ThrownEyeOfEnder> {
-        private val DEFAULT_ITEM = ResourceLocation("ender_eye")
-        override val identifier: ResourceLocation = ResourceLocation("eye_of_ender")
+        private val DEFAULT_ITEM = minecraft("ender_eye")
+        override val identifier: ResourceLocation = minecraft("eye_of_ender")
         private val ITEM_DATA = EntityDataField("THROWN_EYE_OF_ENDER_ITEM")
 
 

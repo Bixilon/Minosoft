@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.factory
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
 open class DefaultFactory<T : Identified>(private vararg val factories: T) : Iterable<T> {
     private val map: MutableMap<ResourceLocation, T> = mutableMapOf()

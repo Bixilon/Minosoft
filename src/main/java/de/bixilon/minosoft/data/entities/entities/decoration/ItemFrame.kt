@@ -19,10 +19,12 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, data, position, rotation) {
 
@@ -42,7 +44,7 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: E
     }
 
     companion object : EntityFactory<ItemFrame> {
-        override val identifier: ResourceLocation = ResourceLocation("item_frame")
+        override val identifier: ResourceLocation = minecraft("item_frame")
         private val ITEM_DATA = EntityDataField("ITEM_FRAME_ITEM")
         private val ROTATION_DATA = EntityDataField("ITEM_FRAME_ROTATION")
 

@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.registries.dimension.effects
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.minecraft
 
 object OverworldEffects : DimensionEffects {
     override val identifier = minecraft("overworld")

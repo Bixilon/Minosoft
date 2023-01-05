@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,12 +24,12 @@ import de.bixilon.minosoft.data.language.lang.LanguageList
 import de.bixilon.minosoft.data.language.manager.LanguageManager
 import de.bixilon.minosoft.data.language.translate.Translated
 import de.bixilon.minosoft.data.language.translate.Translator
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.io.FileNotFoundException
 
@@ -39,7 +39,7 @@ object LanguageUtil {
 
     fun String?.i18n(): Translated {
         val resourceLocation = this.toResourceLocation()
-        if (resourceLocation.namespace == ProtocolDefinition.DEFAULT_NAMESPACE) {
+        if (resourceLocation.namespace == Namespaces.MINECRAFT) {
             return Translated(minosoft(resourceLocation.path))
         }
         return Translated(resourceLocation)
@@ -49,7 +49,7 @@ object LanguageUtil {
         val data: LanguageData = mutableMapOf()
 
         for ((key, value) in json) {
-            val path = ResourceLocation(key).path
+            val path = ResourceLocation.of(key).path
             data[path] = value.toString().correctValue()
         }
 
@@ -64,7 +64,7 @@ object LanguageUtil {
                 continue
             }
             val (key, value) = line.split('=', limit = 2)
-            val path = ResourceLocation(key).path
+            val path = ResourceLocation.of(key).path
             data[path] = value.correctValue()
         }
         return data
@@ -98,7 +98,7 @@ object LanguageUtil {
     }
 
 
-    fun load(language: String, version: Version?, assetsManager: AssetsManager, path: ResourceLocation = ResourceLocation("lang/")): Translator {
+    fun load(language: String, version: Version?, assetsManager: AssetsManager, path: ResourceLocation = ResourceLocation.of("lang/")): Translator {
         val name = language.lowercase()
         val json = version != null && version.jsonLanguage
 
@@ -119,6 +119,6 @@ object LanguageUtil {
 
 
     fun ResourceLocation.translation(name: String): ResourceLocation {
-        return ResourceLocation(this.namespace, "item.$namespace.$path")
+        return ResourceLocation(this.namespace, "item.$namespace.$path") // TODO: use name?
     }
 }

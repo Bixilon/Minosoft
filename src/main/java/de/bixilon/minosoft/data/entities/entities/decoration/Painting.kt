@@ -21,12 +21,14 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.Motif
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.entityPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3i
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Painting(
     connection: PlayConnection,
@@ -42,7 +44,7 @@ class Painting(
         get() = fixedMotif ?: data.get<Motif?>(MOTIF_DATA, null)
 
     companion object : EntityFactory<Painting> {
-        override val identifier: ResourceLocation = ResourceLocation("painting")
+        override val identifier: ResourceLocation = minecraft("painting")
         private val MOTIF_DATA = EntityDataField("MOTIF", "MOTIVE")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Painting {

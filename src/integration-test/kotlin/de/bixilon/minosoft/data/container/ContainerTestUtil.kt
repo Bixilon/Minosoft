@@ -15,15 +15,15 @@ package de.bixilon.minosoft.data.container
 
 import de.bixilon.minosoft.data.container.types.generic.Generic9x3Container
 import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceContainer
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.IT.reference
-import de.bixilon.minosoft.util.KUtil.minosoft
 
 
 object ContainerTestUtil {

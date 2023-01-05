@@ -19,9 +19,10 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -37,7 +38,7 @@ class RemotePlayerEntity(
 ) : PlayerEntity(connection, entityType, data, position, rotation, name, properties, tabListItem) {
 
     companion object : EntityFactory<PlayerEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:player")
+        override val identifier: ResourceLocation = minecraft("player")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): RemotePlayerEntity? {
             throw IllegalAccessError("Can not build player entity!")

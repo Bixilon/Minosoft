@@ -17,10 +17,12 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Strider(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
@@ -38,7 +40,7 @@ class Strider(connection: PlayConnection, entityType: EntityType, data: EntityDa
 
 
     companion object : EntityFactory<Strider> {
-        override val identifier: ResourceLocation = ResourceLocation("strider")
+        override val identifier: ResourceLocation = minecraft("strider")
         private val TIME_TO_BOOST_DATA = EntityDataField("STRIDER_TIME_TO_BOOST")
         private val IS_SUFFOCATING_DATA = EntityDataField("STRIDER_IS_SUFFOCATING")
         private val HAS_SADDLE_DATA = EntityDataField("STRIDER_HAS_SADDLE")

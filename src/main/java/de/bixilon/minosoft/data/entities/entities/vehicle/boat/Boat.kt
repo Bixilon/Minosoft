@@ -20,10 +20,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 open class Boat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
@@ -72,7 +74,7 @@ open class Boat(connection: PlayConnection, entityType: EntityType, data: Entity
     }
 
     companion object : EntityFactory<Boat> {
-        override val identifier: ResourceLocation = ResourceLocation("boat")
+        override val identifier: ResourceLocation = minecraft("boat")
         private val TIME_SINCE_LAST_HIT_DATA = EntityDataField("BOAT_HURT")
         private val HIT_DIRECTION_DATA = EntityDataField("BOAT_HURT_DIRECTION")
         private val DAMAGE_TAKEN_DATA = EntityDataField("BOAT_DAMAGE_TAKEN")

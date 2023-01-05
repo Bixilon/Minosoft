@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.fluid
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 interface FluidFactory<T : Fluid> : Identified {

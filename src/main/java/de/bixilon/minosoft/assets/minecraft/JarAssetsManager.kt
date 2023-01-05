@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,8 +21,8 @@ import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil.readArchive
 import de.bixilon.minosoft.assets.util.FileUtil.readZipArchive
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.generalize
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -50,7 +50,7 @@ class JarAssetsManager(
 ) : MinecraftAssetsManager {
     override var loaded: Boolean = false
         private set
-    override val namespaces = setOf(ProtocolDefinition.DEFAULT_NAMESPACE)
+    override val namespaces = setOf(Namespaces.MINECRAFT)
     private var jarAssets: MutableMap<String, ByteArray> = mutableMapOf()
 
     override fun load(latch: CountUpAndDownLatch) {
@@ -59,7 +59,7 @@ class JarAssetsManager(
         val jarAssets = FileAssetsUtil.readVerified(jarAssetsHash, profile.verify)?.readArchive()
         if (jarAssets != null) {
             for ((path, data) in jarAssets) {
-                this.jarAssets[path.removePrefix("assets/" + ProtocolDefinition.DEFAULT_NAMESPACE + "/")] = data
+                this.jarAssets[path.removePrefix("assets/" + Namespaces.MINECRAFT + "/")] = data
             }
         } else {
             var clientJar = FileAssetsUtil.readVerified(clientJarHash, profile.verify)?.readZipArchive()
@@ -84,7 +84,7 @@ class JarAssetsManager(
                 }
                 var cutFilename = filename.removePrefix("assets/")
                 val splitFilename = cutFilename.split("/", limit = 2)
-                if (splitFilename[0] != ProtocolDefinition.DEFAULT_NAMESPACE) {
+                if (splitFilename[0] != Namespaces.MINECRAFT) {
                     continue
                 }
                 cutFilename = splitFilename.getOrNull(1) ?: continue
@@ -125,12 +125,12 @@ class JarAssetsManager(
     }
 
     override fun get(path: ResourceLocation): InputStream {
-        check(path.namespace == ProtocolDefinition.DEFAULT_NAMESPACE) { "Jar Assets manager does not provide non-minecraft assets!" }
+        check(path.namespace == Namespaces.MINECRAFT) { "Jar Assets manager does only provides minecraft assets!" }
         return ByteArrayInputStream(jarAssets[path.path] ?: throw FileNotFoundException("Can not find asset: $path"))
     }
 
     override fun getOrNull(path: ResourceLocation): InputStream? {
-        if (path.namespace != ProtocolDefinition.DEFAULT_NAMESPACE) {
+        if (path.namespace != Namespaces.MINECRAFT) {
             return null
         }
         return ByteArrayInputStream(jarAssets[path.path] ?: return null)
@@ -142,7 +142,7 @@ class JarAssetsManager(
     }
 
     override fun contains(path: ResourceLocation): Boolean {
-        if (path.namespace != ProtocolDefinition.DEFAULT_NAMESPACE) {
+        if (path.namespace != Namespaces.MINECRAFT) {
             return false
         }
         return path.path in jarAssets

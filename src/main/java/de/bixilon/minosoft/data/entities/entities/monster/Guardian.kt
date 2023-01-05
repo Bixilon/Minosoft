@@ -18,11 +18,13 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil
 
 open class Guardian(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
@@ -39,7 +41,7 @@ open class Guardian(connection: PlayConnection, entityType: EntityType, data: En
 
 
     companion object : EntityFactory<Guardian> {
-        override val identifier: ResourceLocation = ResourceLocation("guardian")
+        override val identifier: ResourceLocation = minecraft("guardian")
         private val IS_MOVING_DATA = EntityDataField("GUARDIAN_IS_MOVING")
         private val TARGET_DATA = EntityDataField("GUARDIAN_TARGET_ENTITY_ID")
         private val LEGACY_FLAGS_DATA = EntityDataField("LEGACY_GUARDIAN_FLAGS")

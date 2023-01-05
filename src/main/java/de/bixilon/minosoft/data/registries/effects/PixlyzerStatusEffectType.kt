@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.registries.effects
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.effects.properties.categories.CategorizedEffect
 import de.bixilon.minosoft.data.registries.effects.properties.categories.StatusEffectCategories
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.data.text.formatting.color.Colored
@@ -29,7 +29,7 @@ class PixlyzerStatusEffectType(
 ) : StatusEffectType(), Colored, CategorizedEffect {
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     companion object : ResourceLocationCodec<StatusEffectType> {

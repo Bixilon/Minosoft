@@ -15,13 +15,15 @@ package de.bixilon.minosoft.data.entities.block.redstone
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class DaylightDetectorBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<DaylightDetectorBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:daylight_detector")
+        override val identifier: ResourceLocation = minecraft("daylight_detector")
 
         override fun build(connection: PlayConnection): DaylightDetectorBlockEntity {
             return DaylightDetectorBlockEntity(connection)

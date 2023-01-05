@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -111,7 +111,7 @@ data class EntityType(
 
             data["attributes"]?.toJsonObject()?.let {
                 for ((attributeResourceLocation, value) in it) {
-                    attributes[ResourceLocation.getResourceLocation(attributeResourceLocation).fix()] = value.unsafeCast()
+                    attributes[ResourceLocation.of(attributeResourceLocation).fix()] = value.unsafeCast()
                 }
             }
 

@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class LecternBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<LecternBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:lectern")
+        override val identifier: ResourceLocation = minecraft("lectern")
 
         override fun build(connection: PlayConnection): LecternBlockEntity {
             return LecternBlockEntity(connection)

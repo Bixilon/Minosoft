@@ -30,10 +30,6 @@ public final class ProtocolDefinition {
 
     public static final int QUERY_PROTOCOL_VERSION_ID = -1;
 
-    public static final String MINECRAFT_NAMESPACE = "minecraft";
-    public static final String MINOSOFT_NAMESPACE = "minosoft";
-    public static final String DEFAULT_NAMESPACE = MINECRAFT_NAMESPACE;
-
     public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '§';
 
     public static final int AIR_BLOCK_ID = 0;

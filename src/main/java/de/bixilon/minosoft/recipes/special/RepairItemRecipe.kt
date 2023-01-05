@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.recipes.special
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.recipes.RecipeCategories
-import de.bixilon.minosoft.util.KUtil.minecraft
 
 class RepairItemRecipe(
     override val category: RecipeCategories?,

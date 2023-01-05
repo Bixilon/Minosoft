@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.misc.event.game.handler.rain
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.misc.event.game.GameEventHandler
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

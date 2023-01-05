@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 @Deprecated("Air == null!", level = DeprecationLevel.HIDDEN)

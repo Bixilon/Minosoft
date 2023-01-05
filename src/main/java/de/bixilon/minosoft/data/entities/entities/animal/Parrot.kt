@@ -19,10 +19,12 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class Parrot(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ShoulderRidingAnimal(connection, entityType, data, position, rotation) {
 
@@ -45,7 +47,7 @@ class Parrot(connection: PlayConnection, entityType: EntityType, data: EntityDat
     }
 
     companion object : EntityFactory<Parrot> {
-        override val identifier: ResourceLocation = ResourceLocation("parrot")
+        override val identifier: ResourceLocation = minecraft("parrot")
         private val VARIANT_DATA = EntityDataField("PARROT_VARIANT")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Parrot {

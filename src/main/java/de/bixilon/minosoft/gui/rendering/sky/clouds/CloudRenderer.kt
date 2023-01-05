@@ -19,7 +19,7 @@ import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
@@ -36,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.util.KUtil.minosoft
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
@@ -240,7 +239,7 @@ class CloudRenderer(
     }
 
     companion object : RendererBuilder<CloudRenderer> {
-        override val identifier = ResourceLocation("minosoft:cloud")
+        override val identifier = minosoft("cloud")
         private val RAIN_COLOR = Vec3(0.31f, 0.35f, 0.40f)
         private val SUNRISE_COLOR = Vec3(0.85f, 0.68f, 0.36f)
         private val DAY_COLOR = Vec3(0.95f, 0.97f, 0.97f)

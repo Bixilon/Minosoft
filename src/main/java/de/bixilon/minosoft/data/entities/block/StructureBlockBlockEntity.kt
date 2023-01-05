@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class StructureBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
@@ -23,7 +25,7 @@ class StructureBlockBlockEntity(connection: PlayConnection) : BlockEntity(connec
     }
 
     companion object : BlockEntityFactory<StructureBlockBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:structure_block")
+        override val identifier: ResourceLocation = minecraft("structure_block")
 
         override fun build(connection: PlayConnection): StructureBlockBlockEntity {
             return StructureBlockBlockEntity(connection)

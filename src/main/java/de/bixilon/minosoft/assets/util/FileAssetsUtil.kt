@@ -23,7 +23,7 @@ import de.bixilon.kutil.hex.HexUtil.isHexString
 import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.HashTypes.Companion.hashType
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil
 import java.io.*

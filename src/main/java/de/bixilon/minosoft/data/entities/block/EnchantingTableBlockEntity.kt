@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 
 class EnchantingTableBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<EnchantingTableBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation("minecraft:enchanting_table")
+        override val identifier: ResourceLocation = minecraft("enchanting_table")
 
         override fun build(connection: PlayConnection): EnchantingTableBlockEntity {
             return EnchantingTableBlockEntity(connection)

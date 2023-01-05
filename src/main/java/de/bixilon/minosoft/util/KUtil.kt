@@ -33,8 +33,8 @@ import de.bixilon.kutil.time.Cooldown
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
@@ -70,18 +70,10 @@ object KUtil {
 
     fun Any?.toResourceLocation(): ResourceLocation {
         return when (this) {
-            is String -> ResourceLocation(this)
+            is String -> ResourceLocation.of(this)
             is ResourceLocation -> this
             else -> throw IllegalArgumentException("Don't know how to turn $this into a resource location!")
         }
-    }
-
-    fun minecraft(path: String): ResourceLocation {
-        return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, path)
-    }
-
-    fun minosoft(path: String): ResourceLocation {
-        return ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, path)
     }
 
     fun <T> T.synchronizedDeepCopy(): T {

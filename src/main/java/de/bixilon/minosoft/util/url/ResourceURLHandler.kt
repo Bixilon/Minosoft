@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util.url
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.InputStream
 import java.net.URL
 import java.net.URLConnection
@@ -33,7 +33,7 @@ object ResourceURLHandler : URLStreamHandler() {
         }
 
         override fun getInputStream(): InputStream {
-            return Minosoft.MINOSOFT_ASSETS_MANAGER[ResourceLocation(url.path)]
+            return Minosoft.MINOSOFT_ASSETS_MANAGER[ResourceLocation.of(url.path)]
         }
     }
 }

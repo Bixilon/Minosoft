@@ -106,14 +106,14 @@ class PlayInByteBuffer : InByteBuffer {
     fun readParticleData(type: ParticleType): ParticleData {
         // ToDo: Replace with dynamic particle type calling
         if (this.versionId < V_17W45A) {
-            return when (type.identifier.full) {
+            return when (type.identifier.toString()) {
                 "minecraft:iconcrack" -> ItemParticleData.read(this, type)
                 "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> BlockParticleData.read(this, type)
                 else -> ParticleData(type)
             }
         }
 
-        return when (type.identifier.full) {
+        return when (type.identifier.toString()) {
             "minecraft:block", "minecraft:falling_dust" -> BlockParticleData.read(this, type)
             "minecraft:dust" -> DustParticleData.read(this, type)
             "minecraft:item" -> ItemParticleData.read(this, type)

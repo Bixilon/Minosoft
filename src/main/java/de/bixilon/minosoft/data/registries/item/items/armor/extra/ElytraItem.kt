@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.extra
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 import de.bixilon.minosoft.data.registries.item.items.armor.slots.ChestplateItem
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.minecraft
 
 open class ElytraItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), WearableItem, ChestplateItem {
 

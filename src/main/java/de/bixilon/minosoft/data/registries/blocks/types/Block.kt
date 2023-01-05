@@ -25,12 +25,12 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactories
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -52,7 +52,7 @@ open class Block(
 ) : RegistryItem() {
     open val explosionResistance: Float = data["explosion_resistance"]?.toFloat() ?: 0.0f
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
-    open val tint: ResourceLocation? = data["tint"].nullCast<String>()?.let { ResourceLocation(it) }
+    open val tint: ResourceLocation? = data["tint"].nullCast<String>()?.let { ResourceLocation.of(it) }
 
     open lateinit var states: Set<BlockState>
         protected set
@@ -72,7 +72,7 @@ open class Block(
     }
 
     override fun toString(): String {
-        return identifier.full
+        return identifier.toString()
     }
 
     open fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? = defaultState

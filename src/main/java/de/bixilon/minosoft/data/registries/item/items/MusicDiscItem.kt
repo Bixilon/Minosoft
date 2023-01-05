@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
