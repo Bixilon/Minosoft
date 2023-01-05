@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,7 +35,7 @@ class WorldRendererTest {
         for (i in 0 until 1000) {
             Thread.sleep(10)
             frame()
-            if (loaded.size == 1) {
+            if (loaded.size == count) {
                 break
             }
         }
@@ -69,7 +69,30 @@ class WorldRendererTest {
         val renderer = create()
         renderer.master.tryQueue(chunk, ignoreLoaded = true, force = true)
         renderer.awaitQueue(1)
-        chunk[Vec3i(0, 0, 0)] = null
+        chunk[Vec3i(0, 0, 0)] = null // reset
         Assert.assertEquals(renderer.loaded.size, 1)
+    }
+
+    fun queueMultipleChunks() {
+        val chunks = setOf(
+            RenderTestUtil.context.connection.world[Vec2i(0, 0)]!!,
+            RenderTestUtil.context.connection.world[Vec2i(0, 1)]!!,
+            RenderTestUtil.context.connection.world[Vec2i(1, 1)]!!,
+            RenderTestUtil.context.connection.world[Vec2i(3, 1)]!!,
+        )
+        for (chunk in chunks) {
+            chunk[Vec3i(0, 0, 0)] = StoneTestO.state
+        }
+        val renderer = create()
+        for (chunk in chunks) {
+            renderer.master.tryQueue(chunk, ignoreLoaded = true, force = true)
+        }
+        renderer.awaitQueue(chunks.size)
+
+        // reset
+        for (chunk in chunks) {
+            chunk[Vec3i(0, 0, 0)] = null
+        }
+        Assert.assertEquals(renderer.loaded.size, chunks.size)
     }
 }
