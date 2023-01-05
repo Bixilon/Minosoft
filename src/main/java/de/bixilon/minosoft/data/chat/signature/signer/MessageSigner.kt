@@ -11,19 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.signature
+package de.bixilon.minosoft.data.chat.signature.signer
 
-import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
+import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.versions.Version
 import java.security.PrivateKey
 import java.time.Instant
 import java.util.*
 
-class MessageChain(version: Version) {
-    val signer = MessageSigner.forVersion(version)
+interface MessageSigner {
 
-    fun signMessage(privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray {
-        return signer.signMessage(privateKey, message, preview, salt, sender, time, lastSeen)
+    fun signMessage(privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray
+
+
+    companion object {
+
+        fun forVersion(version: Version): MessageSigner {
+            if (version < ProtocolVersions.V_1_19_1_PRE4) {
+                return MessageSigner1(version)
+            }
+            if (version < ProtocolVersions.V_22W42A) {
+                return MessageSigner2(version)
+            }
+            return MessageSigner3(version)
+        }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,19 +47,19 @@ import java.time.Instant
 class ConnectionUtil(
     private val connection: PlayConnection,
 ) {
-    private val chain = MessageChain()
+    private val chain = MessageChain(connection.version)
     private val random = SecureRandom()
 
     fun sendDebugMessage(message: Any) {
         val component = BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { this.setFallbackColor(ChatColors.BLUE) })
-        connection.fire(InternalMessageReceiveEvent(connection, InternalChatMessage(component)))
+        connection.events.fire(InternalMessageReceiveEvent(connection, InternalChatMessage(component)))
         Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { component }
     }
 
     fun sendInternal(message: Any) {
         val component = ChatComponent.of(message)
         val prefixed = BaseComponent(RenderConstants.INTERNAL_MESSAGES_PREFIX, component)
-        connection.fire(InternalMessageReceiveEvent(connection, InternalChatMessage(if (connection.profiles.gui.chat.internal.hidden) prefixed else component)))
+        connection.events.fire(InternalMessageReceiveEvent(connection, InternalChatMessage(if (connection.profiles.gui.chat.internal.hidden) prefixed else component)))
         Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { prefixed }
     }
 
@@ -78,7 +78,7 @@ class ConnectionUtil(
         if (message.length > connection.version.maxChatMessageSize) {
             throw IllegalArgumentException("Message length (${message.length} can not exceed ${connection.version.maxChatMessageSize})")
         }
-        if (connection.fire(ChatMessageSendEvent(connection, message))) {
+        if (connection.events.fire(ChatMessageSendEvent(connection, message))) {
             return
         }
         Log.log(LogMessageType.CHAT_OUT) { message }
@@ -97,7 +97,7 @@ class ConnectionUtil(
         val acknowledgement = Acknowledgement.EMPTY
 
         val signature: ByteArray? = if (connection.network.encrypted) {
-            chain.signMessage(connection.version, privateKey, message, null, salt, uuid, time, acknowledgement.lastSeen)
+            chain.signMessage(privateKey, message, null, salt, uuid, time, acknowledgement.lastSeen)
         } else {
             null
         }
@@ -129,7 +129,7 @@ class ConnectionUtil(
         connection.world.particleRenderer?.removeAllParticles()
         connection.player.openedContainer?.let {
             connection.player.openedContainer = null
-            connection.fire(ContainerCloseEvent(connection, it.id ?: -1, it))
+            connection.events.fire(ContainerCloseEvent(connection, it.id ?: -1, it))
         }
         connection.player.healthCondition = HealthCondition()
         connection.world.time = WorldTime()

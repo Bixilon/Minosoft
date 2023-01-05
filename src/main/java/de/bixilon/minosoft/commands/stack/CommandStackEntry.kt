@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,6 +25,6 @@ data class CommandStackEntry(
 ) {
 
     fun sign(connection: PlayConnection, chain: MessageChain, key: PrivateKey, salt: Long, time: Instant): ByteArray {
-        return chain.signMessage(connection.version, key, data.toString(), null, salt, connection.player.uuid, time, LastSeenMessageList(emptyArray()))
+        return chain.signMessage(key, data.toString(), null, salt, connection.player.uuid, time, LastSeenMessageList(emptyArray()))
     }
 }
