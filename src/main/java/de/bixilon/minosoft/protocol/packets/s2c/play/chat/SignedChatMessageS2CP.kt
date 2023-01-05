@@ -16,10 +16,9 @@ import de.bixilon.minosoft.data.chat.ChatUtil.getMessageSender
 import de.bixilon.minosoft.data.chat.filter.ChatFilter
 import de.bixilon.minosoft.data.chat.filter.Filter
 import de.bixilon.minosoft.data.chat.message.SignedChatMessage
-import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
-import de.bixilon.minosoft.data.chat.signature.errors.MessageExpiredError
 import de.bixilon.minosoft.data.chat.signature.lastSeen.IndexedLastSeenMessage
 import de.bixilon.minosoft.data.chat.signature.lastSeen.LastSeenMessage
+import de.bixilon.minosoft.data.chat.signature.verifyer.MessageVerifyUtil
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -77,7 +76,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val received = Instant.now()
 
-        val error = verifyMessage(sent, received, versionId, salt, message, sender.uuid)
+        val error = MessageVerifyUtil.verifyMessage(sent, received, versionId, salt, message, sender.uuid)
 
 
         return SignedChatMessage(connection, message, type, connection.getMessageSender(sender.uuid), parameters, null, error, sent, received)
@@ -121,7 +120,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val sender = connection.getMessageSender(senderUUID)
         val received = Instant.now()
 
-        val error = verifyMessage(sent, received, versionId, salt, message, senderUUID)
+        val error = MessageVerifyUtil.verifyMessage(sent, received, versionId, salt, message, senderUUID)
 
         return SignedChatMessage(
             connection = connection,
@@ -134,28 +133,6 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             sent = sent,
             received = received
         )
-    }
-
-    private fun checkExpired(sent: Instant, received: Instant): Exception? {
-        if (received.toEpochMilli() - sent.toEpochMilli() > ChatSignatureProperties.MESSAGE_TTL) {
-            return MessageExpiredError(sent, received)
-        }
-        return null
-    }
-
-    private fun verifyMessage(
-        sent: Instant,
-        received: Instant,
-        versionId: Int,
-        seed: Long,
-        content: String,
-        sender: UUID,
-    ): Exception? {
-        checkExpired(sent, received)?.let { return it }
-
-        // TODO: Verify signature
-
-        return null
     }
 
     override fun handle(connection: PlayConnection) {
