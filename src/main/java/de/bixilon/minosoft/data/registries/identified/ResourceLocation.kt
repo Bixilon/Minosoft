@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.identified
 
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation.Companion.ALLOWED_NAMESPACE_PATTERN
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation.Companion.ALLOWED_PATH_PATTERN
@@ -39,7 +40,7 @@ open class ResourceLocation(
         get() = this
 
     init {
-        if (namespace.isBlank() || !ALLOWED_NAMESPACE_PATTERN.matches(namespace)) {
+        if (StaticConfiguration.VALIDATE_RESOURCE_LOCATION && (namespace.isBlank() || !ALLOWED_NAMESPACE_PATTERN.matches(namespace))) {
             throw IllegalArgumentException("Invalid namespace: $namespace")
         }
         // TODO: Figure out a way to implement this but have backwards compatibility with pre flattening versions
