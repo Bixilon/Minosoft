@@ -21,7 +21,7 @@ import java.util.*
 /**
  * A resource location is a string that identifies a resource. It is composed of a namespace and a path, separated by a colon (:).
  * The namespace is optional and defaults to "minecraft". The path is the path to the resource, separated by forward slashes (/).
- * If possible, use KUtil.minecraft() or KUtil.minosoft() instead.
+ * If possible, use minecraft() or minosoft() instead.
  *
  * @param namespace The namespace of the resource location
  * @param path The path of the resource location
@@ -89,7 +89,7 @@ open class ResourceLocation(
 
         /**
          * Creates a resource location from a string.
-         * If possible, use KUtil.minecraft() or KUtil.minosoft() instead.
+         * If possible, use minecraft() or minosoft() instead.
          *
          * @param string The string to parse
          * @return The parsed resource location
@@ -104,7 +104,7 @@ open class ResourceLocation(
 
         /**
          * Creates a resource location from a string by splitting it at the first colon (:) or at the first slash (/) if there is no colon.
-         * If possible, use KUtil.minecraft() or KUtil.minosoft() instead.
+         * If possible, use minecraft() or minosoft() instead.
          *
          * @param path The path to parse
          * @return The parsed resource location

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -30,52 +30,11 @@ internal class ProtocolDefinitionTest {
 
     @Test
     fun testDefaultNamespace() {
-        assertEquals(ProtocolDefinition.DEFAULT_NAMESPACE, "minecraft")
+        assertEquals(Namespaces.DEFAULT, "minecraft")
     }
 
     @Test
     fun testSectionSize() {
         assertEquals(ProtocolDefinition.BLOCKS_PER_SECTION, 4096)
     }
-
-    /**
-     * @see [de.bixilon.minosoft.data.registries.ResourceLocation]
-     */
-    @Test
-    fun testAllowedNamespaces() {
-        // Should Pass
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("minecraft"), true)
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("min1234567890craft"), true)
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine-craft"), true)
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine_craft"), true)
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine.craft"), true)
-        // Should Fail
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("MineCraft"), false)
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine craft"), false)
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("minecraft!"), false)
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("^minecraft"), false)
-        assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine/craft"), false)
-    }
-
-    /**
-     * @see [de.bixilon.minosoft.data.registries.ResourceLocation]
-     */
-    @Test
-    fun testAllowedResourceLocationPaths() {
-        // Should Pass
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("minecraft"), true)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("min1234567890craft"), true)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine-craft"), true)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine_craft"), true)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine.craft"), true)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine/craft"), true)
-        // Should Fail
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("MineCraft"), false)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine craft"), false)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("minecraft!"), false)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("^minecraft"), false)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine//craft"), false)
-        assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine///craft"), false)
-    }
-
 }

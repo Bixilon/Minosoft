@@ -82,9 +82,7 @@ object LanguageUtil {
     }
 
     fun loadLanguage(language: String, assetsManager: AssetsManager, json: Boolean, path: ResourceLocation): Translator {
-        val assets = assetsManager.getAll(
-            ResourceLocation(path.namespace, path.path + language + if (json) ".json" else ".lang")
-        )
+        val assets = assetsManager.getAll(ResourceLocation(path.namespace, path.path + language + if (json) ".json" else ".lang"))
         val languages: MutableList<Language> = mutableListOf()
 
         for (asset in assets) {
