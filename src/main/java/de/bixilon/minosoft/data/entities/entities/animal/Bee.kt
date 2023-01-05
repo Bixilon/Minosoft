@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -47,7 +48,7 @@ class Bee(connection: PlayConnection, entityType: EntityType, data: EntityData, 
 
 
     companion object : EntityFactory<Bee> {
-        override val identifier: ResourceLocation = KUtil.minecraft("bee")
+        override val identifier: ResourceLocation = minecraft("bee")
         private val FLAGS_DATA = EntityDataField("BEE_FLAGS")
         private val REMAINING_ANGER_DATA = EntityDataField("BEE_REMAINING_ANGER_TIME")
 

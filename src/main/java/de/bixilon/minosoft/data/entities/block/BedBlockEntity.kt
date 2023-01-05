@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.colors.DyeColors
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -29,7 +30,7 @@ class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     }
 
     companion object : BlockEntityFactory<BedBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("bed")
+        override val identifier: ResourceLocation = minecraft("bed")
 
         override fun build(connection: PlayConnection): BedBlockEntity {
             return BedBlockEntity(connection)

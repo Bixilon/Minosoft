@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.Animal
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -34,7 +35,7 @@ class Hoglin(connection: PlayConnection, entityType: EntityType, data: EntityDat
         get() = data.getBoolean(IS_BABY_DATA, super.isBaby)
 
     companion object : EntityFactory<Hoglin> {
-        override val identifier: ResourceLocation = KUtil.minecraft("hoglin")
+        override val identifier: ResourceLocation = minecraft("hoglin")
         private val IS_BABY_DATA = EntityDataField("AGEABLE_IS_BABY")
         private val IMMUNE_TO_ZOMBIFICATION_DATA = EntityDataField("HOGLIN_IMMUNE_TO_ZOMBIFICATION")
 

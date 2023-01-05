@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -35,7 +36,7 @@ class FishingBobber(connection: PlayConnection, entityType: EntityType, data: En
 
 
     companion object : EntityFactory<FishingBobber> {
-        override val identifier: ResourceLocation = KUtil.minecraft("fishing_bobber")
+        override val identifier: ResourceLocation = minecraft("fishing_bobber")
         private val HOOKED_ENTITY_DATA = EntityDataField("FISHING_HOOK_HOOKED_ENTITY")
         private val CATCHABLE_DATA = EntityDataField("FISHING_HOOK_CATCHABLE")
 

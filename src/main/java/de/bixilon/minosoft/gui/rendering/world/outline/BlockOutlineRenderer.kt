@@ -20,6 +20,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
@@ -136,7 +137,7 @@ class BlockOutlineRenderer(
 
 
     companion object : RendererBuilder<BlockOutlineRenderer> {
-        override val identifier = KUtil.minosoft("block_outline")
+        override val identifier = minosoft("block_outline")
 
         override fun build(connection: PlayConnection, context: RenderContext): BlockOutlineRenderer {
             return BlockOutlineRenderer(connection, context)

@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.WorldEntities
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
@@ -64,7 +65,7 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
     }
 
     companion object : BlockEntityFactory<MobSpawnerBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("mob_spawner")
+        override val identifier: ResourceLocation = minecraft("mob_spawner")
 
         override fun build(connection: PlayConnection): MobSpawnerBlockEntity {
             return MobSpawnerBlockEntity(connection)

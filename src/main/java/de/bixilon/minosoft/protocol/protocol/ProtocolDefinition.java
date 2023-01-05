@@ -38,8 +38,6 @@ public final class ProtocolDefinition {
     public static final String LAN_SERVER_BROADCAST_ADDRESS = "224.0.2.60";
     public static final int LAN_SERVER_MAXIMUM_SERVERS = 100; // maximum number of lan servers, set because otherwise dos attacks would be easy
 
-    public static final String DEFAULT_NAMESPACE = "minecraft";
-    public static final String MINOSOFT_NAMESPACE = "minosoft";
     public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '\u00A7';
 
     public static final int DEFAULT_BUFFER_SIZE = 4096;

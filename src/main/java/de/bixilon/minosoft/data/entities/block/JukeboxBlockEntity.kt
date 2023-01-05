@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -20,7 +21,7 @@ import de.bixilon.minosoft.util.KUtil
 class JukeboxBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<JukeboxBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("jukebox")
+        override val identifier: ResourceLocation = minecraft("jukebox")
 
         override fun build(connection: PlayConnection): JukeboxBlockEntity {
             return JukeboxBlockEntity(connection)

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -46,7 +47,7 @@ class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityD
 
 
     companion object : EntityFactory<Enderman> {
-        override val identifier: ResourceLocation = KUtil.minecraft("enderman")
+        override val identifier: ResourceLocation = minecraft("enderman")
         private val CARRIED_BLOCK_DATA = EntityDataField("ENDERMAN_CARRIED_BLOCK")
         private val SCREAMING_DATA = EntityDataField("ENDERMAN_IS_SCREAMING")
         private val STARRING_DATA = EntityDataField("ENDERMAN_IS_STARRING")

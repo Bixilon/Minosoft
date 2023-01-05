@@ -27,6 +27,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
@@ -151,8 +152,8 @@ class EntityRenderer(
 
 
     companion object : RendererBuilder<EntityRenderer> {
-        override val identifier = KUtil.minosoft("entity")
-        private val HITBOX_TOGGLE_KEY_COMBINATION = KUtil.minosoft("toggle_hitboxes")
+        override val identifier = minosoft("entity")
+        private val HITBOX_TOGGLE_KEY_COMBINATION = minosoft("toggle_hitboxes")
 
 
         override fun build(connection: PlayConnection, context: RenderContext): EntityRenderer {

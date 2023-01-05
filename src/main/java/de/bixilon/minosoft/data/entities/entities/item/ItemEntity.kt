@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -63,7 +64,7 @@ class ItemEntity(connection: PlayConnection, entityType: EntityType, data: Entit
 
 
     companion object : EntityFactory<ItemEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("item")
+        override val identifier: ResourceLocation = minecraft("item")
         private val ITEM_DATA = EntityDataField("ITEM_ITEM")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ItemEntity {

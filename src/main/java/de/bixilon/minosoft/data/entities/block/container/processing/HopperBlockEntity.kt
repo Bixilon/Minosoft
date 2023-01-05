@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities.block.container.processing
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -22,7 +23,7 @@ class HopperBlockEntity(connection: PlayConnection) : ProcessingBlockEntity(conn
 
 
     companion object : BlockEntityFactory<HopperBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("hopper")
+        override val identifier: ResourceLocation = minecraft("hopper")
 
         override fun build(connection: PlayConnection): HopperBlockEntity {
             return HopperBlockEntity(connection)

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.util.KUtil
 class CaveSpider(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Spider(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<CaveSpider> {
-        override val identifier: ResourceLocation = KUtil.minecraft("cave_spider")
+        override val identifier: ResourceLocation = minecraft("cave_spider")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): CaveSpider {
             return CaveSpider(connection, entityType, data, position, rotation)

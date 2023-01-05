@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.entity.CampfireBlock
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
@@ -97,7 +98,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
     }
 
     companion object : BlockEntityFactory<CampfireBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("campfire")
+        override val identifier: ResourceLocation = minecraft("campfire")
         const val DIRECTION_OFFSET = 0.3125
 
 

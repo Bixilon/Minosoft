@@ -29,8 +29,8 @@ import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -50,7 +50,7 @@ class IndexAssetsManager(
 ) : MinecraftAssetsManager {
     private val verify: Boolean = profile.verify
     private val assets: MutableMap<ResourceLocation, AssetsProperty> = synchronizedMapOf()
-    override val namespaces: Set<String> = setOf(ProtocolDefinition.DEFAULT_NAMESPACE)
+    override val namespaces: Set<String> = setOf(Namespaces.MINECRAFT)
     override var loaded: Boolean = false
         private set
 

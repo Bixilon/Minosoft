@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -52,7 +53,7 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: 
 
 
     companion object : EntityFactory<AreaEffectCloud> {
-        override val identifier: ResourceLocation = KUtil.minecraft("area_effect_cloud")
+        override val identifier: ResourceLocation = minecraft("area_effect_cloud")
         private val IGNORE_RADIUS_DATA = EntityDataField("AREA_EFFECT_CLOUD_IGNORE_RADIUS")
         private val RADIUS_DATA = EntityDataField("AREA_EFFECT_CLOUD_RADIUS")
         private val COLOR_DATA = EntityDataField("AREA_EFFECT_CLOUD_COLOR")

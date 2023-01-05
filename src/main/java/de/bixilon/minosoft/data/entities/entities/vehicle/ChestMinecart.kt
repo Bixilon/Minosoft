@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.util.KUtil
 class ChestMinecart(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ChestMinecart> {
-        override val identifier: ResourceLocation = KUtil.minecraft("chest_minecart")
+        override val identifier: ResourceLocation = minecraft("chest_minecart")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ChestMinecart {
             return ChestMinecart(connection, entityType, data, position, rotation)

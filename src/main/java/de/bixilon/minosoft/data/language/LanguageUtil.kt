@@ -24,12 +24,12 @@ import de.bixilon.minosoft.data.language.lang.LanguageList
 import de.bixilon.minosoft.data.language.manager.LanguageManager
 import de.bixilon.minosoft.data.language.translate.Translated
 import de.bixilon.minosoft.data.language.translate.Translator
+import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.io.FileNotFoundException
 
@@ -39,7 +39,7 @@ object LanguageUtil {
 
     fun String?.i18n(): Translated {
         val resourceLocation = this.toResourceLocation()
-        if (resourceLocation.namespace == ProtocolDefinition.DEFAULT_NAMESPACE) {
+        if (resourceLocation.namespace == Namespaces.MINECRAFT) {
             return Translated(minosoft(resourceLocation.path))
         }
         return Translated(resourceLocation)

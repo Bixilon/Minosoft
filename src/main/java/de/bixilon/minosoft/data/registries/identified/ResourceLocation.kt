@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.identified
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation.Companion.ALLOWED_NAMESPACE_PATTERN
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation.Companion.ALLOWED_PATH_PATTERN
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 /**
@@ -31,7 +30,7 @@ import java.util.*
  * @see <a href="https://minecraft.fandom.com/wiki/Resource_location">Resource location</a>
  */
 open class ResourceLocation(
-    val namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE,
+    val namespace: String = Namespaces.DEFAULT,
     val path: String,
 ) : Translatable {
     private val hashCode = Objects.hash(namespace, path)
@@ -61,7 +60,7 @@ open class ResourceLocation(
      * @return If the namespace is "minecraft", the path is returned. Otherwise, the full string is returned.
      */
     fun toMinifiedString(): String {
-        if (namespace == ProtocolDefinition.DEFAULT_NAMESPACE) {
+        if (namespace == Namespaces.DEFAULT) {
             return path
         }
         return toString()
@@ -97,7 +96,7 @@ open class ResourceLocation(
         fun of(string: String): ResourceLocation {
             val split = string.split(':', limit = 2)
             if (split.size == 1) {
-                return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, string)
+                return ResourceLocation(Namespaces.DEFAULT, string)
             }
             return ResourceLocation(split[0], split[1])
         }

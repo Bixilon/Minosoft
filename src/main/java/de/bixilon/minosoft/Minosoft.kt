@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,8 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.language.manager.MultiLanguageManager
 import de.bixilon.minosoft.data.registries.DefaultRegistries
-import de.bixilon.minosoft.protocol.versions.Versions
+import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
@@ -47,13 +48,12 @@ import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -139,7 +139,7 @@ object Minosoft {
         val language = ErosProfileManager.selected.general.language
         ErosProfileManager.selected.general::language.observe(this, true) {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
-            LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = LanguageUtil.load(it, null, MINOSOFT_ASSETS_MANAGER, minosoft("language/"))
+            LANGUAGE_MANAGER.translators[Namespaces.MINOSOFT] = LanguageUtil.load(it, null, MINOSOFT_ASSETS_MANAGER, minosoft("language/"))
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }
         }
     }

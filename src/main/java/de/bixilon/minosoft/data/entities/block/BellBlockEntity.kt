@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -27,7 +28,7 @@ class BellBlockEntity(connection: PlayConnection) : BlockEntity(connection), Blo
     }
 
     companion object : BlockEntityFactory<BellBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("bell")
+        override val identifier: ResourceLocation = minecraft("bell")
 
         override fun build(connection: PlayConnection): BellBlockEntity {
             return BellBlockEntity(connection)

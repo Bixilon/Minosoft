@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -28,7 +29,7 @@ class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection), B
     }
 
     companion object : BlockEntityFactory<BeaconBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("beacon")
+        override val identifier: ResourceLocation = minecraft("beacon")
 
         override fun build(connection: PlayConnection): BeaconBlockEntity {
             return BeaconBlockEntity(connection)

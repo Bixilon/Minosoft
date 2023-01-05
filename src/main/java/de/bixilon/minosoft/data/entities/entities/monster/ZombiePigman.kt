@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -28,7 +29,7 @@ import de.bixilon.minosoft.util.KUtil
 class ZombiePigman(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ZombifiedPiglin(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ZombifiedPiglin> {
-        override val identifier: ResourceLocation = KUtil.minecraft("zombie_pigman")
+        override val identifier: ResourceLocation = minecraft("zombie_pigman")
 
         override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
             return ZombifiedPiglin.identifier

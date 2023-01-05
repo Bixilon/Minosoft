@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -26,8 +27,8 @@ class SmallFireball(connection: PlayConnection, entityType: EntityType, data: En
         get() = DEFAULT_ITEM
 
     companion object : EntityFactory<SmallFireball> {
-        private val DEFAULT_ITEM = KUtil.minecraft("fire_charge")
-        override val identifier: ResourceLocation = KUtil.minecraft("small_fireball")
+        private val DEFAULT_ITEM = minecraft("fire_charge")
+        override val identifier: ResourceLocation = minecraft("small_fireball")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): SmallFireball {
             return SmallFireball(connection, entityType, data, position, rotation)

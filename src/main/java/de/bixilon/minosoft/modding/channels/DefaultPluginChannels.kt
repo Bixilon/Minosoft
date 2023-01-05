@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.modding.channels
 
-import de.bixilon.minosoft.util.KUtil.minecraft
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 
 object DefaultPluginChannels {
     val REGISTER = minecraft("register")

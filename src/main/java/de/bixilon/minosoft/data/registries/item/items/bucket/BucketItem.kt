@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.item.items.bucket
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.fluid.FluidDrainable
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.minecraft
 
 
 abstract class BucketItem(

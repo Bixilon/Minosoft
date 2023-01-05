@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.block.redstone
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil
 class ComparatorBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<ComparatorBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("comparator")
+        override val identifier: ResourceLocation = minecraft("comparator")
 
         override fun build(connection: PlayConnection): ComparatorBlockEntity {
             return ComparatorBlockEntity(connection)

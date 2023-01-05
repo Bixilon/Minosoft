@@ -14,13 +14,14 @@
 package de.bixilon.minosoft.data.entities.block.redstone.piston
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class StickyPistonBlockEntity(connection: PlayConnection) : PistonBlockEntity(connection) {
 
     companion object : BlockEntityFactory<StickyPistonBlockEntity> {
-        override val identifier: ResourceLocation = ResourceLocation.of("minecraft:sticky_piston")
+        override val identifier: ResourceLocation = minecraft("sticky_piston")
 
         override fun build(connection: PlayConnection): StickyPistonBlockEntity {
             return StickyPistonBlockEntity(connection)

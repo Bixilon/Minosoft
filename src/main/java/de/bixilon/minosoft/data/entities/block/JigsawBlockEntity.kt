@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -21,13 +22,13 @@ import de.bixilon.minosoft.util.KUtil
 class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var joint: String = "rollable"
         private set
-    var name: ResourceLocation = KUtil.minecraft("empty")
+    var name: ResourceLocation = minecraft("empty")
         private set
-    var pool: ResourceLocation = KUtil.minecraft("empty")
+    var pool: ResourceLocation = minecraft("empty")
         private set
-    var finalState: ResourceLocation = KUtil.minecraft("empty")
+    var finalState: ResourceLocation = minecraft("empty")
         private set
-    var target: ResourceLocation = KUtil.minecraft("empty")
+    var target: ResourceLocation = minecraft("empty")
         private set
 
 
@@ -40,7 +41,7 @@ class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     }
 
     companion object : BlockEntityFactory<JigsawBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("jigsaw")
+        override val identifier: ResourceLocation = minecraft("jigsaw")
 
         override fun build(connection: PlayConnection): JigsawBlockEntity {
             return JigsawBlockEntity(connection)

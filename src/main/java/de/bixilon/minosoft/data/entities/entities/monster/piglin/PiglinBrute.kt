@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -25,7 +26,7 @@ class PiglinBrute(connection: PlayConnection, entityType: EntityType, data: Enti
 
 
     companion object : EntityFactory<PiglinBrute> {
-        override val identifier: ResourceLocation = KUtil.minecraft("piglin_brute")
+        override val identifier: ResourceLocation = minecraft("piglin_brute")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PiglinBrute {
             return PiglinBrute(connection, entityType, data, position, rotation)

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.enchantment.tool
 
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.util.KUtil.minecraft
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 
 interface WeaponEnchantment : ToolEnchantment {
 

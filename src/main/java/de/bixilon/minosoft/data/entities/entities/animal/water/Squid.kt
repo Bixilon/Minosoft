@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.util.KUtil
 open class Squid(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : WaterAnimal(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<Squid> {
-        override val identifier: ResourceLocation = KUtil.minecraft("squid")
+        override val identifier: ResourceLocation = minecraft("squid")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Squid {
             return Squid(connection, entityType, data, position, rotation)

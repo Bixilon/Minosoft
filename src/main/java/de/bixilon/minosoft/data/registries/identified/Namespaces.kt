@@ -11,21 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block.container.processing
+package de.bixilon.minosoft.data.registries.identified
 
-import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+object Namespaces {
+    const val MINECRAFT = "minecraft"
+    const val MINOSOFT = "minosoft"
+    const val DEFAULT = MINECRAFT
 
-class BlastFurnaceBlockEntity(connection: PlayConnection) : ProcessingBlockEntity(connection) {
 
-    companion object : BlockEntityFactory<BlastFurnaceBlockEntity> {
-        override val identifier: ResourceLocation = minecraft("blast_furnace")
+    fun minecraft(path: String): ResourceLocation {
+        return ResourceLocation(MINECRAFT, path)
+    }
 
-        override fun build(connection: PlayConnection): BlastFurnaceBlockEntity {
-            return BlastFurnaceBlockEntity(connection)
-        }
+    fun minosoft(path: String): ResourceLocation {
+        return ResourceLocation(MINOSOFT, path)
     }
 }

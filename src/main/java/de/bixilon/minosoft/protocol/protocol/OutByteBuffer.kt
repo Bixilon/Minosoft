@@ -16,6 +16,7 @@ import com.sun.javafx.geom.Vec3f
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
@@ -286,7 +287,7 @@ open class OutByteBuffer() {
     }
 
     fun writeLegacyResourceLocation(resourceLocation: ResourceLocation) {
-        if (resourceLocation.namespace == ProtocolDefinition.DEFAULT_NAMESPACE) {
+        if (resourceLocation.namespace == Namespaces.DEFAULT) {
             writeString(resourceLocation.path)
             return
         }

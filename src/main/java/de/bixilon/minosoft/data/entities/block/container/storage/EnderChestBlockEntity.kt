@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
@@ -32,7 +33,7 @@ class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
     }
 
     companion object : BlockEntityFactory<EnderChestBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("ender_chest")
+        override val identifier: ResourceLocation = minecraft("ender_chest")
 
         override fun build(connection: PlayConnection): EnderChestBlockEntity {
             return EnderChestBlockEntity(connection)

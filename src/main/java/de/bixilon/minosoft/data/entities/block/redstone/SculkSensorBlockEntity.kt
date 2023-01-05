@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.block.redstone
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -23,7 +24,7 @@ class SculkSensorBlockEntity(connection: PlayConnection) : BlockEntity(connectio
     // ToDo: lastVibrationFrequency
 
     companion object : BlockEntityFactory<SculkSensorBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("sculk_sensor")
+        override val identifier: ResourceLocation = minecraft("sculk_sensor")
 
         override fun build(connection: PlayConnection): SculkSensorBlockEntity {
             return SculkSensorBlockEntity(connection)

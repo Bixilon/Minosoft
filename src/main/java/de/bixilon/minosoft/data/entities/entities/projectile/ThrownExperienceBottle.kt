@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -27,8 +28,8 @@ class ThrownExperienceBottle(connection: PlayConnection, entityType: EntityType,
         get() = DEFAULT_ITEM
 
     companion object : EntityFactory<ThrownExperienceBottle> {
-        private val DEFAULT_ITEM = KUtil.minecraft("experience_bottle")
-        override val identifier: ResourceLocation = KUtil.minecraft("experience_bottle")
+        private val DEFAULT_ITEM = minecraft("experience_bottle")
+        override val identifier: ResourceLocation = minecraft("experience_bottle")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownExperienceBottle {
             return ThrownExperienceBottle(connection, entityType, data, position, rotation)

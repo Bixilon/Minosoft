@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -35,7 +36,7 @@ class Bat(connection: PlayConnection, entityType: EntityType, data: EntityData, 
 
 
     companion object : EntityFactory<Bat> {
-        override val identifier: ResourceLocation = KUtil.minecraft("bat")
+        override val identifier: ResourceLocation = minecraft("bat")
         private val FLAGS_DATA = EntityDataField("BAT_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Bat {

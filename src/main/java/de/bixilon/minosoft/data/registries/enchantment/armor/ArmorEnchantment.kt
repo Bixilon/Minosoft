@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.enchantment.slots.SlotSpecificEnchantment
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
-import de.bixilon.minosoft.util.KUtil.minecraft
 
 interface ArmorEnchantment : SlotSpecificEnchantment {
     val slots: Set<ArmorSlots>

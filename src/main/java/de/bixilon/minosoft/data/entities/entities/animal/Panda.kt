@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -84,7 +85,7 @@ class Panda(connection: PlayConnection, entityType: EntityType, data: EntityData
     }
 
     companion object : EntityFactory<Panda> {
-        override val identifier: ResourceLocation = KUtil.minecraft("panda")
+        override val identifier: ResourceLocation = minecraft("panda")
         private val BAMBOO_ASK_TIMER_DATA = EntityDataField("PANDA_UNHAPPY_TIMER")
         private val SNEEZE_TIMER_DATA = EntityDataField("PANDA_SNEEZE_TIMER")
         private val EATING_TICKS_DATA = EntityDataField("PANDA_EAT_TIMER")

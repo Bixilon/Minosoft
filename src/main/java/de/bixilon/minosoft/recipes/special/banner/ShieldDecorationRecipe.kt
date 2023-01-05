@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.recipes.special.banner
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.recipes.RecipeCategories
 import de.bixilon.minosoft.recipes.special.SpecialRecipe
 import de.bixilon.minosoft.recipes.special.SpecialRecipeFactory
-import de.bixilon.minosoft.util.KUtil.minecraft
 
 class ShieldDecorationRecipe(
     override val category: RecipeCategories?,

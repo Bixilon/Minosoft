@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -31,7 +32,7 @@ class WitherSkull(connection: PlayConnection, entityType: EntityType, data: Enti
 
 
     companion object : EntityFactory<WitherSkull> {
-        override val identifier: ResourceLocation = KUtil.minecraft("wither_skull")
+        override val identifier: ResourceLocation = minecraft("wither_skull")
         private val IS_DANGEROUS_DATA = EntityDataField("WITHER_SKULL_DANGEROUS")
 
 

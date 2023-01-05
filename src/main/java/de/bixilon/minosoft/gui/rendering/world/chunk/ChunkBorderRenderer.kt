@@ -21,6 +21,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -196,7 +197,7 @@ class ChunkBorderRenderer(
 
 
     companion object : RendererBuilder<ChunkBorderRenderer> {
-        override val identifier = KUtil.minosoft("chunk_borders")
+        override val identifier = minosoft("chunk_borders")
         private val CHUNK_BORDER_TOGGLE_KEY_COMBINATION = "minosoft:toggle_chunk_borders".toResourceLocation()
         private const val SECTION_LINE_WIDTH = RenderConstants.DEFAULT_LINE_WIDTH * 3
         private const val INNER_CHUNK_LINE_WIDTH = SECTION_LINE_WIDTH * 3

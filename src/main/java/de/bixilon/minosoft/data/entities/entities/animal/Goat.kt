@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -38,7 +39,7 @@ class Goat(connection: PlayConnection, entityType: EntityType, data: EntityData,
         get() = data.getBoolean(RIGHT_HORN_DATA, false)
 
     companion object : EntityFactory<Goat> {
-        override val identifier: ResourceLocation = KUtil.minecraft("goat")
+        override val identifier: ResourceLocation = minecraft("goat")
         private val SCREAMING_DATA = EntityDataField("GOAT_IS_SCREAMING")
         private val LEFT_HORN_DATA = EntityDataField("LEFT_HORN")
         private val RIGHT_HORN_DATA = EntityDataField("RIGHT_HORN")

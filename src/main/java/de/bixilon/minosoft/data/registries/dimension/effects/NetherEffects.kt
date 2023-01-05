@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.registries.dimension.effects
 
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.minecraft
 
 object NetherEffects : DimensionEffects {
     override val identifier = minecraft("the_nether")

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.block.redstone
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil
 class CommandBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<CommandBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("command_block")
+        override val identifier: ResourceLocation = minecraft("command_block")
 
         override fun build(connection: PlayConnection): CommandBlockEntity {
             return CommandBlockEntity(connection)

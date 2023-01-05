@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -26,7 +27,7 @@ class LightningBolt(connection: PlayConnection, entityType: EntityType, data: En
     val duration = random.nextLong(100, 250)
 
     companion object : EntityFactory<LightningBolt> {
-        override val identifier: ResourceLocation = KUtil.minecraft("lightning_bolt")
+        override val identifier: ResourceLocation = minecraft("lightning_bolt")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LightningBolt {
             return LightningBolt(connection, entityType, data, position)

@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -39,7 +40,7 @@ class Creeper(connection: PlayConnection, entityType: EntityType, data: EntityDa
 
 
     companion object : EntityFactory<Creeper> {
-        override val identifier: ResourceLocation = KUtil.minecraft("creeper")
+        override val identifier: ResourceLocation = minecraft("creeper")
         private val FUSE_STATE_DATA = EntityDataField("CREEPER_STATE")
         private val IS_CHARGED_DATA = EntityDataField("CREEPER_IS_CHARGED")
         private val IS_IGNITED_DATA = EntityDataField("CREEPER_IS_IGNITED")

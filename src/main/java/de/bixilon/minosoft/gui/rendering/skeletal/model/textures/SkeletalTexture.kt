@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.textures
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 // ToDo: This does not follow the specification
 data class SkeletalTexture(
     val path: String,
     val name: String,
-    val namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE,
+    val namespace: String = Namespaces.DEFAULT,
     val id: Int,
     val uuid: UUID,
 ) {

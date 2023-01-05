@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -35,7 +36,7 @@ open class PistonBlockEntity(connection: PlayConnection) : BlockEntity(connectio
     }
 
     companion object : BlockEntityFactory<PistonBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("piston")
+        override val identifier: ResourceLocation = minecraft("piston")
 
         override fun build(connection: PlayConnection): PistonBlockEntity {
             return PistonBlockEntity(connection)

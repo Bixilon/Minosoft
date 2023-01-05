@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.item.items.food
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.minecraft
 
 open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), FoodItem {
     override val nutrition: Int get() = 4

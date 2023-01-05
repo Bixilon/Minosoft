@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -30,7 +31,7 @@ class Skeleton(connection: PlayConnection, entityType: EntityType, data: EntityD
 
 
     companion object : EntityFactory<Skeleton> {
-        override val identifier: ResourceLocation = KUtil.minecraft("skeleton")
+        override val identifier: ResourceLocation = minecraft("skeleton")
         private val CONVERTING_DATA = EntityDataField("SKELETON_STRAY_FREEZE_CONVERTING")
         private val LEGACY_TYPE_DATA = EntityDataField("LEGACY_SKELETON_TYPE")
 

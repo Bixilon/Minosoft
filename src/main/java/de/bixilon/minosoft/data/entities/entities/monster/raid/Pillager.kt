@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -30,7 +31,7 @@ class Pillager(connection: PlayConnection, entityType: EntityType, data: EntityD
         get() = data.getBoolean(IS_CHARGING_CROSSBOW_DATA, false)
 
     companion object : EntityFactory<Pillager> {
-        override val identifier: ResourceLocation = KUtil.minecraft("pillager")
+        override val identifier: ResourceLocation = minecraft("pillager")
         private val IS_CHARGING_CROSSBOW_DATA = EntityDataField("PILLAGER_IS_CHARGING_CROSSBOW")
 
 

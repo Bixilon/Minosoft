@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -34,7 +35,7 @@ class IronGolem(connection: PlayConnection, entityType: EntityType, data: Entity
         get() = getIronGolemFlag(0x01)
 
     companion object : EntityFactory<IronGolem> {
-        override val identifier: ResourceLocation = KUtil.minecraft("iron_golem")
+        override val identifier: ResourceLocation = minecraft("iron_golem")
         private val FLAGS_DATA = EntityDataField("IRON_GOLEM_FLAGS")
 
 

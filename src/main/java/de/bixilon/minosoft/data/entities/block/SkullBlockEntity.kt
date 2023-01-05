@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -20,7 +21,7 @@ import de.bixilon.minosoft.util.KUtil
 class SkullBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     companion object : BlockEntityFactory<SkullBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("skull")
+        override val identifier: ResourceLocation = minecraft("skull")
 
         override fun build(connection: PlayConnection): SkullBlockEntity {
             return SkullBlockEntity(connection)

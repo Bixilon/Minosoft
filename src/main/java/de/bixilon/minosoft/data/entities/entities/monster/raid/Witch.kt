@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -34,7 +35,7 @@ class Witch(connection: PlayConnection, entityType: EntityType, data: EntityData
         get() = data.getBoolean(LEGACY_IS_AGGRESSIVE_DATA, false)
 
     companion object : EntityFactory<Witch> {
-        override val identifier: ResourceLocation = KUtil.minecraft("witch")
+        override val identifier: ResourceLocation = minecraft("witch")
         private val IS_DRINKING_POTION_DATA = EntityDataField("WITCH_IS_DRINKING_POTION")
         private val LEGACY_IS_AGGRESSIVE_DATA = EntityDataField("LEGACY_WITCH_IS_AGGRESSIVE")
 

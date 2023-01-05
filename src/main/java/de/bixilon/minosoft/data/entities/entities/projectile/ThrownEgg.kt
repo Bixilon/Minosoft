@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -26,8 +27,8 @@ class ThrownEgg(connection: PlayConnection, entityType: EntityType, data: Entity
         get() = DEFAULT_ITEM
 
     companion object : EntityFactory<ThrownEgg> {
-        private val DEFAULT_ITEM = KUtil.minecraft("egg")
-        override val identifier: ResourceLocation = KUtil.minecraft("egg")
+        private val DEFAULT_ITEM = minecraft("egg")
+        override val identifier: ResourceLocation = minecraft("egg")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownEgg {
             return ThrownEgg(connection, entityType, data, position, rotation)

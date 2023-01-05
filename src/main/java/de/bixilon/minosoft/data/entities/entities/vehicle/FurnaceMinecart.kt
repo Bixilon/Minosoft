@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -30,7 +31,7 @@ class FurnaceMinecart(connection: PlayConnection, entityType: EntityType, data: 
         get() = data.getBoolean(HAS_FUEL_DATA, false)
 
     companion object : EntityFactory<FurnaceMinecart> {
-        override val identifier: ResourceLocation = KUtil.minecraft("furnace_minecart")
+        override val identifier: ResourceLocation = minecraft("furnace_minecart")
         private val HAS_FUEL_DATA = EntityDataField("MINECART_FURNACE_HAS_FUEL")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): FurnaceMinecart {

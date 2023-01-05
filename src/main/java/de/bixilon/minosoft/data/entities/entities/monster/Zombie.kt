@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -40,7 +41,7 @@ open class Zombie(connection: PlayConnection, entityType: EntityType, data: Enti
 
 
     companion object : EntityFactory<Zombie> {
-        override val identifier: ResourceLocation = KUtil.minecraft("zombie")
+        override val identifier: ResourceLocation = minecraft("zombie")
         private val IS_BABY_DATA = EntityDataField("ZOMBIE_IS_BABY")
         private val SPECIAL_TYPE_DATA = EntityDataField("ZOMBIE_SPECIAL_TYPE")
         private val DROWNING_CONVERSION_DATA = EntityDataField("ZOMBIE_DROWNING_CONVERSION")

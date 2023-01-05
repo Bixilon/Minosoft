@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -41,7 +42,7 @@ class ThrownPotion(connection: PlayConnection, entityType: EntityType, data: Ent
     override val defaultItem: ItemStack? = null
 
     companion object : EntityFactory<ThrownPotion> {
-        override val identifier: ResourceLocation = KUtil.minecraft("potion")
+        override val identifier: ResourceLocation = minecraft("potion")
         private val POTION_ITEM_DATA = EntityDataField("THROWN_POTION_ITEM")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownPotion {

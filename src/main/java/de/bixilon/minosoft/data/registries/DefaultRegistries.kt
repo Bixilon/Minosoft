@@ -25,6 +25,8 @@ import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionRegistry
@@ -33,15 +35,14 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationR
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.minecraft
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 object DefaultRegistries {
-    private val ENUM_RESOURCE_LOCATION = KUtil.minosoft("mapping/enums.json")
-    private val REGISTRIES_RESOURCE_LOCATION = KUtil.minosoft("mapping/default_registries.json")
+    private val ENUM_RESOURCE_LOCATION = minosoft("mapping/enums.json")
+    private val REGISTRIES_RESOURCE_LOCATION = minosoft("mapping/default_registries.json")
     private var initialized = false
 
     val EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)

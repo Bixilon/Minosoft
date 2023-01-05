@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.util.KUtil
@@ -40,7 +41,7 @@ object RenderConstants {
     const val MAXIMUM_QUEUE_TIME_PER_FRAME = 20L
 
 
-    val DEBUG_TEXTURE_RESOURCE_LOCATION = KUtil.minosoft("textures/debug.png")
+    val DEBUG_TEXTURE_RESOURCE_LOCATION = minosoft("textures/debug.png")
 
 
     const val CAMPFIRE_ITEMS = 4

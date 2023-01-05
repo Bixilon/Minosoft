@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Instruments
 import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
@@ -66,7 +67,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
     }
 
     companion object : BlockEntityFactory<NoteBlockBlockEntity>, AliasedIdentified {
-        override val identifier: ResourceLocation = KUtil.minecraft("note_block")
+        override val identifier: ResourceLocation = minecraft("note_block")
 
         override val identifiers: Set<ResourceLocation> = setOf("minecraft:noteblock".toResourceLocation()) // TODO: Investigate why this has 2 identifiers
 

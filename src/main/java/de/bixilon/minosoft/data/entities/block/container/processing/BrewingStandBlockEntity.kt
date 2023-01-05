@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities.block.container.processing
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
@@ -21,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil
 class BrewingStandBlockEntity(connection: PlayConnection) : ProcessingBlockEntity(connection) {
 
     companion object : BlockEntityFactory<BrewingStandBlockEntity> {
-        override val identifier: ResourceLocation = KUtil.minecraft("brewing_stand")
+        override val identifier: ResourceLocation = minecraft("brewing_stand")
 
         override fun build(connection: PlayConnection): BrewingStandBlockEntity {
             return BrewingStandBlockEntity(connection)
