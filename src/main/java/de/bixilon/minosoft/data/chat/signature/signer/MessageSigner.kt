@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.chat.signature.signer
 
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.versions.Version
 import java.security.PrivateKey
@@ -28,14 +29,14 @@ interface MessageSigner {
 
     companion object {
 
-        fun forVersion(version: Version): MessageSigner {
+        fun forVersion(version: Version, connection: PlayConnection): MessageSigner {
             if (version < ProtocolVersions.V_1_19_1_PRE4) {
                 return MessageSigner1(version)
             }
             if (version < ProtocolVersions.V_22W42A) {
                 return MessageSigner2(version)
             }
-            return MessageSigner3(version)
+            return MessageSigner3(version, connection)
         }
     }
 }

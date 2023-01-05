@@ -14,11 +14,19 @@
 package de.bixilon.minosoft.data.chat.signature.signer
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder
+import com.google.common.primitives.Longs
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
+import java.security.Signature
+import java.util.*
 
 object MessageSigningUtil {
 
     fun String.getSignatureBytes(): ByteArray {
         return """{"text":"${String(JsonStringEncoder.getInstance().quoteAsString(this))}"}""".encodeNetwork()
+    }
+
+    fun Signature.update(uuid: UUID) {
+        update(Longs.toByteArray(uuid.mostSignificantBits))
+        update(Longs.toByteArray(uuid.leastSignificantBits))
     }
 }

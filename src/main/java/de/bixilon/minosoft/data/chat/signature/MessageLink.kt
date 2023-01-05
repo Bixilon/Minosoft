@@ -11,11 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.signature.errors
+package de.bixilon.minosoft.data.chat.signature
 
-import java.time.Instant
+import java.util.*
 
-class MessageExpiredError(
-    val sent: Instant,
-    val received: Instant,
-) : Exception("Message expired: Sent at $sent, but received too late at $received")
+class MessageLink(
+    val index: Int,
+    val sender: UUID,
+    val sessionId: UUID,
+) {
+
+    fun next(): MessageLink {
+        // TODO: check Int.MAX_VALUE
+        return MessageLink(index + 1, sender, sessionId)
+    }
+}

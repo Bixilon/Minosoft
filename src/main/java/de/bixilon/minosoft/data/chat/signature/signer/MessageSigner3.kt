@@ -13,8 +13,15 @@
 
 package de.bixilon.minosoft.data.chat.signature.signer
 
+import com.google.common.primitives.Ints
+import com.google.common.primitives.Longs
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
+import de.bixilon.minosoft.data.chat.signature.MessageLink
+import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.update
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.versions.Version
 import java.security.PrivateKey
 import java.time.Instant
@@ -22,9 +29,41 @@ import java.util.*
 
 class MessageSigner3(
     private val version: Version,
+    private val connection: PlayConnection,
 ) : MessageSigner {
+    private var link: MessageLink = MessageLink(0, connection.account.uuid, connection.sessionId)
 
     override fun signMessage(privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray {
-        TODO("Not yet implemented!")
+        val signature = CryptManager.createSignature(version)
+
+        signature.initSign(privateKey)
+
+        signature.update(Ints.toByteArray(1))
+
+        val link = nextLink()
+        signature.update(link.sender)
+        signature.update(link.sessionId)
+        signature.update(Ints.toByteArray(link.index))
+
+        // message body
+        signature.update(Longs.toByteArray(salt))
+        signature.update(Longs.toByteArray(time.epochSecond))
+        val encoded = message.encodeNetwork()
+        signature.update(Ints.toByteArray(encoded.size))
+        signature.update(encoded)
+
+        signature.update(Ints.toByteArray(lastSeen.messages.size))
+
+        for (lastSeenMessage in lastSeen.messages) {
+            signature.update(lastSeenMessage.signature)
+        }
+
+
+        return signature.sign()
+    }
+
+    private fun nextLink(): MessageLink {
+        this.link = this.link.next()
+        return this.link
     }
 }

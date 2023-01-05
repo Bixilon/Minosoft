@@ -47,7 +47,7 @@ import java.time.Instant
 class ConnectionUtil(
     private val connection: PlayConnection,
 ) {
-    private val chain = MessageChain(connection.version)
+    private val chain = MessageChain(connection.version, connection)
     private val random = SecureRandom()
 
     fun sendDebugMessage(message: Any) {

@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.chat.signature.signer
 
 import com.google.common.hash.Hashing
-import com.google.common.primitives.Longs
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.getSignatureBytes
+import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.update
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -59,8 +59,7 @@ class MessageSigner2(
         val hash = Hashing.sha256().hashBytes(buffer.toArray()).asBytes()
 
         previous?.let { signature.update(it) }
-        signature.update(Longs.toByteArray(sender.mostSignificantBits))
-        signature.update(Longs.toByteArray(sender.leastSignificantBits))
+        signature.update(sender)
         signature.update(hash)
 
         return signature.sign()

@@ -15,13 +15,14 @@ package de.bixilon.minosoft.data.chat.signature
 
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.versions.Version
 import java.security.PrivateKey
 import java.time.Instant
 import java.util.*
 
-class MessageChain(version: Version) {
-    val signer = MessageSigner.forVersion(version)
+class MessageChain(version: Version, connection: PlayConnection) {
+    val signer = MessageSigner.forVersion(version, connection)
 
     fun signMessage(privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray {
         return signer.signMessage(privateKey, message, preview, salt, sender, time, lastSeen)
