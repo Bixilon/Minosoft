@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.registries.particle
 
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem

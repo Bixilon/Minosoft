@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.fluid
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.data.registries.fluid.fluids.EmptyFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.lava.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.registries.Registries
 

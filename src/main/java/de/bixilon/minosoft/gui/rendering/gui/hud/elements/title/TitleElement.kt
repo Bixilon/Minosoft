@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments

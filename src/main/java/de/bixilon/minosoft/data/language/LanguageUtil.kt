@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.language.lang.LanguageList
 import de.bixilon.minosoft.data.language.manager.LanguageManager
 import de.bixilon.minosoft.data.language.translate.Translated
 import de.bixilon.minosoft.data.language.translate.Translator
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition

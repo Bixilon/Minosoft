@@ -18,7 +18,6 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
 import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.fluids.WaterFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle

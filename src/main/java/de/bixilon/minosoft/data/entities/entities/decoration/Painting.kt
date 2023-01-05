@@ -21,9 +21,9 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.Motif
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.entityPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3i
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

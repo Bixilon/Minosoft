@@ -16,7 +16,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY

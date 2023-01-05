@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions

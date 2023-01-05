@@ -16,11 +16,11 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Instruments
 import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

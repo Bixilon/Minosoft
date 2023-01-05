@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.GLM.abs
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin

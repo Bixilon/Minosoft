@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.textures
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*

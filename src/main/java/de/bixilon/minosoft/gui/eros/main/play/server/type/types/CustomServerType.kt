@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen

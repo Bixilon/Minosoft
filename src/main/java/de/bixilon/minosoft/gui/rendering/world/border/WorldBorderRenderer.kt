@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.world.border.WorldBorderState
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -29,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 

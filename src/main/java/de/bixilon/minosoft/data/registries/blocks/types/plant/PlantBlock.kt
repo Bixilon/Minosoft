@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.data.registries.blocks.types.plant
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus

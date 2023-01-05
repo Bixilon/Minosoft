@@ -27,7 +27,6 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
@@ -42,7 +41,6 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.concurrent.atomic.AtomicInteger
 
 class EntityRenderer(

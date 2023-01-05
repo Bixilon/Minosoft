@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl
 
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.commands.util.StringReader
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 

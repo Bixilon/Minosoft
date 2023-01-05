@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.plant
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class CropBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(resourceLocation, registries, data) {

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.commands.util
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.commands.errors.reader.*
 import de.bixilon.minosoft.commands.errors.reader.number.NegativeNumberError
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
 

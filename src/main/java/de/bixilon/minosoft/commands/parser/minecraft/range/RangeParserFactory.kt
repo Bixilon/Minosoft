@@ -18,7 +18,7 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRangeParser
 import de.bixilon.minosoft.commands.parser.minecraft.range._int.IntRangeParser
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 

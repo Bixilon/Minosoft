@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.builtin
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

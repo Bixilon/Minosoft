@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ import de.bixilon.kutil.file.watcher.FileWatcher
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.json.Jackson

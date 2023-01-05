@@ -34,7 +34,6 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.properties.StatusEffectProperty
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.physics.PhysicsEntity
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
@@ -43,6 +42,7 @@ import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.armor.DefendingItem
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.shapes.AABB

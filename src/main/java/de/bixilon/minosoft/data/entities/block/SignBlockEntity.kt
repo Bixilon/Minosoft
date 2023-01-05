@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor

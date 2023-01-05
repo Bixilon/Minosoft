@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.dimension.effects
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minecraft

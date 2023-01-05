@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.materials
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
 import de.bixilon.minosoft.data.registries.item.items.armor.DefendingItem

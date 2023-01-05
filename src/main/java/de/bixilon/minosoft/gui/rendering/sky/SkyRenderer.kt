@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.effects.OverworldEffects
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent

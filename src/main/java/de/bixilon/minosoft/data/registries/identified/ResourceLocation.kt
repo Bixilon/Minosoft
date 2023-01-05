@@ -10,11 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries
+package de.bixilon.minosoft.data.registries.identified
 
 import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.data.registries.ResourceLocation.Companion.ALLOWED_NAMESPACE_PATTERN
-import de.bixilon.minosoft.data.registries.ResourceLocation.Companion.ALLOWED_PATH_PATTERN
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation.Companion.ALLOWED_NAMESPACE_PATTERN
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation.Companion.ALLOWED_PATH_PATTERN
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 

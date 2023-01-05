@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.colors.DyeColors
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
 

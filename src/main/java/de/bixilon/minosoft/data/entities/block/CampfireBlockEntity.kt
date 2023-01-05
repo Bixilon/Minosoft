@@ -21,10 +21,10 @@ import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.entity.CampfireBlock
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

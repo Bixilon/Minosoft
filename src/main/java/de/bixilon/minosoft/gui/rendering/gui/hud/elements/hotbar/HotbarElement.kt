@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Arms
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments

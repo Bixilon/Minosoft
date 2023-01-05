@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController

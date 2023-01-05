@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.registries.dimension.effects
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface DimensionEffects : Identified {

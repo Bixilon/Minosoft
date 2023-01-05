@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.integrated
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 

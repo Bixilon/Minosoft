@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.emotion
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory

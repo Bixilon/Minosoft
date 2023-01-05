@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore

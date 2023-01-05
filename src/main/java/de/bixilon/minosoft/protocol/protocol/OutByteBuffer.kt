@@ -16,7 +16,7 @@ import com.sun.javafx.geom.Vec3f
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.util.collections.bytes.HeapArrayByteList

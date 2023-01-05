@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.DoubleChestRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

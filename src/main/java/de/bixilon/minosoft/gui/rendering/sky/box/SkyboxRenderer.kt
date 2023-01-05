@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,9 +24,9 @@ import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.entities.entities.LightningBolt
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.dimension.effects.DefaultDimensionEffects
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor

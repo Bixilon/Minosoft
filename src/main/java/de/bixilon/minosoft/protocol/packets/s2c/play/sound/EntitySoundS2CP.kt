@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.sound
 
 import de.bixilon.minosoft.data.SoundCategories
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer

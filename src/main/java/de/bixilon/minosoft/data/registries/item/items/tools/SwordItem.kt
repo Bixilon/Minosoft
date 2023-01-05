@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.registries.item.items.tools
 
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

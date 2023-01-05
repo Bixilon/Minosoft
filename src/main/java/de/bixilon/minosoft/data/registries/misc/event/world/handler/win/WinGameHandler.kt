@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.misc.event.world.handler.win
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.misc.event.game.GameEventHandler
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP

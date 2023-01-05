@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.biomes
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec

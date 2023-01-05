@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries
 
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

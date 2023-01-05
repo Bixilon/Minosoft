@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.TamableAnimal
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

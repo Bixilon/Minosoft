@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 import de.bixilon.minosoft.data.registries.Motif
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistry
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -45,6 +44,7 @@ import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
 import de.bixilon.minosoft.data.registries.fluid.FluidFactories
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.PixLyzerFluid
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.ItemRegistry
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.misc.MiscData

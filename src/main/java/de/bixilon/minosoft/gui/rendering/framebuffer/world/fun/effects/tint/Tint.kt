@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.tint
 
 import de.bixilon.kutil.random.RandomUtil.nextInt
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect

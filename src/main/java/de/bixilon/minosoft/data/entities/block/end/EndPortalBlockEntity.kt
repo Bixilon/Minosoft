@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.block.end
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.entities.block.JukeboxBlockEntity
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
 

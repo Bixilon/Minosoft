@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.extra
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem

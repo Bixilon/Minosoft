@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minecraft

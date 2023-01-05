@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.entities.block.container.storage
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer

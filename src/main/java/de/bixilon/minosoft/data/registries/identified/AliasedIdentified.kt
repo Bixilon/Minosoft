@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.identified
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-
 interface AliasedIdentified {
     val identifiers: Set<ResourceLocation>
 }
