@@ -21,7 +21,7 @@ import java.util.*
 /**
  * A resource location is a string that identifies a resource. It is composed of a namespace and a path, separated by a colon (:).
  * The namespace is optional and defaults to "minecraft". The path is the path to the resource, separated by forward slashes (/).
- * If possible, use KUtils.minecraft() or KUtils.minosoft() instead.
+ * If possible, use KUtil.minecraft() or KUtil.minosoft() instead.
  *
  * @param namespace The namespace of the resource location
  * @param path The path of the resource location
@@ -43,7 +43,8 @@ open class ResourceLocation(
         if (namespace.isBlank() || !ALLOWED_NAMESPACE_PATTERN.matches(namespace)) {
             throw IllegalArgumentException("Invalid namespace: $namespace")
         }
-        //if (!ProtocolDefinition.ALLOWED_PATH_PATTERN.matches(path) && path != "") TODO: Figure out a way to implement this but have backwards compatibility with pre 1.13 versions
+        // TODO: Figure out a way to implement this but have backwards compatibility with pre flattening versions
+        // if (!ProtocolDefinition.ALLOWED_PATH_PATTERN.matches(path) && path != "")
         //    throw IllegalArgumentException("Path '$path' is not allowed!")
     }
 
@@ -60,8 +61,9 @@ open class ResourceLocation(
      * @return If the namespace is "minecraft", the path is returned. Otherwise, the full string is returned.
      */
     fun toMinifiedString(): String {
-        if (namespace == ProtocolDefinition.DEFAULT_NAMESPACE)
+        if (namespace == ProtocolDefinition.DEFAULT_NAMESPACE) {
             return path
+        }
         return toString()
     }
 
@@ -77,6 +79,7 @@ open class ResourceLocation(
         if (other === this) return true
         if (other !is ResourceLocation) return false
         if (hashCode() != other.hashCode()) return false
+
         return path == other.path && namespace == other.namespace
     }
 
@@ -86,29 +89,31 @@ open class ResourceLocation(
 
         /**
          * Creates a resource location from a string.
-         * If possible, use KUtils.minecraft() or KUtils.minosoft() instead.
+         * If possible, use KUtil.minecraft() or KUtil.minosoft() instead.
          *
          * @param string The string to parse
          * @return The parsed resource location
          */
         fun of(string: String): ResourceLocation {
             val split = string.split(':', limit = 2)
-            if (split.size == 1)
+            if (split.size == 1) {
                 return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, string)
+            }
             return ResourceLocation(split[0], split[1])
         }
 
         /**
          * Creates a resource location from a string by splitting it at the first colon (:) or at the first slash (/) if there is no colon.
-         * If possible, use KUtils.minecraft() or KUtils.minosoft() instead.
+         * If possible, use KUtil.minecraft() or KUtil.minosoft() instead.
          *
          * @param path The path to parse
          * @return The parsed resource location
          */
-        @Deprecated("Don't know why this was a thing but kept it for compatibility reasons. DO NOT USE!")
+        @Deprecated("Don't know why this was a thing")
         fun ofPath(path: String): ResourceLocation {
-            if (path.contains(':') || !path.contains('/'))
+            if (path.contains(':') || !path.contains('/')) {
                 return of(path)
+            }
             val split = path.split('/', limit = 2)
             return ResourceLocation(split[0], split[1])
         }
