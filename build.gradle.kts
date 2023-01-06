@@ -22,6 +22,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.nio.charset.StandardCharsets
 
 
 plugins {
@@ -455,6 +456,10 @@ java {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
     // kotlinOptions.useK2 = true // ToDo: Really? boosts the performance a lot
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = StandardCharsets.UTF_8.name()
 }
 
 application {
