@@ -455,7 +455,7 @@ java {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
-    // kotlinOptions.useK2 = true // ToDo: Really? boosts the performance a lot
+    // kotlinOptions.useK2 = true // ToDo: Really? boosts the performance a lot, see https://youtrack.jetbrains.com/issue/KT-55806/K2-Property-must-be-initialized-or-be-abstract and https://youtrack.jetbrains.com/issue/KT-55804/K2-Non-nullable-generic-marked-as-nullable-even-if-assertNonNull
 }
 
 tasks.withType<JavaCompile> {
