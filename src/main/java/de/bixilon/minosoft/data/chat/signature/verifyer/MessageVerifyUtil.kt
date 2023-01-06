@@ -15,13 +15,16 @@ package de.bixilon.minosoft.data.chat.signature.verifyer
 
 import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
 import de.bixilon.minosoft.data.chat.signature.errors.MessageExpiredError
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.versions.Version
 import java.time.Instant
 import java.util.*
 
 object MessageVerifyUtil {
 
-    fun checkExpired(sent: Instant, received: Instant): Exception? {
-        if (received.toEpochMilli() - sent.toEpochMilli() > ChatSignatureProperties.MESSAGE_TTL) {
+    fun checkExpired(sent: Instant, received: Instant, long: Boolean): Exception? {
+        val ttl = if (long) ChatSignatureProperties.MESSAGE_TTL_LONG else ChatSignatureProperties.MESSAGE_TTL
+        if (received.toEpochMilli() - sent.toEpochMilli() > ttl) {
             return MessageExpiredError(sent, received)
         }
         return null
@@ -29,6 +32,7 @@ object MessageVerifyUtil {
 
     @Deprecated("TODO")
     fun verifyMessage(
+        version: Version,
         sent: Instant,
         received: Instant,
         versionId: Int,
@@ -36,7 +40,7 @@ object MessageVerifyUtil {
         content: String,
         sender: UUID,
     ): Exception? {
-        checkExpired(sent, received)?.let { return it }
+        checkExpired(sent, received, version >= ProtocolVersions.V_22W42A)?.let { return it }
 
         // TODO: Verify signature
 
