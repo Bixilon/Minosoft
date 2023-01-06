@@ -76,7 +76,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val received = Instant.now()
 
-        val error = MessageVerifyUtil.verifyMessage(sent, received, versionId, salt, message, sender.uuid)
+        val error = MessageVerifyUtil.verifyMessage(connection.version, sent, received, versionId, salt, message, sender.uuid)
 
 
         return SignedChatMessage(connection, message, type, connection.getMessageSender(sender.uuid), parameters, null, error, sent, received)
@@ -120,7 +120,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val sender = connection.getMessageSender(senderUUID)
         val received = Instant.now()
 
-        val error = MessageVerifyUtil.verifyMessage(sent, received, versionId, salt, message, senderUUID)
+        val error = MessageVerifyUtil.verifyMessage(connection.version, sent, received, versionId, salt, message, senderUUID)
 
         return SignedChatMessage(
             connection = connection,
