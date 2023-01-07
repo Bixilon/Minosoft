@@ -67,8 +67,7 @@ class ConnectionUtil(
         ChatNode("", allowCLI = false).execute(CommandReader(message), CommandStack(connection))
     }
 
-    fun sendChatMessage(message: String) {
-        val message = message.trimWhitespaces()
+    private fun validateChatMessage(message: String) {
         if (message.isBlank()) {
             throw IllegalArgumentException("Chat message can not be blank!")
         }
@@ -78,15 +77,20 @@ class ConnectionUtil(
         if (message.length > connection.version.maxChatMessageSize) {
             throw IllegalArgumentException("Message length (${message.length} can not exceed ${connection.version.maxChatMessageSize})")
         }
-        if (connection.events.fire(ChatMessageSendEvent(connection, message))) {
+    }
+
+    fun sendChatMessage(message: String) {
+        val trimmed = message.trimWhitespaces()
+        validateChatMessage(trimmed)
+        if (connection.events.fire(ChatMessageSendEvent(connection, trimmed))) {
             return
         }
-        Log.log(LogMessageType.CHAT_OUT) { message }
+        Log.log(LogMessageType.CHAT_OUT) { trimmed }
         val privateKey = connection.player.privateKey?.private
         if (privateKey == null || !connection.version.requiresSignedChat) {
-            return connection.sendPacket(ChatMessageC2SP(message))
+            return connection.sendPacket(ChatMessageC2SP(trimmed))
         }
-        sendSignedMessage(privateKey, message)
+        sendSignedMessage(privateKey, trimmed)
     }
 
     fun sendSignedMessage(privateKey: PrivateKey = connection.player.privateKey!!.private, message: String) {
@@ -109,6 +113,11 @@ class ConnectionUtil(
         if (!connection.version.requiresSignedChat || connection.profiles.connection.signature.sendCommandAsMessage) {
             return sendChatMessage(command)
         }
+        val trimmed = command.trimWhitespaces().removePrefix("/")
+        validateChatMessage(trimmed)
+        if (stack.size == 0) {
+            throw IllegalArgumentException("Empty command stack! Did the command failed to parse?")
+        }
         val salt = SecureRandom().nextLong()
         val time = Instant.now()
         val acknowledgement = Acknowledgement.EMPTY
@@ -120,7 +129,7 @@ class ConnectionUtil(
             signature = stack.sign(signer, key.private, salt, time)
         }
 
-        connection.sendPacket(CommandC2SP(command.trimWhitespaces().removePrefix("/"), time, salt, signature, false, acknowledgement))
+        connection.sendPacket(CommandC2SP(trimmed, time, salt, signature, false, acknowledgement))
     }
 
     fun prepareSpawn() {
