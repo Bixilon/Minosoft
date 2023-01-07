@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -49,7 +50,8 @@ class BakedItemModel(
 
     fun render2d(guiRenderer: GUIRenderer, offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2i, stack: ItemStack) {
         val texture = texture ?: return
-        consumer.addQuad(offset, offset + size, texture, tint = ChatColors.WHITE, options = options)
+        val tint = guiRenderer.context.tintManager.getItemTint(stack)
+        consumer.addQuad(offset, offset + size, texture, tint = tint?.let { it[0].asRGBColor() } ?: ChatColors.WHITE, options = options) // TODO: multiple tint layers
 
         renderDurability(guiRenderer, offset, consumer, options, size, stack)
 

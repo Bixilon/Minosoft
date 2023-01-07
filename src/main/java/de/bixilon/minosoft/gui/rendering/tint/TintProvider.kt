@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.gui.rendering.tint
 
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
-import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 
 interface TintProvider {
@@ -25,7 +25,7 @@ interface TintProvider {
         return getBlockColor(blockState, biome, x, y, z, 0)
     }
 
-    fun getItemColor(item: Item, tintIndex: Int): Int = Colors.WHITE
+    fun getItemColor(stack: ItemStack, tintIndex: Int): Int = Colors.WHITE
 
     fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, x: Int, y: Int, z: Int): Int = Colors.WHITE
 }

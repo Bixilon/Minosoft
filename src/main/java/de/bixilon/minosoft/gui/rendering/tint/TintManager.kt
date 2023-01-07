@@ -16,9 +16,9 @@ package de.bixilon.minosoft.gui.rendering.tint
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -26,21 +26,15 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBCo
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class TintManager(private val connection: PlayConnection) {
-    private val grassTintCalculator = GrassTintCalculator()
-    private val foliageTintCalculator = FoliageTintCalculator()
+class TintManager(val connection: PlayConnection) {
+    val grassTintCalculator = GrassTintCalculator()
+    val foliageTintCalculator = FoliageTintCalculator()
 
     fun init(assetsManager: AssetsManager) {
         grassTintCalculator.init(assetsManager)
         foliageTintCalculator.init(assetsManager)
 
-        val blockRegistry = connection.registries.block
-        for ((blockNames, provider) in createDefaultTints()) {
-            for (blockName in blockNames) {
-                val block = blockRegistry[blockName] ?: continue
-                block.tintProvider = provider
-            }
-        }
+        DefaultTints.init(this)
     }
 
     private fun getAverageBlockTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, tintProvider: TintProvider, x: Int, y: Int, z: Int): IntArray {
@@ -93,19 +87,20 @@ class TintManager(private val connection: PlayConnection) {
         return fluid.model?.tint?.getFluidTint(fluid, biome, height, x, y, z)
     }
 
+    fun getItemTint(stack: ItemStack): IntArray? {
+        val tintProvider = stack.item.item.tintProvider ?: return null
+        val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
+
+        for (tintIndex in tints.indices) {
+            tints[tintIndex] = tintProvider.getItemColor(stack, tintIndex)
+        }
+
+        return tints
+    }
+
 
     private fun createDefaultTints(): Map<Set<ResourceLocation>, TintProvider> {
         return mapOf(
-            setOf(MinecraftBlocks.GRASS_BLOCK, MinecraftBlocks.FERN, MinecraftBlocks.GRASS, MinecraftBlocks.POTTED_FERN) to grassTintCalculator,
-            setOf(MinecraftBlocks.LARGE_FERN, MinecraftBlocks.TALL_GRASS) to TallGrassTintCalculator(grassTintCalculator),
-            setOf(MinecraftBlocks.SPRUCE_LEAVES) to StaticTintProvider(0x619961),
-            setOf(MinecraftBlocks.BIRCH_LEAVES) to StaticTintProvider(0x80A755),
-            setOf(MinecraftBlocks.OAK_LEAVES, MinecraftBlocks.JUNGLE_LEAVES, MinecraftBlocks.ACACIA_LEAVES, MinecraftBlocks.DARK_OAK_LEAVES, MinecraftBlocks.VINE) to foliageTintCalculator, setOf(MinecraftBlocks.REDSTONE_WIRE) to RedstoneWireTintCalculator,
-            setOf(MinecraftBlocks.WATER_CAULDRON, MinecraftBlocks.CAULDRON, MinecraftBlocks.WATER) to WaterTintProvider,
-            setOf(MinecraftBlocks.SUGAR_CANE) to SugarCaneTintCalculator(grassTintCalculator),
-            setOf(MinecraftBlocks.ATTACHED_MELON_STEM, MinecraftBlocks.ATTACHED_PUMPKIN_STEM) to StaticTintProvider(0xE0C71C),
-            setOf(MinecraftBlocks.MELON_STEM, MinecraftBlocks.PUMPKIN_STEM) to StemTintCalculator,
-            setOf(MinecraftBlocks.LILY_PAD) to StaticTintProvider(block = 0x208030, item = 0x71C35C),
         )
     }
 

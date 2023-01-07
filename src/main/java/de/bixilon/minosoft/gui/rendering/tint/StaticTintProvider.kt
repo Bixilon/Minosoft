@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.tint
 
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.item.items.Item
 
 class StaticTintProvider(val block: Int, val item: Int = block, val particle: Int = block) : TintProvider {
 
@@ -23,7 +23,7 @@ class StaticTintProvider(val block: Int, val item: Int = block, val particle: In
         return this.block
     }
 
-    override fun getItemColor(item: Item, tintIndex: Int): Int {
+    override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {
         return this.item
     }
 
