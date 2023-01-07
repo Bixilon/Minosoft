@@ -9,7 +9,6 @@ Versions before the minecraft netty rewrite (1.7; 13w41b) are currently not supp
 
 | Name       | State | Comment                                                                                                   |
 |------------|-------|-----------------------------------------------------------------------------------------------------------|
-| 1.19.3     | ✔     | chat broken [#93](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/83)                                 |
 | 1.19.x     | ✔     | communication commands broken (e.g. `/msg` [#93](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/83)) |
 | 1.18.x     | ✅     | best version supported                                                                                    |
 | 1.17.x     | ✅     |                                                                                                           |
