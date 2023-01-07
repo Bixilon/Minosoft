@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.chat.signature.signer
 import com.google.common.primitives.Longs
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.getSignatureBytes
+import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.update
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.versions.Version
@@ -28,13 +29,16 @@ class MessageSigner1(
 ) : MessageSigner {
 
     override fun signMessage(privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray {
+        return signMessage(privateKey, message, salt, sender, time)
+    }
+
+    fun signMessage(privateKey: PrivateKey, message: String, salt: Long, sender: UUID, time: Instant): ByteArray {
         val signature = CryptManager.createSignature(version)
 
         signature.initSign(privateKey)
 
         signature.update(Longs.toByteArray(salt))
-        signature.update(Longs.toByteArray(sender.mostSignificantBits))
-        signature.update(Longs.toByteArray(sender.leastSignificantBits))
+        signature.update(sender)
         signature.update(Longs.toByteArray(time.epochSecond))
         signature.update(message.getSignatureBytes())
 

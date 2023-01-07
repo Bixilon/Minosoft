@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.update
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.versions.Version
 import java.security.PrivateKey
@@ -29,19 +28,23 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class MessageSigner3(
     private val version: Version,
-    private val connection: PlayConnection,
+    private val sessionId: UUID,
 ) : MessageSigner {
     private var index = AtomicInteger()
 
     override fun signMessage(privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray {
+        return signMessage(privateKey, message, salt, sender, time, lastSeen)
+    }
+
+    fun signMessage(privateKey: PrivateKey, message: String, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray {
         val signature = CryptManager.createSignature(version)
 
         signature.initSign(privateKey)
 
         signature.update(Ints.toByteArray(1))
 
-        signature.update(connection.account.uuid)
-        signature.update(connection.sessionId)
+        signature.update(sender)
+        signature.update(sessionId)
 
         val index = index.getAndIncrement()
         signature.update(Ints.toByteArray(index))

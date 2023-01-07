@@ -17,7 +17,7 @@ import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.TestAssetsManager
 import de.bixilon.minosoft.config.profile.ProfileTestUtil.createProfiles
-import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
+import de.bixilon.minosoft.data.accounts.types.test.TestAccount
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.WorldTestUtil.createWorld
@@ -36,7 +36,7 @@ object ConnectionTestUtil {
 
     fun createConnection(worldSize: Int = 0): PlayConnection {
         val connection = IT.OBJENESIS.newInstance(PlayConnection::class.java)
-        connection::account.forceSet(OfflineAccount("dummy"))
+        connection::account.forceSet(TestAccount)
         connection::version.forceSet(IT.VERSION)
         connection::registries.forceSet(Registries())
         connection.registries.parent = IT.REGISTRIES

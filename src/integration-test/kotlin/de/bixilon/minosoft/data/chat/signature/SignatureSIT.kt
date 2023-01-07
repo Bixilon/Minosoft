@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,9 +20,11 @@ import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import org.testng.Assert
 import org.testng.SkipException
 import org.testng.annotations.Test
+import java.time.Instant
 
 @Test(groups = ["private_key"])
 class SignatureSIT {
+    // The private key is a private environment variable in gitlab. Yes, that makes it hard to run tests outside my devices, but you have to understand that I am not publishing my private key, no matter if it is already expired
 
     fun loadYggdrasil() {
         YggdrasilUtil.load()
@@ -35,12 +37,17 @@ class SignatureSIT {
 
     @Test(dependsOnMethods = ["loadPrivateKey"])
     fun testKeyUUID() {
-        SignatureTestUtil.key.requireSignature("9e6ce7c5-40d3-483e-8e5a-b6350987d65f".toUUID()) // yep, that is really my private key
+        SignatureTestUtil.key.requireSignature("9e6ce7c5-40d3-483e-8e5a-b6350987d65f".toUUID()) // yep, that is really Bixilon's private key
     }
 
     @Test(dependsOnMethods = ["loadPrivateKey"])
     fun testRequireSignature() {
-        Assert.assertThrows { SignatureTestUtil.key.requireSignature("b876ec32-e396-476b-a115-8438d83c67d4".toUUID()) }
+        Assert.assertThrows { SignatureTestUtil.key.requireSignature("b876ec32-e396-476b-a115-8438d83c67d4".toUUID()) } // sadly that is not possible anymore
+    }
+
+    @Test(dependsOnMethods = ["loadPrivateKey"])
+    fun testExpiresAt() {
+        Assert.assertEquals(SignatureTestUtil.key.expiresAt, Instant.ofEpochSecond(1668977246L, 93031788L)) // verify that we load the correct key and not just some key
     }
 }
 

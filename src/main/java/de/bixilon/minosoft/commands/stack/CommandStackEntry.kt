@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.commands.stack
 
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
-import de.bixilon.minosoft.data.chat.signature.MessageChain
+import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.security.PrivateKey
 import java.time.Instant
@@ -24,7 +24,7 @@ data class CommandStackEntry(
     val data: Any?,
 ) {
 
-    fun sign(connection: PlayConnection, chain: MessageChain, key: PrivateKey, salt: Long, time: Instant): ByteArray {
-        return chain.signMessage(key, data.toString(), null, salt, connection.player.uuid, time, LastSeenMessageList(emptyArray()))
+    fun sign(connection: PlayConnection, signer: MessageSigner, key: PrivateKey, salt: Long, time: Instant): ByteArray {
+        return signer.signMessage(key, data.toString(), null, salt, connection.player.uuid, time, LastSeenMessageList(emptyArray()))
     }
 }
