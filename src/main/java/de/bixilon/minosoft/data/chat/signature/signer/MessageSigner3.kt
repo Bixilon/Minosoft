@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.chat.signature.signer
 import com.google.common.primitives.Ints
 import com.google.common.primitives.Longs
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
-import de.bixilon.minosoft.data.chat.signature.MessageLink
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.update
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
@@ -26,12 +25,13 @@ import de.bixilon.minosoft.protocol.versions.Version
 import java.security.PrivateKey
 import java.time.Instant
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 class MessageSigner3(
     private val version: Version,
     private val connection: PlayConnection,
 ) : MessageSigner {
-    private var link: MessageLink = MessageLink(0, connection.account.uuid, connection.sessionId)
+    private var index = AtomicInteger()
 
     override fun signMessage(privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray {
         val signature = CryptManager.createSignature(version)
@@ -40,10 +40,11 @@ class MessageSigner3(
 
         signature.update(Ints.toByteArray(1))
 
-        val link = nextLink()
-        signature.update(link.sender)
-        signature.update(link.sessionId)
-        signature.update(Ints.toByteArray(link.index))
+        signature.update(connection.account.uuid)
+        signature.update(connection.sessionId)
+
+        val index = index.getAndIncrement()
+        signature.update(Ints.toByteArray(index))
 
         // message body
         signature.update(Longs.toByteArray(salt))
@@ -60,11 +61,5 @@ class MessageSigner3(
 
 
         return signature.sign()
-    }
-
-    private fun nextLink(): MessageLink {
-        val link = this.link
-        this.link = this.link.next()
-        return link
     }
 }
