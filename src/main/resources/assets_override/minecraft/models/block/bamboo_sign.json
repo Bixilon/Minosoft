@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_standing_sign",
+  "textures": {
+    "particle": "minecraft:block/bamboo_block",
+    "sign": "minecraft:entity/signs/bamboo"
+  }
+}
