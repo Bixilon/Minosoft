@@ -43,7 +43,7 @@ class MessageSigner1Test {
         val signature = signer.signMessage(SignatureTestUtil.key.pair.private, message, -4886770986649219020L, TestAccount.uuid, time)
 
 
-        val expected = "".fromBase64() // TODO
+        val expected = "Wy91EhZPcvKlMweY+hZ6iegp9Ak5fGVdFVsTjYXl6MbnDzZtZ43GVZRvJDq/G8PZ9hsbS7ZfDGAs7TyMtYGRIuqiAR/3SKCmJZv6RGK6EiMc5uY4fQU+r/Bz+SjNivDlYXyv7ax3wZ90U210eyIDeVfYEmZqeZg4+WtWft1ZQaoTU9V2ZFIPWAQoRyhjtTVJeE8UyQrurT4LmVFom2/YFG/EtqvPTpC3vJS+EdgnWbGFvOTilGXWCrMg8I+yNFPTZ1Q7kG1HSyhy0anDT/rE9M1/SEtyHi1xhaIvueCQeIrQ/hoKdWCNJARXRdDaCAF+agtAPWneUVuquhGdhzsEmg==".fromBase64()
         assertArrayEquals(expected, signature)
     }
 
@@ -54,7 +54,7 @@ class MessageSigner1Test {
         val signature = signer.signMessage(SignatureTestUtil.key.pair.private, message, 1856442944183750824L, TestAccount.uuid, time)
 
 
-        val expected = "".fromBase64() // TODO
+        val expected = "U+rXvXVgZoVJwFMpJAWkmRYxEF1YAxtWGojLJ1pqzdZOdfrrpfqs/jr5g6QQz5cJ2v96oo2I1Zpm+O2Qnigb/fJANCcV3OISVOS+BgtkhH/Z8vCvdsFlDAnJLVKtBayk2NiERnd5Ax+drYdWuxMxMVBBk62k1uvtibpEcrB18bQJVaL8vaYOPqnr51pUXZTBP/1/WtJLTsSGXv72wOETN8gumAufhmnqLtKtmT3zclieX7JvzMZogVgzapANTtO5ZuUdxxaPkrkYOffk3GdZ4zixoN4R/gObmxMcQ+IU1x+DGA8Bu7J+LJ4Q5MPv1B239FtazHy0OkDECGECGn5m8Q==".fromBase64()
         assertArrayEquals(expected, signature)
     }
 
@@ -66,7 +66,7 @@ class MessageSigner1Test {
         val signature = signer.signMessage(SignatureTestUtil.key.pair.private, message, 6392082609L, TestAccount.uuid, time)
 
 
-        val expected = "".fromBase64() // TODO
+        val expected = "Rb41Gpj1gx00pc5mXo3YkDFim5dF0dpF6LJdpFOYfaTsyjqmxe+qudnHM8+ZJVdu30WJUYleWQk3f30eSz5FQewdP3CHRaFGYF/5ifh+j1It6RFQ1IyK3+4XITD781fnvjm8YkpljcJI7x7L9ewiwM/TKN/XnKqL/LT3ZRCghBfl2XJQLJBmOo9YeSwm6djFRAbNhQS+gy55M1dZQlRRI3tQtPK07as1/BwmhKeDfoto9lXgKVMJArS2HH08KaoBaqFhhI6SbE6CLCXpa/K3AF0ISldgbhgbLDbrgr+gAX9E+PL+hPmwR9WG5mikA+Mv0Snz2KZJKB+9G5IVWmyBFw==".fromBase64()
         assertArrayEquals(expected, signature)
     }
 
@@ -78,7 +78,7 @@ class MessageSigner1Test {
         val signature = signer.signMessage(SignatureTestUtil.key.pair.private, message, 6392082609L, TestAccount.uuid, time)
 
 
-        val expected = "".fromBase64() // TODO
+        val expected = "mS4E4dFd10fiVzYbO7WIQw3k6dCMJKPQDx8SBZvVbaHbGhL4I3F2nCapTJRux1N/XBB8uS7/haqODK2TsnALYJgv9KVsgYSxOUQC6s+Dx7ziydOvkGy2w2nIvJAtI5MOaETOQE2PMXZgTg3g+IhULYMtOlB8eYcgjIJROEpe8AiTbjXofy8foIgRuVAiSuEJ/4tQfqs0v4C5QMBjOJfB/d3tz2JoIkEKop41k2cMh93xNO7UP+AUCsDI+nBnfqiDPORHo1fncyhIhucGeFcIkhDhDMZ6lytprXyUdmYWDqNtUXkS6yn5P33rCvWEPcpGAVhetOluQZAWsEOQ/9Tl3w==".fromBase64()
         assertArrayEquals(expected, signature)
     }
     // TODO: Test 22w17a (sha1 signature)

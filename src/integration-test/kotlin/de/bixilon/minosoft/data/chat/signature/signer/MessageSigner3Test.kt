@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.chat.signature.lastSeen.LastSeenMessage
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
-import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 import org.testng.internal.junit.ArrayAsserts.assertArrayEquals
 import java.time.Instant
@@ -48,7 +47,7 @@ class MessageSigner3Test {
         val signature = signer.signMessage(SignatureTestUtil.key.pair.private, message, -4886770986649219020L, TestAccount.uuid, time, LastSeenMessageList(emptyArray()))
 
 
-        val expected = "".fromBase64() // TODO
+        val expected = "UKzEfea2lAHcBTqv1G8dq2VYwXoUr9MNKUZyiL2YjB4DnX/harx2bQebkTelFoEc4EXe5n9TLowcfHFuj1LeGfjlduooST6Y88pFZjZNza2HwtvF+caczh5mcrYScYs5bXCD5Td42H9Ri7JKR0uRzK7OGXiHA/4b6RvF68SwcsvUTfiS5YTSnWBCdd8dQWkaRQS+H+gGXL5H3ofvGHlIIglHsZL8rkkuqknsg8sPSnh8xPzUUztV82Gbe7ZCXTR0yrO0zL4EI1URM4KawCothG168uXMNAju6Ad15Iit86PPTbAudzfZ4iBYsrENP+ntDsD9C0frFiAhr/OmXwGpHg==".fromBase64()
         assertArrayEquals(expected, signature)
     }
 
@@ -59,7 +58,7 @@ class MessageSigner3Test {
         val signature = signer.signMessage(SignatureTestUtil.key.pair.private, message, 1856442944183750824L, TestAccount.uuid, time, LastSeenMessageList(emptyArray()))
 
 
-        val expected = "".fromBase64() // TODO
+        val expected = "UJCsmqR5rUjeEAuvxqVCDj3bprQ5ObbngoPJdJTmvq5KLXHTUM2bQydzjstxd29+ykGwDC1e8gLXI8mR4O+4rC+36A8jgbz7ipeqHPqC5WZw/tngEqNRr9vf5PaiM0PIrB1L+kn13UBHYKx2FbtBspdXcB7SX2phJKPNDZ3RqdhUJ+n7MdZwRcdgoWZ5ItRVVFbaAJaAqSupTTCY1WGrjxSNqmhZcGiMC/z9/4LAzXLFcwPMnRuLCqYiz5Rn055H1+l4ZMZGCTKTMjDjnGlVnS09m5lXlji1XnNtI1ecnlYya8gI8+eQX0Y+tDxvTuR3Ra8tKfMQlXh8LGnA5u0djQ==".fromBase64()
         assertArrayEquals(expected, signature)
     }
 
@@ -72,7 +71,7 @@ class MessageSigner3Test {
         val signature = signer.signMessage(SignatureTestUtil.key.pair.private, message, 6392082609L, TestAccount.uuid, time, lastSeen)
 
 
-        val expected = "".fromBase64() // TODO
+        val expected = "lx2uggzeCgjn3KOP3iymTMy/RKhmpNocYiqsNEhCFp+fq0rMzp7lPQAeuc8hy5xuSPFdiOInTanPSMu3FVrSZSPOQye+4w5cQwjygN5WSFp/glRFkw/6GL9RP7Zi7A8VEbGzRcTguDgryEQFytiBKX3m+5pMpsT7jQZAnxsl0aCyhLXfS6Frl4hqnSjuC05l79QziorZZpKa0F4sdDMIsnlRPl4NEB4jjwId41VwtEArMeHgDQ3aPZi2nfPEGXJCKdxdFMUFKDlaBW8QNWHePdaaivtuSsSeZJzbN4sqtMHSYJJJNEc/QY7LFpBZTlnW1EKy4tWBnWCY4Gra/FE/9Q==".fromBase64()
         assertArrayEquals(expected, signature)
     }
 
@@ -84,7 +83,7 @@ class MessageSigner3Test {
         val signature = signer.signMessage(SignatureTestUtil.key.pair.private, message, 6392082609L, TestAccount.uuid, time, LastSeenMessageList(emptyArray()))
 
 
-        val expected = "".fromBase64() // TODO
+        val expected = "n9stopralm3Ns3H4QgESZHp8gSyKtQ71bSJqSHPPGo1OwXCXYpFrYURquMW56PN8eZuvz4ppoGIrrw6QN+Z3wxDs6I5ex9uy3nyzGHaJ5iL6N7QZCqE4N/dnkVc6i4wp/lpp6AMO6tBzR8HE44UIBLKY+42J2AZitCX8N305Qq4kwB3TpqUWMr3/zW6HvmDa3mP43hhlBDqnFcKtTQy1iIkHZHEcqAj1fodP0UPJJJvmgtyI6dFyvc8JaxQV2BqRVoj8sl0cxYlEKx93//HByBNMHo37t8VfY8A6YT/DsxJD0Tz/Zv+ild+GLGXrde0fl0YNs5LXmMRN3OHkLlBRfw==".fromBase64()
         assertArrayEquals(expected, signature)
     }
 
@@ -113,10 +112,12 @@ class MessageSigner3Test {
 
 
         val expected = listOf(
-            "".fromBase64(), // TODO
-            "".fromBase64(), // TODO
-            "".fromBase64(), // TODO
+            "aCJ/YjIz0rYLgx2dZwzaRCy5vbKKLna49haTJw4Ygq0N7uGlbyiQJpptnt3toSP00xyF2QZ3lldEYIklK5t6234aGBiTfq0WHfCGY2bDTpJIkqjII/EnIhhaSpGGw0f5GpiWDUxdwlZVeo3wO3P2LT3TzlJqZzdG9NypYKf3VLVyGd+UQbr6ivMSltavqhnInY+0ymVkk/AFcemmZ0h01NuNPsxWGQqTQnA4bZ8ByJOQWjWYXCvcoGzLGhEOyMBb64r0DSwW/99UPTMUI2K/u6vuC3omI0wrcmZ04C4P3+5EwXUCwCPyNGOl/9Bupose/HdBb1beFlfab2n3Hn+DFg==".fromBase64(),
+            "KbiFTDN4v9mnNaVUcnkXVJcEBxInl/bggyuzf2DLp8Uu28iV0v+7i8E/ScfIPkfm5baO7UqAdd4ZQRWbT46v1+fjWkgx3SQXEg2OshelVPTChVjJBwqsxtAcw80IkSraZfPmhZnKZcvIaiEjHBt6J+oV4VJejYDyYP/IFAm7J5q//fzmt2nOuWu6nx3nn7SIeN7zHyvScjjYWHohA8MVKGHclCLhgNl2X+WoiYGDqlUEvMHX6kprrmbp/C+wfgF8lf39slFs0xnUxs5GcRdbc+0iAMkFe+0js2sYRWDGa3/7gA66sq2yrdFXlfxDw74U9XW+wJkMlRe8y2iHygXhbA==".fromBase64(),
+            "PUYn1xRYCpK0+cBDmpXbZhm/K+KilsAiw255oZy4sTc8BK/+N7G87iy/Qat/BRBLz1FM11uNrQlAHJbpz4FJTBwLV6bayt3HwUw4s646DEag2bkUFYBWR/JEPLRP3jVfXeyfy22XYI9gvxbDAXSOiShvNJmP1yUyfk02QqIiuLDjdTLumILOgoJTUF6Wj7rx/mpVIgYnKmIH4D/gfwErI/Gng37fAWHux2m4CoHswAb4qbJHv86RsxiApLz/tT6XjOp/8hkL4hISvvQFMw+LgcQzoASspC4OIApiR++aZCT+i3GhTnqBC2AiH1/t3Dhc55LQ1RmD0gOkkEDyHDo7Kg==".fromBase64(),
         )
-        assertEquals(expected, signatures)
+        for (i in expected.indices) {
+            assertArrayEquals(expected[i], signatures[i])
+        }
     }
 }
