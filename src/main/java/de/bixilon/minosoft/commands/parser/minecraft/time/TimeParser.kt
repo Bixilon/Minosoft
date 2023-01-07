@@ -19,14 +19,12 @@ import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParser.Companio
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object TimeParser : ArgumentParser<Int>, ArgumentParserFactory<TimeParser> {
     override val identifier: ResourceLocation = "minecraft:time".toResourceLocation()
     override val examples: List<Any> = listOf(2400, "3d", "10s")
-    override val placeholder = ChatComponent.of("<time>")
 
     override fun parse(reader: CommandReader): Int {
         reader.readResult { reader.readTime() }.let { return it.result }

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
@@ -30,7 +29,6 @@ class ColorParser(
     val supportsRGB: Boolean = true,
 ) : ArgumentParser<RGBColor> {
     override val examples: List<Any> = listOf("red", "yellow")
-    override val placeholder = ChatComponent.of("<color>")
     private val suggestions = ArraySuggestion(ChatColors.NAME_MAP.keys, true)
 
     override fun parse(reader: CommandReader): RGBColor {

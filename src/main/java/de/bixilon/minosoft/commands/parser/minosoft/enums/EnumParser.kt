@@ -19,7 +19,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -28,7 +27,6 @@ class EnumParser<E : Enum<*>>(
 ) : ArgumentParser<E> {
     override val examples: List<E> = values.VALUES.toList()
     private val suggestion = ArraySuggestion(examples, ignoreCase = true)
-    override val placeholder = ChatComponent.of("<enum>")
 
     override fun parse(reader: CommandReader): E {
         reader.readResult { reader.readEnum() }.let { return it.result ?: throw EnumParseError(reader, it) }

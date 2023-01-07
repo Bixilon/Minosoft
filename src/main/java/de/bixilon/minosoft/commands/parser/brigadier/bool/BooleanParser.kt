@@ -20,7 +20,6 @@ import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -28,7 +27,6 @@ object BooleanParser : BrigadierParser<Boolean>, ArgumentParserFactory<BooleanPa
     override val identifier: ResourceLocation = "brigadier:bool".toResourceLocation()
     override val examples: List<Boolean> = listOf(true, false)
     private val suggestion = ArraySuggestion(examples)
-    override val placeholder = ChatComponent.of("<boolean>")
 
     override fun parse(reader: CommandReader): Boolean {
         return reader.readRequiredBoolean()

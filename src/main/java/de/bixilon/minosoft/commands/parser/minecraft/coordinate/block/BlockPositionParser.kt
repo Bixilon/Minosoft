@@ -18,14 +18,12 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.CoordinateParserUtil.readCoordinate
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object BlockPositionParser : ArgumentParser<BlockCoordinate>, ArgumentParserFactory<BlockPositionParser> {
     override val identifier: ResourceLocation = "minecraft:block_pos".toResourceLocation()
     override val examples: List<Any> = listOf("~ ~ ~", "^ ^ ^", "5 5 5")
-    override val placeholder = ChatComponent.of("<block position>")
 
     override fun parse(reader: CommandReader): BlockCoordinate {
         return BlockCoordinate(reader.readCoordinate(decimal = false), reader.readCoordinate(decimal = false), reader.readCoordinate(decimal = false))

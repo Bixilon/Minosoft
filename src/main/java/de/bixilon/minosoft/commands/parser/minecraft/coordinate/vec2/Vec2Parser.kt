@@ -18,14 +18,12 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.CoordinateParserUtil.readCoordinate
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object Vec2Parser : ArgumentParser<Vec2Coordinate>, ArgumentParserFactory<Vec2Parser> {
     override val identifier: ResourceLocation = "minecraft:vec2".toResourceLocation()
     override val examples: List<Any> = listOf("~ ~ ", "^ ^", "5 5")
-    override val placeholder = ChatComponent.of("<vec2>")
 
     override fun parse(reader: CommandReader): Vec2Coordinate {
         return Vec2Coordinate(reader.readCoordinate(), reader.readCoordinate())

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -28,7 +27,6 @@ class LongParser(
     val max: Long = Long.MAX_VALUE,
 ) : BrigadierParser<Long> {
     override val examples: List<Long> = listOf(1L, -1L, 1000L)
-    override val placeholder = ChatComponent.of("<long>")
 
     override fun parse(reader: CommandReader): Long {
         val result = reader.readResult { reader.readLong() }

@@ -20,7 +20,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -28,7 +27,6 @@ class StringParser(
     val mode: StringModes = StringModes.SINGLE,
 ) : BrigadierParser<String> {
     override val examples: List<String> = emptyList()
-    override val placeholder = ChatComponent.of("<string>")
 
     override fun parse(reader: CommandReader): String {
         reader.readResult { reader.readString(mode) }.let { return it.result ?: throw StringParseError(reader, it) }

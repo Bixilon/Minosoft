@@ -31,7 +31,6 @@ import de.bixilon.minosoft.commands.parser.minecraft.uuid.InvalidUUIDError
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -42,7 +41,6 @@ class TargetParser(
     val playerName: String = DEFAULT_PLAYER_NAME,
 ) : ArgumentParser<EntityTarget> {
     override val examples: List<Any?> = listOf(playerName, "@a", "@p")
-    override val placeholder = ChatComponent.of("<target>")
 
     override fun parse(reader: CommandReader): EntityTarget {
         if (!reader.canPeek()) {

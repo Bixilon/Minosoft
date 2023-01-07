@@ -17,14 +17,12 @@ import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ResourceLocationParser : ArgumentParser<ResourceLocation>, ArgumentParserFactory<ResourceLocationParser> {
     override val identifier: ResourceLocation = "minecraft:resource_location".toResourceLocation()
     override val examples: List<Any> = listOf("dirt", "minecraft:dirt")
-    override val placeholder = ChatComponent.of("<resource location>")
 
     override fun parse(reader: CommandReader): ResourceLocation {
         reader.readResult { readResourceLocation() }.let { return it.result ?: throw InvalidResourceLocationError(reader, it) }

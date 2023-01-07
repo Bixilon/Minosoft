@@ -19,7 +19,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.range.RangeParserFactory.readRange
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -27,7 +26,6 @@ class FloatRangeParser(
     val defaultMin: Float? = -Float.MAX_VALUE,
 ) : ArgumentParser<FloatRange> {
     override val examples: List<Any> = listOf(1.0f, "1.0..10")
-    override val placeholder = ChatComponent.of("<float..float>")
 
     override fun parse(reader: CommandReader): FloatRange {
         return reader.readResult { reader.readFloatRange(defaultMin) }.let { return@let it.result ?: throw FloatRangeParseError(reader, it) }

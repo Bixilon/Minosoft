@@ -18,7 +18,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -27,7 +26,6 @@ class ResourceParser(
     val registry: AbstractRegistry<*>?,
 ) : ArgumentParser<Any> {
     override val examples: List<Any> = listOf("TODO")
-    override val placeholder = ChatComponent.of("<TODO>")
 
     override fun parse(reader: CommandReader): Any {
         TODO()

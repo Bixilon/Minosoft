@@ -26,7 +26,6 @@ object ChatComponentParser : ArgumentParser<ChatComponent>, ArgumentParserFactor
     override val identifier: ResourceLocation = "minecraft:component".toResourceLocation()
     override val examples: List<Any> = listOf("", "hello", """{"text":"hello world"}""")
     private val parser = StringParser(StringParser.StringModes.GREEDY)
-    override val placeholder = ChatComponent.of("<angle>")
 
     override fun parse(reader: CommandReader): ChatComponent {
         if (!reader.canPeek()) {

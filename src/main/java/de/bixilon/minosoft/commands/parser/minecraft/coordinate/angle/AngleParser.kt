@@ -19,14 +19,12 @@ import de.bixilon.minosoft.commands.parser.minecraft.coordinate.Coordinate
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.CoordinateParserUtil.readCoordinate
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object AngleParser : ArgumentParser<Coordinate>, ArgumentParserFactory<AngleParser> {
     override val identifier: ResourceLocation = "minecraft:angle".toResourceLocation()
     override val examples: List<Any> = listOf("~", "5", "~10.8")
-    override val placeholder = ChatComponent.of("<angle>")
 
     override fun parse(reader: CommandReader): Coordinate {
         return reader.readCoordinate(caret = false) // ToDo: Check min/max?

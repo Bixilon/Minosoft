@@ -19,7 +19,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.range.RangeParserFactory.readRange
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -27,7 +26,6 @@ class IntRangeParser(
     val defaultMin: Int? = Int.MIN_VALUE,
 ) : ArgumentParser<IntRange> {
     override val examples: List<Any> = listOf(1, "1..10")
-    override val placeholder = ChatComponent.of("<int..int>")
 
     override fun parse(reader: CommandReader): IntRange {
         return reader.readResult { reader.readIntRange(defaultMin) }.let { return@let it.result ?: throw IntRangeParseError(reader, it) }

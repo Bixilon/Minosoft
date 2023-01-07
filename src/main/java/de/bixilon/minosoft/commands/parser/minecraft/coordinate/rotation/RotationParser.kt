@@ -18,14 +18,12 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.CoordinateParserUtil.readCoordinate
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object RotationParser : ArgumentParser<Rotation>, ArgumentParserFactory<RotationParser> {
     override val identifier: ResourceLocation = "minecraft:rotation".toResourceLocation()
     override val examples: List<Any> = listOf("~ ~", "5 5", "~10.8 ~12")
-    override val placeholder = ChatComponent.of("<rotation>")
 
     override fun parse(reader: CommandReader): Rotation {
         return Rotation(reader.readCoordinate(caret = false), reader.readCoordinate(caret = false)) // ToDo: Check min/max?

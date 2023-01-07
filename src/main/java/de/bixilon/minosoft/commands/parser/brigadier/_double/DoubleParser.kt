@@ -19,7 +19,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -28,7 +27,6 @@ class DoubleParser(
     val max: Double = Double.MAX_VALUE,
 ) : BrigadierParser<Double> {
     override val examples: List<Double> = listOf(1.0, -1.0, 1000.0)
-    override val placeholder = ChatComponent.of("<double>")
 
     override fun parse(reader: CommandReader): Double {
         val result = reader.readResult { reader.readDouble() }

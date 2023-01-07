@@ -19,7 +19,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
@@ -27,7 +26,6 @@ import java.util.*
 object UUIDParser : ArgumentParser<UUID>, ArgumentParserFactory<UUIDParser> {
     override val identifier: ResourceLocation = "minecraft:uuid".toResourceLocation()
     override val examples: List<Any> = listOf("9e6ce7c5-40d3-483e-8e5a-b6350987d65f")
-    override val placeholder = ChatComponent.of("<uuid>")
 
     override fun parse(reader: CommandReader): UUID {
         reader.readResult { readUUID() }.let { return it.result ?: throw InvalidUUIDError(reader, it) }

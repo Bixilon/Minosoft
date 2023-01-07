@@ -19,7 +19,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -28,7 +27,6 @@ class IntParser(
     val max: Int = Int.MAX_VALUE,
 ) : BrigadierParser<Int> {
     override val examples: List<Int> = listOf(1, -1, 1000)
-    override val placeholder = ChatComponent.of("<int>")
 
     override fun parse(reader: CommandReader): Int {
         val result = reader.readResult { reader.readInt() }
