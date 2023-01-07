@@ -62,7 +62,6 @@ class MessageSigner3(
             signature.update(lastSeenMessage.signature)
         }
 
-
         return signature.sign()
     }
 }

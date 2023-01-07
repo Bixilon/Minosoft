@@ -36,7 +36,7 @@ interface MessageSigner {
             if (version < ProtocolVersions.V_22W42A) {
                 return MessageSigner2(version)
             }
-            return MessageSigner3(version, connection)
+            return MessageSigner3(version, connection.sessionId)
         }
     }
 }

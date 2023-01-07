@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.commands.stack
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.commands.nodes.NamedNode
+import de.bixilon.minosoft.commands.nodes.SignedNode
 import de.bixilon.minosoft.commands.stack.print.PrintTarget
 import de.bixilon.minosoft.commands.stack.print.SystemPrintTarget
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
@@ -43,7 +45,7 @@ class CommandStack(
     }
 
     fun getAny(name: String): Any? {
-        return stack.find { it.name == name }?.data
+        return stack.find { it.node.name == name }?.data
     }
 
     fun reset(size: Int) {
@@ -51,14 +53,18 @@ class CommandStack(
         stack.removeAll { index++ >= size }
     }
 
-    fun push(name: String, data: Any?) {
-        stack.add(CommandStackEntry(name, data))
+    fun push(node: NamedNode, data: Any?) {
+        stack.add(CommandStackEntry(node, data))
     }
 
-    fun sign(chain: MessageSigner, key: PrivateKey, salt: Long, time: Instant): Map<String, ByteArray> {
+    fun sign(signer: MessageSigner, key: PrivateKey, salt: Long, time: Instant): Map<String, ByteArray> {
         val output: MutableMap<String, ByteArray> = mutableMapOf()
         for (entry in stack) {
-            output[entry.name] = entry.sign(connection, chain, key, salt, time)
+            if (entry.node !is SignedNode || !entry.node.sign) {
+                continue
+            }
+            // TODO: properly sign
+            output[entry.node.name] = entry.sign(connection, signer, key, salt, time)
         }
         return output
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,13 +15,16 @@ package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.parser.ArgumentParser
+import de.bixilon.minosoft.commands.parser.SignedParser
 import de.bixilon.minosoft.commands.stack.CommandExecutor
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 import de.bixilon.minosoft.commands.util.CommandReader
 
-class ArgumentNode : ExecutableNode {
+class ArgumentNode : ExecutableNode, SignedNode {
     private val parser: ArgumentParser<*>
+    override val sign: Boolean
+        get() = parser is SignedParser
 
     constructor(
         name: String,
@@ -49,7 +52,7 @@ class ArgumentNode : ExecutableNode {
     override fun execute(reader: CommandReader, stack: CommandStack) {
         reader.skipWhitespaces(1)
         val parsed = parser.parse(reader)
-        stack.push(name, parsed)
+        stack.push(this, parsed)
         super.execute(reader, stack)
     }
 
@@ -61,7 +64,7 @@ class ArgumentNode : ExecutableNode {
             // try parsing our argument
             // it should succeed if we are not the last
             val parsed = parser.parse(reader)
-            stack.push(name, parsed)
+            stack.push(this, parsed)
             return super.getSuggestions(reader, stack)
         } catch (error: Throwable) {
             if (stack.size > stackSize + 1) {

@@ -11,21 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.stack
+package de.bixilon.minosoft.commands.parser
 
-import de.bixilon.minosoft.commands.nodes.NamedNode
-import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
-import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import java.security.PrivateKey
-import java.time.Instant
-
-data class CommandStackEntry(
-    val node: NamedNode,
-    val data: Any?,
-) {
-
-    fun sign(connection: PlayConnection, signer: MessageSigner, key: PrivateKey, salt: Long, time: Instant): ByteArray {
-        return signer.signMessage(key, data.toString(), null, salt, connection.player.uuid, time, LastSeenMessageList(emptyArray()))
-    }
-}
+interface SignedParser
