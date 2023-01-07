@@ -21,8 +21,9 @@ import de.bixilon.minosoft.protocol.protocol.VersionSupport
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.test.ITUtil
 import org.testng.Assert
+import org.testng.annotations.Test
 
-// @Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], singleThreaded = false, threadPoolSize = 8)
+@Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], singleThreaded = false, threadPoolSize = 8)
 class PixLyzerLoadingTest {
 
     private fun VersionRegistry.test() {
