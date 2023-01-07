@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.commands.stack
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.commands.stack.print.PrintTarget
 import de.bixilon.minosoft.commands.stack.print.SystemPrintTarget
-import de.bixilon.minosoft.data.chat.signature.MessageChain
+import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.security.PrivateKey
@@ -55,7 +55,7 @@ class CommandStack(
         stack.add(CommandStackEntry(name, data))
     }
 
-    fun sign(chain: MessageChain, key: PrivateKey, salt: Long, time: Instant): Map<String, ByteArray> {
+    fun sign(chain: MessageSigner, key: PrivateKey, salt: Long, time: Instant): Map<String, ByteArray> {
         val output: MutableMap<String, ByteArray> = mutableMapOf()
         for (entry in stack) {
             output[entry.name] = entry.sign(connection, chain, key, salt, time)

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.chat.message.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
-import de.bixilon.minosoft.data.chat.signature.MessageChain
+import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
 import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -47,7 +47,7 @@ import java.time.Instant
 class ConnectionUtil(
     private val connection: PlayConnection,
 ) {
-    private val chain = MessageChain(connection.version, connection)
+    val signer = MessageSigner.forVersion(connection.version, connection)
     private val random = SecureRandom()
 
     fun sendDebugMessage(message: Any) {
@@ -97,7 +97,7 @@ class ConnectionUtil(
         val acknowledgement = Acknowledgement.EMPTY
 
         val signature: ByteArray? = if (connection.network.encrypted) {
-            chain.signMessage(privateKey, message, null, salt, uuid, time, acknowledgement.lastSeen)
+            signer.signMessage(privateKey, message, null, salt, uuid, time, acknowledgement.lastSeen)
         } else {
             null
         }
@@ -117,7 +117,7 @@ class ConnectionUtil(
 
         val key = connection.player.privateKey
         if (key != null && connection.network.encrypted && connection.profiles.connection.signature.signCommands) {
-            signature = stack.sign(chain, key.private, salt, time)
+            signature = stack.sign(signer, key.private, salt, time)
         }
 
         connection.sendPacket(CommandC2SP(command.trimWhitespaces().removePrefix("/"), time, salt, signature, false, acknowledgement))
