@@ -63,7 +63,8 @@ class MessageSigner3(
     }
 
     private fun nextLink(): MessageLink {
+        val link = this.link
         this.link = this.link.next()
-        return this.link
+        return link
     }
 }

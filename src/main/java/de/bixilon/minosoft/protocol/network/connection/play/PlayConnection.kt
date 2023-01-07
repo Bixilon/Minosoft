@@ -77,6 +77,7 @@ class PlayConnection(
     override val version: Version,
     val profiles: ConnectionProfiles = ConnectionProfiles(),
 ) : Connection() {
+    val sessionId = KUtil.secureRandomUUID()
     val settingsManager = ClientSettingsManager(this)
     val registries = Registries()
     val world = World(this)
@@ -87,7 +88,6 @@ class PlayConnection(
     val ticker = ConnectionTicker(this)
     val channels = ConnectionChannelHandler(this)
     val serverInfo = ServerInfo()
-    val sessionId = KUtil.secureRandomUUID()
 
     lateinit var assetsManager: AssetsManager
         private set
@@ -155,7 +155,7 @@ class PlayConnection(
                         CLI.connection = this
                     }
 
-                    register(CallbackEventListener.of<ChatMessageReceiveEvent> {
+                    events.register(CallbackEventListener.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.message.type.position) {
                             ChatTextPositions.SYSTEM -> "[SYSTEM] "
                             ChatTextPositions.HOTBAR -> "[HOTBAR] "
