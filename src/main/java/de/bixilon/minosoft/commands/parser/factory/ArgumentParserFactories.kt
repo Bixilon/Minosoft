@@ -26,6 +26,7 @@ import de.bixilon.minosoft.commands.parser.minecraft.coordinate.block.BlockPosit
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.rotation.RotationParser
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.vec2.Vec2Parser
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.vec3.Vec3Parser
+import de.bixilon.minosoft.commands.parser.minecraft.message.MessageParser
 import de.bixilon.minosoft.commands.parser.minecraft.range.RangeParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRangeParser
 import de.bixilon.minosoft.commands.parser.minecraft.range._int.IntRangeParser
@@ -69,6 +70,8 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
 
     ChatComponentParser,
 
+    MessageParser,
+
     DummyParser,
 
     ScoreHolderParser,
@@ -85,7 +88,6 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
     minecraft:block_predicate
     minecraft:item_stack
     minecraft:item_predicate
-    minecraft:message, SIGNED
     minecraft:nbt
     minecraft:nbt_path
     minecraft:objective
