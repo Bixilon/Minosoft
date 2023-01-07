@@ -21,7 +21,7 @@ import java.util.*
 
 object MessageSigningUtil {
 
-    fun String.getSignatureBytes(): ByteArray {
+    fun String.getJsonSignatureBytes(): ByteArray {
         return """{"text":"${String(JsonStringEncoder.getInstance().quoteAsString(this))}"}""".encodeNetwork()
     }
 

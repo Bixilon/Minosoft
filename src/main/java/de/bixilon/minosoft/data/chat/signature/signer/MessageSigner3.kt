@@ -56,9 +56,9 @@ class MessageSigner3(
         signature.update(Ints.toByteArray(encoded.size))
         signature.update(encoded)
 
-        signature.update(Ints.toByteArray(lastSeen.messages.size))
+        signature.update(Ints.toByteArray(lastSeen.entries.size))
 
-        for (lastSeenMessage in lastSeen.messages) {
+        for (lastSeenMessage in lastSeen.entries) {
             signature.update(lastSeenMessage.signature)
         }
 

@@ -16,8 +16,8 @@ import de.bixilon.minosoft.data.chat.ChatUtil.getMessageSender
 import de.bixilon.minosoft.data.chat.filter.ChatFilter
 import de.bixilon.minosoft.data.chat.filter.Filter
 import de.bixilon.minosoft.data.chat.message.SignedChatMessage
-import de.bixilon.minosoft.data.chat.signature.lastSeen.IndexedLastSeenMessage
-import de.bixilon.minosoft.data.chat.signature.lastSeen.LastSeenMessage
+import de.bixilon.minosoft.data.chat.signature.lastSeen.IndexedMessageSignatureData
+import de.bixilon.minosoft.data.chat.signature.lastSeen.MessageSignatureData
 import de.bixilon.minosoft.data.chat.signature.verifyer.MessageVerifyUtil
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -45,17 +45,17 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
 
-    fun PlayInByteBuffer.readLastSeenMessage(): LastSeenMessage {
-        return LastSeenMessage(readUUID(), readByteArray())
+    fun PlayInByteBuffer.readLastSeenMessage(): MessageSignatureData {
+        return MessageSignatureData(readUUID(), readByteArray())
     }
 
-    fun PlayInByteBuffer.readIndexedLastSeenMessage(): IndexedLastSeenMessage {
+    fun PlayInByteBuffer.readIndexedLastSeenMessage(): IndexedMessageSignatureData {
         val id = readVarInt() - 1
         var signature: ByteArray? = null
         if (id == -1) {
             signature = readSignatureData()
         }
-        return IndexedLastSeenMessage(id, signature)
+        return IndexedMessageSignatureData(id, signature)
     }
 
     private fun PlayInByteBuffer.readLegacySignedMessage(): SignedChatMessage {

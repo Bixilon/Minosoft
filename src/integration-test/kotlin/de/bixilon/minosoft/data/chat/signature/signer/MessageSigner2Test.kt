@@ -17,7 +17,7 @@ import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.minosoft.data.accounts.types.test.TestAccount
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.chat.signature.SignatureTestUtil
-import de.bixilon.minosoft.data.chat.signature.lastSeen.LastSeenMessage
+import de.bixilon.minosoft.data.chat.signature.lastSeen.MessageSignatureData
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
@@ -66,7 +66,7 @@ class MessageSigner2Test {
         val time = Instant.ofEpochMilli(1673103854_8402)
         val signer = create()
 
-        val lastSeen = LastSeenMessageList(arrayOf(LastSeenMessage(UUID(0L, 0L), "/OmblHW9CwdAawdE7WtVurRs7umsa/my8EeTT/NY36lqg3HmtAsqyRQ4fXHelw6pOA4o8UroAlmx+inwiEFHXkDICEIVM69vHKapQvoAaeEVrQ4pn9vURTY3GcUVOgr12V3d00odEpwviXaF6kchG1b/pZsLsfpacMiiVHkxZoqolvUNifHQKXVS48Gu1AKkwRw6bkcOKYZpcZgffe6U273rEQQefwzIdT/8F1P04WhiH7SREexVOolkuoKo6gYxXELf5M0BUf0ssG3SS1k8Wr3ys9nzB6hSoEd/ftKqGVxoqeq7pd1GgKfaRWpka8ZNyDpdm8JqvrmlN/phpS5X4Q==".fromBase64()))) // uuid does not matter, bytes are random
+        val lastSeen = LastSeenMessageList(arrayOf(MessageSignatureData(UUID(0L, 0L), "/OmblHW9CwdAawdE7WtVurRs7umsa/my8EeTT/NY36lqg3HmtAsqyRQ4fXHelw6pOA4o8UroAlmx+inwiEFHXkDICEIVM69vHKapQvoAaeEVrQ4pn9vURTY3GcUVOgr12V3d00odEpwviXaF6kchG1b/pZsLsfpacMiiVHkxZoqolvUNifHQKXVS48Gu1AKkwRw6bkcOKYZpcZgffe6U273rEQQefwzIdT/8F1P04WhiH7SREexVOolkuoKo6gYxXELf5M0BUf0ssG3SS1k8Wr3ys9nzB6hSoEd/ftKqGVxoqeq7pd1GgKfaRWpka8ZNyDpdm8JqvrmlN/phpS5X4Q==".fromBase64()))) // uuid does not matter, bytes are random
         val signature = signer.signMessage(SignatureTestUtil.key.pair.private, message, null, 6392082609L, TestAccount.uuid, time, lastSeen)
 
 

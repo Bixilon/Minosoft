@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.chat.signature.signer
 
 import com.google.common.hash.Hashing
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
-import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.getSignatureBytes
+import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.getJsonSignatureBytes
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.update
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
@@ -43,16 +43,16 @@ class MessageSigner2(
         if (version.versionId >= ProtocolVersions.V_1_19_2) { // ToDo: This changed somewhere after 1.19.1-pre5
             buffer.writeBareString(message)
         } else {
-            buffer.writeBareByteArray(message.getSignatureBytes())
+            buffer.writeBareByteArray(message.getJsonSignatureBytes())
         }
 
         if (version.versionId >= ProtocolVersions.V_1_19_1_PRE5) {
             buffer.writeByte(0x46)
             // ToDo: send preview text (optional)
 
-            for (entry in lastSeen.messages) {
+            for (entry in lastSeen.entries) {
                 buffer.writeByte(0x46)
-                buffer.writeUUID(entry.profile)
+                buffer.writeUUID(entry.sender)
                 buffer.writeBareByteArray(entry.signature)
             }
         }

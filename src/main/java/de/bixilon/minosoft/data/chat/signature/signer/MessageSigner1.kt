@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.chat.signature.signer
 
 import com.google.common.primitives.Longs
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
-import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.getSignatureBytes
+import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.getJsonSignatureBytes
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigningUtil.update
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
@@ -40,7 +40,7 @@ class MessageSigner1(
         signature.update(Longs.toByteArray(salt))
         signature.update(sender)
         signature.update(Longs.toByteArray(time.epochSecond))
-        signature.update(message.getSignatureBytes())
+        signature.update(message.getJsonSignatureBytes())
 
         return signature.sign()
     }
