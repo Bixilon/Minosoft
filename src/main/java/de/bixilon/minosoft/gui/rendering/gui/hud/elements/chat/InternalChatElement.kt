@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,10 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
@@ -47,11 +48,11 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
 
     override fun init() {
-        connection.events.listen<InternalMessageReceiveEvent> {
-            if (profile.chat.internal.hidden) {
+        connection.events.listen<ChatMessageEvent> {
+            if (it.message !is InternalChatMessage || profile.chat.internal.hidden) {
                 return@listen
             }
-            DefaultThreadPool += { messages += it.message.text }
+            DefaultThreadPool += { messages += it.message.raw }
         }
     }
 

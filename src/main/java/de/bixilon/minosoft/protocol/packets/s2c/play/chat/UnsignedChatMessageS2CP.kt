@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.chat
 import de.bixilon.minosoft.data.chat.message.FormattedChatMessage
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -35,7 +35,7 @@ class UnsignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val message = FormattedChatMessage(connection, type, parameters)
-        connection.events.fire(ChatMessageReceiveEvent(connection, message))
+        connection.events.fire(ChatMessageEvent(connection, message))
     }
 
     override fun log(reducedLog: Boolean) {

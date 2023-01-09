@@ -11,34 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.connection.play
+package de.bixilon.minosoft.protocol.network.connection.play.util
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.minosoft.commands.nodes.ChatNode
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.chat.message.InternalChatMessage
+import de.bixilon.minosoft.data.chat.ChatUtil
+import de.bixilon.minosoft.data.chat.message.internal.DebugChatMessage
+import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
 import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
-import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.CommandC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.SignedChatMessageC2SP
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.security.PrivateKey
 import java.security.SecureRandom
@@ -50,38 +47,23 @@ class ConnectionUtil(
     val signer = MessageSigner.forVersion(connection.version, connection)
     private val random = SecureRandom()
 
-    fun sendDebugMessage(message: Any) {
-        val component = BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { this.setFallbackColor(ChatColors.BLUE) })
-        connection.events.fire(InternalMessageReceiveEvent(connection, InternalChatMessage(component)))
-        Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { component }
+    fun sendDebugMessage(raw: Any) {
+        val message = DebugChatMessage(ChatComponent.of(raw))
+        connection.events.fire(ChatMessageEvent(connection, message))
     }
 
-    fun sendInternal(message: Any) {
-        val component = ChatComponent.of(message)
-        val prefixed = BaseComponent(RenderConstants.INTERNAL_MESSAGES_PREFIX, component)
-        connection.events.fire(InternalMessageReceiveEvent(connection, InternalChatMessage(if (connection.profiles.gui.chat.internal.hidden) prefixed else component)))
-        Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { prefixed }
+    fun sendInternal(raw: Any) {
+        val message = InternalChatMessage(ChatComponent.of(raw))
+        connection.events.fire(ChatMessageEvent(connection, message))
     }
 
     fun typeChat(message: String) {
         ChatNode("", allowCLI = false).execute(CommandReader(message), CommandStack(connection))
     }
 
-    private fun validateChatMessage(message: String) {
-        if (message.isBlank()) {
-            throw IllegalArgumentException("Chat message can not be blank!")
-        }
-        if (message.contains(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR)) {
-            throw IllegalArgumentException("Chat message must not contain chat formatting (${ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR}): $message")
-        }
-        if (message.length > connection.version.maxChatMessageSize) {
-            throw IllegalArgumentException("Message length (${message.length} can not exceed ${connection.version.maxChatMessageSize})")
-        }
-    }
-
     fun sendChatMessage(message: String) {
-        val trimmed = message.trimWhitespaces()
-        validateChatMessage(trimmed)
+        val trimmed = ChatUtil.trimChatMessage(message)
+        ChatUtil.validateChatMessage(connection, message)
         if (connection.events.fire(ChatMessageSendEvent(connection, trimmed))) {
             return
         }
@@ -113,10 +95,10 @@ class ConnectionUtil(
         if (!connection.version.requiresSignedChat || connection.profiles.connection.signature.sendCommandAsMessage) {
             return sendChatMessage(command)
         }
-        val trimmed = command.trimWhitespaces().removePrefix("/")
-        validateChatMessage(trimmed)
+        val trimmed = ChatUtil.trimChatMessage(command).removePrefix("/")
+        ChatUtil.validateChatMessage(connection, trimmed)
         if (stack.size == 0) {
-            throw IllegalArgumentException("Empty command stack! Did the command failed to parse?")
+            throw IllegalArgumentException("Empty command stack! Did the command fail to parse?")
         }
         val salt = SecureRandom().nextLong()
         val time = Instant.now()

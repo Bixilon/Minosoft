@@ -11,26 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.message
+package de.bixilon.minosoft.data.chat.message.internal
 
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.chat.ChatUtil
+import de.bixilon.minosoft.data.chat.message.ChatMessage
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.registries.chat.TypeProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 
-class InternalChatMessage(
-    override val text: ChatComponent,
+open class InternalChatMessage(
+    val raw: ChatComponent,
 ) : ChatMessage {
     override val type: ChatMessageType get() = TYPE
 
     init {
-        text.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
+        raw.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
     }
 
+    override val text: ChatComponent = BaseComponent(RenderConstants.INTERNAL_MESSAGES_PREFIX, raw)
+
     companion object {
-        val TYPE = ChatMessageType(minosoft("internal"), TypeProperties("%s", listOf(ChatParameter.CONTENT), mapOf()), narration = null, position = ChatTextPositions.CHAT)
+        val TYPE = ChatMessageType(minosoft("internal_message"), TypeProperties("%s", listOf(ChatParameter.CONTENT), mapOf()), narration = null, position = ChatTextPositions.CHAT)
     }
 }

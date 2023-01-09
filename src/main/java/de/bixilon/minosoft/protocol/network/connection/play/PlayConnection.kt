@@ -45,7 +45,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
-import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionCreateEvent
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
@@ -58,6 +58,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.channel.ConnectionCh
 import de.bixilon.minosoft.protocol.network.connection.play.channel.DefaultChannelHandlers
 import de.bixilon.minosoft.protocol.network.connection.play.settings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicker
+import de.bixilon.minosoft.protocol.network.connection.play.util.ConnectionUtil
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
@@ -155,7 +156,7 @@ class PlayConnection(
                         CLI.connection = this
                     }
 
-                    events.register(CallbackEventListener.of<ChatMessageReceiveEvent> {
+                    events.register(CallbackEventListener.of<ChatMessageEvent> {
                         val additionalPrefix = when (it.message.type.position) {
                             ChatTextPositions.SYSTEM -> "[SYSTEM] "
                             ChatTextPositions.HOTBAR -> "[HOTBAR] "

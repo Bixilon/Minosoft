@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.chat.message.SimpleChatMessage
 import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -64,7 +64,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             PlayerChatMessage(text, type, connection.getMessageSender(sender))
         }
-        connection.events.fire(ChatMessageReceiveEvent(connection, message))
+        connection.events.fire(ChatMessageEvent(connection, message))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -30,7 +30,7 @@ public final class ProtocolDefinition {
 
     public static final int QUERY_PROTOCOL_VERSION_ID = -1;
 
-    public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '§';
+    public static final char TEXT_COMPONENT_FORMATTING_PREFIX = '§';
 
     public static final int AIR_BLOCK_ID = 0;
 

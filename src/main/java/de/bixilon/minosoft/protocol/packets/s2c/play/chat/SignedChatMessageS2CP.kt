@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.chat.signature.verifyer.MessageVerifyUtil
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -144,7 +144,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 return
             }
         }
-        connection.events.fire(ChatMessageReceiveEvent(connection, message))
+        connection.events.fire(ChatMessageEvent(connection, message))
     }
 
     override fun log(reducedLog: Boolean) {

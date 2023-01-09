@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,7 +37,7 @@ open class TextComponent(
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
 ) : ChatComponent, TextStyle {
-    override var message: String = message.toString().replace(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR, '&')
+    override var message: String = message.toString().replace(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX, '&')
 
     override fun obfuscate(): TextComponent {
         formatting.add(PreChatFormattingCodes.OBFUSCATED); return this
@@ -106,15 +106,15 @@ open class TextComponent(
             color?.let {
                 val colorChar = ChatCode.FORMATTING_CODES_ID.indexOf(it)
                 if (colorChar != -1) {
-                    stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(Integer.toHexString(colorChar))
+                    stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(Integer.toHexString(colorChar))
                 }
             }
             for (formattingCode in this.formatting) {
-                stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR)
+                stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX)
                 stringBuilder.append(formattingCode.char)
             }
             stringBuilder.append(this.message)
-            stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(PostChatFormattingCodes.RESET.char) // ToDo: This should not always be appended
+            stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(PostChatFormattingCodes.RESET.char) // ToDo: This should not always be appended
             return stringBuilder.toString()
         }
 

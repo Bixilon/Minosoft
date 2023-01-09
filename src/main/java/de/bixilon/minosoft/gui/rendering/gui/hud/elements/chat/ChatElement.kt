@@ -20,6 +20,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.chat.ChatTextPositions
+import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.Font
@@ -33,8 +34,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
@@ -82,16 +82,15 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
 
     override fun init() {
-        connection.events.listen<ChatMessageReceiveEvent> {
+        connection.events.listen<ChatMessageEvent> {
             if (it.message.type.position == ChatTextPositions.HOTBAR) {
                 return@listen
             }
-            DefaultThreadPool += { messages += it.message.text }
-        }
-        connection.events.listen<InternalMessageReceiveEvent> {
-            if (!profile.chat.internal.hidden) {
+            if (it.message is InternalChatMessage && !profile.chat.internal.hidden) {
+                // message will be displayed in internal chat
                 return@listen
             }
+
             DefaultThreadPool += { messages += it.message.text }
         }
 

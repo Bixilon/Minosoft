@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.data.chat
 
+import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.minosoft.data.chat.sender.*
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 object ChatUtil {
@@ -32,5 +34,21 @@ object ChatUtil {
             return InvalidSender(uuid)
         }
         return PlayerEntityMessageSender(uuid, entity.name, entity)
+    }
+
+    fun validateChatMessage(connection: PlayConnection, message: String) {
+        if (message.isBlank()) {
+            throw IllegalArgumentException("Chat message can not be blank!")
+        }
+        if (ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX in message) {
+            throw IllegalArgumentException("Chat message must not contain formatting (${ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX}): $message")
+        }
+        if (message.length > connection.version.maxChatMessageSize) {
+            throw IllegalArgumentException("Message length (${message.length} can not exceed ${connection.version.maxChatMessageSize})")
+        }
+    }
+
+    fun trimChatMessage(message: String): String {
+        return message.trimWhitespaces()
     }
 }
