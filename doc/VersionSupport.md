@@ -16,7 +16,7 @@ Versions before the minecraft netty rewrite (1.7; 13w41b) are currently not supp
 | 1.15.x     | ✅     | eol                                                                                          |
 | 1.14.x     | ✅     | eol, some minor bugs                                                                         |
 | 1.13.x     | ❌     | eol, no mappings  [#40](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/40)              |
-| 1.12.x     | ❌     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
+| **1.12.x** | ❌     | lts, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
 | 1.11.x     | ❌     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
 | 1.10.x     | ❌     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
 | 1.9.x      | ❌     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
