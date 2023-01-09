@@ -12,9 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.identified
 
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation.Companion.ALLOWED_NAMESPACE_PATTERN
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation.Companion.ALLOWED_PATH_PATTERN
 import java.util.*
 
@@ -26,7 +24,7 @@ import java.util.*
  * @param namespace The namespace of the resource location
  * @param path The path of the resource location
  *
- * @throws IllegalArgumentException If the namespace or path does not match the allowed pattern. See [ALLOWED_NAMESPACE_PATTERN] and [ALLOWED_PATH_PATTERN]
+ * @throws IllegalArgumentException If the namespace or path does not match the allowed pattern. and [ALLOWED_PATH_PATTERN]
  *
  * @see <a href="https://minecraft.fandom.com/wiki/Resource_location">Resource location</a>
  */
@@ -40,9 +38,7 @@ open class ResourceLocation(
         get() = this
 
     init {
-        if (StaticConfiguration.VALIDATE_RESOURCE_LOCATION && (namespace.isBlank() || !ALLOWED_NAMESPACE_PATTERN.matches(namespace))) {
-            throw IllegalArgumentException("Invalid namespace: $namespace")
-        }
+        ResourceLocationUtil.validateNamespace(namespace)
         // TODO: Figure out a way to implement this but have backwards compatibility with pre flattening versions
         // if (!ProtocolDefinition.ALLOWED_PATH_PATTERN.matches(path) && path != "")
         //    throw IllegalArgumentException("Path '$path' is not allowed!")
@@ -84,7 +80,6 @@ open class ResourceLocation(
     }
 
     companion object {
-        val ALLOWED_NAMESPACE_PATTERN = Regex("[a-z0-9_.\\-]+")
         val ALLOWED_PATH_PATTERN = Regex("(?!.*//)[a-z0-9_./\\-]+")
 
         /**

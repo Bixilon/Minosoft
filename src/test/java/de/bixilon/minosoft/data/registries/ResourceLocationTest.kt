@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.data.registries
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertNotEquals
 
@@ -66,23 +69,31 @@ class ResourceLocationTest {
         assertThrows<IllegalArgumentException> { ResourceLocation("in valid", "path") }
     }
 
+    @Test
+    fun integratedNamespaces() {
+        assertDoesNotThrow { ResourceLocationUtil.validateNamespace(Namespaces.MINECRAFT) }
+        assertDoesNotThrow { ResourceLocationUtil.validateNamespace(Namespaces.MINOSOFT) }
+        assertDoesNotThrow { ResourceLocationUtil.validateNamespace(Namespaces.DEFAULT) }
+    }
+
     /**
      * @see [de.bixilon.minosoft.data.registries.ResourceLocation]
      */
     @Test
     fun testAllowedNamespaces() {
         // Should Pass
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("minecraft"), true)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("min1234567890craft"), true)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine-craft"), true)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine_craft"), true)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine.craft"), true)
+        assertDoesNotThrow { ResourceLocationUtil.validateNamespace("minecraft") }
+        assertDoesNotThrow { ResourceLocationUtil.validateNamespace("min1234567890craft") }
+        assertDoesNotThrow { ResourceLocationUtil.validateNamespace("mine-craft") }
+        assertDoesNotThrow { ResourceLocationUtil.validateNamespace("mine_craft") }
+        assertDoesNotThrow { ResourceLocationUtil.validateNamespace("mine.craft") }
+
         // Should Fail
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("MineCraft"), false)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine craft"), false)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("minecraft!"), false)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("^minecraft"), false)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_NAMESPACE_PATTERN.matches("mine/craft"), false)
+        assertThrows<IllegalArgumentException> { ResourceLocationUtil.validateNamespace("MineCraft") }
+        assertThrows<IllegalArgumentException> { ResourceLocationUtil.validateNamespace("mine craft") }
+        assertThrows<IllegalArgumentException> { ResourceLocationUtil.validateNamespace("minecraft!") }
+        assertThrows<IllegalArgumentException> { ResourceLocationUtil.validateNamespace("^minecraft") }
+        assertThrows<IllegalArgumentException> { ResourceLocationUtil.validateNamespace("mine/craft") }
     }
 
     /**
