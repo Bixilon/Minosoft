@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import com.sun.javafx.geom.Vec3f
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -309,10 +308,6 @@ open class OutByteBuffer() {
     }
 
     fun writeVec3f(vec3: Vec3) {
-        writeVec3f(Vec3f(vec3.x, vec3.y, vec3.z))
-    }
-
-    fun writeVec3f(vec3: Vec3f) {
         writeFloat(vec3.x)
         writeFloat(vec3.y)
         writeFloat(vec3.z)
