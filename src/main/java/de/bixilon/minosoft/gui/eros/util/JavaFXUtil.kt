@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.eros.util
 
-import com.sun.javafx.util.WeakReferenceQueue
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -46,7 +45,7 @@ import kotlin.reflect.jvm.javaField
 
 object JavaFXUtil {
     private const val DEFAULT_STYLE = "resource:minosoft:eros/style.css"
-    private val stages: WeakReferenceQueue<Stage> = WeakReferenceQueue()
+    private val stages = StageList()
     lateinit var JAVA_FX_THREAD: Thread
     lateinit var MINOSOFT_LOGO: Image
     lateinit var HOST_SERVICES: HostServices
@@ -62,8 +61,8 @@ object JavaFXUtil {
 
         ErosProfileManager.selected.theme::theme.observeFX(this) {
             stages.cleanup()
-            for (stage in stages.iterator().unsafeCast<Iterator<Stage?>>()) {
-                stage ?: continue
+            for (stage in stages.iterator()) {
+                stage ?: break
                 stage.scene.stylesheets.clear()
                 stage.scene.stylesheets.add(DEFAULT_STYLE)
                 stage.scene.stylesheets.add(getThemeURL(it))
