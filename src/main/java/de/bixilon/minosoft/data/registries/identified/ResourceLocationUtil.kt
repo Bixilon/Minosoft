@@ -21,7 +21,7 @@ object ResourceLocationUtil {
         if (!StaticConfiguration.VALIDATE_RESOURCE_LOCATION) {
             return
         }
-        if (namespace.isBlank()) {
+        if (namespace.isEmpty()) {
             throw IllegalArgumentException("Namespace is blank!")
         }
         for (code in namespace.codePoints()) {
