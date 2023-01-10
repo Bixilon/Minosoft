@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.dimension.effects.DefaultDimensionEffects
 import de.bixilon.minosoft.data.registries.dimension.effects.DimensionEffects
 import de.bixilon.minosoft.data.registries.dimension.effects.OverworldEffects
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
@@ -65,7 +66,7 @@ data class DimensionProperties(
         const val DEFAULT_HEIGHT = 256
         const val DEFAULT_MAX_Y = DEFAULT_HEIGHT - 1
 
-        fun deserialize(data: Map<String, Any>): DimensionProperties {
+        fun deserialize(identifier: ResourceLocation? = null, data: Map<String, Any>): DimensionProperties {
             return DimensionProperties(
                 //piglinSafe = data["piglin_safe"]?.toBoolean() ?: false,
                 //natural = data["natural"]?.toBoolean() ?: false,
@@ -74,7 +75,7 @@ data class DimensionProperties(
                 //respawnAnchorWorks = data["respawn_anchor_works"]?.toBoolean() ?: false,
                 hasSkyLight = data["has_skylight", "has_sky_light"]?.toBoolean() ?: false,
                 //bedWorks = data["bed_works"]?.toBoolean() ?: false,
-                effects = data["effects"].nullCast<String>()?.let { DefaultDimensionEffects[it.toResourceLocation()] } ?: OverworldEffects,
+                effects = data["effects"].nullCast<String>()?.let { DefaultDimensionEffects[it.toResourceLocation()] } ?: identifier?.let { DefaultDimensionEffects[it] } ?: OverworldEffects,
                 //hasRaids = data["has_raids"]?.toBoolean() ?: false,
                 // logicalHeight = data["logical_height"]?.toInt() ?: DEFAULT_MAX_Y,
                 //coordinateScale = data["coordinate_scale"].nullCast() ?: 0.0,

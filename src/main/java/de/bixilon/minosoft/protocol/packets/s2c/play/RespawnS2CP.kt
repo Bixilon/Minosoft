@@ -63,7 +63,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 buffer.readLegacyRegistryItem(buffer.connection.registries.dimension)!!.properties
             }
 
-            else -> DimensionProperties.deserialize(buffer.readNBT().asJsonObject()) // current dimension data
+            else -> DimensionProperties.deserialize(null, buffer.readNBT().asJsonObject())
         }
         if (buffer.versionId < ProtocolVersions.V_19W11A) {
             difficulty = Difficulties[buffer.readUnsignedByte()]

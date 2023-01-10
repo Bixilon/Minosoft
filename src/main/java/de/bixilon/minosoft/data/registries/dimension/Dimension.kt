@@ -30,7 +30,7 @@ data class Dimension(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Dimension {
             return Dimension(
                 identifier = resourceLocation,
-                properties = DimensionProperties.deserialize(data)
+                properties = DimensionProperties.deserialize(resourceLocation, data)
             )
         }
     }

@@ -102,7 +102,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A) {
                     dimensionName = buffer.readResourceLocation() // dimension type
                 } else {
-                    dimension = DimensionProperties.deserialize(buffer.readNBT().asJsonObject())
+                    dimension = DimensionProperties.deserialize(null, buffer.readNBT().asJsonObject())
                 }
                 this.world = buffer.readResourceLocation()
             }
