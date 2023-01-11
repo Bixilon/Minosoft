@@ -21,6 +21,10 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W02A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W15A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W18A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W14A
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -39,8 +43,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         private set
 
     init {
-        if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
-            // category was moved to the top
+        if (buffer.versionId in V_17W15A until V_17W18A) {
             this.category = SoundCategories[buffer.readVarInt()]
         }
         if (buffer.versionId < ProtocolVersions.V_1_19_3_PRE3) {
@@ -48,24 +51,25 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             val id = buffer.readVarInt()
             if (id == 0) {
-                sound = buffer.connection.registries.soundEvent[id]
-            } else {
+                // TODO: this was removed at some point
                 sound = buffer.readResourceLocation()
                 attenuationDistance = buffer.readOptional { readFloat() }
+            } else {
+                sound = buffer.connection.registries.soundEvent[id]
             }
         }
 
-        if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
+        if (buffer.versionId in V_17W15A until V_17W18A) {
             buffer.readString() // parrot entity type
         }
-        if (buffer.versionId >= ProtocolVersions.V_16W02A && (buffer.versionId < ProtocolVersions.V_17W15A || buffer.versionId >= ProtocolVersions.V_17W18A)) {
+        if (buffer.versionId >= V_16W02A && (buffer.versionId !in V_17W15A until V_17W18A)) {
             this.category = SoundCategories[buffer.readVarInt()]
         }
         position = Vec3i(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4)
         volume = buffer.readFloat()
         pitch = buffer.readSoundPitch()
 
-        if (buffer.versionId >= ProtocolVersions.V_22W14A) {
+        if (buffer.versionId >= V_22W14A) {
             seed = buffer.readLong()
         }
     }
