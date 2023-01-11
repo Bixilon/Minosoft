@@ -89,6 +89,9 @@ class CloudRenderer(
         sky.profile.clouds::maxDistance.observe(this, instant = true) { this.maxDistance = it }
         connection::state.observe(this) {
             if (it == PlayConnectionStates.SPAWNING) {
+                if (!sky.effects.clouds) {
+                    return@observe
+                }
                 // reset clouds
                 position = Vec2i(Int.MIN_VALUE)
                 for ((index, layer) in this.layers.withIndex()) {
@@ -203,7 +206,7 @@ class CloudRenderer(
 
     private fun calculateCloudsColor(): Vec3 {
         var weather = connection.world.weather
-        if (connection.world.dimension?.effects?.weather != true) {
+        if (!sky.effects.weather) {
             weather = WorldWeather.NONE
         }
         val time = sky.time
