@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.container.click
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createChest
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createFurnace
+import de.bixilon.minosoft.data.container.ContainerTestUtil.createInventory
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTestO
@@ -137,6 +138,34 @@ class FastMoveContainerActionTest {
         assertEquals(container.slots, slotsOf(1 to ItemStack(CoalTest0.item, 12)))
 
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 30, 1, 0, 0, slotsOf(30 to null, 1 to ItemStack(CoalTest0.item, count = 12)), null))
+    }
+
+
+    fun playerPassiveToHotbar() {
+        val connection = createConnection()
+        val container = createInventory(connection)
+        container[9] = ItemStack(AppleTestO.item)
+        container.invokeAction(FastMoveContainerAction(9))
+        assertNull(container.floatingItem)
+        assertEquals(container.slots, slotsOf(36 to ItemStack(AppleTestO.item)))
+    }
+
+    fun craftingToPassive() {
+        val connection = createConnection()
+        val container = createInventory(connection)
+        container[1] = ItemStack(AppleTestO.item)
+        container.invokeAction(FastMoveContainerAction(1))
+        assertNull(container.floatingItem)
+        assertEquals(container.slots, slotsOf(9 to ItemStack(AppleTestO.item)))
+    }
+
+    fun hotbarToPassive() {
+        val connection = createConnection()
+        val container = createInventory(connection)
+        container[36] = ItemStack(AppleTestO.item)
+        container.invokeAction(FastMoveContainerAction(36))
+        assertNull(container.floatingItem)
+        assertEquals(container.slots, slotsOf(9 to ItemStack(AppleTestO.item)))
     }
 
     // TODO: revert, full container

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -26,9 +27,13 @@ class CloseContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId: Int = buffer.readUnsignedByte()
 
     override fun handle(connection: PlayConnection) {
+        if (containerId == PlayerInventory.CONTAINER_ID) {
+            // server can not close inventory
+            return
+        }
         val container = connection.player.containers[containerId] ?: return
         container.onClose()
-        connection.fire(ContainerCloseEvent(connection, containerId, container))
+        connection.events.fire(ContainerCloseEvent(connection, containerId, container))
     }
 
     override fun log(reducedLog: Boolean) {

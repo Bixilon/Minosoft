@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.container
 
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.container.types.generic.Generic9x3Container
 import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceContainer
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
@@ -34,6 +35,12 @@ object ContainerTestUtil {
 
     init {
         reference()
+    }
+
+    fun createInventory(connection: PlayConnection = createConnection()): Container {
+        val inventory = PlayerInventory(connection)
+        connection.player.containers[0] = inventory
+        return inventory
     }
 
     fun createContainer(connection: PlayConnection = createConnection()): Container {

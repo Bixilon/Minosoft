@@ -115,16 +115,6 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
         return HOTBAR_OFFSET + slot.ordinal
     }
 
-    override fun getSection(slotId: Int): Int? {
-        return when (slotId) {
-            in 0..4 -> null // crafting
-            in ARMOR_OFFSET..ARMOR_OFFSET + 4 -> 0 // armor
-            in MAIN_SLOTS_START until HOTBAR_OFFSET -> 1 // inventory
-            in HOTBAR_OFFSET..HOTBAR_OFFSET + HOTBAR_SLOTS -> 2 // hotbar
-            else -> null // offhand, else
-        }
-    }
-
     val EquipmentSlots.slot: Int
         get() = when (this) {
             EquipmentSlots.HEAD -> ARMOR_OFFSET + 0
@@ -169,8 +159,8 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
 
         private val SECTIONS = arrayOf<ContainerSection>(
             RangeSection(ARMOR_OFFSET, 4),
-            PassiveInventorySection(ARMOR_OFFSET + 5),
-            HotbarSection(HOTBAR_OFFSET),
+            PassiveInventorySection(MAIN_SLOTS_START, false),
+            HotbarSection(HOTBAR_OFFSET, false),
         )
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): PlayerInventory {
