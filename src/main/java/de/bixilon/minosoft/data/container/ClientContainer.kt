@@ -11,13 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event.events.container
+package de.bixilon.minosoft.data.container
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-
-class ContainerCloseEvent(
-    connection: PlayConnection,
-    val container: Container,
-) : PlayConnectionEvent(connection)
+/**
+ * This container is managed by the client and always be present
+ * Container closing means in this context hiding it
+ */
+interface ClientContainer

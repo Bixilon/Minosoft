@@ -79,9 +79,10 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             container.floatingItem = it.floating
         }
         connection.player.containers[containerId] = container
-        connection.player.openedContainer = container
 
-        connection.events.fire(ContainerOpenEvent(connection, containerId, container))
+
+        connection.player.openedContainer = container
+        connection.events.fire(ContainerOpenEvent(connection, container))
     }
 
     override fun log(reducedLog: Boolean) {

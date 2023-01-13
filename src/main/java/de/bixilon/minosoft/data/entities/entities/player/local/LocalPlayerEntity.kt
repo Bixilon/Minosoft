@@ -107,7 +107,7 @@ class LocalPlayerEntity(
         }
     }
 
-    var openedContainer: Container? = null
+    var openedContainer: Container? by observed(null)
 
     val itemCooldown: MutableMap<Item, ItemCooldown> = synchronizedMapOf()
 

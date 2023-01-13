@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.container.types
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
+import de.bixilon.minosoft.data.container.ClientContainer
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
@@ -40,7 +41,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
-class PlayerInventory(connection: PlayConnection) : Container(connection = connection, type = TYPE) {
+class PlayerInventory(connection: PlayConnection) : Container(connection = connection, type = TYPE), ClientContainer {
     override val sections: Array<ContainerSection> get() = SECTIONS
     val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
 

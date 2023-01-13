@@ -33,6 +33,7 @@ import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -215,18 +216,25 @@ open class Container(
         action.revert(connection, id ?: return, this)
     }
 
-    fun onClose() {
-        floatingItem = null // ToDo: Does not seem correct
+    fun close(force: Boolean = false) {
+        connection.events.fire(ContainerCloseEvent(connection, this))
+        onClose()
+
         val id = id ?: return
 
-        if (id != PlayerInventory.CONTAINER_ID) {
+        if (id != PlayerInventory.CONTAINER_ID || this is ClientContainer) {
             connection.player.containers -= id
         }
-        // minecraft behavior, when opening the inventory an open packet is never sent, but a close is
 
-        if (connection.player.openedContainer == this) {
+
+        if (force && connection.player.openedContainer == this) {
+            connection.player.openedContainer = null
             connection.sendPacket(CloseContainerC2SP(id))
         }
+    }
+
+    protected open fun onClose() {
+        floatingItem = null // ToDo: Does not seem correct
     }
 
     override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {

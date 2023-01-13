@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
 import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -27,13 +26,13 @@ class CloseContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId: Int = buffer.readUnsignedByte()
 
     override fun handle(connection: PlayConnection) {
-        if (containerId == PlayerInventory.CONTAINER_ID) {
+        val container = connection.player.containers[containerId] ?: return
+
+        if (container is PlayerInventory || containerId == PlayerInventory.CONTAINER_ID) {
             // server can not close inventory
             return
         }
-        val container = connection.player.containers[containerId] ?: return
-        container.onClose()
-        connection.events.fire(ContainerCloseEvent(connection, containerId, container))
+        container.close(force = true)
     }
 
     override fun log(reducedLog: Boolean) {

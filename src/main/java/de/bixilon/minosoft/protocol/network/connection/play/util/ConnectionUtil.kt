@@ -120,7 +120,7 @@ class ConnectionUtil(
         connection.world.particleRenderer?.removeAllParticles()
         connection.player.openedContainer?.let {
             connection.player.openedContainer = null
-            connection.events.fire(ContainerCloseEvent(connection, it.id ?: -1, it))
+            connection.events.fire(ContainerCloseEvent(connection, it))
         }
         connection.player.healthCondition = HealthCondition()
         connection.world.time = WorldTime()
