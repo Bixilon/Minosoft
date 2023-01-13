@@ -46,7 +46,7 @@ class SimpleContainerAction(
         }
 
         container.floatingItem = floatingItem
-        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to item), floatingItem))
+        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to item), floatingItem))
     }
 
     private fun putItem(connection: PlayConnection, containerId: Int, container: Container, floatingItem: ItemStack) {
@@ -58,7 +58,7 @@ class SimpleContainerAction(
             } else {
                 floatingItem.item._count-- // don't use decrease, item + container is already locked
             }
-            return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), slotsOf(), null))
+            return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.actions.createId(this), slotsOf(), null))
         }
         var target = container[slot]
         val slotType = container.getSlotType(slot)
@@ -90,7 +90,7 @@ class SimpleContainerAction(
             } else {
                 container.floatingItem = null
             }
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to target), container.floatingItem))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to target), container.floatingItem))
             return
         }
         if (target != null && slotType?.canRemove(container, slot, target) != true) {
@@ -106,13 +106,13 @@ class SimpleContainerAction(
         if (count == ContainerCounts.ALL || (!matches && target != null)) {
             container.floatingItem = target
             container[slot] = floatingItem
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to floatingItem), target))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to floatingItem), target))
         } else {
             floatingItem.item.count--
             container.floatingItem = floatingItem
             target = floatingItem.copy(count = 1)
             container[slot] = target
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to target), floatingItem))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to target), floatingItem))
         }
     }
 

@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.data.container
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
-import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.observer.map.MapObserver.Companion.observedMap
-import de.bixilon.minosoft.data.container.actions.ContainerAction
+import de.bixilon.minosoft.data.container.actions.ContainerActions
 import de.bixilon.minosoft.data.container.actions.types.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
@@ -45,9 +43,8 @@ abstract class Container(
     var propertiesRevision by observed(0L)
     var revision by observed(0L)
     var serverRevision = 0
-    private var lastActionId = 0
-    var actions: SynchronizedBiMap<Int, ContainerAction> = synchronizedBiMapOf()
     var floatingItem: ItemStack? by observed(null)
+    val actions = ContainerActions(this)
 
     val id: Int?
         get() = connection.player.containers.getKey(this)
@@ -187,30 +184,6 @@ abstract class Container(
         lock.lock()
         _clear()
         internalCommit()
-    }
-
-    @Synchronized
-    fun createAction(action: ContainerAction): Int {
-        val nextId = lastActionId++
-        actions[nextId] = action
-        return nextId
-    }
-
-    @Synchronized
-    fun invokeAction(action: ContainerAction) {
-        action.invoke(connection, id ?: return, this)
-    }
-
-    fun acknowledgeAction(actionId: Int) {
-        actions.remove(actionId)
-    }
-
-    fun revertAction(actionId: Int) {
-        actions.remove(actionId)?.let { revertAction(it) }
-    }
-
-    fun revertAction(action: ContainerAction) {
-        action.revert(connection, id ?: return, this)
     }
 
     fun close(force: Boolean = false) {

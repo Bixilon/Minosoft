@@ -38,7 +38,7 @@ class DropContainerAction(
             item.item.decreaseCount()
         }
 
-        val actionId = container.createAction(this)
+        val actionId = container.actions.createId(this)
         connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 4, if (stack) 1 else 0, actionId, slotsOf(slot to item), null))
 
         // TODO (1.18.2): use creative inventory packet

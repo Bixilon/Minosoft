@@ -66,7 +66,7 @@ class PickAllContainerAction(
                 return
             }
             container.floatingItem = floating
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.createAction(this), changes, floating))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.actions.createId(this), changes, floating))
         } finally {
             container.commit()
         }

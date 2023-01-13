@@ -95,7 +95,7 @@ class FastMoveContainerAction(
                 }
             }
 
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.createAction(this), changes, null))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.actions.createId(this), changes, null))
         } finally {
             container.commit()
         }

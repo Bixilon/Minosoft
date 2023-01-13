@@ -33,7 +33,7 @@ class DropContainerActionTest {
     fun dropEmptySingle() {
         val connection = createConnection()
         val container = createContainer(connection)
-        container.invokeAction(DropContainerAction(7, false))
+        container.actions.invoke(DropContainerAction(7, false))
         assertNull(container.floatingItem)
         connection.assertNoPacket()
     }
@@ -41,7 +41,7 @@ class DropContainerActionTest {
     fun dropEmptyStack() {
         val connection = createConnection()
         val container = createContainer(connection)
-        container.invokeAction(DropContainerAction(9, true))
+        container.actions.invoke(DropContainerAction(9, true))
         assertNull(container.floatingItem)
         connection.assertNoPacket()
     }
@@ -50,7 +50,7 @@ class DropContainerActionTest {
         val connection = createConnection()
         val container = createContainer(connection)
         container[9] = ItemStack(AppleTestO.item, count = 8)
-        container.invokeAction(DropContainerAction(9, false))
+        container.actions.invoke(DropContainerAction(9, false))
         assertNull(container.floatingItem)
         assertEquals(container[9], ItemStack(AppleTestO.item, count = 7))
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(AppleTestO.item, count = 7)), null))
@@ -60,7 +60,7 @@ class DropContainerActionTest {
         val connection = createConnection()
         val container = createContainer(connection)
         container[9] = ItemStack(AppleTestO.item, count = 1)
-        container.invokeAction(DropContainerAction(9, false))
+        container.actions.invoke(DropContainerAction(9, false))
         assertNull(container.floatingItem)
         assertEquals(container[9], null)
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to null), null))
@@ -70,7 +70,7 @@ class DropContainerActionTest {
         val connection = createConnection()
         val container = createContainer(connection)
         container[9] = ItemStack(AppleTestO.item, count = 12)
-        container.invokeAction(DropContainerAction(9, true))
+        container.actions.invoke(DropContainerAction(9, true))
         assertNull(container.floatingItem)
         assertEquals(container[9], null)
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 1, 0, slotsOf(9 to null), null))
@@ -81,8 +81,8 @@ class DropContainerActionTest {
         val container = createContainer(connection)
         container[8] = ItemStack(EggTestO.item, count = 9)
         val action = DropContainerAction(8, false)
-        container.invokeAction(action)
-        container.revertAction(action)
+        container.actions.invoke(action)
+        container.actions.revert(action)
         assertEquals(container[8], ItemStack(EggTestO.item, count = 9))
     }
 
@@ -91,8 +91,8 @@ class DropContainerActionTest {
         val container = createContainer(connection)
         container[8] = ItemStack(EggTestO.item, count = 9)
         val action = DropContainerAction(8, true)
-        container.invokeAction(action)
-        container.revertAction(action)
+        container.actions.invoke(action)
+        container.actions.revert(action)
         assertEquals(container[8], ItemStack(EggTestO.item, count = 9))
     }
 }

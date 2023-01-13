@@ -97,7 +97,7 @@ class ItemElement(
             return true
         }
         if (button == MouseButtons.LEFT && count == 2 && itemsElement.container[slotId] == null) {
-            itemsElement.container.invokeAction(PickAllContainerAction(slotId))
+            itemsElement.container.actions.invoke(PickAllContainerAction(slotId))
             return true
         }
 
@@ -106,11 +106,11 @@ class ItemElement(
             if (guiRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
                 return true
             }
-            itemsElement.container.invokeAction(CloneContainerAction(slotId))
+            itemsElement.container.actions.invoke(CloneContainerAction(slotId))
             return true
         }
         if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
-            itemsElement.container.invokeAction(if (shiftDown) {
+            itemsElement.container.actions.invoke(if (shiftDown) {
                 FastMoveContainerAction(slotId)
             } else {
                 SimpleContainerAction(slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART)
@@ -125,7 +125,7 @@ class ItemElement(
             return this
         }
         if (button == MouseButtons.LEFT && count == 2) {
-            itemsElement.container.invokeAction(PickAllContainerAction(slotId))
+            itemsElement.container.actions.invoke(PickAllContainerAction(slotId))
             return this
         }
         if (draggable !is FloatingItem) {
@@ -133,9 +133,9 @@ class ItemElement(
         }
         val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
         if (shiftDown && button == MouseButtons.LEFT) {
-            itemsElement.container.invokeAction(FastMoveContainerAction(slotId))
+            itemsElement.container.actions.invoke(FastMoveContainerAction(slotId))
         } else if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
-            itemsElement.container.invokeAction(SimpleContainerAction(slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART))
+            itemsElement.container.actions.invoke(SimpleContainerAction(slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART))
             return this
         }
         return this
@@ -148,18 +148,18 @@ class ItemElement(
         val container = itemsElement.container
         when (key) {
             // ToDo: Make this configurable
-            KeyCodes.KEY_Q -> container.invokeAction(DropContainerAction(slotId, guiRenderer.isKeyDown(ModifierKeys.CONTROL)))
+            KeyCodes.KEY_Q -> container.actions.invoke(DropContainerAction(slotId, guiRenderer.isKeyDown(ModifierKeys.CONTROL)))
 
-            KeyCodes.KEY_1 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_1))
-            KeyCodes.KEY_2 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_2))
-            KeyCodes.KEY_3 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_3))
-            KeyCodes.KEY_4 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_4))
-            KeyCodes.KEY_5 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_5))
-            KeyCodes.KEY_6 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_6))
-            KeyCodes.KEY_7 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_7))
-            KeyCodes.KEY_8 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_8))
-            KeyCodes.KEY_9 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_9))
-            KeyCodes.KEY_F -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.OFFHAND))
+            KeyCodes.KEY_1 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_1))
+            KeyCodes.KEY_2 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_2))
+            KeyCodes.KEY_3 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_3))
+            KeyCodes.KEY_4 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_4))
+            KeyCodes.KEY_5 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_5))
+            KeyCodes.KEY_6 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_6))
+            KeyCodes.KEY_7 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_7))
+            KeyCodes.KEY_8 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_8))
+            KeyCodes.KEY_9 -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_9))
+            KeyCodes.KEY_F -> container.actions.invoke(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.OFFHAND))
             else -> Unit
         }
 

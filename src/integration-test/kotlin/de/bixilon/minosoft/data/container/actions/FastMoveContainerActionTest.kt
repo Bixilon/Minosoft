@@ -36,7 +36,7 @@ class FastMoveContainerActionTest {
     fun empty() {
         val connection = createConnection()
         val container = createChest(connection)
-        container.invokeAction(FastMoveContainerAction(0))
+        container.actions.invoke(FastMoveContainerAction(0))
         assertNull(container.floatingItem)
         assertEquals(container.slots, slotsOf())
         connection.assertNoPacket()
@@ -46,7 +46,7 @@ class FastMoveContainerActionTest {
         val connection = createConnection()
         val container = createChest(connection)
         container[54] = ItemStack(AppleTestO.item, 9)
-        container.invokeAction(FastMoveContainerAction(54))
+        container.actions.invoke(FastMoveContainerAction(54))
         assertNull(container.floatingItem)
         assertEquals(container.slots, slotsOf(0 to ItemStack(AppleTestO.item, 9)))
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 54, 1, 0, 0, slotsOf(54 to null, 0 to ItemStack(AppleTestO.item, count = 9)), null))
@@ -56,7 +56,7 @@ class FastMoveContainerActionTest {
         val connection = createConnection()
         val container = createChest(connection)
         container[0] = ItemStack(AppleTestO.item, 9)
-        container.invokeAction(FastMoveContainerAction(0))
+        container.actions.invoke(FastMoveContainerAction(0))
         assertNull(container.floatingItem)
         assertEquals(container.slots, slotsOf(62 to ItemStack(AppleTestO.item, 9)))
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 62 to ItemStack(AppleTestO.item, count = 9)), null))
@@ -78,7 +78,7 @@ class FastMoveContainerActionTest {
 
         container[0] = ItemStack(AppleTestO.item, 9)
 
-        container.invokeAction(FastMoveContainerAction(0))
+        container.actions.invoke(FastMoveContainerAction(0))
         assertNull(container.floatingItem)
         assertNull(container[0])
         assertEquals(container[53], ItemStack(AppleTestO.item, 9))
@@ -97,7 +97,7 @@ class FastMoveContainerActionTest {
 
         container[0] = ItemStack(CoalTest0.item, 63)
 
-        container.invokeAction(FastMoveContainerAction(0))
+        container.actions.invoke(FastMoveContainerAction(0))
         assertNull(container.floatingItem)
         assertEquals(
             container.slots, slotsOf(
@@ -121,7 +121,7 @@ class FastMoveContainerActionTest {
 
         container[30] = ItemStack(EggTestO.item, 12)
 
-        container.invokeAction(FastMoveContainerAction(30))
+        container.actions.invoke(FastMoveContainerAction(30))
         assertNull(container.floatingItem)
         assertEquals(container.slots, slotsOf(3 to ItemStack(EggTestO.item, 12)))
 
@@ -134,7 +134,7 @@ class FastMoveContainerActionTest {
 
         container[30] = ItemStack(CoalTest0.item, 12)
 
-        container.invokeAction(FastMoveContainerAction(30))
+        container.actions.invoke(FastMoveContainerAction(30))
         assertNull(container.floatingItem)
         assertEquals(container.slots, slotsOf(1 to ItemStack(CoalTest0.item, 12)))
 
@@ -146,7 +146,7 @@ class FastMoveContainerActionTest {
         val connection = createConnection()
         val container = createInventory(connection)
         container[9] = ItemStack(AppleTestO.item)
-        container.invokeAction(FastMoveContainerAction(9))
+        container.actions.invoke(FastMoveContainerAction(9))
         assertNull(container.floatingItem)
         assertEquals(container.slots, slotsOf(36 to ItemStack(AppleTestO.item)))
     }
@@ -155,7 +155,7 @@ class FastMoveContainerActionTest {
         val connection = createConnection()
         val container = createInventory(connection)
         container[1] = ItemStack(AppleTestO.item)
-        container.invokeAction(FastMoveContainerAction(1))
+        container.actions.invoke(FastMoveContainerAction(1))
         assertNull(container.floatingItem)
         assertEquals(container.slots, slotsOf(9 to ItemStack(AppleTestO.item)))
     }
@@ -164,7 +164,7 @@ class FastMoveContainerActionTest {
         val connection = createConnection()
         val container = createInventory(connection)
         container[36] = ItemStack(AppleTestO.item)
-        container.invokeAction(FastMoveContainerAction(36))
+        container.actions.invoke(FastMoveContainerAction(36))
         assertNull(container.floatingItem)
         assertEquals(container.slots, slotsOf(9 to ItemStack(AppleTestO.item)))
     }
