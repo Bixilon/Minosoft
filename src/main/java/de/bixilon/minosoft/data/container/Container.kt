@@ -14,9 +14,8 @@
 package de.bixilon.minosoft.data.container
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.observer.map.MapObserver.Companion.observedMap
@@ -45,7 +44,7 @@ open class Container(
 ) : Iterable<Map.Entry<Int, ItemStack>> {
     @Deprecated("Should not be accessed directly")
     val slots: MutableMap<Int, ItemStack> by observedMap(Int2ObjectOpenHashMap())
-    val lock = SimpleLock()
+    val lock = ThreadLock()
     var propertiesRevision by observed(0L)
     var revision by observed(0L)
     var serverRevision = 0
@@ -62,29 +61,26 @@ open class Container(
         this::floatingItem.observe(this) { it?.holder?.container = this }
     }
 
-    fun _validate() {
-        var itemsRemoved = 0
-        if (floatingItem?._valid == false) {
-            floatingItem = null
-            itemsRemoved++
-        }
-        for ((slot, itemStack) in slots.toSynchronizedMap()) {
-            if (itemStack._valid) {
-                continue
-            }
-            _remove(slot)
-            itemStack.holder?.container = null
-            itemsRemoved++
-        }
-        if (itemsRemoved > 0) {
-            revision++
-        }
-    }
+    var edit: ContainerEdit? = null
 
     fun validate() {
         lock.lock()
-        _validate()
-        lock.unlock()
+
+        if (floatingItem?._valid == false) {
+            floatingItem = null
+            edit?.addChange()
+        }
+        val iterator = slots.iterator()
+        for ((slot, stack) in iterator) {
+            if (stack._valid) {
+                continue
+            }
+            stack.holder?.container = null
+            iterator.remove()
+            edit?.addChange()
+        }
+
+        internalCommit()
     }
 
     open fun getSlotType(slotId: Int): SlotType? = DefaultSlotType
@@ -108,6 +104,7 @@ open class Container(
         }
     }
 
+    @Deprecated("")
     open fun _remove(slotId: Int): ItemStack? {
         val stack = slots.remove(slotId) ?: return null
         stack.holder?.container = null
@@ -117,24 +114,19 @@ open class Container(
     open fun remove(slotId: Int): ItemStack? {
         lock.lock()
         val remove = _remove(slotId)
-        lock.unlock()
         if (remove != null) {
-            revision++
+            edit?.addChange()
         }
+        internalCommit()
         return remove
     }
 
     open operator fun set(slotId: Int, itemStack: ItemStack?) {
-        try {
-            lock.lock()
-            if (!_set(slotId, itemStack)) {
-                return
-            }
-        } finally {
-            lock.unlock()
+        lock.lock()
+        if (_set(slotId, itemStack)) {
+            edit?.addChange()
         }
-
-        revision++
+        internalCommit()
     }
 
     open fun _set(slotId: Int, itemStack: ItemStack?): Boolean {
@@ -166,30 +158,27 @@ open class Container(
             return
         }
         lock.lock()
-        var changes = 0
         for ((slotId, itemStack) in slots) {
             if (_set(slotId, itemStack)) {
-                changes++
+                edit?.addChange()
             }
         }
-        lock.unlock()
-        if (changes > 0) {
-            revision++
-        }
+        internalCommit()
     }
 
     fun _clear() {
         for (stack in slots.values) {
             stack.holder?.container = null
         }
-        slots.clear()
+        if (slots.isNotEmpty()) {
+            edit?.addChange()
+        }
     }
 
     fun clear() {
         lock.lock()
         _clear()
-        lock.unlock()
-        revision++
+        internalCommit()
     }
 
     @Synchronized
@@ -241,8 +230,28 @@ open class Container(
         return slots.iterator()
     }
 
-    fun commit() {
+    fun lock() {
+        lock.lock()
+        if (edit == null) {
+            edit = ContainerEdit()
+        }
+    }
+
+    fun internalCommit() {
+        val edit = this.edit
         lock.unlock()
+        if (edit == null) {
+            revision++
+        }
+    }
+
+    fun commit() {
+        val edit = this.edit ?: throw IllegalStateException("Not in bulk edit mode!")
+        validate()
+        lock.unlock()
+        for (slot in edit.slots) {
+            slot.revision++
+        }
         revision++
     }
 

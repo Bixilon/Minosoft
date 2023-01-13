@@ -14,27 +14,12 @@
 package de.bixilon.minosoft.data.container
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KMutableProperty0
-import kotlin.reflect.KProperty
 
-class InventoryDelegate<T>(
-    val stack: ItemStack,
-    val field: KMutableProperty0<T>,
-) : ReadWriteProperty<Any, T> {
+class ContainerEdit {
+    val slots: MutableSet<ItemStack> = mutableSetOf()
+    var changes = 0
 
-    override operator fun getValue(thisRef: Any, property: KProperty<*>): T {
-        try {
-            stack.lock.acquire()
-            return field.getValue(thisRef, property)
-        } finally {
-            stack.lock.release()
-        }
-    }
-
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
-        stack.lock.lock()
-        field.setValue(thisRef, property, value)
-        stack.internalCommit()
+    fun addChange() {
+        changes++
     }
 }

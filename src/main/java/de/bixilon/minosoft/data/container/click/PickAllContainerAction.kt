@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,14 +30,14 @@ class PickAllContainerAction(
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         // TODO (1.18.2) minecraft always sends a packet
-        container.lock.lock()
+        container.lock()
         try {
-            val previous = container.slots[slot]
+            val previous = container[slot]
             val floating = container.floatingItem?.copy()
             if (previous != null || floating == null) {
                 return
             }
-            var countLeft = floating.item.item.maxStackSize - floating.item._count
+            var countLeft = floating.item.item.maxStackSize - floating.item.count
             val changes: Int2ObjectMap<ItemStack?> = Int2ObjectOpenHashMap()
             for ((slotId, slot) in container.slots) {
                 if (!floating.matches(slot)) {
@@ -46,10 +46,10 @@ class PickAllContainerAction(
                 if (container.getSlotType(slotId)?.canRemove(container, slotId, slot) != true) {
                     continue
                 }
-                val countToRemove = minOf(slot.item._count, countLeft)
-                slot.item._count -= countToRemove
+                val countToRemove = minOf(slot.item.count, countLeft)
+                slot.item.count -= countToRemove
                 countLeft -= countToRemove
-                floating.item._count += countToRemove
+                floating.item.count += countToRemove
                 if (slot._valid) {
                     changes[slotId] = slot
                 } else {
@@ -59,7 +59,7 @@ class PickAllContainerAction(
                     break
                 }
             }
-            container._validate()
+            container.validate()
             if (floating == container.floatingItem) {
                 // no change
                 return

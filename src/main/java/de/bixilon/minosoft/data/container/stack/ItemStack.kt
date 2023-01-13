@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,12 @@
 package de.bixilon.minosoft.data.container.stack
 
 import de.bixilon.kutil.concurrent.lock.simple.ParentLock
+import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.Rarities
+import de.bixilon.minosoft.data.container.SlotEdit
 import de.bixilon.minosoft.data.container.stack.property.*
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -24,9 +26,11 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
 class ItemStack {
-    val lock = ParentLock()
+    val lock = ParentLock(lock = ThreadLock())
     val item: ItemProperty
     var holder: HolderProperty? = null
+
+    var edit: SlotEdit? = null
 
     var _display: DisplayProperty? = null
         private set
@@ -122,7 +126,7 @@ class ItemStack {
     val displayName: ChatComponent
         get() {
             _display?.customDisplayName?.let { return it }
-            item.item.translationKey?.let {
+            item.item.translationKey.let {
                 val language = holder?.connection?.language ?: return@let
                 val translated = language.translate(it)
                 rarity.color.let { color -> translated.setFallbackColor(color) }
@@ -196,17 +200,44 @@ class ItemStack {
 
     fun lock() {
         lock.lock()
+        if (holder?.container?.edit != null) {
+            return
+        }
+        if (edit == null) {
+            edit = SlotEdit()
+        }
     }
 
-    fun commit(unlock: Boolean = true) {
+    fun internalCommit() {
+        val container = holder?.container
         if (!_valid) {
-            holder?.container?._validate()
+            container?.validate()
         }
-        if (unlock) {
-            lock.unlock()
+        val containerEdit = container?.edit
+        containerEdit?.let { it.addChange(); it.slots += this }
+        val edit = edit
+        if (edit != null) {
+            return
+        }
+        lock.unlock()
+        if (containerEdit != null) {
+            return
         }
         revision++
-        holder?.container?.apply { revision++ } // increase revision after unlock to prevent deadlock
+        container?.apply { revision++ }
+    }
+
+    fun commit() {
+        if (!_valid) {
+            holder?.container?.validate()
+        }
+
+        val edit = edit ?: throw IllegalStateException("Not in edit mode!")
+        lock.unlock()
+        if (edit.changes > 0) {
+            revision++
+            holder?.container?.apply { revision++ }
+        }
     }
 
     override fun hashCode(): Int {

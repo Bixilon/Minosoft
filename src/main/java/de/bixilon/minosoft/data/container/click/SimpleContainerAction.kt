@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,19 +36,19 @@ class SimpleContainerAction(
         if (count == ContainerCounts.ALL) {
             floatingItem = item.copy()
             item.item.count = 0
-            container._remove(slot)
+            container[slot] = null
         } else {
             // half
             val stayCount = item.item.count / 2
             item.item.count = stayCount
             floatingItem = previous.copy(count = previous.item.count - stayCount)
         }
+
         container.floatingItem = floatingItem
         connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to item), floatingItem))
     }
 
     private fun putItem(connection: PlayConnection, containerId: Int, container: Container, floatingItem: ItemStack) {
-        var target = container.slots[slot]
         if (slot == null) {
             // slot id is null, we are not targeting anything
             // -> drop item into the void
@@ -59,6 +59,7 @@ class SimpleContainerAction(
             }
             return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), slotsOf(), null))
         }
+        var target = container[slot]
         val slotType = container.getSlotType(slot)
         val matches = floatingItem.matches(target)
 
@@ -66,23 +67,22 @@ class SimpleContainerAction(
             // we can remove or merge the item
             if (slotType?.canPut(container, slot, floatingItem) == true) {
                 // merge
-                val subtract = if (count == ContainerCounts.ALL) minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count) else 1
-                if (subtract == 0 || target.item._count + subtract > target.item.item.maxStackSize) {
+                val subtract = if (count == ContainerCounts.ALL) minOf(target.item.item.maxStackSize - target.item.count, floatingItem.item.count) else 1
+                if (subtract == 0 || target.item.count + subtract > target.item.item.maxStackSize) {
                     return
                 }
-                target.item._count += subtract
-                floatingItem.item._count -= subtract
+                target.item.count += subtract
+                floatingItem.item.count -= subtract
             } else if (slotType?.canRemove(container, slot, floatingItem) == true) {
                 // remove only (e.g. crafting result)
                 // ToDo: respect count (part or all)
-                val subtract = minOf(floatingItem.item.item.maxStackSize - floatingItem.item._count, target.item._count)
+                val subtract = minOf(floatingItem.item.item.maxStackSize - floatingItem.item.count, target.item.count)
                 if (subtract == 0) {
                     return
                 }
-                target.item._count -= subtract
-                floatingItem.item._count += subtract
+                target.item.count -= subtract
+                floatingItem.item.count += subtract
             }
-            target.commit(false)
 
             if (floatingItem._valid) {
                 container.floatingItem = floatingItem
@@ -104,20 +104,20 @@ class SimpleContainerAction(
         // swap
         if (count == ContainerCounts.ALL || (!matches && target != null)) {
             container.floatingItem = target
-            container._set(slot, floatingItem)
+            container[slot] = floatingItem
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to floatingItem), target))
         } else {
-            floatingItem.item._count--
+            floatingItem.item.count--
             container.floatingItem = floatingItem
             target = floatingItem.copy(count = 1)
-            container._set(slot, target)
+            container[slot] = target
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to target), floatingItem))
         }
     }
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         try {
-            container.lock.lock()
+            container.lock()
             val floatingItem = container.floatingItem?.copy() ?: return pickItem(connection, containerId, container)
             return putItem(connection, containerId, container, floatingItem)
         } finally {

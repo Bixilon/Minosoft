@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ class FastMoveContainerAction(
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         // ToDo: minecraft always sends a packet
         val source = container.slots[slot] ?: return
-        container.lock.lock()
+        container.lock()
         try {
             val sourceSection = container.getSection(slot) ?: Int.MAX_VALUE
 
@@ -38,7 +38,6 @@ class FastMoveContainerAction(
             for ((index, section) in container.sections.withIndex()) {
                 if (index == sourceSection) {
                     // we don't want to swap into the same section, that is just useless
-                    // ToDo: Is this vanilla behavior?
                     continue
                 }
                 if (section.count == 0) {
@@ -47,7 +46,7 @@ class FastMoveContainerAction(
                 val list = IntArrayList()
                 targets += Pair(section, list)
                 for (slot in section.iterator()) {
-                    val content = container.slots[slot]
+                    val content = container[slot]
                     if (content != null && !source.matches(content)) { // only check slots that are not empty
                         continue
                     }
@@ -64,13 +63,12 @@ class FastMoveContainerAction(
             sections@ for ((type, list) in targets) {
                 val putting = if (type.fillReversed) list.reversed().iterator() else list.intIterator()
                 for (slot in putting) {
-                    val content = container.slots[slot] ?: continue // filling will be done one step afterwards
-                    val countToPut = if (source.item._count + content.item._count > maxStack) maxStack - content.item._count else source.item._count
-                    source.item._count -= countToPut
-                    content.item._count += countToPut
-                    content.commit(false)
+                    val content = container[slot] ?: continue // filling will be done one step afterwards
+                    val countToPut = if (source.item.count + content.item.count > maxStack) maxStack - content.item.count else source.item.count
+                    source.item.count -= countToPut
+                    content.item.count += countToPut
                     changes[slot] = content
-                    if (source.item._count <= 0) {
+                    if (source.item.count <= 0) {
                         changes[this.slot] = null
                         break@sections
                     }
@@ -79,19 +77,19 @@ class FastMoveContainerAction(
             }
 
             sections@ for ((type, list) in targets) {
-                if (source.item._count <= 0) {
+                if (source.item.count <= 0) {
                     break
                 }
                 val putting = if (type.fillReversed) list.reversed().iterator() else list.intIterator()
                 for (slot in putting) {
-                    val content = container.slots[slot]
+                    val content = container[slot]
                     if (content != null) {
                         continue
                     }
                     changes[slot] = source
                     changes[this.slot] = null
-                    container._set(slot, source)
-                    container._set(this.slot, null)
+                    container[slot] = source
+                    container[this.slot] = null
                     break@sections
                 }
             }
@@ -99,7 +97,6 @@ class FastMoveContainerAction(
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.createAction(this), changes, null))
         } finally {
             container.commit()
-            container._validate()
         }
     }
 }

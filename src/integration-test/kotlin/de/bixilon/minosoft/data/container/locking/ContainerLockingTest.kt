@@ -45,7 +45,7 @@ class ContainerLockingTest {
 
         container.lock()
         container.commit()
-        assertEquals(container.revision, 0L)
+        assertEquals(container.revision, 1L)
     }
 
     fun verifyRevisionSingle() {
@@ -57,7 +57,7 @@ class ContainerLockingTest {
 
         assertEquals(container.revision, 1L)
         assertNotNull(container[0])
-        container[0]!!.item.decreaseCount()
+        container[0]!!.item.increaseCount()
         assertEquals(container.revision, 2L)
         assertEquals(container[0], ItemStack(AppleTestO.item, count = 16))
     }
