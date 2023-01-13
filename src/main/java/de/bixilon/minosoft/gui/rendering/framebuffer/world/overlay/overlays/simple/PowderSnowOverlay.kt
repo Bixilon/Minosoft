@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
+import de.bixilon.kutil.avg.LongAverage
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
@@ -23,13 +24,23 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val config = context.connection.profiles.rendering.overlay
     override val texture: AbstractTexture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
-    private var ticksFrozen: Int = 0
-    override val render: Boolean
-        get() = config.powderSnow && ticksFrozen > 0
+    private val strength = LongAverage(1L * 1000000000L) // TODO: FloatAverage
+    override var render: Boolean = false
+        get() = config.powderSnow && field
 
     override fun update() {
-        ticksFrozen = context.connection.player.ticksFrozen
-        tintColor = RGBColor(1.0f, 1.0f, 1.0f, minOf(ticksFrozen, FREEZE_DAMAGE_TICKS) / FREEZE_DAMAGE_TICKS.toFloat()) // ToDo: Fade out
+        val ticksFrozen = context.connection.player.ticksFrozen
+        val strength = ((minOf(ticksFrozen, FREEZE_DAMAGE_TICKS) / FREEZE_DAMAGE_TICKS.toFloat()) * 255).toLong()
+        this.strength += strength
+
+        val avg = this.strength.avg
+
+        if (avg > 255 || avg == 0L) {
+            this.render = false
+            return
+        }
+        this.render = true
+        tintColor = RGBColor(1.0f, 1.0f, 1.0f, avg / 255.0f)
     }
 
 
