@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,8 @@ import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.parser.minosoft.connection.ConnectionParser
 import de.bixilon.minosoft.commands.parser.minosoft.connection.ConnectionTarget
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.cli.CLI
 
@@ -32,7 +34,7 @@ object ConnectionManageCommand : Command {
                 connections += PlayConnection.ERRORED_CONNECTIONS.toSynchronizedList()
                 val filteredConnections = it.get<ConnectionTarget?>("filter")?.getConnections(connections) ?: connections
                 if (filteredConnections.isEmpty()) {
-                    it.print.print("No connection matched your filter!")
+                    it.print.print(TextComponent("No connection matched your filter!").color(ChatColors.RED))
                     return@LiteralNode
                 }
                 val table = Table(arrayOf("Id", "State", "Address"))
@@ -63,13 +65,13 @@ object ConnectionManageCommand : Command {
                             continue
                         }
                         if (toSelect != null) {
-                            stack.print.print("Can not select multiple connections!")
+                            stack.print.print(TextComponent("Can not select multiple connections!").color(ChatColors.RED))
                             return@addFilter
                         }
                         toSelect = connection
                     }
                     if (toSelect == null) {
-                        stack.print.print("No connection matched your filter!")
+                        stack.print.print(TextComponent("No connection matched your filter!").color(ChatColors.RED))
                         return@addFilter
                     }
                     CLI.connection = toSelect
@@ -85,7 +87,7 @@ object ConnectionManageCommand : Command {
             connections += PlayConnection.ERRORED_CONNECTIONS.toSynchronizedList()
             val filteredConnections = it.get<ConnectionTarget?>("filter")?.getConnections(connections) ?: connections
             if (filteredConnections.isEmpty()) {
-                it.print.print("No connection matched your filter!")
+                it.print.print(TextComponent("No connection matched your filter!").color(ChatColors.RED))
                 return@ArgumentNode
             }
             executor(it, connections)

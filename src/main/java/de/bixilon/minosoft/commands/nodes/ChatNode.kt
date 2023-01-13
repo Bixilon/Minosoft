@@ -39,9 +39,14 @@ class ChatNode(
             thrown = error
         }
 
+
         if (node != CLI.ROOT_NODE && string.isNotBlank()) {
             if (peek == '/'.code) {
-                stack.connection.util.sendCommand("/$string", stack)
+                try {
+                    stack.connection.util.sendCommand("/$string", stack)
+                } catch (error: Throwable) {
+                    throw thrown ?: error
+                }
             } else {
                 stack.connection.util.sendChatMessage(string)
             }
