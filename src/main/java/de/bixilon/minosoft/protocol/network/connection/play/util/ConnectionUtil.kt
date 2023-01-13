@@ -98,6 +98,7 @@ class ConnectionUtil(
         val trimmed = ChatUtil.trimChatMessage(command).removePrefix("/")
         ChatUtil.validateChatMessage(connection, trimmed)
         if (stack.size == 0) {
+            connection.sendPacket(CommandC2SP(trimmed, Instant.EPOCH, 0L, emptyMap(), false, Acknowledgement.EMPTY)) // TODO: remove
             throw IllegalArgumentException("Empty command stack! Did the command fail to parse?")
         }
         val salt = SecureRandom().nextLong()

@@ -107,7 +107,5 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
     minecraft:dimension
     minecraft:nbt_tag
     minecraft:nbt_compound_tag
-    minecraft:resource_or_tag
-    minecraft:resource
      */
 )
