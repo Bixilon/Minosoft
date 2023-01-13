@@ -72,11 +72,15 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
     }
 
     fun canEnchant(index: Int): Boolean {
-        if (costs[index] < 0) {
+        val cost = costs[index]
+        if (cost < 0) {
             return false
         }
         if (connection.player.gamemode == Gamemodes.CREATIVE) {
             return true
+        }
+        if (connection.player.experienceCondition.level < cost) {
+            return false
         }
         val lapislazuli = this.lapislazuli
         if (lapislazuli < index + 1) {
