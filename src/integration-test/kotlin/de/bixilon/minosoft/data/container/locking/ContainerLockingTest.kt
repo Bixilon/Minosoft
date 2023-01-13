@@ -45,7 +45,7 @@ class ContainerLockingTest {
 
         container.lock()
         container.commit()
-        assertEquals(container.revision, 1L)
+        assertEquals(container.revision, 0L)
     }
 
     fun verifyRevisionSingle() {

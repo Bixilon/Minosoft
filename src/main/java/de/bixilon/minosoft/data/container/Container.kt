@@ -230,10 +230,12 @@ abstract class Container(
         validate()
         this.edit = null
         lock.unlock()
-        for (slot in edit.slots) {
-            slot.revision++
+        if (edit.changes > 0) {
+            for (slot in edit.slots) {
+                slot.revision++
+            }
+            revision++
         }
-        revision++
     }
 
     override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {
