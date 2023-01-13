@@ -233,6 +233,7 @@ class ItemStack {
         }
 
         val edit = edit ?: throw IllegalStateException("Not in edit mode!")
+        this.edit = null
         lock.unlock()
         if (edit.changes > 0) {
             revision++

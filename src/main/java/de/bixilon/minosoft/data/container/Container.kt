@@ -87,6 +87,7 @@ abstract class Container(
             }
             stack.holder?.container = null
             iterator.remove()
+            onRemove(slot, stack)
             edit?.addChange()
         }
 
@@ -194,7 +195,7 @@ abstract class Container(
 
         val id = id ?: return
 
-        if (id != PlayerInventory.CONTAINER_ID || this is ClientContainer) {
+        if (id != PlayerInventory.CONTAINER_ID && this !is ClientContainer) {
             connection.player.containers -= id
         }
 
@@ -227,6 +228,7 @@ abstract class Container(
     fun commit() {
         val edit = this.edit ?: throw IllegalStateException("Not in bulk edit mode!")
         validate()
+        this.edit = null
         lock.unlock()
         for (slot in edit.slots) {
             slot.revision++

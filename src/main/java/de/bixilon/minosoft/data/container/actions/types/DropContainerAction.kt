@@ -31,6 +31,7 @@ class DropContainerAction(
         if (container.getSlotType(this.slot)?.canRemove(container, slot, item) != true) {
             return
         }
+        container.lock()
         previousStack = item.copy()
         if (stack) {
             item.item.count = 0
@@ -42,6 +43,7 @@ class DropContainerAction(
         connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 4, if (stack) 1 else 0, actionId, slotsOf(slot to item), null))
 
         // TODO (1.18.2): use creative inventory packet
+        container.commit()
     }
 
     override fun revert(connection: PlayConnection, containerId: Int, container: Container) {
