@@ -35,6 +35,6 @@ class InventoryDelegate<T>(
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
         stack.lock.lock()
         field.setValue(thisRef, property, value)
-        stack.internalCommit()
+        stack.commitChange()
     }
 }

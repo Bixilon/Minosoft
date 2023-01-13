@@ -28,13 +28,13 @@ class CloneContainerAction(
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         container.floatingItem?.let { return }
         val clicked = container[slot] ?: return
-        val itemStack = clicked.copy(count = clicked.item.item.maxStackSize)
-        this.copied = itemStack
+        val stack = clicked.copy(count = clicked.item.item.maxStackSize)
+        this.copied = stack
 
         // TODO (1.18.2): use creative inventory packet
-        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.actions.createId(this), slotsOf(), itemStack))
+        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.actions.createId(this), slotsOf(), stack))
 
-        container.floatingItem = itemStack
+        container.floatingItem = stack
     }
 
     override fun revert(connection: PlayConnection, containerId: Int, container: Container) {

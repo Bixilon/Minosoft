@@ -208,7 +208,7 @@ class ItemStack {
         }
     }
 
-    fun internalCommit() {
+    fun commitChange() {
         val container = holder?.container
         if (!_valid) {
             container?.validate()

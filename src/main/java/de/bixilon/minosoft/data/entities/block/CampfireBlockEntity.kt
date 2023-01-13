@@ -49,13 +49,13 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
                 items[index] = null
                 continue
             }
-            val itemStack = ItemStackUtil.of(
+            val stack = ItemStackUtil.of(
                 item = connection.registries.item[slot["id"].unsafeCast<String>()]!!,
                 connection = connection,
                 count = slot["Count"]?.toInt() ?: 1,
             )
 
-            items[slot["Slot"]!!.toInt()] = itemStack
+            items[slot["Slot"]!!.toInt()] = stack
         }
     }
 

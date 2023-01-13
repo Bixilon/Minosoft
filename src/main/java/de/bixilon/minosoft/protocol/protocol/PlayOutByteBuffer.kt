@@ -45,27 +45,27 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
         }
     }
 
-    fun writeItemStack(itemStack: ItemStack?) {
+    fun writeItemStack(stack: ItemStack?) {
         if (versionId < ProtocolVersions.V_1_13_2_PRE1) {
-            if (itemStack == null || !itemStack._valid) {
+            if (stack == null || !stack._valid) {
                 writeShort(-1)
                 return
             }
-            writeShort(connection.registries.item.getId(itemStack.item.item))
-            writeByte(itemStack.item.count)
-            writeShort(itemStack._durability?.durability ?: 0) // ToDo: This is meta data in general and not just durability
-            writeNBT(itemStack.getNBT())
+            writeShort(connection.registries.item.getId(stack.item.item))
+            writeByte(stack.item.count)
+            writeShort(stack._durability?.durability ?: 0) // ToDo: This is meta data in general and not just durability
+            writeNBT(stack.getNBT())
             return
         }
-        val valid = itemStack != null && itemStack._valid
+        val valid = stack != null && stack._valid
         writeBoolean(valid)
         if (!valid) {
             return
         }
-        itemStack!!
-        writeVarInt(connection.registries.item.getId(itemStack.item.item))
-        writeByte(itemStack.item.count)
-        writeNBT(itemStack.getNBT())
+        stack!!
+        writeVarInt(connection.registries.item.getId(stack.item.item))
+        writeByte(stack.item.count)
+        writeNBT(stack.getNBT())
     }
 
     fun writeEntityId(entityId: Int) {

@@ -30,13 +30,13 @@ class ItemProperty(
     fun decreaseCount() {
         stack.lock.lock()
         _count -= 1
-        stack.internalCommit()
+        stack.commitChange()
     }
 
     fun increaseCount() {
         stack.lock.lock()
         _count += 1
-        stack.internalCommit()
+        stack.commitChange()
     }
 
     override fun isDefault(): Boolean = false

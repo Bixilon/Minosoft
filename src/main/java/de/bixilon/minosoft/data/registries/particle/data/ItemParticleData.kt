@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
-class ItemParticleData(val itemStack: ItemStack?, type: ParticleType) : ParticleData(type) {
+class ItemParticleData(val stack: ItemStack?, type: ParticleType) : ParticleData(type) {
 
     override fun toString(): String {
-        return "$type: $itemStack"
+        return "$type: $stack"
     }
 
     companion object : ParticleDataFactory<ItemParticleData> {

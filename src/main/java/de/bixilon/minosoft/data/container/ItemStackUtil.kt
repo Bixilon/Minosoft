@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,15 +37,15 @@ object ItemStackUtil {
 
         nbt: MutableJsonObject? = null,
     ): ItemStack {
-        val itemStack = ItemStack(item, count)
+        val stack = ItemStack(item, count)
         if (connection != null || container != null) {
-            itemStack.holder = HolderProperty(connection, container)
+            stack.holder = HolderProperty(connection, container)
         }
         if (durability != null) {
-            itemStack.durability._durability = durability
+            stack.durability._durability = durability
         }
-        nbt?.let { itemStack.updateNbt(nbt) }
+        nbt?.let { stack.updateNbt(nbt) }
 
-        return itemStack
+        return stack
     }
 }

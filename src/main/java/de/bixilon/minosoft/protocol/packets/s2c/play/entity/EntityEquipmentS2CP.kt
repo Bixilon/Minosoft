@@ -54,11 +54,11 @@ class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
 
-        for ((slot, itemStack) in equipment) {
-            if (itemStack == null) {
+        for ((slot, stack) in equipment) {
+            if (stack == null) {
                 entity.equipment.remove(slot)
             } else {
-                entity.equipment[slot] = itemStack
+                entity.equipment[slot] = stack
             }
         }
     }

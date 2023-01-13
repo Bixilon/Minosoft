@@ -51,11 +51,27 @@ abstract class Container(
 
     open val sections: Array<ContainerSection> get() = emptyArray()
 
+    var edit: ContainerEdit? = null
+
     init {
         this::floatingItem.observe(this) { it?.holder?.container = this }
     }
 
-    var edit: ContainerEdit? = null
+
+    open fun getSlotType(slotId: Int): SlotType? = DefaultSlotType
+    open fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? = null
+    open fun readProperty(property: Int, value: Int) = Unit
+
+
+    open fun getSection(slotId: Int): Int? {
+        for ((index, section) in sections.withIndex()) {
+            if (slotId in section) {
+                return index
+            }
+        }
+        return null
+    }
+
 
     fun validate() {
         lock.lock()
@@ -74,19 +90,7 @@ abstract class Container(
             edit?.addChange()
         }
 
-        internalCommit()
-    }
-
-    open fun getSlotType(slotId: Int): SlotType? = DefaultSlotType
-    open fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? = null
-
-    open fun getSection(slotId: Int): Int? {
-        for ((index, section) in sections.withIndex()) {
-            if (slotId in section) {
-                return index
-            }
-        }
-        return null
+        commitChange()
     }
 
     operator fun get(slotId: Int): ItemStack? {
@@ -105,16 +109,14 @@ abstract class Container(
         val stack = slots.remove(slotId) ?: return null
         onRemove(slotId, stack)
         stack.holder?.container = null
+        edit?.addChange()
         return stack
     }
 
     fun remove(slotId: Int): ItemStack? {
         lock.lock()
         val remove = _remove(slotId)
-        if (remove != null) {
-            edit?.addChange()
-        }
-        internalCommit()
+        commitChange()
         return remove
     }
 
@@ -122,12 +124,12 @@ abstract class Container(
         remove(slotId)
     }
 
-    open operator fun set(slotId: Int, itemStack: ItemStack?) {
+    open operator fun set(slotId: Int, stack: ItemStack?) {
         lock.lock()
-        if (_set(slotId, itemStack)) {
+        if (_set(slotId, stack)) {
             edit?.addChange()
         }
-        internalCommit()
+        commitChange()
     }
 
     protected open fun onSet(slotId: Int, stack: ItemStack?) = Unit
@@ -163,12 +165,12 @@ abstract class Container(
             return
         }
         lock.lock()
-        for ((slotId, itemStack) in slots) {
-            if (_set(slotId, itemStack)) {
+        for ((slotId, stack) in slots) {
+            if (_set(slotId, stack)) {
                 edit?.addChange()
             }
         }
-        internalCommit()
+        commitChange()
     }
 
     fun _clear() {
@@ -183,7 +185,7 @@ abstract class Container(
     fun clear() {
         lock.lock()
         _clear()
-        internalCommit()
+        commitChange()
     }
 
     fun close(force: Boolean = false) {
@@ -207,10 +209,6 @@ abstract class Container(
         floatingItem = null // ToDo: Does not seem correct
     }
 
-    override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {
-        return slots.iterator()
-    }
-
     fun lock() {
         lock.lock()
         if (edit == null) {
@@ -218,7 +216,7 @@ abstract class Container(
         }
     }
 
-    fun internalCommit() {
+    fun commitChange() {
         val edit = this.edit
         lock.unlock()
         if (edit == null) {
@@ -236,5 +234,7 @@ abstract class Container(
         revision++
     }
 
-    open fun readProperty(property: Int, value: Int) = Unit
+    override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {
+        return slots.iterator()
+    }
 }

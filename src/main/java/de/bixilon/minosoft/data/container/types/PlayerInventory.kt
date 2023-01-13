@@ -74,8 +74,8 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
         return this[slot.slot]
     }
 
-    operator fun set(slot: EquipmentSlots, itemStack: ItemStack?) {
-        this[slot.slot] = itemStack
+    operator fun set(slot: EquipmentSlots, stack: ItemStack?) {
+        this[slot.slot] = stack
     }
 
     operator fun get(hand: Hands): ItemStack? {
@@ -89,8 +89,8 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
     fun set(vararg slots: Pair<EquipmentSlots, ItemStack?>) {
         val realSlots: MutableList<Pair<Int, ItemStack?>> = mutableListOf()
 
-        for ((slot, itemStack) in slots) {
-            realSlots += Pair(slot.slot, itemStack)
+        for ((slot, stack) in slots) {
+            realSlots += Pair(slot.slot, stack)
         }
 
         set(*realSlots.toTypedArray())

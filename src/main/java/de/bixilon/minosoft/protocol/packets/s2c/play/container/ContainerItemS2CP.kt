@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,7 +31,7 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         -1
     }
     val slot = buffer.readShort().toInt()
-    val itemStack = buffer.readItemStack()
+    val stack = buffer.readItemStack()
 
     override fun handle(connection: PlayConnection) {
         val container = connection.player.containers[containerId]
@@ -39,24 +39,24 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (container == null) {
             val incomplete = connection.player.incompleteContainers.synchronizedGetOrPut(containerId) { IncompleteContainer() }
             if (slot < 0) {
-                incomplete.floating = itemStack
-            } else if (itemStack == null) {
+                incomplete.floating = stack
+            } else if (stack == null) {
                 incomplete.slots -= slot
             } else {
-                incomplete.slots[slot] = itemStack
+                incomplete.slots[slot] = stack
             }
 
             return
         }
         if (slot < 0) {
-            container.floatingItem = itemStack
+            container.floatingItem = stack
         } else {
-            container[slot] = itemStack
+            container[slot] = stack
         }
         container.serverRevision = revision
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container item (containerId=$containerId, revision=$revision, slot=$slot, itemStack=$itemStack)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container item (containerId=$containerId, revision=$revision, slot=$slot, stack=$stack)" }
     }
 }
