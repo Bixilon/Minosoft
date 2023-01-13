@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.registries.containers
 
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.types.UnknownContainer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -31,7 +32,7 @@ data class ContainerType(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): ContainerType {
             return ContainerType(
                 identifier = resourceLocation,
-                factory = DefaultContainerFactories[resourceLocation] ?: Container,
+                factory = DefaultContainerFactories[resourceLocation] ?: UnknownContainer,
             )
         }
     }

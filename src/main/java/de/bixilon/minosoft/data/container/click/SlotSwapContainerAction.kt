@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,32 +25,32 @@ class SlotSwapContainerAction(
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         val targetId = container.getSlotSwap(target) ?: return
-        container.lock.lock()
+        container.lock()
         try {
-            val source = container.slots[sourceId]
-            val target = container.slots[targetId]
+            val source = container[sourceId]
+            val target = container[targetId]
 
             if (source == null && target == null) {
                 return
             }
-            container._set(this.sourceId, target)
-            container._set(targetId, source)
+            container[this.sourceId] = target
+            container[targetId] = source
 
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.createAction(this), slotsOf(sourceId to target, targetId to source), source))
 
         } finally {
-            container.lock.unlock()
+            container.commit()
         }
     }
 
     override fun revert(connection: PlayConnection, containerId: Int, container: Container) {
         val targetId = container.getSlotSwap(target) ?: return
-        container.lock.lock()
-        val target = container.slots[targetId]
-        val source = container.slots[sourceId]
-        container._set(sourceId, target)
-        container._set(targetId, source)
-        container.lock.unlock()
+        container.lock()
+        val target = container[targetId]
+        val source = container[sourceId]
+        container[sourceId] = target
+        container[targetId] = source
+        container.commit()
     }
 
     enum class SwapTargets(val button: Int) {

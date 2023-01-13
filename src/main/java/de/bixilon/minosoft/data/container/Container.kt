@@ -27,17 +27,14 @@ import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.stack.property.HolderProperty
 import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-open class Container(
+abstract class Container(
     val connection: PlayConnection,
     val type: ContainerType,
     val title: ChatComponent? = null,
@@ -104,14 +101,17 @@ open class Container(
         }
     }
 
-    @Deprecated("")
-    open fun _remove(slotId: Int): ItemStack? {
+
+    protected open fun onRemove(slotId: Int, stack: ItemStack) = Unit
+
+    private fun _remove(slotId: Int): ItemStack? {
         val stack = slots.remove(slotId) ?: return null
+        onRemove(slotId, stack)
         stack.holder?.container = null
         return stack
     }
 
-    open fun remove(slotId: Int): ItemStack? {
+    fun remove(slotId: Int): ItemStack? {
         lock.lock()
         val remove = _remove(slotId)
         if (remove != null) {
@@ -119,6 +119,10 @@ open class Container(
         }
         internalCommit()
         return remove
+    }
+
+    operator fun minusAssign(slotId: Int) {
+        remove(slotId)
     }
 
     open operator fun set(slotId: Int, itemStack: ItemStack?) {
@@ -129,26 +133,30 @@ open class Container(
         internalCommit()
     }
 
-    open fun _set(slotId: Int, itemStack: ItemStack?): Boolean {
+    protected open fun onSet(slotId: Int, stack: ItemStack?) = Unit
+
+    protected fun _set(slotId: Int, stack: ItemStack?): Boolean {
         val previous = slots[slotId]
-        if (itemStack == null) {
+        if (stack == null) {
+            // remove item
             if (previous == null) {
                 return false
             }
             _remove(slotId)
             return true
         }
-        if (previous == itemStack) {
+        if (previous == stack) {
             return false
         }
-        slots[slotId] = itemStack // ToDo: Check for changes
-        var holder = itemStack.holder
+        slots[slotId] = stack // ToDo: Check for changes
+        var holder = stack.holder
         if (holder == null) {
             holder = HolderProperty(connection, this)
-            itemStack.holder = holder
+            stack.holder = holder
         } else {
             holder.container = this
         }
+        onSet(slotId, stack)
 
         return true
     }
@@ -256,12 +264,4 @@ open class Container(
     }
 
     open fun readProperty(property: Int, value: Int) = Unit
-
-    companion object : ContainerFactory<Container> {
-        override val identifier: ResourceLocation = minecraft("container")
-
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): Container {
-            return Container(connection, type, title)
-        }
-    }
 }

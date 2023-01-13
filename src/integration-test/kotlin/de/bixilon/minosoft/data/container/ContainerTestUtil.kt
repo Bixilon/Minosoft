@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container
 
 import de.bixilon.minosoft.data.container.types.PlayerInventory
+import de.bixilon.minosoft.data.container.types.UnknownContainer
 import de.bixilon.minosoft.data.container.types.generic.Generic9x3Container
 import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceContainer
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
@@ -44,7 +45,7 @@ object ContainerTestUtil {
     }
 
     fun createContainer(connection: PlayConnection = createConnection()): Container {
-        val container = Container(connection, this.container)
+        val container = UnknownContainer(connection, this.container)
         connection.player.containers[9] = container
         return container
     }
@@ -65,7 +66,7 @@ object ContainerTestUtil {
         override val identifier: ResourceLocation = minosoft("test")
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): Container {
-            return Container(connection, type, title)
+            return UnknownContainer(connection, type, title)
         }
     }
 }

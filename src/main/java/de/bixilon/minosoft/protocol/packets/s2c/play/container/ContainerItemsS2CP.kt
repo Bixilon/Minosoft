@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -62,19 +62,18 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun updateContainer(container: Container) {
-        container.lock.lock()
-        container._clear()
+        container.lock()
+        container.clear()
 
         for ((slotId, stack) in this.items.withIndex()) {
             if (stack == null) {
                 continue
             }
-            container._set(slotId, stack)
+            container[slotId] = stack
         }
         container.serverRevision = revision
         this.floatingItem?.let { container.floatingItem = if (it.isEmpty) null else it.get() }
-        container.lock.unlock()
-        container.revision++
+        container.commit()
     }
 
     override fun handle(connection: PlayConnection) {
