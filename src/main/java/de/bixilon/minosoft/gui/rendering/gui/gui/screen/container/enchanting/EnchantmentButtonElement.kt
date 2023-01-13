@@ -30,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElemen
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerButtonC2SP
 
 class EnchantmentButtonElement(
     guiRenderer: GUIRenderer,
@@ -63,7 +62,7 @@ class EnchantmentButtonElement(
     }
 
     override fun submit() {
-        container.container.id?.let { guiRenderer.connection.network.send(ContainerButtonC2SP(it, index)) }
+        container.container.selectEnchantment(index)
     }
 
     fun update(disabled: Boolean, cost: Int, enchantment: Enchantment?, level: Int) {

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.container.types
 
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
@@ -32,6 +33,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerButtonC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class EnchantingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
@@ -41,6 +43,8 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
     var enchantmentLevels = IntArray(ENCHANTING_OPTIONS) { -1 }
     var seed = -1
         private set
+
+    val lapislazuli: Int get() = this[LAPISLAZULI_SLOT]?.item?._count ?: 0
 
     override fun getSlotType(slotId: Int): SlotType? {
         return when (slotId) {
@@ -65,6 +69,33 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
             4, 5, 6 -> enchantments[property - 4] = connection.registries.enchantment.getOrNull(value)
             7, 8, 9 -> enchantmentLevels[property - 7] = value
         }
+    }
+
+    fun canEnchant(index: Int): Boolean {
+        if (costs[index] < 0) {
+            return false
+        }
+        if (connection.player.gamemode == Gamemodes.CREATIVE) {
+            return true
+        }
+        val lapislazuli = this.lapislazuli
+        if (lapislazuli < index + 1) {
+            return false
+        }
+
+        return true
+    }
+
+
+    fun selectEnchantment(index: Int) {
+        if (index < 0 || index > 2) {
+            throw IllegalArgumentException("Index out of bounds: $index")
+        }
+        if (!canEnchant(index)) {
+            throw IllegalStateException("Can not enchant $index!")
+        }
+        val id = this.id ?: return
+        connection.network.send(ContainerButtonC2SP(id, index))
     }
 
     private object LapislazuliSlot : SlotType {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.types.EnchantingContainer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -66,14 +65,10 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
 
     override fun forceSilentApply() {
         super.forceSilentApply()
-        var lapisCount = container[EnchantingContainer.LAPISLAZULI_SLOT]?.item?._count ?: 0
-        if (guiRenderer.connection.player.gamemode == Gamemodes.CREATIVE) {
-            lapisCount = 64
-        }
 
         for (index in 0 until EnchantingContainer.ENCHANTING_OPTIONS) {
             val card = cards[index]
-            card.update(lapisCount < index + 1, container.costs[index], container.enchantments[index], container.enchantmentLevels[index])
+            card.update(!container.canEnchant(index), container.costs[index], container.enchantments[index], container.enchantmentLevels[index])
         }
     }
 
