@@ -19,7 +19,7 @@ import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
 import de.bixilon.minosoft.data.container.ClientContainer
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.EquipmentSlots
-import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.actions.types.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.sections.HotbarSection
 import de.bixilon.minosoft.data.container.sections.PassiveInventorySection

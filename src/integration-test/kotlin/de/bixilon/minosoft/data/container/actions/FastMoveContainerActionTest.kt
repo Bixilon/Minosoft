@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.click
+package de.bixilon.minosoft.data.container.actions
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createChest
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createFurnace
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createInventory
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
+import de.bixilon.minosoft.data.container.actions.types.FastMoveContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTestO
 import de.bixilon.minosoft.data.registries.items.CoalTest0

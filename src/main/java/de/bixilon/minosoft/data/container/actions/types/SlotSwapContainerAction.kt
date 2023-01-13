@@ -11,10 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.click
+package de.bixilon.minosoft.data.container.actions.types
 
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
+import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 

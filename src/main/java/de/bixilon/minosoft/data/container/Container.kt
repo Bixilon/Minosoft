@@ -19,8 +19,8 @@ import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.observer.map.MapObserver.Companion.observedMap
-import de.bixilon.minosoft.data.container.click.ContainerAction
-import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.actions.ContainerAction
+import de.bixilon.minosoft.data.container.actions.types.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType

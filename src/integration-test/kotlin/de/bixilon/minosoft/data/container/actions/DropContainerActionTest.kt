@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.click
+package de.bixilon.minosoft.data.container.actions
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
+import de.bixilon.minosoft.data.container.actions.types.DropContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTestO
 import de.bixilon.minosoft.data.registries.items.EggTestO
@@ -27,75 +28,71 @@ import org.testng.Assert.assertNull
 import org.testng.annotations.Test
 
 @Test(groups = ["container"], dependsOnGroups = ["block", "item", "item_stack"])
-class CloneContainerActionTest {
+class DropContainerActionTest {
 
-    fun testEmpty() {
+    fun dropEmptySingle() {
         val connection = createConnection()
         val container = createContainer(connection)
-        container.invokeAction(CloneContainerAction(0))
+        container.invokeAction(DropContainerAction(7, false))
         assertNull(container.floatingItem)
         connection.assertNoPacket()
     }
 
-    fun testAlready1() {
+    fun dropEmptyStack() {
         val connection = createConnection()
         val container = createContainer(connection)
-        container.floatingItem = ItemStack(EggTestO.item, count = 7)
-        container.invokeAction(CloneContainerAction(6))
-        assertEquals(container.floatingItem, ItemStack(EggTestO.item, count = 7))
-        assertNull(container[6])
+        container.invokeAction(DropContainerAction(9, true))
+        assertNull(container.floatingItem)
         connection.assertNoPacket()
     }
 
-    fun testAlready2() {
+    fun testDropSingle() {
         val connection = createConnection()
         val container = createContainer(connection)
-        container[6] = ItemStack(AppleTestO.item, count = 7)
-        container.floatingItem = ItemStack(EggTestO.item, count = 7)
-        container.invokeAction(CloneContainerAction(6))
-        assertEquals(container.floatingItem, ItemStack(EggTestO.item, count = 7))
-        assertEquals(container[6], ItemStack(AppleTestO.item, count = 7))
-        connection.assertNoPacket()
+        container[9] = ItemStack(AppleTestO.item, count = 8)
+        container.invokeAction(DropContainerAction(9, false))
+        assertNull(container.floatingItem)
+        assertEquals(container[9], ItemStack(AppleTestO.item, count = 7))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(AppleTestO.item, count = 7)), null))
     }
 
-    fun testTaking() {
+    fun testDropSingleEmpty() {
         val connection = createConnection()
         val container = createContainer(connection)
-        container[1] = ItemStack(AppleTestO.item)
-        container.invokeAction(CloneContainerAction(1))
-        assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 64))
-        // TODO: Not sending any packet in 1.18.2?
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 3, 0, 0, slotsOf(), ItemStack(AppleTestO.item, count = 64)))
+        container[9] = ItemStack(AppleTestO.item, count = 1)
+        container.invokeAction(DropContainerAction(9, false))
+        assertNull(container.floatingItem)
+        assertEquals(container[9], null)
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to null), null))
     }
 
-    fun taskTalking2() {
+    fun testDropStack() {
         val connection = createConnection()
         val container = createContainer(connection)
-        container[3] = ItemStack(AppleTestO.item, count = 8)
-        container.invokeAction(CloneContainerAction(3))
-        assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 64))
-        // TODO: Not sending any packet in 1.18.2?
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 3, 3, 0, 0, slotsOf(), ItemStack(AppleTestO.item, count = 64)))
+        container[9] = ItemStack(AppleTestO.item, count = 12)
+        container.invokeAction(DropContainerAction(9, true))
+        assertNull(container.floatingItem)
+        assertEquals(container[9], null)
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 1, 0, slotsOf(9 to null), null))
     }
 
-    fun testStackLimit() {
+    fun testSingleRevert() {
         val connection = createConnection()
         val container = createContainer(connection)
         container[8] = ItemStack(EggTestO.item, count = 9)
-        container.invokeAction(CloneContainerAction(8))
-        assertEquals(container.floatingItem, ItemStack(EggTestO.item, count = 16))
-        // TODO: Not sending any packet in 1.18.2?
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(EggTestO.item, count = 16)))
-    }
-
-    fun testRevert() {
-        val connection = createConnection()
-        val container = createContainer(connection)
-        container[8] = ItemStack(EggTestO.item, count = 9)
-        val action = CloneContainerAction(8)
+        val action = DropContainerAction(8, false)
         container.invokeAction(action)
-        assertEquals(container.floatingItem, ItemStack(EggTestO.item, count = 16))
         container.revertAction(action)
-        assertNull(container.floatingItem)
+        assertEquals(container[8], ItemStack(EggTestO.item, count = 9))
+    }
+
+    fun testStackRevert() {
+        val connection = createConnection()
+        val container = createContainer(connection)
+        container[8] = ItemStack(EggTestO.item, count = 9)
+        val action = DropContainerAction(8, true)
+        container.invokeAction(action)
+        container.revertAction(action)
+        assertEquals(container[8], ItemStack(EggTestO.item, count = 9))
     }
 }
