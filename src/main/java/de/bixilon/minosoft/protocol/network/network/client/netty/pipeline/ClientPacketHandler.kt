@@ -80,7 +80,6 @@ class ClientPacketHandler(
 
     private fun handle(packet: S2CPacket) {
         val event = PacketReceiveEvent(connection, packet)
-        Thread.sleep(100)
         if (connection.events.fire(event)) {
             return
         }
