@@ -26,9 +26,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.entityPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3i
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class Painting(
     connection: PlayConnection,
@@ -48,7 +46,7 @@ class Painting(
         private val MOTIF_DATA = EntityDataField("MOTIF", "MOTIVE")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Painting {
-            return Painting(connection, entityType, data, position.toVec3i(), Directions.NORTH, null)
+            return Painting(connection, entityType, data, Vec3i(position), Directions.NORTH, null)
         }
     }
 }
