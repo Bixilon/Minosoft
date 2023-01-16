@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val hp: Float = buffer.readFloat().clamp(0.0f, Float.MAX_VALUE)
+    val hp: Float = buffer.readFloat()
     val hunger = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readUnsignedShort()
     } else {
@@ -37,9 +37,9 @@ class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         connection.player.healthCondition = HealthCondition(
-            hp = hp,
-            hunger = hunger,
-            saturation = saturation,
+            hp = maxOf(0.0f, hp),
+            hunger = hunger.clamp(0, 20),
+            saturation = saturation.clamp(0.0f, 20.0f),
         )
 
 
@@ -52,11 +52,6 @@ class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
             }
         }
-    }
-
-    override fun check(connection: PlayConnection) {
-        check(hunger in 0..20)
-        check(saturation in 0.0..20.0)
     }
 
     override fun log(reducedLog: Boolean) {
