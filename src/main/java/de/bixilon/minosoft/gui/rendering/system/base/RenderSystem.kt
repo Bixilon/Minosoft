@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer

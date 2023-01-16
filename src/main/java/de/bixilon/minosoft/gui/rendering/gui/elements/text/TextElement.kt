@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -38,7 +38,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
-import de.bixilon.minosoft.util.KUtil.length
+import de.bixilon.minosoft.util.KUtil.charCount
 
 open class TextElement(
     guiRenderer: GUIRenderer,
@@ -50,7 +50,7 @@ open class TextElement(
     parent: Element? = null,
     scale: Float = 1.0f,
     shadow: Boolean = true,
-) : Element(guiRenderer, text.length * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
+) : Element(guiRenderer, text.charCount * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
     private var activeElement: TextComponent? = null
     lateinit var renderInfo: TextRenderInfo
         private set

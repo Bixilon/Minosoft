@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.eros.main.play.server.card
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.observer.ObservedReference
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.Minosoft
@@ -28,7 +27,6 @@ import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFav
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
@@ -39,7 +37,7 @@ import javafx.scene.image.Image
 import javafx.scene.text.TextFlow
 import java.io.ByteArrayInputStream
 
-class ServerCardController : AbstractCardController<ServerCard>(), ObservedReference<StatusConnection> {
+class ServerCardController : AbstractCardController<ServerCard>() {
     @FXML private lateinit var faviconFX: PixelImageView
     @FXML private lateinit var serverNameFX: TextFlow
     @FXML private lateinit var motdFX: TextFlow
@@ -134,10 +132,6 @@ class ServerCardController : AbstractCardController<ServerCard>(), ObservedRefer
             pingFX.text = it.latency.formatNanos()
             serverList?.onPingUpdate(item)
         }
-    }
-
-    override fun isValid(value: StatusConnection): Boolean {
-        return item.ping === value
     }
 
     companion object : CardFactory<ServerCardController> {

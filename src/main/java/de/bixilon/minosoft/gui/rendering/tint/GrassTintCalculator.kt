@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.tint
 
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.util.KUtil.ignoreAll
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GrassTintCalculator : TintProvider {

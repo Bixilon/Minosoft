@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.factory.clazz
 
-import de.bixilon.minosoft.data.registries.GenericUtil
+import de.bixilon.kutil.reflection.generic.GenericUtil
 import java.lang.reflect.ParameterizedType
 import kotlin.reflect.jvm.javaType
 
@@ -25,7 +25,7 @@ open class DefaultClassFactory<T : ClassFactory<*>>(vararg factories: T) {
 
 
         for (factory in factories) {
-            val className = GenericUtil.getClassOfFactory(factory::class.supertypes[0].javaType as ParameterizedType).simpleName
+            val className = GenericUtil.getGeneric(factory::class.supertypes[0].javaType as ParameterizedType).simpleName
             ret[className] = factory
             if (factory is MultiClassFactory<*>) {
                 for (name in factory.ALIASES) {

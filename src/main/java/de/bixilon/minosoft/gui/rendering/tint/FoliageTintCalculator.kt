@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.tint
 
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readRGBArray
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.util.KUtil.ignoreAll
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 private const val FALLBACK_COLOR = 0x48B518

@@ -18,9 +18,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.delegates.BackingDelegate
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
-import de.bixilon.minosoft.config.profile.delegate.BackingDelegate
 import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate

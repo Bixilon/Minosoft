@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.BooleanUtil.decide
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.font.FontLoader
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.logging.Log
@@ -55,7 +55,7 @@ object RenderLoader {
         registerRenderer()
 
         window.init(connection.profiles.rendering)
-        KUtil.ignoreAll { window.setDefaultIcon(connection.assetsManager) }
+        ignoreAll { window.setDefaultIcon(connection.assetsManager) }
 
         camera.init()
 

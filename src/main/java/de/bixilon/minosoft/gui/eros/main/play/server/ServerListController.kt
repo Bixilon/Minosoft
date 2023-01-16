@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.eros.main.play.server
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.observer.ObservedReference
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
@@ -63,7 +62,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.Pane
 
 
-class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable, ObservedReference<Any> {
+class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML private lateinit var hideOfflineFX: CheckBox
     @FXML private lateinit var hideFullFX: CheckBox
     @FXML private lateinit var hideEmptyFX: CheckBox
@@ -163,7 +162,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable, Obse
                 JavaFXUtil.runLater { updateServer(server, true) }
             }
 
-            connection.register(JavaFXEventListener.of<KickEvent> { event ->
+            connection.events.register(JavaFXEventListener.of<KickEvent> { event ->
                 KickDialog(
                     title = "minosoft:connection.kick.title".toResourceLocation(),
                     header = "minosoft:connection.kick.header".toResourceLocation(),
@@ -171,7 +170,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable, Obse
                     reason = event.reason,
                 ).show()
             })
-            connection.register(JavaFXEventListener.of<LoginKickEvent> { event ->
+            connection.events.register(JavaFXEventListener.of<LoginKickEvent> { event ->
                 KickDialog(
                     title = "minosoft:connection.login_kick.title".toResourceLocation(),
                     header = "minosoft:connection.login_kick.header".toResourceLocation(),
@@ -408,13 +407,6 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable, Obse
 
     override fun refresh() {
         serverType!!.refresh(serverListViewFX.items)
-    }
-
-    override fun isValid(value: Any): Boolean {
-        if (value is ServerCard) {
-            return value === serverListViewFX.selectionModel.selectedItem
-        }
-        return value === this
     }
 
 

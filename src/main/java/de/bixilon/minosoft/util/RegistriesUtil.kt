@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.util
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.primitive.Clearable
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.data.registries.GenericUtil
+import de.bixilon.kutil.reflection.generic.GenericUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.Parentable
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
-import de.bixilon.minosoft.util.collections.Clearable
 import java.lang.reflect.Field
 
 object RegistriesUtil {
@@ -57,7 +57,7 @@ object RegistriesUtil {
             }
         }
 
-        types[GenericUtil.getClassOfFactory(clazz)] = field
+        types[GenericUtil.getGeneric(clazz)] = field
     }
 
 
