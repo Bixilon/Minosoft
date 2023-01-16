@@ -138,7 +138,7 @@ testing {
     suites {
         val test by getting(JvmTestSuite::class) {
             testType.set(TestSuiteType.UNIT_TEST)
-            useJUnitJupiter("5.9.1")
+            useJUnitJupiter("5.9.2")
 
             dependencies {
                 implementation(project())
@@ -178,7 +178,7 @@ testing {
 
         val integrationTest by registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.INTEGRATION_TEST)
-            useTestNG("7.7.0")
+            useTestNG("7.7.1")
 
             dependencies {
                 implementation(project())
