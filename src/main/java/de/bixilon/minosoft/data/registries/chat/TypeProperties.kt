@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,9 +16,10 @@ package de.bixilon.minosoft.data.registries.chat
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonList
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.text.ChatComponent
 
-class TypeProperties(
+data class TypeProperties(
     val translationKey: String,
     val parameters: List<ChatParameter>,
     val style: Map<String, Any>,
@@ -37,17 +38,19 @@ class TypeProperties(
     companion object {
 
         fun deserialize(data: JsonObject): TypeProperties {
-            val key = data["translation_key"]!!.toString()
+            val decoration = data["decoration"]?.toJsonObject() ?: data
+
+            val key = decoration["translation_key"]!!.toString()
             var parameters: List<ChatParameter> = emptyList()
 
-            data["parameters"]?.asJsonList()?.let {
+            decoration["parameters"]?.asJsonList()?.let {
                 val list: MutableList<ChatParameter> = mutableListOf()
                 for (entry in it) {
                     list += ChatParameter[entry.toString()]
                 }
                 parameters = list
             }
-            val style = data["style"]?.asJsonObject() ?: emptyMap()
+            val style = decoration["style"]?.asJsonObject() ?: emptyMap()
 
             return TypeProperties(key, parameters, style)
         }
