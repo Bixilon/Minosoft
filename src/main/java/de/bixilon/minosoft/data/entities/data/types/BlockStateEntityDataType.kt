@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.data.types
 
 import de.bixilon.minosoft.data.entities.data.types.registry.RegistryEntityDataType
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 object BlockStateEntityDataType : RegistryEntityDataType<BlockState> {
 

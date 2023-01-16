@@ -20,8 +20,8 @@ import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.channel.play.PlayChannelHandler
 import de.bixilon.minosoft.protocol.packets.c2s.play.ChannelC2SP
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 
 object BrandHandler {
     const val VANILLA = "vanilla"

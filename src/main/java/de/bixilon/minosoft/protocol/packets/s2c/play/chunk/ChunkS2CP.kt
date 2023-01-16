@@ -31,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
@@ -45,6 +44,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_4
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W03A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log

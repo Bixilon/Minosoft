@@ -18,7 +18,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
 import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 @LoadPacket(threadSafe = false)
 object TitleS2CF : PlayPacketFactory {

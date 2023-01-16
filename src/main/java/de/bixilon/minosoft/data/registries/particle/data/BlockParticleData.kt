@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.registries.particle.data
 
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.particle.ParticleType
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 class BlockParticleData(val blockState: BlockState?, type: ParticleType) : ParticleData(type) {
     override fun toString(): String {

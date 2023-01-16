@@ -19,12 +19,12 @@ import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W02A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W15A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W18A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W14A
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

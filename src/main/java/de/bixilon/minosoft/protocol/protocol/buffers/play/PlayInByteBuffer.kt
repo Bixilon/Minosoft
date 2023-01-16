@@ -10,7 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.protocol
+package de.bixilon.minosoft.protocol.protocol.buffers.play
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -34,6 +34,8 @@ import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W21A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28B
@@ -42,6 +44,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
+import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.KUtil
@@ -230,14 +233,6 @@ class PlayInByteBuffer : InByteBuffer {
         )
     }
 
-    fun <T> readPlayOptional(reader: PlayInByteBuffer.() -> T): T? {
-        return if (readBoolean()) {
-            reader(this)
-        } else {
-            null
-        }
-    }
-
     fun readInstant(): Instant {
         val time = readLong()
         if (versionId >= ProtocolVersions.V_22W19A) {
@@ -335,5 +330,9 @@ class PlayInByteBuffer : InByteBuffer {
             return Vec3d(readFixedPointNumberByte(), readFixedPointNumberByte(), readFixedPointNumberByte())
         }
         return Vec3d(readShort() / 4096.0, readShort() / 4096.0, readShort() / 4096.0) // / 128 / 32
+    }
+
+    fun readVelocity(): Vec3d {
+        return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_NETWORK_DIVIDER
     }
 }

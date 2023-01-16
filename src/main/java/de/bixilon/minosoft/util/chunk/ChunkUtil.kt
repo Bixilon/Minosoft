@@ -31,7 +31,6 @@ import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFac
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W35A
@@ -39,6 +38,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import java.lang.StrictMath.abs
 import java.util.*
 

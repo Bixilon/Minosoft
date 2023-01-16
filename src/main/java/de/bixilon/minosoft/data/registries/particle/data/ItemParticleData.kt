@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.registries.particle.data
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.particle.ParticleType
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 class ItemParticleData(val stack: ItemStack?, type: ParticleType) : ParticleData(type) {
 

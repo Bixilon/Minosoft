@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,8 +16,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardScorePutEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -39,7 +39,7 @@ class PutScoreboardScoreS2CP(
         val score = ScoreboardScore(entity, objective, connection.scoreboardManager.getTeam(entity), value)
         objective.scores[entity] = score
 
-        connection.fire(ScoreboardScorePutEvent(connection, score))
+        connection.events.fire(ScoreboardScorePutEvent(connection, score))
     }
 
 

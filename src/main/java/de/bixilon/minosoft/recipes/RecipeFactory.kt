@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.recipes
 
 import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 interface RecipeFactory<T : Recipe> : Identified {
 

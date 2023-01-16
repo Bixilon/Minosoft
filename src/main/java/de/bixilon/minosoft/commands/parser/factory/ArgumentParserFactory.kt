@@ -15,7 +15,7 @@ package de.bixilon.minosoft.commands.parser.factory
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 interface ArgumentParserFactory<T : ArgumentParser<*>> : Identified {
 

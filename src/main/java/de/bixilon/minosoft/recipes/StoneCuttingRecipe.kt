@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.recipes
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class StoneCuttingRecipe(

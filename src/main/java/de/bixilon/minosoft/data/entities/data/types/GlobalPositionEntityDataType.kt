@@ -18,8 +18,8 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3i
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 object GlobalPositionEntityDataType : EntityDataType<GlobalPosition> {
 

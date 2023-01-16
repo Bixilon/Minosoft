@@ -10,7 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.protocol
+package de.bixilon.minosoft.protocol.protocol.buffers.play
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
@@ -20,7 +20,9 @@ import de.bixilon.minosoft.data.chat.signature.lastSeen.MessageSignatureData
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
+import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import java.time.Instant
 import java.util.*
 

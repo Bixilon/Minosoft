@@ -10,58 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.protocol
+package de.bixilon.minosoft.protocol.protocol.buffers
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.collections.primitive.bytes.HeapArrayByteList
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.nbtType
-import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
-import java.util.*
 
-@Deprecated("Kutil")
-open class OutByteBuffer() {
-    private val bytes = HeapArrayByteList()
+open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
 
-    constructor(buffer: OutByteBuffer) : this() {
-        bytes.addAll(buffer.bytes)
-    }
-
-    fun writeShort(short: Short) {
-        writeShort(short.toInt())
-    }
-
-    fun writeShort(short: Int) {
-        writeByte(short ushr Byte.SIZE_BITS)
-        writeByte(short)
-    }
-
-    fun writeInt(int: Int) {
-        writeShort(int shr Short.SIZE_BITS)
-        writeShort(int)
-    }
-
-    open fun writeBareByteArray(data: ByteArray) {
-        bytes.addAll(data)
-    }
-
-    open fun writeByteArray(data: ByteArray) {
-        writeVarInt(data.size)
-        bytes.addAll(data)
-    }
-
-    fun writeLong(value: Long) {
-        writeInt((value shr Int.SIZE_BITS).toInt())
-        writeInt(value.toInt())
-    }
+    constructor() : super()
+    constructor(buffer: OutByteBuffer) : super(buffer)
 
     fun writeJson(json: Any) {
         writeString(Jackson.MAPPER.writeValueAsString(json))
@@ -71,74 +35,17 @@ open class OutByteBuffer() {
         writeJson(chatComponent.getJson())
     }
 
-    fun writeString(string: String) {
+
+    // TODO kutil 1.19.2
+    /*
+    override fun writeString(string: String) {
         check(string.length <= ProtocolDefinition.STRING_MAX_LENGTH) { "String max string length exceeded ${string.length} > ${ProtocolDefinition.STRING_MAX_LENGTH}" }
         val bytes = string.encodeNetwork()
         writeVarInt(bytes.size)
         writeBareByteArray(bytes)
     }
 
-    fun writeVarLong(long: Long) {
-        var value = long
-        do {
-            var temp = value and 0x7F
-            value = value ushr 7
-            if (value != 0L) {
-                temp = temp or 0x80
-            }
-            writeByte(temp)
-        } while (value != 0L)
-    }
-
-    fun writeByte(byte: Byte) {
-        bytes.add(byte)
-    }
-
-    fun writeByte(byte: Int) {
-        writeByte((byte and 0xFF).toByte())
-    }
-
-    fun writeByte(long: Long) {
-        writeByte((long and 0xFF).toByte())
-    }
-
-    fun writeFloat(float: Float) {
-        writeInt(float.toBits())
-    }
-
-    fun writeFloat(float: Double) {
-        writeFloat(float.toFloat())
-    }
-
-    fun writeDouble(double: Double) {
-        writeLong(double.toBits())
-    }
-
-    fun writeDouble(float: Float) {
-        writeDouble(float.toDouble())
-    }
-
-    fun writeUUID(uuid: UUID) {
-        writeLong(uuid.mostSignificantBits)
-        writeLong(uuid.leastSignificantBits)
-    }
-
-    fun writeFixedPointNumberInt(double: Double) {
-        writeInt((double * 32.0).toInt())
-    }
-
-    fun writeVarInt(int: Int) {
-        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        var value = int
-        do {
-            var temp = value and 0x7F
-            value = value ushr 7
-            if (value != 0) {
-                temp = temp or 0x80
-            }
-            writeByte(temp)
-        } while (value != 0)
-    }
+     */
 
     protected fun writeNBTTagType(type: NBTTagTypes) {
         writeByte(type.ordinal)
@@ -235,54 +142,10 @@ open class OutByteBuffer() {
         }
     }
 
-    fun writeBoolean(value: Boolean) {
-        writeByte(
-            if (value) {
-                0x01
-            } else {
-                0x00
-            }
-        )
-    }
-
-    fun writeBareString(string: String) {
-        writeBareByteArray(string.toByteArray(StandardCharsets.UTF_8))
-    }
-
     fun writeByteBlockPosition(blockPosition: Vec3i?) {
         writeInt(blockPosition?.x ?: 0)
         writeByte(blockPosition?.y ?: 0)
         writeInt(blockPosition?.z ?: 0)
-    }
-
-    fun toArray(): ByteArray {
-        return bytes.toArray()
-    }
-
-    fun writeBareIntArray(data: IntArray) {
-        for (i in data) {
-            writeInt(i)
-        }
-    }
-
-    fun writeIntArray(data: IntArray) {
-        writeVarInt(data.size)
-        writeBareIntArray(data)
-    }
-
-    fun writeBareLongArray(data: LongArray) {
-        for (l in data) {
-            writeLong(l)
-        }
-    }
-
-    fun writeLongArray(data: LongArray) {
-        writeVarInt(data.size)
-        writeBareLongArray(data)
-    }
-
-    fun writeTo(buffer: ByteBuffer) {
-        buffer.put(toArray())
     }
 
     fun writeLegacyResourceLocation(resourceLocation: ResourceLocation) {
@@ -311,24 +174,5 @@ open class OutByteBuffer() {
         writeFloat(vec3.x)
         writeFloat(vec3.y)
         writeFloat(vec3.z)
-    }
-
-    fun <T> writeArray(array: Array<T>, writer: (T) -> Unit) {
-        writeVarInt(array.size)
-        for (entry in array) {
-            writer(entry)
-        }
-    }
-
-    fun <T> writeArray(collection: Collection<T>, writer: (T) -> Unit) {
-        writeVarInt(collection.size)
-        for (entry in collection) {
-            writer(entry)
-        }
-    }
-
-    fun <T> writeOptional(value: T?, writer: (T) -> Unit) {
-        writeBoolean(value != null)
-        value?.let(writer)
     }
 }

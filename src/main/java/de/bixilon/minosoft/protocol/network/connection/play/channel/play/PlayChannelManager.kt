@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.channel.ChannelManager
 import de.bixilon.minosoft.protocol.packets.c2s.play.ChannelC2SP
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 
 class PlayChannelManager(
     private val connection: PlayConnection,

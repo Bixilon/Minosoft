@@ -16,7 +16,7 @@ package de.bixilon.minosoft.commands.suggestion.factory
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 interface SuggestionFactory<T : SuggestionType<*>> : Identified {
 

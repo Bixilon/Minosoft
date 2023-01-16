@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.recipes.crafting
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.recipes.RecipeCategories
 import de.bixilon.minosoft.recipes.RecipeFactory

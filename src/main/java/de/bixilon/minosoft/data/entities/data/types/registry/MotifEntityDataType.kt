@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.entities.data.types.registry
 
 import de.bixilon.minosoft.data.registries.Motif
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 object MotifEntityDataType : RegistryEntityDataType<Motif> {
 

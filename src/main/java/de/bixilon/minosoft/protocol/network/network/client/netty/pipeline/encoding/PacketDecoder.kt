@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
@@ -25,9 +24,10 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.impl
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.QueuedS2CP
 import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.Protocol
+import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.versions.Version
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
 import java.lang.reflect.InvocationTargetException
