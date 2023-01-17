@@ -37,6 +37,7 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
 import java.util.concurrent.locks.ReentrantLock
 
@@ -57,11 +58,11 @@ interface ProfileManager<T : Profile> {
     val profiles: AbstractMutableBiMap<String, T>
     var selected: T
 
-    val baseDirectory: File
-        get() = File(RunConfiguration.HOME_DIRECTORY + "config/" + namespace.namespace + "/")
+    val baseDirectory: Path
+        get() = RunConfiguration.CONFIG_DIRECTORY.resolve(namespace.namespace)
 
-    fun getPath(profileName: String, baseDirectory: File = this.baseDirectory): String {
-        return baseDirectory.path + "/" + profileName + "/" + namespace.path + ".json"
+    fun getPath(profileName: String, baseDirectory: Path = this.baseDirectory): Path {
+        return baseDirectory.resolve(profileName).resolve(namespace.path + ".json")
     }
 
     /**

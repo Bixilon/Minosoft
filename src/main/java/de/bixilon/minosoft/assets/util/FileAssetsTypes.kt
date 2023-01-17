@@ -11,18 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.crash.section
+package de.bixilon.minosoft.assets.util
 
-import de.bixilon.minosoft.terminal.CommandLineArguments
-import de.bixilon.minosoft.terminal.RunConfiguration
-import java.lang.management.ManagementFactory
-
-class RuntimeSection : CrashSection(
-    "Runtime details", arrayOf(
-        "Start arguments" to CommandLineArguments.ARGUMENTS,
-        "JVM flags" to ManagementFactory.getRuntimeMXBean().inputArguments,
-        "Environment" to System.getenv(),
-        "Home directory" to RunConfiguration.HOME_DIRECTORY,
-        "Config directory" to RunConfiguration.CONFIG_DIRECTORY,
-    )
-)
+object FileAssetsTypes {
+    const val GAME = "game"
+    const val SKINS = "skins"
+    const val SOUNDS = "sounds"
+    const val PIXLYZER = "pixlyzer"
+}

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,7 +31,7 @@ import kotlin.reflect.jvm.javaField
 
 
 object ModLoader {
-    private val BASE_PATH = RunConfiguration.HOME_DIRECTORY + "mods/"
+    private val BASE_PATH = RunConfiguration.HOME_DIRECTORY.resolve("mods")
     private var latch: CountUpAndDownLatch? = null
     val mods = ModList()
     var currentPhase by observed(LoadingPhases.PRE_BOOT)
@@ -39,7 +39,7 @@ object ModLoader {
     var state by observed(PhaseStates.WAITING)
         private set
 
-    private val LoadingPhases.path: File get() = File(BASE_PATH + name.lowercase())
+    private val LoadingPhases.path: File get() = BASE_PATH.resolve(name.lowercase()).toFile()
 
     private fun createDirectories() {
         val created: MutableList<LoadingPhases> = mutableListOf()

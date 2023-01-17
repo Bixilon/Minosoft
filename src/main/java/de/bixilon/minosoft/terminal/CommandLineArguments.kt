@@ -15,6 +15,7 @@ package de.bixilon.minosoft.terminal
 
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.loader.parameters.ModParameters
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -26,6 +27,7 @@ import net.sourceforge.argparse4j.impl.Arguments
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.inf.Namespace
 import java.io.PrintWriter
+import java.nio.file.Path
 
 object CommandLineArguments {
     lateinit var ARGUMENTS: List<String>
@@ -92,6 +94,14 @@ object CommandLineArguments {
             addArgument("--mod_parameters")
                 .action(Arguments.store())
                 .help("JSON of custom mod parameters")
+
+            addArgument("--home")
+                .action(Arguments.store())
+                .help("Home path of minosoft")
+
+            addArgument("--assets")
+                .action(Arguments.store())
+                .help("Path where assets are stored")
         }
 
     fun parse(args: Array<String>) {
@@ -137,5 +147,10 @@ object CommandLineArguments {
         RunConfiguration.IGNORE_YGGDRASIL = namespace.getBoolean("ignore_yggdrasil")
         RunConfiguration.IGNORE_MODS = namespace.getBoolean("ignore_mods")
         namespace.getString("mod_parameters")?.let { RunConfiguration.MOD_PARAMETERS = Jackson.MAPPER.readValue(it, ModParameters::class.java) }
+
+
+
+        namespace.getString("home")?.let { RunConfiguration.setHome(Path.of(it)) }
+        namespace.getString("assets")?.let { FileAssetsUtil.BASE_PATH = Path.of(it) }
     }
 }

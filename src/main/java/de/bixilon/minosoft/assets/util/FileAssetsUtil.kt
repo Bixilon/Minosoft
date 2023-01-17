@@ -29,20 +29,20 @@ import de.bixilon.minosoft.util.KUtil
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
+import java.nio.file.Path
 import java.security.MessageDigest
 
 object FileAssetsUtil {
-    private val EMPTY_BYTE_ARRAY = ByteArray(0)
-    private val BASE_PATH = RunConfiguration.HOME_DIRECTORY + "assets/objects/"
+    var BASE_PATH = RunConfiguration.HOME_DIRECTORY.resolve("assets/")
 
-    fun getPath(hash: String): String {
+    fun getPath(type: String, hash: String): Path {
         if (hash.length <= 10) {
             throw IllegalArgumentException("Hash too short: $hash")
         }
         if (!hash.isHexString) {
             throw IllegalArgumentException("String is not a hex string. Invalid data or manipulated?: $hash")
         }
-        return BASE_PATH + hash.substring(0, 2) + "/" + hash
+        return BASE_PATH.resolve(type).resolve(hash.substring(0, 2)).resolve(hash)
     }
 
     fun downloadAsset(url: String, compress: Boolean = true, hashType: HashTypes = HashTypes.SHA256): String {
