@@ -69,8 +69,11 @@ class ConnectionUtil(
         }
         Log.log(LogMessageType.CHAT_OUT) { trimmed }
         val privateKey = connection.player.privateKey?.private
-        if (privateKey == null || !connection.version.requiresSignedChat) {
+        if (!connection.version.requiresSignedChat) {
             return connection.sendPacket(ChatMessageC2SP(trimmed))
+        }
+        if (privateKey == null) {
+            return connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.EPOCH, salt = 0, signature = null, false, Acknowledgement.EMPTY))
         }
         sendSignedMessage(privateKey, trimmed)
     }
