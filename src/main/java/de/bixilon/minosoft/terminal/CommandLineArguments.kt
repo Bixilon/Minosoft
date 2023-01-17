@@ -102,6 +102,10 @@ object CommandLineArguments {
             addArgument("--assets")
                 .action(Arguments.store())
                 .help("Path where assets are stored")
+
+            addArgument("--config")
+                .action(Arguments.store())
+                .help("Path where minosoft configuration files are stored")
         }
 
     fun parse(args: Array<String>) {
@@ -152,5 +156,6 @@ object CommandLineArguments {
 
         namespace.getString("home")?.let { RunConfiguration.setHome(Path.of(it)) }
         namespace.getString("assets")?.let { AssetsOptions.PATH = Path.of(it) }
+        namespace.getString("config")?.let { RunConfiguration.setConfig(Path.of(it)) }
     }
 }
