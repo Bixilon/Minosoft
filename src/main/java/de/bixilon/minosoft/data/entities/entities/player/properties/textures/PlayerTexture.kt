@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.player.properties.textures
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kutil.hash.HashUtil.sha256
+import de.bixilon.kutil.hex.HexUtil.isHexString
 import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
@@ -37,13 +38,24 @@ open class PlayerTexture(
         check(urlMatches(url, ALLOWED_DOMAINS) && !urlMatches(url, BLOCKED_DOMAINS)) { "URL hostname is not allowed!" }
     }
 
+    fun getHash(): String {
+        when (url.host) {
+            "textures.minecraft.net" -> {
+                val hash = url.file.split("/").last()
+                if (hash.length !in 63..64 || !hash.isHexString) {
+                    throw IllegalStateException("Invalid hash: $hash")
+                }
+                return hash
+            }
+
+            else -> TODO("Can not get texture identifier: $url")
+        }
+    }
+
     @Synchronized
     fun read(): ByteArray {
         this.data?.let { return it }
-        val sha256 = when (url.host) {
-            "textures.minecraft.net" -> url.file.split("/").last()
-            else -> TODO("Can not get texture identifier: $url")
-        }
+        val sha256 = getHash()
 
         val diskPath = FileAssetsUtil.getPath(sha256)
 
@@ -65,7 +77,7 @@ open class PlayerTexture(
         val (hash, data) = FileAssetsUtil.saveAndGet(input)
         if (sha256 != hash) {
             File(diskPath).delete()
-            throw IllegalStateException("Hash mismatch (expected=$sha256, got=$hash)")
+            throw IllegalStateException("Hash mismatch (expected=$sha256, got=$hash): $url")
         }
         Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloaded player texture ($url)" }
         return data
