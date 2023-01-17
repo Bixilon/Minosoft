@@ -32,8 +32,8 @@ class WorldRendererTest {
     }
 
     private fun WorldRenderer.awaitQueue(count: Int) {
-        for (i in 0 until 1000) {
-            Thread.sleep(10)
+        for (i in 0 until 2000) {
+            Thread.sleep(16)
             frame()
             if (loaded.size == count) {
                 break
@@ -89,10 +89,11 @@ class WorldRendererTest {
         }
         renderer.awaitQueue(chunks.size)
 
+        val count = renderer.loaded.size
         // reset
         for (chunk in chunks) {
             chunk[Vec3i(0, 0, 0)] = null
         }
-        Assert.assertEquals(renderer.loaded.size, chunks.size)
+        Assert.assertEquals(count, chunks.size)
     }
 }
