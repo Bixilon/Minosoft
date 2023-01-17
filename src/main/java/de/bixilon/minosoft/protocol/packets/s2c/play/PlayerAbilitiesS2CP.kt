@@ -27,7 +27,7 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val isInvulnerable: Boolean
     val isFlying: Boolean
     val canFly: Boolean
-    val canInstantBuild: Boolean
+    val creative: Boolean
 
     val flyingSpeed: Double
     val walkingSpeed: Double
@@ -38,9 +38,9 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         canFly = flags.isBit(2)
         if (buffer.versionId < ProtocolVersions.V_14W03B) { // ToDo: Find out correct version
             isInvulnerable = flags.isBit(0)
-            canInstantBuild = flags.isBit(3)
+            creative = flags.isBit(3)
         } else {
-            canInstantBuild = flags.isBit(0)
+            creative = flags.isBit(0)
             isInvulnerable = flags.isBit(3)
         }
         flyingSpeed = buffer.readFloat().toDouble()
@@ -48,7 +48,7 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player abilities (isInvulnerable=$isInvulnerable, isFlying=$isFlying, canFly=$canFly, canInstantBuild=$canInstantBuild, flyingSpeed=$flyingSpeed, walkingSpeed=$walkingSpeed)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player abilities (isInvulnerable=$isInvulnerable, isFlying=$isFlying, canFly=$canFly, canInstantBuild=$creative, flyingSpeed=$flyingSpeed, walkingSpeed=$walkingSpeed)" }
     }
 
     override fun handle(connection: PlayConnection) {
@@ -57,7 +57,6 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         abilities.isInvulnerable = isInvulnerable
         abilities.isFlying = isFlying
         abilities.canFly = canFly
-        abilities.creative = canInstantBuild
 
         abilities.flyingSpeed = flyingSpeed
         abilities.walkingSpeed = walkingSpeed

@@ -142,9 +142,8 @@ class BreakInteractionHandler(
         val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME
 
 
-        val canInstantBreak = connection.player.baseAbilities.creative || connection.player.gamemode == Gamemodes.CREATIVE
 
-        if (canInstantBreak) {
+        if (connection.player.gamemode == Gamemodes.CREATIVE) {
             if (!canStartBreaking) {
                 return true
             }
