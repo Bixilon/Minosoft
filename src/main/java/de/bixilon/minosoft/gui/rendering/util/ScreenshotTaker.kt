@@ -20,6 +20,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.assets.util.AssetsOptions
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.events.click.ClickCallbackClickEvent
@@ -52,8 +53,8 @@ class ScreenshotTaker(
             var i = 1
             while (path.resolve(filename).toFile().exists()) {
                 filename = "${timestamp}_${i++}.png"
-                if (i > MAX_FILES_CHECK) {
-                    throw StackOverflowError("There are already > $MAX_FILES_CHECK screenshots with this date! Please try again later!")
+                if (i > AssetsOptions.MAX_FILE_CHECKING) {
+                    throw StackOverflowError("There are already > ${AssetsOptions.MAX_FILE_CHECKING} screenshots with this date! Please try again later!")
                 }
             }
 
@@ -119,6 +120,5 @@ class ScreenshotTaker(
 
     companion object {
         private val DATE_FORMATTER = SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")
-        private const val MAX_FILES_CHECK = 10
     }
 }

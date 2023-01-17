@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.assets.util.FileUtil.readRGBArray
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.GrassColorModifiers
 import de.bixilon.minosoft.data.registries.blocks.BlockState

@@ -14,20 +14,22 @@
 package de.bixilon.minosoft.assets.minecraft.index
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
+import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.error.AssetCorruptedError
 import de.bixilon.minosoft.assets.error.AssetNotFoundError
 import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsManager
+import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
-import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
-import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.assets.util.HashTypes
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -35,7 +37,7 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.io.File
+import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
 
@@ -54,87 +56,75 @@ class IndexAssetsManager(
     override var loaded: Boolean = false
         private set
 
-    private fun downloadAssetsIndex(): Map<String, Any> {
-        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading assets index ($indexHash)" }
-        return Jackson.MAPPER.readValue(
-            FileAssetsUtil.downloadAndGetAsset(
-                profile.source.mojangPackages.formatPlaceholder(
-                    "fullHash" to indexHash,
-                    "filename" to "$assetsVersion.json",
-                ), hashType = FileAssetsUtil.HashTypes.SHA1
-            ).second, Jackson.JSON_MAP_TYPE
-        )
+    private fun readAssetsIndex(): Map<String, Any> {
+        return FileAssetsUtil.readOrNull(indexHash, FileAssetsTypes.GAME, verify = verify)?.let { ByteArrayInputStream(it).readJsonObject() } ?: downloadAssetsIndex()
     }
 
-    fun verifyAsset(hash: String) {
-        val file = File(FileAssetsUtil.getPath(hash))
-        if (FileAssetsUtil.verifyAsset(hash, file, verify, hashType = FileAssetsUtil.HashTypes.SHA1)) {
+    private fun downloadAssetsIndex(): Map<String, Any> {
+        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading assets index ($indexHash)" }
+        val data = FileAssetsUtil.read(profile.source.mojangPackages.formatPlaceholder(
+            "fullHash" to indexHash,
+            "filename" to "$assetsVersion.json",
+        ).toURL().openStream(), FileAssetsTypes.GAME, hash = HashTypes.SHA1).data
+
+        return Jackson.MAPPER.readValue(data, Jackson.JSON_MAP_TYPE)
+    }
+
+    fun verifyAsset(property: AssetsProperty) {
+        if (FileAssetsUtil.verify(property.hash, type = property.type.type, lazy = !verify)) {
             return
         }
         val url = profile.source.minecraftResources.formatPlaceholder(
-            "hashPrefix" to hash.substring(0, 2),
-            "fullHash" to hash,
-        )
+            "hashPrefix" to property.hash.substring(0, 2),
+            "fullHash" to property.hash,
+        ).toURL()
+
         Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading asset $url" }
-        val downloadedHash = FileAssetsUtil.downloadAsset(url, hashType = FileAssetsUtil.HashTypes.SHA1)
-        if (downloadedHash != hash) {
-            throw IOException("Verification of asset $hash failed!")
+
+        val hash = FileAssetsUtil.save(url.openStream(), type = property.type.type, hash = HashTypes.SHA1)
+        if (hash != property.hash) {
+            throw IOException("Verification of asset failed (expected=${property.hash}, hash=$hash)!")
         }
     }
 
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
 
-        var assets = FileAssetsUtil.readVerified(indexHash, verify)?.readJsonObject() ?: downloadAssetsIndex()
+        var assets = readAssetsIndex()
 
         assets["objects"].let { assets = it.asJsonObject() }
-        val tasks = CountUpAndDownLatch(0)
-        val assetsLatch = CountUpAndDownLatch(assets.size, parent = latch)
+
+        val worker = UnconditionalWorker()
+
+        val hashes: MutableSet<String> = mutableSetOf()
 
         for ((path, data) in assets) {
             check(data is Map<*, *>)
-            val name = path.toAssetName(false)
-            if (name == null) {
-                assetsLatch.dec()
-                continue
-            }
+            val name = path.toAssetName(false) ?: continue
 
-            val type = when {
-                name.path.startsWith("lang/") -> IndexAssetsType.LANGUAGE
-                name.path.startsWith("sounds/") -> IndexAssetsType.SOUNDS
-                name.path == "sounds.json" -> IndexAssetsType.SOUNDS
-                name.path.startsWith("textures/") -> IndexAssetsType.TEXTURES
-                else -> {
-                    assetsLatch.dec()
-                    continue
-                }
-            }
-            if (type !in this.types) {
-                assetsLatch.dec()
+            val type = IndexAssetsType.determinate(name.path)
+            if (type == null || type !in this.types) {
                 continue
             }
 
             val size = data["size"]?.toLong() ?: -1
             val hash = data["hash"].toString()
-            while (tasks.count > DefaultThreadPool.threadCount - 1) {
-                // ToDo: The timeout is just a workaround for bad multi threading timings
-                try {
-                    tasks.waitForChange(100L)
-                } catch (_: InterruptedException) {
-                }
+            val property = AssetsProperty(type, hash, size)
+
+            this.assets[name] = property
+
+            if (hash in hashes) {
+                // sound is used multiple times
+                continue
             }
-            tasks.inc()
-            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.LOW) {
-                verifyAsset(hash)
-                this.assets[name] = AssetsProperty(type, hash, size)
-                tasks.dec()
-                assetsLatch.dec()
-                if (StaticConfiguration.DEBUG_SLOW_LOADING) {
-                    Thread.sleep(30L)
-                }
+            hashes += hash
+
+            worker += UnconditionalTask(priority = ThreadPool.LOW) {
+                verifyAsset(property) // TODO: This first verifies the asset, it will be verified another time when loading
             }
         }
-        assetsLatch.await()
+
+        worker.work(latch)
         loaded = true
     }
 
@@ -144,11 +134,13 @@ class IndexAssetsManager(
     }
 
     override fun get(path: ResourceLocation): InputStream {
-        return FileAssetsUtil.readVerified(assets[path]?.hash ?: throw AssetNotFoundError(path), verify, hashType = FileAssetsUtil.HashTypes.SHA1) ?: throw AssetCorruptedError(path)
+        val property = assets[path] ?: throw AssetNotFoundError(path)
+        return FileAssetsUtil.readOrNull(property.hash, type = property.type.type, verify = verify)?.let { ByteArrayInputStream(it) } ?: throw AssetCorruptedError(path)
     }
 
     override fun getOrNull(path: ResourceLocation): InputStream? {
-        return FileAssetsUtil.readVerified(assets[path]?.hash ?: return null, verify, hashType = FileAssetsUtil.HashTypes.SHA1) ?: throw AssetCorruptedError(path)
+        val property = assets[path] ?: return null
+        return FileAssetsUtil.readOrNull(property.hash, type = property.type.type, verify = verify)?.let { ByteArrayInputStream(it) }
     }
 
     override fun contains(path: ResourceLocation): Boolean {

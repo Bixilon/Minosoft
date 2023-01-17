@@ -16,114 +16,125 @@ package de.bixilon.minosoft.assets.util
 import com.github.luben.zstd.ZstdInputStream
 import com.github.luben.zstd.ZstdOutputStream
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
-import de.bixilon.kutil.buffer.BufferDefinition
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.kutil.hex.HexUtil.isHexString
-import de.bixilon.kutil.random.RandomStringUtil.randomString
+import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.assets.util.FileAssetsUtil.HashTypes.Companion.hashType
+import de.bixilon.minosoft.assets.util.FileUtil.copy
+import de.bixilon.minosoft.assets.util.HashTypes.Companion.hashType
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.*
-import java.net.URL
 import java.nio.file.Files
-import java.nio.file.Path
-import java.security.MessageDigest
 
 object FileAssetsUtil {
-    var BASE_PATH = RunConfiguration.HOME_DIRECTORY.resolve("assets/")
 
-    fun getPath(type: String, hash: String): Path {
-        if (hash.length <= 10) {
-            throw IllegalArgumentException("Hash too short: $hash")
-        }
-        if (!hash.isHexString) {
-            throw IllegalArgumentException("String is not a hex string. Invalid data or manipulated?: $hash")
-        }
-        return BASE_PATH.resolve(type).resolve(hash.substring(0, 2)).resolve(hash)
-    }
+    private fun save(input: InputStream, type: String, compress: Boolean, hash: HashTypes, close: Boolean, store: OutputStream?): String {
+        val temp = FileUtil.createTempFile()
+        temp.createParent()
 
-    fun downloadAsset(url: String, compress: Boolean = true, hashType: HashTypes = HashTypes.SHA256): String {
-        return saveAndGet(URL(url).openStream(), compress, false, hashType).first
-    }
+        val digest = hash.createDigest()
+        val output = FileOutputStream(temp).upgrade(compress)
 
-    fun downloadAndGetAsset(url: String, compress: Boolean = true, hashType: HashTypes = HashTypes.SHA256): Pair<String, ByteArray> {
-        return saveAndGet(URL(url).openStream(), compress, true, hashType)
-    }
-
-    fun saveAndGet(stream: InputStream, compress: Boolean = true, get: Boolean = true, hashType: HashTypes = HashTypes.SHA256, close: Boolean = true): Pair<String, ByteArray> {
-        var tempFile: File
-        do {
-            tempFile = File(RunConfiguration.TEMPORARY_FOLDER + KUtil.RANDOM.randomString(32))
-        } while (tempFile.exists())
-        tempFile.parentFile.apply {
-            mkdirs()
-            if (!isDirectory) {
-                throw IllegalStateException("Could not create folder: $this")
-            }
-        }
-        val returnStream = if (get) {
-            ByteArrayOutputStream()
+        if (store == null) {
+            input.copy(output, digest = digest)
         } else {
-            ByteArrayOutputStream(0)
-        }
-        val digest = hashType.createDigest()
-        var output: OutputStream = FileOutputStream(tempFile)
-        if (compress) {
-            output = ZstdOutputStream(output, 5)
+            input.copy(output, store, digest = digest)
         }
 
-        val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
-        var length: Int
-        while (true) {
-            length = stream.read(buffer, 0, buffer.size)
-            if (length < 0) {
-                break
-            }
-            output.write(buffer, 0, length)
-            digest.update(buffer, 0, length)
-            if (get) {
-                returnStream.write(buffer, 0, length)
-            }
-        }
-        if (close) {
-            stream.close()
-        }
+        if (close) input.close()
         output.close()
+
         val hash = digest.digest().toHex()
 
-        val file = File(getPath(hash))
+        val file = PathUtil.getAssetsPath(hash = hash, type = type).toFile()
+
         if (file.exists()) {
-            // already downloaded. This was a waste
-            tempFile.delete()
-            return Pair(hash, returnStream.toByteArray())
+            Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Storing of file (type=$type, hash=$hash) was useless! Please check you code to avoid bandwidth usage!" }
+            temp.delete()
+            return hash
         }
 
-        file.parentFile.apply {
-            mkdirs()
-            if (!isDirectory) {
-                tempFile.delete()
-                throw IllegalStateException("Could not create folder $this")
-            }
+        file.createParent()
+
+        Files.move(temp.toPath(), file.toPath())
+
+        return hash
+    }
+
+    fun save(input: InputStream, type: String, compress: Boolean = true, hash: HashTypes = HashTypes.SHA256, close: Boolean = true): String {
+        return save(input, type, compress, hash, close, null)
+    }
+
+    fun read(input: InputStream, type: String, compress: Boolean = true, hash: HashTypes = HashTypes.SHA256, close: Boolean = true): SavedAsset {
+        val output = ByteArrayOutputStream()
+        val hash = save(input, type, compress, hash, close, output)
+        return SavedAsset(hash, output.toByteArray())
+    }
+
+    fun verify(hash: String, type: String, lazy: Boolean = true, compress: Boolean = true): Boolean {
+        val file = PathUtil.getAssetsPath(hash = hash, type = type).toFile()
+
+        if (!file.verify()) return false
+
+        if (lazy) return true
+
+        val digest = hash.hashType.createDigest()
+        val stream = FileInputStream(file).upgrade(compress)
+
+        stream.copy(digest = digest)
+
+        stream.close()
+
+        if (digest.digest().toHex() != hash) {
+            file.delete()
+            return false
         }
-        Files.move(tempFile.toPath(), file.toPath())
-
-        return Pair(hash, returnStream.toByteArray())
+        return true
     }
 
-    fun saveAsset(stream: InputStream, compress: Boolean = true, hashType: HashTypes = HashTypes.SHA256): String {
-        return saveAndGet(stream, compress, false, hashType).first
+    fun read(hash: String, type: String, verify: Boolean = true, compress: Boolean = true): ByteArray {
+        val file = PathUtil.getAssetsPath(hash = hash, type = type).toFile()
+
+        if (!file.verify()) throw IOException("Invalid file: $file")
+
+        val digest = hash.hashType.createDigest()
+        val stream = FileInputStream(file).upgrade(compress)
+        val output = ByteArrayOutputStream(stream.available())
+
+        stream.copy(output, digest = if (verify) digest else null)
+
+        stream.close()
+
+        val result = digest.digest().toHex()
+        if (result != hash) {
+            file.delete()
+            throw IOException("Hash does not match (type=$type, expected=$hash, hash=$hash)")
+        }
+        return output.toByteArray()
     }
 
-    fun saveAsset(data: ByteArray, compress: Boolean = true, hashType: HashTypes = HashTypes.SHA256): String {
-        return saveAndGet(ByteArrayInputStream(data), compress, false, hashType).first
+    fun readOrNull(hash: String, type: String, verify: Boolean = true, compress: Boolean = true): ByteArray? {
+        val file = PathUtil.getAssetsPath(hash = hash, type = type).toFile()
+
+        if (!file.verify()) return null
+
+        val digest = hash.hashType.createDigest()
+        val stream = FileInputStream(file).upgrade(compress)
+        val output = ByteArrayOutputStream(stream.available())
+
+        stream.copy(output, digest = if (verify) digest else null)
+
+        stream.close()
+
+        val result = digest.digest().toHex()
+        if (result != hash) {
+            file.delete()
+            return null
+        }
+        return output.toByteArray()
     }
 
-    fun saveAndGetAsset(data: ByteArray, hashType: HashTypes = HashTypes.SHA256, compress: Boolean = true): Pair<String, ByteArray> {
-        return saveAndGet(ByteArrayInputStream(data), compress, false, hashType)
-    }
 
     fun String.toAssetName(verifyPrefix: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX): ResourceLocation? {
         if (verifyPrefix && !startsWith("$prefix/")) {
@@ -136,126 +147,29 @@ object FileAssetsUtil {
         return ResourceLocation(split[0], split[1])
     }
 
-    fun verifyAsset(hash: String, file: File = File(getPath(hash)), verify: Boolean, hashType: HashTypes = HashTypes.SHA256, compress: Boolean = true): Boolean {
-        if (!verifyAssetBasic(file)) {
-            return false
+    private fun OutputStream.upgrade(compress: Boolean): OutputStream {
+        if (compress && AssetsOptions.COMPRESS_ASSETS) {
+            return ZstdOutputStream(this)
         }
-        if (!verify) {
-            return true
-        }
-
-        try {
-            val digest = hashType.createDigest()
-
-            val input = openStream(file, compress)
-
-            val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
-            var length: Int
-            while (true) {
-                length = input.read(buffer, 0, buffer.size)
-                if (length < 0) {
-                    break
-                }
-                digest.update(buffer, 0, length)
-            }
-            val equals = hash == digest.digest().toHex()
-            if (!equals) {
-                file.delete()
-            }
-            return equals
-        } catch (exception: Throwable) {
-            file.delete()
-            return false
-        }
+        return this
     }
 
-    private fun verifyAssetBasic(file: File): Boolean {
-        if (!file.exists()) {
+    private fun InputStream.upgrade(compress: Boolean): InputStream {
+        if (compress && AssetsOptions.COMPRESS_ASSETS) {
+            return ZstdInputStream(this)
+        }
+        return this
+    }
+
+    private fun File.verify(): Boolean {
+        if (!exists() || !isFile) {
             return false
         }
-        if (!file.isFile) {
-            throw IllegalStateException("File is not a file: $file")
-        }
-        val size = file.length()
+        val size = length()
         if (size < 0) {
-            file.delete()
+            delete()
             return false
         }
         return true
-    }
-
-    fun readVerified(hash: String, verify: Boolean, hashType: HashTypes = hash.hashType, compress: Boolean = true): InputStream? {
-        val file = File(getPath(hash))
-        if (!verifyAssetBasic(file)) {
-            return null
-        }
-        val stream = openStream(file, compress)
-        if (!verify) {
-            return stream
-        }
-
-        try {
-            val digest = hashType.createDigest()
-
-            val input = openStream(file, compress)
-            val output = ByteArrayOutputStream(if (compress) input.available() else maxOf(1000, input.available()))
-
-            val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
-            var length: Int
-            while (true) {
-                length = input.read(buffer, 0, buffer.size)
-                if (length < 0) {
-                    break
-                }
-                digest.update(buffer, 0, length)
-                output.write(buffer, 0, length)
-            }
-            val equals = hash == digest.digest().toHex()
-            if (!equals) {
-                file.delete()
-                return null
-            }
-            return ByteArrayInputStream(output.toByteArray())
-        } catch (exception: Throwable) {
-            file.delete()
-            return null
-        }
-    }
-
-    private fun openStream(file: File, compress: Boolean): InputStream {
-        var input: InputStream = FileInputStream(file)
-        if (compress) {
-            input = ZstdInputStream(input)
-        }
-
-        return input
-    }
-
-    enum class HashTypes(
-        val digestName: String,
-        val length: Int,
-    ) {
-        SHA1("SHA-1", 40),
-        SHA256("SHA-256", 64),
-        ;
-
-        fun createDigest(): MessageDigest {
-            return MessageDigest.getInstance(digestName)
-        }
-
-        companion object : ValuesEnum<HashTypes> {
-            override val VALUES: Array<HashTypes> = values()
-            override val NAME_MAP: Map<String, HashTypes> = EnumUtil.getEnumValues(VALUES)
-
-            val String.hashType: HashTypes
-                get() {
-                    for (type in VALUES) {
-                        if (this.length == type.length) {
-                            return type
-                        }
-                    }
-                    throw IllegalArgumentException("Can not determinate hash type: $this")
-                }
-        }
     }
 }

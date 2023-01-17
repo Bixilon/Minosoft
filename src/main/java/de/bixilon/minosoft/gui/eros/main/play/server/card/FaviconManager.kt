@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,11 +15,12 @@ package de.bixilon.minosoft.gui.eros.main.play.server.card
 
 import com.github.luben.zstd.ZstdOutputStream
 import de.bixilon.kutil.hash.HashUtil.sha256
-import de.bixilon.minosoft.assets.util.FileAssetsUtil
+import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileUtil
+import de.bixilon.minosoft.assets.util.FileUtil.mkdirParent
+import de.bixilon.minosoft.assets.util.PathUtil
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import javafx.scene.image.Image
-import java.io.File
 import java.io.FileOutputStream
 
 object FaviconManager {
@@ -28,7 +29,7 @@ object FaviconManager {
         get() {
             val hash = this.faviconHash ?: return null
             try {
-                return Image(FileUtil.readFile(FileAssetsUtil.getPath(hash)))
+                return Image(FileUtil.readFile(PathUtil.getAssetsPath(hash = hash, type = FileAssetsTypes.FAVICON)))
             } catch (exception: Throwable) {
                 this.faviconHash = null
             }
@@ -40,7 +41,7 @@ object FaviconManager {
             return
         }
         this.faviconHash = faviconHash
-        val file = File(FileAssetsUtil.getPath(faviconHash))
+        val file = PathUtil.getAssetsPath(hash = faviconHash, type = FileAssetsTypes.FAVICON).toFile()
         if (file.exists()) {
             return
         }
@@ -48,9 +49,9 @@ object FaviconManager {
             file.delete() // ToDo: Check if other servers are using it
             return
         }
+        file.mkdirParent()
         val outputStream = ZstdOutputStream(FileOutputStream(file), 5)
         outputStream.write(favicon)
         outputStream.close()
-
     }
 }

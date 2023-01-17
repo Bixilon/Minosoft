@@ -19,12 +19,13 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
-import de.bixilon.minosoft.assets.util.FileUtil.readJson
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
+import java.nio.file.Path
 
 
 /**
@@ -46,8 +47,8 @@ class DirectoryAssetsManager(
     override var properties: AssetsManagerProperties? = null
         private set
 
-    private val ResourceLocation.filePath: String
-        get() = "$basePath/$namespace/$path"
+    private val ResourceLocation.filePath: Path
+        get() = Path.of(basePath, namespace, path)
 
     private fun scanDirectory(directory: File) {
         for (file in directory.listFiles() ?: return) {

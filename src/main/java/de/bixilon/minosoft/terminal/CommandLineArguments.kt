@@ -15,7 +15,7 @@ package de.bixilon.minosoft.terminal
 
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.minosoft.assets.util.FileAssetsUtil
+import de.bixilon.minosoft.assets.util.AssetsOptions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.loader.parameters.ModParameters
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -151,6 +151,6 @@ object CommandLineArguments {
 
 
         namespace.getString("home")?.let { RunConfiguration.setHome(Path.of(it)) }
-        namespace.getString("assets")?.let { FileAssetsUtil.BASE_PATH = Path.of(it) }
+        namespace.getString("assets")?.let { AssetsOptions.PATH = Path.of(it) }
     }
 }

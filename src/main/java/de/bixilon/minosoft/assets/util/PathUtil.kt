@@ -10,14 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.config
 
-object StaticConfiguration {
-    const val DEBUG_MODE = true // if true, additional checks will be made to validate data, ... Decreases performance
-    const val REPLACE_SYSTEM_OUT_STREAMS = true // Replace System.out and System.err with the custom Log system ones
+package de.bixilon.minosoft.assets.util
 
+import de.bixilon.kutil.hex.HexUtil.isHexString
+import java.nio.file.Path
 
-    const val IGNORE_SERVER_LIGHT = true
+object PathUtil {
 
-    const val VALIDATE_RESOURCE_LOCATION = true
+    fun getAssetsPath(hash: String, type: String): Path {
+        if (hash.length <= 10) {
+            throw IllegalArgumentException("Hash too short: $hash")
+        }
+        if (!hash.isHexString) {
+            throw IllegalArgumentException("String is not a hex string. Invalid data or manipulated?: $hash")
+        }
+        return AssetsOptions.PATH.resolve(type).resolve(hash.substring(0, 2)).resolve(hash)
+    }
 }

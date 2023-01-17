@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.language
 import de.bixilon.kutil.exception.ExceptionUtil
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.assets.util.FileUtil.readAsString
-import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.language.lang.Language
 import de.bixilon.minosoft.data.language.lang.LanguageData
 import de.bixilon.minosoft.data.language.lang.LanguageList

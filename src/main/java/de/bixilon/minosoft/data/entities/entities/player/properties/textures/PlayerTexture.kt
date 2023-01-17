@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.data.entities.entities.player.properties.textures
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import de.bixilon.kutil.hash.HashUtil.sha256
 import de.bixilon.kutil.hex.HexUtil.isHexString
 import de.bixilon.kutil.url.URLUtil.checkWeb
+import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
-import de.bixilon.minosoft.assets.util.FileUtil
+import de.bixilon.minosoft.assets.util.HashTypes
+import de.bixilon.minosoft.util.KUtil.fill
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.io.File
 import java.net.URL
 
 open class PlayerTexture(
@@ -34,16 +34,14 @@ open class PlayerTexture(
 
     init {
         url.checkWeb()
-
-        check(urlMatches(url, ALLOWED_DOMAINS) && !urlMatches(url, BLOCKED_DOMAINS)) { "URL hostname is not allowed!" }
     }
 
     fun getHash(): String {
         when (url.host) {
             "textures.minecraft.net" -> {
-                val hash = url.file.split("/").last()
-                if (hash.length !in 63..64 || !hash.isHexString) {
-                    throw IllegalStateException("Invalid hash: $hash")
+                val hash = url.file.split("/").last().fill('0', HashTypes.SHA256.length)
+                if (hash.length != HashTypes.SHA256.length || !hash.isHexString) {
+                    throw IllegalArgumentException("Invalid hash: $hash")
                 }
                 return hash
             }
@@ -55,38 +53,24 @@ open class PlayerTexture(
     @Synchronized
     fun read(): ByteArray {
         this.data?.let { return it }
-        val sha256 = getHash()
+        val hash = getHash()
 
-        val diskPath = FileAssetsUtil.getPath(sha256)
-
-        FileUtil.safeReadFile(diskPath, true)?.let {
-            val data = it.readAllBytes()
-            if (data.sha256() != sha256) {
-                // hash mismatch, download again
-                File(diskPath).delete()
-                return@let
-            }
-            this.data = data
-            return data
+        FileAssetsUtil.readOrNull(hash, FileAssetsTypes.SKINS)?.let {
+            this.data = it
+            return it
         }
 
         val input = url.openStream()
         if (input.available() > MAX_TEXTURE_SIZE) {
             throw IllegalStateException("Texture is too big: ${input.available()}!")
         }
-        val (hash, data) = FileAssetsUtil.saveAndGet(input)
-        if (sha256 != hash) {
-            File(diskPath).delete()
-            throw IllegalStateException("Hash mismatch (expected=$sha256, got=$hash): $url")
-        }
+        val asset = FileAssetsUtil.read(input, type = FileAssetsTypes.SKINS, hash = HashTypes.SHA256)
         Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloaded player texture ($url)" }
-        return data
+        return asset.data
     }
 
     companion object {
         private const val MAX_TEXTURE_SIZE = 64 * 64 * 3 + 100 // width * height * rgb + some padding
-        private val ALLOWED_DOMAINS = arrayOf(".minecraft.net", ".mojang.com")
-        private val BLOCKED_DOMAINS = arrayOf("bugs.mojang.com", "education.minecraft.net", "feedback.minecraft.net") // pretty much guaranteed to not happen, texture data must always be signed by mojang. Taken from the original game.
 
         private fun urlMatches(url: URL, domains: Array<String>): Boolean {
             for (checkURL in domains) {

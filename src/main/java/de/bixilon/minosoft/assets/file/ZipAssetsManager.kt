@@ -16,7 +16,7 @@ package de.bixilon.minosoft.assets.file
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
-import de.bixilon.minosoft.assets.util.FileUtil.readJson
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.File
 import java.io.FileInputStream

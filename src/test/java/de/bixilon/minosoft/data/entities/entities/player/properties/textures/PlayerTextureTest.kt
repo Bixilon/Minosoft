@@ -28,30 +28,14 @@ class PlayerTextureTest {
     }
 
     @Test
-    fun extract252bitHash() {
+    fun testLeading0Hash() {
         val texture = PlayerTexture("https://textures.minecraft.net/texture/f4639b3bb2b47f0e567e7a1ca094d38dfa57ce80d79b8cf507479d619ae67b7".toURL())
-        assertEquals("f4639b3bb2b47f0e567e7a1ca094d38dfa57ce80d79b8cf507479d619ae67b7", texture.getHash())
+        assertEquals("0f4639b3bb2b47f0e567e7a1ca094d38dfa57ce80d79b8cf507479d619ae67b7", texture.getHash())
     }
 
     @Test
-    fun invalidHash1() {
-        val texture = PlayerTexture("https://textures.minecraft.net/texture/f4639b3bb2b47f0e567e7a180d79b8cf507479d619ae67b7".toURL())
-        assertThrows<IllegalArgumentException> { texture.getHash() }
-    }
-
-    @Test
-    fun invalidHash2() {
+    fun invalidHash() {
         val texture = PlayerTexture("https://textures.minecraft.net/texture/r4639b3bb2b47f0e567e7a1ca094d38dfa57ce80d79b8cf507479d619ae67b7".toURL())
         assertThrows<IllegalArgumentException> { texture.getHash() }
-    }
-
-    @Test
-    fun invalidUrl1() {
-        assertThrows<IllegalArgumentException> { PlayerTexture("https://bixilon.de/texture/f4639b3bb2b47f0e567e7a180d79b8cf507479d619ae67b7".toURL()) }
-    }
-
-    @Test
-    fun invalidUrl2() {
-        assertThrows<IllegalArgumentException> { PlayerTexture("https://bugs.mojang.com/texture/f4639b3bb2b47f0e567e7a180d79b8cf507479d619ae67b7".toURL()) }
     }
 }
