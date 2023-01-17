@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.properties
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.assets.util.FileUtil.readJson
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log

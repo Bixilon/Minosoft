@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,8 +19,8 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.kutil.file.FileUtil.slashPath
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.assets.util.AssetsOptions
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.events.click.ClickCallbackClickEvent
@@ -33,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.Delete
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
 import java.awt.image.BufferedImage
-import java.io.File
 import java.text.SimpleDateFormat
 import javax.imageio.ImageIO
 
@@ -47,13 +46,15 @@ class ScreenshotTaker(
             val height = context.window.size.y
             val buffer = context.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
 
-            val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${context.connection.address.hostname}/${DATE_FORMATTER.format(millis())}"
-            var path = "$basePath.png"
+            val path = RunConfiguration.HOME_DIRECTORY.resolve("screenshots").resolve(context.connection.address.hostname)
+
+            val timestamp = DATE_FORMATTER.format(millis())
+            var filename = "$timestamp.png"
             var i = 1
-            while (File(path).exists()) {
-                path = "${basePath}_${i++}.png"
-                if (i > MAX_FILES_CHECK) {
-                    throw StackOverflowError("There are already > $MAX_FILES_CHECK screenshots with this date! Please try again later!")
+            while (path.resolve(filename).toFile().exists()) {
+                filename = "${timestamp}_${i++}.png"
+                if (i > AssetsOptions.MAX_FILE_CHECKING) {
+                    throw StackOverflowError("There are already > ${AssetsOptions.MAX_FILE_CHECKING} screenshots with this date! Please try again later!")
                 }
             }
 
@@ -71,7 +72,7 @@ class ScreenshotTaker(
                         }
                     }
 
-                    val file = File(path)
+                    val file = path.resolve(filename).toFile()
                     file.createParent()
 
                     ImageIO.write(bufferedImage, "png", file)
@@ -119,6 +120,5 @@ class ScreenshotTaker(
 
     companion object {
         private val DATE_FORMATTER = SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")
-        private const val MAX_FILES_CHECK = 10
     }
 }

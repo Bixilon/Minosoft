@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.config.profile
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.type.MapType
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
@@ -41,13 +40,12 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.json.Jackson
-import de.bixilon.minosoft.util.json.ResourceLocationSerializer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.io.File
 
 object GlobalProfileManager {
+    private val SELECTED_PROFILES_PATH = RunConfiguration.CONFIG_DIRECTORY.resolve("selected_profiles.json").toFile()
     val DEFAULT_MANAGERS: Map<ResourceLocation, ProfileManager<out Profile>>
     private val SELECTED_PROFILES_TYPE: MapType = Jackson.MAPPER.typeFactory.constructMapType(HashMap::class.java, ResourceLocation::class.java, String::class.java)
     val CLASS_MAPPING: Map<Class<out Profile>, ProfileManager<*>>
@@ -87,13 +85,12 @@ object GlobalProfileManager {
     private fun loadSelectedProfiles() {
         selectedProfiles.lock.lock()
         try {
-            val file = File(RunConfiguration.HOME_DIRECTORY + "config/selected_profiles.json")
-            if (!file.exists()) {
+            if (!SELECTED_PROFILES_PATH.exists()) {
                 return
             }
 
             this.selectedProfiles.unsafe.clear()
-            this.selectedProfiles.unsafe.putAll(Jackson.MAPPER.readValue(file.read(), SELECTED_PROFILES_TYPE))
+            this.selectedProfiles.unsafe.putAll(Jackson.MAPPER.readValue(SELECTED_PROFILES_PATH.read(), SELECTED_PROFILES_TYPE))
         } finally {
             selectedProfiles.lock.unlock()
         }
@@ -109,7 +106,7 @@ object GlobalProfileManager {
                 val data: Map<String, String> = Jackson.MAPPER.convertValue(selectedProfiles.unsafe, SELECTED_PROFILES_TYPE)
                 val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
 
-                FileUtil.safeSaveToFile(File(RunConfiguration.HOME_DIRECTORY + "config/selected_profiles.json"), jsonString)
+                FileUtil.safeSaveToFile(SELECTED_PROFILES_PATH, jsonString)
                 selectedProfilesChanges = false
             } catch (exception: Exception) {
                 exception.crash()

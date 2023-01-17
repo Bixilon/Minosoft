@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityObjectType
@@ -34,7 +34,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

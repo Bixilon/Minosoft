@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font
 import de.bixilon.kutil.array.ArrayUtil.trim
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.provider.*

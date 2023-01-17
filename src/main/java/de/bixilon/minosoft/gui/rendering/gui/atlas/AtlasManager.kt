@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture

@@ -13,24 +13,19 @@
 
 package de.bixilon.minosoft.assets.util
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.luben.zstd.ZstdInputStream
 import de.bixilon.kutil.buffer.BufferDefinition
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.mbf.MBFBinaryReader
-import de.bixilon.minosoft.util.json.Jackson
-import de.matthiasmann.twl.utils.PNGDecoder
-import org.kamranzafar.jtar.TarInputStream
-import org.lwjgl.BufferUtils
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
-import java.util.zip.ZipInputStream
+import de.bixilon.kutil.random.RandomStringUtil.randomString
+import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil
+import java.io.*
+import java.nio.file.Path
+import java.security.MessageDigest
 
 object FileUtil {
 
-    fun safeReadFile(path: String, compressed: Boolean = true): InputStream? {
-        return safeReadFile(File(path), compressed)
+    fun safeReadFile(path: Path, compressed: Boolean = true): InputStream? {
+        return safeReadFile(path.toFile(), compressed)
     }
 
     fun safeReadFile(file: File, compressed: Boolean = true): InputStream? {
@@ -49,88 +44,46 @@ object FileUtil {
         return stream
     }
 
-    fun readFile(path: String, compressed: Boolean = true): InputStream {
-        return readFile(File(path), compressed)
+    fun readFile(path: Path, compressed: Boolean = true): InputStream {
+        return readFile(path.toFile(), compressed)
     }
 
-    fun InputStream.readAsString(close: Boolean = true): String {
-        val builder = StringBuilder()
+    fun File.mkdirParent() {
+        val parent = this.parentFile
+        if (parent.exists()) {
+            return
+        }
+        if (!parent.mkdirs()) {
+            throw IOException("Can not create parent of $this")
+        }
+    }
 
+
+    fun createTempFile(): File {
+        var file: File
+
+        for (i in 0 until AssetsOptions.MAX_FILE_CHECKING) {
+            file = RunConfiguration.TEMPORARY_FOLDER.resolve(KUtil.RANDOM.randomString(32)).toFile()
+            if (!file.exists()) {
+                return file
+            }
+        }
+
+        throw IOException("Can not find temporary file after ${AssetsOptions.MAX_FILE_CHECKING} tries!")
+    }
+
+    fun InputStream.copy(vararg output: OutputStream, digest: MessageDigest?) {
         val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
-        var length: Int
 
         while (true) {
-            length = this.read(buffer, 0, buffer.size)
+            val length = read(buffer, 0, buffer.size)
             if (length < 0) {
                 break
             }
-            builder.append(String(buffer, 0, length, Charsets.UTF_8))
-        }
-        if (close) {
-            this.close()
-        }
-
-        return builder.toString()
-    }
-
-    fun InputStream.readJsonObject(close: Boolean = true): Map<String, Any> {
-        try {
-            return Jackson.MAPPER.readValue(this, Jackson.JSON_MAP_TYPE)
-        } finally {
-            if (close) {
-                this.close()
+            for (stream in output) {
+                stream.write(buffer, 0, length)
             }
+            digest?.update(buffer, 0, length)
         }
-    }
-
-    inline fun <reified T> InputStream.readJson(close: Boolean = true): T {
-        try {
-            return Jackson.MAPPER.readValue(this)
-        } finally {
-            if (close) {
-                this.close()
-            }
-        }
-    }
-
-    fun InputStream.readArchive(): Map<String, ByteArray> {
-        val content: MutableMap<String, ByteArray> = mutableMapOf()
-        val stream = TarInputStream(this)
-        while (true) {
-            val entry = stream.nextEntry ?: break
-            content[entry.name] = stream.readAllBytes()
-
-        }
-        return content
-    }
-
-    fun InputStream.readZipArchive(): Map<String, ByteArray> {
-        val content: MutableMap<String, ByteArray> = mutableMapOf()
-        val stream = ZipInputStream(this)
-        while (true) {
-            val entry = stream.nextEntry ?: break
-            content[entry.name] = stream.readAllBytes()
-
-        }
-        return content
-    }
-
-    fun InputStream.readRGBArray(): IntArray {
-        val decoder = PNGDecoder(this)
-
-        val buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGB.numComponents)
-        decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGB.numComponents, PNGDecoder.Format.RGB)
-        buffer.flip()
-        val colors = IntArray(decoder.width * decoder.height)
-
-        for (i in colors.indices) {
-            colors[i] = ((buffer.get().toInt() and 0xFF) shl 16) or ((buffer.get().toInt() and 0xFF) shl 8) or (buffer.get().toInt() and 0xFF)
-        }
-
-        return colors
-    }
-
-    fun InputStream.readMBFMap(): Map<Any, Any> {
-        return MBFBinaryReader(this).readMBF().data.unsafeCast()
     }
 }

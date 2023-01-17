@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.terminal
 
 import com.google.common.base.StandardSystemProperty
-import de.bixilon.kutil.file.FileUtil.slashPath
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.loader.parameters.ModParameters
-import java.io.File
 import java.io.IOException
+import java.nio.file.Path
 
 object RunConfiguration {
     var LOG_COLOR_MESSAGE = true // The message (after all prefixes) should be colored with ANSI color codes
@@ -35,27 +35,17 @@ object RunConfiguration {
 
     var AUTO_CONNECT_TO: String? = null
 
-    var HOME_DIRECTORY: String = let {
-        // Sets Config.homeDir to the correct folder per OS
-        var homeDir: String = System.getProperty(StandardSystemProperty.USER_HOME.key())
-        if (!homeDir.endsWith(File.separator)) {
-            homeDir += "/"
-        }
-        homeDir += when (PlatformInfo.OS) {
-            OSTypes.LINUX -> ".local/share/minosoft/"
-            OSTypes.WINDOWS -> "AppData/Roaming/Minosoft/"
-            OSTypes.MAC -> "Library/Application Support/Minosoft/"
-            else -> ".minosoft/"
-        }
-        val folder = File(homeDir)
-        if (!folder.exists() && !folder.mkdirs()) {
-            // failed creating folder
-            throw IOException("Could not create home folder ($homeDir)!")
-        }
-        folder.slashPath + "/"
+    var HOME_DIRECTORY: Path = unsafeNull()
+        private set
+    var CONFIG_DIRECTORY: Path = unsafeNull()
+        private set
+
+    init {
+        setDefaultHome()
     }
 
-    val TEMPORARY_FOLDER = System.getProperty("java.io.tmpdir", "$HOME_DIRECTORY/tmp/") + "/minosoft/"
+
+    val TEMPORARY_FOLDER: Path = Path.of(System.getProperty("java.io.tmpdir") ?: "$HOME_DIRECTORY/tmp/", "/minosoft/")
 
     val X_START_ON_FIRST_THREAD_SET = System.getenv("JAVA_STARTED_ON_FIRST_THREAD_${ProcessHandle.current().pid()}") == "1"
 
@@ -71,4 +61,41 @@ object RunConfiguration {
     var IGNORE_MODS = false
 
     var MOD_PARAMETERS = ModParameters()
+
+
+    private fun setDefaultHome() {
+        val user = System.getProperty(StandardSystemProperty.USER_HOME.key()) ?: throw IllegalStateException("Can not get user home!")
+
+        val home = Path.of(user, when (PlatformInfo.OS) {
+            OSTypes.LINUX -> ".local/share/minosoft/"
+            OSTypes.WINDOWS -> "AppData/Roaming/Minosoft/"
+            OSTypes.MAC -> "Library/Application Support/Minosoft/"
+            else -> ".minosoft/"
+        })
+        setHome(home)
+
+        val config = when (PlatformInfo.OS) {
+            OSTypes.LINUX -> Path.of(user, ".config/minosoft")
+            else -> home
+        }
+        setConfig(config)
+    }
+
+    fun setHome(path: Path) {
+        val folder = path.toFile()
+
+        if (!folder.exists() && !folder.mkdirs()) {
+            throw IOException("Can not create home directory: $path")
+        }
+        HOME_DIRECTORY = path
+    }
+
+    fun setConfig(path: Path) {
+        val folder = path.toFile()
+
+        if (!folder.exists() && !folder.mkdirs()) {
+            throw IOException("Can not create home directory: $path")
+        }
+        CONFIG_DIRECTORY = path
+    }
 }

@@ -10,14 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.config
 
-object StaticConfiguration {
-    const val DEBUG_MODE = true // if true, additional checks will be made to validate data, ... Decreases performance
-    const val REPLACE_SYSTEM_OUT_STREAMS = true // Replace System.out and System.err with the custom Log system ones
+package de.bixilon.minosoft.assets.util
 
+import de.bixilon.minosoft.terminal.RunConfiguration
 
-    const val IGNORE_SERVER_LIGHT = true
-
-    const val VALIDATE_RESOURCE_LOCATION = true
+object AssetsOptions {
+    const val MAX_FILE_CHECKING = 10
+    var PATH = RunConfiguration.HOME_DIRECTORY.resolve("assets/")
+    var COMPRESS_ASSETS = true
 }

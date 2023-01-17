@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.assets.util.FileUtil.readAsString
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader

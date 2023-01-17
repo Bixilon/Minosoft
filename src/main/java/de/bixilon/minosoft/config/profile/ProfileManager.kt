@@ -37,6 +37,7 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
 import java.util.concurrent.locks.ReentrantLock
 
@@ -57,11 +58,11 @@ interface ProfileManager<T : Profile> {
     val profiles: AbstractMutableBiMap<String, T>
     var selected: T
 
-    val baseDirectory: File
-        get() = File(RunConfiguration.HOME_DIRECTORY + "config/" + namespace.namespace + "/")
+    val baseDirectory: Path
+        get() = RunConfiguration.CONFIG_DIRECTORY.resolve(namespace.namespace)
 
-    fun getPath(profileName: String, baseDirectory: File = this.baseDirectory): String {
-        return baseDirectory.path + "/" + profileName + "/" + namespace.path + ".json"
+    fun getPath(profileName: String, baseDirectory: Path = this.baseDirectory): Path {
+        return baseDirectory.resolve(profileName).resolve(namespace.path + ".json")
     }
 
     /**
@@ -144,7 +145,7 @@ interface ProfileManager<T : Profile> {
             if (selected == profile) {
                 selected = profiles.iterator().next().value
             }
-            val file = File(getPath(name))
+            val file = getPath(name).toFile()
             if (file.exists()) {
                 if (!file.delete() || file.exists()) {
                     throw IOException("Can not delete $file")
@@ -176,9 +177,9 @@ interface ProfileManager<T : Profile> {
             val data = serialize(profile)
             val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
 
-            val profileFile = File(getPath(profile.name))
+            val file = getPath(profile.name).toFile()
             profile.ignoreNextReload = true
-            FileUtil.safeSaveToFile(profileFile, jsonString)
+            FileUtil.safeSaveToFile(file, jsonString)
             profile.saved = true
         } catch (exception: Exception) {
             exception.printStackTrace()
@@ -193,7 +194,7 @@ interface ProfileManager<T : Profile> {
     }
 
     fun load(selected: String?) {
-        val baseDirectory = baseDirectory
+        val baseDirectory = baseDirectory.toFile()
         if (!baseDirectory.exists()) {
             baseDirectory.mkdirs()
             // ToDo: Skip further processing
@@ -204,7 +205,7 @@ interface ProfileManager<T : Profile> {
         val profileNames = baseDirectory.list { current, name -> File(current, name).isDirectory }?.toMutableSet() ?: throw IOException("Can not create a list of profiles in ${baseDirectory.path}")
 
         for (profileName in profileNames) {
-            val path = getPath(profileName, baseDirectory)
+            val path = getPath(profileName, baseDirectory.toPath())
             val (saveFile, json) = readAndMigrate(path)
             if (json == null) {
                 continue
@@ -220,7 +221,7 @@ interface ProfileManager<T : Profile> {
                 save(profile)
             }
             if (RunConfiguration.PROFILES_HOT_RELOADING) {
-                watchProfile(profileName, File(path))
+                watchProfile(profileName, path.toFile())
             }
         }
 
@@ -229,10 +230,10 @@ interface ProfileManager<T : Profile> {
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loaded ${profiles.size} $namespace profiles!" }
     }
 
-    fun readAndMigrate(path: String): Pair<Boolean, MutableMap<String, Any?>?> {
+    fun readAndMigrate(path: Path): Pair<Boolean, MutableMap<String, Any?>?> {
         var saveFile = false
         val json: MutableMap<String, Any?>?
-        val jsonString = tryCatch(FileNotFoundException::class.java) { File(path).read() }
+        val jsonString = tryCatch(FileNotFoundException::class.java) { path.toFile().read() }
         if (jsonString != null) {
             json = Jackson.MAPPER.readValue(jsonString, Jackson.JSON_MAP_TYPE)!!
             val version = json["version"]?.toInt() ?: throw IllegalArgumentException("Can not find version attribute in profile: $path")
@@ -255,7 +256,7 @@ interface ProfileManager<T : Profile> {
         return Pair(saveFile, json)
     }
 
-    fun watchProfile(profileName: String, path: File = File(getPath(profileName))) {
+    fun watchProfile(profileName: String, path: File = getPath(profileName).toFile()) {
         FileWatcherService.register(FileWatcher(path.toPath(), arrayOf(StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE)) { _, it ->
             val profile = profiles[profileName] ?: return@FileWatcher
             if (profile.ignoreNextReload) {
@@ -263,7 +264,7 @@ interface ProfileManager<T : Profile> {
                 return@FileWatcher
             }
             try {
-                val data = readAndMigrate(path.path).second
+                val data = readAndMigrate(path.toPath()).second
                 updateValue(profile, data)
             } catch (exception: Exception) {
                 exception.printStackTrace()

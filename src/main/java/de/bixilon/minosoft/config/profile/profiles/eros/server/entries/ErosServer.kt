@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.delegates.BackingDelegate
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.minosoft.assets.util.FileAssetsUtil
+import de.bixilon.minosoft.assets.util.HashTypes
 import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
@@ -79,5 +79,5 @@ class ErosServer(
     }
 
     @get:JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    override var faviconHash: String? by NullableStringDelegate(profile, null, "") { if (it != null) check(it.length == FileAssetsUtil.HashTypes.SHA256.length) { "Not a valid sha256 hash!" } }
+    override var faviconHash: String? by NullableStringDelegate(profile, null, "") { if (it != null) check(it.length == HashTypes.SHA256.length) { "Not a valid sha256 hash!" } }
 }

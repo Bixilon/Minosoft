@@ -16,10 +16,14 @@ package de.bixilon.minosoft.assets.minecraft
 import com.fasterxml.jackson.databind.JsonNode
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
+import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.InvalidAssetException
+import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
-import de.bixilon.minosoft.assets.util.FileUtil.readArchive
-import de.bixilon.minosoft.assets.util.FileUtil.readZipArchive
+import de.bixilon.minosoft.assets.util.HashTypes
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readArchive
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readZipArchive
+import de.bixilon.minosoft.assets.util.PathUtil
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -33,7 +37,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import org.kamranzafar.jtar.TarEntry
 import org.kamranzafar.jtar.TarHeader
 import org.kamranzafar.jtar.TarOutputStream
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.FileNotFoundException
+import java.io.InputStream
 
 
 /**
@@ -51,93 +58,102 @@ class JarAssetsManager(
     override var loaded: Boolean = false
         private set
     override val namespaces = setOf(Namespaces.MINECRAFT)
-    private var jarAssets: MutableMap<String, ByteArray> = mutableMapOf()
+    private var assets: MutableMap<String, ByteArray> = mutableMapOf()
+
+    private fun tryLoadAssets(): Boolean {
+        val assets = FileAssetsUtil.readOrNull(jarAssetsHash, FileAssetsTypes.GAME, verify = profile.verify)?.let { ByteArrayInputStream(it).readArchive() } ?: return false
+
+        for ((path, data) in assets) {
+            this.assets[path.removePrefix("assets/" + Namespaces.MINECRAFT + "/")] = data
+        }
+        loaded = true
+
+        return true
+    }
+
+    private fun readClientJar(): Map<String, ByteArray> {
+        val clientJar = FileAssetsUtil.readOrNull(clientJarHash, FileAssetsTypes.GAME, verify = profile.verify)?.let { ByteArrayInputStream(it).readZipArchive() }
+        if (clientJar != null) {
+            return clientJar
+        }
+
+        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading minecraft jar ($clientJarHash)" }
+        val downloaded = FileAssetsUtil.read(profile.source.pistonObjects.formatPlaceholder(
+            "fullHash" to clientJarHash,
+            "filename" to "client.jar",
+        ).toURL().openStream(), FileAssetsTypes.GAME, compress = false, hash = HashTypes.SHA1)
+        check(downloaded.hash == clientJarHash) { "Minecraft client.jar verification failed!" }
+
+        return ByteArrayInputStream(downloaded.data).readZipArchive()
+    }
 
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
 
-        val jarAssets = FileAssetsUtil.readVerified(jarAssetsHash, profile.verify)?.readArchive()
-        if (jarAssets != null) {
-            for ((path, data) in jarAssets) {
-                this.jarAssets[path.removePrefix("assets/" + Namespaces.MINECRAFT + "/")] = data
-            }
-        } else {
-            var clientJar = FileAssetsUtil.readVerified(clientJarHash, profile.verify)?.readZipArchive()
-            if (clientJar == null) {
-                Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading minecraft jar ($clientJarHash)" }
-                val downloaded = FileAssetsUtil.downloadAndGetAsset(
-                    profile.source.pistonObjects.formatPlaceholder(
-                        "fullHash" to clientJarHash,
-                        "filename" to "client.jar",
-                    ), false, FileAssetsUtil.HashTypes.SHA1
-                )
-                check(downloaded.first == clientJarHash) { "Minecraft client.jar verification failed!" }
-                clientJar = ByteArrayInputStream(downloaded.second).readZipArchive()
-            }
-
-            val buildingJarAsset: MutableMap<String, ByteArray> = mutableMapOf()
-            val byteOutputStream = ByteArrayOutputStream(expectedTarBytes)
-            val tarOutputStream = TarOutputStream(byteOutputStream)
-            for ((filename, data) in clientJar) {
-                if (!filename.startsWith("assets/")) {
-                    continue
-                }
-                var cutFilename = filename.removePrefix("assets/")
-                val splitFilename = cutFilename.split("/", limit = 2)
-                if (splitFilename[0] != Namespaces.MINECRAFT) {
-                    continue
-                }
-                cutFilename = splitFilename.getOrNull(1) ?: continue
-
-                var outData = data
-                if (cutFilename.endsWith(".json")) {
-                    // minify json
-                    val jsonNode = Jackson.MAPPER.readValue(data, JsonNode::class.java)
-                    outData = jsonNode.toString().toByteArray()
-                }
-
-                var required = false
-                for (prefix in REQUIRED_FILE_PREFIXES) {
-                    if (cutFilename.startsWith(prefix)) {
-                        required = true
-                        break
-                    }
-                }
-                if (!required) {
-                    continue
-                }
-                buildingJarAsset[cutFilename] = outData
-                tarOutputStream.putNextEntry(TarEntry(TarHeader.createHeader(filename, outData.size.toLong(), 0L, false, 777).apply { generalize() }))
-                tarOutputStream.write(outData)
-                tarOutputStream.flush()
-            }
-            tarOutputStream.close()
-            val tarBytes = byteOutputStream.toByteArray()
-            val savedHash = FileAssetsUtil.saveAsset(tarBytes)
-            File(FileAssetsUtil.getPath(clientJarHash)).delete()
-            if (savedHash != jarAssetsHash) {
-                throw InvalidAssetException("jar_assets".toResourceLocation(), savedHash, jarAssetsHash, tarBytes.size)
-            }
-
-            this.jarAssets = buildingJarAsset
+        if (tryLoadAssets()) {
+            return
         }
+
+        val clientJar = readClientJar()
+
+        val assets: MutableMap<String, ByteArray> = mutableMapOf()
+
+        val output = ByteArrayOutputStream(expectedTarBytes)
+        val tar = TarOutputStream(output)
+
+        for ((filename, data) in clientJar) {
+            if (!filename.startsWith("assets/")) {
+                continue
+            }
+            var cutFilename = filename.removePrefix("assets/")
+            val splitFilename = cutFilename.split("/", limit = 2)
+            if (splitFilename[0] != Namespaces.MINECRAFT) {
+                continue
+            }
+            cutFilename = splitFilename.getOrNull(1) ?: continue
+
+            var outData = data
+            if (cutFilename.endsWith(".json")) {
+                outData = minifyJson(data)
+            }
+
+            if (!isRequired(cutFilename)) {
+                continue
+            }
+
+            assets[cutFilename] = outData
+            tar.putNextEntry(TarEntry(TarHeader.createHeader(filename, outData.size.toLong(), 0L, false, 777).apply { generalize() }))
+            tar.write(outData)
+            tar.flush()
+        }
+
+        tar.close()
+        val tarBytes = output.toByteArray()
+        val savedHash = FileAssetsUtil.save(ByteArrayInputStream(tarBytes), FileAssetsTypes.GAME)
+        PathUtil.getAssetsPath(hash = clientJarHash, type = FileAssetsTypes.GAME).toFile().delete()
+
+        if (savedHash != jarAssetsHash) {
+            throw InvalidAssetException("jar_assets".toResourceLocation(), savedHash, jarAssetsHash, tarBytes.size)
+        }
+
+        this.assets = assets
         loaded = true
     }
 
     override fun get(path: ResourceLocation): InputStream {
         check(path.namespace == Namespaces.MINECRAFT) { "Jar Assets manager does only provides minecraft assets!" }
-        return ByteArrayInputStream(jarAssets[path.path] ?: throw FileNotFoundException("Can not find asset: $path"))
+        return ByteArrayInputStream(assets[path.path] ?: throw FileNotFoundException("Can not find asset: $path"))
     }
 
     override fun getOrNull(path: ResourceLocation): InputStream? {
         if (path.namespace != Namespaces.MINECRAFT) {
             return null
         }
-        return ByteArrayInputStream(jarAssets[path.path] ?: return null)
+        return ByteArrayInputStream(assets[path.path] ?: return null)
     }
 
     override fun unload() {
-        jarAssets = mutableMapOf()
+        assets = mutableMapOf()
         loaded = false
     }
 
@@ -145,7 +161,7 @@ class JarAssetsManager(
         if (path.namespace != Namespaces.MINECRAFT) {
             return false
         }
-        return path.path in jarAssets
+        return path.path in assets
     }
 
     companion object {
@@ -160,5 +176,19 @@ class JarAssetsManager(
             "textures/",
             "recipes/",
         )
+
+        private fun isRequired(name: String): Boolean {
+            for (prefix in REQUIRED_FILE_PREFIXES) {
+                if (name.startsWith(prefix)) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        private fun minifyJson(data: ByteArray): ByteArray {
+            val node = Jackson.MAPPER.readValue(data, JsonNode::class.java)
+            return node.toString().toByteArray()
+        }
     }
 }

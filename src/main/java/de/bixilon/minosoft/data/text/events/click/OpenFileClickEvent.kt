@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,11 +23,13 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.util.DesktopUtil
 import javafx.scene.text.Text
 import java.io.File
+import java.nio.file.Path
 
 class OpenFileClickEvent(
     val file: File,
 ) : ClickEvent {
 
+    constructor(path: Path) : this(path.toFile())
     constructor(path: String) : this(File(path))
 
     override fun applyJavaFX(text: Text) {

@@ -11,31 +11,36 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.assets.minecraft.index
+package de.bixilon.minosoft.assets.util
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.assets.util.FileAssetsTypes
+import java.security.MessageDigest
 
-enum class IndexAssetsType(val type: String) {
-    LANGUAGE(FileAssetsTypes.GAME),
-    SOUNDS(FileAssetsTypes.SOUNDS),
-    TEXTURES(FileAssetsTypes.GAME),
+enum class HashTypes(
+    val digestName: String,
+    val length: Int,
+) {
+    SHA1("SHA-1", 40),
+    SHA256("SHA-256", 64),
     ;
 
-    companion object : ValuesEnum<IndexAssetsType> {
-        override val VALUES: Array<IndexAssetsType> = values()
-        override val NAME_MAP: Map<String, IndexAssetsType> = EnumUtil.getEnumValues(VALUES)
+    fun createDigest(): MessageDigest {
+        return MessageDigest.getInstance(digestName)
+    }
 
+    companion object : ValuesEnum<HashTypes> {
+        override val VALUES: Array<HashTypes> = values()
+        override val NAME_MAP: Map<String, HashTypes> = EnumUtil.getEnumValues(VALUES)
 
-        fun determinate(path: String): IndexAssetsType? {
-            return when {
-                path.startsWith("lang/") -> LANGUAGE
-                path.startsWith("sounds/") -> SOUNDS
-                path == "sounds.json" -> SOUNDS
-                path.startsWith("textures/") -> TEXTURES
-                else -> null
+        val String.hashType: HashTypes
+            get() {
+                for (type in VALUES) {
+                    if (this.length == type.length) {
+                        return type
+                    }
+                }
+                throw IllegalArgumentException("Can not determinate hash type: $this")
             }
-        }
     }
 }

@@ -308,4 +308,11 @@ object KUtil {
         val random = SecureRandom()
         return UUID(random.nextLong(), random.nextLong())
     }
+
+    fun String.fill(char: Char, length: Int): String {
+        if (this.length >= length) return this
+        val fill = char.toString().repeat(length - this.length)
+
+        return fill + this
+    }
 }
