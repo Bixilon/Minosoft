@@ -50,5 +50,5 @@ Resource packs override everything that is provided by the original sources (so 
 
 ## Storing
 
-All assets are stored in `assets/objects`. There are (probably 256) folders with the first 2 digits of the hash. All files are saved without extension and are (unless specified in code, currently only pixlyzer data (that is in mbf and mbf is probably already zstd compressed))
+All assets are stored sub folders of `assets/`. There are (probably 256) folders with the first 2 digits of the hash. All files are saved without extension and are (unless specified in code, currently only pixlyzer data (that is in mbf and mbf is probably already zstd compressed))
 compressed with facebooks zstd algorithm.
