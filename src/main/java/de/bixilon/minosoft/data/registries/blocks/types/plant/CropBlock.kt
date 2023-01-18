@@ -42,7 +42,7 @@ open class CropBlock(resourceLocation: ResourceLocation, registries: Registries,
 
         component += if (blockLight < MIN_LIGHT_LEVEL) "§4$blockLight§r" else "§a$blockLight§r"
 
-        component += "($skyLight)"
+        component += " ($skyLight)"
 
         return component
     }
