@@ -117,7 +117,7 @@ open class Registry<T : RegistryItem>(
 
     protected open fun deserialize(resourceLocation: ResourceLocation, data: JsonObject, registries: Registries?): T? {
         if (registries != null) {
-            integrated?.build(resourceLocation, registries)?.let { return it }
+            integrated?.build(resourceLocation, registries, data)?.let { return it }
         }
 
         if (codec == null) {

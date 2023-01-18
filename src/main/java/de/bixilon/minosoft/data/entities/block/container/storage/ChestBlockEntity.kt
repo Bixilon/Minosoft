@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.ChestTypes
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.DoubleChestRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 

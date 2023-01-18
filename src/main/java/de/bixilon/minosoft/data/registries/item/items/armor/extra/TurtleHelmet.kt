@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.extra
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
@@ -28,6 +29,6 @@ open class TurtleHelmet(resourceLocation: ResourceLocation = this.identifier) : 
     companion object : ItemFactory<TurtleHelmet> {
         override val identifier = minecraft("turtle_helmet")
 
-        override fun build(registries: Registries) = TurtleHelmet()
+        override fun build(registries: Registries, data: JsonObject) = TurtleHelmet()
     }
 }

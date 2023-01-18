@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.modding.event.events.LegacyBlockBreakAckEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP.Actions

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.AirBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries

@@ -16,12 +16,13 @@ package de.bixilon.minosoft.data.registries.blocks.types.stone
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.SolidBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.tools.pickaxe.PickaxeMineable
+import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class RockBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), PickaxeMineable {
+abstract class RockBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), PickaxeRequirement, SolidBlock {
     override val hardness: Float get() = 1.5f
 
 

@@ -18,8 +18,8 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.time.DateUtil
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader

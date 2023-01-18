@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.extra
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
@@ -26,6 +27,6 @@ open class ElytraItem(resourceLocation: ResourceLocation = this.identifier) : It
     companion object : ItemFactory<ElytraItem> {
         override val identifier = minecraft("elytra")
 
-        override fun build(registries: Registries) = ElytraItem()
+        override fun build(registries: Registries, data: JsonObject) = ElytraItem()
     }
 }

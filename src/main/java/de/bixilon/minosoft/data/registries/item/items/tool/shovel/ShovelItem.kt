@@ -11,57 +11,45 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tools
+package de.bixilon.minosoft.data.registries.item.items.tool.shovel
 
 import de.bixilon.kutil.cast.CollectionCast.toAnyMap
-import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.tool.InteractingToolItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-open class ShovelItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : MiningToolItem(resourceLocation, registries, data) {
-    override val diggableTag: ResourceLocation = SHOVEL_MINEABLE_TAG
-    val flattenableBlockStates: Map<Block, BlockState>? = data["flattenables_block_states"]?.toAnyMap()?.let {
-        val entries: MutableMap<Block, BlockState> = mutableMapOf()
-        for ((origin, target) in it) {
-            entries[registries.block[origin.toInt()]] = registries.blockState[target]!!
-        }
-        entries
-    }
+abstract class ShovelItem(identifier: ResourceLocation, registries: Registries, data: JsonObject) : InteractingToolItem(identifier) {
+    override val tag: ResourceLocation get() = TAG
+    override val mineable: Set<Block>? = data["diggable_blocks"]?.toJsonList()?.blocks(registries)
+
+    @Deprecated("Flattenables")
+    protected val flattenables = data["flattenables_block_states"]?.toAnyMap()?.states(registries)
 
 
     override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         if (!connection.profiles.controls.interaction.flattening) {
             return InteractionResults.CONSUME
         }
-
         if (connection.world[target.blockPosition + Directions.UP] != null) {
             return InteractionResults.PASS
         }
 
-        return super.interactWithTool(connection, target.blockPosition, flattenableBlockStates?.get(target.blockState.block))
+
+        return super.interact(connection, target.blockPosition, flattenables?.get(target.blockState.block))
     }
 
-
-    companion object : PixLyzerItemFactory<ShovelItem> {
-        val SHOVEL_MINEABLE_TAG = "minecraft:mineable/shovel".toResourceLocation()
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ShovelItem {
-            return ShovelItem(resourceLocation, registries, data)
-        }
+    companion object {
+        private val TAG = minecraft("mineable/shovel")
     }
 }

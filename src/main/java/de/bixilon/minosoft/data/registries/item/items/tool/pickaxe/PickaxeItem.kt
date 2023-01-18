@@ -11,26 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tools.pickaxe
+package de.bixilon.minosoft.data.registries.item.items.tool.pickaxe
 
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonList
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.item.items.tools.MiningToolItem
+import de.bixilon.minosoft.data.registries.item.items.tool.ToolItem
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-open class PickaxeItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : MiningToolItem(resourceLocation, registries, data) {
-    override val diggableTag: ResourceLocation = PICKAXE_MINEABLE_TAG
+abstract class PickaxeItem(identifier: ResourceLocation, registries: Registries, data: JsonObject) : ToolItem(identifier) {
+    override val tag: ResourceLocation get() = TAG
+    override val mineable: Set<Block>? = data["diggable_blocks"]?.toJsonList()?.blocks(registries)
 
-    companion object : PixLyzerItemFactory<PickaxeItem> {
-        val PICKAXE_MINEABLE_TAG = "minecraft:mineable/pickaxe".toResourceLocation()
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PickaxeItem {
-            return PickaxeItem(resourceLocation, registries, data)
-        }
+    companion object {
+        private val TAG = minecraft("mineable/pickaxe")
     }
 }

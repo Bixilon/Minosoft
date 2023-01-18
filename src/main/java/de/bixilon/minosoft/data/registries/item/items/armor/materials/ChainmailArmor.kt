@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.materials
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
@@ -34,7 +35,7 @@ abstract class ChainmailArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         companion object : ItemFactory<ChainmailBoots> {
             override val identifier = minecraft("chainmail_boots")
 
-            override fun build(registries: Registries) = ChainmailBoots()
+            override fun build(registries: Registries, data: JsonObject) = ChainmailBoots()
         }
     }
 
@@ -44,7 +45,7 @@ abstract class ChainmailArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         companion object : ItemFactory<ChainmailLeggings> {
             override val identifier = minecraft("chainmail_leggings")
 
-            override fun build(registries: Registries) = ChainmailLeggings()
+            override fun build(registries: Registries, data: JsonObject) = ChainmailLeggings()
         }
     }
 
@@ -54,7 +55,7 @@ abstract class ChainmailArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         companion object : ItemFactory<ChainmailChestplate> {
             override val identifier = minecraft("chainmail_chestplate")
 
-            override fun build(registries: Registries) = ChainmailChestplate()
+            override fun build(registries: Registries, data: JsonObject) = ChainmailChestplate()
         }
     }
 
@@ -64,7 +65,7 @@ abstract class ChainmailArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         companion object : ItemFactory<ChainmailHelmet> {
             override val identifier = minecraft("chainmail_helmet")
 
-            override fun build(registries: Registries) = ChainmailHelmet()
+            override fun build(registries: Registries, data: JsonObject) = ChainmailHelmet()
         }
     }
 }

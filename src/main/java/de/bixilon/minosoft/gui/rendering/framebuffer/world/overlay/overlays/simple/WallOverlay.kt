@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash

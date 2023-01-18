@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
@@ -46,10 +45,6 @@ abstract class Item(
 
     override fun toString(): String {
         return identifier.toString()
-    }
-
-    open fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float {
-        return 1.0f
     }
 
     open fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {

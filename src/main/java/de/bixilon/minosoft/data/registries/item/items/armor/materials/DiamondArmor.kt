@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.materials
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
@@ -34,7 +35,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         companion object : ItemFactory<DiamondBoots> {
             override val identifier = minecraft("diamond_boots")
 
-            override fun build(registries: Registries) = DiamondBoots()
+            override fun build(registries: Registries, data: JsonObject) = DiamondBoots()
         }
     }
 
@@ -44,7 +45,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         companion object : ItemFactory<DiamondLeggings> {
             override val identifier = minecraft("diamond_leggings")
 
-            override fun build(registries: Registries) = DiamondLeggings()
+            override fun build(registries: Registries, data: JsonObject) = DiamondLeggings()
         }
     }
 
@@ -54,7 +55,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         companion object : ItemFactory<DiamondChestplate> {
             override val identifier = minecraft("diamond_chestplate")
 
-            override fun build(registries: Registries) = DiamondChestplate()
+            override fun build(registries: Registries, data: JsonObject) = DiamondChestplate()
         }
     }
 
@@ -64,7 +65,7 @@ abstract class DiamondArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         companion object : ItemFactory<DiamondHelmet> {
             override val identifier = minecraft("diamond_helmet")
 
-            override fun build(registries: Registries) = DiamondHelmet()
+            override fun build(registries: Registries, data: JsonObject) = DiamondHelmet()
         }
     }
 }

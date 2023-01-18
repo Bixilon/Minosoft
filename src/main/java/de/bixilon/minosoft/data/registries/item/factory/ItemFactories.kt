@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.factory
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.data.registries.item.items.armor.materials.*
 import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
 import de.bixilon.minosoft.data.registries.item.items.bucket.FilledBucketItem
 import de.bixilon.minosoft.data.registries.item.items.food.AppleItem
+import de.bixilon.minosoft.data.registries.item.items.tool.materials.*
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 object ItemFactories : DefaultFactory<ItemFactory<*>>(
@@ -66,9 +68,20 @@ object ItemFactories : DefaultFactory<ItemFactory<*>>(
 
     TurtleHelmet,
     ElytraItem,
+
+    WoodenTool.WoodenSword, WoodenTool.WoodenShovel, WoodenTool.WoodenPickaxe, WoodenTool.WoodenAxe, WoodenTool.WoodenHoe,
+    StoneTool.StoneSword, StoneTool.StoneShovel, StoneTool.StonePickaxe, StoneTool.StoneAxe, StoneTool.StoneHoe,
+
+    GoldenTool.GoldenSword, GoldenTool.GoldenShovel, GoldenTool.GoldenPickaxe, GoldenTool.GoldenAxe, GoldenTool.GoldenHoe,
+
+    IronTool.IronSword, IronTool.IronShovel, IronTool.IronPickaxe, IronTool.IronAxe, IronTool.IronHoe,
+
+    DiamondTool.DiamondSword, DiamondTool.DiamondShovel, DiamondTool.DiamondPickaxe, DiamondTool.DiamondAxe, DiamondTool.DiamondHoe,
+
+    NetheriteTool.NetheriteSword, NetheriteTool.NetheriteShovel, NetheriteTool.NetheritePickaxe, NetheriteTool.NetheriteAxe, NetheriteTool.NetheriteHoe,
 ), IntegratedRegistry<Item> {
 
-    override fun build(name: ResourceLocation, registries: Registries): Item? {
-        return this[name]?.build(registries)
+    override fun build(name: ResourceLocation, registries: Registries, data: JsonObject): Item? {
+        return this[name]?.build(registries, data)
     }
 }

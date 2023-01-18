@@ -17,8 +17,8 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidHolder

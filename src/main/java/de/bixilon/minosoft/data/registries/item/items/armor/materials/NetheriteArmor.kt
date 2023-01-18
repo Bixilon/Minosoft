@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.materials
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
@@ -34,7 +35,7 @@ abstract class NetheriteArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         companion object : ItemFactory<NetheriteBoots> {
             override val identifier = minecraft("netherite_boots")
 
-            override fun build(registries: Registries) = NetheriteBoots()
+            override fun build(registries: Registries, data: JsonObject) = NetheriteBoots()
         }
     }
 
@@ -44,7 +45,7 @@ abstract class NetheriteArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         companion object : ItemFactory<NetheriteLeggings> {
             override val identifier = minecraft("netherite_leggings")
 
-            override fun build(registries: Registries) = NetheriteLeggings()
+            override fun build(registries: Registries, data: JsonObject) = NetheriteLeggings()
         }
     }
 
@@ -54,7 +55,7 @@ abstract class NetheriteArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         companion object : ItemFactory<NetheriteChestplate> {
             override val identifier = minecraft("netherite_chestplate")
 
-            override fun build(registries: Registries) = NetheriteChestplate()
+            override fun build(registries: Registries, data: JsonObject) = NetheriteChestplate()
         }
     }
 
@@ -64,7 +65,7 @@ abstract class NetheriteArmor(resourceLocation: ResourceLocation) : ArmorItem(re
         companion object : ItemFactory<NetheriteHelmet> {
             override val identifier = minecraft("netherite_helmet")
 
-            override fun build(registries: Registries) = NetheriteHelmet()
+            override fun build(registries: Registries, data: JsonObject) = NetheriteHelmet()
         }
     }
 }

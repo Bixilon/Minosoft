@@ -23,7 +23,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

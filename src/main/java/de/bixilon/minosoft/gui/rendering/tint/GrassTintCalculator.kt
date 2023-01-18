@@ -18,8 +18,8 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.GrassColorModifiers
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation

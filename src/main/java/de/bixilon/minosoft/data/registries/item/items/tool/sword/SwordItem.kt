@@ -11,19 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tools.pickaxe
+package de.bixilon.minosoft.data.registries.item.items.tool.sword
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.item.items.tools.ToolLevels
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.tool.ToolItem
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-interface PickaxeMineable {
-    val pickaxeLevel: ToolLevels get() = ToolLevels.WOOD
+abstract class SwordItem(identifier: ResourceLocation) : ToolItem(identifier) {
 
-    fun canMine(item: PickaxeItem, stack: ItemStack): Boolean {
-        val level = item.level
-        if (level < pickaxeLevel) {
-            return false
+    override fun getMiningSpeed(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float? {
+        // TODO: check
+        if (blockState.block.identifier == MinecraftBlocks.COBWEB) {
+            return 15.0f
         }
-        return true
+        return null
     }
 }

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readRGBArray
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 

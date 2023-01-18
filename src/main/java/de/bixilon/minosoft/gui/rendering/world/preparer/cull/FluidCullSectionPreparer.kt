@@ -21,8 +21,8 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid

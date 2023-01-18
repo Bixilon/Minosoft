@@ -23,8 +23,8 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.SignBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
 import de.bixilon.minosoft.gui.rendering.RenderContext

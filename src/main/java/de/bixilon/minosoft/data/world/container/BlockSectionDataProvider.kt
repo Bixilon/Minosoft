@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidHolder
 import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition

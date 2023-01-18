@@ -10,7 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.blocks
+package de.bixilon.minosoft.data.registries.blocks.state
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
@@ -22,23 +22,15 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import java.util.*
 
-data class BlockState(
+abstract class BlockState(
     val block: Block,
     val properties: Map<BlockProperties, Any> = emptyMap(),
-    val material: Material,
-    val collisionShape: VoxelShape,
-    val outlineShape: VoxelShape,
-    val hardness: Float,
-    val requiresTool: Boolean,
-    val isSolid: Boolean,
     val luminance: Int,
-    val lightProperties: LightProperties,
 ) {
     var blockModel: BakedBlockModel? = null
 
@@ -47,36 +39,12 @@ data class BlockState(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) {
-            return true
-        }
-        if (other == null) {
-            return false
-        }
-        if (other is WannabeBlockState) {
-            if (block.identifier != other.resourceLocation) {
-                return false
-            }
-
-            other.properties?.let {
-                for ((state, value) in it) {
-                    if (properties[state] != value) {
-                        return false
-                    }
-                }
-            }
-
-            return true
-        }
-
-        if (hashCode() != other.hashCode()) {
-            return false
-        }
+        if (this === other) return true
         if (other is BlockState) {
             return block.identifier.path == other.block.identifier.path && properties == other.properties && block.identifier.namespace == other.block.identifier.namespace
         }
         if (other is ResourceLocation) {
-            return super.equals(other)
+            return block.identifier == other
         }
         return false
     }

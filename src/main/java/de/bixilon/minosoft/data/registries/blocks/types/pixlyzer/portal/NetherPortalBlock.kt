@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.portal
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries

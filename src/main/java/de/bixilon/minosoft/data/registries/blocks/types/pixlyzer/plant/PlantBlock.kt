@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries

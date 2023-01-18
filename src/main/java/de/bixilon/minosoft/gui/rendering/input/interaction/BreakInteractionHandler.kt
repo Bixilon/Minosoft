@@ -23,12 +23,14 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.UnbreakableBlock
 import de.bixilon.minosoft.data.registries.effects.mining.MiningEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.data.registries.item.items.tools.MiningToolItem
+import de.bixilon.minosoft.data.registries.item.items.tool.MiningTool
+import de.bixilon.minosoft.data.registries.item.items.tool.ToolRequirement
 import de.bixilon.minosoft.data.registries.misc.event.world.handler.BlockDestroyedHandler
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
@@ -173,31 +175,35 @@ class BreakInteractionHandler(
 
         // thanks to https://minecraft.fandom.com/wiki/Breaking#Calculation
 
-        val breakItemInHand = connection.player.inventory.getHotbarSlot()
+        val stack = connection.player.inventory.getHotbarSlot()
 
-        val isToolEffective = breakItemInHand?.item?.item?.let {
-            return@let if (it is MiningToolItem) {
-                it.isEffectiveOn(connection, target.blockState)
-            } else {
-                false
+        var speed = 1.0f
+        var toolSpeed: Float? = null
+        val block = target.blockState.block
+        val toolRequired = block is ToolRequirement
+        var isBestTool = !toolRequired
+
+        if (stack != null) {
+            if (stack.item.item is MiningTool) {
+                toolSpeed = stack.item.item.getMiningSpeed(connection, target.blockState, stack)
+                isBestTool = true
             }
-        } ?: false
-        val isBestTool = !target.blockState.requiresTool || isToolEffective
+        }
+        toolSpeed?.let { speed *= it }
 
-        var speedMultiplier = breakItemInHand?.let { it.item.item.getMiningSpeedMultiplier(connection, target.blockState, it) } ?: 1.0f
 
-        if (isToolEffective) {
-            breakItemInHand?._enchanting?.enchantments?.get(MiningEnchantment.Efficiency)?.let {
-                speedMultiplier += it.pow(2) + 1.0f
+        if (toolSpeed != null) {
+            stack?._enchanting?.enchantments?.get(MiningEnchantment.Efficiency)?.let {
+                speed += it.pow(2) + 1.0f
             }
         }
 
         connection.player.effects[MiningEffect.Haste]?.let {
-            speedMultiplier *= (0.2f * (it.amplifier + 1)) + 1.0f
+            speed *= (0.2f * (it.amplifier + 1)) + 1.0f
         }
 
         connection.player.effects[MiningEffect.MiningFatigue]?.let {
-            speedMultiplier *= when (it.amplifier) {
+            speed *= when (it.amplifier) {
                 0 -> 0.3f
                 1 -> 0.09f
                 2 -> 0.0027f
@@ -206,14 +212,14 @@ class BreakInteractionHandler(
         }
 
         if (connection.player.submergedFluid?.identifier == DefaultFluids.WATER && connection.player.getEquipmentEnchant(ArmorEnchantment.AquaAffinity) == 0) {
-            speedMultiplier /= 5.0f
+            speed /= 5.0f
         }
 
         if (!connection.player.onGround) {
-            speedMultiplier /= 5.0f
+            speed /= 5.0f
         }
 
-        var damage = speedMultiplier / target.blockState.hardness
+        var damage = speed / target.blockState.block.hardness
 
         damage /= if (isBestTool) {
             30
@@ -222,13 +228,14 @@ class BreakInteractionHandler(
         }
 
         when {
+            damage <= 0.0f || block is UnbreakableBlock -> {
+                breakProgress = 0.0
+            }
+
             damage > 1.0f -> {
                 breakProgress = 1.0
             }
 
-            damage <= 0.0f -> {
-                breakProgress = 0.0
-            }
 
             else -> {
                 val ticks = 1.0f / damage
@@ -241,11 +248,10 @@ class BreakInteractionHandler(
 
         // TODO: properly set slow status if block drops without tool
         this.status = when {
-            damage <= 0.0f -> BlockBreakStatus.USELESS
-            speedMultiplier <= 1.0f -> BlockBreakStatus.SLOW
-            isBestTool -> BlockBreakStatus.EFFECTIVE
-            target.blockState.requiresTool -> BlockBreakStatus.INEFFECTIVE
-            else -> BlockBreakStatus.SLOW
+            damage <= 0.0f || block is UnbreakableBlock -> BlockBreakStatus.USELESS
+            toolRequired && toolSpeed == null -> BlockBreakStatus.INEFFECTIVE
+            toolSpeed == null -> BlockBreakStatus.SLOW
+            else -> BlockBreakStatus.EFFECTIVE
         }
 
         if (breakProgress >= 1.0f) {

@@ -20,7 +20,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.block.SignBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.SignBlock
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.font.Font

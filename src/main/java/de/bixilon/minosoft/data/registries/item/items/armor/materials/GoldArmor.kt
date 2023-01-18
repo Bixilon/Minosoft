@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.materials
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
@@ -34,7 +35,7 @@ abstract class GoldArmor(resourceLocation: ResourceLocation) : ArmorItem(resourc
         companion object : ItemFactory<GoldBoots> {
             override val identifier = minecraft("gold_boots")
 
-            override fun build(registries: Registries) = GoldBoots()
+            override fun build(registries: Registries, data: JsonObject) = GoldBoots()
         }
     }
 
@@ -44,7 +45,7 @@ abstract class GoldArmor(resourceLocation: ResourceLocation) : ArmorItem(resourc
         companion object : ItemFactory<GoldLeggings> {
             override val identifier = minecraft("gold_leggings")
 
-            override fun build(registries: Registries) = GoldLeggings()
+            override fun build(registries: Registries, data: JsonObject) = GoldLeggings()
         }
     }
 
@@ -54,7 +55,7 @@ abstract class GoldArmor(resourceLocation: ResourceLocation) : ArmorItem(resourc
         companion object : ItemFactory<GoldChestplate> {
             override val identifier = minecraft("gold_chestplate")
 
-            override fun build(registries: Registries) = GoldChestplate()
+            override fun build(registries: Registries, data: JsonObject) = GoldChestplate()
         }
     }
 
@@ -64,7 +65,7 @@ abstract class GoldArmor(resourceLocation: ResourceLocation) : ArmorItem(resourc
         companion object : ItemFactory<GoldHelmet> {
             override val identifier = minecraft("gold_helmet")
 
-            override fun build(registries: Registries) = GoldHelmet()
+            override fun build(registries: Registries, data: JsonObject) = GoldHelmet()
         }
     }
 }

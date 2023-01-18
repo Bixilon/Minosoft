@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.modding.event.events.blocks.BlocksSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket

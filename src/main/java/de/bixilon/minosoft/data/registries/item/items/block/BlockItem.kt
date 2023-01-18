@@ -19,7 +19,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

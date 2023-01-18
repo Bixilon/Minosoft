@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.BedBlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

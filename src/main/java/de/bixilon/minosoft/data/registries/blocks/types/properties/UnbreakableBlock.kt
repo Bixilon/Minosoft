@@ -10,12 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.blocks
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+package de.bixilon.minosoft.data.registries.blocks.types.properties
 
-data class WannabeBlockState(
-    val resourceLocation: ResourceLocation,
-    val properties: Map<BlockProperties, Any>? = null,
-)
+interface UnbreakableBlock

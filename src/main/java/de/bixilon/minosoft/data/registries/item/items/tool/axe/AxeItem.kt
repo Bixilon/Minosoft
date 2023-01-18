@@ -11,48 +11,39 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tools
+package de.bixilon.minosoft.data.registries.item.items.tool.axe
 
 import de.bixilon.kutil.cast.CollectionCast.toAnyMap
-import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.tool.InteractingToolItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-open class AxeItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : MiningToolItem(resourceLocation, registries, data) {
-    override val diggableTag: ResourceLocation = AXE_MINEABLE_TAG
-    val strippableBlocks: Map<Block, Block>? = data["strippables_blocks"]?.toAnyMap()?.let {
-        val entries: MutableMap<Block, Block> = mutableMapOf()
-        for ((origin, target) in it) {
-            entries[registries.block[origin.toInt()]] = registries.block[target]!!
-        }
-        entries
-    }
+abstract class AxeItem(identifier: ResourceLocation, registries: Registries, data: JsonObject) : InteractingToolItem(identifier) {
+    override val tag: ResourceLocation get() = TAG
+    override val mineable: Set<Block>? = data["diggable_blocks"]?.toJsonList()?.blocks(registries)
+
+    @Deprecated("StrippableBLock")
+    protected val strippable = data["strippables_blocks"]?.toAnyMap()?.blocks(registries)
+
 
     override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         if (!connection.profiles.controls.interaction.stripping) {
             return InteractionResults.CONSUME
         }
 
-        return super.interactWithTool(connection, target.blockPosition, strippableBlocks?.get(target.blockState.block)?.withProperties(target.blockState.properties))
+        return super.interact(connection, target.blockPosition, strippable?.get(target.blockState.block)?.withProperties(target.blockState.properties))
     }
 
-    companion object : PixLyzerItemFactory<AxeItem> {
-        val AXE_MINEABLE_TAG = "minecraft:mineable/axe".toResourceLocation()
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): AxeItem {
-            return AxeItem(resourceLocation, registries, data)
-        }
+    companion object {
+        private val TAG = minecraft("mineable/axe")
     }
 }

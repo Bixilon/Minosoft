@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.bucket
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
@@ -30,7 +31,7 @@ abstract class BucketItem(
         companion object : ItemFactory<BucketItem> {
             override val identifier = minecraft("bucket")
 
-            override fun build(registries: Registries) = EmptyBucketItem()
+            override fun build(registries: Registries, data: JsonObject) = EmptyBucketItem()
         }
     }
 }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.bucket
 
 import de.bixilon.kutil.cast.CastUtil
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.lava.LavaFluid
@@ -39,7 +40,7 @@ open class FilledBucketItem<T : Fluid>(
         companion object : ItemFactory<LavaBucketItem> {
             override val identifier = minecraft("lava_bucket")
 
-            override fun build(registries: Registries) = LavaBucketItem()
+            override fun build(registries: Registries, data: JsonObject) = LavaBucketItem()
         }
     }
 
@@ -48,7 +49,7 @@ open class FilledBucketItem<T : Fluid>(
         companion object : ItemFactory<WaterBucketItem> {
             override val identifier = minecraft("water_bucket")
 
-            override fun build(registries: Registries) = WaterBucketItem()
+            override fun build(registries: Registries, data: JsonObject) = WaterBucketItem()
         }
     }
 }

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.WorldEntities
@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 import java.util.*
 
 class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {

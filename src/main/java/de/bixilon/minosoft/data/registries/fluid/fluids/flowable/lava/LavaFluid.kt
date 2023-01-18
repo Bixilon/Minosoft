@@ -20,7 +20,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid

@@ -17,9 +17,9 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.SolidProperty
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft

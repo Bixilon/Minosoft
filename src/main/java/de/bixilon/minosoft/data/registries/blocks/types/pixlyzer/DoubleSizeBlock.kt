@@ -16,9 +16,9 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Halves
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus

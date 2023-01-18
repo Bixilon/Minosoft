@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.food
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
@@ -25,15 +26,16 @@ open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Ite
     companion object : ItemFactory<AppleItem> {
         override val identifier = minecraft("apple")
 
-        override fun build(registries: Registries) = AppleItem()
+        override fun build(registries: Registries, data: JsonObject) = AppleItem()
     }
 
     open class GoldenAppleItem(resourceLocation: ResourceLocation = this.identifier) : AppleItem(resourceLocation) {
+        override val alwaysEditable: Boolean get() = true
 
         companion object : ItemFactory<GoldenAppleItem> {
             override val identifier = minecraft("golden_apple")
 
-            override fun build(registries: Registries) = GoldenAppleItem()
+            override fun build(registries: Registries, data: JsonObject) = GoldenAppleItem()
         }
     }
 
@@ -42,7 +44,7 @@ open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Ite
         companion object : ItemFactory<EnchantedGoldenAppleItem> {
             override val identifier = minecraft("enchanted_golden_apple")
 
-            override fun build(registries: Registries) = EnchantedGoldenAppleItem()
+            override fun build(registries: Registries, data: JsonObject) = EnchantedGoldenAppleItem()
         }
     }
 }

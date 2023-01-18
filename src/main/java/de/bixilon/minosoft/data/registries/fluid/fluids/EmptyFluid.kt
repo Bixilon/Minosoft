@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.fluid.fluids
 
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft

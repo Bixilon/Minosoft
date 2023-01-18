@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util.chunk
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.PalettedBiomeArray
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray

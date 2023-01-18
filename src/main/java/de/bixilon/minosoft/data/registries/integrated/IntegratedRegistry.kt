@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.integrated
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 
 interface IntegratedRegistry<T : RegistryItem> {
 
-    fun build(name: ResourceLocation, registries: Registries): T?
+    fun build(name: ResourceLocation, registries: Registries, data: JsonObject): T?
 }

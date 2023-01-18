@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.camera.target.targets
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent

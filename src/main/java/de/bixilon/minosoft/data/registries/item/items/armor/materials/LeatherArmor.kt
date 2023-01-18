@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.materials
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
@@ -35,7 +36,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         companion object : ItemFactory<LeatherBoots> {
             override val identifier = minecraft("leather_boots")
 
-            override fun build(registries: Registries) = LeatherBoots()
+            override fun build(registries: Registries, data: JsonObject) = LeatherBoots()
         }
     }
 
@@ -45,7 +46,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         companion object : ItemFactory<LeatherLeggings> {
             override val identifier = minecraft("leather_leggings")
 
-            override fun build(registries: Registries) = LeatherLeggings()
+            override fun build(registries: Registries, data: JsonObject) = LeatherLeggings()
         }
     }
 
@@ -55,7 +56,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         companion object : ItemFactory<LeatherChestplate> {
             override val identifier = minecraft("leather_chestplate")
 
-            override fun build(registries: Registries) = LeatherChestplate()
+            override fun build(registries: Registries, data: JsonObject) = LeatherChestplate()
         }
     }
 
@@ -65,7 +66,7 @@ abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(reso
         companion object : ItemFactory<LeatherHelmet> {
             override val identifier = minecraft("leather_helmet")
 
-            override fun build(registries: Registries) = LeatherHelmet()
+            override fun build(registries: Registries, data: JsonObject) = LeatherHelmet()
         }
     }
 }

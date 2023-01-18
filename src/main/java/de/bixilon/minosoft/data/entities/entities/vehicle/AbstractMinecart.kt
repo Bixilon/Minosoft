@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.particle.data
 
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer

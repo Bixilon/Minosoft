@@ -11,12 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tools
+package de.bixilon.minosoft.data.registries.blocks.state
 
-enum class ToolLevels {
-    WOOD,
-    STONE,
-    IRON,
-    DIAMOND,
-    ;
-}
+object BlockPropertiesUtil

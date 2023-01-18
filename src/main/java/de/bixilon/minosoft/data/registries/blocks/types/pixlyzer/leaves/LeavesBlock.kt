@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.leaves
 
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries

@@ -18,12 +18,12 @@ import de.bixilon.kutil.cast.CollectionCast.asAnyMap
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactories
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

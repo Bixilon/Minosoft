@@ -18,7 +18,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants

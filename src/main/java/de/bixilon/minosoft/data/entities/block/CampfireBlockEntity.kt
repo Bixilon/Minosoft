@@ -21,8 +21,8 @@ import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.CampfireBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

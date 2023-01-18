@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.item.factory
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 interface ItemFactory<T : Item> : Identified {
 
-    fun build(registries: Registries): T
+    fun build(registries: Registries, data: JsonObject): T
 }
