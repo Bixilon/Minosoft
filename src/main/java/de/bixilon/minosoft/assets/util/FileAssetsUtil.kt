@@ -129,6 +129,7 @@ object FileAssetsUtil {
 
         val result = digest.digest().toHex()
         if (result != hash) {
+            Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Asset stored corrupted: (type=$type, hash=$hash)" }
             file.delete()
             return null
         }
