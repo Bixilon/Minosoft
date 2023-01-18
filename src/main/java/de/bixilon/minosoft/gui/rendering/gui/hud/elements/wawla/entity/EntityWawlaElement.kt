@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
@@ -21,42 +20,28 @@ import de.bixilon.minosoft.data.entities.wawla.EntityWawlaProvider
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponentUtil.removeTrailingNewlines
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarget) : WawlaElement(wawla) {
-    private val name = createName()
-    private val base = createBaseInformation()
-    private val additional = createAdditionalInformation()
-    private val mod = createMod()
+    override val elements: List<Element?> = listOf(
+        createName(),
+        createBaseInformation(),
+        createAdditionalInformation(),
+        createIdentifierElement(target.entity.type),
+        createMod(),
+    )
 
     init {
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        name.render(offset, consumer, options)
-        offset.y += name.size.y
-
-        additional?.let { it.render(offset, consumer, options); offset.y += it.size.y }
-
-        mod?.let { it.render(offset, consumer, options); offset.y += it.size.y }
-    }
-
-    override fun forceSilentApply() {
-        val size = Vec2i(
-            x = maxOf(name.size.x, mod?.size?.x ?: 0, additional?.size?.x ?: 0),
-            y = name.size.y + (mod?.size?.y ?: 0) + (additional?.size?.y ?: 0),
-        )
-
-        this.size = size
-    }
 
     private fun createName(): TextElement {
         return createNameElement(target.entity.type.translationKey)
@@ -83,6 +68,7 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
             component += "\n"
         }
 
+        component.removeTrailingNewlines()
         if (component.length == 0) return null
 
         component.setFallbackColor(ChatColors.GRAY)
@@ -95,6 +81,7 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
 
         val text = target.entity.getWawlaInformation(context.connection, target)
 
+        if (text is BaseComponent) text.removeTrailingNewlines()
         if (text.length == 0) return null // isEmpty
 
         text.setFallbackColor(ChatColors.GRAY)

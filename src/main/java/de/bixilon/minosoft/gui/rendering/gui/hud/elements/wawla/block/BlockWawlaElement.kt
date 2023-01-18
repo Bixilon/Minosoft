@@ -13,46 +13,28 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.block
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.blocks.wawla.BlockWawlaProvider
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponentUtil.removeTrailingNewlines
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget) : WawlaElement(wawla) {
-    private val name = createName()
-    private val additional = createAdditionalInformation()
-    private val mod = createMod()
+    override val elements: List<Element?> = listOf(
+        createName(),
+        createAdditionalInformation(),
+        createIdentifierElement(target.blockState.block),
+        createMod(),
+    )
 
     init {
         forceSilentApply()
-    }
-
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        // TODO: render block
-
-        name.render(offset, consumer, options)
-        offset.y += name.size.y
-
-        additional?.let { it.render(offset, consumer, options); offset.y += it.size.y }
-
-        mod?.let { it.render(offset, consumer, options); offset.y += it.size.y }
-    }
-
-    override fun forceSilentApply() {
-        val size = Vec2i(
-            x = maxOf(name.size.x, mod?.size?.x ?: 0, additional?.size?.x ?: 0),
-            y = name.size.y + (mod?.size?.y ?: 0) + (additional?.size?.y ?: 0),
-        )
-
-        this.size = size
     }
 
     private fun createName(): TextElement {
@@ -79,11 +61,10 @@ class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget)
             component += "\n"
         }
 
+        component.removeTrailingNewlines()
+
         if (component.parts.isEmpty()) return null
 
-        if (component.parts.last().toString() == "\n") {
-            component.parts.removeLast()
-        }
         component.setFallbackColor(ChatColors.GRAY)
 
         return TextElement(guiRenderer, component, background = false)

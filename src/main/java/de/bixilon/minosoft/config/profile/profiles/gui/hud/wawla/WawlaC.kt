@@ -22,6 +22,8 @@ class WawlaC(profile: GUIProfile) {
     var enabled by BooleanDelegate(profile, true)
     var limitReach by BooleanDelegate(profile, true)
 
+    var identifier by BooleanDelegate(profile, false)
+
     val block = BlockC(profile)
     val entity = EntityC(profile)
 }

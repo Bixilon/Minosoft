@@ -11,14 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.gui.hud.wawla.entity
+package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
+object ChatComponentUtil {
 
-class EntityC(profile: GUIProfile) {
-    var enabled by BooleanDelegate(profile, true)
-    var health by BooleanDelegate(profile, true)
+    fun BaseComponent.removeTrailingNewlines() {
+        val iterator = this.parts.iterator()
 
-    var hand by BooleanDelegate(profile, false)
+        for (part in iterator) {
+            val message = part.message
+            if (message.isEmptyOrNewline()) {
+                iterator.remove()
+                continue
+            }
+            break
+        }
+
+        for (index in parts.size - 1 downTo 0) {
+            val message = parts[index].message
+            if (message.isEmptyOrNewline()) {
+                parts.removeAt(index)
+                continue
+            }
+            break
+        }
+    }
+
+    private fun String.isEmptyOrNewline(): Boolean {
+        return isEmpty() || this == "\n" || this == "\r" || this == "\n\r" || this == "\r\n"
+    }
 }
