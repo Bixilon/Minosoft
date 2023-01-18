@@ -71,14 +71,5 @@ open class PlayerTexture(
 
     companion object {
         private const val MAX_TEXTURE_SIZE = 64 * 64 * 3 + 100 // width * height * rgb + some padding
-
-        private fun urlMatches(url: URL, domains: Array<String>): Boolean {
-            for (checkURL in domains) {
-                if (url.host.endsWith(checkURL)) {
-                    return true
-                }
-            }
-            return false
-        }
     }
 }

@@ -48,7 +48,7 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player abilities (isInvulnerable=$isInvulnerable, isFlying=$isFlying, canFly=$canFly, canInstantBuild=$creative, flyingSpeed=$flyingSpeed, walkingSpeed=$walkingSpeed)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player abilities (isInvulnerable=$isInvulnerable, isFlying=$isFlying, canFly=$canFly, creative=$creative, flyingSpeed=$flyingSpeed, walkingSpeed=$walkingSpeed)" }
     }
 
     override fun handle(connection: PlayConnection) {
