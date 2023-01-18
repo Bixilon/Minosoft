@@ -71,11 +71,11 @@ class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget)
         val component = BaseComponent()
 
         if (target.blockState.block is BlockWawlaProvider) {
-            component += target.blockState.block.getWawlaInformation(context.connection, target).text
+            component += target.blockState.block.getWawlaInformation(context.connection, target)
             component += "\n"
         }
         if (target.entity is BlockWawlaProvider) {
-            component += target.entity.getWawlaInformation(context.connection, target).text
+            component += target.entity.getWawlaInformation(context.connection, target)
             component += "\n"
         }
 

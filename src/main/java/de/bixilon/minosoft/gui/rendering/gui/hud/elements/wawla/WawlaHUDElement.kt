@@ -35,15 +35,28 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable {
     private var element: WawlaElement? = null
 
+    val profile = guiRenderer.connection.profiles.gui.hud.wawla
+
     override val layoutOffset: Vec2i
         get() = Vec2i((guiRenderer.scaledSize.x - ((element?.size?.x ?: 0) + BACKGROUND_SIZE)) / 2, BACKGROUND_SIZE)
+    override val skipDraw: Boolean
+        get() = !profile.enabled
 
 
     override fun drawAsync() {
         val target = context.camera.targetHandler.target
-        val element: WawlaElement? = when (target) {
-            is BlockTarget -> BlockWawlaElement(this, target)
-            is EntityTarget -> EntityWawlaElement(this, target)
+
+        if (target == null) {
+            this.element = null
+            forceSilentApply()
+            return
+        }
+        val distance = target.distance
+
+
+        val element: WawlaElement? = when {
+            target is BlockTarget && profile.block.enabled && (!profile.limitReach || distance <= context.connection.player.reachDistance) -> BlockWawlaElement(this, target)
+            target is EntityTarget && profile.entity.enabled && (!profile.limitReach || distance <= 3.0) -> EntityWawlaElement(this, target) // TODO: use constant for distance
             else -> null
         }
         this.element = element

@@ -14,8 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.math.simple.DoubleMath.rounded10
+import de.bixilon.minosoft.data.container.EquipmentSlots
+import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.wawla.EntityWawlaProvider
+import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
@@ -27,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarget) : WawlaElement(wawla) {
     private val name = createName()
+    private val base = createBaseInformation()
     private val additional = createAdditionalInformation()
     private val mod = createMod()
 
@@ -64,10 +70,32 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
         return TextElement(guiRenderer, TextComponent(namespace).color(ChatColors.BLUE), background = false)
     }
 
+    private fun createBaseInformation(): TextElement? {
+        val entity = target.entity
+        val component = BaseComponent()
+        if (entity is LivingEntity && wawla.profile.entity.health) {
+            component += TextComponent("Health: ${entity.health.rounded10}/${java.lang.Float.max(0.0f, entity.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat() + entity.absorptionHearts)}")
+            component += "\n"
+        }
+        val hand = entity.equipment[EquipmentSlots.MAIN_HAND]
+        if (wawla.profile.entity.hand && hand != null) {
+            component += TextComponent("Hand: ${hand.item.count}x ${hand.item.item}")
+            component += "\n"
+        }
+
+        if (component.length == 0) return null
+
+        component.setFallbackColor(ChatColors.GRAY)
+
+        return TextElement(guiRenderer, component, background = false)
+    }
+
     private fun createAdditionalInformation(): TextElement? {
         if (target.entity !is EntityWawlaProvider) return null
 
-        val text = target.entity.getWawlaInformation(context.connection, target).text
+        val text = target.entity.getWawlaInformation(context.connection, target)
+
+        if (text.length == 0) return null // isEmpty
 
         text.setFallbackColor(ChatColors.GRAY)
 

@@ -11,8 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.wawla
+package de.bixilon.minosoft.config.profile.profiles.gui.hud.wawla.block
 
-import de.bixilon.minosoft.data.registries.wawla.WawlaInformation
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
 
-interface EntityWawlaInformation : WawlaInformation
+class BlockC(profile: GUIProfile) {
+    var enabled by BooleanDelegate(profile, true)
+}

@@ -11,13 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.wawla
+package de.bixilon.minosoft.config.profile.profiles.gui.hud.wawla
 
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
+import de.bixilon.minosoft.config.profile.profiles.gui.hud.wawla.block.BlockC
+import de.bixilon.minosoft.config.profile.profiles.gui.hud.wawla.entity.EntityC
 
-interface EntityWawlaProvider {
+class WawlaC(profile: GUIProfile) {
+    var enabled by BooleanDelegate(profile, true)
+    var limitReach by BooleanDelegate(profile, true)
 
-    fun getWawlaInformation(connection: PlayConnection, target: EntityTarget): ChatComponent
+    val block = BlockC(profile)
+    val entity = EntityC(profile)
 }

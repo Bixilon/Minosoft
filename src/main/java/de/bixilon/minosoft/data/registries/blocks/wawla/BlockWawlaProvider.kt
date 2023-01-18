@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.blocks.wawla
 
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface BlockWawlaProvider {
 
-    fun getWawlaInformation(connection: PlayConnection, target: BlockTarget): BlockWawlaInformation
+    fun getWawlaInformation(connection: PlayConnection, target: BlockTarget): ChatComponent
 }
