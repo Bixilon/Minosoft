@@ -107,7 +107,7 @@ object FileAssetsUtil {
         stream.close()
 
         val result = digest.digest().toHex()
-        if (result != hash) {
+        if (verify && result != hash) {
             file.delete()
             throw IOException("Hash does not match (type=$type, expected=$hash, hash=$hash)")
         }
@@ -127,8 +127,7 @@ object FileAssetsUtil {
 
         stream.close()
 
-        val result = digest.digest().toHex()
-        if (result != hash) {
+        if (verify && digest.digest().toHex() != hash) {
             Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Asset stored corrupted: (type=$type, hash=$hash)" }
             file.delete()
             return null
