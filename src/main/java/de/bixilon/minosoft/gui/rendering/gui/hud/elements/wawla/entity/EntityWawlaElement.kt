@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.entities.wawla.EntityWawlaProvider
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarget) : WawlaElement(wawla) {
     private val name = createName()
+    private val additional = createAdditionalInformation()
     private val mod = createMod()
 
     init {
@@ -36,13 +38,15 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
         name.render(offset, consumer, options)
         offset.y += name.size.y
 
+        additional?.let { it.render(offset, consumer, options); offset.y += it.size.y }
+
         mod?.let { it.render(offset, consumer, options); offset.y += it.size.y }
     }
 
     override fun forceSilentApply() {
         val size = Vec2i(
-            x = maxOf(name.size.x, mod?.size?.x ?: 0),
-            y = name.size.y + (mod?.size?.y ?: 0),
+            x = maxOf(name.size.x, mod?.size?.x ?: 0, additional?.size?.x ?: 0),
+            y = name.size.y + (mod?.size?.y ?: 0) + (additional?.size?.y ?: 0),
         )
 
         this.size = size
@@ -58,5 +62,15 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
             return null
         }
         return TextElement(guiRenderer, TextComponent(namespace).color(ChatColors.BLUE), background = false)
+    }
+
+    private fun createAdditionalInformation(): TextElement? {
+        if (target.entity !is EntityWawlaProvider) return null
+
+        val text = target.entity.getWawlaInformation(context.connection, target).text
+
+        text.setFallbackColor(ChatColors.GRAY)
+
+        return TextElement(guiRenderer, text, background = false)
     }
 }

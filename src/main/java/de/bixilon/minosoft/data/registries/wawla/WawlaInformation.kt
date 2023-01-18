@@ -13,4 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.wawla
 
-interface WawlaInformation
+import de.bixilon.minosoft.data.text.ChatComponent
+
+interface WawlaInformation {
+    val text: ChatComponent
+}

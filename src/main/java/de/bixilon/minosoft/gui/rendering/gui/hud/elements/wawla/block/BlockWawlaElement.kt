@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.block
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.registries.blocks.wawla.BlockWawlaProvider
 import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
@@ -26,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget) : WawlaElement(wawla) {
     private val name = createName()
+    private val additional = createAdditionalInformation()
     private val mod = createMod()
 
     init {
@@ -38,13 +41,15 @@ class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget)
         name.render(offset, consumer, options)
         offset.y += name.size.y
 
+        additional?.let { it.render(offset, consumer, options); offset.y += it.size.y }
+
         mod?.let { it.render(offset, consumer, options); offset.y += it.size.y }
     }
 
     override fun forceSilentApply() {
         val size = Vec2i(
-            x = maxOf(name.size.x, mod?.size?.x ?: 0),
-            y = name.size.y + (mod?.size?.y ?: 0),
+            x = maxOf(name.size.x, mod?.size?.x ?: 0, additional?.size?.x ?: 0),
+            y = name.size.y + (mod?.size?.y ?: 0) + (additional?.size?.y ?: 0),
         )
 
         this.size = size
@@ -60,5 +65,27 @@ class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget)
             return null
         }
         return TextElement(guiRenderer, TextComponent(namespace).color(ChatColors.BLUE), background = false)
+    }
+
+    private fun createAdditionalInformation(): TextElement? {
+        val component = BaseComponent()
+
+        if (target.blockState.block is BlockWawlaProvider) {
+            component += target.blockState.block.getWawlaInformation(context.connection, target).text
+            component += "\n"
+        }
+        if (target.entity is BlockWawlaProvider) {
+            component += target.entity.getWawlaInformation(context.connection, target).text
+            component += "\n"
+        }
+
+        if (component.parts.isEmpty()) return null
+
+        if (component.parts.last().toString() == "\n") {
+            component.parts.removeLast()
+        }
+        component.setFallbackColor(ChatColors.GRAY)
+
+        return TextElement(guiRenderer, component, background = false)
     }
 }
