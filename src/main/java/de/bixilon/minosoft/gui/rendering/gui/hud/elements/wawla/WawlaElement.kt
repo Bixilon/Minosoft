@@ -13,6 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla
 
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 
-abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawla.guiRenderer)
+abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawla.guiRenderer) {
+
+    protected fun createNameElement(translationKey: ResourceLocation?): TextElement {
+        val name = wawla.context.connection.language.translate(translationKey)
+        name.setFallbackColor(ChatColors.WHITE)
+        return TextElement(guiRenderer, name, background = false, scale = 1.2f)
+    }
+}

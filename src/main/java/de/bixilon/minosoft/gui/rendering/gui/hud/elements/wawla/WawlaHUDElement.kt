@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.block.BlockWawlaElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity.EntityWawlaElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
@@ -42,7 +43,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         val target = context.camera.targetHandler.target
         val element: WawlaElement? = when (target) {
             is BlockTarget -> BlockWawlaElement(this, target)
-            is EntityTarget -> null
+            is EntityTarget -> EntityWawlaElement(this, target)
             else -> null
         }
         this.element = element

@@ -11,20 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.block
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
-class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget) : WawlaElement(wawla) {
+class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarget) : WawlaElement(wawla) {
     private val name = createName()
     private val mod = createMod()
 
@@ -33,8 +33,6 @@ class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget)
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        // TODO: render block
-
         name.render(offset, consumer, options)
         offset.y += name.size.y
 
@@ -51,11 +49,11 @@ class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget)
     }
 
     private fun createName(): TextElement {
-        return createNameElement(target.blockState.block.item.translationKey) // TODO: use key of block and not item
+        return createNameElement(target.entity.type.translationKey)
     }
 
     private fun createMod(): TextElement? {
-        val namespace = target.blockState.block.identifier.namespace
+        val namespace = target.entity.type.identifier.namespace
         if (namespace == Namespaces.DEFAULT) {
             return null
         }
