@@ -25,15 +25,17 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaHUDElement
 
-class BlockWawlaElement(wawla: WawlaHUDElement, private val target: BlockTarget) : WawlaElement(wawla) {
+class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : WawlaElement(wawla) {
     override val elements: List<Element?> = listOf(
         createName(),
         createAdditionalInformation(),
         createIdentifierElement(target.blockState.block),
         createMod(),
+        WawlaBreakProgressElement(this),
     )
 
     init {
+        parent = wawla
         forceSilentApply()
     }
 
