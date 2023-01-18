@@ -11,15 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.gui.hud
+package de.bixilon.minosoft.gui.rendering.input.interaction
 
-import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.crosshair.CrosshairC
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.hotbar.HotbarC
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.wawla.WawlaC
+enum class BlockBreakStatus {
+    /**
+     * Block can not be broken
+     */
+    USELESS,
 
-class HudC(profile: GUIProfile) {
-    val crosshair = CrosshairC(profile)
-    val hotbar = HotbarC(profile)
-    val wawla = WawlaC(profile)
+    /**
+     * Block can only be broken with tool
+     */
+    INEFFECTIVE,
+
+    /**
+     * Breaking can be faster with the correct tool
+     */
+    SLOW,
+
+    /**
+     * Current tool is effective
+     */
+    EFFECTIVE,
+    ;
+
 }

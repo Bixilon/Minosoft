@@ -48,8 +48,8 @@ class BreakInteractionHandler(
     private var breakBlockState: BlockState? = null
     var breakProgress = Double.NEGATIVE_INFINITY
         private set
-    val breakingBlock: Boolean
-        get() = breakPosition != null
+    var status: BlockBreakStatus? = null
+        private set
 
     private var breakSelectedSlot: Int = -1
 
@@ -63,6 +63,7 @@ class BreakInteractionHandler(
         breakPosition = null
         breakBlockState = null
         breakProgress = Double.NEGATIVE_INFINITY
+        status = null
 
         breakSelectedSlot = -1
     }
@@ -236,6 +237,15 @@ class BreakInteractionHandler(
                 // Log.log(LogMessageType.OTHER, LogLevels.WARN){ "Breaking progress at $breakPosition, total=$breakProgress, totalEstimated=$seconds"}
                 breakProgress += progress
             }
+        }
+
+        // TODO: properly set slow status if block drops without tool
+        this.status = when {
+            damage <= 0.0f -> BlockBreakStatus.USELESS
+            speedMultiplier <= 1.0f -> BlockBreakStatus.SLOW
+            isBestTool -> BlockBreakStatus.EFFECTIVE
+            target.blockState.requiresTool -> BlockBreakStatus.INEFFECTIVE
+            else -> BlockBreakStatus.SLOW
         }
 
         if (breakProgress >= 1.0f) {

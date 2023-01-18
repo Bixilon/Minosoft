@@ -11,15 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.gui.hud
+package de.bixilon.minosoft.data.registries.wawla
 
-import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.crosshair.CrosshairC
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.hotbar.HotbarC
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.wawla.WawlaC
+import de.bixilon.minosoft.data.text.ChatComponent
 
-class HudC(profile: GUIProfile) {
-    val crosshair = CrosshairC(profile)
-    val hotbar = HotbarC(profile)
-    val wawla = WawlaC(profile)
+interface WawlaInformation {
+    val text: ChatComponent
 }

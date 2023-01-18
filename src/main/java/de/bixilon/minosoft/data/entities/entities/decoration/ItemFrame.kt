@@ -19,14 +19,17 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
+import de.bixilon.minosoft.data.entities.wawla.EntityWawlaProvider
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
-open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, data, position, rotation) {
+open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, data, position, rotation), EntityWawlaProvider {
 
     @get:SynchronizedEntityData
     val item: ItemStack?
@@ -39,8 +42,13 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: E
     @get:SynchronizedEntityData
     var facing: Directions = Directions.NORTH
 
+
     override fun setObjectData(data: Int) {
         facing = Directions[data]
+    }
+
+    override fun getWawlaInformation(connection: PlayConnection, target: EntityTarget): ChatComponent {
+        return TextComponent("Item: $item")
     }
 
     companion object : EntityFactory<ItemFrame> {

@@ -11,15 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.gui.hud
+package de.bixilon.minosoft.config.profile.profiles.gui.hud.wawla.entity
 
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.crosshair.CrosshairC
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.hotbar.HotbarC
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.wawla.WawlaC
 
-class HudC(profile: GUIProfile) {
-    val crosshair = CrosshairC(profile)
-    val hotbar = HotbarC(profile)
-    val wawla = WawlaC(profile)
+class EntityC(profile: GUIProfile) {
+    var enabled by BooleanDelegate(profile, true)
+    var health by BooleanDelegate(profile, true)
+
+    var hand by BooleanDelegate(profile, false)
 }

@@ -16,16 +16,39 @@ package de.bixilon.minosoft.data.registries.blocks.types.plant
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.registries.blocks.wawla.BlockWawlaProvider
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.world.chunk.light.SectionLight.Companion.BLOCK_LIGHT_MASK
+import de.bixilon.minosoft.data.world.chunk.light.SectionLight.Companion.SKY_LIGHT_MASK
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class CropBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(resourceLocation, registries, data) {
+open class CropBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PlantBlock(resourceLocation, registries, data), BlockWawlaProvider {
 
     override fun canPlaceOn(blockState: BlockState): Boolean {
         return blockState.block.identifier == MinecraftBlocks.FARMLAND
     }
 
+    override fun getWawlaInformation(connection: PlayConnection, target: BlockTarget): ChatComponent {
+        val light = connection.world.getLight(target.blockPosition)
+
+        val blockLight = light and BLOCK_LIGHT_MASK
+        val skyLight = (light and SKY_LIGHT_MASK) shr 4
+
+        val component = BaseComponent("Light: ")
+
+        component += if (blockLight < MIN_LIGHT_LEVEL) "§4$blockLight§r" else "§a$blockLight§r"
+
+        component += " ($skyLight)"
+
+        return component
+    }
+
     companion object : BlockFactory<CropBlock> {
+        const val MIN_LIGHT_LEVEL = 7
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CropBlock {
             return CropBlock(resourceLocation, registries, data)
