@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.camera.target.targets
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -27,6 +28,7 @@ open class BlockTarget(
     distance: Double,
     direction: Directions,
     val blockState: BlockState,
+    val entity: BlockEntity?,
     val blockPosition: Vec3i,
 ) : GenericTarget(position, distance, direction), TextFormattable {
     val hitPosition = position - blockPosition

@@ -37,6 +37,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.PerformanceHUDEl
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardSideElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaHUDElement
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -138,6 +139,7 @@ class HUDManager(
             PerformanceHUDElement,
             TitleElement,
             ScoreboardSideElement,
+            WawlaHUDElement,
         )
     }
 }
