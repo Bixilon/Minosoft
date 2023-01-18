@@ -31,6 +31,8 @@ abstract class MiningToolItem(
     registries: Registries,
     data: Map<String, Any>,
 ) : ToolItem(resourceLocation, registries, data) {
+    @Deprecated("TODO")
+    val level: ToolLevels = ToolLevels.WOOD
     val diggableBlocks: Set<Block>? = data["diggable_blocks"]?.toJsonList()?.let {
         val entries: MutableList<Block> = mutableListOf()
         for (id in it) {

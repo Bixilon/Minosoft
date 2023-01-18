@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.registries.registry
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.AirBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -74,7 +75,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
             return null
         }
         val state = forceGet(id) ?: return null
-        if (state.block is de.bixilon.minosoft.data.registries.blocks.types.AirBlock) {
+        if (state.block is AirBlock) {
             return null
         }
         return state

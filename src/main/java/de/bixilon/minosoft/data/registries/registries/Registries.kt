@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 import de.bixilon.minosoft.data.registries.Motif
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.blocks.BlockRegistry
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistry
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
@@ -76,7 +77,7 @@ class Registries : Parentable<Registries> {
     val shape = ShapeRegistry()
 
     val motif: Registry<Motif> = register("motif", Registry(codec = Motif))
-    val block: Registry<Block> = register("block", Registry(flattened = true, codec = Block, metaType = MetaTypes.BLOCKS))
+    val block: Registry<Block> = register("block", BlockRegistry())
     val item: ItemRegistry = register("item", ItemRegistry())
     val enchantment: Registry<Enchantment> = register("enchantment", Registry(codec = PixLyzerEnchantment, integrated = IntegratedEnchantments))
     val particleType: Registry<ParticleType> = register("particle_type", Registry(codec = ParticleType))
