@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.time.DateUtil
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -40,7 +38,7 @@ class SingleChestRenderer(
     light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    SkeletalInstance(context, model, blockPosition.toVec3, (blockState.properties[BlockProperties.FACING]?.nullCast() ?: Directions.NORTH).rotatedMatrix),
+    SkeletalInstance(context, model, blockPosition.toVec3, blockState.getFacing().rotatedMatrix),
     light,
 ) {
 

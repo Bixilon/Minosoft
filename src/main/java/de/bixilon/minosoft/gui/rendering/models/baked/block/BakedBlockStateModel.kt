@@ -18,6 +18,7 @@ import de.bixilon.kutil.array.IntArrayUtil.getOrElse
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
+import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider.Companion.isFullyOpaque
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
@@ -51,7 +52,8 @@ class BakedBlockStateModel(
         for ((index, faces) in faces.withIndex()) {
             val direction = Directions.VALUES[index]
             val neighbour = neighbours[index]
-            if (blockState.isSolid && neighbour?.isSolid == true) {
+            val neighbourFullyOpaque = neighbour.isFullyOpaque()
+            if (blockState.isFullyOpaque() && neighbourFullyOpaque) {
                 continue
             }
             val neighboursModel = neighbour?.blockModel
@@ -62,7 +64,7 @@ class BakedBlockStateModel(
             }
             for (face in faces) {
                 if (face.touching) {
-                    if (neighbour?.isSolid == true) {
+                    if (neighbourFullyOpaque) {
                         continue
                     }
                     if (neighbourProperties != null && neighbourProperties.isNotEmpty() && neighbourProperties.canCull(face, neighbour != null && blockState.block.canCull(blockState, neighbour))) {

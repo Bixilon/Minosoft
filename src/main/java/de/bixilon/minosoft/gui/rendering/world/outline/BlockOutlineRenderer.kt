@@ -20,6 +20,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -119,7 +120,10 @@ class BlockOutlineRenderer(
 
         val mesh = LineMesh(context)
 
-        val blockOffset = target.blockPosition.toVec3d + target.blockPosition.getWorldOffset(target.blockState.block)
+        val blockOffset = target.blockPosition.toVec3d
+        if (target.blockState.block is RandomOffsetBlock) {
+            target.blockState.block.randomOffset?.let { blockOffset += target.blockPosition.getWorldOffset(it) }
+        }
 
 
         target.blockState.block.getOutlineShape(connection, target.blockState)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor) }

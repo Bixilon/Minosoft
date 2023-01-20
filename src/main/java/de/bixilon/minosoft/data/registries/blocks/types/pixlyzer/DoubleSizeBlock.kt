@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -27,6 +28,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 abstract class DoubleSizeBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
 
     override fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) {
+        if (blockState !is SimpleBlockState) return
         if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
             connection.world.forceSetBlockState(blockPosition + Directions.UP, null, check = true)
         } else {
@@ -35,6 +37,7 @@ abstract class DoubleSizeBlock(resourceLocation: ResourceLocation, registries: R
     }
 
     override fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) {
+        if (blockState !is SimpleBlockState) return
         if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
             connection.world.forceSetBlockState(blockPosition + Directions.UP, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER), check = true)
         } else {

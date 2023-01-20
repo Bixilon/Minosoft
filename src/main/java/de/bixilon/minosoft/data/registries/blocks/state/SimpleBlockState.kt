@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.util.KUtil.next
 
 open class SimpleBlockState(
@@ -48,10 +49,24 @@ open class SimpleBlockState(
             nextProperties[key] = value
         }
 
+        return getStateWith(nextProperties)
+    }
+
+    override fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
+        val nextProperties = this.properties.toMutableMap()
+
+        for ((key, value) in properties) {
+            nextProperties[key] = value
+        }
+
+        return getStateWith(nextProperties)
+    }
+
+    private fun getStateWith(properties: Map<BlockProperties, Any>): BlockState {
         for (state in this.block.states) {
             if (state !is SimpleBlockState) continue
 
-            if (state.properties != nextProperties) {
+            if (state.properties != properties) {
                 continue
             }
 
@@ -61,9 +76,26 @@ open class SimpleBlockState(
         throw IllegalArgumentException("Can not find ${this.block} with properties: $properties")
     }
 
-
     override fun cycle(property: BlockProperties): BlockState {
         val value = properties[property] ?: throw IllegalArgumentException("$this has no property $property")
         return withProperties(property to block.properties[property]!!.next(value))
+    }
+
+
+    fun withProperties(): BaseComponent {
+        val component = BaseComponent()
+        var first = true
+        for ((property, value) in properties) {
+            if (first) {
+                first = false
+            } else {
+                component += "\n"
+            }
+            component += property
+            component += ": "
+            component += value
+        }
+
+        return component
     }
 }

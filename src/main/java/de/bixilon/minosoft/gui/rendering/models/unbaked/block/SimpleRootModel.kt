@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 
@@ -24,6 +25,9 @@ class SimpleRootModel(
 ) : RootModel {
 
     private fun Map<BlockProperties, Any>.matches(blockState: BlockState): Boolean {
+        if (this.isEmpty()) return true
+        if (blockState !is SimpleBlockState) return false
+
         for ((property, value) in this) {
             blockState.properties[property]?.let {
                 if (value != it) {
@@ -31,6 +35,7 @@ class SimpleRootModel(
                 }
             }
         }
+
         return true
     }
 

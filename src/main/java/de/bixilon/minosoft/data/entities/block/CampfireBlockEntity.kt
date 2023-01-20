@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isLit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.CampfireBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -61,7 +62,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
 
 
     override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        if (blockState.block !is CampfireBlock || !blockState.block.isLit(blockState)) {
+        if (blockState.block !is CampfireBlock || !blockState.isLit()) {
             return
         }
 

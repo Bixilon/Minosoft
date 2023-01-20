@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.item.items.tool.axe
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CollectionCast.toAnyMap
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -40,7 +42,9 @@ abstract class AxeItem(identifier: ResourceLocation, registries: Registries, dat
             return InteractionResults.CONSUME
         }
 
-        return super.interact(connection, target.blockPosition, strippable?.get(target.blockState.block)?.withProperties(target.blockState.properties))
+        val properties = target.blockState.nullCast<SimpleBlockState>()?.properties ?: emptyMap()
+
+        return super.interact(connection, target.blockPosition, strippable?.get(target.blockState.block)?.withProperties(properties))
     }
 
     companion object {

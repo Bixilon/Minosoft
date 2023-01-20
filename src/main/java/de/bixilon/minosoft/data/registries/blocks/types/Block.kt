@@ -71,6 +71,10 @@ abstract class Block(
         return this.defaultState.withProperties(*properties)
     }
 
+    fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
+        return this.defaultState.withProperties(properties)
+    }
+
 
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
 

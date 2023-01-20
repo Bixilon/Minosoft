@@ -341,7 +341,8 @@ class World(
         for (position in aabb.blockPositions) {
             val blockState = this[position] ?: continue
             if (blockState !is ShapedBlock) continue
-            if ((blockState.getCollisionShape(connection, blockState) + position).intersect(aabb)) {
+            val shape = blockState.getCollisionShape(connection, blockState) ?: continue
+            if ((shape + position).intersect(aabb)) {
                 return false
             }
             if (!checkFluids || blockState.block !is FluidBlock) {

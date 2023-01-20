@@ -19,13 +19,13 @@ import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
+import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.TestBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.registries.materials.Material
-import de.bixilon.minosoft.data.registries.materials.PushReactions
-import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
@@ -106,9 +106,8 @@ object ChunkTestingUtil {
     }
 
     fun createBlock(name: String, luminance: Int, lightProperties: LightProperties): Block {
-        val block = Block(minosoft(name), Registries(), mapOf())
-        val material = Material(minosoft("dummy"), null, PushReactions.NORMAL, false, false, false, false, false, false, true)
-        val state = BlockState(block, material = material, collisionShape = VoxelShape.EMPTY, outlineShape = VoxelShape.EMPTY, hardness = 1.0f, requiresTool = false, isSolid = true, luminance = luminance, lightProperties = lightProperties)
+        val block = TestBlock(minosoft(name), BlockSettings())
+        val state = AdvancedBlockState(block, properties = emptyMap(), collisionShape = VoxelShape.EMPTY, outlineShape = VoxelShape.EMPTY, luminance = luminance, lightProperties = lightProperties)
         block::states.javaField!!.forceSet(block, setOf(state))
         block::defaultState.javaField!!.forceSet(block, state)
 

@@ -19,6 +19,8 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -35,6 +37,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 
+@Deprecated("Refactor")
 class TargetHandler(
     private val context: RenderContext,
     private var camera: Camera,
@@ -108,11 +111,21 @@ class TargetHandler(
             }
             val blockState = currentChunk?.get(blockPosition.inChunkPosition)
 
-            if (blockState == null) {
+            if (blockState == null || blockState.block !is ShapedBlock) {
                 currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxisInDirection(currentPosition, direction) + 0.001)
                 continue
             }
-            val voxelShapeRaycastResult = (blockState.block.getOutlineShape(connection, blockState, blockPosition) + blockPosition + blockPosition.getWorldOffset(blockState.block)).raycast(currentPosition, direction)
+            val shape = blockState.block.getOutlineShape(connection, blockState)
+            if (shape == null) {
+                currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxisInDirection(currentPosition, direction) + 0.001)
+                continue
+            }
+            var positioned = shape + blockPosition
+            if (blockState.block is RandomOffsetBlock) {
+                blockState.block.randomOffset?.let { positioned = positioned + blockPosition.getWorldOffset(it) }
+            }
+
+            val voxelShapeRaycastResult = positioned.raycast(currentPosition, direction)
             if (voxelShapeRaycastResult.hit) {
                 val distance = getTotalDistance()
                 currentPosition += direction * voxelShapeRaycastResult.distance

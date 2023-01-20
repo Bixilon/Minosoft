@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.fluid
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.data.registries.fluid.fluids.EmptyFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
@@ -28,7 +29,7 @@ object FluidFactories : DefaultFactory<FluidFactory<*>>(
     LavaFluid,
 ), IntegratedRegistry<Fluid> {
 
-    override fun build(name: ResourceLocation, registries: Registries): Fluid? {
+    override fun build(name: ResourceLocation, registries: Registries, data: JsonObject): Fluid? {
         return this[name]?.build(name, registries)
     }
 }

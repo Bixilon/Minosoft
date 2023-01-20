@@ -11,17 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.properties.shape
+package de.bixilon.minosoft.data.registries.blocks.types.properties
 
-import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
-import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-/**
- * A block with a collision and outline shape from (0|0|0) to (1|1|1)
- */
-interface SolidBlock : FullBlock, LightedBlock {
+interface ReplaceableBlock {
 
-    override fun getLightProperties(blockState: BlockState): LightProperties = OpaqueProperty
+    fun canReplace(connection: PlayConnection, state: BlockState, position: BlockPosition): Boolean
 }

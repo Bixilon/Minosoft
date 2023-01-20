@@ -18,7 +18,8 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidFilled
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.SolidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.FullOpaqueBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -75,7 +76,7 @@ class BlockSectionDataProvider(
             fluidCount--
         }
 
-        if (previous.isSolid() != value.isSolid()) {
+        if (previous.isFullyOpaque() != value.isFullyOpaque()) {
             recalculateOcclusion()
         }
 
@@ -93,16 +94,6 @@ class BlockSectionDataProvider(
         return false
     }
 
-    private inline fun BlockState?.isSolid(): Boolean {
-        if (this == null) {
-            return false
-        }
-        if (this.block is SolidBlock) return true
-
-        return this.isSolid
-    }
-
-
     private fun floodFill(): ShortArray {
         // mark regions and check direct neighbours
         val regions = ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION)
@@ -114,7 +105,7 @@ class BlockSectionDataProvider(
                 return
             }
             val blockState = unsafeGet(index)
-            if (blockState.isSolid()) {
+            if (blockState.isFullyOpaque()) {
                 return
             }
             regions[index] = nextId
@@ -228,5 +219,16 @@ class BlockSectionDataProvider(
 
     companion object {
         private val NO_OCCLUSION = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
+
+
+        fun BlockState?.isFullyOpaque(): Boolean {
+            if (this == null) {
+                return false
+            }
+            if (this.block is FullOpaqueBlock) return true
+            if (this.block !is PotentialFullOpaqueBlock) return false
+
+            return this.block.isFullOpaque(this)
+        }
     }
 }

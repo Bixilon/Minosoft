@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.registries.blocks.state
 
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
+import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
@@ -41,6 +42,15 @@ open class BlockState(
         return block.toString()
     }
 
-    open fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState = throw IllegalStateException("Stateless block state!")
-    open fun cycle(property: BlockProperties): BlockState = throw IllegalStateException("Stateless block state!")
+    open fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
+        if (properties.isEmpty()) return this
+        throw StatelessBlockError(this)
+    }
+
+    open fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
+        if (properties.isEmpty()) return this
+        throw StatelessBlockError(this)
+    }
+
+    open fun cycle(property: BlockProperties): BlockState = throw StatelessBlockError(this)
 }

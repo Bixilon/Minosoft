@@ -18,6 +18,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 object RedstoneWireTintCalculator : TintProvider {
@@ -31,6 +32,7 @@ object RedstoneWireTintCalculator : TintProvider {
 
 
     override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+        if (blockState !is SimpleBlockState) return -1
         return COLORS[blockState.properties[BlockProperties.REDSTONE_POWER]?.toInt() ?: return -1]
     }
 }

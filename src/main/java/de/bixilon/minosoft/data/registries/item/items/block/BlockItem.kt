@@ -21,6 +21,8 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.ReplaceableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
@@ -48,13 +50,15 @@ open class BlockItem(
         }
 
         val placePosition = Vec3i(target.blockPosition)
-        if (!target.blockState.material.replaceable) {
+        if (target !is ReplaceableBlock || !target.canReplace(connection, target.blockState, target.blockPosition)) {
             placePosition += target.direction
 
-            if (connection.world[placePosition]?.material?.replaceable == false) {
+            val targetBlock = connection.world[placePosition]
+            if (targetBlock != null && (targetBlock.block !is ReplaceableBlock || !targetBlock.block.canReplace(connection, targetBlock, placePosition))) {
                 return InteractionResults.PASS
             }
         }
+
 
         if (!connection.world.isPositionChangeable(placePosition)) {
             return InteractionResults.ERROR
@@ -71,12 +75,13 @@ open class BlockItem(
         } catch (exception: Throwable) {
             exception.printStackTrace()
         }
-
-        val collisionShape = placeBlockState.collisionShape + placePosition
-        if (connection.world.entities.isEntityIn(collisionShape)) {
-            return InteractionResults.ERROR
+        val block = placeBlockState.block
+        if (block is ShapedBlock) {
+            val shape = block.getCollisionShape(connection, placeBlockState)?.plus(placePosition)
+            if (shape != null && connection.world.entities.isEntityIn(shape)) {
+                return InteractionResults.ERROR
+            }
         }
-
 
         DefaultThreadPool += { connection.world[placePosition] = placeBlockState }
 

@@ -49,7 +49,7 @@ abstract class BlockTest<T : Block> {
         propagates: BooleanArray,
     ) {
         assertEquals(this.luminance, luminance)
-        val light = this.lightProperties
+        val light = this.block.getLightProperties(this)
         assertEquals(light.propagatesLight, propagatesLight)
         assertEquals(light.skylightEnters, skylightEnters)
         assertEquals(light.filtersSkylight, filtersSkylight)

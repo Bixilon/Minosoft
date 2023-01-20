@@ -25,14 +25,20 @@ import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettin
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.FrictionBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.JumpBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.ReplaceableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.VelocityBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.shapes.VoxelShape
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -41,7 +47,7 @@ open class PixLyzerBlock(
     identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Block(identifier, BlockSettings(soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] }, item = data["item"]?.toInt())), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, ShapedBlock, BlockStateBuilder {
+) : Block(identifier, BlockSettings(soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] }, item = data["item"]?.toInt())), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, ShapedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock {
 
     override val randomOffset: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
 
@@ -51,8 +57,19 @@ open class PixLyzerBlock(
 
     override val jumpBoost = data["jump_velocity_multiplier"]?.toFloat() ?: 1.0f
 
+    val material: Material = TODO()
+
     override fun buildState(settings: BlockStateSettings): BlockState {
         return AdvancedBlockState(this, settings.properties ?: emptyMap(), settings.luminance, settings.collisionShape, settings.outlineShape, settings.lightProperties)
+    }
+
+    override fun canReplace(connection: PlayConnection, state: BlockState, position: BlockPosition): Boolean {
+        return material.replaceable
+    }
+
+    override fun isFullOpaque(state: BlockState): Boolean {
+        if (state !is AdvancedBlockState) return false
+        return state.outlineShape == VoxelShape.FULL
     }
 
     override fun toString(): String {

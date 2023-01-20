@@ -33,11 +33,12 @@ class SectionLight(
         val luminance = now?.luminance ?: 0
 
         if (previousLuminance == luminance) {
-            if (previous?.lightProperties?.propagatesLight == now?.lightProperties?.propagatesLight) {
+            val nowProperties = now?.block?.getLightProperties(now)
+            if (previous?.block?.getLightProperties(previous)?.propagatesLight == nowProperties?.propagatesLight) {
                 // no change for light data
                 return
             }
-            if (now == null || now.lightProperties.propagatesLight) {
+            if (nowProperties == null || nowProperties.propagatesLight) {
                 // block got destroyed/is propagating light now
                 propagateFromNeighbours(x, y, z)
                 return
@@ -121,7 +122,7 @@ class SectionLight(
     fun traceBlockIncrease(x: Int, y: Int, z: Int, nextLuminance: Int, target: Directions?) {
         val index = getIndex(x, y, z)
         val block = section.blocks.unsafeGet(index)
-        val lightProperties = block?.lightProperties ?: TransparentProperty
+        val lightProperties = block?.block?.getLightProperties(block) ?: TransparentProperty
         val blockLuminance = block?.luminance ?: 0
         if (block != null && !lightProperties.propagatesLight && blockLuminance == 0) {
             // light can not pass through the block
@@ -331,7 +332,8 @@ class SectionLight(
             return
         }
 
-        var lightProperties = section.blocks.unsafeGet(index)?.lightProperties
+        val state = section.blocks.unsafeGet(index)
+        var lightProperties = state?.block?.getLightProperties(state)
 
         if (lightProperties == null) {
             lightProperties = TransparentProperty
