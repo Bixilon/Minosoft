@@ -17,19 +17,21 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
-import de.bixilon.minosoft.data.registries.item.items.tool.LeveledTool
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.tool.ToolLevels
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeItem
 import de.bixilon.minosoft.data.registries.item.items.tool.hoe.HoeItem
 import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeItem
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.LeveledTool
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.MiningSpeedTool
 import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelItem
 import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface GoldenTool : LeveledTool {
+interface GoldenTool : LeveledTool, DurableItem, MiningSpeedTool {
     override val level: ToolLevels get() = ToolLevels.WOOD
-    override val speed: Float get() = 12.0f
-    override val durability: Int get() = 32
+    override val miningSpeed: Float get() = 12.0f
+    override val maxDurability: Int get() = 32
 
     open class GoldenSword(identifier: ResourceLocation = this.identifier) : SwordItem(identifier), GoldenTool {
 

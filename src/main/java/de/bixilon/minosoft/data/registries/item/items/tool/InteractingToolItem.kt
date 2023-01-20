@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class InteractingToolItem(identifier: ResourceLocation) : ToolItem(identifier) {
+abstract class InteractingToolItem(identifier: ResourceLocation) : LeveledToolItem(identifier) {
 
     protected fun interact(connection: PlayConnection, blockPosition: BlockPosition, replace: BlockState?): InteractionResults {
         if (replace == null || !connection.player.gamemode.useTools) {

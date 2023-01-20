@@ -11,14 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tool.sword
+package de.bixilon.minosoft.data.registries.item.items.tool.properties
 
-import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
-
-interface SwordRequirement : ToolRequirement {
-
-    override fun isCorrectTool(item: Item): Boolean {
-        return item is SwordItem
-    }
+interface MiningSpeedTool {
+    val miningSpeed: Float
 }

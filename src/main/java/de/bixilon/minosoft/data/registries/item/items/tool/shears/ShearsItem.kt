@@ -11,22 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tool.sword
+package de.bixilon.minosoft.data.registries.item.items.tool.shears
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.tool.LeveledToolItem
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
+import de.bixilon.minosoft.data.registries.item.items.tool.ToolItem
+import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class SwordItem(identifier: ResourceLocation) : LeveledToolItem(identifier) {
+class ShearsItem(identifier: ResourceLocation = this.identifier) : ToolItem(identifier) {
+    override val maxDurability: Int get() = 238
 
-    override fun getMiningSpeed(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float? {
-        // TODO: check
-        if (blockState.block.identifier == MinecraftBlocks.COBWEB) {
-            return 15.0f
-        }
-        return null
+    // TODO
+
+
+    companion object : ItemFactory<ShearsItem> {
+        override val identifier = minecraft("shears")
+
+        override fun build(registries: Registries, data: JsonObject) = ShearsItem()
     }
 }

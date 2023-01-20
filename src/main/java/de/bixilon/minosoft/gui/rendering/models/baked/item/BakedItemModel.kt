@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked.item
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
@@ -31,6 +32,7 @@ class BakedItemModel(
 ) : BakedModel {
 
     private fun renderDurability(guiRenderer: GUIRenderer, offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2i, stack: ItemStack) {
+        if (stack.item.item !is DurableItem) return
         val durability = stack._durability?._durability
         val maxDurability = stack.item.item.maxDurability
         if (durability == null || durability < 0 || durability == stack.item.item.maxDurability) {

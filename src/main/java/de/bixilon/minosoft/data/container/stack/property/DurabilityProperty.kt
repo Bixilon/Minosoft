@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,11 +19,12 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.container.InventoryDelegate
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 
 class DurabilityProperty(
     private val stack: ItemStack,
     unbreakable: Boolean = false,
-    durability: Int = stack.item.item.maxDurability,
+    durability: Int = if (stack.item.item is DurableItem) stack.item.item.maxDurability else -1,
 ) : Property {
     var _unbreakable = unbreakable
     var unbreakable by InventoryDelegate(stack, this::_unbreakable)
@@ -34,7 +35,7 @@ class DurabilityProperty(
         get() {
             try {
                 stack.lock.acquire()
-                return stack.item.item.maxDurability > 0 || !_unbreakable
+                return stack.item.item is DurableItem && stack.item.item.maxDurability > 0 || !_unbreakable
             } finally {
                 stack.lock.release()
             }
@@ -45,7 +46,7 @@ class DurabilityProperty(
             if (_unbreakable) {
                 return true
             }
-            if (stack.item.item.maxDurability <= 1) {
+            if (stack.item.item !is DurableItem || stack.item.item.maxDurability <= 1) {
                 return true
             }
             if (_durability <= 0) { // ToDo
@@ -55,12 +56,12 @@ class DurabilityProperty(
         }
 
     override fun isDefault(): Boolean {
-        return !_unbreakable && _durability == stack.item.item.maxDurability
+        return !_unbreakable && (stack.item.item is DurableItem && _durability == stack.item.item.maxDurability)
     }
 
     override fun updateNbt(nbt: MutableJsonObject): Boolean {
         nbt.remove(UNBREAKABLE_TAG)?.toBoolean()?.let { this._unbreakable = it }
-        nbt.remove(DAMAGE_TAG)?.toInt()?.let { this._durability = stack.item.item.maxDurability - it }
+        nbt.remove(DAMAGE_TAG)?.toInt()?.let { if (stack.item.item is DurableItem) this._durability = stack.item.item.maxDurability - it }
 
         return !isDefault()
     }

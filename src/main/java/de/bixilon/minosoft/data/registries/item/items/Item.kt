@@ -35,9 +35,6 @@ abstract class Item(
     @Deprecated("interface")
     open val maxStackSize: Int get() = 64
 
-    @Deprecated("interface")
-    open val maxDurability: Int get() = -1
-
     override val translationKey: ResourceLocation = identifier.translation("item")
 
     open var model: BakedItemModel? = null

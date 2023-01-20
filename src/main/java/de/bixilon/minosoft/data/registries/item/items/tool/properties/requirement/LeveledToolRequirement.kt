@@ -11,10 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tool
+package de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement
 
-interface LeveledTool {
-    val level: ToolLevels
-    val speed: Float
-    val durability: Int
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.items.tool.LeveledToolItem
+import de.bixilon.minosoft.data.registries.item.items.tool.ToolLevels
+
+interface LeveledToolRequirement : ToolRequirement {
+    val level: ToolLevels get() = ToolLevels.WOOD
+
+    override fun canMine(stack: ItemStack): Boolean {
+        if (!super.canMine(stack)) return false
+        val item = stack.item.item
+        if (item is LeveledToolItem && item.level < level) {
+            return false
+        }
+        return true
+    }
 }

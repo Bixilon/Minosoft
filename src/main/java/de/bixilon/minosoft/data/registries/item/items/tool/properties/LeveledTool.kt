@@ -11,14 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tool.sword
+package de.bixilon.minosoft.data.registries.item.items.tool.properties
 
-import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
+import de.bixilon.minosoft.data.registries.item.items.tool.ToolLevels
 
-interface SwordRequirement : ToolRequirement {
-
-    override fun isCorrectTool(item: Item): Boolean {
-        return item is SwordItem
-    }
+interface LeveledTool {
+    val level: ToolLevels
 }

@@ -18,10 +18,10 @@ import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.tool.ToolItem
+import de.bixilon.minosoft.data.registries.item.items.tool.LeveledToolItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class PickaxeItem(identifier: ResourceLocation, registries: Registries, data: JsonObject) : ToolItem(identifier) {
+abstract class PickaxeItem(identifier: ResourceLocation, registries: Registries, data: JsonObject) : LeveledToolItem(identifier) {
     override val tag: ResourceLocation get() = TAG
     override val mineable: Set<Block>? = data["diggable_blocks"]?.toJsonList()?.blocks(registries)
 

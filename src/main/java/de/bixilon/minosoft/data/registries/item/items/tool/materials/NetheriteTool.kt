@@ -17,19 +17,21 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
-import de.bixilon.minosoft.data.registries.item.items.tool.LeveledTool
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.tool.ToolLevels
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeItem
 import de.bixilon.minosoft.data.registries.item.items.tool.hoe.HoeItem
 import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeItem
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.LeveledTool
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.MiningSpeedTool
 import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelItem
 import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface NetheriteTool : LeveledTool {
+interface NetheriteTool : LeveledTool, DurableItem, MiningSpeedTool {
     override val level: ToolLevels get() = ToolLevels.DIAMOND
-    override val speed: Float get() = 9.0f
-    override val durability: Int get() = 2031
+    override val miningSpeed: Float get() = 9.0f
+    override val maxDurability: Int get() = 2031
 
     open class NetheriteSword(identifier: ResourceLocation = this.identifier) : SwordItem(identifier), NetheriteTool {
 

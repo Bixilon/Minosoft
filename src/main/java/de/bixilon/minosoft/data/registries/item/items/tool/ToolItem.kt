@@ -17,35 +17,32 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.MiningSpeedTool
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 
-abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), MiningTool, LeveledTool {
+abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), MiningTool, DurableItem {
     open val tag: ResourceLocation? get() = null
 
     @Deprecated("This was removed in 21w19a")
     protected open val mineable: Set<Block>? = null // TODO: remove, this is legacy and used for blocks that are not implemented
     override val maxStackSize: Int get() = 1
-    override val maxDurability: Int get() = durability
+
+
+    protected open fun checkTag(connection: PlayConnection, blockState: BlockState): Boolean? {
+        val blockTags = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION] ?: return null
+        val tag = blockTags[tag]?.entries ?: return null
+        if (blockState.block !in tag) {
+            return false
+        }
+        return true
+    }
 
     private fun isEffectiveTool(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Boolean {
-        val blockTags = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]
-        val tag = tag?.let { blockTags?.get(it)?.entries }
-        if (blockTags != null && tag != null) {
-            if (blockState.block !in tag) {
-                return false
-            }
-            for (level in ToolLevels.REVERSED) {
-                val levelTag = blockTags[level.tag] ?: continue
-                if (blockState.block in levelTag.entries) {
-                    // minimum tool level required
-                    return this.level >= level
-                }
-            }
-            return true
-        }
         if (blockState.block !is ToolRequirement) {
             // everything is effective, so …
             return true
@@ -57,7 +54,10 @@ abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), Mining
         if (!isEffectiveTool(connection, blockState, stack)) {
             return null
         }
-        return speed
+        if (this is MiningSpeedTool) {
+            return this.miningSpeed
+        }
+        return 1.0f
     }
 
     companion object {

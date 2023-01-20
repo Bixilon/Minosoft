@@ -11,22 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tool.sword
+package de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.tool.LeveledToolItem
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.data.registries.item.items.Item
 
-abstract class SwordItem(identifier: ResourceLocation) : LeveledToolItem(identifier) {
+interface ToolRequirement {
+    fun isCorrectTool(item: Item): Boolean
 
-    override fun getMiningSpeed(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float? {
-        // TODO: check
-        if (blockState.block.identifier == MinecraftBlocks.COBWEB) {
-            return 15.0f
+    fun canMine(stack: ItemStack): Boolean {
+        val item = stack.item.item
+        if (!isCorrectTool(item)) {
+            return false
         }
-        return null
+        return true
     }
 }

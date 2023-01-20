@@ -11,24 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tool
+package de.bixilon.minosoft.data.registries.item.items
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.item.items.Item
-
-interface ToolRequirement {
-    val level: ToolLevels get() = ToolLevels.WOOD
-
-    fun isCorrectTool(item: Item): Boolean
-
-    fun canMine(stack: ItemStack): Boolean {
-        val item = stack.item.item
-        if (!isCorrectTool(item)) {
-            return false
-        }
-        if (item is ToolItem && item.level < level) {
-            return false
-        }
-        return true
-    }
+interface DurableItem {
+    val maxDurability: Int
 }

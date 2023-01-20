@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.popper.item
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -48,6 +49,7 @@ class ItemInfoPopper(
             stack.displayName,
         )
         stack._durability?.durability?.let {
+            if (stack.item.item !is DurableItem) return@let
             val max = stack.item.item.maxDurability
             if (it in 0 until max) {
                 text += TextComponent(" (${it}/${max})", color = ChatColors.DARK_GRAY)

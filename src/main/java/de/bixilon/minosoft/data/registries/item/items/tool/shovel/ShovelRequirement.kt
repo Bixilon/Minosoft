@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.tool.shovel
 
 import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.data.registries.item.items.tool.ToolRequirement
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 
 interface ShovelRequirement : ToolRequirement {
 

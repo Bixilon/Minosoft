@@ -11,22 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.tool.sword
+package de.bixilon.minosoft.data.registries.item.items.tool
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.tool.LeveledToolItem
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.LeveledTool
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 
-abstract class SwordItem(identifier: ResourceLocation) : LeveledToolItem(identifier) {
+abstract class LeveledToolItem(identifier: ResourceLocation) : ToolItem(identifier), LeveledTool {
 
-    override fun getMiningSpeed(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float? {
-        // TODO: check
-        if (blockState.block.identifier == MinecraftBlocks.COBWEB) {
-            return 15.0f
+
+    override fun checkTag(connection: PlayConnection, blockState: BlockState): Boolean? {
+        val blockTags = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION] ?: return null
+        val tag = blockTags[tag]?.entries ?: return null
+        if (blockState.block !in tag) {
+            return false
         }
-        return null
+        for (level in ToolLevels.REVERSED) {
+            val levelTag = blockTags[level.tag] ?: continue
+            if (blockState.block in levelTag.entries) {
+                // minimum tool level required
+                return this.level >= level
+            }
+        }
+        return true
     }
 }

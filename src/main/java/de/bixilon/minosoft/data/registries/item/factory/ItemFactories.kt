@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
 import de.bixilon.minosoft.data.registries.item.items.bucket.FilledBucketItem
 import de.bixilon.minosoft.data.registries.item.items.food.AppleItem
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.*
+import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 object ItemFactories : DefaultFactory<ItemFactory<*>>(
@@ -79,6 +80,8 @@ object ItemFactories : DefaultFactory<ItemFactory<*>>(
     DiamondTool.DiamondSword, DiamondTool.DiamondShovel, DiamondTool.DiamondPickaxe, DiamondTool.DiamondAxe, DiamondTool.DiamondHoe,
 
     NetheriteTool.NetheriteSword, NetheriteTool.NetheriteShovel, NetheriteTool.NetheritePickaxe, NetheriteTool.NetheriteAxe, NetheriteTool.NetheriteHoe,
+
+    ShearsItem,
 ), IntegratedRegistry<Item> {
 
     override fun build(name: ResourceLocation, registries: Registries, data: JsonObject): Item? {
