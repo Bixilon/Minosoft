@@ -13,14 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties
 
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.shapes.VoxelShape
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-
-/**
- * A block with a collision and outline shape from (0|0|0) to (1|1|1)
- */
-interface SolidBlock : ShapedBlock {
-    override fun getCollisionShape(connection: PlayConnection, blockState: BlockState): VoxelShape = VoxelShape.FULL
-    override fun getOutlineShape(connection: PlayConnection, blockState: BlockState): VoxelShape = VoxelShape.FULL
+interface FrictionBlock {
+    val friction: Float
 }

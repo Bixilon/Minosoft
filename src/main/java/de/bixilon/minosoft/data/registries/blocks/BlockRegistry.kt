@@ -14,10 +14,18 @@
 package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.cast.CollectionCast.asAnyMap
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactories
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -31,11 +39,39 @@ class BlockRegistry(
 ) : Registry<Block>(parent = parent, codec = PixLyzerBlock, flattened = flattened, metaType = MetaTypes.BLOCK) {
 
 
-    override fun deserialize(resourceLocation: ResourceLocation, data: JsonObject, registries: Registries?): Block? {
-        if (registries != null) {
-            BlockFactories.build(resourceLocation, registries, BlockSettings.of(data))?.let { return it }
+    private fun updateStates(block: Block, data: JsonObject, registries: Registries) {
+        val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
+
+        val states: MutableSet<BlockState> = mutableSetOf()
+        for ((stateId, stateJson) in data["states"].asAnyMap()) {
+            check(stateJson is Map<*, *>) { "Not a state element!" }
+
+            val settings = BlockStateSettings.of(registries, data)
+            val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
+
+            states += state
+            registries.blockState[stateId.toInt()] = state
+
+            if (state !is SimpleBlockState) continue
+
+            for ((property, value) in state.properties) {
+                properties.getOrPut(property) { mutableSetOf() } += value
+            }
         }
-        return super.deserialize(resourceLocation, data, registries)
+
+        val default = registries.blockState.forceGet(data["default_state"].toInt())!!
+
+        block.updateStates(states, default, properties.mapValues { it.value.toTypedArray() })
+    }
+
+    override fun deserialize(resourceLocation: ResourceLocation, data: JsonObject, registries: Registries?): Block? {
+        val factory = BlockFactories[resourceLocation]
+
+        val block = factory?.build(registries!!, BlockSettings.of(data)) ?: this.codec!!.deserialize(registries, resourceLocation, data) ?: return null
+
+        updateStates(block, data, registries!!)
+
+        return block
     }
 
     operator fun <T : Block> get(factory: BlockFactory<T>): T? {

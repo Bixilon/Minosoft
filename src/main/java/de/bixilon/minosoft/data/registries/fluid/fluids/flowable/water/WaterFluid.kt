@@ -16,10 +16,12 @@ package de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
@@ -52,7 +54,7 @@ class WaterFluid(resourceLocation: ResourceLocation = this.identifier) : Flowabl
         if (super.matches(other)) {
             return true
         }
-        if (other.properties[BlockProperties.WATERLOGGED] == true) {
+        if (other.isWaterlogged()) {
             return true
         }
         return false
@@ -63,7 +65,7 @@ class WaterFluid(resourceLocation: ResourceLocation = this.identifier) : Flowabl
         if (`super` != 0.0f) {
             return `super`
         }
-        if (state.properties[BlockProperties.WATERLOGGED] == true) {
+        if (state.isWaterlogged()) {
             return 0.9f
         }
         return 0.0f
@@ -128,5 +130,11 @@ class WaterFluid(resourceLocation: ResourceLocation = this.identifier) : Flowabl
         private const val VELOCITY_MULTIPLIER = 0.014
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries) = WaterFluid()
+
+
+        fun BlockState.isWaterlogged(): Boolean {
+            if (this !is SimpleBlockState) return false
+            return properties[BlockProperties.WATERLOGGED]?.toBoolean() ?: return false
+        }
     }
 }

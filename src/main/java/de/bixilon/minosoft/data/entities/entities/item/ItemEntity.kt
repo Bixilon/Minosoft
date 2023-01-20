@@ -20,13 +20,13 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
+import de.bixilon.minosoft.data.registries.blocks.types.properties.FrictionBlock
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class ItemEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
@@ -48,7 +48,10 @@ class ItemEntity(connection: PlayConnection, entityType: EntityType, data: Entit
 
             var movement = 0.98
             if (onGround) {
-                movement = (connection.world[Vec3i(positionInfo.blockPosition.x, position.y - 1.0, position.z)]?.block?.friction ?: 1.0) * 0.98
+                val block = connection.world[Vec3i(positionInfo.blockPosition.x, position.y - 1.0, position.z)]?.block
+                if (block is FrictionBlock) {
+                    movement *= block.friction
+                }
             }
             velocity = velocity * Vec3d(movement, 0.98, movement)
 

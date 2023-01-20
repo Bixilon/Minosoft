@@ -17,10 +17,11 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isPowered
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
@@ -38,7 +39,7 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
 
     private fun spawnParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, scale: Float) {
         dustParticleType ?: return
-        val direction = (blockState.properties[BlockProperties.FACING] as Directions).inverted
+        val direction = blockState.getFacing().inverted
         val mountDirection = getRealFacing(blockState)
 
         val position = (Vec3d(blockPosition) + 0.5).plus((direction.vector * 0.1) + (mountDirection.vector * 0.2))
@@ -47,7 +48,7 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
     }
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        if (blockState.properties[BlockProperties.POWERED] != true) {
+        if (!blockState.isPowered()) {
             return
         }
         if (random.chance(25)) {

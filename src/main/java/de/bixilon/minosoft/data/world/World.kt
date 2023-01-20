@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.AABB
@@ -339,7 +340,8 @@ class World(
     fun isSpaceEmpty(aabb: AABB, checkFluids: Boolean = false): Boolean {
         for (position in aabb.blockPositions) {
             val blockState = this[position] ?: continue
-            if ((blockState.collisionShape + position).intersect(aabb)) {
+            if (blockState !is ShapedBlock) continue
+            if ((blockState.getCollisionShape(connection, blockState) + position).intersect(aabb)) {
                 return false
             }
             if (!checkFluids || blockState.block !is FluidBlock) {

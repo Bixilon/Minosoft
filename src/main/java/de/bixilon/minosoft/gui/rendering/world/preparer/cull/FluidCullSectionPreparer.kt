@@ -21,12 +21,12 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidHolder
-import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -54,7 +54,7 @@ import kotlin.math.atan2
 class FluidCullSectionPreparer(
     val context: RenderContext,
 ) : FluidSectionPreparer {
-    private val water = context.connection.registries.fluid[DefaultFluids.WATER]
+    private val water = context.connection.registries.fluid[WaterFluid]
     private val tintManager = context.tintManager
 
 
@@ -79,7 +79,7 @@ class FluidCullSectionPreparer(
                     val block = blockState.block
                     val fluid = when {
                         block is FluidHolder -> block.fluid
-                        blockState.properties[BlockProperties.WATERLOGGED] == true && water != null -> water
+                        water != null && blockState.isWaterlogged() -> water
                         else -> continue
                     }
                     val model = fluid.model ?: continue

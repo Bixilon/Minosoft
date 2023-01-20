@@ -16,9 +16,10 @@ package de.bixilon.minosoft.data.world.container
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidHolder
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidFilled
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.SolidBlock
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
@@ -82,11 +83,11 @@ class BlockSectionDataProvider(
     }
 
     private fun BlockState?.isFluid(): Boolean {
-        this ?: return false
-        if (this.block is FluidHolder) {
+        if (this == null) return false
+        if (this.block is FluidFilled) {
             return true
         }
-        if (properties[BlockProperties.WATERLOGGED] == true) {
+        if (this.isWaterlogged()) {
             return true
         }
         return false
@@ -96,6 +97,8 @@ class BlockSectionDataProvider(
         if (this == null) {
             return false
         }
+        if (this.block is SolidBlock) return true
+
         return this.isSolid
     }
 

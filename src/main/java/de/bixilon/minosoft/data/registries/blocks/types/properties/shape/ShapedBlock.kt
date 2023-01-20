@@ -11,22 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.state
+package de.bixilon.minosoft.data.registries.blocks.types.properties.shape
 
-import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
-import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class AdvancedBlockState(
-    block: Block,
-    properties: Map<BlockProperties, Any>,
-    luminance: Int,
-    val collisionShape: VoxelShape?,
-    val outlineShape: VoxelShape?,
-    val lightProperties: LightProperties,
-) : SimpleBlockState(block, properties, luminance) {
+/**
+ * A block with potential non-empty collision/outline shape
+ */
+interface ShapedBlock {
 
-    constructor(block: Block, settings: BlockStateSettings) : this(block, settings.properties ?: emptyMap(), settings.luminance, settings.collisionShape, settings.outlineShape, settings.lightProperties)
+    fun getOutlineShape(connection: PlayConnection, blockState: BlockState): VoxelShape? {
+        if (blockState is AdvancedBlockState) {
+            return blockState.outlineShape
+        }
+        return null
+    }
+
+    fun getCollisionShape(connection: PlayConnection, blockState: BlockState): VoxelShape? {
+        if (blockState is AdvancedBlockState) {
+            return blockState.collisionShape
+        }
+        return null
+    }
 }

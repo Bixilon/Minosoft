@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isLit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
@@ -32,7 +32,7 @@ open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Re
     private val redstoneDustParticle = registries.particleType[DustParticle]
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        if (blockState.properties[BlockProperties.LIT] != true) {
+        if (!blockState.isLit()) {
             return
         }
 

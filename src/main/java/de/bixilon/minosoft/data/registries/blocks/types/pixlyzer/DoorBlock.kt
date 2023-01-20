@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.materials.DefaultMaterials
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
@@ -32,7 +31,7 @@ open class DoorBlock(resourceLocation: ResourceLocation, registries: Registries,
     }
 
     override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        if (target.blockState.material.identifier == DefaultMaterials.METAL) {
+        if (target.blockState.block.identifier.path.startsWith("iron")) { // TODO
             return InteractionResults.CONSUME
         }
 

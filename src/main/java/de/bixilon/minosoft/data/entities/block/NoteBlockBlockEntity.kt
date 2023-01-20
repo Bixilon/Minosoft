@@ -19,6 +19,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Instruments
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -34,6 +35,11 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
     var pitch: Int? = null
         private set
     private var showParticleNextTick = false
+
+    private fun BlockState.getNote(): Int {
+        if (this !is SimpleBlockState) throw IllegalArgumentException("Block has not states!")
+        return properties[BlockProperties.NOTE]?.toInt() ?: 0
+    }
 
     override fun setBlockActionData(data1: Byte, data2: Byte) {
         instrument = when (data1.toInt()) {
@@ -52,7 +58,6 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
     }
 
     override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        super.tick(connection, blockState, blockPosition, random)
         if (!showParticleNextTick) {
             return
         }
@@ -60,7 +65,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
 
 
         noteParticleType?.let {
-            connection.world += NoteParticle(connection, blockPosition.toVec3d + Vec3d(0.5, 1.2, 0.5), (blockState.properties[BlockProperties.NOTE]?.toInt() ?: 0) / 24.0f, it.default())
+            connection.world += NoteParticle(connection, blockPosition.toVec3d + Vec3d(0.5, 1.2, 0.5), blockState.getNote() / 24.0f, it.default())
         }
     }
 

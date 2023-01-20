@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -33,13 +35,12 @@ import java.util.*
 abstract class Block(
     override val identifier: ResourceLocation,
     settings: BlockSettings,
-) : RegistryItem() {
-    open lateinit var states: Set<BlockState>
-        protected set
-    open lateinit var defaultState: BlockState
-        protected set
+) : RegistryItem(), LightedBlock {
+    val properties: Map<BlockProperties, Array<Any>> = unsafeNull()
+    val states: Set<BlockState> = unsafeNull()
+    val defaultState: BlockState = unsafeNull()
+
     val item: Item = unsafeNull()
-    open lateinit var properties: Map<BlockProperties, List<Any>>
     var tintProvider: TintProvider? = null
 
     val soundGroup = settings.soundGroup
@@ -70,9 +71,6 @@ abstract class Block(
         return this.defaultState.withProperties(*properties)
     }
 
-    fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
-        return this.defaultState.withProperties(properties)
-    }
 
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
 
@@ -82,4 +80,11 @@ abstract class Block(
 
 
     open fun canCull(blockState: BlockState, other: BlockState): Boolean = true
+
+
+    fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperties, Array<Any>>) {
+        this::properties.forceSet(properties)
+        this::states.forceSet(states)
+        this::defaultState.forceSet(default)
+    }
 }

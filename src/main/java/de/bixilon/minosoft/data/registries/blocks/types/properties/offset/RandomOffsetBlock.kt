@@ -11,9 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
+package de.bixilon.minosoft.data.registries.blocks.types.properties.offset
 
-/**
- * A block that is fluid filled, e.g. water or kelp (filled with water)
- */
-interface FluidFilled : FluidHolder
+interface RandomOffsetBlock {
+    val randomOffset: RandomOffsetTypes? // TODO: make non nullable
+}

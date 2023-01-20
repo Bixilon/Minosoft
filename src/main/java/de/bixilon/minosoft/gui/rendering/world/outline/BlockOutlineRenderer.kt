@@ -20,6 +20,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -91,7 +92,7 @@ class BlockOutlineRenderer(
     override fun prepareDrawAsync() {
         val target = context.camera.targetHandler.target.nullCast<BlockTarget>()
 
-        if (target == null || connection.world.border.isOutside(target.blockPosition)) {
+        if (target == null || target.blockState.block !is ShapedBlock || connection.world.border.isOutside(target.blockPosition)) {
             unload = true
             return
         }
@@ -120,12 +121,14 @@ class BlockOutlineRenderer(
 
         val blockOffset = target.blockPosition.toVec3d + target.blockPosition.getWorldOffset(target.blockState.block)
 
-        mesh.drawVoxelShape(target.blockState.outlineShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor)
+
+        target.blockState.block.getOutlineShape(connection, target.blockState)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor) }
 
 
         if (profile.collisions) {
-            mesh.drawVoxelShape(target.blockState.collisionShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f)
+            target.blockState.block.getCollisionShape(connection, target.blockState)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f) }
         }
+
         this.nextMesh = mesh
 
 

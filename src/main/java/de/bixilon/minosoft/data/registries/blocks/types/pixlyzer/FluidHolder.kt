@@ -15,6 +15,9 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 
+/**
+ * Something that contains a fluid (e.g. water block, cauldron, kelp, ...)
+ */
 interface FluidHolder {
     val fluid: Fluid
 }

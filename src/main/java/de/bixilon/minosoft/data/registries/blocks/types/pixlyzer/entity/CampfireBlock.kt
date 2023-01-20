@@ -23,9 +23,11 @@ import de.bixilon.minosoft.data.entities.block.CampfireBlockEntity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isLit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.tool.ShovelItem
+import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
@@ -58,7 +60,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
             random.nextDouble() + random.nextDouble() + 0.5 // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
         )
 
-        val isSignal = blockState.properties[BlockProperties.CAMPFIRE_SIGNAL_FIRE] == true
+        val isSignal = isSignal(blockState)
 
         val particleType = if (isSignal) {
             signalSmokeParticle
@@ -78,7 +80,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     }
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        if (blockState.properties[BlockProperties.LIT] != true) {
+        if (!blockState.isLit()) {
             return
         }
         if (random.chance(10)) {
@@ -95,12 +97,17 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
     override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
         // ToDo: Ignite (flint and steel, etc)
-        if (itemStack?.item?.item !is ShovelItem || target.blockState.properties[BlockProperties.LIT] != true) {
+        if (itemStack?.item?.item !is ShovelItem || target.blockState.isLit()) {
             return super.onUse(connection, target, hand, itemStack)
         }
         connection.world[target.blockPosition] = target.blockState.withProperties(BlockProperties.LIT to false)
         extinguish(connection, target.blockState, target.blockPosition, Random())
         return InteractionResults.SUCCESS
+    }
+
+    fun isSignal(state: BlockState): Boolean {
+        if (state !is SimpleBlockState) return false
+        return state.properties[BlockProperties.CAMPFIRE_SIGNAL_FIRE]?.toBoolean() ?: return false
     }
 
     companion object : PixLyzerBlockFactory<CampfireBlock> {

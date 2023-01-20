@@ -19,6 +19,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -39,10 +40,11 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
                 return false
             }
             val blockState = blockState ?: return false
-            if (blockState.block is FluidBlock) {
+            if (blockState.block is FluidBlock || blockState.block !is ShapedBlock) {
                 return false
             }
-            if (!blockState.collisionShape.intersect(player.aabb)) {
+            val shape = blockState.block.getCollisionShape(context.connection, blockState) ?: return false
+            if (!shape.intersect(player.aabb)) {
                 return false
             }
             return true

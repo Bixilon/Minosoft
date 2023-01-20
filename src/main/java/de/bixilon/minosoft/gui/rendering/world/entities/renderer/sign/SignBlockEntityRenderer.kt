@@ -17,14 +17,15 @@ import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.SignBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -44,6 +45,12 @@ class SignBlockEntityRenderer(
     val context: RenderContext,
     override val blockState: BlockState,
 ) : OnlyMeshedBlockEntityRenderer<SignBlockEntity> {
+
+    private fun getRotation(): Float {
+        if (blockState !is SimpleBlockState) return 0.0f
+        val rotation = blockState.properties[BlockProperties.ROTATION]?.toFloat() ?: return 0.0f
+        return rotation * 22.5f
+    }
 
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val block = this.blockState.block
@@ -73,7 +80,7 @@ class SignBlockEntityRenderer(
     }
 
     private fun renderStandingText(position: Vec3i, mesh: WorldMesh, light: Int) {
-        val yRotation = (this.blockState.properties[BlockProperties.ROTATION]?.toInt() ?: 0) * 22.5f
+        val yRotation = getRotation()
 
         val rotationVector = Vec3(X_OFFSET, 17.5f / UnbakedElement.BLOCK_RESOLUTION - Y_OFFSET, 9.0f / UnbakedElement.BLOCK_RESOLUTION + Z_OFFSET)
         rotationVector.signRotate(yRotation.rad)
@@ -81,7 +88,7 @@ class SignBlockEntityRenderer(
     }
 
     private fun renderWallText(position: Vec3i, mesh: WorldMesh, light: Int) {
-        val yRotation = -when (val rotation = this.blockState.properties[BlockProperties.FACING].nullCast<Directions>() ?: Directions.NORTH) {
+        val yRotation = -when (val rotation = this.blockState.getFacing()) {
             Directions.SOUTH -> 0.0f
             Directions.EAST -> 90.0f
             Directions.NORTH -> 180.0f

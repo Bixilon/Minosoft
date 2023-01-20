@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.integrated
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -37,7 +38,7 @@ abstract class SingletonIntegratedRegistry<T : RegistryItem>(vararg items: T) : 
         return entries[name]
     }
 
-    override fun build(name: ResourceLocation, registries: Registries): T? {
+    override fun build(name: ResourceLocation, registries: Registries, data: JsonObject): T? {
         return this[name]
     }
 }

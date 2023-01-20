@@ -206,7 +206,8 @@ class ChunkLight(private val chunk: Chunk) {
 
             section.acquire()
             for (sectionY in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
-                val light = section.blocks.unsafeGet(x, sectionY, z)?.lightProperties ?: continue
+                val state = section.blocks.unsafeGet(x, sectionY, z) ?: continue
+                val light = state.block.getLightProperties(state)
 
                 if (light.skylightEnters && !light.filtersSkylight && light.propagatesLight(Directions.DOWN)) {
                     // can go through block
@@ -274,7 +275,7 @@ class ChunkLight(private val chunk: Chunk) {
 
         // we are the highest block now
         // check if light can pass
-        val light = blockState.lightProperties
+        val light = blockState.block.getLightProperties(blockState)
         if (!light.skylightEnters) {
             heightmap[index] = y + 1
         } else if (light.filtersSkylight || !light.propagatesLight(Directions.DOWN)) {

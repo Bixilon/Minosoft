@@ -14,18 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 
 class TallGrassTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
 
     fun getColor(blockState: BlockState, biome: Biome?): Int {
-        return if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.UPPER) {
-            grassTintCalculator.getBlockColor(biome)
-        } else {
-            grassTintCalculator.getBlockColor(biome)
-        }
+        return grassTintCalculator.getBlockColor(biome) // TODO: check for top/bottom
     }
 
     override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,15 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BooleanBlockPropertiesSerializer
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.IntBlockPropertiesSerializer
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import java.util.*
 
 enum class BlockProperties {
@@ -176,6 +180,21 @@ enum class BlockProperties {
                 throw IllegalArgumentException("Can not parse value $value for group $group")
             }
             return Pair(property, retValue)
+        }
+
+        fun BlockState.getFacing(): Directions {
+            if (this !is SimpleBlockState) throw IllegalArgumentException("Block has no states!")
+            return this.properties[FACING]?.nullCast() ?: throw IllegalArgumentException("Block has no facing property!")
+        }
+
+        fun BlockState.isPowered(): Boolean {
+            if (this !is SimpleBlockState) throw IllegalArgumentException("Block has no states!")
+            return this.properties[POWERED]?.toBoolean() ?: false
+        }
+
+        fun BlockState.isLit(): Boolean {
+            if (this !is SimpleBlockState) throw IllegalArgumentException("Block has no states!")
+            return this.properties[LIT]?.toBoolean() ?: return false
         }
     }
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.wall
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.Attachments
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -27,7 +28,7 @@ abstract class WallMountedBlock(resourceLocation: ResourceLocation, registries: 
         return when (blockState.properties[BlockProperties.FACE]) {
             Attachments.CEILING -> Directions.DOWN
             Attachments.FLOOR -> Directions.UP
-            else -> blockState.properties[BlockProperties.FACING] as Directions
+            else -> blockState.getFacing()
         }
     }
 

@@ -81,10 +81,9 @@ class RawItemElement(
         if (model == null) {
             var element: Element? = null
 
-            var color = ChatColors.WHITE
+            val color = ChatColors.WHITE
             if (item is BlockItem) {
                 val defaultState = item.block.defaultState
-                defaultState.material.color?.let { color = it }
                 defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
                     element = ImageElement(guiRenderer, it, size = textureSize)
                 }

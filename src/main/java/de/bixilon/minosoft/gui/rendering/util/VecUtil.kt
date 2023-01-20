@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,11 +23,9 @@ import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
-import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
@@ -183,11 +181,7 @@ object VecUtil {
         return this + direction.vector
     }
 
-    fun Vec3i.getWorldOffset(block: Block): Vec3 {
-        if (block.randomOffsetType == null) {
-            return Vec3.EMPTY
-        }
-
+    fun Vec3i.getWorldOffset(offsetType: RandomOffsetTypes): Vec3 {
         val positionHash = BlockPositionUtil.generatePositionHash(x, 0, z)
         val maxModelOffset = 0.25f // ToDo: PixLyzer: use block.model.max_model_offset
 
@@ -197,7 +191,7 @@ object VecUtil {
 
         return Vec3(
             x = horizontal(positionHash),
-            y = if (block.randomOffsetType === RandomOffsetTypes.XYZ) {
+            y = if (offsetType === RandomOffsetTypes.XYZ) {
                 (((positionHash shr 4 and 0xF) / 15.0f) - 1.0f) / 5.0f
             } else {
                 0.0f

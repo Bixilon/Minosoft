@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.light
+package de.bixilon.minosoft.data.registries.blocks.types.properties.shape
 
-object SolidProperty : SimpleLightProperties {
-    override val propagatesLight: Boolean get() = false
-    override val skylightEnters: Boolean get() = false
-    override val filtersSkylight: Boolean get() = true
+import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
+import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
+
+/**
+ * A block with a collision and outline shape from (0|0|0) to (1|1|1)
+ */
+interface SolidBlock : FullBlock, LightedBlock {
+
+    override fun getLightProperties(blockState: BlockState): LightProperties = OpaqueProperty
 }

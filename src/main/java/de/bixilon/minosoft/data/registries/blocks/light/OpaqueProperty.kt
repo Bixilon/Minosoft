@@ -11,17 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.properties
+package de.bixilon.minosoft.data.registries.blocks.light
 
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.shapes.VoxelShape
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-
-/**
- * A block with potential non-empty collision/outline shape
- */
-interface ShapedBlock {
-
-    fun getOutlineShape(connection: PlayConnection, blockState: BlockState): VoxelShape
-    fun getCollisionShape(connection: PlayConnection, blockState: BlockState): VoxelShape
+object OpaqueProperty : SimpleLightProperties {
+    override val propagatesLight: Boolean get() = false
+    override val skylightEnters: Boolean get() = false
+    override val filtersSkylight: Boolean get() = true
 }

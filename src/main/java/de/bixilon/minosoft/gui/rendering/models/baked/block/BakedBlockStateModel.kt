@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.IntArrayUtil.getOrElse
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
@@ -40,8 +41,8 @@ class BakedBlockStateModel(
 
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val floatPosition = position.toVec3()
-        blockState.block.randomOffsetType?.let {
-            floatPosition += position.getWorldOffset(blockState.block)
+        if (blockState.block is RandomOffsetBlock) {
+            blockState.block.randomOffset?.let { floatPosition += position.getWorldOffset(it) }
         }
         val positionArray = floatPosition.array
         var rendered = false

@@ -52,6 +52,9 @@ import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.FrictionBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.JumpBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.VelocityBlock
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
@@ -216,18 +219,21 @@ class LocalPlayerEntity(
             val blockStateBelow = connection.world[positionInfo.blockPosition] ?: return 1.0
 
             if (blockStateBelow.block.identifier == MinecraftBlocks.WATER || blockStateBelow.block.identifier == MinecraftBlocks.BUBBLE_COLUMN) {
-                if (blockStateBelow.block.velocityMultiplier == 1.0) {
-                    return connection.world[positionInfo.blockPosition]?.block?.velocityMultiplier ?: 1.0
+                if (blockStateBelow.block !is VelocityBlock || blockStateBelow.block.velocity == 1.0f) {
+                    return connection.world[positionInfo.blockPosition]?.block?.nullCast<VelocityBlock>()?.velocity?.toDouble() ?: 1.0
                 }
             }
-            return blockStateBelow.block.velocityMultiplier
+            if (blockStateBelow.block is VelocityBlock) {
+                return blockStateBelow.block.velocity.toDouble()
+            }
+            return 1.0
         }
 
     private val jumpVelocityMultiplier: Double
         get() {
-            val blockModifier = connection.world[positionInfo.blockPosition]?.block?.jumpVelocityMultiplier ?: 1.0
+            val blockModifier = connection.world[positionInfo.blockPosition]?.block?.nullCast<JumpBlock>()?.jumpBoost?.toDouble() ?: 1.0
             if (blockModifier == 1.0) {
-                return connection.world[positionInfo.velocityPosition]?.block?.jumpVelocityMultiplier ?: 1.0
+                return connection.world[positionInfo.velocityPosition]?.block?.nullCast<JumpBlock>()?.jumpBoost?.toDouble() ?: 1.0
             }
             return blockModifier
         }
@@ -411,7 +417,7 @@ class LocalPlayerEntity(
             }
 
             else -> {
-                val friction = connection.world.connection.world[positionInfo.velocityPosition]?.block?.friction ?: 0.6
+                val friction = connection.world.connection.world[positionInfo.velocityPosition]?.block?.nullCast<FrictionBlock>()?.friction?.toDouble() ?: 0.6
                 speedMultiplier = 0.91
                 if (onGround) {
                     speedMultiplier *= friction

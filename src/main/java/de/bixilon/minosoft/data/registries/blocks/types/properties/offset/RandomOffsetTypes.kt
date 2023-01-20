@@ -11,9 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
+package de.bixilon.minosoft.data.registries.blocks.types.properties.offset
 
-/**
- * A block that is fluid filled, e.g. water or kelp (filled with water)
- */
-interface FluidFilled : FluidHolder
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
+
+enum class RandomOffsetTypes {
+    XZ,
+    XYZ,
+    ;
+
+    companion object : ValuesEnum<RandomOffsetTypes> {
+        override val VALUES: Array<RandomOffsetTypes> = values()
+        override val NAME_MAP: Map<String, RandomOffsetTypes> = EnumUtil.getEnumValues(VALUES)
+    }
+}

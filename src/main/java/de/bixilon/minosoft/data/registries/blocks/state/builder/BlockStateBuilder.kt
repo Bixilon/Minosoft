@@ -11,9 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
+package de.bixilon.minosoft.data.registries.blocks.state.builder
 
-/**
- * A block that is fluid filled, e.g. water or kelp (filled with water)
- */
-interface FluidFilled : FluidHolder
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+
+interface BlockStateBuilder {
+
+    fun buildState(settings: BlockStateSettings): BlockState
+}

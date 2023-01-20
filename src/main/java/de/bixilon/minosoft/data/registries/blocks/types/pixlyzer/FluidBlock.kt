@@ -30,7 +30,7 @@ import java.util.*
 open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), FluidHolder {
     override val fluid: Fluid = registries.fluid[data["still_fluid"]]!!
 
-    override fun getOutlineShape(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): VoxelShape {
+    override fun getOutlineShape(connection: PlayConnection, blockState: BlockState): VoxelShape {
         return VoxelShape(mutableListOf(AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(blockState), 1.0f))))
     }
 

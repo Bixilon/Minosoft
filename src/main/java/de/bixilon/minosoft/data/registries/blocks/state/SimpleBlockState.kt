@@ -13,11 +13,57 @@
 
 package de.bixilon.minosoft.data.registries.blocks.state
 
+import com.google.common.base.Objects
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.next
 
-class SimpleBlockState(
+open class SimpleBlockState(
     block: Block,
-    properties: Map<BlockProperties, Any>,
+    val properties: Map<BlockProperties, Any>,
     luminance: Int,
-) : BlockState(block, properties, luminance)
+) : BlockState(block, luminance) {
+
+    constructor(block: Block, settings: BlockStateSettings) : this(block, settings.properties ?: emptyMap(), settings.luminance)
+
+
+    override fun hashCode(): Int {
+        return Objects.hashCode(block, properties)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is ResourceLocation) return other == block.identifier
+        if (other is SimpleBlockState) return other.block == this.block && other.properties == this.properties
+
+        return false
+    }
+
+
+    override fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
+        val nextProperties = this.properties.toMutableMap()
+
+        for ((key, value) in properties) {
+            nextProperties[key] = value
+        }
+
+        for (state in this.block.states) {
+            if (state !is SimpleBlockState) continue
+
+            if (state.properties != nextProperties) {
+                continue
+            }
+
+            return state
+        }
+
+        throw IllegalArgumentException("Can not find ${this.block} with properties: $properties")
+    }
+
+
+    override fun cycle(property: BlockProperties): BlockState {
+        val value = properties[property] ?: throw IllegalArgumentException("$this has no property $property")
+        return withProperties(property to block.properties[property]!!.next(value))
+    }
+}

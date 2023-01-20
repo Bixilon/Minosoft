@@ -18,7 +18,7 @@ import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
-import de.bixilon.minosoft.data.registries.blocks.light.SolidProperty
+import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -116,10 +116,10 @@ object ChunkTestingUtil {
     }
 
     fun createSolidBlock(): Block {
-        return createBlock("solid", 0, SolidProperty)
+        return createBlock("solid", 0, OpaqueProperty)
     }
 
     fun createSolidLight(): Block {
-        return createBlock("solid_light", 15, SolidProperty)
+        return createBlock("solid_light", 15, OpaqueProperty)
     }
 }

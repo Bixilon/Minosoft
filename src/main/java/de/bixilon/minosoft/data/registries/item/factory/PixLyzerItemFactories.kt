@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.registries.item.items.throwable.*
 import de.bixilon.minosoft.data.registries.item.items.throwable.potion.LingeringPotionItem
 import de.bixilon.minosoft.data.registries.item.items.throwable.potion.PotionItem
 import de.bixilon.minosoft.data.registries.item.items.tool.*
-import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeItem
 
 @Deprecated("item factory")
 object PixLyzerItemFactories : DefaultClassFactory<PixLyzerItemFactory<*>>(
@@ -38,13 +37,7 @@ object PixLyzerItemFactories : DefaultClassFactory<PixLyzerItemFactory<*>>(
     MusicDiscItem,
 
 
-    ToolItem,
-    SwordItem,
     BowItem,
-    ShovelItem,
-    PickaxeItem,
-    HoeItem,
-    AxeItem,
 
     LingeringPotionItem,
     FireChargeItem,

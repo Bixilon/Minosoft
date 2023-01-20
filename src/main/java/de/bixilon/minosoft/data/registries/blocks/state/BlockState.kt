@@ -12,168 +12,35 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.state
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.blocks.light.*
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
-import java.util.*
 
-abstract class BlockState(
+open class BlockState(
     val block: Block,
-    val properties: Map<BlockProperties, Any> = emptyMap(),
     val luminance: Int,
 ) {
     var blockModel: BakedBlockModel? = null
 
+    constructor(block: Block, settings: BlockStateSettings) : this(block, settings.luminance)
+
+
     override fun hashCode(): Int {
-        return Objects.hash(block, properties)
+        return block.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other is BlockState) {
-            return block.identifier.path == other.block.identifier.path && properties == other.properties && block.identifier.namespace == other.block.identifier.namespace
-        }
-        if (other is ResourceLocation) {
-            return block.identifier == other
-        }
+        if (other is ResourceLocation) return other == block.identifier
+        if (other is BlockState) return other.block == block
         return false
     }
 
     override fun toString(): String {
-        val out = StringBuilder()
-        out.append(block.identifier.toString())
-        out.append(" (")
-        if (properties.isNotEmpty()) {
-            out.append("properties=")
-            out.append(properties)
-        }
-        if (out.isNotEmpty()) {
-            out.append(")")
-        }
-        return out.toString().removeSuffix("()")
+        return block.toString()
     }
 
-    companion object {
-
-        fun deserialize(block: Block, registries: Registries, data: Map<String, Any>): BlockState {
-            val properties = data["properties"]?.toJsonObject()?.let {
-                getProperties(it)
-            } ?: emptyMap()
-
-            val material = registries.material[ResourceLocation.of(data["material"].unsafeCast())]!!
-
-
-            fun Any.asShape(): VoxelShape {
-                return if (this is Int) {
-                    registries.shape[this]
-                } else {
-                    VoxelShape(registries.shape, this)
-                }
-            }
-
-            val collisionShape = data["collision_shape"]?.asShape()
-                ?: if (data["is_collision_shape_full_block"]?.toBoolean() == true) {
-                    VoxelShape.FULL
-                } else {
-                    VoxelShape.EMPTY
-                }
-
-            val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
-
-            val opaque = data["is_opaque"]?.toBoolean() ?: true
-            val translucent = data["translucent"]?.toBoolean() ?: true
-
-
-            var lightProperties = if (block is FluidBlock) {
-                FluidBlock.LIGHT_PROPERTIES
-            } else if (outlineShape == VoxelShape.EMPTY || (!opaque && translucent)) {
-                TransparentProperty
-            } else if (outlineShape == VoxelShape.FULL) {
-                SolidProperty
-            } else {
-                DirectedProperty.of(outlineShape, opaque, !translucent)
-            }
-
-            if (lightProperties is SolidProperty && !opaque) {
-                lightProperties = CustomLightProperties(propagatesLight = true, skylightEnters = false, !translucent)
-            }
-
-
-            return BlockState(
-                block = block,
-                properties = properties,
-                material = material,
-                collisionShape = collisionShape,
-                outlineShape = outlineShape,
-                hardness = data["hardness"]?.toFloat() ?: 1.0f,
-                requiresTool = data["requires_tool"]?.toBoolean() ?: !material.soft,
-                isSolid = data["solid_render"]?.toBoolean() ?: false,
-                luminance = data["luminance"]?.toInt() ?: 0,
-                lightProperties = lightProperties,
-            )
-        }
-
-        private fun getProperties(json: Map<String, Any>): MutableMap<BlockProperties, Any> {
-            val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
-            for ((propertyGroup, propertyJsonValue) in json) {
-                val propertyValue: Any = when (propertyJsonValue) {
-                    is String -> propertyJsonValue.lowercase()
-                    else -> propertyJsonValue
-                }
-                try {
-                    val (blockProperty, value) = BlockProperties.parseProperty(propertyGroup, propertyValue)
-                    properties[blockProperty] = value
-                } catch (exception: NullPointerException) {
-                    throw NullPointerException("Invalid block property $propertyGroup or value $propertyValue")
-                }
-            }
-            return properties
-        }
-    }
-
-
-    fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
-        return withProperties(properties.toMap())
-    }
-
-    fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
-        val newProperties = this.properties.toMutableMap()
-        for ((key, value) in properties) {
-            newProperties[key] = value
-        }
-        val wannabe = WannabeBlockState(resourceLocation = this.block.identifier, properties = newProperties)
-        for (blockState in this.block.states) {
-            if (blockState.equals(wannabe)) {
-                return blockState
-            }
-        }
-        throw IllegalArgumentException("Can not find ${this.block.identifier}, with properties: $properties")
-    }
-
-
-    fun cycle(property: BlockProperties): BlockState {
-        val currentValue = properties[property] ?: throw IllegalArgumentException("$this has no property $property")
-
-        return withProperties(property to block.properties[property]!!.next(currentValue))
-    }
-
-    private fun <T> List<T>.next(current: T): T {
-        val index = this.indexOf(current)
-        check(index >= 0) { "List does not contain $current" }
-
-        if (index == this.size - 1) {
-            return this[0]
-        }
-        return this[index + 1]
-    }
+    open fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState = throw IllegalStateException("Stateless block state!")
+    open fun cycle(property: BlockProperties): BlockState = throw IllegalStateException("Stateless block state!")
 }

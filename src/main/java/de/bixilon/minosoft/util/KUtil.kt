@@ -315,4 +315,15 @@ object KUtil {
 
         return fill + this
     }
+
+
+    fun <T> Array<T>.next(current: T): T {
+        val index = this.indexOf(current)
+        check(index >= 0) { "Array does not contain $current" }
+
+        if (index == this.size - 1) {
+            return this[0]
+        }
+        return this[index + 1]
+    }
 }
