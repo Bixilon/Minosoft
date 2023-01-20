@@ -34,7 +34,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.properties.StatusEffectProperty
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.physics.PhysicsEntity
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations

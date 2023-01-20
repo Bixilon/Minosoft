@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidHolder
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

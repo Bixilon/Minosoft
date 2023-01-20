@@ -43,6 +43,7 @@ abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), Mining
     }
 
     private fun isEffectiveTool(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Boolean {
+        checkTag(connection, blockState)?.let { return it }
         if (blockState.block !is ToolRequirement) {
             // everything is effective, so …
             return true

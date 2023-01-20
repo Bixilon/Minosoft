@@ -11,27 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.factory
+package de.bixilon.minosoft.data.registries.blocks.types.fluid
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.blocks.types.fluid.LavaFluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.fluid.WaterFluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.stone.RockBlock
-import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-object BlockFactories : DefaultFactory<BlockFactory<*>>(
-    RockBlock.Stone,
-    RockBlock.Granite, RockBlock.PolishedGranite,
-    RockBlock.Diorite, RockBlock.PolishedDiorite,
-    RockBlock.Andesite, RockBlock.PolishedAndesite,
+class WaterFluidBlock(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FluidBlock(identifier, settings) {
+    override val fluid: WaterFluid = unsafeNull()
 
-    WaterFluidBlock, LavaFluidBlock,
-) {
+    init {
+        this::fluid.inject(WaterFluid)
+    }
 
-    fun build(name: ResourceLocation, registries: Registries, settings: BlockSettings): Block? {
-        return this[name]?.build(registries, settings)
+    companion object : BlockFactory<WaterFluidBlock> {
+        override val identifier = WaterFluid.identifier
+
+        override fun build(registries: Registries, settings: BlockSettings) = WaterFluidBlock(settings = settings)
     }
 }

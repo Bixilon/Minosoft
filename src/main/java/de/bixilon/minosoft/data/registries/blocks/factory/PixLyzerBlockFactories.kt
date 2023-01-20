@@ -54,7 +54,6 @@ import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
 object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     AirBlock,
     PixLyzerBlock,
-    FluidBlock,
     DoorBlock,
     LeverBlock,
     NoteBlock,

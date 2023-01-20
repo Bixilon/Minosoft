@@ -44,9 +44,7 @@ class BlockRegistry(
 
         val states: MutableSet<BlockState> = mutableSetOf()
         for ((stateId, stateJson) in data["states"].asAnyMap()) {
-            check(stateJson is Map<*, *>) { "Not a state element!" }
-
-            val settings = BlockStateSettings.of(registries, data)
+            val settings = BlockStateSettings.of(registries, stateJson.unsafeCast())
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
 
             states += state
@@ -66,10 +64,11 @@ class BlockRegistry(
 
     override fun deserialize(resourceLocation: ResourceLocation, data: JsonObject, registries: Registries?): Block? {
         val factory = BlockFactories[resourceLocation]
+        if (registries == null) throw NullPointerException("registries?")
 
-        val block = factory?.build(registries!!, BlockSettings.of(data)) ?: this.codec!!.deserialize(registries, resourceLocation, data) ?: return null
+        val block = factory?.build(registries, BlockSettings.of(registries, data)) ?: this.codec!!.deserialize(registries, resourceLocation, data) ?: return null
 
-        updateStates(block, data, registries!!)
+        updateStates(block, data, registries)
 
         return block
     }

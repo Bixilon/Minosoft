@@ -13,6 +13,9 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.cast.CollectionCast.asAnyMap
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactories
@@ -57,7 +60,14 @@ open class PixLyzerBlock(
 
     override val jumpBoost = data["jump_velocity_multiplier"]?.toFloat() ?: 1.0f
 
-    val material: Material = TODO()
+    val material: Material = unsafeNull()
+    override var hardness: Float = 0.0f
+
+    init {
+        val state = data["states"]?.asAnyMap()!!.iterator().next().value.asJsonObject()
+        registries.material[state["material"]]!!
+        hardness = state["hardness"].toFloat()
+    }
 
     override fun buildState(settings: BlockStateSettings): BlockState {
         return AdvancedBlockState(this, settings.properties ?: emptyMap(), settings.luminance, settings.collisionShape, settings.outlineShape, settings.lightProperties)

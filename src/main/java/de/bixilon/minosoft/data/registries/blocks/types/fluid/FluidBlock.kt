@@ -11,40 +11,38 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
+package de.bixilon.minosoft.data.registries.blocks.types.fluid
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
+import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidFilled
+import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), FluidHolder {
-    override val fluid: Fluid = registries.fluid[data["still_fluid"]]!!
+abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FluidFilled, ShapedBlock, LightedBlock {
 
     override fun getOutlineShape(connection: PlayConnection, blockState: BlockState): VoxelShape {
         return VoxelShape(mutableListOf(AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(blockState), 1.0f))))
     }
 
+    override fun getCollisionShape(connection: PlayConnection, blockState: BlockState): VoxelShape? = null
+    override fun getLightProperties(blockState: BlockState) = LIGHT_PROPERTIES
+
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        super.randomTick(connection, blockState, blockPosition, random)
-        // ToDo
         fluid.randomTick(connection, blockState, blockPosition, random)
     }
 
-    companion object : PixLyzerBlockFactory<FluidBlock> {
+    companion object {
         val LIGHT_PROPERTIES = CustomLightProperties(true, false, true)
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): FluidBlock {
-            return FluidBlock(resourceLocation, registries, data)
-        }
     }
 }

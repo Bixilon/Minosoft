@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.registries.blocks.settings
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 
 class BlockSettings(
@@ -22,8 +24,12 @@ class BlockSettings(
 ) {
 
     companion object {
-        fun of(data: JsonObject): BlockSettings {
-            TODO()
+        fun of(registries: Registries, data: JsonObject): BlockSettings {
+            val soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] }
+            val item = data["item"].toInt()
+
+
+            return BlockSettings(soundGroup = soundGroup, item)
         }
     }
 }
