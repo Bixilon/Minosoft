@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.serializer.IntBlock
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import java.util.*
 
+@Deprecated("Will be split and refactored")
 enum class BlockProperties {
     POWERED(BooleanBlockPropertiesSerializer),
     TRIGGERED(BooleanBlockPropertiesSerializer),

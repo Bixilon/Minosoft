@@ -39,7 +39,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
-import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
@@ -60,17 +59,17 @@ open class PixLyzerBlock(
 
     override val jumpBoost = data["jump_velocity_multiplier"]?.toFloat() ?: 1.0f
 
-    val material: Material = unsafeNull()
+    var material: Material = unsafeNull()
     override var hardness: Float = 0.0f
 
     init {
         val state = data["states"]?.asAnyMap()!!.iterator().next().value.asJsonObject()
-        registries.material[state["material"]]!!
+        material = registries.material[state["material"]]!!
         hardness = state["hardness"].toFloat()
     }
 
     override fun buildState(settings: BlockStateSettings): BlockState {
-        return AdvancedBlockState(this, settings.properties ?: emptyMap(), settings.luminance, settings.collisionShape, settings.outlineShape, settings.lightProperties)
+        return AdvancedBlockState(this, settings)
     }
 
     override fun canReplace(connection: PlayConnection, state: BlockState, position: BlockPosition): Boolean {
@@ -79,7 +78,7 @@ open class PixLyzerBlock(
 
     override fun isFullOpaque(state: BlockState): Boolean {
         if (state !is AdvancedBlockState) return false
-        return state.outlineShape == VoxelShape.FULL
+        return state.solidRenderer
     }
 
     override fun toString(): String {

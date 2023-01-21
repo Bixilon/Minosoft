@@ -29,6 +29,7 @@ class BlockStateSettings(
     val collisionShape: VoxelShape?,
     val outlineShape: VoxelShape?,
     val lightProperties: LightProperties,
+    @Deprecated("pixlyzer") val solidRenderer: Boolean,
 ) {
 
     companion object {
@@ -109,6 +110,7 @@ class BlockStateSettings(
                 collisionShape = if (collisionShape == VoxelShape.EMPTY) null else collisionShape,
                 outlineShape = if (outlineShape == VoxelShape.EMPTY) null else outlineShape,
                 lightProperties = data.getLightProperties(outlineShape),
+                solidRenderer = data["solid_render"]?.toBoolean() ?: false,
             )
         }
     }

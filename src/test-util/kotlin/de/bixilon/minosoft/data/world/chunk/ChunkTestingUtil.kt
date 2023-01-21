@@ -107,7 +107,7 @@ object ChunkTestingUtil {
 
     fun createBlock(name: String, luminance: Int, lightProperties: LightProperties): Block {
         val block = TestBlock(minosoft(name), BlockSettings())
-        val state = AdvancedBlockState(block, properties = emptyMap(), collisionShape = VoxelShape.EMPTY, outlineShape = VoxelShape.EMPTY, luminance = luminance, lightProperties = lightProperties)
+        val state = AdvancedBlockState(block, properties = emptyMap(), collisionShape = VoxelShape.EMPTY, outlineShape = VoxelShape.EMPTY, luminance = luminance, lightProperties = lightProperties, solidRenderer = true)
         block::states.javaField!!.forceSet(block, setOf(state))
         block::defaultState.javaField!!.forceSet(block, state)
 
