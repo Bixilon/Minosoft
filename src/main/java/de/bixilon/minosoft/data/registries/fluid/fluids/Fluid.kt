@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidHolder
@@ -54,7 +54,7 @@ open class Fluid(override val identifier: ResourceLocation) : RegistryItem() {
         if (state.block is FluidFilled && state.block.fluid == this) {
             return 0.9f
         }
-        if (state.block !is FluidBlock || state.block.fluid != this || state !is SimpleBlockState) {
+        if (state.block !is FluidBlock || state.block.fluid != this || state !is PropertyBlockState) {
             return 0.0f
         }
         val level = state.properties[BlockProperties.FLUID_LEVEL]?.toInt() ?: return 0.0f

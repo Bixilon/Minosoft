@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
@@ -48,7 +48,7 @@ open class BlockTarget(
 
         text += "\n"
 
-        if (blockState is SimpleBlockState) {
+        if (blockState is PropertyBlockState) {
             text += blockState.withProperties()
         }
 

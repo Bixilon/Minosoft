@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.Attachments
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 abstract class WallMountedBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
 
     fun getRealFacing(state: BlockState): Directions {
-        if (state !is SimpleBlockState) throw StatelessBlockError(state)
+        if (state !is PropertyBlockState) throw StatelessBlockError(state)
         return when (state.properties[BlockProperties.FACE]) {
             Attachments.CEILING -> Directions.DOWN
             Attachments.FLOOR -> Directions.UP

@@ -19,14 +19,14 @@ import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettin
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 
-class AdvancedBlockState(
+open class AdvancedBlockState(
     block: Block,
     properties: Map<BlockProperties, Any>,
     luminance: Int,
     val collisionShape: VoxelShape?,
     val outlineShape: VoxelShape?,
     val lightProperties: LightProperties,
-) : SimpleBlockState(block, properties, luminance) {
+) : PropertyBlockState(block, properties, luminance) {
 
     constructor(block: Block, settings: BlockStateSettings) : this(block, settings.properties ?: emptyMap(), settings.luminance, settings.collisionShape, settings.outlineShape, settings.lightProperties)
 }

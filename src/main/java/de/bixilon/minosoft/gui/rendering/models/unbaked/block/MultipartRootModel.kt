@@ -18,7 +18,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockModel
 
@@ -27,7 +27,7 @@ class MultipartRootModel(
 ) : RootModel {
 
     private fun Map<BlockProperties, Set<Any>>.matches(blockState: BlockState): Boolean {
-        if (this.isEmpty() || blockState !is SimpleBlockState) return true
+        if (this.isEmpty() || blockState !is PropertyBlockState) return true
         var matches = true
 
         for ((property, values) in this) {

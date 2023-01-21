@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.ChestTypes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -30,8 +29,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
     override fun createRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*>? {
-        if (blockState !is SimpleBlockState) return null
-        val type = blockState.properties[BlockProperties.CHEST_TYPE] ?: return null
+        val type: ChestTypes = blockState[BlockProperties.CHEST_TYPE]
         if (type == ChestTypes.SINGLE) {
             return SingleChestRenderer(this, context, blockState, blockPosition, context.modelLoader.entities.skeletal[getSingleModel()] ?: return null, light)
         }

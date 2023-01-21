@@ -13,16 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BooleanBlockPropertiesSerializer
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.IntBlockPropertiesSerializer
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
-import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
 import java.util.*
 
 enum class BlockProperties {
@@ -184,18 +180,15 @@ enum class BlockProperties {
         }
 
         fun BlockState.getFacing(): Directions {
-            if (this !is SimpleBlockState) throw StatelessBlockError(this)
-            return this.properties[FACING]?.nullCast() ?: throw IllegalArgumentException("Block has no facing property!")
+            return this[FACING]
         }
 
         fun BlockState.isPowered(): Boolean {
-            if (this !is SimpleBlockState) throw StatelessBlockError(this)
-            return this.properties[POWERED]?.toBoolean() ?: false
+            return this[POWERED]
         }
 
         fun BlockState.isLit(): Boolean {
-            if (this !is SimpleBlockState) throw StatelessBlockError(this)
-            return this.properties[LIT]?.toBoolean() ?: return false
+            return this[LIT]
         }
     }
 }

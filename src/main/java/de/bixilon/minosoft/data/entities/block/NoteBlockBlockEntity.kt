@@ -19,7 +19,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Instruments
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -37,7 +37,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
     private var showParticleNextTick = false
 
     private fun BlockState.getNote(): Int {
-        if (this !is SimpleBlockState) throw IllegalArgumentException("Block has not states!")
+        if (this !is PropertyBlockState) throw IllegalArgumentException("Block has not states!")
         return properties[BlockProperties.NOTE]?.toInt() ?: 0
     }
 

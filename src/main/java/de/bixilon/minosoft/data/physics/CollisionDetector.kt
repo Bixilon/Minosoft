@@ -55,10 +55,10 @@ class CollisionDetector(val connection: PlayConnection) {
                 continue
             }
             val blockState = chunk[blockPosition.inChunkPosition] ?: continue
-            if (blockState !is ShapedBlock) {
+            if (blockState.block !is ShapedBlock) {
                 continue
             }
-            val blockShape = blockState.getCollisionShape(connection, blockState)?.plus(blockPosition)
+            val blockShape = blockState.block.getCollisionShape(connection, blockState)?.plus(blockPosition)
 
             // remove position if not already in it and not colliding with it
             if (blockShape == null || blockPosition in aabbBlockPositions && blockShape.intersect(aabb)) {

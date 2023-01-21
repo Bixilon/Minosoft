@@ -53,4 +53,6 @@ open class BlockState(
     }
 
     open fun cycle(property: BlockProperties): BlockState = throw StatelessBlockError(this)
+
+    open operator fun <T> get(property: BlockProperties): T = throw StatelessBlockError(this)
 }

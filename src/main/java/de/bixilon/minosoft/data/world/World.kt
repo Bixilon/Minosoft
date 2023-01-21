@@ -340,8 +340,8 @@ class World(
     fun isSpaceEmpty(aabb: AABB, checkFluids: Boolean = false): Boolean {
         for (position in aabb.blockPositions) {
             val blockState = this[position] ?: continue
-            if (blockState !is ShapedBlock) continue
-            val shape = blockState.getCollisionShape(connection, blockState) ?: continue
+            if (blockState.block !is ShapedBlock) continue
+            val shape = blockState.block.getCollisionShape(connection, blockState) ?: continue
             if ((shape + position).intersect(aabb)) {
                 return false
             }

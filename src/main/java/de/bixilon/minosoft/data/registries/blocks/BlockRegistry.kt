@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.SimpleBlockState
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -50,7 +50,7 @@ class BlockRegistry(
             states += state
             registries.blockState[stateId.toInt()] = state
 
-            if (state !is SimpleBlockState) continue
+            if (state !is PropertyBlockState) continue
 
             for ((property, value) in state.properties) {
                 properties.getOrPut(property) { mutableSetOf() } += value
