@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.factory
 
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.LavaFluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.WaterFluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.stone.RockBlock
@@ -22,7 +23,11 @@ import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
+
+@Suppress("DEPRECATION")
 object BlockFactories : DefaultFactory<BlockFactory<*>>(
+    AirBlock.Air, AirBlock.VoidAir, AirBlock.CaveAir,
+
     RockBlock.Stone,
     RockBlock.Granite, RockBlock.PolishedGranite,
     RockBlock.Diorite, RockBlock.PolishedDiorite,

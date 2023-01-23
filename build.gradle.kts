@@ -224,13 +224,13 @@ testing {
             }
             sources {
                 kotlin {
-                    setSrcDirs(listOf("src/integration-test/kotlin", "src/test-util/kotlin"))
+                    setSrcDirs(listOf("src/integration-test/kotlin"))
                 }
             }
         }
         val benchmark by registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.PERFORMANCE_TEST)
-            useTestNG("7.7.0")
+            useTestNG("7.7.1")
 
             dependencies {
                 implementation(project())
@@ -265,7 +265,7 @@ testing {
             }
             sources {
                 kotlin {
-                    setSrcDirs(listOf("src/benchmark/kotlin", "src/test-util/kotlin"))
+                    setSrcDirs(listOf("src/benchmark/kotlin"))
                 }
             }
         }

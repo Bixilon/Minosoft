@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.registries.registry
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.AirBlock
+import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -69,7 +69,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         return getOrNull(id)
     }
 
-    @Suppress("DEPRECATION_ERROR")
+    @Suppress("DEPRECATION")
     override fun getOrNull(id: Int): BlockState? {
         if (id == ProtocolDefinition.AIR_BLOCK_ID) {
             return null

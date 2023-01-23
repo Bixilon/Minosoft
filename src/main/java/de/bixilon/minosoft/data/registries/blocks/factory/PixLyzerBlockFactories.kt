@@ -49,10 +49,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.water.KelpPlant
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.water.SeagrassBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
 
-@Suppress("DEPRECATION_ERROR")
 @Deprecated("BlockFactories")
 object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
-    AirBlock,
     PixLyzerBlock,
     DoorBlock,
     LeverBlock,
