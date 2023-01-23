@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -72,18 +72,7 @@ class StatusConnection(
             if (status != null) {
                 return@observe
             }
-
-            val addresses = this.addresses!!
-            val nextIndex = ++addressIndex
-            if (addresses.size > nextIndex) {
-                val nextAddress = addresses[nextIndex]
-                Log.log(LogMessageType.NETWORK_RESOLVING) { "Could not connect to $address, trying next hostname: $nextAddress" }
-                realAddress = nextAddress
-                ping(nextAddress)
-            } else {
-                // no connection and no servers available anymore... sorry, but you can not play today :(
-                error = Exception("Can not ping: Tried all hostnames")
-            }
+            tryNextAddress()
         }
 
         network::state.observe(this) {
@@ -107,6 +96,16 @@ class StatusConnection(
         GlobalEventMaster.fire(StatusConnectionCreateEvent(this))
     }
 
+    private fun tryNextAddress() {
+        val addresses = this.addresses ?: return
+        val nextIndex = ++addressIndex
+        if (addresses.size > nextIndex) {
+            val nextAddress = addresses[nextIndex]
+            Log.log(LogMessageType.NETWORK_RESOLVING) { "Could not connect to $address, trying next hostname: $nextAddress" }
+            realAddress = nextAddress
+            ping(nextAddress)
+        }
+    }
 
     private fun resolve(): List<ServerAddress> {
         state = StatusConnectionStates.RESOLVING
