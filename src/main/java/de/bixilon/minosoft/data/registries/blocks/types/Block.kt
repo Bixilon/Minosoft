@@ -41,6 +41,8 @@ abstract class Block(
     val defaultState: BlockState = unsafeNull()
 
     val item: Item = unsafeNull()
+
+    @Deprecated("Interface")
     var tintProvider: TintProvider? = null
 
     val soundGroup = settings.soundGroup
@@ -55,14 +57,19 @@ abstract class Block(
         return identifier.toString()
     }
 
+    @Deprecated("Interface")
     open fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? = defaultState
 
+    @Deprecated("Interface")
     open fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) = Unit
 
+    @Deprecated("Interface")
     open fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) = Unit
 
+    @Deprecated("Interface")
     open fun canPlaceAt(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState): Boolean = true
 
+    @Deprecated("Interface")
     open fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
         return InteractionResults.PASS
     }
@@ -76,13 +83,16 @@ abstract class Block(
     }
 
 
+    @Deprecated("Interface")
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
 
+    @Deprecated("work/physics")
     open fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) = Unit
 
+    @Deprecated("work/physics")
     open fun onEntityCollision(connection: PlayConnection, entity: Entity, blockState: BlockState, blockPosition: Vec3i) = Unit
 
-
+    @Deprecated("Interface")
     open fun canCull(blockState: BlockState, other: BlockState): Boolean = true
 
 
