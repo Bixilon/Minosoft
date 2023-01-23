@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterloggableBlock
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
@@ -133,6 +134,7 @@ class WaterFluid(resourceLocation: ResourceLocation = this.identifier) : Flowabl
 
 
         fun BlockState.isWaterlogged(): Boolean {
+            if (this.block !is WaterloggableBlock) return false
             if (this !is PropertyBlockState) return false
             return properties[BlockProperties.WATERLOGGED]?.toBoolean() ?: return false
         }

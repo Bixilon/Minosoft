@@ -11,13 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
+package de.bixilon.minosoft.data.registries.blocks.types.fluid.water
 
-import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
-
-/**
- * Something that contains a fluid (e.g. water block, cauldron, kelp, ...)
- */
-interface FluidHolder {
-    val fluid: Fluid
-}
+interface WaterloggableBlock

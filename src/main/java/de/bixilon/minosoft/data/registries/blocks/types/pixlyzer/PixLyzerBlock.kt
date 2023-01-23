@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterloggableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.FrictionBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.JumpBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.ReplaceableBlock
@@ -49,7 +50,7 @@ open class PixLyzerBlock(
     identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Block(identifier, BlockSettings(soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] }, item = data["item"]?.toInt())), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, ShapedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock {
+) : Block(identifier, BlockSettings(soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] }, item = data["item"]?.toInt())), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, ShapedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock, WaterloggableBlock {
 
     override val randomOffset: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
 

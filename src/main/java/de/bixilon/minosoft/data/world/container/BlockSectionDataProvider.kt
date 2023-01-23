@@ -17,7 +17,8 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidFilled
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid.Companion.isWaterlogged
@@ -85,7 +86,7 @@ class BlockSectionDataProvider(
 
     private fun BlockState?.isFluid(): Boolean {
         if (this == null) return false
-        if (this.block is FluidFilled) {
+        if (this.block is FluidFilled || this.block is FluidBlock) {
             return true
         }
         if (this.isWaterlogged()) {

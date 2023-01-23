@@ -11,16 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.fluid
+package de.bixilon.minosoft.data.registries.blocks.types.fluid.water
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-class WaterFluidBlock(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : FluidBlock(identifier, settings) {
+class WaterFluidBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FluidBlock(identifier, settings) {
     override val fluid: WaterFluid = unsafeNull()
 
     init {

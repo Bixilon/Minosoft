@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.water
 
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.FluidFilled
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
