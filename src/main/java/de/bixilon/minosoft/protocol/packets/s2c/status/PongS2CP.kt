@@ -30,13 +30,9 @@ class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
 
     override fun handle(connection: StatusConnection) {
         val ping = connection.ping ?: return
-        if (ping.pingId != pingId) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown status pong (pingId=$pingId, expected=${ping.pingId})" }
-            // return ToDo: feather-rs is sending a wrong ping id back
-        }
         val latency = nanos() - ping.nanos
         connection.network.disconnect()
-        connection.pong = StatusPong(pingId, latency)
+        connection.pong = StatusPong(latency)
         connection.state = StatusConnectionStates.PING_DONE
     }
 

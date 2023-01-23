@@ -26,6 +26,7 @@ import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.concurrent.ThreadLocalRandom
 
 @LoadPacket(state = ProtocolStates.STATUS)
 class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
@@ -43,7 +44,7 @@ class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
         val ping = StatusPing()
         connection.ping = ping
         connection.state = StatusConnectionStates.QUERYING_PING
-        connection.sendPacket(PingC2SP(ping.pingId))
+        connection.sendPacket(PingC2SP(ThreadLocalRandom.current().nextLong()))
     }
 
     override fun log(reducedLog: Boolean) {
