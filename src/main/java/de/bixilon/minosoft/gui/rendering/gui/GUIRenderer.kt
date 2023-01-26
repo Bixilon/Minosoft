@@ -15,9 +15,11 @@ package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -79,6 +81,7 @@ class GUIRenderer(
         shader.load()
 
         connection.events.listen<ResizeWindowEvent> { recalculateMatrices(it.size) }
+        context.window::systemScale.observe(this) { recalculateMatrices(systemScale = it) }
         profile::scale.observeRendering(this) { recalculateMatrices(scale = it) }
 
         gui.postInit()
@@ -87,8 +90,8 @@ class GUIRenderer(
         dragged.postInit()
     }
 
-    private fun recalculateMatrices(windowSize: Vec2i = context.window.size, scale: Float = profile.scale) {
-        scaledSize = windowSize.scale(scale)
+    private fun recalculateMatrices(windowSize: Vec2i = context.window.size, scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
+        scaledSize = windowSize.scale(systemScale, scale)
         matrix = GLM.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
         matrixChange = true
 
@@ -145,16 +148,17 @@ class GUIRenderer(
         }
     }
 
-    fun Vec2i.scale(scale: Float = profile.scale): Vec2i {
+    fun Vec2i.scale(systemScale: Vec2 = context.window.systemScale, scale: Float = profile.scale): Vec2i {
         val output = Vec2i(this)
+        val totalScale = systemScale * scale
         // ToDo: This is just a dirty workaround and does not fix the problem at all
-        while (output.x % scale.toInt() != 0) {
+        while (output.x % totalScale.x.toInt() != 0) {
             output.x++
         }
-        while (output.y % scale.toInt() != 0) {
+        while (output.y % totalScale.y.toInt() != 0) {
             output.y++
         }
-        return output / scale
+        return output / totalScale
     }
 
     fun isKeyDown(vararg keyCodes: KeyCodes): Boolean {

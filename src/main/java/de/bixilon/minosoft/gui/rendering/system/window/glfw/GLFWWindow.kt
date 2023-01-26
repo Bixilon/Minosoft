@@ -80,29 +80,6 @@ class GLFWWindow(
             field = value
         }
 
-    override val systemScale: Vec2
-        get() {
-            val x = FloatArray(1)
-            val y = FloatArray(1)
-            glfwGetWindowContentScale(window, x, y)
-            return Vec2(x[0], y[0])
-        }
-
-    private fun scalePosition(position: Vec2i): Vec2i {
-        if (!PlatformInfo.OS.needsWindowScaling) return position
-        return position / systemScale
-    }
-
-    private fun unscalePosition(position: Vec2i): Vec2i {
-        if (!PlatformInfo.OS.needsWindowScaling) return position
-        return position * systemScale
-    }
-
-    private fun unscalePosition(position: Vec2d): Vec2d {
-        if (!PlatformInfo.OS.needsWindowScaling) return position
-        return position * systemScale
-    }
-
     private var _size = Vec2i(DEFAULT_WINDOW_SIZE)
 
     override var size: Vec2i
@@ -249,6 +226,9 @@ class GLFWWindow(
         glfwSetWindowFocusCallback(window, this::onFocusChange)
         glfwSetWindowIconifyCallback(window, this::onIconify)
         glfwSetScrollCallback(window, this::onScroll)
+        glfwSetWindowContentScaleCallback(window, this::onWindowScale)
+
+        pollWindowScale()
 
         when (PlatformInfo.OS) {
             OSTypes.MAC -> {
@@ -298,6 +278,40 @@ class GLFWWindow(
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true.glfw)
         }
         glfwWindowHint(GLFW_OPENGL_PROFILE, if (coreProfile) GLFW_OPENGL_CORE_PROFILE else GLFW_OPENGL_ANY_PROFILE)
+    }
+
+
+    override var systemScale by observed(Vec2(1.0f))
+
+    private fun scalePosition(position: Vec2i): Vec2i {
+        if (!PlatformInfo.OS.needsWindowScaling) return position
+        return position / systemScale
+    }
+
+    private fun unscalePosition(position: Vec2i): Vec2i {
+        if (!PlatformInfo.OS.needsWindowScaling) return position
+        return position * systemScale
+    }
+
+    private fun unscalePosition(position: Vec2d): Vec2d {
+        if (!PlatformInfo.OS.needsWindowScaling) return position
+        return position * systemScale
+    }
+
+
+    private fun pollWindowScale() {
+        val x = FloatArray(1)
+        val y = FloatArray(1)
+        glfwGetWindowContentScale(window, x, y)
+        onWindowScale(window, x[0], y[0])
+    }
+
+    private fun onWindowScale(window: Long, x: Float, y: Float) {
+        if (window != this.window) {
+            return
+        }
+        val scale = Vec2(x, y)
+        this.systemScale = scale
     }
 
     override var focused by observed(false)
