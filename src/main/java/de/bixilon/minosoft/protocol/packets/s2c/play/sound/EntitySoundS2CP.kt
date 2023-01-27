@@ -38,8 +38,8 @@ class EntitySoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             return readRegistryItem(connection.registries.soundEvent)
         }
         val id = readVarInt()
-        if (id == 0) {
-            return connection.registries.soundEvent[id]
+        if (id != 0) {
+            return connection.registries.soundEvent[id - 1]
         }
         val name = readResourceLocation()
         attenuationDistance = readOptional { readFloat() }
