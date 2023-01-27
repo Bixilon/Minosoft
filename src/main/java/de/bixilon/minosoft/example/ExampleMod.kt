@@ -13,22 +13,41 @@
 
 package de.bixilon.minosoft.example
 
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionCreateEvent
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.mod.ModMain
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
 object ExampleMod : ModMain() {
 
     override fun init() {
-        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "This mod can not do anything!" }
+        logger.info { "This mod can not do anything!" }
         val message = assets["example:message.txt".toResourceLocation()].readAsString()
-        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Stored message is: $message" }
+        logger.info { "Stored message is: $message" }
     }
 
     override fun postInit() {
-        Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "This mod can not do much yet!" }
+        logger.warn { "This mod can not do much yet!" }
+        GlobalEventMaster.listen<PlayConnectionCreateEvent> { it.connection.startListening() }
+    }
+
+    private fun PlayConnection.startListening() {
+        if (this.address.hostname != "localhost" && this.address.hostname != "127.0.0.1") {
+            return
+        }
+        events.listen<ChatMessageEvent> {
+            if ("hide me" !in it.message.text.message.lowercase()) {
+                return@listen
+            }
+            it.cancelled = true
+            logger.info { "A chat message was hidden!" }
+        }
+
+        this.world::weather.observe(this) { logger.info { "The weather just changed!" } }
     }
 }
