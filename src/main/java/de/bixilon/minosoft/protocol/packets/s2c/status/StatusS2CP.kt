@@ -33,7 +33,6 @@ class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     val status: ServerStatus = ServerStatus(buffer.readJson())
 
     override fun handle(connection: StatusConnection) {
-        connection.status = status
         val version: Version? = Versions.getByProtocol(status.protocolId ?: -1)
         if (version == null) {
             Log.log(LogMessageType.NETWORK_STATUS, LogLevels.WARN) { "Server is running on unknown version (protocolId=${status.protocolId})" }
@@ -41,6 +40,7 @@ class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
             connection.serverVersion = version
         }
 
+        connection.status = status
         val ping = StatusPing()
         connection.ping = ping
         connection.state = StatusConnectionStates.QUERYING_PING
