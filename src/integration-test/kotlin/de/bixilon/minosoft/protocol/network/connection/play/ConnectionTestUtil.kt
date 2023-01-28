@@ -19,6 +19,7 @@ import de.bixilon.minosoft.assets.TestAssetsManager
 import de.bixilon.minosoft.config.profile.ProfileTestUtil.createProfiles
 import de.bixilon.minosoft.data.accounts.types.test.TestAccount
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.WorldTestUtil.createWorld
 import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
@@ -41,7 +42,7 @@ object ConnectionTestUtil {
         connection::registries.forceSet(Registries())
         connection.registries.parent = IT.REGISTRIES
         connection::world.forceSet(createWorld(connection))
-        connection::player.forceSet(LocalPlayerEntity(connection.account, connection, null))
+        connection::player.forceSet(LocalPlayerEntity(connection.account, connection, SignatureKeyManagement(connection, TestAccount)))
         connection::network.forceSet(TestNetwork())
         connection::events.forceSet(EventMaster())
         connection::profiles.forceSet(createProfiles())
