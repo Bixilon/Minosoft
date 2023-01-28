@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
+import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.language.translate.Translator
@@ -69,7 +69,6 @@ import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.util.*
 
 
 class PlayConnection(
@@ -172,6 +171,7 @@ class PlayConnection(
         GlobalEventMaster.fire(PlayConnectionCreateEvent(this))
     }
 
+
     fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
         val count = latch.count
         check(!wasConnected) { "Connection was already connected!" }
@@ -194,19 +194,12 @@ class PlayConnection(
                 assetsManager.load(latch)
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
             }
-            var privateKey: PlayerPrivateKey? = null
+
+            val keyManagement = SignatureKeyManagement(this, account)
             if (version.requiresSignedChat && !profiles.connection.signature.disableKeys) {
-                taskWorker += WorkerTask(optional = true) {
-                    val minecraftKey = account.fetchKey(latch) ?: return@WorkerTask
-                    minecraftKey.requireSignature(account.uuid)
-                    privateKey = PlayerPrivateKey(
-                        expiresAt = minecraftKey.expiresAt,
-                        signature = minecraftKey.getSignature(version.versionId),
-                        private = minecraftKey.pair.private,
-                        public = minecraftKey.pair.public,
-                    )
-                }
+                taskWorker += WorkerTask(optional = true) { keyManagement.init(latch) }
             }
+
             taskWorker.work(latch)
             error?.let { throw it }
 
@@ -214,7 +207,7 @@ class PlayConnection(
 
             language = LanguageUtil.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
 
-            player = LocalPlayerEntity(account, this, privateKey)
+            player = LocalPlayerEntity(account, this, keyManagement)
             settingsManager.initSkins()
 
             if (!RunConfiguration.DISABLE_RENDERING) {

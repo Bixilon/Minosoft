@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,13 +30,28 @@ data class MinecraftPrivateKey(
     @JsonProperty("expiresAt") val expiresAt: Instant,
     @JsonProperty("refreshedAfter") val refreshedAfter: Instant,
 ) {
-    @get:JsonIgnore val signatureBytes: ByteArray? by lazy { signature?.fromBase64() }
-    @get:JsonIgnore val signatureBytesV2: ByteArray by lazy { signatureV2!!.fromBase64() }
+    @get:JsonIgnore
+    val signatureBytes: ByteArray? by lazy { signature?.fromBase64() }
+
+    @get:JsonIgnore
+    val signatureBytesV2: ByteArray by lazy { signatureV2!!.fromBase64() }
+
+    init {
+        if (refreshedAfter > expiresAt) {
+            throw IllegalArgumentException("Key is expired before refreshing!")
+        }
+    }
 
     @JsonIgnore
     fun isExpired(): Boolean {
         val now = Instant.now()
-        return now.isAfter(expiresAt) || now.isAfter(refreshedAfter)
+        return now.isAfter(expiresAt)
+    }
+
+    @JsonIgnore
+    fun shouldRefresh(): Boolean {
+        val now = Instant.now()
+        return now.isAfter(refreshedAfter) || now.isAfter(expiresAt)
     }
 
     @JsonIgnore

@@ -27,7 +27,6 @@ import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.channel.vanila.BrandHandler.sendBrand
-import de.bixilon.minosoft.protocol.packets.c2s.play.SessionDataC2SP
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -169,10 +168,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.settingsManager.sendClientSettings()
         connection.sendBrand()
 
-        val publicKey = connection.player.privateKey?.playerKey
-        if (publicKey != null && connection.network.encrypted && connection.version.versionId >= ProtocolVersions.V_22W43A) {
-            connection.sendPacket(SessionDataC2SP(connection.sessionId, publicKey))
-        }
+         connection.player.keyManagement.sendSession()
 
         connection.state = PlayConnectionStates.SPAWNING
     }

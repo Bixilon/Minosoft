@@ -32,7 +32,7 @@ class StartC2SP(
     val profileUUID: UUID? = null,
 ) : PlayC2SPacket {
 
-    constructor(player: LocalPlayerEntity, sessionId: UUID) : this(player.name, sessionId, player.privateKey?.playerKey, player.uuid)
+    constructor(player: LocalPlayerEntity, sessionId: UUID) : this(player.name, sessionId, player.keyManagement.key?.playerKey, player.uuid)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeString(username)

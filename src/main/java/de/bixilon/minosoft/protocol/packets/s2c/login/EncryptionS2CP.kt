@@ -47,7 +47,7 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val decryptCipher = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey)
 
         val encryptedSecretKey = CryptManager.encryptData(publicKey, secretKey.encoded)
-        val privateKey = connection.player.privateKey
+        val privateKey = connection.player.keyManagement.key
         if (connection.version.requiresSignedLogin && privateKey != null) {
             val salt = SecureRandom().nextLong()
 

@@ -21,11 +21,10 @@ import de.bixilon.minosoft.data.chat.ChatUtil
 import de.bixilon.minosoft.data.chat.message.internal.DebugChatMessage
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
-import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties.MINIMUM_KEY_TTL
-import de.bixilon.minosoft.data.chat.signature.errors.KeyExpiredError
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
 import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
 import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
+import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
@@ -70,21 +69,23 @@ class ConnectionUtil(
             return
         }
         Log.log(LogMessageType.CHAT_OUT) { trimmed }
-        val privateKey = connection.player.privateKey
         if (!connection.version.requiresSignedChat) {
             return connection.sendPacket(ChatMessageC2SP(trimmed))
         }
-        if (privateKey == null) {
-            return connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.EPOCH, salt = 0, signature = null, false, Acknowledgement.EMPTY))
+
+        val keyManagement = connection.player.keyManagement
+        keyManagement.acquire()
+        try {
+            val key = keyManagement.key ?: return connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.EPOCH, salt = 0, signature = null, false, Acknowledgement.EMPTY))
+            sendSignedMessage(key, trimmed)
+        } finally {
+            keyManagement.release()
         }
-        sendSignedMessage(privateKey, trimmed)
     }
 
-    fun sendSignedMessage(privateKey: PlayerPrivateKey = connection.player.privateKey!!, message: String) {
+    private fun sendSignedMessage(privateKey: PlayerPrivateKey, message: String) {
         val time = Instant.now()
-        if (time.isAfter(privateKey.expiresAt.minusMillis(MINIMUM_KEY_TTL.toLong()))) {
-            throw KeyExpiredError(privateKey)
-        }
+        SignatureKeyManagement.verify(privateKey, time)
         val salt = random.nextLong()
         val uuid = connection.player.uuid
 
@@ -109,18 +110,25 @@ class ConnectionUtil(
             connection.sendPacket(CommandC2SP(trimmed, Instant.EPOCH, 0L, emptyMap(), false, Acknowledgement.EMPTY)) // TODO: remove
             throw IllegalArgumentException("Empty command stack! Did the command fail to parse?")
         }
-        val salt = SecureRandom().nextLong()
         val time = Instant.now()
+        val salt = SecureRandom().nextLong()
         val acknowledgement = Acknowledgement.EMPTY
 
         var signature: Map<String, ByteArray> = emptyMap()
 
-        val key = connection.player.privateKey
-        if (key != null && connection.network.encrypted && connection.profiles.connection.signature.signCommands) {
-            signature = stack.sign(signer, key.private, salt, time)
-        }
+        val keyManagement = connection.player.keyManagement
+        keyManagement.acquire()
+        try {
+            val privateKey = keyManagement.key
+            privateKey?.let { SignatureKeyManagement.verify(privateKey, time) }
+            if (privateKey != null && connection.network.encrypted && connection.profiles.connection.signature.signCommands) {
+                signature = stack.sign(signer, privateKey.private, salt, time)
+            }
 
-        connection.sendPacket(CommandC2SP(trimmed, time, salt, signature, false, acknowledgement))
+            connection.sendPacket(CommandC2SP(trimmed, time, salt, signature, false, acknowledgement))
+        } finally {
+            keyManagement.release()
+        }
     }
 
     fun prepareSpawn() {

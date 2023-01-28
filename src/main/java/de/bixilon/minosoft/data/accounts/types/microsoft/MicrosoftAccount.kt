@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.data.accounts.types.microsoft
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
@@ -44,6 +47,9 @@ class MicrosoftAccount(
 ) : Account(username) {
     override val id: String = uuid.toString()
     override val type: ResourceLocation = identifier
+
+    @JsonIgnore
+    private val keyLock = SimpleLock()
 
     @Synchronized
     override fun join(serverId: String) {
@@ -143,14 +149,19 @@ class MicrosoftAccount(
 
     override fun fetchKey(latch: CountUpAndDownLatch?): MinecraftPrivateKey {
         var key = key
-        if (key == null || key.isExpired() || key.signatureV2 == null) {
-            key = AccountUtil.fetchPrivateKey(minecraft)
-            this.key = key
-            save()
-            Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Fetched private key for $this. Expires at ${key.expiresAt}" }
+        if (key == null || key.shouldRefresh() || key.signatureV2 == null) {
+            keyLock.lock()
+            try {
+                key = AccountUtil.fetchPrivateKey(minecraft)
+                this.key = key
+                save()
+                Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Fetched private key for $this. Expires at ${key.expiresAt}" }
+            } finally {
+                keyLock.unlock()
+            }
         }
 
-        return key
+        return key ?: Broken()
     }
 
     override fun toString(): String {
