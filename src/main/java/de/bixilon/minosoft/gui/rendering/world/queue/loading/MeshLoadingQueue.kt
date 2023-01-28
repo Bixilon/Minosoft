@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -110,6 +110,14 @@ class MeshLoadingQueue(
         if (lock) unlock()
     }
 
+    fun abort(position: QueuePosition, lock: Boolean = true) {
+        if (lock) lock()
+        if (this.positions.remove(position)) {
+            this.meshes.removeAll { it.chunkPosition == position.position && it.sectionHeight == position.sectionHeight }
+        }
+        if (lock) unlock()
+    }
+
 
     fun cleanup(lock: Boolean) {
         val remove: MutableSet<QueuePosition> = mutableSetOf()
@@ -123,7 +131,7 @@ class MeshLoadingQueue(
             return@removeAll true
         }
 
-        this.meshes.removeAll { QueuePosition(it) in remove }
+        this.meshes.removeAll { QueuePosition(it) in remove; }
         if (lock) unlock()
     }
 

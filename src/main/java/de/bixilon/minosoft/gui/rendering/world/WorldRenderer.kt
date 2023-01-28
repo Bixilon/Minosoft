@@ -197,7 +197,7 @@ class WorldRenderer(
         loaded.unload(position.position, position.sectionHeight, false)
         culledQueue.remove(position.position, position.sectionHeight, false)
         meshingQueue.remove(position, false)
-        loadingQueue.abort(position.position, false)
+        loadingQueue.abort(position, false)
         meshingQueue.tasks.interrupt(position.position, position.sectionHeight)
 
         lock.unlock()

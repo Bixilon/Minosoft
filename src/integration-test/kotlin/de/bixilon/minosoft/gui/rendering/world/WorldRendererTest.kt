@@ -32,7 +32,7 @@ class WorldRendererTest {
     }
 
     private fun WorldRenderer.awaitQueue(count: Int) {
-        for (i in 0 until 2000) {
+        for (i in 0 until 200) {
             Thread.sleep(16)
             frame()
             if (loaded.size == count) {
@@ -73,6 +73,7 @@ class WorldRendererTest {
         Assert.assertEquals(renderer.loaded.size, 1)
     }
 
+    @Test(invocationCount = 10)
     fun queueMultipleChunks() {
         val chunks = setOf(
             RenderTestUtil.context.connection.world[Vec2i(0, 0)]!!,
@@ -82,6 +83,7 @@ class WorldRendererTest {
         )
         for (chunk in chunks) {
             chunk[Vec3i(0, 0, 0)] = StoneTestO.state
+            chunk[Vec3i(0, 16, 0)] = StoneTestO.state
         }
         val renderer = create()
         for (chunk in chunks) {
