@@ -150,7 +150,7 @@ class Registries : Parentable<Registries> {
         item.flattened = isFlattened
 
         var error: Throwable? = null
-        val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it }, criticalErrorHandler = { _, it -> if (error == null) error = it })
+        val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it })
         val stopwatch = Stopwatch()
         // enums
         worker += WorkerTask(this::shape) { this.shape.load(pixlyzerData["shapes"]?.toJsonObject()) }

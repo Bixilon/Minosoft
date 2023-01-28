@@ -181,7 +181,7 @@ class PlayConnection(
 
             state = PlayConnectionStates.LOADING_ASSETS
             var error: Throwable? = null
-            val taskWorker = TaskWorker(errorHandler = { _, exception -> if (error == null) error = exception }, criticalErrorHandler = { _, exception -> if (error == null) error = exception })
+            val taskWorker = TaskWorker(errorHandler = { _, exception -> if (error == null) error = exception })
             taskWorker += {
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 registries.parent = version.load(profiles.resources, latch)

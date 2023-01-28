@@ -86,7 +86,7 @@ object Minosoft {
         }
         MinosoftPropertiesLoader.load()
 
-        val taskWorker = TaskWorker(criticalErrorHandler = { _, exception -> exception.crash() })
+        val taskWorker = TaskWorker(errorHandler = { _, error -> error.crash() })
 
         taskWorker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.HIGH, executor = CLI::startThread)
 
