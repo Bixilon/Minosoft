@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.world.light.debug.LightmapDebugWindow
+import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 
@@ -56,7 +57,7 @@ class RenderLight(val context: RenderContext) {
             defaultPressed = connection.profiles.rendering.light.fullbright,
         ) {
             connection.profiles.rendering.light.fullbright = it
-            connection.util.sendDebugMessage("Fullbright: $it")
+            connection.util.sendDebugMessage("Fullbright: ${it.format()}")
         }
         if (DebugOptions.LIGHTMAP_DEBUG_WINDOW) {
             context::state.observeFX(this) {
