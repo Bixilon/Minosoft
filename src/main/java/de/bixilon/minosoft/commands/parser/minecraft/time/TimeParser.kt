@@ -19,11 +19,12 @@ import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParser.Companio
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W03A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-object TimeParser : ArgumentParser<Int>, ArgumentParserFactory<TimeParser> {
-    override val identifier: ResourceLocation = "minecraft:time".toResourceLocation()
+// TODO: respect minimum
+class TimeParser(val minimum: Int = 0) : ArgumentParser<Int> {
     override val examples: List<Any> = listOf(2400, "3d", "10s")
 
     override fun parse(reader: CommandReader): Int {
@@ -55,5 +56,15 @@ object TimeParser : ArgumentParser<Int>, ArgumentParserFactory<TimeParser> {
         return emptyList()
     }
 
-    override fun read(buffer: PlayInByteBuffer) = this
+
+    companion object : ArgumentParserFactory<TimeParser> {
+        override val identifier: ResourceLocation = "minecraft:time".toResourceLocation()
+
+        override fun read(buffer: PlayInByteBuffer): TimeParser {
+            if (buffer.versionId < V_23W03A) {
+                return TimeParser()
+            }
+            return TimeParser(buffer.readInt())
+        }
+    }
 }

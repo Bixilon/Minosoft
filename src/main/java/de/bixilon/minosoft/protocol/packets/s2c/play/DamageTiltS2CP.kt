@@ -11,14 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_13W41B
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_3
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W04A
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-object VersionSupport {
-    const val MINIMUM_VERSION = V_13W41B
-    const val LATEST_VERSION = V_23W04A
-    const val LATEST_RELEASE = V_1_19_3
+@LoadPacket
+class DamageTiltS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val entityId: Int = buffer.readVarInt()
+    val yaw = buffer.readFloat()
+
+    override fun log(reducedLog: Boolean) {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Damage tilt (entityId=$entityId, yaw=$yaw)" }
+    }
 }
