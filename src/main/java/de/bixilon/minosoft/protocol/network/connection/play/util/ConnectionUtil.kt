@@ -21,8 +21,11 @@ import de.bixilon.minosoft.data.chat.ChatUtil
 import de.bixilon.minosoft.data.chat.message.internal.DebugChatMessage
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
+import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties.MINIMUM_KEY_TTL
+import de.bixilon.minosoft.data.chat.signature.errors.KeyExpiredError
 import de.bixilon.minosoft.data.chat.signature.signer.MessageSigner
 import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
+import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
@@ -37,7 +40,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.chat.CommandC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.SignedChatMessageC2SP
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.security.PrivateKey
 import java.security.SecureRandom
 import java.time.Instant
 
@@ -68,7 +70,7 @@ class ConnectionUtil(
             return
         }
         Log.log(LogMessageType.CHAT_OUT) { trimmed }
-        val privateKey = connection.player.privateKey?.private
+        val privateKey = connection.player.privateKey
         if (!connection.version.requiresSignedChat) {
             return connection.sendPacket(ChatMessageC2SP(trimmed))
         }
@@ -78,15 +80,18 @@ class ConnectionUtil(
         sendSignedMessage(privateKey, trimmed)
     }
 
-    fun sendSignedMessage(privateKey: PrivateKey = connection.player.privateKey!!.private, message: String) {
-        val salt = random.nextLong()
+    fun sendSignedMessage(privateKey: PlayerPrivateKey = connection.player.privateKey!!, message: String) {
         val time = Instant.now()
+        if (time.isAfter(privateKey.expiresAt.minusMillis(MINIMUM_KEY_TTL.toLong()))) {
+            throw KeyExpiredError(privateKey)
+        }
+        val salt = random.nextLong()
         val uuid = connection.player.uuid
 
         val acknowledgement = Acknowledgement.EMPTY
 
         val signature: ByteArray? = if (connection.network.encrypted) {
-            signer.signMessage(privateKey, message, null, salt, uuid, time, acknowledgement.lastSeen)
+            signer.signMessage(privateKey.private, message, null, salt, uuid, time, acknowledgement.lastSeen)
         } else {
             null
         }

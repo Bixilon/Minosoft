@@ -11,12 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.signature
+package de.bixilon.minosoft.data.chat.signature.errors
 
-object ChatSignatureProperties {
-    const val MESSAGE_TTL = 2 * 60 * 1000 // 2 Minutes
-    const val MESSAGE_TTL_LONG = 5 * 60 * 1000 // 5 Minutes
-    const val SIGNATURE_SIZE = 256
+import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
 
-    const val MINIMUM_KEY_TTL = MESSAGE_TTL_LONG
-}
+class KeyExpiredError(
+    val key: PlayerPrivateKey,
+) : Exception("Your private key is expired or is near its end!")
