@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,36 +26,36 @@ internal class TimeParserTest {
     @Test
     fun testNoUnit() {
         val reader = CommandReader("1235")
-        assertEquals(TimeParser.parse(reader), 1235)
+        assertEquals(TimeParser().parse(reader), 1235)
     }
 
     @Test
     fun testTickUnit() {
         val reader = CommandReader("7382t")
-        assertEquals(TimeParser.parse(reader), 7382)
+        assertEquals(TimeParser().parse(reader), 7382)
     }
 
     @Test
     fun testSecondsUnit() {
         val reader = CommandReader("64s")
-        assertEquals(TimeParser.parse(reader), 64 * ProtocolDefinition.TICKS_PER_SECOND)
+        assertEquals(TimeParser().parse(reader), 64 * ProtocolDefinition.TICKS_PER_SECOND)
     }
 
     @Test
     fun testDaysUnit() {
         val reader = CommandReader("89d")
-        assertEquals(TimeParser.parse(reader), 89 * ProtocolDefinition.TICKS_PER_DAY)
+        assertEquals(TimeParser().parse(reader), 89 * ProtocolDefinition.TICKS_PER_DAY)
     }
 
     @Test
     fun testEmpty() {
         val reader = CommandReader("")
-        assertThrows<FloatParseError> { TimeParser.parse(reader) }
+        assertThrows<FloatParseError> { TimeParser().parse(reader) }
     }
 
     @Test
     fun testInvalidUnit() {
         val reader = CommandReader("48i")
-        assertThrows<InvalidTimeUnitError> { TimeParser.parse(reader) }
+        assertThrows<InvalidTimeUnitError> { TimeParser().parse(reader) }
     }
 }
