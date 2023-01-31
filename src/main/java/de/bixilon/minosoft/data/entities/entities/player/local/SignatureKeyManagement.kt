@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.player.local
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
@@ -66,7 +67,7 @@ class SignatureKeyManagement(
             private = key.pair.private,
             public = key.pair.public,
         )
-        registerRefresh(key.refreshedAfter.toEpochMilli().toInt())
+        registerRefresh(maxOf((key.refreshedAfter.toEpochMilli() - millis()).toInt(), 100))
         sendSession()
     }
 
