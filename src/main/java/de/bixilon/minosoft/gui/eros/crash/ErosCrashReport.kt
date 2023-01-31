@@ -132,6 +132,7 @@ class ErosCrashReport : JavaFXWindowController() {
             }
 
             if (RunConfiguration.DISABLE_EROS) {
+                this?.printStackTrace()
                 ShutdownManager.shutdown(this?.message, AbstractShutdownReason.CRASH)
                 return
             }
