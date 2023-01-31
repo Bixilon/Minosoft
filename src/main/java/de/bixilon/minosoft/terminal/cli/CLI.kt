@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
+import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.commands.Commands
@@ -71,21 +72,30 @@ object CLI {
 
 
         while (true) {
+            var line = ""
             try {
-                val line: String = reader.readLine().trimWhitespaces()
-                if (line.isBlank()) {
-                    continue
-                }
+                line = reader.readLine().trimWhitespaces()
                 terminal.flush()
-                ROOT_NODE.execute(line, connection)
             } catch (exception: EndOfFileException) {
                 Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { exception.printStackTrace() }
                 Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "End of file error in cli thread. Disabling cli." }
                 break
             } catch (exception: UserInterruptException) {
                 ShutdownManager.shutdown(reason = AbstractShutdownReason.DEFAULT)
+                break
             } catch (exception: Throwable) {
                 exception.printStackTrace()
+                continue
+            }
+            try {
+                if (line.isBlank()) {
+                    continue
+                }
+                ROOT_NODE.execute(line, connection)
+            } catch (error: ReaderError) {
+                Log.log(LogMessageType.OTHER, LogLevels.WARN) { error.message }
+            } catch (error: Throwable) {
+                error.printStackTrace()
             }
         }
     }
