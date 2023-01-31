@@ -70,6 +70,7 @@ object Minosoft {
     fun main(args: Array<String>) {
         val start = nanos()
         Log::class.java.forceInit()
+        ShutdownManager.addHook { Log.await() }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
 

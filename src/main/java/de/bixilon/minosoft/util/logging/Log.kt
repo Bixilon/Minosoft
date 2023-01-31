@@ -114,10 +114,7 @@ object Log {
             return false
         }
         val setLevel = levels?.get(type) ?: LogLevels.INFO
-        if (setLevel.ordinal < level.ordinal) {
-            return true
-        }
-        return false
+        return setLevel.ordinal < level.ordinal
     }
 
     fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any?, vararg formatting: Any) {
@@ -190,5 +187,11 @@ object Log {
             callsInPlace(messageBuilder, InvocationKind.AT_MOST_ONCE)
         }
         log(type, additionalPrefix = null, messageBuilder = messageBuilder)
+    }
+
+    fun await() {
+        while (this.QUEUE.isNotEmpty()) {
+            Thread.sleep(1)
+        }
     }
 }

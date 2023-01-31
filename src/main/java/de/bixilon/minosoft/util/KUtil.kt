@@ -46,6 +46,7 @@ import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.url.ResourceURLHandler
@@ -293,7 +294,9 @@ object KUtil {
             }
         }
         ShutdownManager += {
-            Platform.exit()
+            if (!RunConfiguration.DISABLE_EROS) {
+                Platform.exit()
+            }
         }
     }
 
