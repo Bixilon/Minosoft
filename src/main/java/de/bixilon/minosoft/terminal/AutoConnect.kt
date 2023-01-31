@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.terminal
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
@@ -59,6 +60,9 @@ object AutoConnect {
         val version = Versions[split.getOrNull(1) ?: "automatic"] ?: throw IllegalArgumentException("Auto connect: Version not found!")
         val accountProfile = AccountProfileManager.selected
         val account = accountProfile.entries[split.getOrNull(2)] ?: accountProfile.selected ?: throw RuntimeException("Auto connect: Account not found! Have you started normal before or added an account?")
+
+        Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Checking account..." }
+        account.tryCheck(CountUpAndDownLatch(0), accountProfile.clientToken)
 
         if (version == Versions.AUTOMATIC) {
             Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server to get version..." }
