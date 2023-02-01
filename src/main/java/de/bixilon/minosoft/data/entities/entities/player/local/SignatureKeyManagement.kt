@@ -92,6 +92,9 @@ class SignatureKeyManagement(
         if (connection.network.state != ProtocolStates.PLAY || !connection.network.connected) {
             return
         }
+        if (!connection.network.encrypted) {
+            return
+        }
         connection.sendPacket(SessionDataC2SP(connection.sessionId, key))
     }
 
