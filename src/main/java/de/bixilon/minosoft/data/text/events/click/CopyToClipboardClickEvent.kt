@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,6 +34,15 @@ class CopyToClipboardClickEvent(
         }
         val dialog = CopyToClipboardDialog(guiRenderer, text)
         dialog.show()
+    }
+
+    override fun hashCode(): Int {
+        return text.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is CopyToClipboardClickEvent) return false
+        return other.text == text
     }
 
     companion object : ClickEventFactory<CopyToClipboardClickEvent> {

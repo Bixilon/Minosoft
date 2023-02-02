@@ -17,18 +17,11 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.data.language.translate.Translator
-import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.click.ClickEvents
-import de.bixilon.minosoft.data.text.events.click.OpenURLClickEvent
 import de.bixilon.minosoft.data.text.events.hover.HoverEvents
 import de.bixilon.minosoft.data.text.formatting.ChatCode.Companion.toColor
-import de.bixilon.minosoft.data.text.formatting.ChatFormattingCode
-import de.bixilon.minosoft.data.text.formatting.ChatFormattingCodes
-import de.bixilon.minosoft.data.text.formatting.PostChatFormattingCodes
 import de.bixilon.minosoft.data.text.formatting.PreChatFormattingCodes
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
@@ -36,111 +29,18 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 import javafx.collections.ObservableList
 import javafx.scene.Node
-import java.text.CharacterIterator
-import java.text.StringCharacterIterator
 
 class BaseComponent : ChatComponent {
     val parts: MutableList<ChatComponent> = mutableListOf()
+
+    constructor(parts: MutableList<ChatComponent>) {
+        this.parts += parts
+    }
 
     constructor(vararg parts: Any?) {
         for (part in parts) {
             this.parts += part.format()
         }
-    }
-
-    constructor(parent: TextComponent? = null, legacy: String = "", restrictedMode: Boolean = false) {
-        val currentText = StringBuilder()
-        var currentColor = parent?.color
-        var currentFormatting: MutableSet<ChatFormattingCode> = parent?.formatting?.toMutableSet() ?: mutableSetOf()
-
-        val iterator = StringCharacterIterator(legacy)
-
-        var char = iterator.first()
-
-
-        fun push() {
-            if (currentText.isEmpty()) {
-                return
-            }
-            val spaceSplit = currentText.split(' ')
-            var currentMessage = ""
-
-            fun push(clickEvent: ClickEvent?) {
-                if (currentMessage.isEmpty()) {
-                    return
-                }
-                parts += TextComponent(message = currentMessage, color = currentColor, formatting = currentFormatting.toMutableSet(), clickEvent = clickEvent)
-                currentMessage = ""
-            }
-
-            for ((index, split) in spaceSplit.withIndex()) {
-                var clickEvent: ClickEvent? = null
-                if (split.isNotBlank()) {
-                    for (protocol in URLProtocols.VALUES) {
-                        if (!split.startsWith(protocol.prefix)) {
-                            continue
-                        }
-                        if (protocol.restricted && restrictedMode) {
-                            break
-                        }
-                        clickEvent = OpenURLClickEvent(split.toURL())
-                        break
-                    }
-                }
-                if (split.isNotEmpty()) {
-                    if (clickEvent != null) {
-                        // push previous
-                        push(null)
-
-                        currentMessage = split
-                        push(clickEvent)
-                    } else {
-                        currentMessage += split
-                    }
-                }
-
-                if (index != spaceSplit.size - 1) {
-                    currentMessage += " "
-                }
-            }
-            push(null)
-            currentFormatting = mutableSetOf()
-            currentColor = null
-            currentText.clear()
-        }
-
-        while (char != CharacterIterator.DONE) {
-            if (char != ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX) {
-                currentText.append(char)
-                char = iterator.next()
-                continue
-            }
-
-            val formattingChar = iterator.next()
-
-            ChatColors.VALUES.getOrNull(Character.digit(formattingChar, 16))?.let {
-                push()
-                currentColor = it.nullCast<RGBColor>()
-            } ?: ChatFormattingCodes.getChatFormattingCodeByChar(formattingChar)?.let {
-                push()
-
-                if (it == PostChatFormattingCodes.RESET) {
-                    push()
-                } else {
-                    currentFormatting.add(it)
-                }
-            } ?: let {
-                // ignore and ignore next char
-                char = iterator.next()
-            }
-            // check because of above
-            if (char == CharacterIterator.DONE) {
-                break
-            }
-            char = iterator.next()
-        }
-
-        push()
     }
 
     constructor(translator: Translator? = null, parent: TextComponent? = null, json: Map<String, Any>, restrictedMode: Boolean = false) {
@@ -150,7 +50,7 @@ class BaseComponent : ChatComponent {
         fun parseExtra() {
             json["extra"].toJsonList()?.let {
                 for (data in it) {
-                    parts += ChatComponent.of(data, translator, currentParent, restrictedMode)
+                    this += ChatComponent.of(data, translator, currentParent, restrictedMode)
                 }
             }
         }
@@ -186,7 +86,7 @@ class BaseComponent : ChatComponent {
             hoverEvent = hoverEvent,
         )
         if (currentText.isNotEmpty()) {
-            parts += textComponent
+            this += textComponent
         }
         currentParent = textComponent
 
@@ -199,7 +99,7 @@ class BaseComponent : ChatComponent {
                     with.add(part ?: continue)
                 }
             }
-            parts += translator?.translate(it.toResourceLocation(), currentParent, restrictedMode, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent, restrictedMode)
+            this += translator?.translate(it.toResourceLocation(), currentParent, restrictedMode, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent, restrictedMode)
         }
     }
 
@@ -295,8 +195,15 @@ class BaseComponent : ChatComponent {
         return legacyText
     }
 
+    operator fun plusAssign(component: ChatComponent) {
+        if (component.length == 0) {
+            return
+        }
+        parts += component
+    }
+
     operator fun plusAssign(text: Any?) {
-        parts += text.format()
+        this += text.format()
     }
 
     private fun <T> MutableSet<T>.addOrRemove(value: T, addOrRemove: Boolean?) {

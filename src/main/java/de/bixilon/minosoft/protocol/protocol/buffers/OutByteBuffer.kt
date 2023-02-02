@@ -18,6 +18,8 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.nbtType
@@ -36,16 +38,12 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
     }
 
 
-    // TODO kutil 1.19.2
-    /*
     override fun writeString(string: String) {
         check(string.length <= ProtocolDefinition.STRING_MAX_LENGTH) { "String max string length exceeded ${string.length} > ${ProtocolDefinition.STRING_MAX_LENGTH}" }
         val bytes = string.encodeNetwork()
         writeVarInt(bytes.size)
         writeBareByteArray(bytes)
     }
-
-     */
 
     protected fun writeNBTTagType(type: NBTTagTypes) {
         writeByte(type.ordinal)

@@ -48,6 +48,15 @@ class OpenFileClickEvent(
         dialog.show()
     }
 
+    override fun hashCode(): Int {
+        return file.path.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is OpenFileClickEvent) return false
+        return other.file.path == file.path
+    }
+
     companion object : ClickEventFactory<OpenFileClickEvent> {
         override val name: String = "open_file"
 

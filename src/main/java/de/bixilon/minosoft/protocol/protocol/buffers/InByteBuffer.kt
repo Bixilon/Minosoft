@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
+import java.nio.charset.StandardCharsets
 
 
 open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
@@ -44,14 +45,11 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
         return readByte() / 32.0
     }
 
-    // TODO kutil 1.19.2
-    /*
-    override fun readString(length: Int = readVarInt()): String {
+    override fun readString(length: Int): String {
         val string = String(readByteArray(length), StandardCharsets.UTF_8)
         check(string.length <= ProtocolDefinition.STRING_MAX_LENGTH) { "String max string length exceeded ${string.length} > ${ProtocolDefinition.STRING_MAX_LENGTH}" }
         return string
     }
-     */
 
     fun readJson(): Map<String, Any> {
         return Jackson.MAPPER.readValue(readString(), Jackson.JSON_MAP_TYPE)

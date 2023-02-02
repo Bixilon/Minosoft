@@ -133,7 +133,7 @@ interface ChatComponent {
                 }
             }
 
-            return BaseComponent(parent, string, restrictedMode)
+            return LegacyComponentReader.parse(parent, string, restrictedMode)
         }
 
         fun String.chat(): ChatComponent {
