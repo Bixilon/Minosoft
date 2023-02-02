@@ -13,9 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui
 
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
@@ -38,7 +35,7 @@ interface GUIElementDrawer {
                     continue
                 }
                 latch.inc()
-                DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGH) {
+                guiRenderer.context.runAsync {
                     element.tick()
                     if (element is Pollable) {
                         if (element.poll()) {
