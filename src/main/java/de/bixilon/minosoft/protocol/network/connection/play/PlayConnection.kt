@@ -161,7 +161,7 @@ class PlayConnection(
                             ChatTextPositions.HOTBAR -> "[HOTBAR] "
                             else -> ""
                         }
-                        Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message.text }
+                        Log.log(LogMessageType.CHAT_IN, level = if (it.message.type.position == ChatTextPositions.HOTBAR) LogLevels.VERBOSE else LogLevels.INFO, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message.text }
                     })
                 }
             }
