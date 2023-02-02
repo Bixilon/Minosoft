@@ -163,9 +163,7 @@ class StatusConnection(
         try {
             addresses = resolve()
         } catch (exception: Exception) {
-            Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve $realAddress" }
-            error = exception
-            network.disconnect()
+            Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve ${this.address}" }
             return
         }
         ping(addresses.first())

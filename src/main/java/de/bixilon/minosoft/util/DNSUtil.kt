@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.util
 
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.xbill.DNS.Lookup
@@ -28,7 +29,7 @@ object DNSUtil {
         }
 
         val query = "_minecraft._tcp.$hostname"
-        val records = Lookup(query, Type.SRV).run() ?: return listOf(originalAddress)
+        val records = catchAll { Lookup(query, Type.SRV).run() } ?: return listOf(originalAddress)
 
         val addresses: MutableList<ServerAddress> = mutableListOf()
         for (record in records) {
