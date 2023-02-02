@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,7 +41,7 @@ class PlayerAdditional(
     var listed by observed(listed)
 
     val tabDisplayName: ChatComponent
-        get() = displayName?.let { team?.decorateName(it) ?: it } ?: ChatComponent.of(name)
+        get() = displayName ?: ChatComponent.of(name).let { team?.decorateName(it) ?: it }
 
     fun merge(data: AdditionalDataUpdate) {
         spareMerge(data)
@@ -55,11 +55,7 @@ class PlayerAdditional(
         data.ping?.let { ping = it }
 
         data.hasDisplayName?.let {
-            displayName = if (it) {
-                data.displayName!!
-            } else {
-                ChatComponent.of(name)
-            }
+            displayName = if (it) data.displayName!! else null
         }
 
         if (data.removeFromTeam) {
