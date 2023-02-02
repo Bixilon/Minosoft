@@ -117,7 +117,11 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         toRender += entries.toSynchronizedMap().values
 
         lock.lock()
-        toRender.sort()
+        try {
+            toRender.sort()
+        } catch (error: Throwable) {
+            // TODO: this should not happen
+        }
         lock.unlock()
 
         // Minecraft limits it to 80 items. Imho this is removing a feature, but some servers use a custom tab list plugin and then players are duplicated, etc
