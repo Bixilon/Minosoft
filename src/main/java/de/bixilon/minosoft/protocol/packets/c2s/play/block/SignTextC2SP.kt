@@ -40,7 +40,7 @@ class SignTextC2SP(
             buffer.writeBlockPosition(position)
         }
         for (line in lines) {
-            buffer.writeChatComponent(line)
+            buffer.writeString(line.message)
         }
     }
 
