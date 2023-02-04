@@ -26,11 +26,13 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.net.URL
 
 open class PlayerTexture(
-    val url: URL,
+    url: URL,
 ) {
     @JsonIgnore
     var data: ByteArray? = null
         private set
+
+    val url = if (url.protocol == "http") URL("https://" + url.toString().removePrefix("http://")) else url
 
     init {
         url.checkWeb()
