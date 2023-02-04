@@ -224,8 +224,6 @@ class PlayInByteBuffer : InByteBuffer {
                     }
                     textures = PlayerTextures.of(value, signature)
                 }
-
-                else -> Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown player property $name: $value" }
             }
         }
         return PlayerProperties(

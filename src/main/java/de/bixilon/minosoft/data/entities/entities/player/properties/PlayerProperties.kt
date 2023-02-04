@@ -19,9 +19,6 @@ import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.uuid.UUIDUtil.trim
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTextures
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import java.net.URL
 import java.util.*
 
@@ -43,9 +40,8 @@ data class PlayerProperties(
             data["properties"]?.toJsonList()?.let {
                 for (property in it) {
                     check(property is Map<*, *>)
-                    when (val name = property["name"]) {
+                    when (property["name"]) {
                         TEXTURE_PROPERTIES -> textures = PlayerTextures.of(property["value"].toString(), property["signature"]?.toString() ?: throw IllegalArgumentException("Texture data must be signed"))
-                        else -> Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Unknown player property $name: ${property["value"].toString()}" }
                     }
                 }
             }
