@@ -180,18 +180,24 @@ class AudioPlayer(
         return source
     }
 
+    private fun shouldPlay(sound: Sound, position: Vec3?): Boolean {
+        if (position == null) return true
+        val distance = (this.listener.position - position).length2()
+        if (distance >= sound.attenuationDistance * sound.attenuationDistance) {
+            return false
+        }
+
+        return true
+    }
+
     private fun playSound(sound: Sound, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         if (!profile.enabled) {
             return
         }
-        position?.let {
-            val distance = (this.listener.position - it).length()
-            if (distance >= sound.attenuationDistance) {
-                return
-            }
-        }
+        position?.let { if (!shouldPlay(sound, position)) return }
         queue += add@{
             sound.load(connection.assetsManager)
+            position?.let { if (!shouldPlay(sound, position)) return@add }
             val source = getAvailableSource()
             if (source == null) {
                 Log.log(LogMessageType.AUDIO, LogLevels.WARN) { "No source available: $sound" }
