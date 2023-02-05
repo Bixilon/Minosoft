@@ -30,15 +30,20 @@ class ArrayPaletteData(
     }
 
     override fun read(buffer: PlayInByteBuffer) {
-        buffer.readVarInt() // minecraft ignores the length prefix
-        val longs: Int = if (versionId < LONG_BIT_SPLITTING_VERSION) {
-            val bits = size * elementBits
+        val packetSize = buffer.readVarInt()
+        val size: Int = if (versionId < LONG_BIT_SPLITTING_VERSION) {
+            val bits = this.size * elementBits
 
             (bits + (Long.SIZE_BITS - 1)) / Long.SIZE_BITS // divide up
         } else {
-            (size + valuesPerLong - 1) / valuesPerLong
+            (this.size + valuesPerLong - 1) / valuesPerLong
         }
-        data = buffer.readLongArray(longs)
+        this.data = LongArray(this.size)
+        if (packetSize != size) {
+            buffer.pointer += packetSize * Long.SIZE_BYTES // data is ignored
+            return
+        }
+        buffer.readLongArray(this.data, size)
     }
 
     override operator fun get(index: Int): Int {
