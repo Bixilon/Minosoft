@@ -190,7 +190,6 @@ abstract class Container(
     }
 
     fun close(force: Boolean = false) {
-        connection.events.fire(ContainerCloseEvent(connection, this))
         onClose()
 
         val id = id ?: return
@@ -204,6 +203,8 @@ abstract class Container(
             connection.player.openedContainer = null
             connection.sendPacket(CloseContainerC2SP(id))
         }
+
+        connection.events.fire(ContainerCloseEvent(connection, this))
     }
 
     protected open fun onClose() {
