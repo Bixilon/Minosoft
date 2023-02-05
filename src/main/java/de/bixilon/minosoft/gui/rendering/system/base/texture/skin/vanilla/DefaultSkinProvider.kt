@@ -103,7 +103,7 @@ class DefaultSkinProvider(
             return getLegacy(uuid) ?: fallback
         }
         // TODO: verify with vanilla
-        val count = DefaultSkins.SKINS.size
+        val count = (DefaultSkins.SKINS.size * 2)
         val hash = abs(uuid.hashCode()) % count
         val model = if (hash > count / 2) SkinModel.WIDE else SkinModel.SLIM
 
