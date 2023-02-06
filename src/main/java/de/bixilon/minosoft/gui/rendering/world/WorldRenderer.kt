@@ -203,6 +203,9 @@ class WorldRenderer(
         lock.unlock()
     }
 
+    override fun prePrepareDraw() {
+        meshingQueue.work()
+    }
 
     override fun postPrepareDraw() {
         if (clearVisibleNextFrame) {
