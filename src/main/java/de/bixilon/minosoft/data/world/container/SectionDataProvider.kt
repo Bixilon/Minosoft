@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -48,20 +48,23 @@ open class SectionDataProvider<T>(
 
     @Suppress("UNCHECKED_CAST")
     operator fun get(index: Int): T {
-        lock.acquire()
-        val value = data?.get(index) as T
-        lock.release()
-        return value
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun unsafeGet(index: Int): T {
         return data?.get(index) as T
     }
 
+    operator fun get(x: Int, y: Int, z: Int): T {
+        return get(ChunkSection.getIndex(x, y, z))
+    }
+
     @Suppress("UNCHECKED_CAST")
+    @Deprecated("no locking", ReplaceWith("this[index]"))
+    fun unsafeGet(index: Int): T {
+        return this[index]
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Deprecated("no locking", ReplaceWith("this[x, y, z]"))
     fun unsafeGet(x: Int, y: Int, z: Int): T {
-        return data?.get(ChunkSection.getIndex(x, y, z)) as T
+        return this[x, y, z]
     }
 
 
@@ -121,10 +124,6 @@ open class SectionDataProvider<T>(
         if (count == 0) {
             this.data = null
         }
-    }
-
-    operator fun get(x: Int, y: Int, z: Int): T {
-        return get(ChunkSection.getIndex(x, y, z))
     }
 
     operator fun set(x: Int, y: Int, z: Int, value: T): T? {
