@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.util
 
 import afester.javafx.svg.SvgLoader
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.shutdown.ShutdownManager
@@ -36,8 +36,10 @@ class JavaFXInitializer internal constructor() : Application() {
 
         JavaFXUtil.JAVA_FX_THREAD = Thread.currentThread()
         JavaFXUtil.HOST_SERVICES = hostServices
-        LATCH.inc(); DefaultThreadPool += { JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/window_icon.png".toResourceLocation()]);LATCH.dec() }
-        LATCH.inc(); DefaultThreadPool += { catchAll { JavaFXUtil.BIXILON_LOGO = SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()]) }; LATCH.dec() }
+        val worker = UnconditionalWorker()
+        worker += { JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/window_icon.png".toResourceLocation()]) }
+        worker += { catchAll { JavaFXUtil.BIXILON_LOGO = SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()]) } }
+        worker.work(LATCH)
 
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }

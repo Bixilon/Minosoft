@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.reflection.KotlinReflection.kClass
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
@@ -87,13 +87,11 @@ object PacketTypeRegistry {
         val c2sClassMap: SynchronizedMap<Class<out C2SPacket>, C2SPacketType> = synchronizedMapOf()
         val c2sStateMap: SynchronizedMap<ProtocolStates, MutableMap<String, C2SPacketType>> = synchronizedMapOf()
 
-        val innerLatch = CountUpAndDownLatch(1, latch)
+        val worker = UnconditionalWorker()
         for (info in ClassPath.from(classLoader).getTopLevelClassesRecursive(PacketsRoot::class.java.packageName)) {
-            innerLatch.inc()
-            DefaultThreadPool += { loadClass(s2cClassMap, s2cStateMap, c2sClassMap, c2sStateMap, info); innerLatch.dec() }
+            worker += { loadClass(s2cClassMap, s2cStateMap, c2sClassMap, c2sStateMap, info) }
         }
-        innerLatch.dec()
-        innerLatch.await()
+        worker.work(latch)
         this.S2C_CLASS_MAP = s2cClassMap
         this.S2C_STATE_MAP = s2cStateMap
         this.C2S_CLASS_MAP = c2sClassMap
