@@ -95,6 +95,7 @@ class WorldRendererTest {
         // reset
         for (chunk in chunks) {
             chunk[Vec3i(0, 0, 0)] = null
+            chunk[Vec3i(0, 16, 0)] = null
         }
         Assert.assertEquals(count, chunks.size)
     }
