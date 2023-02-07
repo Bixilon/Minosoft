@@ -55,7 +55,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 sound = buffer.readResourceLocation()
                 attenuationDistance = buffer.readOptional { readFloat() }
             } else {
-                sound = buffer.connection.registries.soundEvent[id]
+                sound = buffer.connection.registries.soundEvent[id - 1]
             }
         }
 
