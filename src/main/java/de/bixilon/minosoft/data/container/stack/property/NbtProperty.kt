@@ -31,7 +31,7 @@ class NbtProperty(
 
     override fun updateNbt(nbt: MutableJsonObject): Boolean {
         this.nbt.putAll(nbt)
-        return isDefault()
+        return !isDefault()
     }
 
     override fun equals(other: Any?): Boolean {
