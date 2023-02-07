@@ -45,6 +45,9 @@ class AccountProfile(
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 
+    @Deprecated("Accout warning", level = DeprecationLevel.HIDDEN)
+    val NOTICE by StringDelegate(this, "NEVER EVER SHARE THIS FILE WITH SOMEBODY (NOT IN ISSUES, BUG REPORTS, NOWHERE!). IF YOU DO SO, YOU PUT YOUR ACCOUNTS AT HIGH RISK!!!")
+
     /**
      * The client token.
      * This 128 length long string is generated randomly while the profile was created
@@ -69,9 +72,11 @@ class AccountProfile(
      * The current id of the selected account
      */
     @get:JsonInclude(JsonInclude.Include.NON_NULL)
-    @get:JsonProperty("selected") private var _selected: String? by NullableStringDelegate(this, null)
+    @get:JsonProperty("selected")
+    private var _selected: String? by NullableStringDelegate(this, null)
 
-    @get:JsonIgnore var selected: Account? by BackingDelegate(get = { entries[_selected] }, set = { _selected = it?.id })
+    @get:JsonIgnore
+    var selected: Account? by BackingDelegate(get = { entries[_selected] }, set = { _selected = it?.id })
 
     init {
         this::_selected.observe(this) { this.selected = entries[_selected] }
