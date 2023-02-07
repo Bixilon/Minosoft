@@ -175,16 +175,17 @@ abstract class Container(
     }
 
     fun _clear() {
+        if (slots.isEmpty()) return
         for (stack in slots.values) {
             stack.holder?.container = null
         }
-        if (slots.isNotEmpty()) {
-            edit?.addChange()
-        }
+        slots.clear()
+        edit?.addChange()
     }
 
     fun clear() {
         lock.lock()
+        edit = ContainerEdit()
         _clear()
         commitChange()
     }
