@@ -140,7 +140,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
         }
         connection.events.listen<TitleSubtitleSetEvent> {
             this.subtitle.text = it.subtitle
-            // layout.show() // non vanilla behavior
+            this.show()
         }
         connection.events.listen<TitleTimesSetEvent> {
             this.fadeInTime = it.fadeInTime * ProtocolDefinition.TICK_TIME.toLong()
