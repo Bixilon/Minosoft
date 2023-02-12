@@ -24,16 +24,16 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class PingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val id = buffer.readInt()
+    val payload = buffer.readInt()
 
     override fun handle(connection: PlayConnection) {
-        connection.sendPacket(PongC2SP(id))
+        connection.sendPacket(PongC2SP(payload))
     }
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Ping (id=$id)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Ping (payload=$payload)" }
     }
 }

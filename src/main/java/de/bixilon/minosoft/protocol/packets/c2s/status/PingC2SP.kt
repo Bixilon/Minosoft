@@ -21,13 +21,13 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(state = ProtocolStates.STATUS)
-class PingC2SP(val pingId: Long) : C2SPacket {
+class PingC2SP(val payload: Long) : C2SPacket {
 
     override fun write(buffer: OutByteBuffer) {
-        buffer.writeLong(pingId)
+        buffer.writeLong(payload)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Status ping (pingId=$pingId)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Status ping (payload=$payload)" }
     }
 }

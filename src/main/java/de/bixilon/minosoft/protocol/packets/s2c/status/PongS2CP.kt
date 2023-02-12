@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(state = ProtocolStates.STATUS)
 class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
-    val pingId: Long = buffer.readLong()
+    val payload: Long = buffer.readLong()
 
     override fun handle(connection: StatusConnection) {
         val ping = connection.ping ?: return
@@ -37,6 +37,6 @@ class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Status pong (pingId=$pingId)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Status pong (payload=$payload)" }
     }
 }
