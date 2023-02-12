@@ -13,16 +13,23 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.awt.Taskbar
+import java.awt.Toolkit
 import java.io.File
 import java.net.URL
 import java.nio.file.Path
 
+
 object DesktopUtil {
+    val ICON = minosoft("icons/window_icon").texture()
 
     fun openURL(url: URL) {
         if (RunConfiguration.DISABLE_EROS) {
@@ -55,6 +62,23 @@ object DesktopUtil {
             JavaFXUtil.HOST_SERVICES.showDocument(file.absolutePath)
         } catch (exception: Throwable) {
             exception.printStackTrace()
+        }
+    }
+
+    private fun Taskbar.setDockIcon() {
+        iconImage = Toolkit.getDefaultToolkit().createImage(Minosoft.MINOSOFT_ASSETS_MANAGER[ICON].readAllBytes())
+    }
+
+    private fun Taskbar.initialize() {
+        if (isSupported(Taskbar.Feature.ICON_IMAGE)) {
+            setDockIcon()
+        }
+    }
+
+    fun initialize() {
+        System.setProperty("java.awt.headless", true.toString())
+        if (Taskbar.isTaskbarSupported()) {
+            Taskbar.getTaskbar().initialize()
         }
     }
 }

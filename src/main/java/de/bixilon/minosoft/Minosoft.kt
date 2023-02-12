@@ -53,6 +53,7 @@ import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
+import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -110,6 +111,10 @@ object Minosoft {
             taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(BOOT_LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
 
             Eros::class.java.forceInit()
+        }
+        if (RunConfiguration.DISABLE_EROS && !RunConfiguration.DISABLE_RENDERING) {
+            // eros is disabled, but rendering not, force initialize the desktop, otherwise eros will do so
+            DefaultThreadPool += { DesktopUtil.initialize() }
         }
         taskWorker += WorkerTask(identifier = BootTasks.YGGDRASIL, executor = { YggdrasilUtil.load() })
 
