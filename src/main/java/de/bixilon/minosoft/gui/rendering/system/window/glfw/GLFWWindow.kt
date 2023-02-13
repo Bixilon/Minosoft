@@ -411,8 +411,7 @@ class GLFWWindow(
 
     override fun setIcon(size: Vec2i, buffer: ByteBuffer) {
         if (PlatformInfo.OS == OSTypes.MAC) {
-            Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not set window icon on mac os!" } // ToDo
-            return
+            return // the window icon can just be set with the TaskBar api. See DesktopUtil for more information
         }
         val images = GLFWImage.malloc(1)
         val image = GLFWImage.malloc()

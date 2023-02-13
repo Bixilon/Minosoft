@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
@@ -81,7 +81,7 @@ interface BaseWindow {
 
 
     fun setDefaultIcon(assetsManager: AssetsManager) {
-        val decoder = PNGDecoder(assetsManager["minosoft:textures/icons/window_icon.png".toResourceLocation()])
+        val decoder = PNGDecoder(assetsManager[DesktopUtil.ICON])
         val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
         decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
         data.flip()
