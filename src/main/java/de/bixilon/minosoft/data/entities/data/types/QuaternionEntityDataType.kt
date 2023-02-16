@@ -11,14 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol
+package de.bixilon.minosoft.data.entities.data.types
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_13W41B
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_3
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W06A
+import de.bixilon.kotlinglm.vec4.Vec4
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-object VersionSupport {
-    const val MINIMUM_VERSION = V_13W41B
-    const val LATEST_VERSION = V_23W06A
-    const val LATEST_RELEASE = V_1_19_3
+object QuaternionEntityDataType : EntityDataType<Vec4> {
+
+    override fun read(buffer: PlayInByteBuffer): Vec4 {
+        return buffer.readVec4f()
+    }
 }

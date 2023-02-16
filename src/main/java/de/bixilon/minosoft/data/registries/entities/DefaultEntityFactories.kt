@@ -27,6 +27,9 @@ import de.bixilon.minosoft.data.entities.entities.boss.enderdragon.EnderDragon
 import de.bixilon.minosoft.data.entities.entities.boss.wither.WitherBoss
 import de.bixilon.minosoft.data.entities.entities.decoration.*
 import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStand
+import de.bixilon.minosoft.data.entities.entities.display.BlockDisplayEntity
+import de.bixilon.minosoft.data.entities.entities.display.ItemDisplayEntity
+import de.bixilon.minosoft.data.entities.entities.display.TextDisplayEntity
 import de.bixilon.minosoft.data.entities.entities.item.FallingBlockEntity
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.entities.entities.item.PrimedTNT
@@ -172,6 +175,10 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     FishingBobber,
     GlowSquid,
     EvokerFangs,
+
+    BlockDisplayEntity,
+    ItemDisplayEntity,
+    TextDisplayEntity,
 ) {
 
     fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, versionId: Int): Entity? {

@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -90,6 +91,11 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
     open fun readVec3d(): Vec3d {
         return Vec3d(readDouble(), readDouble(), readDouble())
     }
+
+    fun readVec4f(): Vec4 {
+        return Vec4(readFloat(), readFloat(), readFloat(), readFloat())
+    }
+
 
     fun readByteBlockPosition(): Vec3i {
         return Vec3i(readInt(), readByte(), readInt())

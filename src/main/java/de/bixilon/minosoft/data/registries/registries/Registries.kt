@@ -39,6 +39,7 @@ import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.enchantment.IntegratedEnchantments
 import de.bixilon.minosoft.data.registries.enchantment.PixLyzerEnchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.entities.damage.DamageType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
@@ -114,6 +115,7 @@ class Registries : Parentable<Registries> {
 
     val entityDataIndexMap: MutableMap<EntityDataField, Int> = mutableMapOf()
     val entityType: Registry<EntityType> = register("entity_type", Registry(codec = EntityType))
+    val damageType: Registry<DamageType> = register("damage_type", Registry())
 
     val blockEntityType = BlockEntityTypeRegistry()
     val blockDataType: Registry<BlockDataDataType> = Registry(codec = BlockDataDataType)
