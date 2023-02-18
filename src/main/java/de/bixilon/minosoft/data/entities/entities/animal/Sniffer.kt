@@ -42,7 +42,6 @@ class Sniffer(connection: PlayConnection, entityType: EntityType, data: EntityDa
             override val NAME_MAP: Map<String, States> = EnumUtil.getEnumValues(VALUES)
         }
     }
-
     companion object : EntityFactory<Sniffer> {
         override val identifier: ResourceLocation = minecraft("sniffer")
         private val STATE = EntityDataField("STATE")
