@@ -52,6 +52,8 @@ enum class EntityDataTypes(val type: EntityDataType<*>) {
 
     CAT_VARIANT(VariantsEntityDataType.CatVariantType),
     FROG_VARIANT(VariantsEntityDataType.FrogVariantType),
+
+    SNIFFER_STATE(SnifferStateEntityDataType),
     ;
 
     companion object : ValuesEnum<EntityDataTypes> {

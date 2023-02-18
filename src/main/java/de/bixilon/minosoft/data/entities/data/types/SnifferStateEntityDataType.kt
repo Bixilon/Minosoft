@@ -11,14 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol
+package de.bixilon.minosoft.data.entities.data.types
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_13W41B
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_3
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W07A
+import de.bixilon.minosoft.data.entities.entities.animal.Sniffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-object VersionSupport {
-    const val MINIMUM_VERSION = V_13W41B
-    const val LATEST_VERSION = V_23W07A
-    const val LATEST_RELEASE = V_1_19_3
+object SnifferStateEntityDataType : EntityDataType<Sniffer.States> {
+
+    override fun read(buffer: PlayInByteBuffer): Sniffer.States {
+        return Sniffer.States[buffer.readVarInt()]
+    }
 }

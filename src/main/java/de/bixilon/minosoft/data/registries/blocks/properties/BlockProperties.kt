@@ -132,6 +132,10 @@ enum class BlockProperties {
     BOOK_SLOT_OCCUPIED_3("slot_3_occupied", BooleanBlockPropertiesSerializer),
     BOOK_SLOT_OCCUPIED_4("slot_4_occupied", BooleanBlockPropertiesSerializer),
     BOOK_SLOT_OCCUPIED_5("slot_5_occupied", BooleanBlockPropertiesSerializer),
+
+
+    DUSTED("dusted", IntBlockPropertiesSerializer),
+    FLOWER_AMOUNT("flower_amount", IntBlockPropertiesSerializer),
     ;
 
     val group: String

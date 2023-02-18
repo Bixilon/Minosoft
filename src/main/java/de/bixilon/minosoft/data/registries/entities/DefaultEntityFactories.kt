@@ -179,6 +179,9 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     BlockDisplayEntity,
     ItemDisplayEntity,
     TextDisplayEntity,
+    InteractionEntity,
+
+    Sniffer,
 ) {
 
     fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, versionId: Int): Entity? {
