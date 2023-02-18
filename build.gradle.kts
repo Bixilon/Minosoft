@@ -347,7 +347,7 @@ dependencies {
     implementation("de.bixilon", "kutil", kutilVersion)
     implementation("de.bixilon", "jiibles", "1.1.1")
     implementation("de.bixilon", "kotlin-glm", "0.9.9.1-6")
-    implementation("de.bixilon", "mbf-kotlin", "0.2.1") { exclude("com.github.luben", "zstd-jni") }
+    implementation("de.bixilon", "mbf-kotlin", "1.0") { exclude("com.github.luben", "zstd-jni") }
     implementation("de.bixilon.javafx", "javafx-svg", "0.3") { exclude("org.openjfx", "javafx-controls") }
 
     // netty
