@@ -57,6 +57,7 @@ class BaseComponent : ChatComponent {
 
         json["text"]?.nullCast<String>()?.let {
             if (it.indexOf(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX) != -1) {
+                // TODO: That is wrong, clickEvent, hoverEvent is ignored
                 this += ChatComponent.of(it, translator, parent, restrictedMode)
                 parseExtra()
                 return
@@ -250,5 +251,22 @@ class BaseComponent : ChatComponent {
             pointer -= length
         }
         throw IllegalArgumentException("Pointer ot of bounds!")
+    }
+
+    override fun trim(): ChatComponent? {
+        return when {
+            parts.isEmpty() -> null
+            parts.size == 1 -> parts.first().trim()
+            else -> {
+                val parts: MutableList<ChatComponent> = mutableListOf()
+                for (part in this.parts) {
+                    parts += part.trim() ?: continue
+                }
+                if (parts.isEmpty()) return null
+                if (parts.size == 1) parts.first()
+                if (this.parts.size == parts.size) return this
+                return BaseComponent(parts)
+            }
+        }
     }
 }

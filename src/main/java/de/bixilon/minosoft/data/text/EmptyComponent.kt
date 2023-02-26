@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger and contributors
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,6 +32,7 @@ object EmptyComponent : ChatComponent {
     override val length: Int get() = 0
 
     override fun cut(length: Int) = Unit
+    override fun trim(): ChatComponent? = null
 
     override fun strikethrough() = this
     override fun obfuscate() = this

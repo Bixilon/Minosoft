@@ -79,6 +79,8 @@ interface ChatComponent {
 
     fun cut(length: Int)
 
+    fun trim(): ChatComponent?
+
 
     fun strikethrough(): ChatComponent
     fun obfuscate(): ChatComponent
@@ -103,13 +105,13 @@ interface ChatComponent {
             }
 
             when (raw) {
-                is Map<*, *> -> return BaseComponent(translator, parent, raw.unsafeCast(), restrictedMode)
+                is Map<*, *> -> return BaseComponent(translator, parent, raw.unsafeCast(), restrictedMode).trim() ?: EmptyComponent
                 is List<*> -> {
                     val component = BaseComponent()
                     for (part in raw) {
-                        component += of(part, translator, parent, restrictedMode = restrictedMode)
+                        component += of(part, translator, parent, restrictedMode = restrictedMode).trim() ?: continue
                     }
-                    return component
+                    return component.trim() ?: EmptyComponent
                 }
             }
             val string = raw.toString()
@@ -124,7 +126,7 @@ interface ChatComponent {
                     if (codePoint == '{'.code || codePoint == '['.code) {
                         try {
                             val read: Any = Jackson.MAPPER.readValue(string, Any::class.java)
-                            return of(read, translator, parent, ignoreJson = true, restrictedMode)
+                            return of(read, translator, parent, ignoreJson = true, restrictedMode).trim() ?: EmptyComponent
                         } catch (ignored: JacksonException) {
                             break
                         }
@@ -133,7 +135,7 @@ interface ChatComponent {
                 }
             }
 
-            return LegacyComponentReader.parse(parent, string, restrictedMode)
+            return LegacyComponentReader.parse(parent, string, restrictedMode).trim() ?: EmptyComponent
         }
 
         fun String.chat(): ChatComponent {

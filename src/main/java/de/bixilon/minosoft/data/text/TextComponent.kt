@@ -245,4 +245,9 @@ open class TextComponent(
         }
         return message == other.message && color == other.color && formatting == other.formatting && clickEvent == other.clickEvent && hoverEvent == other.hoverEvent
     }
+
+    override fun trim(): ChatComponent? {
+        if (message.isEmpty()) return null
+        return this
+    }
 }

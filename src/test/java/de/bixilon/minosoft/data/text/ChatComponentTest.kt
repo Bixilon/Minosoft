@@ -17,6 +17,8 @@ import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.chat
 import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.data.text.events.click.OpenURLClickEvent
+import de.bixilon.minosoft.data.text.events.click.SendMessageClickEvent
+import de.bixilon.minosoft.data.text.events.hover.TextHoverEvent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import org.junit.jupiter.api.Test
@@ -227,6 +229,25 @@ internal class ChatComponentTest {
 
 
         assertEquals("                Hypixel Network [1.8-1.19]\n   LUNAR MAPS COSMETICS | SKYBLOCK 0.17.3", component.message)
+        assertEquals(expected, component)
+    }
+
+    @Test
+    fun levelingReward() {
+        val string = """{"text":"§eClick here to view it!","strikethrough":false,"clickEvent":{"action":"run_command","value":"/rewards"},"hoverEvent":{"action":"show_text","value":{"text":"Click to open the §3Hypixel Leveling §emenu","color":"yellow","strikethrough":false}}}"""
+        val component = ChatComponent.of(string)
+
+        val expected = TextComponent("Click here to view it!")
+            .color(ChatColors.YELLOW)
+            .clickEvent(SendMessageClickEvent("/rewards"))
+            .hoverEvent(
+                TextHoverEvent(BaseComponent(
+                    TextComponent("Click to open the ").color(ChatColors.YELLOW),
+                    TextComponent("Hypixel Leveling ").color(ChatColors.DARK_AQUA),
+                    TextComponent("menu").color(ChatColors.YELLOW),
+                )))
+
+
         assertEquals(expected, component)
     }
 }
