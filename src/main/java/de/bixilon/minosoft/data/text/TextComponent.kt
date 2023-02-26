@@ -33,6 +33,7 @@ import javafx.util.Duration
 open class TextComponent(
     message: Any? = "",
     override var color: RGBColor? = null,
+    @Deprecated("bitfield")
     override val formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,

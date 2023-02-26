@@ -114,8 +114,6 @@ object LegacyComponentReader {
                 }
                 continue
             }
-
-            // ignore the next char, it is not valid formatting and should be hidden
         }
 
         parts.push(sequence, restricted)
