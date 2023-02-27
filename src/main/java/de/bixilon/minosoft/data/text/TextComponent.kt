@@ -199,6 +199,8 @@ open class TextComponent(
 
         color?.let { json["color"] = ChatColors.NAME_MAP.getKey(it) ?: it.toString() }
 
+        // TODO: hover, click event
+
         return json
     }
 

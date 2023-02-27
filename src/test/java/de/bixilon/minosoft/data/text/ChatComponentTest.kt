@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.text.events.hover.TextHoverEvent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import org.junit.jupiter.api.Test
+import org.opentest4j.AssertionFailedError
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
@@ -124,59 +125,35 @@ internal class ChatComponentTest {
 
     @Test
     fun testSimpleJsonReading() {
-        val expected = BaseComponent(
-            parts = arrayOf(
-                TextComponent("Test"),
-            )
-        )
+        val expected = TextComponent("Test")
         val actual = """{"text":"Test"}""".chat()
         assertEquals(expected, actual)
     }
 
     @Test
     fun testColorJsonReading() {
-        val expected = BaseComponent(
-            parts = arrayOf(
-                TextComponent("Test").color(ChatColors.YELLOW),
-            )
-        )
+        val expected = TextComponent("Test").color(ChatColors.YELLOW)
         val actual = """{"text":"Test", "color": "yellow"}""".chat()
         assertEquals(expected, actual)
     }
 
     @Test
     fun testHexColor() {
-        val expected = BaseComponent(
-            parts = arrayOf(
-                TextComponent("Test").color("#123456".asColor()),
-            )
-        )
+        val expected = TextComponent("Test").color("#123456".asColor())
         val actual = """{"text":"Test", "color": "#123456"}""".chat()
         assertEquals(expected, actual)
     }
 
     @Test
     fun testJsonArray() {
-        val expected = BaseComponent(
-            parts = arrayOf(
-                BaseComponent(
-                    parts = arrayOf(
-                        TextComponent("Test"),
-                    )
-                )
-            )
-        )
+        val expected = TextComponent("Test")
         val actual = """[{"text":"Test"}]""".chat()
         assertEquals(expected, actual)
     }
 
     @Test
     fun testJsonWithWhitespaces() {
-        val expected = BaseComponent(
-            parts = arrayOf(
-                TextComponent("Test"),
-            )
-        )
+        val expected = TextComponent("Test")
         val actual = """    {"text":"Test"}""".chat()
         assertEquals(expected, actual)
     }
@@ -249,5 +226,38 @@ internal class ChatComponentTest {
 
 
         assertEquals(expected, component)
+    }
+
+    private fun assertEquals(expected: ChatComponent, actual: ChatComponent) {
+        when (expected) {
+            is BaseComponent -> {
+                if (actual !is BaseComponent) throw AssertionFailedError("Type mismatch", "BaseComponent", actual::class.java.name)
+
+                if (expected.parts.size != actual.parts.size) throw AssertionFailedError("Count of parts does not match", expected.parts, actual.parts)
+
+                for (index in expected.parts.indices) {
+                    val first = expected.parts[index]
+                    val second = actual.parts[index]
+
+                    assertEquals(first, second)
+                }
+            }
+
+            is TextComponent -> {
+                if (actual !is TextComponent) throw AssertionFailedError("Type mismatch", "TextComponent", actual::class.java.name)
+                if (expected.message != actual.message) {
+                    throw AssertionFailedError("Message mismatch", expected.message, actual.message)
+                }
+                if (expected.clickEvent != actual.clickEvent) {
+                    throw AssertionFailedError("Click event mismatch: $expected", expected.clickEvent, actual.clickEvent)
+                }
+                if (expected.hoverEvent != actual.hoverEvent) {
+                    throw AssertionFailedError("Click event mismatch: $expected", expected.hoverEvent, actual.hoverEvent)
+                }
+                assertEquals(expected as Any, actual)
+            }
+
+            else -> assertEquals(expected as Any, actual)
+        }
     }
 }
