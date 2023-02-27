@@ -30,7 +30,7 @@ plugins {
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.0.0"
-    id("com.github.ben-manes.versions") version "0.45.0"
+    id("com.github.ben-manes.versions") version "0.46.0"
 }
 
 fun getProperty(name: String): String {
@@ -189,6 +189,8 @@ testing {
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
                 implementation("it.unimi.dsi:fastutil-core:8.5.11")
+
+                implementation("de.bixilon:mbf-kotlin:1.0") { exclude("com.github.luben", "zstd-jni") }
 
                 jacksonCore("core")
                 jacksonCore("databind")
