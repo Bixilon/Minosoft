@@ -32,7 +32,7 @@ private typealias PartList = MutableList<ChatComponent>
 object LegacyComponentReader {
 
 
-    private fun PartList.push(sequence: SequenceBuilder, restricted: Boolean) {
+    private fun PartList.push(sequence: SequenceBuilder, parent: TextComponent?, restricted: Boolean) {
         if (sequence.text.isEmpty()) return
 
         val split = sequence.text.split(' ')
@@ -51,15 +51,15 @@ object LegacyComponentReader {
             }
             if (text.isNotEmpty()) {
                 // an url follows, push the previous part
-                this += TextComponent(text, sequence.color, sequence.formatting.toMutableSet())
+                this += TextComponent(text, sequence.color, sequence.formatting.toMutableSet(), parent?.clickEvent, parent?.hoverEvent)
                 text.clear()
             }
 
-            this += TextComponent(part, sequence.color, sequence.formatting.toMutableSet(), event)
+            this += TextComponent(part, sequence.color, sequence.formatting.toMutableSet(), parent?.clickEvent ?: event, parent?.hoverEvent)
         }
         if (text.isNotEmpty()) {
             // data that was not pushed yet
-            this += TextComponent(text, sequence.color, sequence.formatting.toMutableSet())
+            this += TextComponent(text, sequence.color, sequence.formatting.toMutableSet(), parent?.clickEvent, parent?.hoverEvent)
         }
 
         sequence.reset()  // clear it up again for next usage
@@ -100,13 +100,13 @@ object LegacyComponentReader {
 
             val color = ChatColors.VALUES.getOrNull(Character.digit(formattingChar, 16))
             if (color != null) {
-                parts.push(sequence, restricted) // try push previous, because this is a color change
+                parts.push(sequence, parent, restricted) // try push previous, because this is a color change
                 sequence.color = color
                 continue
             }
             val formatting = ChatFormattingCodes.getChatFormattingCodeByChar(formattingChar)
             if (formatting != null) {
-                parts.push(sequence, restricted) // try push previous, because this is a formatting change
+                parts.push(sequence, parent, restricted) // try push previous, because this is a formatting change
 
                 if (formatting != PostChatFormattingCodes.RESET) {
                     // a reset means resetting, this is done by the previous push
@@ -116,7 +116,7 @@ object LegacyComponentReader {
             }
         }
 
-        parts.push(sequence, restricted)
+        parts.push(sequence, parent, restricted)
 
         return when {
             parts.isEmpty() -> EmptyComponent

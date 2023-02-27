@@ -44,28 +44,6 @@ class BaseComponent : ChatComponent {
     }
 
     constructor(translator: Translator? = null, parent: TextComponent? = null, json: Map<String, Any>, restrictedMode: Boolean = false) {
-        var currentParent: TextComponent? = null
-        var currentText = ""
-
-        fun parseExtra() {
-            json["extra"].toJsonList()?.let {
-                for (data in it) {
-                    this += ChatComponent.of(data, translator, currentParent, restrictedMode)
-                }
-            }
-        }
-
-        json["text"]?.nullCast<String>()?.let {
-            if (it.indexOf(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX) != -1) {
-                // TODO: That is wrong, clickEvent, hoverEvent is ignored
-                this += ChatComponent.of(it, translator, parent, restrictedMode)
-                parseExtra()
-                return
-            }
-            currentText = it
-        }
-
-
         val color = json["color"]?.nullCast<String>()?.toColor() ?: parent?.color
 
         val formatting = parent?.formatting?.toMutableSet() ?: mutableSetOf()
@@ -76,20 +54,37 @@ class BaseComponent : ChatComponent {
         formatting.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, json["strikethrough"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json["obfuscated"]?.toBoolean())
 
-        val clickEvent = json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restrictedMode) }
-        val hoverEvent = json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restrictedMode) }
+        val clickEvent = parent?.clickEvent ?: json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restrictedMode) }
+        val hoverEvent = parent?.hoverEvent ?: json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restrictedMode) }
 
-        val textComponent = TextComponent(
-            message = currentText,
+        val text = json["text"]?.nullCast<String>() ?: ""
+
+        val component = TextComponent(
+            message = text,
             color = color,
             formatting = formatting,
             clickEvent = clickEvent,
             hoverEvent = hoverEvent,
         )
-        if (currentText.isNotEmpty()) {
-            this += textComponent
+
+
+        fun parseExtra() {
+            json["extra"].toJsonList()?.let {
+                for (data in it) {
+                    this += ChatComponent.of(data, translator, component, restrictedMode)
+                }
+            }
         }
-        currentParent = textComponent
+
+        if (text.indexOf(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX) != -1) {
+            this += ChatComponent.of(text, translator, component, restrictedMode)
+            parseExtra()
+            return
+        }
+
+        if (text.isNotEmpty()) {
+            this += component
+        }
 
         parseExtra()
 
@@ -100,7 +95,7 @@ class BaseComponent : ChatComponent {
                     with.add(part ?: continue)
                 }
             }
-            this += translator?.translate(it.toResourceLocation(), currentParent, restrictedMode, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent, restrictedMode)
+            this += translator?.translate(it.toResourceLocation(), component, restrictedMode, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, component, restrictedMode)
         }
     }
 
