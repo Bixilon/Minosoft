@@ -21,10 +21,23 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class ChunkCenterS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val position: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt())
+class ChunkBiomeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val data = buffer.readArray { ChunkBiomeData(buffer.readLongChunkPosition(), buffer.readByteArray()) }
+
+
+    class ChunkBiomeData(
+        val position: Vec2i,
+        val data: ByteArray,
+    )
+
+    private fun PlayInByteBuffer.readLongChunkPosition(): Vec2i {
+        val long = readLong()
+        return Vec2i(long.toInt(), (long shr 32).toInt())
+    }
+
+    // TODO: handle
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk center (position=$position)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk biome (data=$data)" }
     }
 }

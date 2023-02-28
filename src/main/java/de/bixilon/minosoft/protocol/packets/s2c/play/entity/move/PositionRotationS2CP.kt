@@ -46,7 +46,7 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId >= ProtocolVersions.V_15W42A) {
                 teleportId = buffer.readVarInt()
             }
-            if (buffer.versionId >= ProtocolVersions.V_21W05A) {
+            if (buffer.versionId >= ProtocolVersions.V_21W05A && buffer.versionId < ProtocolVersions.V_1_19_4_PRE1) {
                 dismountVehicle = buffer.readBoolean()
             }
         }
