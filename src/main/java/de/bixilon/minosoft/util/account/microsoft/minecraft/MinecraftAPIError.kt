@@ -13,10 +13,14 @@
 
 package de.bixilon.minosoft.util.account.microsoft.minecraft
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
+
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy::class)
 data class MinecraftAPIError(
     val path: String,
-    val errorType: String,
-    val error: String,
-    val errorMessage: String,
-    val developerMessage: String,
+    val errorType: String? = null,
+    val error: String? = null,
+    val errorMessage: String? = null,
+    val developerMessage: String? = null,
 )
