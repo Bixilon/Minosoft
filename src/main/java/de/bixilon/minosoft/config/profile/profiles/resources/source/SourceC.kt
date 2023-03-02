@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 
 class SourceC(profile: ResourcesProfile) {
-    var pixlyzer by StringDelegate(profile, "https://gitlab.com/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false")
+    var pixlyzer by StringDelegate(profile, "https://gitlab.bixilon.de/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false")
     var minecraftResources by StringDelegate(profile, "https://resources.download.minecraft.net/\${hashPrefix}/\${fullHash}")
     var mojangPackages by StringDelegate(profile, "https://launchermeta.mojang.com/v1/packages/\${fullHash}/\${filename}")
     var pistonObjects by StringDelegate(profile, "https://piston-data.mojang.com/v1/objects/\${fullHash}/\${filename}")
