@@ -65,8 +65,8 @@ open class PixLyzerBlock(
 
     init {
         val state = data["states"]?.asAnyMap()!!.iterator().next().value.asJsonObject()
-        material = registries.material[state["material"]]!!
-        hardness = state["hardness"].toFloat()
+        material = registries.material[data["material"] ?: state["material"]]!!
+        hardness = data["hardness"]?.toFloat() ?: state["hardness"].toFloat()
     }
 
     override fun buildState(settings: BlockStateSettings): BlockState {
