@@ -1,4 +1,19 @@
 {
+  "884": {
+    "name": "1.19.4-rc1",
+    "protocol_id": 1073741948,
+    "packets": 880
+  },
+  "883": {
+    "name": "1.19.4-pre4",
+    "protocol_id": 1073741947,
+    "packets": 880
+  },
+  "882": {
+    "name": "1.19.4-pre3",
+    "protocol_id": 1073741946,
+    "packets": 880
+  },
   "881": {
     "name": "1.19.4-pre2",
     "protocol_id": 1073741945,
