@@ -94,7 +94,7 @@ open class TextComponent(
                 stringBuilder.append(it.ansi)
             }
 
-            for (formattingCode in this.formatting.collect()) {
+            for (formattingCode in this.formatting) {
                 stringBuilder.append(formattingCode.ansi)
             }
             stringBuilder.append(this.message)
@@ -104,20 +104,15 @@ open class TextComponent(
 
     override val legacyText: String
         get() {
-            val stringBuilder = StringBuilder()
-            color?.let {
-                val colorChar = ChatColors.VALUES.indexOf(it) // TODO: Optimize
-                if (colorChar != -1) {
-                    stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(Integer.toHexString(colorChar))
-                }
+            val builder = StringBuilder()
+            ChatColors.getChar(color)?.let { builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(it) }
+            for (formattingCode in this.formatting) {
+                builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX)
+                builder.append(formattingCode.char)
             }
-            for (formattingCode in this.formatting.collect()) {
-                stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX)
-                stringBuilder.append(formattingCode.char)
-            }
-            stringBuilder.append(this.message)
-            stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(FormattingCodes.RESET.char) // ToDo: This should not always be appended
-            return stringBuilder.toString()
+            builder.append(this.message)
+            builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(FormattingCodes.RESET.char) // ToDo: This should not always be appended
+            return builder.toString()
         }
 
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
@@ -183,7 +178,7 @@ open class TextComponent(
             "text" to message
         )
 
-        for (formatting in formatting.collect()) {
+        for (formatting in formatting) {
             json[formatting.json] = true
         }
 

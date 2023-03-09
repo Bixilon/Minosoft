@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
 import de.bixilon.kutil.collections.map.bi.MutableBiMap
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
 object ChatColors {
     @JvmField
@@ -70,24 +72,30 @@ object ChatColors {
 
     val VALUES: Array<RGBColor>
     val NAME_MAP: AbstractBiMap<String, RGBColor>
+    val CHAR_MAP = Object2IntOpenHashMap<RGBColor>(16)
 
 
     init {
-        val values: MutableList<RGBColor> = mutableListOf()
+        val values: Array<RGBColor?> = arrayOfNulls(16)
         val nameMap: MutableBiMap<String, RGBColor> = mutableBiMapOf()
 
 
+        var index = 0
         for (field in this::class.java.declaredFields) {
             val color = field.get(null)
             if (color !is RGBColor) {
                 continue
             }
-            values += color
+            values[index] = color
+            CHAR_MAP[color] = index
             nameMap[field.name.lowercase()] = color
+            index++
         }
 
-        VALUES = values.toTypedArray()
+        VALUES = values.cast()
         NAME_MAP = nameMap
+
+        CHAR_MAP.defaultReturnValue(-1)
     }
 
     operator fun get(id: Int): RGBColor {
@@ -103,6 +111,14 @@ object ChatColors {
             "dark_grey" -> DARK_GRAY
             else -> NAME_MAP[name]
         }
+    }
+
+    fun getChar(color: RGBColor?): String? {
+        if (color == null) return null
+        val char = CHAR_MAP.getInt(color)
+        if (char < 0) return null
+
+        return Integer.toHexString(char)
     }
 
     fun String.toColor(): RGBColor? {

@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.text.formatting
 import java.util.*
 
 class TextFormatting(
-    val bits: BitSet = BitSet(),
-) {
+    val bits: BitSet = BitSet(FormattingCodes.VALUES.size),
+) : Iterable<FormattingCodes> {
 
     operator fun minusAssign(code: FormattingCodes) {
         this[code] = false
@@ -61,5 +61,21 @@ class TextFormatting(
     override fun equals(other: Any?): Boolean {
         if (other !is TextFormatting) return false
         return bits == other.bits
+    }
+
+    override fun iterator(): Iterator<FormattingCodes> {
+        return TextFormattingIterator()
+    }
+
+    private inner class TextFormattingIterator : Iterator<FormattingCodes> {
+        private var index = 0
+
+        override fun hasNext(): Boolean {
+            return bits.length() > index
+        }
+
+        override fun next(): FormattingCodes {
+            return FormattingCodes.VALUES[index++]
+        }
     }
 }
