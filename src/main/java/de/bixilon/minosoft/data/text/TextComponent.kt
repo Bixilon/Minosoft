@@ -30,6 +30,7 @@ import javafx.scene.Node
 import javafx.scene.paint.Color
 import javafx.scene.text.Text
 import javafx.util.Duration
+import java.util.concurrent.atomic.AtomicInteger
 
 
 open class TextComponent(
@@ -117,21 +118,23 @@ open class TextComponent(
 
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
         val text = Text(this.message)
-        this.color?.let {
-            if (ErosProfileManager.selected.text.colored) {
-                text.fill = Color.rgb(it.red, it.green, it.blue)
-            }
-        } ?: let {
+        val color = this.color
+        if (color == null) {
             text.styleClass += "text-default-color"
+        } else {
+            if (ErosProfileManager.selected.text.colored) {
+                text.fill = Color.rgb(color.red, color.green, color.blue)
+            }
         }
         if (FormattingCodes.OBFUSCATED in formatting) {
             // ToDo: This is just slow
             val obfuscatedTimeline = if (ErosProfileManager.selected.text.obfuscated) {
+                val index = AtomicInteger()
                 Timeline(
                     KeyFrame(Duration.millis(50.0), {
                         val chars = text.text.toCharArray()
                         for (i in chars.indices) {
-                            chars[i] = ProtocolDefinition.OBFUSCATED_CHARS.random()
+                            chars[i] = ProtocolDefinition.OBFUSCATED_CHARS[index.getAndIncrement() % ProtocolDefinition.OBFUSCATED_CHARS.size]
                         }
                         text.text = String(chars)
                     }),

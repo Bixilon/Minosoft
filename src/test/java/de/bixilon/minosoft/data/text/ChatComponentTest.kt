@@ -28,7 +28,6 @@ import kotlin.test.assertSame
 
 internal class ChatComponentTest {
 
-
     @Test
     fun testEmpty() {
         assertSame(ChatComponent.EMPTY, "".chat())
