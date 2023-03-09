@@ -20,8 +20,9 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.text.events.click.ClickEvents
 import de.bixilon.minosoft.data.text.events.hover.HoverEvents
-import de.bixilon.minosoft.data.text.formatting.ChatCode.Companion.toColor
-import de.bixilon.minosoft.data.text.formatting.PreChatFormattingCodes
+import de.bixilon.minosoft.data.text.formatting.FormattingCodes
+import de.bixilon.minosoft.data.text.formatting.TextFormatting
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors.toColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
@@ -46,13 +47,13 @@ class BaseComponent : ChatComponent {
     constructor(translator: Translator? = null, parent: TextComponent? = null, json: Map<String, Any>, restrictedMode: Boolean = false) {
         val color = json["color"]?.nullCast<String>()?.toColor() ?: parent?.color
 
-        val formatting = parent?.formatting?.toMutableSet() ?: mutableSetOf()
+        val formatting = parent?.formatting?.copy() ?: TextFormatting()
 
-        formatting.addOrRemove(PreChatFormattingCodes.BOLD, json["bold"]?.toBoolean())
-        formatting.addOrRemove(PreChatFormattingCodes.ITALIC, json["italic"]?.toBoolean())
-        formatting.addOrRemove(PreChatFormattingCodes.UNDERLINED, json["underlined"]?.toBoolean())
-        formatting.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, json["strikethrough"]?.toBoolean())
-        formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json["obfuscated"]?.toBoolean())
+        json["bold"]?.toBoolean()?.let { formatting[FormattingCodes.BOLD] = it }
+        json["italic"]?.toBoolean()?.let { formatting[FormattingCodes.ITALIC] = it }
+        json["underlined"]?.toBoolean()?.let { formatting[FormattingCodes.UNDERLINED] = it }
+        json["strikethrough"]?.toBoolean()?.let { formatting[FormattingCodes.STRIKETHROUGH] = it }
+        json["obfuscated"]?.toBoolean()?.let { formatting[FormattingCodes.OBFUSCATED] = it }
 
         val clickEvent = parent?.clickEvent ?: json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restrictedMode) }
         val hoverEvent = parent?.hoverEvent ?: json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restrictedMode) }

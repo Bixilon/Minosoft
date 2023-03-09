@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.formatting.PostChatFormattingCodes
+import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 object ChatComponentColorSerializer : SimpleModule() {
@@ -41,7 +41,7 @@ object ChatComponentColorSerializer : SimpleModule() {
     object Serializer : StdSerializer<ChatComponent>(ChatComponent::class.java) {
 
         override fun serialize(value: ChatComponent?, generator: JsonGenerator, provider: SerializerProvider?) {
-            generator.writeString(value?.legacyText?.removeSuffix(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX.toString() + PostChatFormattingCodes.RESET.char.toString()))
+            generator.writeString(value?.legacyText?.removeSuffix(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX.toString() + FormattingCodes.RESET.char.toString()))
         }
     }
 }

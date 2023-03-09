@@ -18,6 +18,5 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 interface TextStyle {
     var color: RGBColor?
 
-    @Deprecated("bitfield")
-    val formatting: MutableCollection<ChatFormattingCode>
+    val formatting: TextFormatting
 }

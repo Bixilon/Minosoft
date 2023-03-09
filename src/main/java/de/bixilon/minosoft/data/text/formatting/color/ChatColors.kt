@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.text.formatting.color
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
 import de.bixilon.kutil.collections.map.bi.MutableBiMap
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 
 object ChatColors {
     @JvmField
@@ -91,5 +92,23 @@ object ChatColors {
 
     operator fun get(id: Int): RGBColor {
         return VALUES[id]
+    }
+
+    fun getOrNull(id: Int): RGBColor? {
+        return VALUES.getOrNull(id)
+    }
+
+    operator fun get(name: String): RGBColor? {
+        return when (name) {
+            "dark_grey" -> DARK_GRAY
+            else -> NAME_MAP[name]
+        }
+    }
+
+    fun String.toColor(): RGBColor? {
+        if (this.startsWith("#")) {
+            return this.asColor()
+        }
+        return ChatColors[this]
     }
 }

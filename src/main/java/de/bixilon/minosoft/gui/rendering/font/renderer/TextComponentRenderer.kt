@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.renderer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.PreChatFormattingCodes
+import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.Font
@@ -35,10 +35,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         val elementSize = element.size
         val color = text.color ?: ChatColors.WHITE
         val shadow = renderInfo.shadow
-        val italic: Boolean = text.formatting.contains(PreChatFormattingCodes.ITALIC)
-        val bold: Boolean = text.formatting.contains(PreChatFormattingCodes.BOLD)
-        val strikethrough: Boolean = text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)
-        val underlined: Boolean = text.formatting.contains(PreChatFormattingCodes.UNDERLINED)
+        val italic: Boolean = text.formatting.contains(FormattingCodes.ITALIC)
+        val bold: Boolean = text.formatting.contains(FormattingCodes.BOLD)
+        val strikethrough: Boolean = text.formatting.contains(FormattingCodes.STRIKETHROUGH)
+        val underlined: Boolean = text.formatting.contains(FormattingCodes.UNDERLINED)
 
         // ToDo: Only 1 quad for the underline and the strikethrough
 
@@ -190,13 +190,13 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
     override fun calculatePrimitiveCount(text: TextComponent): Int {
         val length = text.message.length
         var count = length
-        if (text.formatting.contains(PreChatFormattingCodes.BOLD)) {
+        if (text.formatting.contains(FormattingCodes.BOLD)) {
             count += length
         }
-        if (text.formatting.contains(PreChatFormattingCodes.UNDERLINED)) {
+        if (text.formatting.contains(FormattingCodes.UNDERLINED)) {
             count += length
         }
-        if (text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)) {
+        if (text.formatting.contains(FormattingCodes.STRIKETHROUGH)) {
             count += length
         }
 
@@ -205,10 +205,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
     override fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: TextComponent, light: Int) {
         val color = text.color ?: ChatColors.BLACK
-        val italic = text.formatting.contains(PreChatFormattingCodes.ITALIC)
-        val bold = text.formatting.contains(PreChatFormattingCodes.BOLD)
-        val strikethrough = text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)
-        val underlined = text.formatting.contains(PreChatFormattingCodes.UNDERLINED)
+        val italic = text.formatting.contains(FormattingCodes.ITALIC)
+        val bold = text.formatting.contains(FormattingCodes.BOLD)
+        val strikethrough = text.formatting.contains(FormattingCodes.STRIKETHROUGH)
+        val underlined = text.formatting.contains(FormattingCodes.UNDERLINED)
 
         for (char in text.message.codePoints()) {
             val data = context.font[char] ?: continue

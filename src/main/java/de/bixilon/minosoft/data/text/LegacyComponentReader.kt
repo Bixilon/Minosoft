@@ -17,9 +17,8 @@ import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.data.text.events.click.OpenURLClickEvent
-import de.bixilon.minosoft.data.text.formatting.ChatFormattingCode
-import de.bixilon.minosoft.data.text.formatting.ChatFormattingCodes
-import de.bixilon.minosoft.data.text.formatting.PostChatFormattingCodes
+import de.bixilon.minosoft.data.text.formatting.FormattingCodes
+import de.bixilon.minosoft.data.text.formatting.TextFormatting
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -51,15 +50,15 @@ object LegacyComponentReader {
             }
             if (text.isNotEmpty()) {
                 // an url follows, push the previous part
-                this += TextComponent(text, sequence.color, sequence.formatting.toMutableSet(), parent?.clickEvent, parent?.hoverEvent)
+                this += TextComponent(text, sequence.color, sequence.formatting.copy(), parent?.clickEvent, parent?.hoverEvent)
                 text.clear()
             }
 
-            this += TextComponent(part, sequence.color, sequence.formatting.toMutableSet(), parent?.clickEvent ?: event, parent?.hoverEvent)
+            this += TextComponent(part, sequence.color, sequence.formatting.copy(), parent?.clickEvent ?: event, parent?.hoverEvent)
         }
         if (text.isNotEmpty()) {
             // data that was not pushed yet
-            this += TextComponent(text, sequence.color, sequence.formatting.toMutableSet(), parent?.clickEvent, parent?.hoverEvent)
+            this += TextComponent(text, sequence.color, sequence.formatting.copy(), parent?.clickEvent, parent?.hoverEvent)
         }
 
         sequence.reset()  // clear it up again for next usage
@@ -82,7 +81,7 @@ object LegacyComponentReader {
     fun parse(parent: TextComponent? = null, legacy: String = "", restricted: Boolean = false): ChatComponent {
         val parts: PartList = mutableListOf()
 
-        val sequence = SequenceBuilder(color = parent?.color, formatting = parent?.formatting?.toMutableSet() ?: mutableSetOf())
+        val sequence = SequenceBuilder(color = parent?.color, formatting = parent?.formatting?.copy() ?: TextFormatting())
 
         val iterator = StringCharacterIterator(legacy)
 
@@ -104,11 +103,11 @@ object LegacyComponentReader {
                 sequence.color = color
                 continue
             }
-            val formatting = ChatFormattingCodes.getChatFormattingCodeByChar(formattingChar)
+            val formatting = FormattingCodes[formattingChar]
             if (formatting != null) {
                 parts.push(sequence, parent, restricted) // try push previous, because this is a formatting change
 
-                if (formatting != PostChatFormattingCodes.RESET) {
+                if (formatting != FormattingCodes.RESET) {
                     // a reset means resetting, this is done by the previous push
                     sequence.formatting += formatting
                 }
@@ -134,7 +133,7 @@ object LegacyComponentReader {
     private data class SequenceBuilder(
         var text: StringBuilder = StringBuilder(),
         var color: RGBColor? = null,
-        var formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
+        var formatting: TextFormatting = TextFormatting(),
     ) {
 
         fun reset() {

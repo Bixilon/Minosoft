@@ -17,7 +17,8 @@ import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.formatting.ChatCode
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -43,7 +44,7 @@ class UpdateTeamS2CP(
         private set
     var nameTagVisibility = NameTagVisibilities.ALWAYS
         private set
-    var formattingCode: ChatCode? = null
+    var color: RGBColor? = null
         private set
 
     init {
@@ -67,9 +68,9 @@ class UpdateTeamS2CP(
                 this.collisionRule = TeamCollisionRules[buffer.readString()]
             }
             if (buffer.versionId < ProtocolVersions.V_18W01A) {
-                this.formattingCode = ChatCode[buffer.readUnsignedByte()]
+                this.color = ChatColors.getOrNull(buffer.readUnsignedByte())
             } else {
-                this.formattingCode = ChatCode[buffer.readVarInt()]
+                this.color = ChatColors.getOrNull(buffer.readVarInt())
             }
         }
 
@@ -102,7 +103,7 @@ class UpdateTeamS2CP(
         team.canSeeInvisibleTeam = canSeeInvisibleTeam
         team.collisionRule = collisionRule
         team.nameTagVisibility = nameTagVisibility
-        team.formattingCode = formattingCode
+        team.color = color
 
         connection.events.fire(TeamUpdateEvent(connection, team))
     }
@@ -111,6 +112,6 @@ class UpdateTeamS2CP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Team update (name=$name, prefix=$prefix, suffix=$suffix, friendlyFire=$friendlyFire, canSeeInvisibleTeam=$canSeeInvisibleTeam, collisionRule=$collisionRule, nameTagVisibility=$nameTagVisibility, formattingCode=$formattingCode)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Team update (name=$name, prefix=$prefix, suffix=$suffix, friendlyFire=$friendlyFire, canSeeInvisibleTeam=$canSeeInvisibleTeam, collisionRule=$collisionRule, nameTagVisibility=$nameTagVisibility, color=$color)" }
     }
 }

@@ -12,19 +12,42 @@
  */
 package de.bixilon.minosoft.data.text.formatting
 
-@Deprecated("bitfield")
-enum class PreChatFormattingCodes(
-    override val char: Char,
-    override val ansi: String,
-) : ChatFormattingCode {
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+
+enum class FormattingCodes(
+    val char: Char,
+    val ansi: String,
+) {
     OBFUSCATED('k', "\u001b[5m"),
     BOLD('l', "\u001b[1m"),
     STRIKETHROUGH('m', "\u001b[9m"),
     UNDERLINED('n', "\u001b[4m"),
     ITALIC('o', "\u001b[3m"),
+    RESET('r', "\u001B[0m"),
     ;
+
+    val json: String = name.lowercase()
 
     override fun toString(): String {
         return ansi
+    }
+
+    companion object : ValuesEnum<FormattingCodes> {
+        override val VALUES: Array<FormattingCodes> = values()
+        override val NAME_MAP: Map<String, FormattingCodes> = EnumUtil.getEnumValues(VALUES)
+        val CHARS = Int2ObjectOpenHashMap<FormattingCodes>()
+
+
+        init {
+            for (code in VALUES) {
+                CHARS[code.char.code] = code
+            }
+        }
+
+        operator fun get(name: Char): FormattingCodes? {
+            return CHARS[name.code]
+        }
     }
 }

@@ -16,7 +16,9 @@ import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.hover.HoverEvent
-import de.bixilon.minosoft.data.text.formatting.*
+import de.bixilon.minosoft.data.text.formatting.FormattingCodes
+import de.bixilon.minosoft.data.text.formatting.TextFormatting
+import de.bixilon.minosoft.data.text.formatting.TextStyle
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -33,31 +35,30 @@ import javafx.util.Duration
 open class TextComponent(
     message: Any? = "",
     override var color: RGBColor? = null,
-    @Deprecated("bitfield")
-    override val formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
+    override val formatting: TextFormatting = TextFormatting(),
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
 ) : ChatComponent, TextStyle {
     override var message: String = message.toString().replace(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX, '&')
 
     override fun obfuscate(): TextComponent {
-        formatting.add(PreChatFormattingCodes.OBFUSCATED); return this
+        formatting += FormattingCodes.OBFUSCATED; return this
     }
 
     override fun bold(): TextComponent {
-        formatting.add(PreChatFormattingCodes.BOLD); return this
+        formatting += FormattingCodes.BOLD; return this
     }
 
     override fun strikethrough(): TextComponent {
-        formatting.add(PreChatFormattingCodes.STRIKETHROUGH); return this
+        formatting += FormattingCodes.STRIKETHROUGH; return this
     }
 
     override fun underline(): TextComponent {
-        formatting.add(PreChatFormattingCodes.UNDERLINED); return this
+        formatting += FormattingCodes.UNDERLINED; return this
     }
 
     override fun italic(): TextComponent {
-        formatting.add(PreChatFormattingCodes.ITALIC); return this
+        formatting += FormattingCodes.ITALIC; return this
     }
 
     fun clickEvent(clickEvent: ClickEvent?): TextComponent {
@@ -93,11 +94,11 @@ open class TextComponent(
                 stringBuilder.append(it.ansi)
             }
 
-            for (formattingCode in this.formatting) {
+            for (formattingCode in this.formatting.collect()) {
                 stringBuilder.append(formattingCode.ansi)
             }
             stringBuilder.append(this.message)
-            stringBuilder.append(PostChatFormattingCodes.RESET)
+            stringBuilder.append(FormattingCodes.RESET.ansi)
             return stringBuilder.toString()
         }
 
@@ -105,17 +106,17 @@ open class TextComponent(
         get() {
             val stringBuilder = StringBuilder()
             color?.let {
-                val colorChar = ChatCode.FORMATTING_CODES_ID.indexOf(it)
+                val colorChar = ChatColors.VALUES.indexOf(it) // TODO: Optimize
                 if (colorChar != -1) {
                     stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(Integer.toHexString(colorChar))
                 }
             }
-            for (formattingCode in this.formatting) {
+            for (formattingCode in this.formatting.collect()) {
                 stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX)
                 stringBuilder.append(formattingCode.char)
             }
             stringBuilder.append(this.message)
-            stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(PostChatFormattingCodes.RESET.char) // ToDo: This should not always be appended
+            stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(FormattingCodes.RESET.char) // ToDo: This should not always be appended
             return stringBuilder.toString()
         }
 
@@ -128,52 +129,44 @@ open class TextComponent(
         } ?: let {
             text.styleClass += "text-default-color"
         }
-        for (chatFormattingCode in formatting) {
-            when (chatFormattingCode) {
-                PreChatFormattingCodes.OBFUSCATED -> {
-                    // ToDo: This is just slow
-                    val obfuscatedTimeline = if (ErosProfileManager.selected.text.obfuscated) {
-                        Timeline(
-                            KeyFrame(Duration.millis(50.0), {
-                                val chars = text.text.toCharArray()
-                                for (i in chars.indices) {
-                                    chars[i] = ProtocolDefinition.OBFUSCATED_CHARS.random()
-                                }
-                                text.text = String(chars)
-                            }),
-                        )
-                    } else {
-                        Timeline(
-                            KeyFrame(Duration.millis(500.0), {
-                                text.isVisible = false
-                            }),
-                            KeyFrame(Duration.millis(1000.0), {
-                                text.isVisible = true
-                            }),
-                        )
-                    }
-
-                    obfuscatedTimeline.cycleCount = Animation.INDEFINITE
-                    obfuscatedTimeline.play()
-                    text.styleClass.add("obfuscated")
-                }
-
-                PreChatFormattingCodes.BOLD -> {
-                    text.style += "-fx-font-weight: bold;"
-                }
-
-                PreChatFormattingCodes.STRIKETHROUGH -> {
-                    text.style += "-fx-strikethrough: true;"
-                }
-
-                PreChatFormattingCodes.UNDERLINED -> {
-                    text.style += "-fx-underline: true;"
-                }
-
-                PreChatFormattingCodes.ITALIC -> {
-                    text.style += "-fx-font-weight: italic;"
-                }
+        if (FormattingCodes.OBFUSCATED in formatting) {
+            // ToDo: This is just slow
+            val obfuscatedTimeline = if (ErosProfileManager.selected.text.obfuscated) {
+                Timeline(
+                    KeyFrame(Duration.millis(50.0), {
+                        val chars = text.text.toCharArray()
+                        for (i in chars.indices) {
+                            chars[i] = ProtocolDefinition.OBFUSCATED_CHARS.random()
+                        }
+                        text.text = String(chars)
+                    }),
+                )
+            } else {
+                Timeline(
+                    KeyFrame(Duration.millis(500.0), {
+                        text.isVisible = false
+                    }),
+                    KeyFrame(Duration.millis(1000.0), {
+                        text.isVisible = true
+                    }),
+                )
             }
+
+            obfuscatedTimeline.cycleCount = Animation.INDEFINITE
+            obfuscatedTimeline.play()
+            text.styleClass.add("obfuscated")
+        }
+        if (FormattingCodes.BOLD in formatting) {
+            text.style += "-fx-font-weight: bold;"
+        }
+        if (FormattingCodes.STRIKETHROUGH in formatting) {
+            text.style += "-fx-strikethrough: true;"
+        }
+        if (FormattingCodes.UNDERLINED in formatting) {
+            text.style += "-fx-underline: true;"
+        }
+        if (FormattingCodes.ITALIC in formatting) {
+            text.style += "-fx-font-style: italic;"
         }
         nodes.add(text)
 
@@ -190,12 +183,9 @@ open class TextComponent(
             "text" to message
         )
 
-        if (PreChatFormattingCodes.OBFUSCATED in formatting) json["obfuscated"] = true
-        if (PreChatFormattingCodes.BOLD in formatting) json["bold"] = true
-        if (PreChatFormattingCodes.STRIKETHROUGH in formatting) json["strikethrough"] = true
-        if (PreChatFormattingCodes.UNDERLINED in formatting) json["underlined"] = true
-        if (PreChatFormattingCodes.ITALIC in formatting) json["italic"] = true
-
+        for (formatting in formatting.collect()) {
+            json[formatting.json] = true
+        }
 
         color?.let { json["color"] = ChatColors.NAME_MAP.getKey(it) ?: it.toString() }
 
@@ -204,7 +194,7 @@ open class TextComponent(
         return json
     }
 
-    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: MutableSet<ChatFormattingCode> = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
+    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: TextFormatting = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
         return TextComponent(
             message = message,
             color = color,

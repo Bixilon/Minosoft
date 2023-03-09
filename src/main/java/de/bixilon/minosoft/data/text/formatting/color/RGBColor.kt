@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,11 +17,10 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.ChatCode
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import org.checkerframework.common.value.qual.IntRange
 
-class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
+class RGBColor(val rgba: Int) : TextFormattable {
     val ansi: String = "\u001b[38;2;$red;$green;${blue}m"
 
     @JvmOverloads

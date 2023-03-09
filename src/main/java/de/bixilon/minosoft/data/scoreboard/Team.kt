@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.scoreboard
 
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.formatting.ChatCode
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 data class Team(
@@ -26,7 +25,7 @@ data class Team(
     var canSeeInvisibleTeam: Boolean,
     var collisionRule: TeamCollisionRules,
     var nameTagVisibility: NameTagVisibilities,
-    var formattingCode: ChatCode?,
+    var color: RGBColor?,
     val members: MutableSet<String>,
 ) {
     override fun toString(): String {
@@ -37,11 +36,7 @@ data class Team(
         val displayName = BaseComponent()
         prefix.let { displayName += it }
         displayName += name.apply {
-            // ToDo: Set correct formatting code
-            val color = formattingCode
-            if (color is RGBColor) {
-                this.setFallbackColor(color)
-            }
+            color?.let { setFallbackColor(it) }
         }
         suffix.let { displayName += it }
         return displayName
