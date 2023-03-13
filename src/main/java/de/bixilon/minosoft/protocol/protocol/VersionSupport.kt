@@ -15,10 +15,10 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_13W41B
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_3
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_4_RC1
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_4_RC3
 
 object VersionSupport {
     const val MINIMUM_VERSION = V_13W41B
-    const val LATEST_VERSION = V_1_19_4_RC1
+    const val LATEST_VERSION = V_1_19_4_RC3
     const val LATEST_RELEASE = V_1_19_3
 }
