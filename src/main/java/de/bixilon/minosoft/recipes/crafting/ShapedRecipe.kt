@@ -41,6 +41,7 @@ class ShapedRecipe(
             val category = if (buffer.versionId >= ProtocolVersions.V_22W42A) RecipeCategories[buffer.readVarInt()] else null
             val ingredients = buffer.readArray(width * height) { buffer.readIngredient() }
             val result = buffer.readItemStack()
+            val notification = if (buffer.versionId >= ProtocolVersions.V_1_19_4) buffer.readBoolean() else true // TODO: unknown version
             return ShapedRecipe(
                 width = width,
                 height = height,

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,10 +20,10 @@ import de.bixilon.minosoft.recipes.heat.BlastingRecipe
 import de.bixilon.minosoft.recipes.heat.CampfireRecipe
 import de.bixilon.minosoft.recipes.heat.SmeltingRecipe
 import de.bixilon.minosoft.recipes.heat.SmokingRecipe
-import de.bixilon.minosoft.recipes.special.BookCloningRecipe
-import de.bixilon.minosoft.recipes.special.RepairItemRecipe
-import de.bixilon.minosoft.recipes.special.SuspiciousStewRecipe
-import de.bixilon.minosoft.recipes.special.TippedArrowRecipe
+import de.bixilon.minosoft.recipes.smithing.SmithingRecipe
+import de.bixilon.minosoft.recipes.smithing.SmithingTransformRecipe
+import de.bixilon.minosoft.recipes.smithing.SmithingTrimRecipe
+import de.bixilon.minosoft.recipes.special.*
 import de.bixilon.minosoft.recipes.special.banner.BannerDuplicateRecipe
 import de.bixilon.minosoft.recipes.special.banner.ShieldDecorationRecipe
 import de.bixilon.minosoft.recipes.special.color.ArmorDyeRecipe
@@ -51,6 +51,7 @@ object RecipeFactories : DefaultFactory<RecipeFactory<*>>(
     ShulkerBoxColoringRecipe,
     SuspiciousStewRecipe,
     RepairItemRecipe,
+    DecoratedPotRecipe,
 
     SmeltingRecipe,
     BlastingRecipe,
@@ -58,5 +59,5 @@ object RecipeFactories : DefaultFactory<RecipeFactory<*>>(
     CampfireRecipe,
 
     StoneCuttingRecipe,
-    SmithingRecipe,
+    SmithingRecipe, SmithingTransformRecipe, SmithingTrimRecipe,
 )

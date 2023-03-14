@@ -11,24 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.recipes
+package de.bixilon.minosoft.recipes.smithing
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.recipes.Ingredient
+import de.bixilon.minosoft.recipes.RecipeCategories
+import de.bixilon.minosoft.recipes.RecipeFactory
 
-class SmithingRecipe(
-    val base: Ingredient,
-    val ingredient: Ingredient,
-    val result: ItemStack?,
-) : Recipe {
+class SmithingTransformRecipe(
+    val template: Ingredient,
+    override val base: Ingredient,
+    override val ingredient: Ingredient,
+    override val result: ItemStack?,
+) : AbstractSmithingRecipe {
     override val category: RecipeCategories? get() = null
 
-    companion object : RecipeFactory<SmithingRecipe> {
-        override val identifier = "smithing".toResourceLocation()
+    companion object : RecipeFactory<SmithingTransformRecipe> {
+        override val identifier = minecraft("smithing_transform")
 
-        override fun build(buffer: PlayInByteBuffer): SmithingRecipe {
-            return SmithingRecipe(
+        override fun build(buffer: PlayInByteBuffer): SmithingTransformRecipe {
+            return SmithingTransformRecipe(
+                template = buffer.readIngredient(),
                 base = buffer.readIngredient(),
                 ingredient = buffer.readIngredient(),
                 result = buffer.readItemStack(),
