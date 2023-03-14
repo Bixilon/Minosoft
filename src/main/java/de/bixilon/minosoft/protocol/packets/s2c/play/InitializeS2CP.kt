@@ -168,7 +168,10 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.settingsManager.sendClientSettings()
         connection.sendBrand()
 
-         connection.player.keyManagement.sendSession()
+        if (connection.version >= ProtocolVersions.V_1_19_4) { // TODO: find out version
+            connection.util.signer.reset()
+        }
+        connection.player.keyManagement.sendSession()
 
         connection.state = PlayConnectionStates.SPAWNING
     }

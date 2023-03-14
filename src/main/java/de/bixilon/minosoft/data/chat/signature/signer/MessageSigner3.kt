@@ -32,6 +32,10 @@ class MessageSigner3(
 ) : MessageSigner {
     private var index = AtomicInteger()
 
+    override fun reset() {
+        index.set(0)
+    }
+
     override fun signMessage(privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray {
         return signMessage(privateKey, message, salt, sender, time, lastSeen)
     }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.chat.signature.signer
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -23,6 +24,8 @@ import java.time.Instant
 import java.util.*
 
 interface MessageSigner {
+
+    fun reset(): Unit = Broken("Not yet implemented")
 
     fun signMessage(privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray
 
