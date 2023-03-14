@@ -1,4 +1,10 @@
 {
+  "887": {
+    "name": "1.19.4",
+    "protocol_id": 762,
+    "packets": 880,
+    "type": "release"
+  },
   "886": {
     "name": "1.19.4-rc3",
     "protocol_id": 1073741950,
