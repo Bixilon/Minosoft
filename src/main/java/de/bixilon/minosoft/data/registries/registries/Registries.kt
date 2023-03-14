@@ -115,7 +115,7 @@ class Registries : Parentable<Registries> {
 
     val entityDataIndexMap: MutableMap<EntityDataField, Int> = mutableMapOf()
     val entityType: Registry<EntityType> = register("entity_type", Registry(codec = EntityType))
-    val damageType: Registry<DamageType> = register("damage_type", Registry())
+    val damageType: Registry<DamageType> = register("damage_type", Registry(codec = DamageType))
 
     val blockEntityType = BlockEntityTypeRegistry()
     val blockDataType: Registry<BlockDataDataType> = Registry(codec = BlockDataDataType)
@@ -259,7 +259,11 @@ class Registries : Parentable<Registries> {
                 value.asJsonObject()["value"].listCast()!!
             }
 
-            registry.update(values, this)
+            try {
+                registry.update(values, this)
+            } catch (error: Throwable) {
+                throw Exception("Can not update $fixedKey registry", error)
+            }
         }
     }
 

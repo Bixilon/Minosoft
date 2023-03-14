@@ -26,6 +26,7 @@ class DamageType(
     val scaling: String?,
 ) : RegistryItem() {
 
+
     companion object : ResourceLocationCodec<DamageType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): DamageType {
             return DamageType(
