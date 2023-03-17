@@ -28,7 +28,7 @@ class LongUseHandler(
     private var item: ItemStack? = null
     private var slot: Int = -1
 
-    private var using: ItemUsing? by connection.player::using
+    private val using: ItemUsing? get() = connection.player.using
     val isUsing: Boolean get() = using != null
 
 
