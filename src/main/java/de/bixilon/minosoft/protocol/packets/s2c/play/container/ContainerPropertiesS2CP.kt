@@ -27,7 +27,7 @@ class ContainerPropertiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val value = buffer.readUnsignedShort()
 
     override fun handle(connection: PlayConnection) {
-        val container = connection.player.containers[containerId] ?: return
+        val container = connection.player.items.containers[containerId] ?: return
         container.readProperty(property, value)
         container.propertiesRevision++
     }

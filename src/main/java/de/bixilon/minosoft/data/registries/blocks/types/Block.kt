@@ -15,43 +15,38 @@ package de.bixilon.minosoft.data.registries.blocks.types
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
+import de.bixilon.minosoft.data.language.LanguageUtil.translation
+import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.HardnessBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.PushingBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
 abstract class Block(
     override val identifier: ResourceLocation,
     settings: BlockSettings,
-) : RegistryItem(), LightedBlock {
+) : RegistryItem(), LightedBlock, HardnessBlock, Translatable, PushingBlock {
     val properties: Map<BlockProperties, Array<Any>> = unsafeNull()
     val states: Set<BlockState> = unsafeNull()
     val defaultState: BlockState = unsafeNull()
 
-    val item: Item = unsafeNull()
+    override val translationKey: ResourceLocation = identifier.translation("block")
 
     @Deprecated("Interface")
     var tintProvider: TintProvider? = null
 
     val soundGroup = settings.soundGroup
-
-    open val hardness: Float get() = 2.0f
-
-    init {
-        this::item.inject(settings.item)
-    }
 
     override fun toString(): String {
         return identifier.toString()
@@ -61,17 +56,8 @@ abstract class Block(
     open fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? = defaultState
 
     @Deprecated("Interface")
-    open fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) = Unit
-
-    @Deprecated("Interface")
-    open fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) = Unit
-
-    @Deprecated("Interface")
-    open fun canPlaceAt(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState): Boolean = true
-
-    @Deprecated("Interface")
     open fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        return InteractionResults.PASS
+        return InteractionResults.IGNORED
     }
 
     fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
@@ -85,12 +71,6 @@ abstract class Block(
 
     @Deprecated("Interface")
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
-
-    @Deprecated("work/physics")
-    open fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) = Unit
-
-    @Deprecated("work/physics")
-    open fun onEntityCollision(connection: PlayConnection, entity: Entity, blockState: BlockState, blockPosition: Vec3i) = Unit
 
     @Deprecated("Interface")
     open fun canCull(blockState: BlockState, other: BlockState): Boolean = true

@@ -15,7 +15,8 @@ package de.bixilon.minosoft
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
-import de.bixilon.minosoft.data.registries.DefaultRegistries
+import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
+import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.test.IT
@@ -72,12 +73,14 @@ internal object MinosoftSIT {
     }
 
     fun loadDefaultRegistries() {
-        DefaultRegistries.load(CountUpAndDownLatch(0))
+        FallbackTags.load()
+        FallbackRegistries.load()
     }
 
     fun loadPixlyzerData() {
         val (version, registries) = ITUtil.loadPixlyzerData(IT.TEST_VERSION_NAME)
         IT.VERSION = version
         IT.REGISTRIES = registries
+        IT.FALLBACK_TAGS = FallbackTags.map(registries)
     }
 }

@@ -96,6 +96,7 @@ class BaseComponent : ChatComponent {
                     with.add(part ?: continue)
                 }
             }
+            // TODO: 1.19.4 added a "fallback" field
             this += translator?.translate(it.toResourceLocation(), component, restrictedMode, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, component, restrictedMode)
         }
     }

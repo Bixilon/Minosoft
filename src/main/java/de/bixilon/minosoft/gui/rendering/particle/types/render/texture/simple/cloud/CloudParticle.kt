@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asGray
@@ -45,14 +46,15 @@ open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: 
         if (dead) {
             return
         }
-        connection.world.entities.getClosestInRadius(position, 2.0, WorldEntities.CHECK_CLOSEST_PLAYER)?.let {
-            val y = it.position.y
+        if (DefaultThreadPool.isBacklog()) return // disable lagging a  bit
+
+        connection.world.entities.getClosestInRadius(position, 2.0, WorldEntities.CHECK_CLOSEST_PLAYER)?.let { // TODO: optimize
+            val y = it.physics.position.y
             if (this.position.y <= y) {
                 return@let
             }
             this.position.y += (y - this.position.y) * 0.2
-            this.velocity.y += (it.velocity.y - this.velocity.y) * 0.2
-
+            this.velocity.y += (it.physics.velocity.y - this.velocity.y) * 0.2
         }
     }
 

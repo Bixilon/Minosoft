@@ -13,19 +13,17 @@
 package de.bixilon.minosoft.data.entities.entities.item
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.blocks.types.properties.FrictionBlock
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
+import de.bixilon.minosoft.physics.entities.living.ItemEntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ItemEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
@@ -35,36 +33,11 @@ class ItemEntity(connection: PlayConnection, entityType: EntityType, data: Entit
         get() = data.get(ITEM_DATA, null)
 
 
-    override fun tick() {
-        super.tick()
-
-        when {
-            // ToDo: Apply water and lava "bouncing"
-            hasGravity -> applyGravity()
-        }
-
-        if (!onGround || !velocity.empty) {
-            move(velocity)
-
-            var movement = 0.98
-            if (onGround) {
-                val block = connection.world[Vec3i(positionInfo.blockPosition.x, position.y - 1.0, position.z)]?.block
-                if (block is FrictionBlock) {
-                    movement *= block.friction
-                }
-            }
-            velocity = velocity * Vec3d(movement, 0.98, movement)
-
-            if (onGround && velocity.y < 0.0) {
-                velocity.y *= -0.5
-            }
-        }
-    }
-
     override fun onAttack(attacker: Entity): Boolean {
         return false
     }
 
+    override fun createPhysics() = ItemEntityPhysics(this)
 
     companion object : EntityFactory<ItemEntity> {
         override val identifier: ResourceLocation = minecraft("item")

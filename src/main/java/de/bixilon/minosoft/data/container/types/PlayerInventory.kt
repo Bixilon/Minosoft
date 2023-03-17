@@ -15,11 +15,12 @@ package de.bixilon.minosoft.data.container.types
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
 import de.bixilon.minosoft.data.container.ClientContainer
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.actions.types.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.sections.HotbarSection
 import de.bixilon.minosoft.data.container.sections.PassiveInventorySection
@@ -33,6 +34,7 @@ import de.bixilon.minosoft.data.container.slots.equipment.HeadSlotType
 import de.bixilon.minosoft.data.container.slots.equipment.LegsSlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
+import de.bixilon.minosoft.data.entities.entities.player.local.PlayerItemManager
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -41,21 +43,24 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
-class PlayerInventory(connection: PlayConnection) : Container(connection = connection, type = TYPE), ClientContainer {
+class PlayerInventory(
+    private val items: PlayerItemManager,
+    connection: PlayConnection,
+) : Container(connection = connection, type = TYPE), ClientContainer {
     override val sections: Array<ContainerSection> get() = SECTIONS
     val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
 
     init {
         this::slots.observeMap(this) {
             for ((slotId, stack) in it.removes) {
-                if (slotId - HOTBAR_OFFSET == connection.player.selectedHotbarSlot) {
+                if (slotId - HOTBAR_OFFSET == items.hotbar) {
                     this.equipment -= EquipmentSlots.MAIN_HAND
                     continue
                 }
                 this.equipment -= slotId.equipmentSlot ?: continue
             }
             for ((slotId, stack) in it.adds) {
-                if (slotId - HOTBAR_OFFSET == connection.player.selectedHotbarSlot) {
+                if (slotId - HOTBAR_OFFSET == items.hotbar) {
                     this.equipment[EquipmentSlots.MAIN_HAND] = stack
                     continue
                 }
@@ -65,7 +70,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
     }
 
 
-    fun getHotbarSlot(hotbarSlot: Int = connection.player.selectedHotbarSlot): ItemStack? {
+    fun getHotbarSlot(hotbarSlot: Int = items.hotbar): ItemStack? {
         check(hotbarSlot in 0..HOTBAR_SLOTS) { "Hotbar slot out of bounds!" }
         return this[hotbarSlot + HOTBAR_OFFSET]
     }
@@ -123,7 +128,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
             EquipmentSlots.LEGS -> ARMOR_OFFSET + 2
             EquipmentSlots.FEET -> ARMOR_OFFSET + 3
 
-            EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + HOTBAR_OFFSET
+            EquipmentSlots.MAIN_HAND -> items.hotbar + HOTBAR_OFFSET
             EquipmentSlots.OFF_HAND -> OFFHAND_SLOT
         }
 
@@ -165,7 +170,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
         )
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): PlayerInventory {
-            return PlayerInventory(connection)
+            Broken("Can not create player inventory!")
         }
     }
 }

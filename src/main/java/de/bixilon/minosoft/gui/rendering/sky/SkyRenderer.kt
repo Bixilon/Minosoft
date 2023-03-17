@@ -45,7 +45,7 @@ class SkyRenderer(
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
-    var effects by observed(connection.world.dimension?.effects ?: OverworldEffects)
+    var effects by observed(connection.world.dimension.effects)
     var matrix by observed(Mat4())
     val profile = connection.profiles.rendering.sky
     var time = connection.world.time
@@ -76,7 +76,7 @@ class SkyRenderer(
         connection.events.listen<CameraMatrixChangeEvent> {
             matrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
         }
-        connection.world::dimension.observe(this) { effects = it?.effects ?: OverworldEffects }
+        connection.world::dimension.observe(this) { effects = it.effects }
     }
 
     override fun prepareDrawAsync() {

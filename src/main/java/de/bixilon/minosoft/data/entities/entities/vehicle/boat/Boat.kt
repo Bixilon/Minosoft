@@ -20,14 +20,24 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
+import de.bixilon.minosoft.data.entities.entities.properties.riding.InputSteerable
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
-open class Boat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
+open class Boat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation), InputSteerable {
+    override var input: PlayerMovementInput = PlayerMovementInput()
+
+    override val primaryPassenger: Entity? get() = attachment.passengers.firstOrNull()
+
+
+    override val canRaycast: Boolean get() = true
+
+
+    override val mountHeightOffset: Double get() = if (material == BoatMaterials.BAMBOO) 0.3 else -0.1
 
     @get:SynchronizedEntityData
     val timeSinceLastHit: Int
@@ -57,6 +67,15 @@ open class Boat(connection: PlayConnection, entityType: EntityType, data: Entity
     val splashTimer: Int
         get() = data.get(SPLASH_TIMER_DATA, 0)
 
+    enum class BoatLocations {
+        WATER,
+        SUBMERGED,
+        SUBMERGED_FLOWING,
+        LAND,
+        AIR
+        ;
+    }
+
     enum class BoatMaterials {
         OAK,
         SPRUCE,
@@ -65,6 +84,7 @@ open class Boat(connection: PlayConnection, entityType: EntityType, data: Entity
         ACACIA,
         DARK_OAK,
         MANGROVE,
+        BAMBOO,
         ;
 
         companion object : ValuesEnum<BoatMaterials> {

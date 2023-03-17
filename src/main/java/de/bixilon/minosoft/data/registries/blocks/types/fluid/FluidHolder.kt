@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.fluid
 
-import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 
 /**
- * Something that contains a fluid (e.g. water block, cauldron, kelp, ...)
+ * Something that is part of a fluid (e.g. water block, kelp, bubble column...)
+ * Note: This does not mean the block contains a fluid (e.g. cauldron). See FluidDrainable for that
  */
 interface FluidHolder {
     val fluid: Fluid

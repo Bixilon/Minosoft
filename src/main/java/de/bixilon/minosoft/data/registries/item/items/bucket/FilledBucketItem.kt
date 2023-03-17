@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.data.registries.item.items.bucket
 
 import de.bixilon.kutil.cast.CastUtil
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
-import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.lava.LavaFluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory

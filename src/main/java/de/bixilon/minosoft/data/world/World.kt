@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
@@ -22,42 +21,33 @@ import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.shapes.AABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
 import de.bixilon.minosoft.data.world.audio.WorldAudioPlayer
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.border.WorldBorder
-import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLight.Companion.canSkylight
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
-import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
 import de.bixilon.minosoft.data.world.difficulty.WorldDifficulty
+import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.data.world.particle.WorldParticleRenderer
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
-import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
-import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
-import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
-import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import java.util.*
 
@@ -69,14 +59,13 @@ class World(
 ) : BiomeAccessor, WorldAudioPlayer, WorldParticleRenderer {
     val lock = SimpleLock()
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
-    val chunks: LockMap<Vec2i, Chunk> = LockMap(mutableMapOf(), lock)
+    val chunks = ChunkManager(this)
     val entities = WorldEntities()
     var hardcore by observed(false)
-    var dimension: DimensionProperties? by observed(null)
+    var dimension: DimensionProperties by observed(DimensionProperties())
     var difficulty: WorldDifficulty? by observed(null)
-    var hashedSeed = 0L
     var time by observed(WorldTime())
-    var weather by observed(WorldWeather.NONE)
+    var weather by observed(WorldWeather.SUNNY)
     val view = WorldView(connection)
     val border = WorldBorder()
 
@@ -86,126 +75,41 @@ class World(
 
     override var audioPlayer: AbstractAudioPlayer? = null
     override var particleRenderer: AbstractParticleRenderer? = null
-    var occlusionUpdateCallback: OcclusionUpdateCallback? = null
 
-    var chunkMin = Vec2i(Int.MAX_VALUE)
-    var chunkMax = Vec2i(Int.MIN_VALUE)
-    var chunkSize = Vec2i.EMPTY
+    var occlusion by observed(0)
 
-    operator fun get(blockPosition: BlockPosition): BlockState? {
-        return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
+
+    operator fun get(x: Int, y: Int, z: Int): BlockState? {
+        return chunks[Vec2i(x shr 4, z shr 4)]?.get(x and 0x0F, y, z and 0x0F)
     }
 
-    operator fun get(chunkPosition: ChunkPosition): Chunk? {
-        return chunks[chunkPosition]
+    operator fun get(position: BlockPosition): BlockState? {
+        return chunks[position.chunkPosition]?.get(position.inChunkPosition)
     }
 
-    @Synchronized
-    private fun updateChunkExtreme(chunkPosition: ChunkPosition, mass: Boolean = false) {
-        var changes = 0
-        if (chunkPosition.x < chunkMin.x) {
-            chunkMin.x = chunkPosition.x
-            changes++
-        }
-        if (chunkPosition.y < chunkMin.y) {
-            chunkMin.y = chunkPosition.y
-            changes++
-        }
-        if (chunkPosition.x > chunkMax.x) {
-            chunkMax.x = chunkPosition.x
-            changes++
-        }
-        if (chunkPosition.y > chunkMax.y) {
-            chunkMax.y = chunkPosition.y
-            changes++
-        }
-        if (!mass && changes > 0) {
-            updateWorldSize()
-            view.updateServerDistance()
-        }
-    }
-
-    @Synchronized
-    private fun updateWorldSize() {
-        val nextSize = (chunkMax - chunkMin)
-        if (chunks.unsafe.isNotEmpty()) {
-            nextSize += 1 // own chunk
-        }
-        if (nextSize.x > MAX_CHUNKS_SIZE) {
-            nextSize.x = MAX_CHUNKS_SIZE
-        }
-        if (nextSize.x < 0) {
-            nextSize.x = 0
-        }
-        if (nextSize.y > MAX_CHUNKS_SIZE) {
-            nextSize.y = MAX_CHUNKS_SIZE
-        }
-        if (nextSize.y < 0) {
-            nextSize.y = 0
-        }
-        this.chunkSize = nextSize
-    }
-
-    private fun recalculateChunkExtreme() {
-        chunks.lock.acquire()
-
-        chunkMin = Vec2i(Int.MAX_VALUE)
-        chunkMax = Vec2i(Int.MIN_VALUE)
-
-        for (chunkPosition in chunks.unsafe.keys) {
-            updateChunkExtreme(chunkPosition, true)
-        }
-        updateWorldSize()
-        view.updateServerDistance()
-
-        chunks.lock.release()
+    @Deprecated("chunks[position]", ReplaceWith("chunks[position]"))
+    operator fun get(position: ChunkPosition): Chunk? {
+        return chunks[position]
     }
 
     fun clear() {
-        chunks.lock.lock()
-        chunks.unsafe.clear()
-        chunkMin = Vec2i(Int.MAX_VALUE)
-        chunkMax = Vec2i(Int.MIN_VALUE)
-        updateWorldSize()
-        view.updateServerDistance()
-        chunks.lock.unlock()
+        lock.lock()
+        chunks.clear()
+        time = WorldTime()
+        weather = WorldWeather.SUNNY
+        border.reset()
+        lock.unlock()
     }
 
-    fun getOrCreateChunk(chunkPosition: ChunkPosition): Chunk {
-        updateChunkExtreme(chunkPosition)
-        return chunks.synchronizedGetOrPut(chunkPosition) { Chunk(connection, chunkPosition) }
+    operator fun set(x: Int, y: Int, z: Int, state: BlockState?) {
+        if (!isValidPosition(x, y, z)) return
+        val chunk = chunks[x shr 4, z shr 4] ?: return
+        chunk[x and 0x0F, y, z and 0x0F] = state
     }
 
-    private fun _set(chunk: Chunk, blockPosition: BlockPosition, blockState: BlockState?) {
-        val inChunkPosition = blockPosition.inChunkPosition
-        val previousBlock = chunk[inChunkPosition]
-        if (previousBlock == blockState) {
-            return
-        }
-        previousBlock?.block?.onBreak(connection, blockPosition, previousBlock, chunk.getBlockEntity(inChunkPosition))
-        blockState?.block?.onPlace(connection, blockPosition, blockState)
-        chunk[inChunkPosition] = blockState
-        chunk.getOrPutBlockEntity(inChunkPosition)
-        connection.events.fire(BlockSetEvent(
-            connection = connection,
-            blockPosition = blockPosition,
-            blockState = blockState,
-        )
-        )
-    }
-
-    fun setBlockState(blockPosition: BlockPosition, blockState: BlockState?) {
-        this[blockPosition] = blockState
-    }
-
-    operator fun set(blockPosition: BlockPosition, blockState: BlockState?) {
-        val chunk = chunks[blockPosition.chunkPosition] ?: return
-        _set(chunk, blockPosition, blockState)
-    }
-
-    fun forceSet(blockPosition: BlockPosition, blockState: BlockState?) {
-        val chunk = getOrCreateChunk(blockPosition.chunkPosition)
-        _set(chunk, blockPosition, blockState)
+    operator fun set(position: BlockPosition, state: BlockState?) {
+        val chunk = chunks[position.chunkPosition] ?: return
+        chunk[position.inChunkPosition] = state
     }
 
     fun isPositionChangeable(blockPosition: BlockPosition): Boolean {
@@ -215,93 +119,63 @@ class World(
         return isValidPosition(blockPosition)
     }
 
-    fun isValidPosition(blockPosition: BlockPosition): Boolean {
-        val dimension = connection.world.dimension!!
-        return (blockPosition.y >= dimension.minY && blockPosition.y <= dimension.maxY)
+    fun isValidPosition(x: Int, y: Int, z: Int): Boolean {
+        if (x > MAX_SIZE || z > MAX_SIZE) return false
+        val dimension = connection.world.dimension
+        if (y < dimension.minY || y > dimension.maxY) return false
+        return true
     }
 
-    fun forceSetBlockState(blockPosition: BlockPosition, blockState: BlockState?, check: Boolean = false) {
-        if (check && !isPositionChangeable(blockPosition)) {
-            return
-        }
-        chunks[blockPosition.chunkPosition]?.set(blockPosition.inChunkPosition, blockState)
+    fun isValidPosition(position: BlockPosition) = isValidPosition(position.x, position.y, position.z)
+    fun isValidPosition(position: ChunkPosition): Boolean {
+        return true // TODO
     }
 
-    fun unloadChunk(chunkPosition: ChunkPosition) {
-        val chunk = chunks.remove(chunkPosition) ?: return
-        for ((index, neighbour) in chunk.neighbours.neighbours.withIndex()) {
-            if (neighbour == null) {
-                continue
-            }
-            val offset = ChunkNeighbours.OFFSETS[index]
-            val neighbourPosition = chunkPosition + offset
-            neighbour.neighbours.remove(-offset)
-            connection.events.fire(ChunkDataChangeEvent(connection, neighbourPosition, neighbour))
-        }
-        // connection.world.view.updateServerViewDistance(chunkPosition, false)
-        connection.events.fire(ChunkUnloadEvent(connection, chunkPosition, chunk))
-        if (chunkPosition.x <= chunkMin.x || chunkPosition.y <= chunkMin.y || chunkPosition.x >= chunkMax.x || chunkPosition.y >= chunkMax.y) {
-            recalculateChunkExtreme()
-        }
-        occlusionUpdateCallback?.onOcclusionChange()
-    }
-
-    fun getBlockEntity(blockPosition: BlockPosition): BlockEntity? {
-        return get(blockPosition.chunkPosition)?.getBlockEntity(blockPosition.inChunkPosition)
+    fun getBlockEntity(position: BlockPosition): BlockEntity? {
+        return chunks[position.chunkPosition]?.getBlockEntity(position.inChunkPosition)
     }
 
     fun getOrPutBlockEntity(blockPosition: BlockPosition): BlockEntity? {
-        return get(blockPosition.chunkPosition)?.getOrPutBlockEntity(blockPosition.inChunkPosition)
+        return chunks[blockPosition.chunkPosition]?.getOrPutBlockEntity(blockPosition.inChunkPosition)
     }
 
-    fun setBlockEntity(blockPosition: BlockPosition, blockEntity: BlockEntity?) {
-        get(blockPosition.chunkPosition)?.setBlockEntity(blockPosition.inChunkPosition, blockEntity)
+    operator fun set(position: BlockPosition, entity: BlockEntity) {
+        this.set(position, entity as BlockEntity?)
     }
 
-
-    fun setBlockEntities(blockEntities: Map<BlockPosition, BlockEntity>) {
-        for ((blockPosition, blockEntity) in blockEntities) {
-            setBlockEntity(blockPosition, blockEntity)
-        }
+    @JvmName("set2")
+    fun set(position: BlockPosition, entity: BlockEntity?) {
+        chunks[position.chunkPosition]?.set(position.inChunkPosition, entity) // TODO: fire event if needed
     }
 
     override fun getBiome(blockPosition: BlockPosition): Biome? {
-        val inChunkPosition = blockPosition.inChunkPosition
-        val minY = dimension?.minY ?: 0
-        if (inChunkPosition.y < minY) {
-            inChunkPosition.y = minY
-        }
-        val maxY = dimension?.maxY ?: DimensionProperties.DEFAULT_MAX_Y
-        if (inChunkPosition.y > maxY) {
-            inChunkPosition.y = maxY
-        }
-        return this[blockPosition.chunkPosition]?.getBiome(inChunkPosition)
+        return chunks[blockPosition.chunkPosition]?.getBiome(blockPosition.inChunkPosition)
     }
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
-        return this[Vec2i(x shr 4, z shr 4)]?.getBiome(x and 0x0F, y, z and 0x0F)
+        return this.chunks[Vec2i(x shr 4, z shr 4)]?.getBiome(x and 0x0F, y, z and 0x0F)
     }
 
     fun tick() {
         val simulationDistance = view.simulationDistance
-        val cameraPosition = connection.player.positionInfo.chunkPosition
-        chunks.lock.acquire()
+        val cameraPosition = connection.player.physics.positionInfo.chunkPosition
+        lock.acquire()
         val worker = UnconditionalWorker()
-        for ((chunkPosition, chunk) in chunks.unsafe) {
+        for ((chunkPosition, chunk) in chunks.chunks.unsafe) {
             // ToDo: Cache (improve performance)
             if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
                 continue
             }
             worker += UnconditionalTask(priority = ThreadPool.HIGH) { chunk.tick(connection, chunkPosition, random) }
         }
-        chunks.lock.release()
+        lock.release()
         worker.work()
         border.tick()
     }
 
     fun randomTick() {
-        val blockPosition = connection.player.position.blockPosition
-        val chunk = this[blockPosition.chunkPosition] ?: return
+        val blockPosition = connection.player.physics.positionInfo.blockPosition
+        val chunk = this.chunks[blockPosition.chunkPosition] ?: return
 
 
         // ToDo: Split that up in multiple threads?
@@ -312,7 +186,7 @@ class World(
     }
 
     private fun randomTick(radius: Int, origin: BlockPosition, chunk: Chunk) {
-        val offset = Vec3i.EMPTY + { random.nextInt(-radius, radius) }
+        val offset = Vec3i(random.nextInt(-radius, radius), random.nextInt(-radius, radius), random.nextInt(-radius, radius))
         val blockPosition = origin + offset
 
         val blockState = chunk.traceBlock(offset, origin, blockPosition) ?: return
@@ -320,105 +194,21 @@ class World(
         blockState.block.randomTick(connection, blockState, blockPosition, random)
     }
 
-    operator fun get(aabb: AABB): Map<BlockPosition, BlockState> {
-        val ret: MutableMap<Vec3i, BlockState> = mutableMapOf()
-        var run = 0
-        var chunk: Chunk? = null
-        var lastChunkPosition = Vec2i.EMPTY
-        for (position in aabb.blockPositions) {
-            val chunkPosition = position.chunkPosition
-            if (chunkPosition != lastChunkPosition || run++ == 0) {
-                chunk = this[chunkPosition]
-                lastChunkPosition = chunkPosition
-            }
-            val state = chunk?.get(position.inChunkPosition) ?: continue
-            ret[position] = state
-        }
-        return ret
+    operator fun get(aabb: AABB): WorldIterator {
+        return WorldIterator(aabb.positions(), this)
     }
 
-    fun isSpaceEmpty(aabb: AABB, checkFluids: Boolean = false): Boolean {
-        for (position in aabb.blockPositions) {
-            val blockState = this[position] ?: continue
-            if (blockState.block !is ShapedBlock) continue
-            val shape = blockState.block.getCollisionShape(connection, blockState) ?: continue
-            if ((shape + position).intersect(aabb)) {
-                return false
-            }
-            if (!checkFluids || blockState.block !is FluidBlock) {
-                continue
-            }
-            val height = blockState.block.fluid.getHeight(blockState)
-            if (position.y + height > aabb.min.y) {
-                return false
-            }
+    fun isSpaceEmpty(entity: Entity? = null, aabb: AABB, chunk: Chunk? = null, fluids: Boolean = false): Boolean {
+        val iterator = WorldIterator(aabb, this, chunk)
+
+        if (entity == null) {
+            return !iterator.hasCollisions(fluids)
         }
-        return true
+        return !iterator.hasCollisions(entity, aabb, fluids)
     }
 
-    fun getLight(blockPosition: BlockPosition): Int {
-        return get(blockPosition.chunkPosition)?.light?.get(blockPosition.inChunkPosition) ?: 0x00
-    }
-
-    /**
-     * @return All 8 neighbour chunks
-     */
-    fun getChunkNeighbours(neighbourPositions: Array<ChunkPosition>): Array<Chunk?> {
-        val chunks: Array<Chunk?> = arrayOfNulls(neighbourPositions.size)
-        this.chunks.lock.acquire()
-        for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
-            chunks[index] = this.chunks.unsafe[neighbourPosition] ?: continue
-        }
-        this.chunks.lock.release()
-        return chunks
-    }
-
-    fun getChunkNeighbours(chunkPosition: ChunkPosition): Array<Chunk?> {
-        return getChunkNeighbours(getChunkNeighbourPositions(chunkPosition))
-    }
-
-    private fun calculateChunkData(chunk: Chunk) {
-        val neighbours = chunk.neighbours.get() ?: return
-        if (!chunk.biomesInitialized && cacheBiomeAccessor != null && chunk.biomeSource != null && neighbours.canBuildBiomeCache) {
-            chunk.buildBiomeCache()
-        }
-
-        chunk.light.recalculate(false)
-        chunk.light.propagateFromNeighbours()
-        connection.events.fire(ChunkDataChangeEvent(connection, chunk.chunkPosition, chunk))
-    }
-
-    fun onChunkUpdate(chunkPosition: ChunkPosition, chunk: Chunk, checkNeighbours: Boolean = true) {
-        if (chunk.isFullyLoaded) {
-            // everything already calculated
-            return
-        }
-
-        for ((index, neighbour) in chunk.neighbours.neighbours.withIndex()) {
-            if (neighbour != null) {
-                continue
-            }
-            val offset = ChunkNeighbours.OFFSETS[index]
-            val neighbour = this[chunkPosition + offset] ?: continue
-            if (neighbour.sections == null) continue
-            chunk.neighbours[index] = neighbour
-            neighbour.neighbours[-offset] = chunk
-        }
-
-        if (chunk.neighbours.complete) {
-            calculateChunkData(chunk)
-        }
-
-        if (checkNeighbours) {
-            for (index in 0 until 8) {
-                val neighbour = chunk.neighbours[index] ?: continue
-                calculateChunkData(neighbour)
-            }
-        }
-
-        if (chunk.neighbours.complete) {
-            connection.events.fire(ChunkDataChangeEvent(connection, chunkPosition, chunk))
-        }
+    fun getLight(position: BlockPosition): Int {
+        return chunks[position.chunkPosition]?.light?.get(position.inChunkPosition) ?: 0x00
     }
 
     fun getBrightness(position: BlockPosition): Float {
@@ -427,16 +217,21 @@ class World(
         if (dimension.canSkylight()) {
             level = maxOf(level, light and SectionLight.SKY_LIGHT_MASK shr 4)
         }
-        return dimension?.brightness?.get(level) ?: 0.0f
+        return dimension.ambientLight[level]
     }
 
-    fun recalculateLight() {
+    fun recalculateLight(heightmap: Boolean = false) {
         val reset = UnconditionalWorker()
         val calculate = UnconditionalWorker()
         lock.acquire()
-        for (chunk in chunks.unsafe.values) {
+        for (chunk in chunks.chunks.unsafe.values) {
             reset += { chunk.light.reset() }
-            calculate += { chunk.light.calculate() }
+            calculate += {
+                if (heightmap) {
+                    chunk.light.recalculateHeightmap()
+                }
+                chunk.light.calculate()
+            }
         }
         lock.release()
         reset.work()

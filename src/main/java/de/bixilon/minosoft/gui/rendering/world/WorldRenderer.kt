@@ -265,7 +265,7 @@ class WorldRenderer(
 
     private fun onFrustumChange() {
         var sortQueue = false
-        val cameraPosition = connection.player.cameraPosition
+        val cameraPosition = connection.player.renderInfo.eyePosition
         val cameraChunkPosition = cameraPosition.blockPosition.chunkPosition
         val cameraSectionHeight = this.cameraSectionHeight
         if (this.cameraPosition != cameraPosition) {

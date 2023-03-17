@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,8 +20,12 @@ import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
+import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
+import kotlin.math.abs
 
 object Vec3dUtil {
+    const val MARGIN = 0.003
 
     val Vec3d.Companion.MIN: Vec3d
         get() = Vec3d(Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE)
@@ -71,8 +75,16 @@ object Vec3dUtil {
         return Vec3d(minOf(value, x), minOf(value, y), minOf(value, z))
     }
 
+    fun Vec3d.min(): Double {
+        return minOf(x, y, z)
+    }
+
     fun Vec3d.max(value: Double): Vec3d {
         return Vec3d(maxOf(value, x), maxOf(value, y), maxOf(value, z))
+    }
+
+    fun Vec3d.max(): Double {
+        return maxOf(x, y, z)
     }
 
     fun Vec3d.ceil(): Vec3i {
@@ -85,5 +97,40 @@ object Vec3dUtil {
 
     fun max(a: Vec3d, b: Vec3d): Vec3d {
         return Vec3d(maxOf(a.x, b.x), maxOf(a.y, b.y), maxOf(a.z, b.z))
+    }
+
+    fun Vec3d.isEmpty(): Boolean {
+        return length2() < MARGIN
+    }
+
+    fun Vec3d.flatten0(): Vec3d {
+        val result = Vec3d(this)
+        if (abs(x) < 0.003) {
+            result.x = 0.0
+        }
+        if (abs(y) < 0.003) {
+            result.y = 0.0
+        }
+        if (abs(z) < 0.003) {
+            result.z = 0.0
+        }
+        return result
+    }
+
+    private fun Vec3d.raycastDistance(direction: Vec3d, axis: Axes): Double {
+        val target = if (direction[axis] > 0) this[axis].floor + 1 else this[axis].ceil - 1
+        return (target - this[axis]) / direction[axis]
+    }
+
+    fun Vec3d.raycastDistance(front: Vec3d): Double {
+        return minOf(
+            raycastDistance(front, Axes.X),
+            raycastDistance(front, Axes.Y),
+            raycastDistance(front, Axes.Z),
+        ) + 0.00001
+    }
+
+    fun Vec3d.length3(): Double {
+        return x + y + z
     }
 }

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -59,7 +60,7 @@ class FastMoveContainerAction(
                     list += slot
                 }
             }
-            val maxStack = source.item.item.maxStackSize
+            val maxStack = if (source.item.item is StackableItem) source.item.item.maxStackSize else 1
             val changes: Int2ObjectOpenHashMap<ItemStack> = Int2ObjectOpenHashMap()
             sections@ for ((type, list) in targets) {
                 val putting = if (type.fillReversed) list.reversed().iterator() else list.intIterator()

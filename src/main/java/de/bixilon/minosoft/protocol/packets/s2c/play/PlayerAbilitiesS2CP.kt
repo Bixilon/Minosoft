@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kutil.bit.BitByte.isBit
+import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -24,41 +25,35 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val isInvulnerable: Boolean
-    val isFlying: Boolean
-    val canFly: Boolean
+    val invulnerable: Boolean
+    val flying: Boolean
+    val allowFly: Boolean
     val creative: Boolean
 
-    val flyingSpeed: Double
-    val walkingSpeed: Double
+    val flyingSpeed: Float
+    val walkingSpeed: Float
 
     init {
         val flags = buffer.readUnsignedByte()
-        isFlying = flags.isBit(1)
-        canFly = flags.isBit(2)
+        flying = flags.isBit(1)
+        allowFly = flags.isBit(2)
         if (buffer.versionId < ProtocolVersions.V_14W03B) { // ToDo: Find out correct version
-            isInvulnerable = flags.isBit(0)
+            invulnerable = flags.isBit(0)
             creative = flags.isBit(3)
         } else {
             creative = flags.isBit(0)
-            isInvulnerable = flags.isBit(3)
+            invulnerable = flags.isBit(3)
         }
-        flyingSpeed = buffer.readFloat().toDouble()
-        walkingSpeed = buffer.readFloat().toDouble()
+        flyingSpeed = buffer.readFloat()
+        walkingSpeed = buffer.readFloat()
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player abilities (isInvulnerable=$isInvulnerable, isFlying=$isFlying, canFly=$canFly, creative=$creative, flyingSpeed=$flyingSpeed, walkingSpeed=$walkingSpeed)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player abilities (invulnerable=$invulnerable, flying=$flying, allowFly=$allowFly, creative=$creative, flyingSpeed=$flyingSpeed, walkingSpeed=$walkingSpeed)" }
     }
 
     override fun handle(connection: PlayConnection) {
-        val abilities = connection.player.baseAbilities
-
-        abilities.isInvulnerable = isInvulnerable
-        abilities.isFlying = isFlying
-        abilities.canFly = canFly
-
-        abilities.flyingSpeed = flyingSpeed
-        abilities.walkingSpeed = walkingSpeed
+        connection.player.abilities = Abilities(invulnerable = invulnerable, flying = flying, allowFly = allowFly, flyingSpeed = flyingSpeed, walkingSpeed = walkingSpeed)
+        connection.player.physics().sender.flying = flying
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.world.chunk.light
 import de.bixilon.kutil.benchmark.BenchmarkUtil
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createChunkWithNeighbours
+import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createOpaqueLight
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createSolidBlock
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createSolidLight
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.fillBottom
 import org.testng.annotations.Test
 import kotlin.system.measureNanoTime
@@ -47,7 +47,7 @@ internal class LightBenchmark {
     fun calculateSimplePlace() {
         val chunk = createChunkWithNeighbours()
         val solid = createSolidBlock().defaultState
-        val light = createSolidLight().defaultState
+        val light = createOpaqueLight().defaultState
         val lowest = chunk.getOrPut(0)!!.blocks
         for (index in 0 until 256) {
             lowest.unsafeSet(index, solid)
@@ -59,8 +59,8 @@ internal class LightBenchmark {
         var totalPlace = 0L
         var totalBreak = 0L
         val benchmark = BenchmarkUtil.benchmark(10000) {
-            totalPlace += measureNanoTime { chunk.set(7, 1, 7, light) }
-            totalBreak += measureNanoTime { chunk.set(7, 1, 7, null) }
+            totalPlace += measureNanoTime { chunk[7, 1, 7] = light }
+            totalBreak += measureNanoTime { chunk[7, 1, 7] = null }
         }
 
         println("Placing light took ${totalPlace.formatNanos()}, avg=${(totalPlace / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")
@@ -82,8 +82,8 @@ internal class LightBenchmark {
         var totalPlace = 0L
         var totalBreak = 0L
         val benchmark = BenchmarkUtil.benchmark(10000) {
-            totalBreak += measureNanoTime { chunk.set(7, 255, 7, null) }
-            totalPlace += measureNanoTime { chunk.set(7, 255, 7, solid) }
+            totalBreak += measureNanoTime { chunk[7, 255, 7] = null }
+            totalPlace += measureNanoTime { chunk[7, 255, 7] = solid }
         }
 
         println("Placing block took ${totalPlace.formatNanos()}, avg=${(totalPlace / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")

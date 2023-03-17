@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor.slots
 
-import de.bixilon.minosoft.data.container.ArmorSlots
+import de.bixilon.minosoft.data.container.equipment.ArmorSlots
 import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 
 interface HelmetItem : WearableItem {

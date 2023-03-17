@@ -16,13 +16,15 @@ package de.bixilon.minosoft.test
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.tags.TagManager
 import org.objenesis.ObjenesisStd
 
 object IT {
     val OBJENESIS = ObjenesisStd()
-    const val TEST_VERSION_NAME = "1.18.2"
+    const val TEST_VERSION_NAME = "1.19.3"
     var VERSION: Version = unsafeNull()
     var REGISTRIES: Registries = unsafeNull()
+    var FALLBACK_TAGS: TagManager = unsafeNull()
 
     val references: MutableList<Any> = mutableListOf()
 

@@ -30,7 +30,7 @@ class HotbarSlotS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.player.selectedHotbarSlot = slot
+        connection.player.items.hotbar = slot
     }
 
     override fun log(reducedLog: Boolean) {

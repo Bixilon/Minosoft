@@ -36,15 +36,11 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
             val next = previous.next()
             connection.player.additional.gamemode = next
         })
-        add(ButtonElement(guiRenderer, "Toggle collisions") {
-            connection.player.hasCollisions = !connection.player.hasCollisions
-        })
         add(ButtonElement(guiRenderer, "Fake y=100") {
             val entity = connection.player
-            val position = Vec3d(entity.position.x, 100.0, entity.position.z)
+            val position = entity.physics.position
 
-            entity.position = position
-            entity.previousPosition = position
+            entity.forceTeleport(Vec3d(position.x, 100.0, position.z))
         })
 
         add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })

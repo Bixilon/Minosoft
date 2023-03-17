@@ -70,6 +70,9 @@ class EnchantingProperty(
                 val enchantmentName = tag[ENCHANTMENT_ID_TAG]
                 val enchantment = registry[enchantmentName] ?: throw IllegalArgumentException("Unknown enchantment: $enchantmentName")
                 val level = tag[ENCHANTMENT_LEVEL_TAG]?.toInt() ?: 1
+                if (level <= 0) {
+                    continue
+                }
 
                 enchantments[enchantment] = level
             }
@@ -83,9 +86,8 @@ class EnchantingProperty(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is EnchantingProperty) {
-            return false
-        }
+        if (isDefault() && other == null) return true
+        if (other !is EnchantingProperty) return false
         if (other.hashCode() != hashCode()) {
             return false
         }

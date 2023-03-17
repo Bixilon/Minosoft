@@ -119,6 +119,6 @@ object LanguageUtil {
 
 
     fun ResourceLocation.translation(name: String): ResourceLocation {
-        return ResourceLocation(this.namespace, "item.$namespace.$path") // TODO: use name?
+        return ResourceLocation(this.namespace, "$name.$namespace.$path") // TODO: use name?
     }
 }

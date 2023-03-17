@@ -43,16 +43,6 @@ class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, dat
         blockState = connection.registries.blockState.getOrNull(data)
     }
 
-    override fun tick() {
-        super.tick()
-
-        applyGravity()
-        move(velocity)
-
-
-        velocity = velocity * 0.98
-    }
-
     companion object : EntityFactory<FallingBlockEntity> {
         override val identifier: ResourceLocation = minecraft("falling_block")
         private val SPAWN_POSITION_DATA = EntityDataField("FALLING_BLOCK_SPAWN_POSITION")

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.factory
 
-import de.bixilon.minosoft.data.registries.blocks.types.*
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.*
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.button.StoneButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.button.WoodenButtonBlock
@@ -40,6 +39,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.Wal
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.leaves.LeavesBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant.CropBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant.PlantBlock
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant.SweetBerryBushBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.portal.NetherPortalBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.redstone.ComparatorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.redstone.RepeaterBlock
@@ -59,12 +59,10 @@ object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     ComparatorBlock,
     CampfireBlock,
     TorchBlock,
-    SlimeBlock,
     BrewingStandBlock,
     EnderChestBlock,
     NetherPortalBlock,
     RedstoneTorchBlock,
-    HoneyBlock,
     KelpBlock,
     KelpPlantBlock,
     SeagrassBlock,
@@ -79,7 +77,6 @@ object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     ChestBlock,
     TrappedChestBlock,
     EnderChestBlock,
-    JukeboxBlock,
     DispenserBlock,
     DropperBlock,
     WallSignBlock,
@@ -109,4 +106,8 @@ object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     CampfireBlock,
     BeehiveBlock,
     SculkSensorBlock,
+
+    TrapdoorBlock,
+    SweetBerryBushBlock,
+    LadderBlock,
 )

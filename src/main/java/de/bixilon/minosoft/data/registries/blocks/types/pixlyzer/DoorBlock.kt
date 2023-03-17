@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
+import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
@@ -20,8 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
+import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class DoorBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : DoubleSizeBlock(resourceLocation, registries, data) {
@@ -31,11 +31,11 @@ open class DoorBlock(resourceLocation: ResourceLocation, registries: Registries,
     }
 
     override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        if (target.blockState.block.identifier.path.startsWith("iron")) { // TODO
-            return InteractionResults.CONSUME
+        if (target.state.block.identifier.path.startsWith("iron")) { // TODO
+            return InteractionResults.FAILED
         }
 
-        connection.world[target.blockPosition] = target.blockState.cycle(BlockProperties.DOOR_OPEN)
+        connection.world[target.blockPosition] = target.state.cycle(BlockProperties.DOOR_OPEN)
 
         return InteractionResults.SUCCESS
     }

@@ -12,10 +12,14 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
-import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
-import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
-import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.registries.effects.attributes.AttributeOperations
+import de.bixilon.minosoft.data.registries.effects.attributes.AttributeType
+import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
+import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeContainerUpdate
+import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeModifier
+import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -27,44 +31,40 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class EntityAttributesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
-    val attributes: Map<ResourceLocation, EntityAttribute>
+    val attributes: Map<AttributeType, AttributeContainerUpdate>
 
     init {
-        val attributes: MutableMap<ResourceLocation, EntityAttribute> = mutableMapOf()
+        val attributes: MutableMap<AttributeType, AttributeContainerUpdate> = mutableMapOf()
         val attributeCount: Int = if (buffer.versionId < V_21W08A) {
             buffer.readInt()
         } else {
             buffer.readVarInt()
         }
         for (i in 0 until attributeCount) {
-            val key: ResourceLocation = buffer.readResourceLocation()
+            val type = MinecraftAttributes[buffer.readResourceLocation().fix()]
             val baseValue: Double = buffer.readDouble()
-            val attribute = EntityAttribute(baseValue = baseValue)
-            val modifierCount: Int = if (buffer.versionId < V_14W04A) {
-                buffer.readUnsignedShort()
-            } else {
-                buffer.readVarInt()
-            }
+            val update = AttributeContainerUpdate(base = baseValue)
+            val modifierCount: Int = if (buffer.versionId < V_14W04A) buffer.readUnsignedShort() else buffer.readVarInt()
+
             for (ii in 0 until modifierCount) {
                 val uuid: UUID = buffer.readUUID()
                 val amount: Double = buffer.readDouble()
-                val operation = StatusEffectOperations[buffer.readUnsignedByte()]
-                attribute.modifiers[uuid] = EntityAttributeModifier(key.toString(), uuid, amount, operation)
+                val operation = AttributeOperations[buffer.readUnsignedByte()]
+                update.modifier[uuid] = AttributeModifier(null, uuid, amount, operation)
             }
-            attributes[key] = attribute
+            if (type == null) {
+                continue
+            }
+            attributes[type] = update
         }
         this.attributes = attributes
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.world.entities[entityId]?.let {
-            for ((key, attribute) in this.attributes) {
-                it.attributes.getOrPut(key) { EntityAttribute(baseValue = it.type.attributes[key] ?: 1.0) }.merge(attribute)
-            }
-        }
+        connection.world.entities[entityId]?.nullCast<LivingEntity>()?.attributes?.update(this.attributes)
     }
 
     override fun log(reducedLog: Boolean) {

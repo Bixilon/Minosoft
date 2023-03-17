@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play.util
 
-import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.commands.nodes.ChatNode
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
@@ -26,9 +25,6 @@ import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
 import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
 import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.world.time.WorldTime
-import de.bixilon.minosoft.data.world.weather.WorldWeather
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
@@ -132,15 +128,19 @@ class ConnectionUtil(
     }
 
     fun prepareSpawn() {
-        connection.player.velocity = Vec3d.EMPTY
+        connection.player.items.reset()
+        connection.player.physics.reset()
         connection.world.audioPlayer?.stopAllSounds()
         connection.world.particleRenderer?.removeAllParticles()
-        connection.player.openedContainer?.let {
-            connection.player.openedContainer = null
+        connection.player.items.opened?.let {
+            connection.player.items.opened = null
             connection.events.fire(ContainerCloseEvent(connection, it))
         }
         connection.player.healthCondition = HealthCondition()
-        connection.world.time = WorldTime()
-        connection.world.weather = WorldWeather.NONE
+    }
+
+    fun resetWorld() {
+        connection.world.entities.clear(connection)
+        connection.world.clear()
     }
 }

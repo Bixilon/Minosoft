@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.data.entities.entities.player
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
-import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -32,10 +30,8 @@ class RemotePlayerEntity(
     data: EntityData,
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation.EMPTY,
-    name: String = "TBA",
-    properties: PlayerProperties? = null,
-    tabListItem: PlayerAdditional = PlayerAdditional(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
-) : PlayerEntity(connection, entityType, data, position, rotation, name, properties, tabListItem) {
+    additional: PlayerAdditional,
+) : PlayerEntity(connection, entityType, data, position, rotation, additional) {
 
     companion object : EntityFactory<PlayerEntity> {
         override val identifier: ResourceLocation = minecraft("player")

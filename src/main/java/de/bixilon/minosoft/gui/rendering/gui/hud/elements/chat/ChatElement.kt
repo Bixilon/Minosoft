@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.commands.nodes.ChatNode
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -90,8 +89,8 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
                 // message will be displayed in internal chat
                 return@listen
             }
-
-            DefaultThreadPool += { messages += it.message.text }
+            // TODO: offload on single thread
+            messages += it.message.text
         }
 
         context.inputHandler.registerKeyCallback(

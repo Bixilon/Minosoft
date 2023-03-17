@@ -13,37 +13,43 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.handler.entity.StepHandler
+import de.bixilon.minosoft.data.registries.blocks.handler.entity.landing.BouncingHandler
+import de.bixilon.minosoft.data.registries.blocks.light.FilteringTransparentProperty
+import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.InstantBreakableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.FrictionBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.transparency.TranslucentBlock
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.physics.entities.EntityPhysics
+import kotlin.math.abs
 
-open class SlimeBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
+open class SlimeBlock(identifier: ResourceLocation = SlimeBlock.identifier, settings: BlockSettings) : Block(identifier, settings), BouncingHandler, StepHandler, InstantBreakableBlock, FrictionBlock, TranslucentBlock, FullBlock {
+    override val friction: Float get() = 0.8f
 
-    override fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {
-        super.onEntityLand(connection, entity, blockPosition, blockState)
+    override fun onEntityStep(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState) {
+        val velocity = entity.physics.velocity
+        if (abs(velocity.y) >= 0.1) return
 
-        if (entity.isSneaking) {
-            return
-        }
-
-        bounce(entity)
+        val friction = 0.4 + velocity.y * 0.2
+        physics.velocity = Vec3d(velocity.x * friction, velocity.y, velocity.z * friction)
     }
 
-    private fun bounce(entity: Entity) {
-        if (entity.velocity.y < 0.0) {
-            entity.velocity.y = -entity.velocity.y
-        }
-    }
+    override fun getLightProperties(blockState: BlockState) = FilteringTransparentProperty
 
-    companion object : PixLyzerBlockFactory<SlimeBlock> {
+    companion object : BlockFactory<SlimeBlock> {
+        override val identifier = minecraft("slime_block")
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SlimeBlock {
-            return SlimeBlock(resourceLocation, registries, data)
-        }
+        override fun build(registries: Registries, settings: BlockSettings): SlimeBlock = SlimeBlock(settings = settings)
     }
 }
 

@@ -1,0 +1,60 @@
+{
+  "Entity": {
+    "events": {
+      "21": "minecraft:guardian_attack",
+      "35": "minecraft:totem_of_undying_particle",
+      "53": "minecraft:honey_block_particles"
+    }
+  },
+  "minecraft:player": {
+    "events": {
+      "9": "minecraft:consume_item",
+      "22": "minecraft:reduced_debug_screen",
+      "23": "minecraft:extended_debug_screen",
+      "24": "minecraft:op_permission_level_1",
+      "25": "minecraft:op_permission_level_2",
+      "26": "minecraft:op_permission_level_3",
+      "27": "minecraft:op_permission_level_4",
+      "43": "minecraft:cloud_particles"
+    }
+  },
+  "LivingEntity": {
+    "events": {
+      "2": "minecraft:damage",
+      "3": "minecraft:death",
+      "29": "minecraft:shield_block",
+      "30": "minecraft:shield_break",
+      "33": "minecraft:thorns_damage",
+      "37": "minecraft:fire_damage",
+      "36": "minecraft:drowning_damage",
+      "44": "minecraft:sweet_berry_bush_damage",
+      "46": "minecraft:portal_particles",
+      "47": "minecraft:main_hand_break",
+      "48": "minecraft:off_hand_break",
+      "49": "minecraft:helmet_break",
+      "50": "minecraft:chestplate_break",
+      "51": "minecraft:leggings_break",
+      "52": "minecraft:boots_break",
+      "54": "minecraft:honey_block_particles",
+      "55": "minecraft:swap_hands",
+      "57": "minecraft:freeze_damage",
+      "60": "minecraft:death_particles"
+    }
+  },
+  "MobEntity": {
+    "events": {
+      "20": "minecraft:poof_particles"
+    }
+  },
+  "Animal": {
+    "events": {
+      "18": "minecraft:love_particles"
+    }
+  },
+  "AbstractHorseEntity": {
+    "events": {
+      "6": "minecraft:taming_success_particles",
+      "7": "minecraft:taming_failed_particles"
+    }
+  }
+}

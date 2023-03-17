@@ -13,18 +13,28 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
+import de.bixilon.minosoft.data.entities.entities.properties.FluidWalker
+import de.bixilon.minosoft.data.entities.entities.properties.riding.ItemRideable
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.fishing.rod.OnAStickItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
-class Strider(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
+class Strider(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation), ItemRideable, FluidWalker {
+
+    override val primaryPassenger: Entity?
+        get() = super<ItemRideable>.primaryPassenger
 
     @get:SynchronizedEntityData
     val boostTime: Int
@@ -35,8 +45,16 @@ class Strider(connection: PlayConnection, entityType: EntityType, data: EntityDa
         get() = data.get(IS_SUFFOCATING_DATA, false)
 
     @get:SynchronizedEntityData
-    val hasSaddle: Boolean
+    override val isSaddled: Boolean
         get() = data.get(HAS_SADDLE_DATA, false)
+
+    override fun isSteerableWith(stack: ItemStack): Boolean {
+        return stack.item.item is OnAStickItem.WarpedFungusOnAStickItem
+    }
+
+    override fun canWalkOnFluid(fluid: Fluid, state: BlockState): Boolean {
+        return fluid is LavaFluid
+    }
 
 
     companion object : EntityFactory<Strider> {

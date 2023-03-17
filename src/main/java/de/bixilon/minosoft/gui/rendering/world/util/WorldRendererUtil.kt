@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.world.util
 
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.isEmpty
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -24,7 +24,7 @@ object WorldRendererUtil {
 
 
     // If the player is still, then we can load more chunks (to not cause lags)
-    val WorldRenderer.maxBusyTime: Long get() = if (connection.player.velocity.empty) STILL_LOADING_TIME else MOVING_LOADING_TIME // TODO: get of camera
+    val WorldRenderer.maxBusyTime: Long get() = if (connection.player.physics.velocity.isEmpty()) STILL_LOADING_TIME else MOVING_LOADING_TIME // TODO: get of camera
 
 
     val ChunkSection.smallMesh: Boolean get() = blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z

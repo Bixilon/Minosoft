@@ -24,7 +24,7 @@ class WorldBorderOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val config = context.connection.profiles.rendering.overlay
     override val texture: AbstractTexture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     override val render: Boolean
-        get() = config.worldBorder && context.connection.world.border.isOutside(context.connection.player.position)
+        get() = config.worldBorder && context.connection.world.border.isOutside(context.connection.player.physics.position)
 
     override fun update() {
         tintColor = RGBColor(1.0f, 0.0f, 0.0f, 0.5f) // ToDo: Correct

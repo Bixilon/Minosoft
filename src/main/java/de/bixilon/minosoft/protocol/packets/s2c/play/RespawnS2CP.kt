@@ -102,10 +102,11 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.player.additional.gamemode = gamemode
         val dimensionChange = this.dimension != connection.world.dimension || this.world != connection.world.name
         if (dimensionChange) {
-            connection.world.clear()
+            connection.util.resetWorld()
         }
         connection.world.dimension = dimension
         connection.world.name = world
+        connection.world.cacheBiomeAccessor?.hashedSeed = hashedSeed
 
         connection.state = PlayConnectionStates.SPAWNING
         if (dimensionChange) {

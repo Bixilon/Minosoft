@@ -21,7 +21,7 @@ import org.testng.annotations.Test
 class GlassTest : BlockTest<Block>() {
 
     init {
-        GlassTestO = this
+        GlassTest0 = this
     }
 
     fun getGlass() {
@@ -33,4 +33,4 @@ class GlassTest : BlockTest<Block>() {
     }
 }
 
-var GlassTestO: GlassTest = CastUtil.unsafeNull()
+var GlassTest0: GlassTest = CastUtil.unsafeNull()

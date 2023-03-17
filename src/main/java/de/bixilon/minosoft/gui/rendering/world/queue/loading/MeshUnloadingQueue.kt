@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -56,7 +56,7 @@ class MeshUnloadingQueue(
     fun forceQueue(mesh: WorldMesh, lock: Boolean = true) {
         if (lock) lock()
 
-        if (mesh.chunkPosition == renderer.connection.player.positionInfo.chunkPosition) { // TODO: camera
+        if (mesh.chunkPosition == renderer.connection.camera.entity.physics.positionInfo.chunkPosition) {
             this.meshes.add(0, mesh)
         } else {
             this.meshes += mesh

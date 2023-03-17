@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.item.items.armor
 
-import de.bixilon.minosoft.data.container.ArmorSlots
+import de.bixilon.minosoft.data.container.equipment.ArmorSlots
+
 
 interface WearableItem {
     val armorSlot: Set<ArmorSlots> get() = ArmorSlots.ALL

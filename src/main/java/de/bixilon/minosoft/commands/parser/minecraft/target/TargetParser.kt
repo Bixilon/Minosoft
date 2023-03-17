@@ -18,7 +18,7 @@ import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.CommandEntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.InvalidNameError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.NameEntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid.UUIDEntityTarget
@@ -39,10 +39,10 @@ class TargetParser(
     val single: Boolean = false,
     val onlyPlayers: Boolean = false,
     val playerName: String = DEFAULT_PLAYER_NAME,
-) : ArgumentParser<EntityTarget> {
+) : ArgumentParser<CommandEntityTarget> {
     override val examples: List<Any?> = listOf(playerName, "@a", "@p")
 
-    override fun parse(reader: CommandReader): EntityTarget {
+    override fun parse(reader: CommandReader): CommandEntityTarget {
         if (!reader.canPeek()) {
             throw ExpectedArgumentError(reader)
         }
@@ -75,7 +75,7 @@ class TargetParser(
         return target.read(this)
     }
 
-    fun parseEntityIdentifier(reader: CommandReader): EntityTarget {
+    fun parseEntityIdentifier(reader: CommandReader): CommandEntityTarget {
         val result = reader.readResult { reader.readUnquotedString() }
         if (result.result == null) {
             throw ExpectedArgumentError(reader)
@@ -107,7 +107,7 @@ class TargetParser(
             val flags = buffer.readUnsignedByte()
             val single = flags.isBitMask(0x01)
             val onlyPlayers = flags.isBitMask(0x02)
-            return TargetParser(single, onlyPlayers, buffer.connection.player.name)
+            return TargetParser(single, onlyPlayers, buffer.connection.player.additional.name)
         }
     }
 }

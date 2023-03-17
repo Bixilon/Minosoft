@@ -20,4 +20,6 @@ object StaticConfiguration {
     const val IGNORE_SERVER_LIGHT = true
 
     const val VALIDATE_RESOURCE_LOCATION = true
+
+    const val REGISTRY_ITEM_COMPARE_CLASS = true
 }

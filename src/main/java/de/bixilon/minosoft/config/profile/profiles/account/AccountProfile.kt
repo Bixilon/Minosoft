@@ -45,7 +45,7 @@ class AccountProfile(
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 
-    @Deprecated("Accout warning", level = DeprecationLevel.HIDDEN)
+    @Deprecated("Account warning", level = DeprecationLevel.HIDDEN)
     val NOTICE by StringDelegate(this, "NEVER EVER SHARE THIS FILE WITH SOMEBODY (NOT IN ISSUES, BUG REPORTS, NOWHERE!). IF YOU DO SO, YOU PUT YOUR ACCOUNTS AT HIGH RISK!!!")
 
     /**

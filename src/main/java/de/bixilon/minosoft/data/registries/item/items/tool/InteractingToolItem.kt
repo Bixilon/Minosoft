@@ -16,16 +16,17 @@ package de.bixilon.minosoft.data.registries.item.items.tool
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.handler.ItemInteractBlockHandler
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
+import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class InteractingToolItem(identifier: ResourceLocation) : LeveledToolItem(identifier) {
+abstract class InteractingToolItem(identifier: ResourceLocation) : LeveledToolItem(identifier), ItemInteractBlockHandler {
 
     protected fun interact(connection: PlayConnection, blockPosition: BlockPosition, replace: BlockState?): InteractionResults {
         if (replace == null || !connection.player.gamemode.useTools) {
-            return InteractionResults.PASS
+            return InteractionResults.IGNORED
         }
 
         connection.world[blockPosition] = replace

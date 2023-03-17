@@ -31,7 +31,7 @@ class DistanceProperty(
     }
 
     override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
-        val entityPosition = entity.position
+        val entityPosition = entity.physics.position
 
         return (entityPosition - properties.center).length().toFloat() in range
     }

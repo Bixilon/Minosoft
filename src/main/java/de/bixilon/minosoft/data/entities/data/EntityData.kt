@@ -59,12 +59,19 @@ class EntityData(
         lock.unlock()
     }
 
+    operator fun set(field: EntityDataField, value: Any?) {
+        lock.acquire()
+        val index = connection.registries.getEntityDataIndex(field) ?: return
+        this.data[index] = value
+        lock.release()
+    }
+
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     inline fun <reified K> get(field: EntityDataField, default: K): K {
         lock.acquire()
         try {
-            val type = connection.registries.getEntityDataIndex(field) ?: return default // field is not present (in this version)
-            val data = this.data[type] ?: return default
+            val index = connection.registries.getEntityDataIndex(field) ?: return default // field is not present (in this version)
+            val data = this.data[index] ?: return default
             if (data !is K) {
                 if (data is Number) {
                     when (K::class) {

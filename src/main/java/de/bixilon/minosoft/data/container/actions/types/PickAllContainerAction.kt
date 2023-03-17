@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.container.actions.types
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
@@ -38,7 +39,7 @@ class PickAllContainerAction(
             if (previous != null || floating == null) {
                 return
             }
-            var countLeft = floating.item.item.maxStackSize - floating.item.count
+            var countLeft = (if (floating.item.item is StackableItem) floating.item.item.maxStackSize else 1) - floating.item.count
             val changes: Int2ObjectMap<ItemStack?> = Int2ObjectOpenHashMap()
             for ((slotId, slot) in container.slots) {
                 if (!floating.matches(slot)) {

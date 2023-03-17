@@ -33,7 +33,7 @@ object ChatUtil {
         if (entity !is PlayerEntity) {
             return InvalidSender(uuid)
         }
-        return PlayerEntityMessageSender(uuid, entity.name, entity)
+        return PlayerEntityMessageSender(uuid, entity.additional.name, entity)
     }
 
     fun validateChatMessage(connection: PlayConnection, message: String) {

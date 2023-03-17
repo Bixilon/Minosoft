@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class UseItemC2SP(
+data class UseItemC2SP(
     val hand: Hands,
     val sequence: Int = 1,
 ) : PlayC2SPacket {

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
 import de.bixilon.kotlinglm.vec2.Vec2t
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kotlinglm.vec4.Vec4t
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -26,6 +27,8 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.primitive.DoubleUtil
+import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.IntUtil.checkInt
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
@@ -310,6 +313,20 @@ object KUtil {
     fun secureRandomUUID(): UUID {
         val random = SecureRandom()
         return UUID(random.nextLong(), random.nextLong())
+    }
+
+    fun Initializable.startInit() {
+        init()
+        postInit()
+    }
+
+
+    fun Vec3d.matches(other: Vec3d, margin: Double = DoubleUtil.DEFAULT_MARGIN): Boolean {
+        return x.matches(other.x, margin) && y.matches(other.y, margin) && z.matches(other.z, margin)
+    }
+
+    fun toRad(value: Float): Float {
+        return value * 0.017453292f
     }
 
     fun String.fill(char: Char, length: Int): String {

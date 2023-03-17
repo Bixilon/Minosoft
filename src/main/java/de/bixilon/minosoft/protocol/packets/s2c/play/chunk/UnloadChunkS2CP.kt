@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -23,16 +23,16 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class UnloadChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val chunkPosition: Vec2i = buffer.readChunkPosition()
+    val position: ChunkPosition = buffer.readChunkPosition()
 
     override fun handle(connection: PlayConnection) {
-        connection.world.unloadChunk(chunkPosition)
+        connection.world.chunks -= position
     }
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk unload (chunkPosition=$chunkPosition)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Unload chunk (position=$position)" }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.world.chunk.light
 import de.bixilon.kutil.array.ArrayUtil.getFirst
 import de.bixilon.kutil.array.ArrayUtil.getLast
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -49,9 +49,9 @@ class BorderSectionLight(
     private fun updateY() {
         // we can not further increase the light
         if (top) {
-            chunk.sections?.getLast()?.light?.apply { if (!update) update = true }
+            chunk.sections.getLast()?.light?.apply { if (!update) update = true }
         } else {
-            chunk.sections?.getFirst()?.light?.apply { if (!update) update = true }
+            chunk.sections.getFirst()?.light?.apply { if (!update) update = true }
         }
     }
 
@@ -75,9 +75,9 @@ class BorderSectionLight(
         val neighbourLuminance = nextLuminance - 1
 
         if (top) {
-            chunk.sections?.getLast()?.light?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.DOWN)
+            chunk.sections.getLast()?.light?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.DOWN)
         } else {
-            chunk.sections?.getFirst()?.light?.traceBlockIncrease(x, 0, z, neighbourLuminance, Directions.UP)
+            chunk.sections.getFirst()?.light?.traceBlockIncrease(x, 0, z, neighbourLuminance, Directions.UP)
         }
 
         if (z > 0) {
@@ -128,9 +128,9 @@ class BorderSectionLight(
         val neighbourLevel = nextLevel - 1
 
         if (top) {
-            chunk.sections?.getLast()?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLevel, Directions.DOWN, chunk.maxSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
+            chunk.sections.getLast()?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLevel, Directions.DOWN, chunk.maxSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
         } else {
-            chunk.sections?.getFirst()?.light?.traceSkylightIncrease(x, 0, z, neighbourLevel, Directions.UP, chunk.minSection * ProtocolDefinition.SECTION_HEIGHT_Y)
+            chunk.sections.getFirst()?.light?.traceSkylightIncrease(x, 0, z, neighbourLevel, Directions.UP, chunk.minSection * ProtocolDefinition.SECTION_HEIGHT_Y)
         }
 
         if (z > 0) {

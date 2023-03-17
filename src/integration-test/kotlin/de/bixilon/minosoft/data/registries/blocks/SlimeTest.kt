@@ -21,7 +21,7 @@ import org.testng.annotations.Test
 class SlimeTest : BlockTest<SlimeBlock>() {
 
     init {
-        SlimeTestO = this
+        SlimeTest0 = this
     }
 
     fun getSlimeBlock() {
@@ -33,4 +33,4 @@ class SlimeTest : BlockTest<SlimeBlock>() {
     }
 }
 
-var SlimeTestO: SlimeTest = CastUtil.unsafeNull()
+var SlimeTest0: SlimeTest = CastUtil.unsafeNull()

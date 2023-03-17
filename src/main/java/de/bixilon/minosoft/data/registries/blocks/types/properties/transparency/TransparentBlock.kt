@@ -13,7 +13,15 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.transparency
 
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
+
 /**
  * A block that has opaque pixels or **fully** transparent pixels
  */
-interface TransparentBlock
+interface TransparentBlock : LightedBlock {
+
+    override fun getLightProperties(blockState: BlockState) = TransparentProperty
+}
+

@@ -18,7 +18,7 @@ import de.bixilon.kutil.array.IntArrayUtil.getOrElse
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
-import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider.Companion.isFullyOpaque
+import de.bixilon.minosoft.data.world.container.block.SectionOcclusion.Companion.isFullyOpaque
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties

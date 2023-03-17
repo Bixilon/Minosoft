@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.container.stack
 
-import de.bixilon.minosoft.data.registries.items.AppleTestO
+import de.bixilon.minosoft.data.registries.items.AppleTest0
 import de.bixilon.minosoft.data.registries.items.CoalTest0
-import de.bixilon.minosoft.data.registries.items.EggTestO
+import de.bixilon.minosoft.data.registries.items.EggTest0
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -23,26 +23,26 @@ import org.testng.annotations.Test
 class ItemStackTest {
 
     fun matches1() {
-        val a = ItemStack(AppleTestO.item, count = 1)
-        val b = ItemStack(AppleTestO.item, count = 2)
+        val a = ItemStack(AppleTest0.item, count = 1)
+        val b = ItemStack(AppleTest0.item, count = 2)
         assertTrue(a.matches(b))
     }
 
     fun matches2() {
-        val a = ItemStack(AppleTestO.item, count = 1)
-        val b = ItemStack(AppleTestO.item, count = 19)
+        val a = ItemStack(AppleTest0.item, count = 1)
+        val b = ItemStack(AppleTest0.item, count = 19)
         assertTrue(a.matches(b))
     }
 
     fun matches3() {
-        val a = ItemStack(AppleTestO.item, count = 1)
-        val b = ItemStack(EggTestO.item, count = 19)
+        val a = ItemStack(AppleTest0.item, count = 1)
+        val b = ItemStack(EggTest0.item, count = 19)
         assertFalse(a.matches(b))
     }
 
     fun matches4() {
         val a = ItemStack(CoalTest0.item, count = 1)
-        val b = ItemStack(EggTestO.item, count = 19)
+        val b = ItemStack(EggTest0.item, count = 19)
         assertFalse(a.matches(b))
     }
 

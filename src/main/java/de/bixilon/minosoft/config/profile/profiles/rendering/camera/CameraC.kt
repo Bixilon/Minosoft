@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,16 +14,18 @@
 package de.bixilon.minosoft.config.profile.profiles.rendering.camera
 
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.delegate.primitive.DoubleDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
+import de.bixilon.minosoft.config.profile.profiles.rendering.camera.shaking.ShakingC
 
 class CameraC(profile: RenderingProfile) {
+    val shaking = ShakingC(profile)
 
     /**
      * Field of view
      * Value must be greater than 0 and smaller than 180
      */
-    var fov by DoubleDelegate(profile, 70.0, "profile.rendering.camera.fov", arrayOf(10.0..179.0))
+    var fov by FloatDelegate(profile, 70.0f, "profile.rendering.camera.fov", arrayOf(10.0f..179.0f))
 
     /**
      * Changes the fov to create a speed or slowness illusion

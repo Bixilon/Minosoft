@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.entity.models
 
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.shapes.AABB
-import de.bixilon.minosoft.gui.rendering.entity.EntityHitbox
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.ModelUpdater
+import de.bixilon.minosoft.gui.rendering.entity.hitbox.EntityHitbox
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
 
@@ -35,7 +35,7 @@ abstract class EntityModel<E : Entity>(
         get() = !visible
 
     override fun checkUpdate(): Boolean {
-        val aabb = entity.cameraAABB
+        val aabb = entity.renderInfo.cameraAABB
         var update = false
         if (this.aabb != aabb) {
             this.aabb = aabb

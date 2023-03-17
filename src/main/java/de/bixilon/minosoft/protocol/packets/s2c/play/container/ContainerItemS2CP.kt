@@ -34,10 +34,10 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val stack = buffer.readItemStack()
 
     override fun handle(connection: PlayConnection) {
-        val container = connection.player.containers[containerId]
+        val container = connection.player.items.containers[containerId]
 
         if (container == null) {
-            val incomplete = connection.player.incompleteContainers.synchronizedGetOrPut(containerId) { IncompleteContainer() }
+            val incomplete = connection.player.items.incomplete.synchronizedGetOrPut(containerId) { IncompleteContainer() }
             if (slot < 0) {
                 incomplete.floating = stack
             } else if (stack == null) {

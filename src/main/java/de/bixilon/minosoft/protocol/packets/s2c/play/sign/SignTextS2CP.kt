@@ -44,11 +44,11 @@ class SignTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        val signBlockEntity = connection.world.getBlockEntity(position)?.unsafeCast<SignBlockEntity>() ?: SignBlockEntity(connection).apply {
-            connection.world.setBlockEntity(position, this)
-        }
+        val entity = connection.world.getBlockEntity(position)?.unsafeCast<SignBlockEntity>() ?: SignBlockEntity(connection)
 
-        signBlockEntity.lines = lines
+        connection.world[position] = entity
+
+        entity.lines = lines
     }
 
     override fun log(reducedLog: Boolean) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,11 +19,12 @@ import de.bixilon.kutil.math.simple.DoubleMath.square
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
-import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class NoiseBiomeAccessor(
     private val connection: PlayConnection,
+    var hashedSeed: Long = 0L,
 ) {
     private val world = connection.world
     private var fastNoise = false
@@ -34,24 +35,16 @@ class NoiseBiomeAccessor(
     }
 
     fun getBiome(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {
-        val biomeY = if (world.dimension?.supports3DBiomes == true) {
-            y
-        } else {
-            0
-        }
+        val biomeY = if (world.dimension.supports3DBiomes) y else 0
 
         if (fastNoise) {
-            chunk.biomeSource?.let {
-                if (it !is SpatialBiomeArray) {
-                    return null
-                }
+            val source = chunk.biomeSource
+            if (source !is SpatialBiomeArray) return null
 
-                return it.data[(biomeY and 0x0F) shr 2 and 0x3F shl 4 or ((z and 0x0F) shr 2 and 0x03 shl 2) or ((x and 0x0F) shr 2 and 0x03)]
-            }
-            return null
+            return source.data[(biomeY and 0x0F) shr 2 and 0x3F shl 4 or ((z and 0x0F) shr 2 and 0x03 shl 2) or ((x and 0x0F) shr 2 and 0x03)]
         }
 
-        return getBiome(world.hashedSeed, x, biomeY, z, chunkPositionX, chunkPositionZ, chunk, neighbours)
+        return getBiome(hashedSeed, x, biomeY, z, chunkPositionX, chunkPositionZ, chunk, neighbours)
     }
 
 
@@ -124,7 +117,7 @@ class NoiseBiomeAccessor(
         val biomeChunkZ = position.z shr 2
 
         if (neighbours == null) {
-            return world[Vec2i(biomeChunkX, biomeChunkZ)]?.biomeSource?.getBiome(position)
+            return world.chunks[Vec2i(biomeChunkX, biomeChunkZ)]?.biomeSource?.getBiome(position)
         }
 
         val deltaChunkX = biomeChunkX - chunkPositionX

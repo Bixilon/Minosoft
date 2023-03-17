@@ -16,6 +16,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.cast.CollectionCast.asAnyMap
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactories
@@ -27,16 +28,20 @@ import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilde
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterloggableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.FrictionBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.JumpBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.ReplaceableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.VelocityBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.PotentialFullOpaqueBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.FrictionBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.PotentialFullOpaqueBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
@@ -50,23 +55,27 @@ open class PixLyzerBlock(
     identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Block(identifier, BlockSettings(soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] }, item = data["item"]?.toInt())), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, ShapedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock, WaterloggableBlock {
+) : Block(identifier, BlockSettings(soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] })), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, OutlinedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock, WaterloggableBlock, CollidableBlock, ToolRequirement, BlockWithItem<Item> {
 
     override val randomOffset: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
 
-    override val friction = data["friction"]?.toFloat() ?: 0.6f
-
+    override val friction = data["friction"]?.toFloat() ?: FrictionBlock.DEFAULT_FRICTION
     override val velocity = data["velocity_multiplier"]?.toFloat() ?: 1.0f // ToDo: They exist since ~1.15
 
     override val jumpBoost = data["jump_velocity_multiplier"]?.toFloat() ?: 1.0f
 
     var material: Material = unsafeNull()
     override var hardness: Float = 0.0f
+    val requiresTool: Boolean
+    override val item: Item = unsafeNull()
 
     init {
         val state = data["states"]?.asAnyMap()!!.iterator().next().value.asJsonObject()
         material = registries.material[data["material"] ?: state["material"]]!!
         hardness = data["hardness"]?.toFloat() ?: state["hardness"].toFloat()
+        requiresTool = state["requires_tool"]?.toBoolean() ?: !material.soft
+
+        this::item.inject(data["item"])
     }
 
     override fun buildState(settings: BlockStateSettings): BlockState {
@@ -80,6 +89,10 @@ open class PixLyzerBlock(
     override fun isFullOpaque(state: BlockState): Boolean {
         if (state !is AdvancedBlockState) return false
         return state.solidRenderer
+    }
+
+    override fun isCorrectTool(item: Item): Boolean {
+        return false
     }
 
     override fun toString(): String {

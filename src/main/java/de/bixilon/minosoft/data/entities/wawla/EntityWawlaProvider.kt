@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.entities.wawla
 
+import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface EntityWawlaProvider {

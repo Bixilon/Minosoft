@@ -58,7 +58,7 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         container.floating = floatingItem?.let { if (it.isEmpty) null else it.get() }
 
-        connection.player.incompleteContainers[containerId] = container
+        connection.player.items.incomplete[containerId] = container
     }
 
     private fun updateContainer(container: Container) {
@@ -77,7 +77,7 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        val container = connection.player.containers[containerId]
+        val container = connection.player.items.containers[containerId]
         if (container == null) {
             pushIncompleteContainer(connection)
         } else {

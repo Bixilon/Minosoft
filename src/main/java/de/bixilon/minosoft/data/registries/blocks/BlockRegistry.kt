@@ -39,7 +39,7 @@ class BlockRegistry(
 ) : Registry<Block>(parent = parent, codec = PixLyzerBlock, flattened = flattened, metaType = MetaTypes.BLOCK) {
 
 
-    private fun updateStates(block: Block, data: JsonObject, registries: Registries) {
+    fun updateStates(block: Block, data: JsonObject, registries: Registries) {
         val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = mutableSetOf()

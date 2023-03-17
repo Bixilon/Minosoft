@@ -21,7 +21,7 @@ import org.testng.annotations.Test
 class LeavesTest : BlockTest<LeavesBlock>() {
 
     init {
-        LeavesTestO = this
+        LeavesTest0 = this
     }
 
     fun getOakLeaves() {
@@ -33,5 +33,5 @@ class LeavesTest : BlockTest<LeavesBlock>() {
     }
 }
 
-var LeavesTestO: LeavesTest = CastUtil.unsafeNull()
+var LeavesTest0: LeavesTest = CastUtil.unsafeNull()
 

@@ -21,14 +21,14 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class VelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     val velocity: Vec3d = buffer.readVelocity()
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        entity.velocity = velocity
+        entity.physics.velocity = velocity
     }
 
     override fun log(reducedLog: Boolean) {

@@ -20,16 +20,17 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class BlockInteractC2SP(
-    val position: Vec3i,
-    val direction: Directions,
-    val cursorPosition: Vec3,
+data class BlockInteractC2SP(
+    val position: Vec3i?,
+    val direction: Directions?,
+    val cursorPosition: Vec3?,
     val item: ItemStack?,
     val hand: Hands,
     val insideBlock: Boolean,
@@ -37,30 +38,37 @@ class BlockInteractC2SP(
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
+        if (buffer.versionId >= V_15W31A && (position == null || direction == null || cursorPosition == null)) {
+            throw NullPointerException()
+        }
         if (buffer.versionId >= ProtocolVersions.V_19W03A) {
             buffer.writeVarInt(hand.ordinal)
         }
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
-            buffer.writeByteBlockPosition(position)
+            buffer.writeByteBlockPosition(position ?: Vec3i(-1, -1, -1))
         } else {
-            buffer.writeBlockPosition(position)
+            buffer.writeBlockPosition(position ?: Vec3i(-1, -1, -1))
         }
-        if (buffer.versionId < ProtocolVersions.V_15W31A) {
-            buffer.writeByte(direction.ordinal)
+        if (buffer.versionId < V_15W31A) {
+            buffer.writeByte(direction?.ordinal ?: -1)
             buffer.writeItemStack(item)
         } else {
-            buffer.writeVarInt(direction.ordinal)
+            buffer.writeVarInt(direction?.ordinal ?: -1)
             if (buffer.versionId < ProtocolVersions.V_19W03A) {
                 buffer.writeVarInt(hand.ordinal)
             }
         }
 
         if (buffer.versionId < ProtocolVersions.V_16W39C) {
-            buffer.writeByte((cursorPosition.x * 15.0f).toInt())
-            buffer.writeByte((cursorPosition.y * 15.0f).toInt())
-            buffer.writeByte((cursorPosition.z * 15.0f).toInt())
+            if (cursorPosition == null) {
+                buffer.writeByte(0); buffer.writeByte(0); buffer.writeByte(0)
+            } else {
+                buffer.writeByte((cursorPosition.x * 15.0f).toInt())
+                buffer.writeByte((cursorPosition.y * 15.0f).toInt())
+                buffer.writeByte((cursorPosition.z * 15.0f).toInt())
+            }
         } else {
-            buffer.writeVec3f(cursorPosition)
+            buffer.writeVec3f(cursorPosition!!)
         }
 
         if (buffer.versionId >= ProtocolVersions.V_19W03A) {

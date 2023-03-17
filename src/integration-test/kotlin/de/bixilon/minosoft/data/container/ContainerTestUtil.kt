@@ -39,26 +39,26 @@ object ContainerTestUtil {
     }
 
     fun createInventory(connection: PlayConnection = createConnection()): Container {
-        val inventory = PlayerInventory(connection)
-        connection.player.containers[0] = inventory
+        val inventory = PlayerInventory(connection.player.items, connection)
+        connection.player.items.containers[0] = inventory
         return inventory
     }
 
     fun createContainer(connection: PlayConnection = createConnection()): Container {
         val container = UnknownContainer(connection, this.container)
-        connection.player.containers[9] = container
+        connection.player.items.containers[9] = container
         return container
     }
 
     fun createChest(connection: PlayConnection = createConnection()): Generic9x3Container {
         val container = Generic9x3Container(connection, this.chest, null)
-        connection.player.containers[9] = container
+        connection.player.items.containers[9] = container
         return container
     }
 
     fun createFurnace(connection: PlayConnection = createConnection()): FurnaceContainer {
         val container = FurnaceContainer(connection, this.furnace, null)
-        connection.player.containers[9] = container
+        connection.player.items.containers[9] = container
         return container
     }
 

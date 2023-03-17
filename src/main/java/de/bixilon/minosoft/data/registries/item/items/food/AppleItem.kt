@@ -18,9 +18,10 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), FoodItem {
+open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), FoodItem, StackableItem {
     override val nutrition: Int get() = 4
 
     companion object : ItemFactory<AppleItem> {
@@ -30,7 +31,7 @@ open class AppleItem(resourceLocation: ResourceLocation = this.identifier) : Ite
     }
 
     open class GoldenAppleItem(resourceLocation: ResourceLocation = this.identifier) : AppleItem(resourceLocation) {
-        override val alwaysEditable: Boolean get() = true
+        override val alwaysEdible: Boolean get() = true
 
         companion object : ItemFactory<GoldenAppleItem> {
             override val identifier = minecraft("golden_apple")

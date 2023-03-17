@@ -13,12 +13,21 @@
 
 package de.bixilon.minosoft.data.registries.item.items.throwable
 
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
-import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.entities.entities.player.Hands
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.registries.item.handler.item.ItemUseHandler
+import de.bixilon.minosoft.input.interaction.InteractionResults
 
-abstract class ThrowableItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data)
+interface ThrowableItem : ItemUseHandler {
+
+    override fun useItem(player: LocalPlayerEntity, hand: Hands, stack: ItemStack): InteractionResults {
+
+        if (player.gamemode != Gamemodes.CREATIVE) {
+            stack.item.decreaseCount()
+        }
+
+        return InteractionResults.SUCCESS
+    }
+}

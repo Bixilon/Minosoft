@@ -39,8 +39,12 @@ class TeleportS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        entity.position = position
-        entity.forceSetRotation(rotation)
+        entity.forceTeleport(position)
+
+        if (entity.clientControlled) return
+
+        entity.forceRotate(rotation)
+        entity.physics.onGround = onGround
     }
 
     override fun log(reducedLog: Boolean) {

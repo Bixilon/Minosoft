@@ -17,12 +17,14 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
+import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-class WaterFluidBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FluidBlock(identifier, settings) {
+open class WaterFluidBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FluidBlock(identifier, settings), VelocityBlock {
     override val fluid: WaterFluid = unsafeNull()
+    override val velocity: Float get() = 1.0f
 
     init {
         this::fluid.inject(WaterFluid)

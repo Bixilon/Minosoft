@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ class CloseContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId: Int = buffer.readUnsignedByte()
 
     override fun handle(connection: PlayConnection) {
-        val container = connection.player.containers[containerId] ?: return
+        val container = connection.player.items.containers[containerId] ?: return
 
         if (container is PlayerInventory || containerId == PlayerInventory.CONTAINER_ID) {
             // server can not close inventory
@@ -38,5 +38,4 @@ class CloseContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Container close (containerId=$containerId)" }
     }
-
 }

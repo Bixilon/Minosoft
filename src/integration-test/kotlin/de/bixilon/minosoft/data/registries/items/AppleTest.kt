@@ -22,7 +22,7 @@ import org.testng.annotations.Test
 class AppleTest : ItemTest<AppleItem>() {
 
     init {
-        AppleTestO = this
+        AppleTest0 = this
     }
 
     fun getApple() {
@@ -31,4 +31,4 @@ class AppleTest : ItemTest<AppleItem>() {
     }
 }
 
-var AppleTestO: AppleTest = unsafeNull()
+var AppleTest0: AppleTest = unsafeNull()

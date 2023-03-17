@@ -26,7 +26,7 @@ interface RotationProperty : EntityTargetProperty {
 
 
     override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
-        val rotation = getValue(entity.rotation)
+        val rotation = getValue(entity.physics.rotation)
 
         return rotation in range
     }

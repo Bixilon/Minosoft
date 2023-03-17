@@ -13,8 +13,37 @@
 
 package de.bixilon.minosoft.data.registries.item.items.food
 
-interface FoodItem {
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.entities.entities.player.Hands
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.registries.item.handler.item.LongItemUseHandler
+import de.bixilon.minosoft.data.registries.item.handler.item.LongUseResults
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarHungerElement
+
+interface FoodItem : LongItemUseHandler {
     val nutrition: Int
-    val alwaysEditable: Boolean get() = false
+    val alwaysEdible: Boolean get() = false
     val eatTime: Int get() = 32
+
+    override val maxUseTime: Int
+        get() = eatTime
+
+
+    override fun startUse(player: LocalPlayerEntity, hand: Hands, stack: ItemStack): LongUseResults {
+        val hunger = player.healthCondition.hunger
+        if (hunger < HotbarHungerElement.MAX_HUNGER || alwaysEdible) {
+            return LongUseResults.START
+        }
+        return LongUseResults.IGNORE
+    }
+
+    override fun finishUse(player: LocalPlayerEntity, hand: Hands, stack: ItemStack, ticks: Int) {
+        if (ticks < eatTime) {
+            return
+        }
+        if (player.gamemode != Gamemodes.CREATIVE) {
+            stack.item.decreaseCount()
+        }
+    }
 }

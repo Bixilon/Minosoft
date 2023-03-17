@@ -12,8 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
-import de.bixilon.minosoft.data.container.EquipmentSlots
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -52,11 +54,11 @@ class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        val entity = connection.world.entities[entityId] ?: return
+        val entity = connection.world.entities[entityId]?.nullCast<LivingEntity>() ?: return
 
         for ((slot, stack) in equipment) {
             if (stack == null) {
-                entity.equipment.remove(slot)
+                entity.equipment -= slot
             } else {
                 entity.equipment[slot] = stack
             }

@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
-import de.bixilon.minosoft.util.Previous
 import kotlin.math.max
 
 interface NativeShader {
@@ -65,7 +64,6 @@ interface NativeShader {
     operator fun set(uniformName: String, data: Any?) {
         data ?: return
         when (data) {
-            is Previous<*> -> this[uniformName] = data.value
             is Array<*> -> setArray(uniformName, data)
             is IntArray -> setIntArray(uniformName, data)
             is Collection<*> -> setCollection(uniformName, data)

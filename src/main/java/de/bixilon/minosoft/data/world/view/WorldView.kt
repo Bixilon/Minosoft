@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ open class WorldView(
                 return
             }
             field = realValue
-            connection.fire(ViewDistanceChangeEvent(connection, realValue))
+            connection.events.fire(ViewDistanceChangeEvent(connection, realValue))
         }
 
     var serverSimulationDistance = Int.MAX_VALUE
@@ -49,7 +49,7 @@ open class WorldView(
                 return
             }
             field = realValue
-            connection.fire(SimulationDistanceChangeEvent(connection, realValue))
+            connection.events.fire(SimulationDistanceChangeEvent(connection, realValue))
             particleViewDistance = minOf(realValue, connection.profiles.particle.viewDistance)
         }
 
@@ -60,14 +60,15 @@ open class WorldView(
                 return
             }
             field = realValue
-            connection.fire(ParticleViewDistanceChangeEvent(connection, realValue))
+            connection.events.fire(ParticleViewDistanceChangeEvent(connection, realValue))
         }
 
     @Synchronized
     open fun updateServerDistance() {
-        val cameraPosition = connection.player.positionInfo.chunkPosition
-        val max = connection.world.chunkMax - cameraPosition
-        val min = connection.world.chunkMin - cameraPosition
+        val cameraPosition = connection.player.physics.positionInfo.chunkPosition
+        val size = connection.world.chunks.size.size
+        val max = size.max - cameraPosition
+        val min = size.min - cameraPosition
         serverViewDistance = maxOf(3, minOf(abs(min.x), abs(max.x), abs(min.y), abs(max.y)))
     }
 }

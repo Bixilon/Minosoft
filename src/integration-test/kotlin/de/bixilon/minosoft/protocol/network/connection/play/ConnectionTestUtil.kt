@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.TestAssetsManager
+import de.bixilon.minosoft.camera.ConnectionCamera
 import de.bixilon.minosoft.config.profile.ProfileTestUtil.createProfiles
 import de.bixilon.minosoft.data.accounts.types.test.TestAccount
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
@@ -25,8 +26,14 @@ import de.bixilon.minosoft.data.world.WorldTestUtil.createWorld
 import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
+import de.bixilon.minosoft.protocol.versions.Versions
+import de.bixilon.minosoft.tags.TagManager
 import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.IT.FALLBACK_TAGS
 import de.bixilon.minosoft.test.IT.reference
+import de.bixilon.minosoft.test.ITUtil
+import de.bixilon.minosoft.util.KUtil.startInit
+import java.util.concurrent.atomic.AtomicInteger
 
 
 object ConnectionTestUtil {
@@ -35,24 +42,30 @@ object ConnectionTestUtil {
         reference()
     }
 
-    fun createConnection(worldSize: Int = 0): PlayConnection {
+
+    fun createConnection(worldSize: Int = 0, light: Boolean = false, version: String? = null): PlayConnection {
         val connection = IT.OBJENESIS.newInstance(PlayConnection::class.java)
+        val version = if (version == null) IT.VERSION else Versions[version] ?: throw IllegalArgumentException("Can not find version: $version")
+        connection::sequence.forceSet(AtomicInteger(1))
         connection::account.forceSet(TestAccount)
-        connection::version.forceSet(IT.VERSION)
+        connection::version.forceSet(version)
         connection::registries.forceSet(Registries())
-        connection.registries.parent = IT.REGISTRIES
-        connection::world.forceSet(createWorld(connection))
+        connection.registries.parent = if (version == IT.VERSION) IT.REGISTRIES else ITUtil.loadPixlyzerData(version)
+        connection::world.forceSet(createWorld(connection, light))
         connection::player.forceSet(LocalPlayerEntity(connection.account, connection, SignatureKeyManagement(connection, TestAccount)))
+        connection.player.startInit()
         connection::network.forceSet(TestNetwork())
         connection::events.forceSet(EventMaster())
         connection::profiles.forceSet(createProfiles())
         connection::assetsManager.forceSet(TestAssetsManager)
         connection::state.forceSet(DataObserver(PlayConnectionStates.PLAYING))
-
+        connection::tags.forceSet(TagManager())
+        connection::legacyTags.forceSet(FALLBACK_TAGS)
+        connection::camera.forceSet(ConnectionCamera(connection))
+        connection.camera.init()
         if (worldSize > 0) {
             connection.world.initialize(worldSize)
         }
-
         return connection
     }
 }

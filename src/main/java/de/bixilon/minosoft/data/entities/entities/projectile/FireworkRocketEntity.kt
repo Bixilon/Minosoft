@@ -33,7 +33,7 @@ class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType, d
         get() = data.get(ITEM_DATA, null)
 
     @get:SynchronizedEntityData
-    override var _attachedEntity: Int?
+    var _attachedEntity: Int?
         get() = data.get(ATTACHED_ENTITY_DATA, null)
         set(attachedEntity) {}
 

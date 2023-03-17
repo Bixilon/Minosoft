@@ -13,17 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
-import de.bixilon.minosoft.data.container.EquipmentSlots
+import de.bixilon.minosoft.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.wawla.EntityWawlaProvider
-import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
+import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponentUtil.removeTrailingNewlines
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaElement
@@ -44,6 +46,13 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
 
 
     private fun createName(): TextElement {
+        if (target.entity is PlayerEntity) {
+            val name = target.entity.additional.tabDisplayName
+            if (name.length > 0) {
+                name.setFallbackColor(ChatColors.WHITE)
+                return TextElement(guiRenderer, name, background = false, scale = 1.2f)
+            }
+        }
         return createNameElement(target.entity.type.translationKey)
     }
 
@@ -59,10 +68,10 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
         val entity = target.entity
         val component = BaseComponent()
         if (entity is LivingEntity && wawla.profile.entity.health) {
-            component += TextComponent("Health: ${entity.health.rounded10}/${java.lang.Float.max(0.0f, entity.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat() + entity.absorptionHearts)}")
+            component += TextComponent("Health: ${entity.health.rounded10}/${java.lang.Float.max(0.0f, entity.attributes[MinecraftAttributes.MAX_HEALTH].toFloat() + entity.absorptionHearts)}")
             component += "\n"
         }
-        val hand = entity.equipment[EquipmentSlots.MAIN_HAND]
+        val hand = entity.nullCast<LivingEntity>()?.equipment?.get(EquipmentSlots.MAIN_HAND)
         if (wawla.profile.entity.hand && hand != null) {
             component += TextComponent("Hand: ${hand.item.count}x ${hand.item.item}")
             component += "\n"

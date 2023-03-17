@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util.chunk
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.chunk.ChunkData
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
@@ -24,15 +24,15 @@ import java.util.*
 object LightUtil {
     val EMPTY_LIGHT_ARRAY = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
 
-    fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, emptySkyLightMask: BitSet, blockLightMask: BitSet, emptyBlockLightMask: BitSet, dimension: DimensionProperties): ChunkData {
-        val skyLight = if (dimension.hasSkyLight || buffer.versionId > V_1_16) { // ToDo: find out version
+    fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, emptySkyLightMask: BitSet, blockLightMask: BitSet, emptyBlockLightMask: BitSet, dimension: DimensionProperties): ChunkPrototype {
+        val skyLight = if (dimension.skyLight || buffer.versionId > V_1_16) { // ToDo: find out version
             readLightArray(buffer, skyLightMask, emptySkyLightMask, dimension)
         } else {
             null
         }
         val blockLight = readLightArray(buffer, blockLightMask, emptyBlockLightMask, dimension)
 
-        val chunkData = ChunkData()
+        val chunkData = ChunkPrototype()
         val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
 
         for (i in light.indices) {

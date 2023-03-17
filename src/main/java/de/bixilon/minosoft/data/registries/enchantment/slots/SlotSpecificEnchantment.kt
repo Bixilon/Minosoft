@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.enchantment.slots
 
-import de.bixilon.minosoft.data.container.EquipmentSlots
+import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 

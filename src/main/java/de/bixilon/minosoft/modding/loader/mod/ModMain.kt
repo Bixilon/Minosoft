@@ -15,8 +15,8 @@ package de.bixilon.minosoft.modding.loader.mod
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.modding.loader.mod.logger.ModLogger
+import de.bixilon.minosoft.util.Initializable
 
 abstract class ModMain : Initializable {
     val assets: AssetsManager = unsafeNull()

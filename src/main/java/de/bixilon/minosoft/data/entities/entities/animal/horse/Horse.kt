@@ -24,9 +24,9 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.physics.entities.vehicle.horse.HorsePhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
 
 class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, data, position, rotation) {
 
@@ -55,6 +55,8 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
             }
             return null
         }
+
+    override fun createPhysics() = HorsePhysics(this)
 
     enum class HorseColors {
         WHITE,

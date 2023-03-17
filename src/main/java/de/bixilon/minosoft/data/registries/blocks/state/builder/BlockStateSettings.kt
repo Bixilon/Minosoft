@@ -21,38 +21,39 @@ import de.bixilon.minosoft.data.registries.blocks.light.*
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
-import de.bixilon.minosoft.data.registries.shapes.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape.Companion.deserialize
 
 class BlockStateSettings(
     val properties: Map<BlockProperties, Any>?,
     val luminance: Int,
-    val collisionShape: VoxelShape?,
-    val outlineShape: VoxelShape?,
+    val collisionShape: AbstractVoxelShape?,
+    val outlineShape: AbstractVoxelShape?,
     val lightProperties: LightProperties,
     @Deprecated("pixlyzer") val solidRenderer: Boolean,
 ) {
 
     companion object {
 
-        private fun Any.getShape(shapes: ShapeRegistry): VoxelShape {
+        private fun Any.getShape(shapes: ShapeRegistry): AbstractVoxelShape {
             if (this is Int) {
                 return shapes[this]
             }
-            return VoxelShape(shapes, this)
+            return shapes.deserialize(this)
         }
 
-        private fun JsonObject.getCollisionShape(shapes: ShapeRegistry): VoxelShape {
+        private fun JsonObject.getCollisionShape(shapes: ShapeRegistry): AbstractVoxelShape {
             this["collision_shape"]?.getShape(shapes)?.let { return it }
 
-            this["is_collision_shape_full_block"]?.toBoolean()?.let { if (it) return VoxelShape.FULL else VoxelShape.EMPTY }
+            this["is_collision_shape_full_block"]?.toBoolean()?.let { if (it) return AbstractVoxelShape.FULL else AbstractVoxelShape.EMPTY }
 
-            return VoxelShape.EMPTY
+            return AbstractVoxelShape.EMPTY
         }
 
-        private fun JsonObject.getOutlineShape(shapes: ShapeRegistry): VoxelShape {
+        private fun JsonObject.getOutlineShape(shapes: ShapeRegistry): AbstractVoxelShape {
             this["outline_shape"]?.getShape(shapes)?.let { return it }
 
-            return VoxelShape.EMPTY
+            return AbstractVoxelShape.EMPTY
         }
 
         private fun JsonObject.getProperties(): Map<BlockProperties, Any>? {
@@ -77,16 +78,13 @@ class BlockStateSettings(
             return this["luminance"]?.toInt() ?: 0
         }
 
-        private fun JsonObject.getLightProperties(outlineShape: VoxelShape): LightProperties {
+        private fun JsonObject.getLightProperties(outlineShape: AbstractVoxelShape): LightProperties {
             val opaque = this["is_opaque"]?.toBoolean() ?: true
             val translucent = this["translucent"]?.toBoolean() ?: true
 
-
-            // TODO: FluidBlock
-
-            var lightProperties = if (outlineShape == VoxelShape.EMPTY || (!opaque && translucent)) {
+            var lightProperties = if (outlineShape == AbstractVoxelShape.EMPTY || (!opaque && translucent)) {
                 TransparentProperty
-            } else if (outlineShape == VoxelShape.FULL) {
+            } else if (outlineShape == AbstractVoxelShape.FULL) {
                 OpaqueProperty
             } else {
                 DirectedProperty.of(outlineShape, opaque, !translucent)
@@ -107,8 +105,8 @@ class BlockStateSettings(
             return BlockStateSettings(
                 properties = data.getProperties(),
                 luminance = data.getLuminance(),
-                collisionShape = if (collisionShape == VoxelShape.EMPTY) null else collisionShape,
-                outlineShape = if (outlineShape == VoxelShape.EMPTY) null else outlineShape,
+                collisionShape = if (collisionShape == AbstractVoxelShape.EMPTY) null else collisionShape,
+                outlineShape = if (outlineShape == AbstractVoxelShape.EMPTY) null else outlineShape,
                 lightProperties = data.getLightProperties(outlineShape),
                 solidRenderer = data["solid_render"]?.toBoolean() ?: false,
             )

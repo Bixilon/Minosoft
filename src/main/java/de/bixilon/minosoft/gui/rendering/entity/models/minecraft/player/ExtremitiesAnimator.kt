@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
-import de.bixilon.kotlinglm.vec3.swizzle.xz
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.CustomSkeletalAnimation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -40,7 +39,8 @@ abstract class ExtremitiesAnimator(
 
 
     private fun _getVelocityMultiplier(): Float {
-        var velocity = model.entity.deltaMovement.xz.length().toFloat()
+        //TODO  var velocity = model.entity.deltaMovement.xz.length().toFloat()
+        var velocity = 0.0f
         if (velocity > 1.0f) {
             velocity = 1.0f
         }

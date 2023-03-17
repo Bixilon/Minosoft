@@ -34,7 +34,7 @@ abstract class SkeletalEntityModel<E : Entity>(renderer: EntityRenderer, entity:
     override fun draw() {
         super.draw()
         if (!hideSkeletalModel) {
-            instance?.updatePosition(entity.cameraPosition, entity.rotation)
+            instance?.updatePosition(entity.renderInfo.position, entity.renderInfo.rotation)
             instance?.draw()
         }
     }

@@ -12,28 +12,23 @@
  */
 package de.bixilon.minosoft.data.registries.item.items
 
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.Rarities
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.models.baked.item.BakedItemModel
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 abstract class Item(
     override val identifier: ResourceLocation,
 ) : RegistryItem(), Translatable {
     @Deprecated("interface")
     open val rarity: Rarities get() = Rarities.COMMON
-
-    @Deprecated("interface")
-    open val maxStackSize: Int get() = 64
 
     override val translationKey: ResourceLocation = identifier.translation("item")
 
@@ -44,19 +39,16 @@ abstract class Item(
         return identifier.toString()
     }
 
-    open fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
-        return InteractionResults.PASS
+    override fun hashCode(): Int {
+        return identifier.hashCode()
     }
 
-    open fun interactEntity(connection: PlayConnection, target: EntityTarget, hand: Hands, stack: ItemStack): InteractionResults {
-        return InteractionResults.PASS
-    }
-
-    open fun interactEntityAt(connection: PlayConnection, target: EntityTarget, hand: Hands, stack: ItemStack): InteractionResults {
-        return InteractionResults.PASS
-    }
-
-    open fun interactItem(connection: PlayConnection, hand: Hands, stack: ItemStack): InteractionResults {
-        return InteractionResults.PASS
+    override fun equals(other: Any?): Boolean {
+        if (other !is Item) return false
+        if (other.identifier != identifier) return false
+        if (StaticConfiguration.REGISTRY_ITEM_COMPARE_CLASS && other::class.java != this::class.java) {
+            Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Mismatching class: ${other::class.java} vs ${this::class.java}, but same identifier: $identifier" }
+        }
+        return true
     }
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play.channel.vanila
 
-import de.bixilon.minosoft.data.registries.DefaultRegistries
+import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
@@ -32,12 +32,12 @@ object BrandHandler {
     }
 
     private fun PlayConnection.getBrandChannel(): ResourceLocation {
-        return DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(version)[DefaultPluginChannels.BRAND]!!.identifier
+        return FallbackRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(version)[DefaultPluginChannels.BRAND]!!.identifier
     }
 
     private fun PlayConnection.sendBrand(channel: ResourceLocation, brand: String) {
         val buffer = PlayOutByteBuffer(this)
-        buffer.writeByteArray(brand.encodeNetwork())
+        buffer.writeBareByteArray(brand.encodeNetwork())
         sendPacket(ChannelC2SP(channel, buffer))
     }
 

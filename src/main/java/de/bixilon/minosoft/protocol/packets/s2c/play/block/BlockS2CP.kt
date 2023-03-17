@@ -23,26 +23,26 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class BlockS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val blockPosition: Vec3i
-    val blockState: BlockState?
+    val position: Vec3i
+    val state: BlockState?
 
     init {
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
-            blockPosition = buffer.readByteBlockPosition()
-            blockState = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
+            position = buffer.readByteBlockPosition()
+            state = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
         } else {
-            blockPosition = buffer.readBlockPosition()
-            blockState = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt())
+            position = buffer.readBlockPosition()
+            state = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt())
         }
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.world[blockPosition] = blockState
+        connection.world[position] = state
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block set (position=${blockPosition}, blockState=$blockState)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block set (position=$position, state=$state)" }
     }
 }

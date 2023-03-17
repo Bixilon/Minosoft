@@ -19,7 +19,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.data.container.EquipmentSlots
+import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -28,7 +28,6 @@ import de.bixilon.minosoft.data.registries.Motif
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockRegistry
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistry
-import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.dimension.Dimension
@@ -43,8 +42,8 @@ import de.bixilon.minosoft.data.registries.entities.damage.DamageType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.FluidFactories
-import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.PixLyzerFluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.ItemRegistry
@@ -72,13 +71,15 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 
-class Registries : Parentable<Registries> {
+class Registries(
+    val cleanup: Boolean = true,
+) : Parentable<Registries> {
     val registries: MutableMap<ResourceLocation, AbstractRegistry<*>> = mutableMapOf()
 
     val shape = ShapeRegistry()
 
     val motif: Registry<Motif> = register("motif", Registry(codec = Motif))
-    val block: Registry<Block> = register("block", BlockRegistry())
+    val block = register("block", BlockRegistry())
     val item: ItemRegistry = register("item", ItemRegistry())
     val enchantment: Registry<Enchantment> = register("enchantment", Registry(codec = PixLyzerEnchantment, integrated = IntegratedEnchantments))
     val particleType: Registry<ParticleType> = register("particle_type", Registry(codec = ParticleType))
@@ -224,7 +225,9 @@ class Registries : Parentable<Registries> {
         inner.dec()
         inner.await()
         isFullyLoaded = true
-        shape.cleanup()
+        if (cleanup) {
+            shape.cleanup()
+        }
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
     }
 

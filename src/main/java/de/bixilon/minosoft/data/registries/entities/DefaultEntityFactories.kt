@@ -206,6 +206,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
         "MobEntity".toResourceLocation() to Mob::class,
         "PassiveEntity".toResourceLocation() to AgeableMob::class,
         "TameableEntity".toResourceLocation() to TamableAnimal::class,
+        "Animal".toResourceLocation() to Animal::class,
         "FishEntity".toResourceLocation() to AbstractFish::class,
         "AbstractDonkeyEntity".toResourceLocation() to AbstractChestedHorse::class,
         "AbstractHorseEntity".toResourceLocation() to AbstractHorse::class,

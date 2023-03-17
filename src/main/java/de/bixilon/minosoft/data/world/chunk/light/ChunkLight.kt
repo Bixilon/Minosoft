@@ -15,16 +15,16 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ChunkLight(private val chunk: Chunk) {
@@ -36,6 +36,9 @@ class ChunkLight(private val chunk: Chunk) {
 
 
     fun onBlockChange(x: Int, y: Int, z: Int, section: ChunkSection, next: BlockState?) {
+        if (!chunk.world.dimension.light) {
+            return
+        }
         val heightmapIndex = (z shl 4) or x
         val previous = heightmap[heightmapIndex]
         recalculateHeightmap(x, y, z, next)
@@ -53,19 +56,20 @@ class ChunkLight(private val chunk: Chunk) {
         }
         section.light.update = false
 
+        val events = hashSetOf<AbstractWorldUpdate>()
         val chunkPosition = chunk.chunkPosition
         if (fireSameChunkEvent) {
-            connection.events.fire(LightChangeEvent(connection, chunkPosition, chunk, sectionHeight, true))
+            events += ChunkLightUpdate(chunkPosition, chunk, sectionHeight, true)
 
             val down = section.neighbours?.get(Directions.O_DOWN)?.light
             if (down != null && down.update) {
                 down.update = false
-                connection.events.fire(LightChangeEvent(connection, chunkPosition, chunk, sectionHeight - 1, false))
+                events += ChunkLightUpdate(chunkPosition, chunk, sectionHeight - 1, false)
             }
             val up = section.neighbours?.get(Directions.O_UP)?.light
             if (up?.update == true) {
                 up.update = false
-                connection.events.fire(LightChangeEvent(connection, chunkPosition, chunk, sectionHeight + 1, false))
+                events += ChunkLightUpdate(chunkPosition, chunk, sectionHeight + 1, false)
             }
         }
 
@@ -84,10 +88,11 @@ class ChunkLight(private val chunk: Chunk) {
                         continue
                     }
                     neighbourSection.light.update = false
-                    connection.events.fire(LightChangeEvent(connection, nextPosition, chunk, sectionHeight + chunkY, false))
+                    events += ChunkLightUpdate(nextPosition, chunk, sectionHeight + chunkY, false)
                 }
             }
         }
+        for (event in events) event.fire(connection)
     }
 
     private fun fireLightChange(sections: Array<ChunkSection?>, fireSameChunkEvent: Boolean) {
@@ -107,16 +112,15 @@ class ChunkLight(private val chunk: Chunk) {
         val inSectionHeight = y.inSectionHeight
         val heightmapIndex = (z shl 4) or x
         val index = inSectionHeight shl 8 or heightmapIndex
-        if (sectionHeight == chunk.minSection - 1) {
-            return bottom[index].toInt()
+
+        val light = when (sectionHeight) {
+            chunk.minSection - 1 -> bottom[index].toInt()
+            chunk.maxSection + 1 -> return top[index].toInt() or SectionLight.SKY_LIGHT_MASK // top has always sky=15
+            else -> chunk[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
         }
-        if (sectionHeight == chunk.maxSection + 1) {
-            return top[index].toInt() or SectionLight.SKY_LIGHT_MASK // top has always sky=15
-        }
-        var light = chunk[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
         if (y >= heightmap[heightmapIndex]) {
             // set sky=15
-            light = light or SectionLight.SKY_LIGHT_MASK
+            return light or SectionLight.SKY_LIGHT_MASK
         }
         return light
     }
@@ -124,7 +128,7 @@ class ChunkLight(private val chunk: Chunk) {
     fun recalculate(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
         bottom.reset()
         top.reset()
-        val sections = chunk.sections ?: Broken("Sections is null")
+        val sections = chunk.sections
         for (section in sections) {
             if (section == null) {
                 continue
@@ -138,7 +142,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     fun calculate(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
-        val sections = chunk.sections ?: Broken("Sections is null")
+        val sections = chunk.sections
         for (section in sections) {
             if (section == null) {
                 continue
@@ -152,7 +156,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     fun reset() {
-        val sections = chunk.sections ?: Broken("Sections is null")
+        val sections = chunk.sections
         for (section in sections) {
             if (section == null) {
                 continue
@@ -164,7 +168,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     fun propagateFromNeighbours(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
-        val sections = chunk.sections ?: Broken("Sections is null")
+        val sections = chunk.sections
         for (section in sections) {
             if (section == null) {
                 continue
@@ -193,7 +197,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     private fun checkHeightmapY(x: Int, startY: Int, z: Int) {
-        val sections = chunk.sections ?: return
+        val sections = chunk.sections
 
         var y = Int.MIN_VALUE
 
@@ -203,10 +207,11 @@ class ChunkLight(private val chunk: Chunk) {
                 continue
             }
             val section = sections[sectionIndex] ?: continue
+            if (section.blocks.isEmpty) continue
 
             section.acquire()
             for (sectionY in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
-                val state = section.blocks.unsafeGet(x, sectionY, z) ?: continue
+                val state = section.blocks[x, sectionY, z] ?: continue
                 val light = state.block.getLightProperties(state)
 
                 if (light.skylightEnters && !light.filtersSkylight && light.propagatesLight(Directions.DOWN)) {
@@ -234,7 +239,7 @@ class ChunkLight(private val chunk: Chunk) {
         if (previous < y) {
             // block is now higher
             // ToDo: Neighbours
-            val sections = chunk.sections ?: Broken("Sections == null")
+            val sections = chunk.sections
             val maxIndex = previous.sectionHeight - chunk.minSection
             val minIndex = now.sectionHeight - chunk.minSection
             bottom.reset()
@@ -368,7 +373,7 @@ class ChunkLight(private val chunk: Chunk) {
         }
 
         for (sectionHeight in minOf(skylightStartSectionHeight, chunk.maxSection) downTo maxOf(maxHeightSection + 1, chunk.minSection)) {
-            val section = chunk.sections?.get(sectionHeight - chunk.minSection) ?: continue
+            val section = chunk.sections.get(sectionHeight - chunk.minSection) ?: continue
 
             // ToDo: Only update if affected by heightmap change
             section.light.update = true
@@ -411,7 +416,7 @@ class ChunkLight(private val chunk: Chunk) {
             if (this == null) {
                 return false
             }
-            if (!this.hasSkyLight || !this.effects.skylight) {
+            if (!this.skyLight || !this.effects.skylight) {
                 return false
             }
             return true

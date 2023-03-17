@@ -16,6 +16,8 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.registries.blocks.handler.entity.BlockBreakHandler
+import de.bixilon.minosoft.data.registries.blocks.handler.entity.BlockPlaceHandler
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -25,23 +27,23 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class DoubleSizeBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
+abstract class DoubleSizeBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), BlockBreakHandler, BlockPlaceHandler {
 
-    override fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) {
-        if (blockState !is PropertyBlockState) return
-        if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
-            connection.world.forceSetBlockState(blockPosition + Directions.UP, null, check = true)
+    override fun onBreak(connection: PlayConnection, position: Vec3i, state: BlockState, entity: BlockEntity?) {
+        if (state !is PropertyBlockState) return
+        if (state.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
+            connection.world[position + Directions.UP] = null
         } else {
-            connection.world.forceSetBlockState(blockPosition + Directions.DOWN, null, check = true)
+            connection.world[position + Directions.DOWN] = null
         }
     }
 
-    override fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) {
-        if (blockState !is PropertyBlockState) return
-        if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
-            connection.world.forceSetBlockState(blockPosition + Directions.UP, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER), check = true)
+    override fun onPlace(connection: PlayConnection, position: Vec3i, state: BlockState, entity: BlockEntity?) {
+        if (state !is PropertyBlockState) return
+        if (state.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
+            connection.world[position + Directions.UP] = state.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER)
         } else {
-            connection.world.forceSetBlockState(blockPosition + Directions.DOWN, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER), check = true)
+            connection.world[position + Directions.DOWN] = state.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER)
         }
     }
 }

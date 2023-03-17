@@ -15,62 +15,62 @@ package de.bixilon.minosoft.data.registries.item.items.tool
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.CustomDiggingBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.MiningSpeedTool
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
-import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
+import de.bixilon.minosoft.tags.MinecraftTagTypes
+import de.bixilon.minosoft.tags.TagManager
 
 abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), MiningTool, DurableItem {
     open val tag: ResourceLocation? get() = null
 
-    @Deprecated("This was removed in 21w19a")
-    protected open val mineable: Set<Block>? = null // TODO: remove, this is legacy and used for blocks that are not implemented
-    override val maxStackSize: Int get() = 1
 
-
-    protected open fun checkTag(connection: PlayConnection, blockState: BlockState): Boolean? {
-        val blockTags = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION] ?: return null
-        val tag = blockTags[tag]?.entries ?: return null
+    private fun isInTag(tagManager: TagManager, blockState: BlockState): Boolean? {
+        val miningTag = this.tag ?: return null
+        val blockTags = tagManager[MinecraftTagTypes.BLOCK] ?: return null
+        val tag = blockTags[miningTag] ?: return null
         if (blockState.block !in tag) {
             return false
         }
         return true
     }
 
-    private fun isEffectiveTool(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Boolean {
-        checkTag(connection, blockState)?.let { return it }
-        if (blockState.block !is ToolRequirement) {
+    private fun isInTag(connection: PlayConnection, blockState: BlockState): Boolean? {
+        return isInTag(connection.tags, blockState) ?: isInTag(connection.legacyTags, blockState)
+    }
+
+    protected open fun isLevelSuitable(connection: PlayConnection, blockState: BlockState): Boolean? {
+        return isInTag(connection, blockState)
+    }
+
+    override fun isSuitableFor(connection: PlayConnection, state: BlockState, stack: ItemStack): Boolean {
+        isLevelSuitable(connection, state)?.let { if (it) return true }
+        if (state.block !is ToolRequirement) {
             // everything is effective, so …
             return true
         }
-        return blockState.block.isCorrectTool(this)
+        return state.block.isCorrectTool(this)
     }
 
-    override fun getMiningSpeed(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float? {
-        if (!isEffectiveTool(connection, blockState, stack)) {
-            return null
-        }
+    override fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack): Float {
+        var speed = 1.0f
         if (this is MiningSpeedTool) {
-            return this.miningSpeed
+            speed = this.miningSpeed
         }
-        return 1.0f
-    }
 
-    companion object {
-        fun Collection<Any?>.blocks(registries: Registries): Set<Block>? {
-            if (this.isEmpty()) return null
-            val set: MutableSet<Block> = mutableSetOf()
-
-            for (entry in this) {
-                set += registries.block[entry] ?: continue
-            }
-
-            return set
+        if (state.block is CustomDiggingBlock) {
+            speed = state.block.getMiningSpeed(connection, state, stack)
         }
+        isInTag(connection, state)?.let { if (it) return speed else 1.0f }
+
+        if (state.block !is ToolRequirement) return speed
+
+        if (!state.block.isCorrectTool(stack.item.item)) return 1.0f
+
+        return speed
     }
 }

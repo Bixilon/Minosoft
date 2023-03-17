@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,8 +21,12 @@ import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.registries.shapes.VoxelShape
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import java.util.*
@@ -44,7 +48,6 @@ class WorldEntities : Iterable<Entity> {
         check(entityId != null || entityUUID != null) { "Entity id and UUID is null!" }
         try {
             lock.lock()
-            entities += entity
             if (entityId != null) {
                 idEntityMap[entityId] = entity
                 entityIdMap[entity] = entityId
@@ -53,12 +56,14 @@ class WorldEntities : Iterable<Entity> {
                 uuidEntityMap[entityUUID] = entity
                 entityUUIDMap[entity] = entityUUID
             }
+            entities += entity
         } finally {
             lock.unlock()
         }
     }
 
     operator fun get(id: Int?): Entity? {
+        if (id == null) return null
         try {
             lock.acquire()
             return idEntityMap[id]
@@ -100,14 +105,8 @@ class WorldEntities : Iterable<Entity> {
             lock.unlock()
             return
         }
-        val id = entityIdMap.remove(entity)
-        if (id != null) {
-            idEntityMap.remove(id)
-        }
-        val uuid = entityUUIDMap.remove(entity)
-        if (uuid != null) {
-            uuidEntityMap.remove(uuid)
-        }
+        entityIdMap.remove(entity)?.let { idEntityMap -= it }
+        entityUUIDMap.remove(entity)?.let { uuidEntityMap -= it }
         lock.unlock()
     }
 
@@ -118,7 +117,7 @@ class WorldEntities : Iterable<Entity> {
             lock.unlock()
             return
         }
-        entities.remove(entity)
+        entities -= entity
         entityIdMap.remove(entity)
         val uuid = entityUUIDMap.remove(entity)
         if (uuid != null) {
@@ -136,8 +135,9 @@ class WorldEntities : Iterable<Entity> {
         val entities: MutableList<Entity> = mutableListOf()
         lock.acquire()
 
+        val distance2 = distance * distance
         for (entity in this) {
-            if ((entity.position - position).length() > distance) {
+            if ((entity.physics.position - position).length2() > distance2) {
                 continue
             }
             if (check(entity)) {
@@ -154,7 +154,7 @@ class WorldEntities : Iterable<Entity> {
         var closestEntity: Entity? = null
 
         for (entity in entities) {
-            val currentDistance = (entity.position - position).length()
+            val currentDistance = (entity.physics.position - position).length2()
             if (currentDistance < closestDistance) {
                 closestDistance = currentDistance
                 closestEntity = entity
@@ -164,14 +164,14 @@ class WorldEntities : Iterable<Entity> {
         return closestEntity
     }
 
-    fun isEntityIn(shape: VoxelShape): Boolean {
+    fun isEntityIn(shape: AbstractVoxelShape): Boolean {
         try {
             lock.acquire()
             for (entity in this) {
-                if (entity.isInvisible) {
+                if (entity.isInvisible || !entity.canRaycast) {
                     continue
                 }
-                val aabb = entity.aabb
+                val aabb = entity.physics.aabb
 
                 if (shape.intersect(aabb)) {
                     return true
@@ -187,10 +187,56 @@ class WorldEntities : Iterable<Entity> {
         lock.acquire()
         val worker = UnconditionalWorker()
         for (entity in entities) {
-            worker += UnconditionalTask(priority = ThreadPool.Priorities.HIGH) { entity.tryTick() }
+            if (entity.attachment.vehicle != null) {
+                continue
+            }
+            worker += UnconditionalTask(priority = ThreadPool.Priorities.HIGH) { tickEntity(entity) }
         }
         lock.release()
         worker.work()
+    }
+
+    private fun tickEntity(entity: Entity) {
+        if (!entity.tryTick()) {
+            // not ticked
+            return
+        }
+
+        for (passenger in entity.attachment.passengers) {
+            tickPassenger(passenger)
+        }
+    }
+
+    private fun tickPassenger(entity: Entity) {
+        if (entity is LivingEntity && entity.health == 0.0) {
+            entity.attachment.vehicle = null
+            return
+        }
+        if (entity !is PlayerEntity) return
+
+        entity.tickRiding()
+
+        for (passenger in entity.attachment.passengers) {
+            tickPassenger(passenger)
+        }
+    }
+
+    fun clear(connection: PlayConnection, local: Boolean = false) {
+        this.lock.lock()
+        for (entity in this.entities) {
+            if (!local && entity is LocalPlayerEntity) continue
+            connection.events.fire(EntityDestroyEvent(connection, entity))
+            entityIdMap.remove(entity)?.let { idEntityMap.remove(it) }
+            entityUUIDMap.remove(entity)?.let { uuidEntityMap.remove(it) }
+        }
+        if (local) {
+            this.entities.clear()
+        } else {
+            val remove = this.entities.toMutableSet()
+            remove -= connection.player
+            this.entities.removeAll(remove)
+        }
+        this.lock.unlock()
     }
 
     companion object {

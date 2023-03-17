@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.items.Item
 
 interface ToolRequirement {
+
     fun isCorrectTool(item: Item): Boolean
 
     fun canMine(stack: ItemStack): Boolean {

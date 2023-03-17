@@ -64,6 +64,7 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         null
     }
+    // TODO: the buffer should be supplied to the container for reading custom properties (e.g. entityId)
 
     override fun handle(connection: PlayConnection) {
         if (containerId == PlayerInventory.CONTAINER_ID) {
@@ -72,16 +73,15 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val title = if (hasTitle) title else null
         val container = containerType.factory.build(connection, containerType, title)
 
-        connection.player.incompleteContainers.remove(containerId)?.let {
+        connection.player.items.incomplete.remove(containerId)?.let {
             for ((slot, stack) in it.slots) {
                 container[slot] = stack
             }
             container.floatingItem = it.floating
         }
-        connection.player.containers[containerId] = container
+        connection.player.items.containers[containerId] = container
+        connection.player.items.opened = container
 
-
-        connection.player.openedContainer = container
         connection.events.fire(ContainerOpenEvent(connection, container))
     }
 

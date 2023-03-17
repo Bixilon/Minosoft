@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.world.queue.queue
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -52,8 +52,8 @@ class ChunkQueueMaster(
 
     fun tryQueue(section: ChunkSection, force: Boolean = false, chunk: Chunk? = null) {
         if (!canQueue()) return
-        val chunk = chunk ?: section.chunk ?: return
-        if (!chunk.isFullyLoaded) return
+        val chunk = chunk ?: section.chunk
+        if (!chunk.neighbours.complete) return
 
         chunk.neighbours.get() ?: return
 
@@ -69,7 +69,7 @@ class ChunkQueueMaster(
     }
 
     fun tryQueue(chunk: Chunk, ignoreLoaded: Boolean = false, force: Boolean = false) {
-        if (!canQueue() || !chunk.isFullyLoaded) return
+        if (!canQueue() || !chunk.neighbours.complete) return
         chunk.neighbours.get() ?: return
 
         if (!ignoreLoaded && chunk.chunkPosition in renderer.loaded) {
@@ -93,7 +93,7 @@ class ChunkQueueMaster(
 
     fun tryQueue(world: World) {
         world.lock.acquire()
-        for (chunk in world.chunks.unsafe.values) {
+        for (chunk in world.chunks.chunks.unsafe.values) {
             tryQueue(chunk, ignoreLoaded = true)
         }
         world.lock.release()

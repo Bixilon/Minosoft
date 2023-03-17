@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.misc.event.world.handler
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.misc.event.world.WorldEventHandler
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
@@ -46,7 +46,7 @@ object BlockDestroyedHandler : WorldEventHandler {
     private fun addBlockBreakParticles(connection: PlayConnection, position: Vec3i, state: BlockState) {
         val particleRenderer = connection.world.particleRenderer ?: return
         val type = connection.registries.particleType[BlockDustParticle] ?: return
-        if (state.block !is ShapedBlock) return
+        if (state.block !is OutlinedBlock) return
         val shape = state.block.getOutlineShape(connection, state) ?: return
         val particleData = BlockParticleData(state, type)
 

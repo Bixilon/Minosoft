@@ -17,9 +17,9 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -67,14 +67,14 @@ class SectionLight(
         val neighbours = section.neighbours ?: return
         val chunk = section.chunk
         if (y - light < 0) {
-            if (section.sectionHeight == chunk?.minSection) {
+            if (section.sectionHeight == chunk.minSection) {
                 chunk.light.bottom.decreaseCheckLevel(x, z, light - y, reset)
             } else {
                 neighbours[Directions.O_DOWN]?.light?.decreaseCheckLevel(x, z, light - y, reset)
             }
         }
         if (y + light > ProtocolDefinition.SECTION_MAX_Y) {
-            if (section.sectionHeight == chunk?.maxSection) {
+            if (section.sectionHeight == chunk.maxSection) {
                 chunk.light.top.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y), reset)
             } else {
                 neighbours[Directions.O_UP]?.light?.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y), reset)
@@ -121,7 +121,7 @@ class SectionLight(
 
     fun traceBlockIncrease(x: Int, y: Int, z: Int, nextLuminance: Int, target: Directions?) {
         val index = getIndex(x, y, z)
-        val block = section.blocks.unsafeGet(index)
+        val block = section.blocks[index]
         val lightProperties = block?.block?.getLightProperties(block) ?: TransparentProperty
         val blockLuminance = block?.luminance ?: 0
         if (block != null && !lightProperties.propagatesLight && blockLuminance == 0) {
@@ -144,7 +144,7 @@ class SectionLight(
         if (!update) {
             update = true
         }
-        val chunk = section.chunk ?: return
+        val chunk = section.chunk
         val chunkNeighbours = chunk.neighbours.get() ?: return
         val neighbours = section.neighbours ?: return
 
@@ -233,7 +233,7 @@ class SectionLight(
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
                     val index = getIndex(x, y, z)
-                    val luminance = blocks.unsafeGet(index)?.luminance ?: continue
+                    val luminance = blocks[index]?.luminance ?: continue
                     if (luminance == 0) {
                         // block is not emitting light, ignore it
                         continue
@@ -243,7 +243,7 @@ class SectionLight(
             }
         }
         blocks.release()
-        section.chunk?.light?.recalculateSkylight(section.sectionHeight)
+        section.chunk.light?.recalculateSkylight(section.sectionHeight)
     }
 
 
@@ -319,7 +319,7 @@ class SectionLight(
     }
 
     fun traceSkylightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, target: Directions?, totalY: Int, noForce: Boolean) {
-        val chunk = section.chunk ?: Broken("chunk == null")
+        val chunk = section.chunk
         val heightmapIndex = (z shl 4) or x
         if (noForce && totalY >= chunk.light.heightmap[heightmapIndex]) {
             // this light level will be 15, don't care
@@ -332,7 +332,7 @@ class SectionLight(
             return
         }
 
-        val state = section.blocks.unsafeGet(index)
+        val state = section.blocks[index]
         var lightProperties = state?.block?.getLightProperties(state)
 
         if (lightProperties == null) {
@@ -468,7 +468,7 @@ class SectionLight(
         traceBlockIncrease(x, y, z, blockLight - 1, null)
 
         val totalY = section.sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + y
-        section.chunk?.let {
+        section.chunk.let {
             // check if neighbours are above heightmap, if so set light level to max
             val chunkNeighbours = it.neighbours.get() ?: return@let
             val minHeight = it.light.getNeighbourMinHeight(chunkNeighbours, x, z)

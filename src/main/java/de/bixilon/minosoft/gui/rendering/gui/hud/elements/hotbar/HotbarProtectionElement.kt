@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.registries.item.items.armor.DefendingArmorItem.Companion.getProtection
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
@@ -56,7 +57,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
     }
 
     override fun poll(): Boolean {
-        val protection = guiRenderer.context.connection.player.protectionLevel // ToDo: Check for equipment change
+        val protection = guiRenderer.context.connection.player.equipment.getProtection() // ToDo: Check for equipment change
 
 
         if (this.protection == protection) {

@@ -14,45 +14,58 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.random.RandomUtil.chance
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.data.container.equipment.EntityEquipment
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
+import de.bixilon.minosoft.data.entities.entities.properties.StatusEffectProperty
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributes
+import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
+import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
     private val entityEffectParticle = connection.registries.particleType[EntityEffectParticle]
     private val ambientEntityEffectParticle = connection.registries.particleType[AmbientEntityEffectParticle]
 
+    open val equipment = EntityEquipment(this)
+    val effects = StatusEffectProperty()
+    val attributes = EntityAttributes(entityType.attributes)
+
+
+    override val canRaycast: Boolean get() = health > 0.0
+
     private fun getLivingEntityFlag(bitMask: Int): Boolean {
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
     @get:SynchronizedEntityData
-    val isHandActive: Boolean
-        get() = getLivingEntityFlag(0x01)
+    open val pose: Poses?
+        get() = data.get(POSE_DATA, Poses.STANDING)
 
     @get:SynchronizedEntityData
-    open val activeHand: Hands?
-        get() = if (getLivingEntityFlag(0x02)) Hands.OFF else Hands.MAIN
+    open val usingHand: Hands?
+        get() {
+            if (!getLivingEntityFlag(0x01)) return null // not using item
+
+            return if (getLivingEntityFlag(0x02)) Hands.OFF else Hands.MAIN
+        }
 
     @get:SynchronizedEntityData // aka using riptide
-    val isSpinAttacking: Boolean
+    val isRiptideAttacking: Boolean
         get() = getLivingEntityFlag(0x04)
 
     @get:SynchronizedEntityData
     open val health: Double
-        get() = data.get<Float?>(HEALTH_DATA, null)?.toDouble() ?: type.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0
+        get() = data.get<Float?>(HEALTH_DATA, null)?.toDouble() ?: attributes[MinecraftAttributes.MAX_HEALTH]
 
     @get:SynchronizedEntityData
     val effectColor: RGBColor?
@@ -77,59 +90,18 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     open val isSleeping: Boolean
         get() = bedPosition != null
 
-    override val pose: Poses?
-        get() = when {
-            isSleeping -> Poses.SLEEPING
-            isSpinAttacking -> Poses.SPIN_ATTACK
-            else -> super.pose
-        }
-
-    override val spawnSprintingParticles: Boolean
-        get() = super.spawnSprintingParticles && health > 0.0
-
-    private fun tickStatusEffects() {
-        if (entityEffectParticle == null && ambientEntityEffectParticle == null) {
-            return
-        }
-        val effectColor = effectColor ?: return
-        if (effectColor == ChatColors.BLACK) {
-            return
-        }
-        var spawnParticles = if (isInvisible) {
-            random.nextInt(15) == 0
-        } else {
-            random.nextBoolean()
-        }
-
-        if (effectAmbient) {
-            spawnParticles = spawnParticles && random.chance(20)
-        }
-
-        if (!spawnParticles) {
-            return
-        }
-
-        val particlePosition = position + Vec3d.horizontal(
-            { dimensions.x * ((2.0 * random.nextDouble() - 1.0) * 0.5) },
-            dimensions.y * random.nextDouble()
-        )
-        if (effectAmbient) {
-            ambientEntityEffectParticle ?: return
-            connection.world += AmbientEntityEffectParticle(connection, particlePosition, effectColor, ambientEntityEffectParticle.default())
-        } else {
-            entityEffectParticle ?: return
-            connection.world += EntityEffectParticle(connection, particlePosition, effectColor, entityEffectParticle.default())
-        }
+    override fun createPhysics(): LivingEntityPhysics<*> {
+        return LivingEntityPhysics(this)
     }
 
     override fun tick() {
         super.tick()
-        tickStatusEffects()
-
-        if (isSleeping) {
-            rotation = rotation.copy(pitch = 0.0f)
-        }
+        effects.tick()
     }
+
+    val activelyRiding: Boolean get() = false
+
+    override fun physics(): LivingEntityPhysics<*> = super.physics().unsafeCast()
 
     companion object {
         private val FLAGS_DATA = EntityDataField("LIVING_ENTITY_FLAGS")

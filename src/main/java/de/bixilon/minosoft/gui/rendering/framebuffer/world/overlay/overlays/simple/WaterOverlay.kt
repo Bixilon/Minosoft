@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
@@ -26,11 +26,11 @@ class WaterOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val player = context.connection.player
     override val texture: AbstractTexture = context.textureManager.staticTextures.createTexture("minecraft:misc/underwater".toResourceLocation().texture())
     override val render: Boolean
-        get() = player.gamemode != Gamemodes.SPECTATOR && player.submergedFluid is WaterFluid
+        get() = player.gamemode != Gamemodes.SPECTATOR && player.physics.submersion.eye is WaterFluid
 
     override fun draw() {
         // TODO: make brightness depend on ambient light (e.g. rain gradient, thunder gradient, time, ...)
-        val brightness = context.connection.world.getBrightness(context.connection.player.positionInfo.blockPosition) * 0.5f
+        val brightness = context.connection.world.getBrightness(context.connection.player.physics.positionInfo.blockPosition) * 0.5f
         tintColor = RGBColor(brightness, brightness, brightness, 0.1f)
 
         // ToDo: Minecraft sets the uv coordinates according to the yaw and pitch (see InGameOverlayRenderer::renderUnderwaterOverlay)

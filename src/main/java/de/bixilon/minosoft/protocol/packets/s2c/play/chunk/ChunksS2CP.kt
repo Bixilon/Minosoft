@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
-import de.bixilon.minosoft.data.world.chunk.ChunkData
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -28,14 +28,14 @@ import java.util.*
 
 @LoadPacket(lowPriority = true)
 class ChunksS2CP : PlayS2CPacket {
-    val data: MutableMap<Vec2i, ChunkData?> = mutableMapOf()
+    val chunks: MutableMap<Vec2i, ChunkPrototype?> = mutableMapOf()
 
     constructor(buffer: PlayInByteBuffer) {
-        val dimension = buffer.connection.world.dimension!!
+        val dimension = buffer.connection.world.dimension
         if (buffer.versionId < ProtocolVersions.V_14W26A) {
-            val chunkCount = buffer.readUnsignedShort()
+            val size = buffer.readUnsignedShort()
             val dataLength = buffer.readInt()
-            val containsSkyLight = buffer.readBoolean()
+            val skylight = buffer.readBoolean()
 
             // decompress chunk data
             val decompressed: PlayInByteBuffer = if (buffer.versionId < ProtocolVersions.V_14W28A) {
@@ -44,37 +44,36 @@ class ChunksS2CP : PlayS2CPacket {
                 buffer
             }
 
-            // chunk meta data
-            for (i in 0 until chunkCount) {
+            for (i in 0 until size) {
                 val chunkPosition = buffer.readChunkPosition()
                 val sectionBitMask = BitSet.valueOf(buffer.readByteArray(2)) // ToDo: Test
                 val addBitMask = BitSet.valueOf(buffer.readByteArray(2)) // ToDo: Test
-                data[chunkPosition] = ChunkUtil.readLegacyChunk(decompressed, dimension, sectionBitMask, addBitMask, true, containsSkyLight)
+                chunks[chunkPosition] = ChunkUtil.readLegacyChunk(decompressed, dimension, sectionBitMask, addBitMask, true, skylight)
             }
             return
         }
-        val containsSkyLight = buffer.readBoolean()
-        val chunkCount = buffer.readVarInt()
-        val chunkData: MutableMap<Vec2i, BitSet> = mutableMapOf()
+        val skylight = buffer.readBoolean()
+        val size = buffer.readVarInt()
+        val bitSets: MutableMap<Vec2i, BitSet> = mutableMapOf()
 
         // ToDo: this was still compressed in 14w28a
-        for (i in 0 until chunkCount) {
-            chunkData[buffer.readChunkPosition()] = BitSet.valueOf(buffer.readByteArray(2))
+        for (i in 0 until size) {
+            bitSets[buffer.readChunkPosition()] = BitSet.valueOf(buffer.readByteArray(2))
         }
-        for ((chunkPosition, sectionBitMask) in chunkData) {
-            data[chunkPosition] = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, true, containsSkyLight)
+        for ((chunkPosition, sectionBitMask) in bitSets) {
+            chunks[chunkPosition] = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, true, skylight)
         }
     }
 
     override fun handle(connection: PlayConnection) {
-        for ((chunkPosition, data) in data) {
-            if (data == null) {
+        for ((position, prototype) in chunks) {
+            if (prototype == null) {
                 // unload chunk
-                connection.world.unloadChunk(chunkPosition)
-            } else {
-                val chunk = connection.world.getOrCreateChunk(chunkPosition)
-                chunk.setData(data)
+                connection.world.chunks -= position
+                continue
             }
+            if (!connection.world.isValidPosition(position)) continue
+            connection.world.chunks[position] = prototype // action is always CREATE, force replace existing prototypes
         }
     }
 
@@ -82,6 +81,6 @@ class ChunksS2CP : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunks (chunks=${data.size})" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunks (positions=${chunks.keys})" }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,20 +14,19 @@
 package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.item.MinecraftItems
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.entities.chicken.EggItem
 import org.testng.annotations.Test
 
 @Test(groups = ["item"])
-class EggTest : ItemTest<Item>() {
+class EggTest : ItemTest<EggItem>() {
 
     init {
-        EggTestO = this
+        EggTest0 = this
     }
 
     fun getEgg() {
-        super.retrieveItem(MinecraftItems.EGG)
+        super.retrieveItem(EggItem)
     }
 }
 
-var EggTestO: EggTest = unsafeNull()
+var EggTest0: EggTest = unsafeNull()

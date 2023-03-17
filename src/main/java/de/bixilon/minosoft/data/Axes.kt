@@ -18,10 +18,22 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 
 enum class Axes {
-    X,
-    Y,
-    Z,
+    X {
+        override fun next() = Y
+        override fun previous() = Z
+    },
+    Y {
+        override fun next() = Z
+        override fun previous() = X
+    },
+    Z {
+        override fun next() = X
+        override fun previous() = Y
+    },
     ;
+
+    abstract fun next(): Axes
+    abstract fun previous(): Axes
 
     companion object : ValuesEnum<Axes>, BlockPropertiesSerializer {
         override val VALUES: Array<Axes> = values()

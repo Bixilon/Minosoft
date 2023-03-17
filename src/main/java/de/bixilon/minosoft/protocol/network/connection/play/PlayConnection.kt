@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
@@ -21,8 +21,10 @@ import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.camera.ConnectionCamera
 import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.accounts.Account
@@ -33,14 +35,10 @@ import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManag
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.language.translate.Translator
-import de.bixilon.minosoft.data.physics.CollisionDetector
+import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.data.registries.fixer.MinecraftRegistryFixer
-import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
-import de.bixilon.minosoft.data.tags.DefaultTags
-import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
@@ -63,12 +61,15 @@ import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.tags.TagManager
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.startInit
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.concurrent.atomic.AtomicInteger
 
 
 class PlayConnection(
@@ -88,25 +89,27 @@ class PlayConnection(
     val ticker = ConnectionTicker(this)
     val channels = ConnectionChannelHandler(this)
     val serverInfo = ServerInfo()
+    val sequence = AtomicInteger(1)
+
 
     lateinit var assetsManager: AssetsManager
         private set
-    val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
     lateinit var language: Translator
 
 
     @Deprecated("will be removed once split into modules")
     var rendering: Rendering? = null
         private set
-    lateinit var player: LocalPlayerEntity
-        private set
+    val player: LocalPlayerEntity = unsafeNull()
+    val camera = ConnectionCamera(this)
 
-    val collisionDetector = CollisionDetector(this)
     var retry = true
 
     var state by observed(PlayConnectionStates.WAITING)
 
     var rootNode: RootNode? = null
+    var tags: TagManager = TagManager()
+    val legacyTags: TagManager = unsafeNull()
 
 
     init {
@@ -186,6 +189,7 @@ class PlayConnection(
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 registries.parent = version.load(profiles.resources, latch)
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
+                this::legacyTags.forceSet(FallbackTags.map(registries))
             }
 
             taskWorker += {
@@ -207,8 +211,11 @@ class PlayConnection(
 
             language = LanguageUtil.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
 
-            player = LocalPlayerEntity(account, this, keyManagement)
+            this::player.forceSet(LocalPlayerEntity(account, this, keyManagement))
             settingsManager.initSkins()
+            player.startInit()
+
+            camera.init()
 
             if (!RunConfiguration.DISABLE_RENDERING) {
                 val rendering = Rendering(this)
@@ -232,24 +239,8 @@ class PlayConnection(
         latch.count = count
     }
 
-    @Deprecated("ToDo: Tag manager")
-    fun inTag(`object`: Any?, tagType: ResourceLocation, tag: ResourceLocation): Boolean {
-
-        fun fallback(): Boolean {
-            if (`object` !is Identified) {
-                return false
-            }
-            return DefaultTags.TAGS[tagType]?.get(tag)?.contains(`object`.identifier) == true
-        }
-
-        (tags[tagType] ?: return fallback()).let { map ->
-            (map[tag] ?: return fallback()).let {
-                return it.entries.contains(`object`)
-            }
-        }
-    }
-
     override fun disconnect() {
+        super.disconnect()
         state = PlayConnectionStates.DISCONNECTED
     }
 

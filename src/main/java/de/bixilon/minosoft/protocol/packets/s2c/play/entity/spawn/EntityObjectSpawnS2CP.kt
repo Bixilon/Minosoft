@@ -14,13 +14,14 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.DefaultRegistries.ENTITY_OBJECT_REGISTRY
+import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries.ENTITY_OBJECT_REGISTRY
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.util.KUtil.startInit
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -60,12 +61,13 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             buffer.connection.registries.entityType[type].build(buffer.connection, position, rotation, null, buffer.versionId)!!
         }
+        entity.startInit()
         entity.setObjectData(data)
     }
 
     override fun handle(connection: PlayConnection) {
         connection.world.entities.add(entityId, entityUUID, entity)
-        velocity?.let { entity.velocity = it }
+        velocity?.let { entity.physics.velocity = it }
 
         connection.events.fire(EntitySpawnEvent(connection, this))
     }

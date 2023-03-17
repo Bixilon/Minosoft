@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.minosoft.data.world.time.WorldTime
-import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.util.Initializable
 
 interface SkyChildRenderer : Initializable {
 

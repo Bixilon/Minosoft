@@ -77,7 +77,7 @@ class ResourceLocationTest {
     }
 
     /**
-     * @see [de.bixilon.minosoft.data.registries.ResourceLocation]
+     * @see [de.bixilon.minosoft.data.registries.identified.ResourceLocation]
      */
     @Test
     fun testAllowedNamespaces() {
@@ -97,7 +97,7 @@ class ResourceLocationTest {
     }
 
     /**
-     * @see [de.bixilon.minosoft.data.registries.ResourceLocation]
+     * @see [de.bixilon.minosoft.data.registries.identified.ResourceLocation]
      */
     @Test
     fun testAllowedResourceLocationPaths() {

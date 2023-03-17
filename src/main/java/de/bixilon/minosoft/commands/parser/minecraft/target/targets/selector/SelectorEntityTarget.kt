@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.commands.parser.minecraft.target.TargetSelectors
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.CommandEntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.XCenterProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.YCenterProperty
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.world.WorldEntities
 class SelectorEntityTarget(
     val selector: TargetSelectors,
     val properties: Map<String, EntityTargetProperty>,
-) : EntityTarget {
+) : CommandEntityTarget {
 
     override fun getEntities(executor: Entity?, entities: WorldEntities): List<Entity> {
         val selected: MutableList<Entity> = mutableListOf()
@@ -39,7 +39,7 @@ class SelectorEntityTarget(
 
         val selectorProperties = EntitySelectorProperties(
             entities = selected,
-            center = executor?.position ?: Vec3d(),
+            center = executor?.physics?.position ?: Vec3d(),
             executor = executor,
         )
 

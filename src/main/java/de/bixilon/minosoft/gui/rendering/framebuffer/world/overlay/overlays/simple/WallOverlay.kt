@@ -17,9 +17,10 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -40,11 +41,12 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
                 return false
             }
             val blockState = blockState ?: return false
-            if (blockState.block is FluidBlock || blockState.block !is ShapedBlock) {
+            if (blockState.block is FluidBlock || blockState.block !is CollidableBlock) {
                 return false
             }
-            val shape = blockState.block.getCollisionShape(context.connection, blockState) ?: return false
-            if (!shape.intersect(player.aabb)) {
+            val camera = context.connection.camera.entity
+            val shape = blockState.block.getCollisionShape(EntityCollisionContext(camera), position, blockState, null) ?: return false // TODO: block entity
+            if (!shape.intersect(player.physics.aabb)) {
                 return false
             }
             return true
@@ -55,7 +57,7 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val random = Random()
 
     override fun update() {
-        position = player.eyePosition.blockPosition
+        position = player.renderInfo.eyePosition.blockPosition
         blockState = context.connection.world[position]
     }
 

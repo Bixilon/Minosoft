@@ -27,7 +27,7 @@ class ContainerActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val accepted = buffer.readBoolean()
 
     override fun handle(connection: PlayConnection) {
-        val container = connection.player.containers[containerId] ?: return
+        val container = connection.player.items.containers[containerId] ?: return
         if (accepted) {
             container.actions.acknowledge(actionId)
         } else {

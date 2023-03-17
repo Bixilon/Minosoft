@@ -57,6 +57,7 @@ class ErosServer(
     /**
      * Sends version -1 in the handshake to query the servers version
      */
+    @get:JsonInclude(JsonInclude.Include.NON_DEFAULT)
     override var queryVersion by BooleanDelegate(profile, queryVersion, "")
 
     /**

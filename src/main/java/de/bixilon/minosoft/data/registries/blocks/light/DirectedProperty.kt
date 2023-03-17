@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.registries.blocks.light
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.registries.shapes.side.VoxelSide
 import de.bixilon.minosoft.data.registries.shapes.side.VoxelSideSet
+import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 
 class DirectedProperty(
     private val directions: BooleanArray,
@@ -50,7 +50,7 @@ class DirectedProperty(
                 return value
             }
 
-        fun of(shape: VoxelShape, skylightEnters: Boolean, filtersLight: Boolean): LightProperties {
+        fun of(shape: AbstractVoxelShape, skylightEnters: Boolean, filtersLight: Boolean): LightProperties {
             val directions = BooleanArray(Directions.SIZE)
 
             for ((index, direction) in Directions.VALUES.withIndex()) {
@@ -68,7 +68,7 @@ class DirectedProperty(
         }
 
 
-        private fun VoxelShape.getSide(side: Directions): VoxelSideSet {
+        private fun AbstractVoxelShape.getSide(side: Directions): VoxelSideSet {
             // ToDo: This whole calculation is technically wrong, it could be that 2 different sides of 2 blocks are "free". That means that light can still not pass the blocks, but
             // this algorithm does not cover it. Let's see it as performance hack
 
@@ -102,7 +102,7 @@ class DirectedProperty(
             return VoxelSideSet(sides)
         }
 
-        fun VoxelShape.isSideCovered(direction: Directions): Boolean {
+        fun AbstractVoxelShape.isSideCovered(direction: Directions): Boolean {
             val side = getSide(direction)
             if (side.isEmpty()) {
                 return false

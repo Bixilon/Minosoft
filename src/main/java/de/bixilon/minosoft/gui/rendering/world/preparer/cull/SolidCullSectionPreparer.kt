@@ -27,8 +27,8 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -88,7 +88,7 @@ class SolidCullSectionPreparer(
                 for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                     val baseIndex = (z shl 4) or x
                     val index = (y shl 8) or baseIndex
-                    blockState = blocks.unsafeGet(index) ?: continue
+                    blockState = blocks[index] ?: continue
                     if (blockState.block is FluidBlock) {
                         continue
                     }
@@ -100,7 +100,7 @@ class SolidCullSectionPreparer(
                         light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or 0xF0).toByte()
                     }
 
-                    blockEntity = section.blockEntities.unsafeGet(index)
+                    blockEntity = section.blockEntities[index]
                     val blockEntityModel = blockEntity?.getRenderer(context, blockState, position, light[SELF_LIGHT_INDEX].toInt())
                     if (blockEntityModel != null && (blockEntityModel !is OnlyMeshedBlockEntityRenderer)) {
                         blockEntities += blockEntityModel
@@ -117,7 +117,7 @@ class SolidCullSectionPreparer(
                         if (fastBedrock && blockState === bedrock) {
                             neighbourBlocks[O_DOWN] = someFullBlock
                         } else {
-                            neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
+                            neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.let { it[x, ProtocolDefinition.SECTION_MAX_Y, z] }
                             light[O_DOWN] = if (isLowestSection) {
                                 chunk.light.bottom
                             } else {
@@ -125,18 +125,18 @@ class SolidCullSectionPreparer(
                             }?.get(ProtocolDefinition.SECTION_MAX_Y shl 8 or baseIndex) ?: 0x00
                         }
                     } else {
-                        neighbourBlocks[O_DOWN] = blocks.unsafeGet((y - 1) shl 8 or baseIndex)
+                        neighbourBlocks[O_DOWN] = blocks[(y - 1) shl 8 or baseIndex]
                         light[O_DOWN] = sectionLight[(y - 1) shl 8 or baseIndex]
                     }
                     if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                        neighbourBlocks[O_UP] = neighbours[O_UP]?.blocks?.unsafeGet(x, 0, z)
+                        neighbourBlocks[O_UP] = neighbours[O_UP]?.blocks?.let { it[x, 0, z] }
                         light[O_UP] = if (isHighestSection) {
                             chunk.light.top
                         } else {
                             neighbours[O_UP]?.light
                         }?.get((z shl 4) or x) ?: 0x00
                     } else {
-                        neighbourBlocks[O_UP] = blocks.unsafeGet((y + 1) shl 8 or baseIndex)
+                        neighbourBlocks[O_UP] = blocks[(y + 1) shl 8 or baseIndex]
                         light[O_UP] = sectionLight[(y + 1) shl 8 or baseIndex]
                     }
 
@@ -209,7 +209,7 @@ class SolidCullSectionPreparer(
     private inline fun setNeighbour(neighbourBlocks: Array<BlockState?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, section: ChunkSection?, chunk: Chunk, ordinal: Int) {
         val heightmapIndex = (z shl 4) or x
         val neighbourIndex = y shl 8 or heightmapIndex
-        neighbourBlocks[ordinal] = section?.blocks?.unsafeGet(neighbourIndex)
+        neighbourBlocks[ordinal] = section?.blocks?.let { it[neighbourIndex] }
         light[ordinal] = section?.light?.get(neighbourIndex) ?: 0x00
         if (position.y >= chunk.light.heightmap[heightmapIndex]) {
             light[ordinal] = (light[ordinal].toInt() or SectionLight.SKY_LIGHT_MASK).toByte() // set sky light to 0x0F

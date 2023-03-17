@@ -27,7 +27,7 @@ abstract class InventorySynchronizedContainer(
     protected var synchronizedSlots: RangeSection,
     protected var inventorySlots: RangeSection = RangeSection(PlayerInventory.MAIN_SLOTS_START, PlayerInventory.MAIN_SLOTS),
 ) : Container(connection, type, title) {
-    private val playerInventory = connection.player.inventory
+    private val playerInventory = connection.player.items.inventory
 
     init {
         check(synchronizedSlots.count == inventorySlots.count) { "Synchronized inventory slots must have the same size!" }

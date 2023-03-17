@@ -13,32 +13,14 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.BedBlockEntity
-import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.handler.entity.landing.BouncingHandler
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class BedBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<BedBlockEntity>(resourceLocation, registries, data) {
-
-    override fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {
-        super.onEntityLand(connection, entity, blockPosition, blockState)
-
-        if (entity.isSneaking) {
-            return
-        }
-
-        bounce(entity)
-    }
-
-    private fun bounce(entity: Entity) {
-        if (entity.velocity.y < 0.0) {
-            entity.velocity.y = -entity.velocity.y * 0.66f
-        }
-    }
+open class BedBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<BedBlockEntity>(resourceLocation, registries, data), BouncingHandler {
+    override val bounceStrength: Double get() = 0.66f.toDouble()
 
     companion object : PixLyzerBlockFactory<BedBlock> {
 

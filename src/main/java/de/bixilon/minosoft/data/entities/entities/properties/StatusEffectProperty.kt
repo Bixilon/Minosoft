@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.registries.effects.StatusEffectType
 class StatusEffectProperty : Tickable {
     private val effects: LockMap<StatusEffectType, StatusEffectInstance> = lockMapOf()
 
-
     override fun tick() {
         effects.lock.lock()
         val iterator = effects.unsafe.iterator()

@@ -19,23 +19,22 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.PotentialFullOpaqueBlock
-import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid.Companion.isWaterlogged
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
+import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.Colors
-import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.FaceProperties
-import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.FlowableFluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
@@ -76,7 +75,7 @@ class FluidCullSectionPreparer(
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                 for (x in blocks.minPosition.x..blocks.maxPosition.x) {
-                    blockState = blocks.unsafeGet(x, y, z) ?: continue
+                    blockState = blocks[x, y, z] ?: continue
                     val block = blockState.block
                     val fluid = when {
                         block is FluidHolder -> block.fluid
@@ -85,7 +84,7 @@ class FluidCullSectionPreparer(
                     }
                     val model = fluid.model ?: continue
                     val stillTexture = model.still ?: continue
-                    val flowingTexture = model.nullCast<FlowableFluidModel>()?.flowing ?: continue // TODO: Non flowable fluids?
+                    val flowingTexture = model.flowing ?: continue
                     val height = fluid.getHeight(blockState)
 
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
@@ -106,9 +105,9 @@ class FluidCullSectionPreparer(
                     }
 
                     val topBlock = if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                        neighbours[Directions.O_UP]?.blocks?.unsafeGet(x, 0, z)
+                        neighbours[Directions.O_UP]?.blocks?.let { it[x, 0, z] }
                     } else {
-                        section.blocks.unsafeGet(x, y + 1, z)
+                        section.blocks[x, y + 1, z]
                     }
 
                     val skip = booleanArrayOf(
@@ -132,8 +131,8 @@ class FluidCullSectionPreparer(
                     )
 
                     if (!skip[Directions.O_UP]) {
-                        val velocity = if (fluid is FlowableFluid) fluid.getVelocity(context.connection, blockState, position, section, neighbours) else null
-                        val still = velocity == null || velocity.x == 0.0 && velocity.z == 0.0
+                        val velocity = fluid.getVelocity(blockState, position, chunk)
+                        val still = velocity.x == 0.0 && velocity.z == 0.0
                         val texture: AbstractTexture
                         val minUV = Vec2.EMPTY
                         val maxUV = Vec2(if (still) 1.0f else 0.5f) // Minecraft just uses half of the sprite
@@ -153,7 +152,7 @@ class FluidCullSectionPreparer(
                             texture = flowingTexture
                             maxUV.x = 0.5f
 
-                            val atan = atan2(velocity!!.x, velocity.z).toFloat()
+                            val atan = atan2(velocity.x, velocity.z).toFloat()
                             val sin = atan.sin
                             val cos = atan.cos
 
@@ -272,11 +271,11 @@ class FluidCullSectionPreparer(
             val chunk = neighbours[offset] ?: continue
 
             val inChunkPosition = blockPosition.inChunkPosition
-            if (fluid.matches(chunk.unsafeGet(inChunkPosition + Directions.UP))) {
+            if (fluid.matches(chunk[inChunkPosition + Directions.UP])) {
                 return 1.0f
             }
 
-            val blockState = chunk.unsafeGet(inChunkPosition)
+            val blockState = chunk[inChunkPosition]
             if (blockState == null) {
                 count++
                 continue
@@ -284,7 +283,7 @@ class FluidCullSectionPreparer(
 
             if (!fluid.matches(blockState)) {
                 // TODO: this was !blockState.material.solid
-                if (blockState.block !is PotentialFullOpaqueBlock || !blockState.block.isFullOpaque(blockState)) {
+                if (blockState.block !is CollidableBlock || blockState.block.getCollisionShape(EmptyCollisionContext, blockPosition, blockState, null) == AbstractVoxelShape.EMPTY) {
                     count++
                 }
                 continue

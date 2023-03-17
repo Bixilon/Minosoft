@@ -16,4 +16,10 @@ package de.bixilon.minosoft.data
 interface Tickable {
 
     fun tick()
+
+    fun tick(count: Int) {
+        for (i in 0 until count) {
+            tick()
+        }
+    }
 }

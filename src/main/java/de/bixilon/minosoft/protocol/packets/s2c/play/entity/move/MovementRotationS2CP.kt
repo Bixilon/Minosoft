@@ -35,8 +35,11 @@ class MovementRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
+        if (entity.clientControlled) return
+
         entity.forceMove(delta)
-        entity.forceSetRotation(rotation)
+        entity.forceRotate(rotation)
+        entity.physics.onGround = onGround
     }
 
     override fun log(reducedLog: Boolean) {

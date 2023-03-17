@@ -21,7 +21,7 @@ import org.testng.annotations.Test
 class WaterTest : BlockTest<Block>() {
 
     init {
-        WaterTestO = this
+        WaterTest0 = this
     }
 
     fun getTorch() {
@@ -33,4 +33,4 @@ class WaterTest : BlockTest<Block>() {
     }
 }
 
-var WaterTestO: WaterTest = unsafeNull()
+var WaterTest0: WaterTest = unsafeNull()

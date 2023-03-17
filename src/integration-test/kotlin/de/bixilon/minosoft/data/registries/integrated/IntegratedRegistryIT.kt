@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.integrated
 
-import de.bixilon.minosoft.data.registries.enchantment.tool.WeaponEnchantment
+import de.bixilon.minosoft.data.registries.enchantment.tool.weapon.WeaponEnchantment
 import de.bixilon.minosoft.data.registries.item.items.food.AppleItem
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.util.KUtil.toResourceLocation

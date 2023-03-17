@@ -13,93 +13,23 @@
 
 package de.bixilon.minosoft.data.registries.item.items.block
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.blocks.types.properties.ReplaceableBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.ShapedBlock
-import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
-import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class BlockItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data) {
-    val block: Block = unsafeNull()
+abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identifier), StackableItem, PlaceableItem {
+    val block: T = unsafeNull()
+    protected abstract val _block: Identified
 
     init {
-        this::block.inject(data["block"])
+        this::block.inject(_block)
     }
 
-    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
-        if (!connection.player.gamemode.canBuild) {
-            return InteractionResults.ERROR
-        }
-
-        val placePosition = Vec3i(target.blockPosition)
-        if (target !is ReplaceableBlock || !target.canReplace(connection, target.blockState, target.blockPosition)) {
-            placePosition += target.direction
-
-            val targetBlock = connection.world[placePosition]
-            if (targetBlock != null && (targetBlock.block !is ReplaceableBlock || !targetBlock.block.canReplace(connection, targetBlock, placePosition))) {
-                return InteractionResults.PASS
-            }
-        }
-
-
-        if (!connection.world.isPositionChangeable(placePosition)) {
-            return InteractionResults.ERROR
-        }
-
-        if (connection.world.getBlockEntity(placePosition) != null && !connection.player.isSneaking) {
-            return InteractionResults.PASS
-        }
-
-
-        var placeBlockState: BlockState = block.defaultState
-        try {
-            placeBlockState = block.getPlacementState(connection, target) ?: return InteractionResults.PASS
-        } catch (exception: Throwable) {
-            exception.printStackTrace()
-        }
-        val block = placeBlockState.block
-        if (block is ShapedBlock) {
-            val shape = block.getCollisionShape(connection, placeBlockState)?.plus(placePosition)
-            if (shape != null && connection.world.entities.isEntityIn(shape)) {
-                return InteractionResults.ERROR
-            }
-        }
-
-        DefaultThreadPool += { connection.world[placePosition] = placeBlockState }
-
-        if (connection.player.gamemode != Gamemodes.CREATIVE) {
-            stack.item.decreaseCount()
-        }
-
-        placeBlockState.block.soundGroup?.let { group ->
-            group.place?.let { connection.world.playSoundEvent(it, placePosition, group.volume, group.pitch) }
-        }
-        return InteractionResults.SUCCESS
-    }
-
-    companion object : PixLyzerItemFactory<BlockItem>, MultiClassFactory<BlockItem> {
-        override val ALIASES = setOf("AliasedBlockItem")
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BlockItem {
-            return BlockItem(resourceLocation, registries, data)
-        }
-    }
+    override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack) = block.defaultState
 }

@@ -14,6 +14,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types.fluid
 
 /**
- * A block that is fluid filled, e.g. water or kelp (filled with water)
+ * A block that is completely filled, e.g. kelp or bubble column(filled with water)
  */
 interface FluidFilled : FluidHolder

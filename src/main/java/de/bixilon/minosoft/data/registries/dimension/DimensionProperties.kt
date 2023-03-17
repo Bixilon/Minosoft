@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.dimension
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -29,9 +28,10 @@ import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 data class DimensionProperties(
     //   val piglinSafe: Boolean = false,
     //   val natural: Boolean = true,
-    val ambientLight: Float = 0.0f,
+    val ambientLight: AmbientLight = AmbientLight(),
     //   val respawnAnchorWorks: Boolean = false,
-    val hasSkyLight: Boolean = true,
+    val light: Boolean = true,
+    val skyLight: Boolean = true,
     //   val bedWorks: Boolean = true,
     val effects: DimensionEffects = OverworldEffects,
     //   val hasRaids: Boolean = true,
@@ -48,17 +48,12 @@ data class DimensionProperties(
     val minSection = minY shr 4
     val maxSection = (minSection + sections - 1)
 
-    val brightness = FloatArray(16)
 
     init {
         check(maxSection >= minSection) { "Upper section can not be lower that the lower section ($minSection >= $maxSection)" }
         check(minSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Minimum section out of bounds: $minSection" }
         check(maxSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Maximum section out of bounds: $minSection" }
 
-        for (level in brightness.indices) {
-            val fraction = level / ProtocolDefinition.MAX_LIGHT_LEVEL.toFloat()
-            brightness[level] = interpolateLinear(ambientLight, fraction / (4.0f - 3.0f * fraction), 1.0f)
-        }
     }
 
 
@@ -70,10 +65,10 @@ data class DimensionProperties(
             return DimensionProperties(
                 //piglinSafe = data["piglin_safe"]?.toBoolean() ?: false,
                 //natural = data["natural"]?.toBoolean() ?: false,
-                ambientLight = data["ambient_light"]?.toFloat() ?: 0.0f,
+                ambientLight = AmbientLight(data["ambient_light"]?.toFloat() ?: 0.0f),
                 //infiniBurn = ResourceLocation(data["infiniburn"].nullCast<String>() ?: "infiniburn_overworld"),
                 //respawnAnchorWorks = data["respawn_anchor_works"]?.toBoolean() ?: false,
-                hasSkyLight = data["has_skylight", "has_sky_light"]?.toBoolean() ?: false,
+                skyLight = data["has_skylight", "has_sky_light"]?.toBoolean() ?: false,
                 //bedWorks = data["bed_works"]?.toBoolean() ?: false,
                 effects = data["effects"].nullCast<String>()?.let { DefaultDimensionEffects[it.toResourceLocation()] } ?: identifier?.let { DefaultDimensionEffects[it] } ?: OverworldEffects,
                 //hasRaids = data["has_raids"]?.toBoolean() ?: false,

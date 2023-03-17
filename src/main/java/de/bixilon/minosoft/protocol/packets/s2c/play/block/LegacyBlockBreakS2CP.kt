@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.modding.event.events.LegacyBlockBreakAckEvent
+import de.bixilon.minosoft.input.interaction.breaking.executor.LegacyExecutor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP.Actions
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -26,20 +26,24 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class LegacyBlockBreakS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val blockPosition: Vec3i = buffer.readBlockPosition()
-    val blockState: BlockState? = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt())
-    val actions: Actions = Actions[buffer.readVarInt()]
+    val position: Vec3i = buffer.readBlockPosition()
+    val state: BlockState? = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt())
+    val action: Actions = Actions[buffer.readVarInt()]
     val successful: Boolean = buffer.readBoolean()
 
     override fun handle(connection: PlayConnection) {
-        if (actions == Actions.FINISHED_DIGGING && !successful) {
-            // never happens?
-            connection.world[blockPosition] = blockState
+        val executor = connection.camera.interactions.breaking.executor
+        if (executor !is LegacyExecutor) return
+        if (action != Actions.FINISHED_DIGGING && action != Actions.START_DIGGING && action != Actions.CANCELLED_DIGGING) return
+
+        if (successful) {
+            executor.acknowledge(position)
+        } else {
+            executor.revert(position)
         }
-        connection.events.fire(LegacyBlockBreakAckEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block break (blockPosition=$blockPosition, blockState=$blockState, actions=$actions, successful=$successful)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block break (position=$position, state=$state, action=$action, successful=$successful)" }
     }
 }

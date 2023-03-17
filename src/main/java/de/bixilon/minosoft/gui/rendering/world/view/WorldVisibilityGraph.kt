@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,11 +18,15 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.isIndex
 import de.bixilon.kutil.array.BooleanArrayUtil.trySet
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.shapes.AABB
-import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
-import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
 import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -33,7 +37,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
-import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
@@ -49,17 +52,17 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 class WorldVisibilityGraph(
     private val context: RenderContext,
     camera: Camera,
-) : OcclusionUpdateCallback {
+) {
     private val connection = context.connection
     private val frustum = camera.matrixHandler.frustum
     private var cameraChunkPosition = Vec2i.EMPTY
     private var cameraSectionHeight = 0
     private var viewDistance = connection.world.view.viewDistance
-    private val chunks = connection.world.chunks.unsafe
+    private val chunks = connection.world.chunks.chunks.unsafe
     private var lastFrustumRevision = -1
 
 
-    private var recalculateNextFrame = false
+    private var invalid = false
 
     private var minSection = 0
     private var maxSection = 16
@@ -85,9 +88,14 @@ class WorldVisibilityGraph(
     // always show current section
 
     init {
-        connection.world.occlusionUpdateCallback = this
+        connection.world::occlusion.observe(this) { invalid = true }
 
-        connection.events.listen<ChunkDataChangeEvent> { recalculateNextFrame = true }
+        connection.events.listen<WorldUpdateEvent> {
+            if (it.update !is ChunkCreateUpdate && it.update !is NeighbourChangeUpdate && it.update !is ChunkUnloadUpdate) {
+                return@listen
+            }
+            invalid = true
+        }
     }
 
     fun isInViewDistance(chunkPosition: Vec2i): Boolean {
@@ -119,7 +127,7 @@ class WorldVisibilityGraph(
         }
         val chunkPositions: MutableSet<Vec2i> = HashSet()
         val sectionIndices = IntOpenHashSet()
-        for (position in aabb.blockPositions) {
+        for (position in aabb.positions()) {
             chunkPositions += position.chunkPosition
             sectionIndices += position.sectionHeight - minSection
         }
@@ -170,8 +178,8 @@ class WorldVisibilityGraph(
         }
         this.cameraChunkPosition = chunkPosition
         this.cameraSectionHeight = sectionHeight
-        this.minSection = connection.world.dimension?.minSection ?: 0
-        this.maxSection = connection.world.dimension?.maxSection ?: 16
+        this.minSection = connection.world.dimension.minSection
+        this.maxSection = connection.world.dimension.maxSection
         this.sections = maxSection - minSection
         this.maxIndex = sections - 1
         calculateGraph()
@@ -240,9 +248,9 @@ class WorldVisibilityGraph(
             return
         }
 
-        val section = chunk.sections?.getOrNull(sectionIndex)?.blocks
+        val section = chunk.sections.getOrNull(sectionIndex)?.blocks
 
-        if (directionX <= 0 && (section?.isOccluded(inverted, Directions.WEST) != true) && chunkPosition.x > chunkMin.x) {
+        if (directionX <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.WEST) != true) && chunkPosition.x > chunkMin.x) {
             val nextPosition = chunkPosition + Directions.WEST
             val nextChunk = chunk.neighbours[ChunkNeighbours.WEST]
             if (nextChunk != null) {
@@ -254,7 +262,7 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (directionX >= 0 && (section?.isOccluded(inverted, Directions.EAST) != true) && chunkPosition.x < chunkMax.x) {
+        if (directionX >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.EAST) != true) && chunkPosition.x < chunkMax.x) {
             val nextPosition = chunkPosition + Directions.EAST
             val nextChunk = chunk.neighbours[ChunkNeighbours.EAST]
             if (nextChunk != null) {
@@ -266,20 +274,20 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (sectionIndex > 0 && directionY <= 0 && (section?.isOccluded(inverted, Directions.DOWN) != true)) {
+        if (sectionIndex > 0 && directionY <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.DOWN) != true)) {
             if (!visibilities[visibilitySectionIndex - 1]) {
                 visibilities[visibilitySectionIndex - 1] = true
                 checkSection(chunkPosition, sectionIndex - 1, chunk, visibilities, Directions.DOWN, directionX, -1, directionZ, false)
             }
         }
-        if (sectionIndex < maxIndex && directionY >= 0 && (section?.isOccluded(inverted, Directions.UP) != true)) {
+        if (sectionIndex < maxIndex && directionY >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.UP) != true)) {
             if (!visibilities[visibilitySectionIndex + 1]) {
                 visibilities[visibilitySectionIndex + 1] = true
                 checkSection(chunkPosition, sectionIndex + 1, chunk, visibilities, Directions.UP, directionX, 1, directionZ, false)
             }
         }
 
-        if (directionZ <= 0 && (section?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.y > chunkMin.y) {
+        if (directionZ <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.y > chunkMin.y) {
             val nextPosition = chunkPosition + Directions.NORTH
             val nextChunk = chunk.neighbours[ChunkNeighbours.NORTH]
             if (nextChunk != null) {
@@ -291,7 +299,7 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (directionZ >= 0 && (section?.isOccluded(inverted, Directions.SOUTH) != true) && chunkPosition.y < chunkMax.y) {
+        if (directionZ >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.SOUTH) != true) && chunkPosition.y < chunkMax.y) {
             val nextPosition = chunkPosition + Directions.SOUTH
             val nextChunk = chunk.neighbours[ChunkNeighbours.SOUTH]
             if (nextChunk != null) {
@@ -307,7 +315,7 @@ class WorldVisibilityGraph(
 
     private fun VisibilityGraph.startCheck(direction: Directions, chunkPosition: Vec2i, cameraSectionIndex: Int) {
         val nextPosition = chunkPosition + direction
-        val nextChunk = connection.world[nextPosition] ?: return
+        val nextChunk = connection.world.chunks[nextPosition] ?: return
         val nextVisibility = getVisibility(nextPosition)
         val vector = direction.vector
         checkSection(nextPosition, cameraSectionIndex + vector.y, nextChunk, nextVisibility ?: return, direction, vector.x, vector.y, vector.z, true)
@@ -319,8 +327,8 @@ class WorldVisibilityGraph(
             connection.events.fire(VisibilityGraphChangeEvent(context))
             return
         }
-        connection.world.chunks.lock.acquire()
-        recalculateNextFrame = false
+        connection.world.lock.acquire()
+        invalid = false
         this.lastFrustumRevision = frustum.revision
 
         val chunkPosition = cameraChunkPosition
@@ -330,10 +338,10 @@ class WorldVisibilityGraph(
 
         val chunk = chunks[chunkPosition]
         if (chunk == null) {
-            connection.world.chunks.lock.release()
+            connection.world.lock.release()
             return
         }
-        val worldSize = Vec2i(connection.world.chunkSize)
+        val worldSize = Vec2i(connection.world.chunks.size.size.size)
         worldSize += 3 // add 3 for forced neighbours and the camera chunk
         val chunkMin = chunkPosition - (worldSize / 2)
         chunkMin.x -= 1 // remove 1 for proper index calculation
@@ -356,17 +364,13 @@ class WorldVisibilityGraph(
         this.graph = graph
 
 
-        connection.world.chunks.lock.release()
+        connection.world.lock.release()
 
         connection.events.fire(VisibilityGraphChangeEvent(context))
     }
 
-    override fun onOcclusionChange() {
-        recalculateNextFrame = true
-    }
-
     fun draw() {
-        if (recalculateNextFrame || frustum.revision != lastFrustumRevision) {
+        if (invalid || frustum.revision != lastFrustumRevision) {
             calculateGraph()
         }
     }

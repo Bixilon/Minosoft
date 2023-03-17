@@ -41,7 +41,7 @@ class WorldBorderRenderer(
     private lateinit var texture: AbstractTexture
     private var offsetReset = millis()
     override val skipTranslucent: Boolean
-        get() = border.getDistanceTo(context.connection.player.position) > MAX_DISTANCE
+        get() = border.getDistanceTo(context.connection.player.physics.position) > MAX_DISTANCE
 
     override fun init(latch: CountUpAndDownLatch) {
         shader.load()
@@ -74,9 +74,9 @@ class WorldBorderRenderer(
         }
         val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
         shader.textureOffset = 1.0f - textureOffset
-        shader.cameraHeight = context.camera.matrixHandler.entity.eyePosition.y
+        shader.cameraHeight = context.connection.camera.entity.renderInfo.eyePosition.y
 
-        val distance = border.getDistanceTo(context.connection.player.position)
+        val distance = border.getDistanceTo(context.connection.player.physics.position)
         val strength = 1.0f - (distance.toFloat().clamp(0.0f, 100.0f) / 100.0f)
         var color = when (border.state) {
             WorldBorderState.GROWING -> GROWING_COLOR

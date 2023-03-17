@@ -23,8 +23,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 class ShearsItem(identifier: ResourceLocation = this.identifier) : ToolItem(identifier) {
     override val maxDurability: Int get() = 238
 
-    // TODO
-
 
     companion object : ItemFactory<ShearsItem> {
         override val identifier = minecraft("shears")

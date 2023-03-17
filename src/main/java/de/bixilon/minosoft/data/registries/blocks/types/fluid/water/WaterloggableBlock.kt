@@ -13,4 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.fluid.water
 
-interface WaterloggableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidDrainable
+
+interface WaterloggableBlock : FluidDrainable

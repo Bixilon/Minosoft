@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 
@@ -28,7 +29,7 @@ class CloneContainerAction(
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         container.floatingItem?.let { return }
         val clicked = container[slot] ?: return
-        val stack = clicked.copy(count = clicked.item.item.maxStackSize)
+        val stack = clicked.copy(count = if (clicked.item.item is StackableItem) clicked.item.item.maxStackSize else 1)
         this.copied = stack
 
         // TODO (1.18.2): use creative inventory packet

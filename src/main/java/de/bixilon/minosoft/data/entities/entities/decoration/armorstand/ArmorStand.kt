@@ -23,14 +23,17 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class ArmorStand(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
 
     private fun getArmorStandFlag(bitMask: Int): Boolean {
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
+
+    override val canRaycast: Boolean get() = super.canRaycast && !isMarker
+    override val hitboxColor: RGBColor? get() = if (isMarker) null else super.hitboxColor
 
     @get:SynchronizedEntityData
     val isSmall: Boolean
@@ -75,7 +78,7 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
 
     companion object : EntityFactory<ArmorStand> {
         override val identifier: ResourceLocation = minecraft("armor_stand")
-        private val FLAGS_DATA = EntityDataField("ARMOR_STAND_FLAGS")
+        val FLAGS_DATA = EntityDataField("ARMOR_STAND_FLAGS")
         private val HEAD_ROTATION_DATA = EntityDataField("ARMOR_STAND_HEAD_ROTATION")
         private val BODY_ROTATION_DATA = EntityDataField("ARMOR_STAND_BODY_ROTATION")
         private val LEFT_ARM_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_ARM_ROTATION")

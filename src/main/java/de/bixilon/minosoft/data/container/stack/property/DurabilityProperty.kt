@@ -71,9 +71,8 @@ class DurabilityProperty(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is DurabilityProperty) {
-            return false
-        }
+        if (isDefault() && other == null) return true
+        if (other !is DurabilityProperty) return false
         if (other.hashCode() != hashCode()) {
             return false
         }

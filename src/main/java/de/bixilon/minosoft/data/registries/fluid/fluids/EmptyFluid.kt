@@ -13,15 +13,20 @@
 
 package de.bixilon.minosoft.data.registries.fluid.fluids
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 @Deprecated("null")
-class EmptyFluid(resourceLocation: ResourceLocation = this.identifier) : Fluid(resourceLocation) {
+class EmptyFluid(identifier: ResourceLocation = this.identifier) : Fluid(identifier) {
+
+    override fun getVelocityMultiplier(connection: PlayConnection): Double = Broken("empty")
 
     override fun matches(other: Fluid): Boolean {
         return other is EmptyFluid
@@ -35,6 +40,7 @@ class EmptyFluid(resourceLocation: ResourceLocation = this.identifier) : Fluid(r
         return matches(other.block.fluid)
     }
 
+    @Suppress("DEPRECATION")
     companion object : FluidFactory<EmptyFluid> {
         override val identifier = minecraft("empty")
 

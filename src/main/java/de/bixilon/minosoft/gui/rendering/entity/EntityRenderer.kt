@@ -27,6 +27,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
@@ -40,7 +41,6 @@ import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.format
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -63,9 +63,11 @@ class EntityRenderer(
 
     override fun init(latch: CountUpAndDownLatch) {
         connection.events.listen<EntitySpawnEvent> { event ->
+            if (event.entity is LocalPlayerEntity) return@listen
             DefaultThreadPool += { event.entity.createModel(this)?.let { models[event.entity] = it } }
         }
         connection.events.listen<EntityDestroyEvent> {
+            if (it.entity is LocalPlayerEntity) return@listen
             DefaultThreadPool += add@{ toUnload += models.remove(it.entity) ?: return@add }
         }
         connection.events.listen<VisibilityGraphChangeEvent> {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.shapes.AABB
-import de.bixilon.minosoft.data.registries.shapes.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -55,7 +55,7 @@ open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
         drawLineQuad(start, end, invertedNormal1, invertedNormal2, directionWidth, floatColor)
     }
 
-    fun tryDrawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, shape: VoxelShape? = null) {
+    fun tryDrawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, shape: AbstractVoxelShape? = null) {
         if (shape != null && !shape.shouldDrawLine(start, end)) {
             return
         }
@@ -74,7 +74,7 @@ open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
         }
     }
 
-    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f, shape: VoxelShape? = null) {
+    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f, shape: AbstractVoxelShape? = null) {
         drawAABB(aabb + position, lineWidth, color, margin, shape)
     }
 
@@ -88,7 +88,7 @@ open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
         }
     }
 
-    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f, shape: VoxelShape? = null) {
+    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f, shape: AbstractVoxelShape? = null) {
         data.ensureSize(12 * 4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         val min = aabb.min - margin
         val max = aabb.max + margin
@@ -117,8 +117,8 @@ open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
         tryDrawLine(Vec3(min.x, min.y, max.z), Vec3(max.x, min.y, max.z))
     }
 
-    fun drawVoxelShape(shape: VoxelShape, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
-        val aabbs = shape.aabbCount
+    fun drawVoxelShape(shape: AbstractVoxelShape, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
+        val aabbs = shape.aabbs
         if (aabbs == 0) {
             return
         }

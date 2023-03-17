@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
-import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
+import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class SeagrassBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), FluidFilled {
-    override val fluid: Fluid = registries.fluid[DefaultFluids.WATER]!!
+    override val fluid: Fluid = registries.fluid[WaterFluid]!!
 
     companion object : PixLyzerBlockFactory<SeagrassBlock>, MultiClassFactory<SeagrassBlock> {
         override val ALIASES: Set<String> = setOf("TallSeagrassBlock")

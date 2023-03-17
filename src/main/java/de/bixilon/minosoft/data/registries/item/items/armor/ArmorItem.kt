@@ -18,4 +18,4 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 
 abstract class ArmorItem(
     resourceLocation: ResourceLocation,
-) : Item(resourceLocation), WearableItem, DefendingItem
+) : Item(resourceLocation), WearableItem, DefendingArmorItem

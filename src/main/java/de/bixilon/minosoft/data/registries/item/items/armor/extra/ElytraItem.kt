@@ -14,15 +14,26 @@
 package de.bixilon.minosoft.data.registries.item.items.armor.extra
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 import de.bixilon.minosoft.data.registries.item.items.armor.slots.ChestplateItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class ElytraItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), WearableItem, ChestplateItem {
+open class ElytraItem(resourceLocation: ResourceLocation = this.identifier) : Item(resourceLocation), WearableItem, ChestplateItem, DurableItem {
+    override val maxDurability: Int get() = 432
+
+
+    fun isUsable(stack: ItemStack): Boolean {
+        if ((stack._durability?._durability ?: maxDurability) <= 0) {
+            return false
+        }
+        return true
+    }
 
     companion object : ItemFactory<ElytraItem> {
         override val identifier = minecraft("elytra")

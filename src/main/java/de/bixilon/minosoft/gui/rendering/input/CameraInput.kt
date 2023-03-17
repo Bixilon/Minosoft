@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,8 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
-import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
+import de.bixilon.minosoft.input.camera.MovementInputActions
+import de.bixilon.minosoft.input.camera.PlayerMovementInput
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class CameraInput(
@@ -30,6 +31,8 @@ class CameraInput(
 ) {
     private val connection = context.connection
     private val controlsProfile = connection.profiles.controls
+
+    private var changeFly = false
 
     private fun registerKeyBindings() {
         context.inputHandler.registerCheckCallback(
@@ -60,8 +63,11 @@ class CameraInput(
             SNEAK_KEYBINDING to KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
             ),
-            TOGGLE_FLY_KEYBINDING to KeyBinding(
+            CHANGE_FLY_KEYBINDING to KeyBinding(
                 KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_SPACE),
+            ),
+            START_ELYTRA_FLY_KEYBINDING to KeyBinding(
+                KeyActions.PRESS to setOf(KeyCodes.KEY_SPACE),
             ),
         )
 
@@ -78,19 +84,27 @@ class CameraInput(
     }
 
     fun updateInput(delta: Double) {
-        val input = MovementInput(
-            pressingForward = context.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
-            pressingBack = context.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
-            pressingLeft = context.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
-            pressingRight = context.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
-            jumping = context.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
-            sneaking = context.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
-            sprinting = context.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
+        val input = PlayerMovementInput(
+            forward = context.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
+            backward = context.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
+            left = context.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
+            right = context.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
+            jump = context.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
+            sneak = context.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
+            sprint = context.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
             flyDown = context.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
             flyUp = context.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
-            toggleFlyDown = context.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
         )
-        context.camera.view.view.onInput(input, delta)
+
+        val changeFly = context.inputHandler.isKeyBindingDown(CHANGE_FLY_KEYBINDING)
+        val startElytraFly = context.inputHandler.isKeyBindingDown(START_ELYTRA_FLY_KEYBINDING)
+        val inputActions = MovementInputActions(
+            toggleFly = changeFly != this.changeFly,
+            startElytraFly = startElytraFly,
+        )
+        this.changeFly = changeFly
+
+        context.camera.view.view.onInput(input, inputActions, delta)
     }
 
     fun updateMouse(movement: Vec2d) {
@@ -120,7 +134,9 @@ class CameraInput(
         private val SNEAK_KEYBINDING = "minosoft:move_sneak".toResourceLocation()
         private val JUMP_KEYBINDING = "minosoft:move_jump".toResourceLocation()
 
-        private val TOGGLE_FLY_KEYBINDING = "minosoft:move_toggle_fly".toResourceLocation()
+        private val START_ELYTRA_FLY_KEYBINDING = "minosoft:move_start_elytra_fly".toResourceLocation()
+
+        private val CHANGE_FLY_KEYBINDING = "minosoft:move_change_fly".toResourceLocation()
         private val FLY_UP_KEYBINDING = "minosoft:move_fly_up".toResourceLocation()
         private val FLY_DOWN_KEYBINDING = "minosoft:move_fly_down".toResourceLocation()
 

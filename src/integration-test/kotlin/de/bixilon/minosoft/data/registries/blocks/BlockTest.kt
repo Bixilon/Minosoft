@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -25,8 +25,8 @@ import org.testng.Assert
 import org.testng.Assert.assertEquals
 
 abstract class BlockTest<T : Block> {
-    var block: T = unsafeNull()
-    var state: BlockState = unsafeNull()
+    val block: T = unsafeNull()
+    val state: BlockState = unsafeNull()
 
     init {
         reference()
@@ -37,8 +37,8 @@ abstract class BlockTest<T : Block> {
         Assert.assertNotNull(block)
         block!!
         assertEquals(block.identifier, name)
-        this.block = block.unsafeCast()
-        this.state = block.defaultState
+        this::block.forceSet(block)
+        this::state.forceSet(block.defaultState)
     }
 
     fun BlockState.testLightProperties(

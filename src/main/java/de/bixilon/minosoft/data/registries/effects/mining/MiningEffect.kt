@@ -32,5 +32,14 @@ interface MiningEffect {
     object MiningFatigue : StatusEffectType(), MiningEffect, Identified, Colored, HarmfulEffect {
         override val identifier = minecraft("mining_fatigue")
         override val color = 0x4A4217.asRGBColor()
+
+        fun calculateSpeed(amplifier: Int): Float {
+            return when (amplifier) {
+                0 -> 0.3f
+                1 -> 0.09f
+                2 -> 0.0027f
+                else -> 8.1E-4f
+            }
+        }
     }
 }

@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class HeadRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
-    val headYaw: Int = buffer.readAngle()
+    val headYaw: Float = buffer.readAngle()
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return

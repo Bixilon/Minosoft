@@ -12,52 +12,105 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.tags.Tag
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.tags.MinecraftTagTypes.BLOCK
+import de.bixilon.minosoft.tags.MinecraftTagTypes.ENTITY_TYPE
+import de.bixilon.minosoft.tags.MinecraftTagTypes.FLUID
+import de.bixilon.minosoft.tags.MinecraftTagTypes.GAME_EVENT
+import de.bixilon.minosoft.tags.MinecraftTagTypes.ITEM
+import de.bixilon.minosoft.tags.Tag
+import de.bixilon.minosoft.tags.TagList
+import de.bixilon.minosoft.tags.TagManager
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val tags: Map<ResourceLocation, Map<ResourceLocation, Tag<Any>>>
+    val tags: TagManager
 
     init {
-        val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = mutableMapOf()
+        val tags: MutableMap<ResourceLocation, TagList<*>> = mutableMapOf()
         if (buffer.versionId < ProtocolVersions.V_20W51A) {
-            tags[BLOCK_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.block[it] } }))
-            tags[ITEM_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.item[it] } }))
-            tags[FLUID_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.fluid[it] } })) // ToDo: when was this added? Was not available in 18w01
+            tags[BLOCK] = buffer.readBlockTags()
+            tags[ITEM] = buffer.readItemTags()
+            tags[FLUID] = buffer.readFluidTags() // ToDo: when was this added? Was not available in 18w01
             if (buffer.versionId >= ProtocolVersions.V_18W43A) {
-                tags[ENTITY_TYPE_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.entityType[it] } }))
+                tags[ENTITY_TYPE] = buffer.readEntityTypeTags()
             }
             if (buffer.versionId >= ProtocolVersions.V_20W49A) {
-                tags[GAME_EVENT_TAG_RESOURCE_LOCATION] = mapOf(*(buffer.readArray { buffer.readTag { it } }))
+                tags[GAME_EVENT] = buffer.readGameEventTags()
             }
         } else {
             for (i in 0 until buffer.readVarInt()) {
                 val resourceLocation = buffer.readResourceLocation()
                 tags[resourceLocation] = when (resourceLocation) {
-                    BLOCK_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.block[it] } }))
-                    ITEM_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.item[it] } }))
-                    FLUID_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.fluid[it] } }))
-                    ENTITY_TYPE_TAG_RESOURCE_LOCATION -> mapOf(*(buffer.readArray { buffer.readTag { buffer.connection.registries.entityType[it] } }))
-                    // GAME_EVENT_TAG_RESOURCE_LOCATION -> buffer.readTagArray { it }
-                    else -> mapOf(*(buffer.readArray { buffer.readTag { it } }))
+                    BLOCK -> buffer.readBlockTags()
+                    ITEM -> buffer.readItemTags()
+                    FLUID -> buffer.readFluidTags()
+                    ENTITY_TYPE -> buffer.readEntityTypeTags()
+                    GAME_EVENT -> buffer.readGameEventTags()
+                    else -> buffer.readTagList(Registry())
                 }
             }
         }
-        this.tags = tags
+        this.tags = TagManager(tags.unsafeCast())
+    }
+
+    private fun PlayInByteBuffer.readBlockTags(): TagList<Block> {
+        return readTagList(connection.registries.block)
+    }
+
+    private fun PlayInByteBuffer.readItemTags(): TagList<Item> {
+        return readTagList(connection.registries.item)
+    }
+
+    private fun PlayInByteBuffer.readFluidTags(): TagList<Fluid> {
+        return readTagList(connection.registries.fluid)
+    }
+
+    private fun PlayInByteBuffer.readEntityTypeTags(): TagList<EntityType> {
+        return readTagList(connection.registries.entityType)
+    }
+
+    @Deprecated("TODO: Game events")
+    private fun PlayInByteBuffer.readGameEventTags(): TagList<*> {
+        return readTagList(Registry())
+    }
+
+    private fun <T : RegistryItem> PlayInByteBuffer.readTag(registry: Registry<T>): Tag<T> {
+        val items: MutableSet<T> = mutableSetOf()
+        for (id in readVarIntArray()) {
+            items += registry.getOrNull(id) ?: continue
+        }
+        return Tag(items)
+    }
+
+
+    private fun <T : RegistryItem> PlayInByteBuffer.readTagList(registry: Registry<T>): TagList<T> {
+        val entries: MutableMap<ResourceLocation, Tag<T>> = mutableMapOf()
+        for (index in 0 until readVarInt()) {
+            val key = readResourceLocation()
+            val tag = readTag(registry)
+            entries[key] = tag
+        }
+        return TagList(entries)
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.tags.putAll(tags)
+        connection.tags = tags
     }
 
     override fun log(reducedLog: Boolean) {
@@ -65,13 +118,5 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             return
         }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Tags (tags=$tags)" }
-    }
-
-    companion object {
-        val BLOCK_TAG_RESOURCE_LOCATION = "minecraft:block".toResourceLocation()
-        val ITEM_TAG_RESOURCE_LOCATION = "minecraft:item".toResourceLocation()
-        val FLUID_TAG_RESOURCE_LOCATION = "minecraft:fluid".toResourceLocation()
-        val ENTITY_TYPE_TAG_RESOURCE_LOCATION = "minecraft:entity_type".toResourceLocation()
-        val GAME_EVENT_TAG_RESOURCE_LOCATION = "minecraft:game_event".toResourceLocation()
     }
 }

@@ -15,33 +15,36 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.collections.CollectionUtil
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.border.WorldBorder
-import de.bixilon.minosoft.data.world.chunk.ChunkData
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
+import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.TEST_WORLD_VIEW
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.test.IT
 
 object WorldTestUtil {
 
 
-    fun createWorld(connection: PlayConnection): World {
+    fun createWorld(connection: PlayConnection?, light: Boolean = false): World {
         val world = IT.OBJENESIS.newInstance(World::class.java)
-        world::chunks.forceSet(CollectionUtil.lockMapOf())
+        world::occlusion.forceSet(DataObserver(0))
+        world::lock.forceSet(SimpleLock())
+        world::chunks.forceSet(ChunkManager(world))
         world::border.forceSet(WorldBorder())
-        world::dimension.forceSet(DataObserver(DimensionProperties()))
+        world::dimension.forceSet(DataObserver(DimensionProperties(light = light, skyLight = light)))
         world::connection.forceSet(connection)
-        world.chunkMin = Vec2i.EMPTY
-        world.chunkMax = Vec2i.EMPTY
-        world.chunkSize = Vec2i.EMPTY
+        world::entities.forceSet(WorldEntities())
         world::view.forceSet(TEST_WORLD_VIEW)
         world::time.forceSet(DataObserver(WorldTime()))
 
@@ -51,19 +54,62 @@ object WorldTestUtil {
     fun World.initialize(size: Int) {
         for (x in -size..size) {
             for (z in -size..size) {
-                val chunk = getOrCreateChunk(ChunkPosition(x, z))
-                chunk.setData(ChunkData(blocks = arrayOfNulls(16), biomeSource = DummyBiomeSource(null)))
+                chunks.create(ChunkPosition(x, z))
             }
         }
     }
 
-    fun World.fill(start: Vec3i, end: Vec3i, state: BlockState?) {
+    fun World.fill(startX: Int, startY: Int, startZ: Int, endX: Int, endY: Int, endZ: Int, state: BlockState?, superUnsafe: Boolean = true) {
+        fill(Vec3i(startX, startY, startZ), Vec3i(endX, endY, endZ), state, superUnsafe)
+    }
+
+    fun World.fill(start: Vec3i, end: Vec3i, state: BlockState?, superUnsafe: Boolean = true) {
+        // TODO: this can be optimized more (loop chunk after chunk, not x->z)
+        var chunk: Chunk? = null
         for (x in start.x..end.x) {
-            for (y in start.y..end.y) {
-                for (z in start.z..end.z) {
-                    this[Vec3i(x, y, z)] = state
+            for (z in start.z..end.z) {
+                val chunkPosition = ChunkPosition(x shr 4, z shr 4)
+                if (chunk == null) {
+                    chunk = this.chunks[chunkPosition] ?: continue
+                } else if (chunk.chunkPosition != chunkPosition) {
+                    chunk = chunk.traceChunk(chunkPosition - chunk.chunkPosition) ?: continue
+                }
+                for (y in start.y..end.y) {
+                    val section = chunk.getOrPut(y.sectionHeight) ?: continue
+                    if (superUnsafe) {
+                        var data = DATA[section.blocks] as Array<Any?>?
+                        if (data == null) {
+                            data = arrayOfNulls<Any?>(ProtocolDefinition.BLOCKS_PER_SECTION)
+                            DATA[section.blocks] = data
+                        }
+                        data[getIndex(x and 0x0F, y and 0x0F, z and 0x0F)] = state
+                    } else {
+                        section.blocks.unsafeSet(x and 0x0F, y and 0x0F, z and 0x0F, state)
+                    }
                 }
             }
         }
+
+        if (superUnsafe) {
+            for (x in (start.x shr 4)..(end.x shr 4)) {
+                for (z in (start.z shr 4)..(end.z shr 4)) {
+                    val chunkPosition = Vec2i(x, z)
+                    chunk = if (chunk != null) {
+                        chunk.traceChunk(chunkPosition - chunk.chunkPosition) ?: continue
+                    } else {
+                        this.chunks[chunkPosition] ?: continue
+                    }
+                    for (sectionHeight in (start.y shr 4)..(end.y shr 4)) {
+                        val section = chunk[sectionHeight] ?: continue
+                        section.blocks.recalculate(true)
+                    }
+                }
+            }
+        }
+        if (dimension.light || dimension.skyLight) {
+            recalculateLight(heightmap = true) // yah, might break the result, don't use fill if you want to test light
+        }
     }
+
+    private val DATA = SectionDataProvider::class.java.getDeclaredField("data").apply { isAccessible = true }
 }

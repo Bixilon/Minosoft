@@ -34,7 +34,7 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val frame = frames[offArm.ordinal]!!
 
     private var frameImage = AtlasImageElement(guiRenderer, frame)
-    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.inventory, frame.slots)
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, frame.slots)
 
     init {
         _size = frame.size

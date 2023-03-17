@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import de.bixilon.kutil.avg.LongAverage
+import de.bixilon.kutil.avg.FloatAverage
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
@@ -24,23 +24,23 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val config = context.connection.profiles.rendering.overlay
     override val texture: AbstractTexture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
-    private val strength = LongAverage(1L * 1000000000L) // TODO: FloatAverage
+    private val strength = FloatAverage(1L * 1000000000L, 0.0f)
     override var render: Boolean = false
         get() = config.powderSnow && field
 
     override fun update() {
         val ticksFrozen = context.connection.player.ticksFrozen
-        val strength = ((minOf(ticksFrozen, FREEZE_DAMAGE_TICKS) / FREEZE_DAMAGE_TICKS.toFloat()) * 255).toLong()
+        val strength = (minOf(ticksFrozen, FREEZE_DAMAGE_TICKS) / FREEZE_DAMAGE_TICKS.toFloat())
         this.strength += strength
 
         val avg = this.strength.avg
 
-        if (avg > 255 || avg == 0L) {
+        if (avg > 1.0f || avg == 0.0f) {
             this.render = false
             return
         }
         this.render = true
-        tintColor = RGBColor(1.0f, 1.0f, 1.0f, avg / 255.0f)
+        tintColor = RGBColor(1.0f, 1.0f, 1.0f, avg)
     }
 
 

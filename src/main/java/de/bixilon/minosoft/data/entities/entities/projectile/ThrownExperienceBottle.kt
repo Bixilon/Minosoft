@@ -23,7 +23,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
 
 class ThrownExperienceBottle(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, data, position, rotation) {
-    override val gravity: Float = 0.07f
     override val defaultItemType: ResourceLocation
         get() = DEFAULT_ITEM
 

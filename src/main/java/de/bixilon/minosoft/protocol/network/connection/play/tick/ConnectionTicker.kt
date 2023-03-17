@@ -64,7 +64,7 @@ class ConnectionTicker(private val connection: PlayConnection) {
         }
 
         if (DebugOptions.LIGHT_DEBUG_MODE || DebugOptions.INFINITE_TORCHES) {
-            tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) { connection.player.inventory[44] = ItemStack(connection.registries.item["minecraft:torch"]!!, Int.MAX_VALUE) }
+            tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) { connection.player.items.inventory[44] = ItemStack(connection.registries.item["minecraft:torch"]!!, Int.MAX_VALUE) }
         }
         if (DebugOptions.SIMULATE_TIME) {
             tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {

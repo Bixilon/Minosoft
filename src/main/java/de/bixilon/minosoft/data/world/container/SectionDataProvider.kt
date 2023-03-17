@@ -177,7 +177,7 @@ open class SectionDataProvider<T>(
         return previous.unsafeCast()
     }
 
-    open fun set(index: Int, value: T): T? {
+    open operator fun set(index: Int, value: T): T? {
         lock()
         val previous = unsafeSet(index, value)
         unlock()
@@ -202,7 +202,6 @@ open class SectionDataProvider<T>(
 
 
     @Suppress("UNCHECKED_CAST")
-    @Synchronized
     fun setData(data: Array<T>) {
         lock()
         check(data.size == ProtocolDefinition.BLOCKS_PER_SECTION) { "Size does not match!" }
@@ -219,6 +218,13 @@ open class SectionDataProvider<T>(
         return clone
     }
 
+    fun clear() {
+        lock()
+        this.data = null
+        recalculate()
+        unlock()
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun iterator(): Iterator<T> {
         return (data?.iterator() ?: EMPTY_ITERATOR) as Iterator<T>
@@ -226,6 +232,6 @@ open class SectionDataProvider<T>(
 
 
     companion object {
-        private val EMPTY_ITERATOR = emptyArray<Any>().iterator()
+        private val EMPTY_ITERATOR = emptyArray<Any>().iterator() // TODO: kutil 1.20.2
     }
 }

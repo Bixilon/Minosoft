@@ -21,7 +21,6 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
-import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.world.light.debug.LightmapDebugWindow
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -44,7 +43,6 @@ class RenderLight(val context: RenderContext) {
         ) {
             DefaultThreadPool += {
                 connection.world.recalculateLight()
-                context.renderer[WorldRenderer]?.silentlyClearChunkCache()
                 connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
             }
         }

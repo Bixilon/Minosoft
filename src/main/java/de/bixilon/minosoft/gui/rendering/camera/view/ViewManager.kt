@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.view
 
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -27,7 +28,7 @@ class ViewManager(private val camera: Camera) {
     private val firstPerson = FirstPersonView(camera)
     private val thirdPerson = ThirdPersonView(camera)
 
-    var view: CameraView = firstPerson
+    var view: CameraView by observed(firstPerson)
         private set
 
     private var isDebug = false

@@ -17,34 +17,19 @@ import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
 import de.bixilon.minosoft.data.registries.item.items.*
 import de.bixilon.minosoft.data.registries.item.items.armor.*
 import de.bixilon.minosoft.data.registries.item.items.block.*
+import de.bixilon.minosoft.data.registries.item.items.block.legacy.*
 import de.bixilon.minosoft.data.registries.item.items.throwable.*
-import de.bixilon.minosoft.data.registries.item.items.throwable.potion.LingeringPotionItem
-import de.bixilon.minosoft.data.registries.item.items.throwable.potion.PotionItem
 import de.bixilon.minosoft.data.registries.item.items.tool.*
 
 @Deprecated("item factory")
 object PixLyzerItemFactories : DefaultClassFactory<PixLyzerItemFactory<*>>(
-    BlockItem,
+    PixLyzerBlockItem,
     TallBlockItem,
     WallStandingBlockItem,
     LilyPadItem,
     CommandBlockItem,
-    ScaffoldingItem,
 
     SpawnEggItem,
     DyeItem,
-    ShieldItem,
     MusicDiscItem,
-
-
-    BowItem,
-
-    LingeringPotionItem,
-    FireChargeItem,
-    ExperienceBottleItem,
-    EnderEyeItem,
-    PotionItem,
-    EnderPearlItem,
-    EggItem,
-    SnowballItem,
 )

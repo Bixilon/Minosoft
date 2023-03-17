@@ -207,7 +207,7 @@ class CloudRenderer(
     private fun calculateCloudsColor(): Vec3 {
         var weather = connection.world.weather
         if (!sky.effects.weather) {
-            weather = WorldWeather.NONE
+            weather = WorldWeather.SUNNY
         }
         val time = sky.time
         if (weather.rain > 0.0f || weather.thunder > 0.0f) {
@@ -218,7 +218,7 @@ class CloudRenderer(
 
 
     private fun setYOffset() {
-        val y = context.camera.matrixHandler.entity.eyePosition.y
+        val y = context.connection.camera.entity.renderInfo.eyePosition.y
         var yOffset = 0.0f
         if (baseHeight - y > maxDistance) {
             yOffset = y - baseHeight + maxDistance

@@ -16,6 +16,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.util.KUtil.startInit
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -37,7 +39,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         entityId = buffer.readVarInt()
-        var name = "TBA"
+        var name = ""
 
         var properties: PlayerProperties? = null
         if (buffer.versionId < ProtocolVersions.V_14W21A) {
@@ -65,19 +67,18 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             data = EntityData(buffer.connection, data),
             position = position,
             rotation = rotation,
-            name = name,
-            properties = properties,
+            additional = buffer.connection.tabList.uuid[entityUUID] ?: PlayerAdditional(name = name, properties = properties),
         )
+        entity.startInit()
     }
 
     override fun handle(connection: PlayConnection) {
-        // connection.tabList.tabListItemsByUUID[entityUUID]?.let { entity.tabListItem = it }
         connection.world.entities.add(entityId, entityUUID, entity)
 
         connection.events.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player entity spawn (position=${entity.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player entity spawn (entityId=$entityId, name=${entity.additional.name}, uuid=$entityUUID)" }
     }
 }

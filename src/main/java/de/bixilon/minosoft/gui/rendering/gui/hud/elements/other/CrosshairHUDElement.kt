@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.minosoft.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -69,8 +69,8 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         get() {
             // Custom draw to make the crosshair inverted
             if (context.connection.player.gamemode == Gamemodes.SPECTATOR) {
-                val target = context.camera.targetHandler.target
-                if (target !is EntityTarget && (target !is BlockTarget || target.blockState.block !is BlockWithEntity<*>)) {
+                val target = context.connection.camera.target.target
+                if (target !is EntityTarget && (target !is BlockTarget || target.state.block !is BlockWithEntity<*>)) {
                     return false
                 }
             }

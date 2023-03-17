@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,9 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import kotlin.math.abs
 
@@ -61,6 +63,11 @@ class WorldBorder {
         return !inside
     }
 
+
+    operator fun contains(position:BlockPosition) = !isOutside(position)
+    operator fun contains(position: Vec3d) = !isOutside(position)
+
+
     fun getDistanceTo(position: Vec3d): Double {
         return getDistanceTo(position.x, position.z)
     }
@@ -89,7 +96,7 @@ class WorldBorder {
             diameter = newDiameter
         }
         lock.lock()
-        val time = TimeUtil.millis
+        val time = millis()
         interpolationStart = time
         interpolationEnd = time + millis
         this.oldDiameter = oldDiameter
@@ -103,7 +110,7 @@ class WorldBorder {
             lock.unlock()
             return
         }
-        val time = TimeUtil.millis
+        val time = millis()
         if (interpolationEnd <= time) {
             state = WorldBorderState.STATIC
             interpolationStart = -1L
@@ -134,7 +141,6 @@ class WorldBorder {
         interpolationStart = -1L
         lock.unlock()
     }
-
 
     companion object {
         const val DEFAULT_DIAMETER = World.MAX_SIZE.toDouble() * 2

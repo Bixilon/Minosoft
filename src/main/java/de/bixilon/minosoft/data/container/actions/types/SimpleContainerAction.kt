@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.actions.ContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 
@@ -68,8 +69,10 @@ class SimpleContainerAction(
             // we can remove or merge the item
             if (slotType?.canPut(container, slot, floatingItem) == true) {
                 // merge
-                val subtract = if (count == ContainerCounts.ALL) minOf(target.item.item.maxStackSize - target.item.count, floatingItem.item.count) else 1
-                if (subtract == 0 || target.item.count + subtract > target.item.item.maxStackSize) {
+                val item = target.item.item
+                val maxStackSize = if (item is StackableItem) item.maxStackSize else 1
+                val subtract = if (count == ContainerCounts.ALL) minOf(maxStackSize - target.item.count, floatingItem.item.count) else 1
+                if (subtract == 0 || target.item.count + subtract > maxStackSize) {
                     return
                 }
                 target.item.count += subtract
@@ -77,7 +80,7 @@ class SimpleContainerAction(
             } else if (slotType?.canRemove(container, slot, floatingItem) == true) {
                 // remove only (e.g. crafting result)
                 // ToDo: respect count (part or all)
-                val subtract = minOf(floatingItem.item.item.maxStackSize - floatingItem.item.count, target.item.count)
+                val subtract = minOf((if (floatingItem.item.item is StackableItem) floatingItem.item.item.maxStackSize else 1) - floatingItem.item.count, target.item.count)
                 if (subtract == 0) {
                     return
                 }

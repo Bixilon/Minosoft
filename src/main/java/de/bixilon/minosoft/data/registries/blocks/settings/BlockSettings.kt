@@ -20,16 +20,14 @@ import de.bixilon.minosoft.data.registries.sound.SoundGroup
 
 class BlockSettings(
     val soundGroup: SoundGroup? = null,
-    val item: Int? = null,
 ) {
 
     companion object {
         fun of(registries: Registries, data: JsonObject): BlockSettings {
             val soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] }
-            val item = data["item"].toInt()
 
 
-            return BlockSettings(soundGroup = soundGroup, item)
+            return BlockSettings(soundGroup = soundGroup)
         }
     }
 }

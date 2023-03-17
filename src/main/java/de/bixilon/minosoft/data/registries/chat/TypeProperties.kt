@@ -40,7 +40,7 @@ data class TypeProperties(
         fun deserialize(data: JsonObject): TypeProperties {
             val decoration = data["decoration"]?.toJsonObject() ?: data
 
-            val key = decoration["translation_key"]!!.toString()
+            val key = decoration["translation_key"]?.toString() ?: "%s"
             var parameters: List<ChatParameter> = emptyList()
 
             decoration["parameters"]?.asJsonList()?.let {

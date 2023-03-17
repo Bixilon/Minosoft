@@ -20,7 +20,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.container.EquipmentSlots
+import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.GlobalPosition
@@ -30,17 +30,15 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
-import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class PlayerEntity(
@@ -49,10 +47,9 @@ abstract class PlayerEntity(
     data: EntityData,
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation.EMPTY,
-    name: String = "",
-    properties: PlayerProperties? = null,
-    val additional: PlayerAdditional = PlayerAdditional(name = name, properties = properties),
+    val additional: PlayerAdditional,
 ) : LivingEntity(connection, entityType, data, position, rotation) {
+
     protected var _model: PlayerModel?
         get() = super.model.nullCast()
         set(value) {
@@ -60,15 +57,19 @@ abstract class PlayerEntity(
         }
 
     override val dimensions: Vec2
-        get() = pose?.let { DIMENSIONS[it] } ?: Vec2(type.width, type.height)
+        get() = pose?.let { getDimensions(it) } ?: Vec2(type.width, type.height)
+
+    override fun getDimensions(pose: Poses): Vec2? {
+        return DIMENSIONS[pose]
+    }
+
+    override val heightOffset: Double get() = -0.35
+
+    override val canRaycast: Boolean get() = super.canRaycast && gamemode != Gamemodes.SPECTATOR
 
     @get:SynchronizedEntityData
     val gamemode: Gamemodes
         get() = additional.gamemode
-
-    @get:SynchronizedEntityData
-    val name: String
-        get() = additional.name
 
     @get:SynchronizedEntityData
     val playerAbsorptionHearts: Float
@@ -78,7 +79,6 @@ abstract class PlayerEntity(
     val score: Int
         get() = data.get(SCORE_DATA, 0)
 
-    @get:SynchronizedEntityData
     val skinParts: MutableSet<SkinParts> by observedSet(mutableSetOf())
 
 
@@ -111,22 +111,6 @@ abstract class PlayerEntity(
     val lastDeathPosition: GlobalPosition?
         get() = data.get(LAST_DEATH_POSITION_DATA, null)
 
-    override val spawnSprintingParticles: Boolean
-        get() = super.spawnSprintingParticles && gamemode != Gamemodes.SPECTATOR
-
-    override fun tick() {
-        if (gamemode == Gamemodes.SPECTATOR) {
-            onGround = false
-        }
-        // ToDo: Update water submersion state
-        super.tick()
-
-        val clampedPosition = position.clamp(-World.MAX_SIZEd, World.MAX_SIZEd)
-        if (clampedPosition != position) {
-            position = clampedPosition
-        }
-    }
-
     override val hitboxColor: RGBColor
         get() {
             if (this.isInvisible) {
@@ -145,6 +129,10 @@ abstract class PlayerEntity(
 
     override fun createModel(renderer: EntityRenderer): EntityModel<PlayerEntity>? {
         return PlayerModel(renderer, this).apply { this@PlayerEntity.model = this }
+    }
+
+    override fun createPhysics(): PlayerPhysics<*> {
+        return PlayerPhysics(this)
     }
 
 

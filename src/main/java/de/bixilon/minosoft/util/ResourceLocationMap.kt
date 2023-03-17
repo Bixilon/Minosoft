@@ -31,6 +31,10 @@ open class ResourceLocationMap<T : Identified>(vararg entries: T) : Iterable<T> 
         }
     }
 
+    operator fun set(resourceLocation: ResourceLocation, value: T) {
+        this.entries[resourceLocation] = value
+    }
+
     operator fun get(resourceLocation: ResourceLocation): T? {
         return this.entries[resourceLocation]
     }

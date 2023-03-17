@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.effect
 
 import de.bixilon.kutil.bit.BitByte.isBitMask
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
+import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -71,17 +73,17 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             readVarInt()
         }
-        val amplifier = readByte()
+        val amplifier = readUnsignedByte()
         val duration = if (versionId < V_14W04A) {
             readUnsignedShort()
         } else {
             readVarInt()
         }
-        return StatusEffectInstance(connection.registries.statusEffect[effectId], amplifier + 1, duration)
+        return StatusEffectInstance(connection.registries.statusEffect[effectId], amplifier, duration)
     }
 
     override fun handle(connection: PlayConnection) {
-        val entity = connection.world.entities[entityId] ?: return // thanks mojang
+        val entity = connection.world.entities[entityId]?.nullCast<LivingEntity>() ?: return // thanks mojang
         entity.effects += effect
     }
 

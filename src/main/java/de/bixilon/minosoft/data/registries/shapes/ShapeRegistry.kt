@@ -16,9 +16,11 @@ package de.bixilon.minosoft.data.registries.shapes
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 
 class ShapeRegistry {
-    private var shapes: Array<VoxelShape> = emptyArray()
+    private var shapes: Array<AbstractVoxelShape> = emptyArray()
 
     fun load(data: JsonObject?) {
         if (data == null) {
@@ -29,10 +31,10 @@ class ShapeRegistry {
     }
 
     private fun loadShapes(data: Collection<Any>, aabbs: Array<AABB>) {
-        this.shapes = arrayOfNulls<VoxelShape>(data.size).cast()
+        this.shapes = arrayOfNulls<AbstractVoxelShape>(data.size).cast()
 
         for ((index, shape) in data.withIndex()) {
-            this.shapes[index] = VoxelShape(shape, aabbs)
+            this.shapes[index] = AbstractVoxelShape.deserialize(shape, aabbs)
         }
     }
 
@@ -50,7 +52,7 @@ class ShapeRegistry {
     }
 
 
-    operator fun get(index: Int): VoxelShape {
+    operator fun get(index: Int): AbstractVoxelShape {
         return shapes[index]
     }
 }

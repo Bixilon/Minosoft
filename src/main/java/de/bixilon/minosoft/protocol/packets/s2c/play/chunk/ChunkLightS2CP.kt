@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.data.world.chunk.ChunkData
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.protocol.PacketSkipper
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -29,17 +29,18 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(lowPriority = true)
+// @JvmOverloads for reflection by packet registry
 class ChunkLightS2CP @JvmOverloads constructor(
     buffer: PlayInByteBuffer,
-    val chunkPosition: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt()),
+    val position: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt()),
 ) : PlayS2CPacket {
-    var trustEdges: Boolean = false
+    var recalculateNeighbours: Boolean = false
         private set
-    val chunkData: ChunkData
+    val prototype: ChunkPrototype
 
     init {
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
-            trustEdges = buffer.readBoolean()
+            recalculateNeighbours = buffer.readBoolean()
         }
 
         val skyLightMask = buffer.readBitSet()
@@ -47,19 +48,18 @@ class ChunkLightS2CP @JvmOverloads constructor(
         val emptySkyLightMask = buffer.readBitSet()
         val emptyBlockLightMask = buffer.readBitSet()
 
-        chunkData = readLightPacket(buffer, skyLightMask, emptySkyLightMask, blockLightMask, emptyBlockLightMask, buffer.connection.world.dimension!!)
+        prototype = readLightPacket(buffer, skyLightMask, emptySkyLightMask, blockLightMask, emptyBlockLightMask, buffer.connection.world.dimension)
     }
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk light (position=$chunkPosition)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk light (position=$position)" }
     }
 
     override fun handle(connection: PlayConnection) {
-        val chunk = connection.world.getOrCreateChunk(chunkPosition)
-        chunk.setData(chunkData)
+        connection.world.chunks[position] = this.prototype
     }
 
     companion object : PacketSkipper {

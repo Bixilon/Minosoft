@@ -20,11 +20,11 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.PalettedBiomeArray
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
-import de.bixilon.minosoft.data.world.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.ChunkData
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
-import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
+import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
@@ -45,35 +45,35 @@ import java.util.*
 
 object ChunkUtil {
 
-    fun readChunkPacket(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet? = null, isFullChunk: Boolean, containsSkyLight: Boolean): ChunkData? {
+    fun readChunkPacket(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet? = null, complete: Boolean, containsSkyLight: Boolean): ChunkPrototype? {
         if (buffer.versionId < V_15W35A) { // ToDo: was this really changed in 62?
-            return readLegacyChunk(buffer, dimension, sectionBitMask, addBitMask, isFullChunk, containsSkyLight)
+            return readLegacyChunk(buffer, dimension, sectionBitMask, addBitMask, complete, containsSkyLight)
         }
-        return readPaletteChunk(buffer, dimension, sectionBitMask, isFullChunk, containsSkyLight)
+        return readPaletteChunk(buffer, dimension, sectionBitMask, complete, containsSkyLight)
     }
 
-    private fun readLegacyChunkWithAddBitSet(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean): ChunkData {
-        val chunkData = ChunkData()
+    private fun readLegacyChunkWithAddBitSet(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet, complete: Boolean, containsSkyLight: Boolean): ChunkPrototype {
+        val chunkData = ChunkPrototype()
 
         val totalBytes = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val halfBytes = totalBytes / 2
 
 
         val blockData = buffer.readByteArray(totalBytes)
-        val blockMetaData = buffer.readByteArray(halfBytes)
+        val blockMeta = buffer.readByteArray(halfBytes)
         val light = buffer.readByteArray(halfBytes)
         var skyLight: ByteArray? = null
         if (containsSkyLight) {
             skyLight = buffer.readByteArray(halfBytes)
         }
-        val addBlockData = buffer.readByteArray(addBitMask.cardinality() * (ProtocolDefinition.BLOCKS_PER_SECTION / 2))
-        if (isFullChunk) {
+        val addData = buffer.readByteArray(addBitMask.cardinality() * (ProtocolDefinition.BLOCKS_PER_SECTION / 2))
+        if (complete) {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }
 
         // parse data
-        var arrayPosition = 0
-        val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
+        var index = 0
+        val sections: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.minSection..dimension.maxSection).withIndex()) {
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -81,37 +81,37 @@ object ChunkUtil {
 
             val blocks: Array<BlockState?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
 
-            for (blockNumber in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-                var blockId = (blockData[arrayPosition].toInt() and 0xFF) shl 4
-                var blockMeta: Int
+            for (yzx in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+                var blockId = (blockData[index].toInt() and 0xFF) shl 4
+                var meta: Int
                 // get block meta and shift and add (merge) id if needed
-                if (arrayPosition % 2 == 0) {
+                if (index % 2 == 0) {
                     // high bits
-                    blockMeta = blockMetaData[arrayPosition / 2].toInt() and 0x0F
+                    meta = blockMeta[index / 2].toInt() and 0x0F
                     if (addBitMask.get(sectionHeight)) {
-                        blockId = (blockId shl 4) or (addBlockData[arrayPosition / 2].toInt() ushr 4)
+                        blockId = (blockId shl 4) or (addData[index / 2].toInt() ushr 4)
                     }
                 } else {
                     // low 4 bits
-                    blockMeta = blockMetaData[arrayPosition / 2].toInt() ushr 4 and 0xF
+                    meta = blockMeta[index / 2].toInt() ushr 4 and 0xF
 
                     if (addBitMask.get(sectionHeight)) {
-                        blockId = blockId shl 4 or (addBlockData[arrayPosition / 2].toInt() and 0xF)
+                        blockId = blockId shl 4 or (addData[index / 2].toInt() and 0xF)
                     }
                 }
-                arrayPosition++
+                index++
 
-                blockId = blockId or blockMeta
+                blockId = blockId or meta
 
-                blocks[blockNumber] = buffer.connection.registries.blockState.getOrNull(blockId) ?: continue
+                blocks[yzx] = buffer.connection.registries.blockState.getOrNull(blockId) ?: continue
             }
-            sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks, buffer.connection.world.occlusionUpdateCallback)
+            sections[sectionHeight] = BlockSectionDataProvider(blocks)
         }
-        chunkData.blocks = sectionBlocks
+        chunkData.blocks = sections
         return chunkData
     }
 
-    fun readLegacyChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet? = null, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData? {
+    fun readLegacyChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet? = null, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkPrototype? {
         if (sectionBitMask.length() == 0 && isFullChunk) {
             // unload chunk
             return null
@@ -120,7 +120,7 @@ object ChunkUtil {
         if (buffer.versionId < V_14W26A) {
             return readLegacyChunkWithAddBitSet(buffer, dimension, sectionBitMask, addBitMask!!, isFullChunk, containsSkyLight)
         }
-        val chunkData = ChunkData()
+        val chunkData = ChunkPrototype()
 
         val totalEntries: Int = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val totalHalfEntries = totalEntries / 2
@@ -137,26 +137,26 @@ object ChunkUtil {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }
 
-        var arrayPos = 0
-        val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
+        var index = 0
+        val sections: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.minSection..dimension.maxSection).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
                 continue
             }
             val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
-            for (blockNumber in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-                val blockId = blockData[arrayPos++]
+            for (yzx in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+                val blockId = blockData[index++]
                 val block = buffer.connection.registries.blockState.getOrNull(blockId) ?: continue
-                blocks[blockNumber] = block
+                blocks[yzx] = block
             }
-            sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks, buffer.connection.world.occlusionUpdateCallback)
+            sections[sectionHeight] = BlockSectionDataProvider(blocks)
         }
-        chunkData.blocks = sectionBlocks
+        chunkData.blocks = sections
         return chunkData
     }
 
-    fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet?, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
-        val chunkData = ChunkData()
+    fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet?, complete: Boolean, skylight: Boolean = false): ChunkPrototype {
+        val chunkData = ChunkPrototype()
         val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
         val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
         var lightReceived = 0
@@ -175,7 +175,7 @@ object ChunkUtil {
             val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.connection.registries.blockState, paletteFactory = BlockStatePaletteFactory)
 
             if (!blockContainer.isEmpty) {
-                val unpacked = BlockSectionDataProvider(blockContainer.unpack(), buffer.connection.world.occlusionUpdateCallback)
+                val unpacked = BlockSectionDataProvider(blockContainer.unpack())
                 if (!unpacked.isEmpty) {
                     sectionBlocks[sectionHeight - dimension.minSection] = unpacked
                 }
@@ -194,7 +194,7 @@ object ChunkUtil {
             if (buffer.versionId < V_18W43A) {
                 val blockLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 var skyLight: ByteArray? = null
-                if (containsSkyLight) {
+                if (skylight) {
                     skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 }
                 if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
@@ -210,7 +210,7 @@ object ChunkUtil {
         }
         if (buffer.versionId >= V_21W37A) {
             chunkData.biomeSource = PalettedBiomeArray(biomes, dimension.minSection, BiomePaletteFactory.edgeBits)
-        } else if (buffer.versionId < V_19W36A && isFullChunk) {
+        } else if (buffer.versionId < V_19W36A && complete) {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }
 
@@ -233,39 +233,11 @@ object ChunkUtil {
     val Array<Chunk?>.fullyLoaded: Boolean
         get() {
             for (neighbour in this) {
-                if (neighbour?.isFullyLoaded != true) {
-                    return false
+                if (neighbour == null) return false
+                if (neighbour.neighbours.complete) {
+                    continue
                 }
-            }
-            return true
-        }
-
-    val Array<Chunk?>.loaded: Boolean
-        get() {
-            for (neighbour in this) {
-                if (neighbour?.isLoaded != true) {
-                    return false
-                }
-            }
-            return true
-        }
-
-    val Array<Chunk?>.received: Boolean
-        get() {
-            for (neighbour in this) {
-                if (neighbour?.blocksInitialized != true) {
-                    return false
-                }
-            }
-            return true
-        }
-
-    val Array<Chunk>.canBuildBiomeCache: Boolean
-        get() {
-            for (neighbour in this) {
-                if (neighbour.biomeSource == null || !neighbour.cacheBiomes) {
-                    return false
-                }
+                return false
             }
             return true
         }

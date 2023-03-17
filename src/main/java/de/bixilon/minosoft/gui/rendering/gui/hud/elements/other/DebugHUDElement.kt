@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
@@ -44,7 +44,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -55,6 +54,7 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.SystemInformation
@@ -92,7 +92,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
         layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}" }
         context.renderer[WorldRenderer]?.apply {
-            layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, l=${loaded.size.format()}, cQ=${culledQueue.size.format()}, q=${meshingQueue.size.format()}, pT=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lQ=${loadingQueue.size.format()}/${meshingQueue.maxMeshesToLoad.format()}, w=${connection.world.chunks.size.format()}" }
+            layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, l=${loaded.size.format()}, cQ=${culledQueue.size.format()}, q=${meshingQueue.size.format()}, pT=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lQ=${loadingQueue.size.format()}/${meshingQueue.maxMeshesToLoad.format()}, w=${connection.world.chunks.chunks.size.format()}" }
         }
 
         layout += context.renderer[EntityRenderer]?.let {
@@ -132,21 +132,21 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += LineSpacerElement(guiRenderer)
 
 
-        connection.player.apply {
+        connection.camera.entity.physics.apply {
             // ToDo: Only update when the position changes
             layout += AutoTextElement(guiRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
             layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.blockPosition) { "Block ${x.format()} ${y.format()} ${z.format()}" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk ${inChunkSectionPosition.format()} in (${chunkPosition.x.format()} ${sectionHeight.format()} ${chunkPosition.y.format()})" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk ${inSectionPosition.format()} in (${chunkPosition.x.format()} ${sectionHeight.format()} ${chunkPosition.y.format()})" } }
             layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 
-                Directions.byDirection(guiRenderer.context.camera.matrixHandler.entity.rotation.front).apply {
+                Directions.byDirection(rotation.front).apply {
                     text += this
                     text += " "
                     text += vector
                 }
 
-                guiRenderer.context.connection.player.rotation.apply {
+                rotation.apply {
                     text += " yaw=§d${yaw.rounded10}§r, pitch=§d${pitch.rounded10}"
                 }
 
@@ -156,7 +156,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        val chunk = connection.world[connection.player.positionInfo.chunkPosition]
+        val chunk = connection.player.physics.positionInfo.chunk
 
         if (chunk == null) {
             layout += DebugWorldInfo(guiRenderer)
@@ -245,7 +245,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        context.camera.targetHandler.apply {
+        context.connection.camera.target.apply {
             layout += AutoTextElement(guiRenderer, 1, HorizontalAlignments.RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"
@@ -272,38 +272,27 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         }
 
         private fun updateInformation() {
-            entity.positionInfo.apply {
-                chunk.value = world[chunkPosition]
+            entity.physics.positionInfo.apply {
+                this@DebugWorldInfo.chunk.value = chunk
 
-                if ((chunk.value == null && lastChunk.value == null) || (chunk.value != null && lastChunk.value != null)) {
+                // TODO: also try getting chunk prototype
+                if ((chunk == null && lastChunk.value == null) || (chunk != null && lastChunk.value != null)) {
                     // No update, elements will update themselves
                     return
                 }
-                if (chunk.value == null) {
+                if (chunk == null) {
                     lastChunk.value = null
                     showWait()
                     return
                 }
                 clear()
 
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.effects) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", entity.connection.world.dimension.effects) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(eyeBlockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) {
-                    val chunk = chunk.value ?: return@AutoTextElement ""
-                    var value: Any = chunk.isFullyLoaded
-                    if (!chunk.isFullyLoaded) {
-                        val builder = StringBuilder()
-                        if (chunk.blocksInitialized) builder.append('s') // for block states
-                        if (chunk.biomesInitialized) builder.append('b') // biomes
-                        if (chunk.neighbours.complete) builder.append('n') // neighbours
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(entity.connection.world.getLight(entity.renderInfo.eyeBlockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", chunk.neighbours.complete) }
 
-                        value = builder.toString()
-                    }
-                    BaseComponent("Fully loaded: ", value)
-                }
-
-                lastChunk = chunk
+                lastChunk.value = chunk
             }
         }
 

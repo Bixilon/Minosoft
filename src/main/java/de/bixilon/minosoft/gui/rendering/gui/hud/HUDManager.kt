@@ -30,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar.BossbarLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.ChatElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.BreakProgressHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.DebugHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.PerformanceHUDElement
@@ -40,6 +39,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaHUDElement
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
+import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class HUDManager(
@@ -133,7 +133,6 @@ class HUDManager(
             BossbarLayout,
             ChatElement,
 
-            BreakProgressHUDElement,
             TabListElement,
             HotbarElement,
             PerformanceHUDElement,

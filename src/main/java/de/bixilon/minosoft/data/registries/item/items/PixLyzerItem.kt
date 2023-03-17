@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactories
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -27,7 +28,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Item(resourceLocation), DurableItem {
+open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Item(resourceLocation), DurableItem, StackableItem {
     override val rarity: Rarities = data["rarity"]?.toInt()?.let { Rarities[it] } ?: Rarities.COMMON
     override val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
     override val maxDurability: Int = data["max_damage"]?.toInt() ?: 1
@@ -36,7 +37,7 @@ open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registri
 
 
     companion object : ResourceLocationCodec<Item>, PixLyzerItemFactory<Item>, MultiClassFactory<Item> {
-        override val ALIASES = setOf("AirBlockItem")
+        override val ALIASES = setOf("Item", "AirBlockItem")
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Item {
             check(registries != null) { "Registries is null!" }
@@ -47,7 +48,7 @@ open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registri
                 Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Item for class $className not found, defaulting..." }
                 // ToDo: This item class got renamed or is not yet implemented
                 factory = if (data["food_properties"] != null) {
-                    FoodItem // ToDo: Remove this edge case
+                    PixLyzerFoodItem // ToDo: Remove this edge case
                 } else {
                     PixLyzerItem
                 }

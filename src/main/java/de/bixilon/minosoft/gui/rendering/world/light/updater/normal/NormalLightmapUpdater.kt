@@ -51,8 +51,8 @@ class NormalLightmapUpdater(
     }
 
     override fun update(force: Boolean, buffer: LightmapBuffer) {
-        val dimension = connection.world.dimension ?: return
-        val skylight = dimension.hasSkyLight && dimension.effects.daylightCycle
+        val dimension = connection.world.dimension
+        val skylight = dimension.skyLight && dimension.effects.daylightCycle
 
         if (!force || !this.force) {
             if (!skylight) {
@@ -74,7 +74,7 @@ class NormalLightmapUpdater(
         val nightVision = getNightVisionStrength()
 
         for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
-            var color = calculateBlock(dimension.brightness[block])
+            var color = calculateBlock(dimension.ambientLight[block])
             color = tweak(color, gamma, dimension.effects.brighten, nightVision)
             buffer[0, block] = color
         }
@@ -84,8 +84,8 @@ class NormalLightmapUpdater(
         val time = connection.world.time
         val weather = connection.world.weather
 
-        val skyColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateSky(dimension.brightness[it], weather, time) }
-        val blockColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateBlock(dimension.brightness[it]) }
+        val skyColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateSky(dimension.ambientLight[it], weather, time) }
+        val blockColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateBlock(dimension.ambientLight[it]) }
 
         val gamma = profile.gamma
         val nightVision = getNightVisionStrength()

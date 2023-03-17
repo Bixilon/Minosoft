@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.FloatMath.ceil
-import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
+import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
-    private val water = guiRenderer.context.connection.registries.fluid[DefaultFluids.WATER]!!
+    private val water = guiRenderer.context.connection.registries.fluid[WaterFluid]!!
     private val airBubble = guiRenderer.atlasManager["minecraft:air_bubble"]
     private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]
 
@@ -59,7 +59,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
 
         val air = player.airSupply
 
-        val submergedFluid = player.submergedFluid
+        val submergedFluid = player.physics.submersion.eye
 
         var bubbles = 0
         var poppingCount = 0

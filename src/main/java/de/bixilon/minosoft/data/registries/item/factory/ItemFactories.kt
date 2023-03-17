@@ -21,11 +21,24 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.armor.extra.ElytraItem
 import de.bixilon.minosoft.data.registries.item.items.armor.extra.TurtleHelmet
 import de.bixilon.minosoft.data.registries.item.items.armor.materials.*
+import de.bixilon.minosoft.data.registries.item.items.block.climbing.ClimbingItems
 import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
 import de.bixilon.minosoft.data.registries.item.items.bucket.FilledBucketItem
+import de.bixilon.minosoft.data.registries.item.items.end.EnderEyeItem
+import de.bixilon.minosoft.data.registries.item.items.end.EnderPealItem
+import de.bixilon.minosoft.data.registries.item.items.entities.chicken.EggItem
+import de.bixilon.minosoft.data.registries.item.items.fire.FireChargeItem
+import de.bixilon.minosoft.data.registries.item.items.fire.FlintAndSteelItem
+import de.bixilon.minosoft.data.registries.item.items.fishing.rod.OnAStickItem
 import de.bixilon.minosoft.data.registries.item.items.food.AppleItem
+import de.bixilon.minosoft.data.registries.item.items.potion.DrinkingPotionItem
+import de.bixilon.minosoft.data.registries.item.items.potion.LingeringPotionItem
+import de.bixilon.minosoft.data.registries.item.items.potion.SplashPotionItem
+import de.bixilon.minosoft.data.registries.item.items.snow.SnowballItem
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.*
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
+import de.bixilon.minosoft.data.registries.item.items.weapon.attack.range.pullable.BowItem
+import de.bixilon.minosoft.data.registries.item.items.weapon.defend.ShieldItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 object ItemFactories : DefaultFactory<ItemFactory<*>>(
@@ -70,6 +83,23 @@ object ItemFactories : DefaultFactory<ItemFactory<*>>(
     TurtleHelmet,
     ElytraItem,
 
+    BowItem,
+    ShieldItem,
+
+    EnderEyeItem,
+    EnderPealItem,
+
+    SnowballItem,
+
+    EggItem,
+
+    DrinkingPotionItem,
+    LingeringPotionItem,
+    SplashPotionItem,
+
+    OnAStickItem.CarrotOnAStickItem,
+    OnAStickItem.WarpedFungusOnAStickItem,
+
     WoodenTool.WoodenSword, WoodenTool.WoodenShovel, WoodenTool.WoodenPickaxe, WoodenTool.WoodenAxe, WoodenTool.WoodenHoe,
     StoneTool.StoneSword, StoneTool.StoneShovel, StoneTool.StonePickaxe, StoneTool.StoneAxe, StoneTool.StoneHoe,
 
@@ -82,6 +112,11 @@ object ItemFactories : DefaultFactory<ItemFactory<*>>(
     NetheriteTool.NetheriteSword, NetheriteTool.NetheriteShovel, NetheriteTool.NetheritePickaxe, NetheriteTool.NetheriteAxe, NetheriteTool.NetheriteHoe,
 
     ShearsItem,
+
+    FireChargeItem, FlintAndSteelItem,
+
+
+    ClimbingItems.ScaffoldingItem,
 ), IntegratedRegistry<Item> {
 
     override fun build(name: ResourceLocation, registries: Registries, data: JsonObject): Item? {

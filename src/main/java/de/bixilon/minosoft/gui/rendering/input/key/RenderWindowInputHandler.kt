@@ -33,7 +33,7 @@ import de.bixilon.minosoft.gui.rendering.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.input.CameraInput
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManagerKeys
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
@@ -59,8 +59,7 @@ class RenderWindowInputHandler(
     var currentMousePosition: Vec2d = Vec2d.EMPTY
         private set
 
-
-    val interactionManager = InteractionManager(context)
+    val interactionKeys = InteractionManagerKeys(this, connection.camera.interactions)
     var inputHandler: InputHandler? = null
         set(value) {
             if (field == value) {
@@ -97,7 +96,7 @@ class RenderWindowInputHandler(
     }
 
     fun init() {
-        interactionManager.init()
+        interactionKeys.register()
 
         connection.events.listen<RawCharInputEvent> { charInput(it.char) }
         connection.events.listen<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) }
@@ -352,6 +351,6 @@ class RenderWindowInputHandler(
 
     fun draw(delta: Double) {
         cameraInput.updateInput(delta)
-        interactionManager.draw(delta)
+        interactionKeys.draw()
     }
 }

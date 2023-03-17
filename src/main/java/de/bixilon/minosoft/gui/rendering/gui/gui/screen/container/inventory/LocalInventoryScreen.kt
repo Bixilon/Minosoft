@@ -17,7 +17,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 
-class LocalInventoryScreen(guiRenderer: GUIRenderer) : InventoryScreen(guiRenderer, guiRenderer.connection.player.inventory) {
+class LocalInventoryScreen(guiRenderer: GUIRenderer) : InventoryScreen(guiRenderer, guiRenderer.connection.player.items.inventory) {
 
     companion object : GUIBuilder<LayoutedGUIElement<LocalInventoryScreen>> {
 

@@ -23,7 +23,7 @@ import org.testng.annotations.Test
 class StairsTest : BlockTest<Block>() {
 
     init {
-        StairsTestO = this
+        StairsTest0 = this
     }
 
     fun getOakStairs() {
@@ -50,4 +50,4 @@ class StairsTest : BlockTest<Block>() {
     }
 }
 
-var StairsTestO: StairsTest = CastUtil.unsafeNull()
+var StairsTest0: StairsTest = CastUtil.unsafeNull()

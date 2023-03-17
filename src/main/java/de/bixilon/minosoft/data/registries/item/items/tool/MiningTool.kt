@@ -19,5 +19,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface MiningTool {
 
-    fun getMiningSpeed(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float?
+    fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack): Float
+
+    fun isSuitableFor(connection: PlayConnection, state: BlockState, stack: ItemStack): Boolean
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,8 +22,7 @@ import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.collections.CollectionUtil.get
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.registries.shapes.AABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
@@ -161,8 +160,8 @@ class Frustum(
 
     fun containsChunk(chunkPosition: Vec2i): Boolean {
         val dimension = world.dimension
-        val minY = dimension?.minY ?: 0
-        val maxY = dimension?.maxY ?: DimensionProperties.DEFAULT_MAX_Y
+        val minY = dimension.minY
+        val maxY = dimension.maxY
         val base = Vec2i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z)
         return containsRegion(Vec3(base.x, minY, base.y), Vec3(base.x + ProtocolDefinition.SECTION_WIDTH_X, maxY, base.y + ProtocolDefinition.SECTION_WIDTH_Z))
     }

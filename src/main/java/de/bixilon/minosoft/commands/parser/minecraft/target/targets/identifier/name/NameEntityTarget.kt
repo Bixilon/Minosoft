@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.CommandEntityTarget
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.world.WorldEntities
 
 class NameEntityTarget(
     val name: String,
-) : EntityTarget {
+) : CommandEntityTarget {
 
     override fun getEntities(executor: Entity?, entities: WorldEntities): List<Entity> {
         var entity: Entity? = null

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.container.slots.equipment
 
-import de.bixilon.minosoft.data.container.ArmorSlots
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.equipment.ArmorSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 

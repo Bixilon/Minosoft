@@ -128,7 +128,7 @@ class ParticleRenderer(
             if (!context.state.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {
                 return@TimeWorkerTask
             }
-            val cameraPosition = connection.player.positionInfo.chunkPosition
+            val cameraPosition = connection.player.physics.positionInfo.chunkPosition
             val particleViewDistance = connection.world.view.particleViewDistance
 
 
@@ -174,7 +174,7 @@ class ParticleRenderer(
             return
         }
 
-        if (!particle.chunkPosition.isInViewDistance(connection.world.view.particleViewDistance, connection.player.positionInfo.chunkPosition)) {
+        if (!particle.chunkPosition.isInViewDistance(connection.world.view.particleViewDistance, connection.player.physics.positionInfo.chunkPosition)) {
             particle.dead = true
             return
         }
@@ -214,13 +214,23 @@ class ParticleRenderer(
 
         particlesLock.acquire()
 
-        val time = millis()
-        for (particle in particles) {
+        val start = millis()
+        var time = start
+        for ((index, particle) in particles.withIndex()) {
             particle.tryTick(time)
             if (particle.dead) {
                 continue
             }
             particle.addVertex(transparentMesh, translucentMesh, time)
+
+            if (index % 1000 == 0) {
+                time = millis()
+                if (time - start > MAX_FRAME_TIME) {
+                    // particles are heavily lagging out the game, reducing it.
+                    // TODO: introduce slow particle mode and optimize out slow particles
+                    break
+                }
+            }
         }
 
         particlesLock.release()
@@ -262,6 +272,7 @@ class ParticleRenderer(
     companion object : RendererBuilder<ParticleRenderer> {
         override val identifier = minosoft("particle")
         const val MAXIMUM_AMOUNT = 50000
+        const val MAX_FRAME_TIME = 5
 
         override fun build(connection: PlayConnection, context: RenderContext): ParticleRenderer? {
             if (connection.profiles.particle.skipLoading) {

@@ -17,24 +17,29 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.LeveledTool
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
+import de.bixilon.minosoft.tags.MinecraftTagTypes
+import de.bixilon.minosoft.tags.TagManager
 
 abstract class LeveledToolItem(identifier: ResourceLocation) : ToolItem(identifier), LeveledTool {
 
-
-    override fun checkTag(connection: PlayConnection, blockState: BlockState): Boolean? {
-        val blockTags = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION] ?: return null
-        val tag = blockTags[tag]?.entries ?: return null
+    private fun isLevelSuitable(tagManager: TagManager, blockState: BlockState): Boolean? {
+        val miningTag = this.tag ?: return null
+        val blockTags = tagManager[MinecraftTagTypes.BLOCK] ?: return null
+        val tag = blockTags[miningTag] ?: return null
         if (blockState.block !in tag) {
             return false
         }
         for (level in ToolLevels.REVERSED) {
-            val levelTag = blockTags[level.tag] ?: continue
-            if (blockState.block in levelTag.entries) {
+            val levelTag = blockTags[level.tag ?: continue] ?: continue
+            if (blockState.block in levelTag) {
                 // minimum tool level required
                 return this.level >= level
             }
         }
         return true
+    }
+
+    override fun isLevelSuitable(connection: PlayConnection, blockState: BlockState): Boolean? {
+        return isLevelSuitable(connection.tags, blockState) ?: isLevelSuitable(connection.legacyTags, blockState)
     }
 }

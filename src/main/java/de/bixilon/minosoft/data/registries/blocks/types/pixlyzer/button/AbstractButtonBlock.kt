@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.button
 
+import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -20,17 +21,16 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Com
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
+import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class AbstractButtonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
 
     override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        if (target.blockState.isPowered()) {
-            return InteractionResults.CONSUME
+        if (target.state.isPowered()) {
+            return InteractionResults.FAILED
         }
-        connection.world[target.blockPosition] = target.blockState.withProperties(BlockProperties.POWERED to true)
+        connection.world[target.blockPosition] = target.state.withProperties(BlockProperties.POWERED to true)
         return InteractionResults.SUCCESS
     }
 }

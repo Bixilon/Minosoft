@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
-import de.bixilon.minosoft.data.registries.item.items.armor.DefendingItem
+import de.bixilon.minosoft.data.registries.item.items.armor.DefendingArmorItem
 import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 import de.bixilon.minosoft.data.registries.item.items.armor.slots.BootsItem
 import de.bixilon.minosoft.data.registries.item.items.armor.slots.ChestplateItem
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.registries.item.items.armor.slots.LeggingsItem
 import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingItem, DyeableItem {
+abstract class LeatherArmor(resourceLocation: ResourceLocation) : ArmorItem(resourceLocation), WearableItem, DefendingArmorItem, DyeableItem {
 
 
     open class LeatherBoots(resourceLocation: ResourceLocation = this.identifier) : LeatherArmor(resourceLocation), BootsItem {

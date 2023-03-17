@@ -220,6 +220,7 @@ testing {
                         options {
                             val options = this as TestNGOptions
                             options.preserveOrder = true
+                            options.excludeGroups("pixlyzer", "light", "packet", "version", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "world_renderer", "rendering")
                         }
                     }
                 }
@@ -227,6 +228,9 @@ testing {
             sources {
                 kotlin {
                     setSrcDirs(listOf("src/integration-test/kotlin"))
+                }
+                resources {
+                    setSrcDirs(listOf("src/integration-test/resources"))
                 }
             }
         }

@@ -14,10 +14,11 @@
 package de.bixilon.minosoft.data.entities.entities.player.local
 
 data class Abilities(
-    var isInvulnerable: Boolean = false,
-    var isFlying: Boolean = false,
-    var canFly: Boolean = false,
+    val invulnerable: Boolean = false,
+    val flying: Boolean = false,
+    val allowFly: Boolean = false,
 
-    var flyingSpeed: Double = 0.05,
-    var walkingSpeed: Double = 0.1,
+    val flyingSpeed: Float = 0.05f,
+    @Deprecated("unused")
+    val walkingSpeed: Float = 0.1f,
 )

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 
 object WaterTintProvider : TintProvider {
 

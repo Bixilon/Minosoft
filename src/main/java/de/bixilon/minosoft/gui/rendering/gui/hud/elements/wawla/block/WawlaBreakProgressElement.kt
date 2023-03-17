@@ -19,13 +19,12 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.input.interaction.BlockBreakStatus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.input.interaction.breaking.survival.BlockBreakProductivity
 
 class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRenderer) {
-    private val `break` = context.inputHandler.interactionManager.`break`
-    private val status = `break`.status
-    private val progress = if (status != null) `break`.breakProgress else null
+    private val breaking = context.connection.camera.interactions.breaking
+    private val status = breaking.digging.status
 
     init {
         parent = block
@@ -33,19 +32,18 @@ class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRen
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        if (progress == null) {
+        if (status == null) {
             return
         }
         val maxWidth = parent?.size?.x ?: 0
-        if (status == BlockBreakStatus.USELESS) {
+        if (status.productivity == BlockBreakProductivity.USELESS) {
             ColorElement(guiRenderer, Vec2i(maxWidth, size.y), color = ChatColors.RED).forceRender(offset, consumer, options)
             return
         }
-        val width = (progress * (maxWidth - 1)).toInt() + 1 // bar is always 1 pixel wide
+        val width = (status.progress * (maxWidth - 1)).toInt() + 1 // bar is always 1 pixel wide
 
-        val color = when (status) {
-            BlockBreakStatus.INEFFECTIVE -> ChatColors.RED
-            BlockBreakStatus.SLOW -> ChatColors.YELLOW
+        val color = when (status.productivity) {
+            BlockBreakProductivity.INEFFECTIVE -> ChatColors.YELLOW
             else -> ChatColors.GREEN
         }
 
@@ -53,6 +51,6 @@ class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRen
     }
 
     override fun forceSilentApply() {
-        this.size = if (progress == null) Vec2i.EMPTY else Vec2i(-1, 3)
+        this.size = if (status == null) Vec2i.EMPTY else Vec2i(-1, 3)
     }
 }

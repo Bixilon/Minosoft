@@ -16,4 +16,6 @@ package de.bixilon.minosoft.data.registries.blocks.types
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
-class TestBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings)
+class TestBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings) {
+    override val hardness: Float get() = 2.0f
+}

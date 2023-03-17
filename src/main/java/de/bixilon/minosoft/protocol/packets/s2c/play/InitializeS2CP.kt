@@ -22,6 +22,8 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
+import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
+import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.PacketErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -141,7 +143,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.world.clear()
+        connection.util.resetWorld()
         connection.util.prepareSpawn()
         val playerEntity = connection.player
         val previousGamemode = playerEntity.additional.gamemode
@@ -157,11 +159,11 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.world.name = world
 
 
-        connection.world.entities.getId(playerEntity)?.let { connection.world.entities.remove(it) } // e.g. bungeecord sends this packet twice
+        connection.world.entities.clear(connection, local = true)
         connection.world.entities.add(entityId, null, playerEntity)
-        connection.world.hashedSeed = hashedSeed
+        connection.events.fire(EntitySpawnEvent(connection, playerEntity))
         if (connection.version.versionId >= ProtocolVersions.V_19W36A && !connection.profiles.rendering.performance.fastBiomeNoise) {
-            connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection)
+            connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection, hashedSeed)
         }
         connection.world.border.reset()
 
@@ -173,6 +175,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         connection.player.keyManagement.sendSession()
 
+        connection.events.fire(DimensionChangeEvent(connection))
         connection.state = PlayConnectionStates.SPAWNING
     }
 

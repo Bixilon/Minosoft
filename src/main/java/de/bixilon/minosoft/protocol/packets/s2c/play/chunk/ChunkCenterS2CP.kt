@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class ChunkCenterS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val position: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt())
+    private val position = ChunkPosition(buffer.readVarInt(), buffer.readVarInt())
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk center (position=$position)" }

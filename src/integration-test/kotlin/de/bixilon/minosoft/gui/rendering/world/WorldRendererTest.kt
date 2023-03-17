@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.data.registries.blocks.StoneTestO
+import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil.frame
 import org.testng.Assert
@@ -65,7 +65,7 @@ class WorldRendererTest {
 
     fun queueSingleChunk() {
         val chunk = RenderTestUtil.context.connection.world[Vec2i(0, 0)]!!
-        chunk[Vec3i(0, 0, 0)] = StoneTestO.state
+        chunk[Vec3i(0, 0, 0)] = StoneTest0.state
         val renderer = create()
         renderer.master.tryQueue(chunk, ignoreLoaded = true, force = true)
         renderer.awaitQueue(1)
@@ -82,8 +82,8 @@ class WorldRendererTest {
             RenderTestUtil.context.connection.world[Vec2i(3, 1)]!!,
         )
         for (chunk in chunks) {
-            chunk[Vec3i(0, 0, 0)] = StoneTestO.state
-            chunk[Vec3i(0, 16, 0)] = StoneTestO.state
+            chunk[Vec3i(0, 0, 0)] = StoneTest0.state
+            chunk[Vec3i(0, 16, 0)] = StoneTest0.state
         }
         val renderer = create()
         for (chunk in chunks) {

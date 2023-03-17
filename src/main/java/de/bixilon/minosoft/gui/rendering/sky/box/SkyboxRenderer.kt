@@ -31,7 +31,10 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
-import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
+import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
+import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
@@ -44,7 +47,6 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
-import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import java.util.*
 import kotlin.math.PI
@@ -101,19 +103,21 @@ class SkyboxRenderer(
             val chunkPosition = blockPosition.chunkPosition
             if (chunkPosition != this.chunkPosition) {
                 this.chunkPosition = chunkPosition
-                this.chunk = sky.context.connection.world[chunkPosition]
+                this.chunk = sky.context.connection.world.chunks[chunkPosition]
             }
             recalculateBaseColor()
         }
 
-        sky.context.connection.events.listen<ChunkDataChangeEvent> {
-            if (!it.chunk.neighbours.complete) {
+        sky.context.connection.events.listen<WorldUpdateEvent> {
+            if (it.update !is NeighbourChangeUpdate && it.update !is ChunkCreateUpdate) return@listen
+            if (it.update.chunkPosition != chunkPosition) return@listen
+            if (!it.update.chunk.neighbours.complete) {
                 return@listen
             }
-            if (it.chunkPosition == chunkPosition || this.chunk == it.chunk) {
-                this.chunk = it.chunk
-                recalculateBaseColor()
+            if (this.chunk != it.update.chunk) {
+                this.chunk = it.update.chunk
             }
+            recalculateBaseColor()
         }
     }
 
@@ -202,7 +206,7 @@ class SkyboxRenderer(
         val offset = Vec3i(cameraPosition)
         val chunk = this.chunk ?: return null
 
-        val dimension = sky.connection.world.dimension ?: return null
+        val dimension = sky.connection.world.dimension
         val yRange: IntRange
 
         if (dimension.supports3DBiomes) {
@@ -350,7 +354,7 @@ class SkyboxRenderer(
 
         var weather = sky.context.connection.world.weather
         if (!properties.weather) {
-            weather = WorldWeather.NONE
+            weather = WorldWeather.SUNNY
         }
 
         if (weather.thunder > 0.0f) {

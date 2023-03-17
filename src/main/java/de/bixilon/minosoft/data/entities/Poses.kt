@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,6 +24,15 @@ enum class Poses {
     SNEAKING,
     LONG_JUMPING, // ToDo: This was added at some time, no clue when
     DYING,
+
+    // warden:  TODO: split and remove, this is shit
+    CROAKING,
+    USING_TONGUE,
+    SITTING,
+    ROARING,
+    SNIFFING,
+    EMERGING,
+    DIGGING,
     ;
 
     companion object : ValuesEnum<Poses> {

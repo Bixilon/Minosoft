@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
@@ -44,7 +44,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
 
     override fun drawAsync() {
-        val target = context.camera.targetHandler.target
+        val target = context.connection.camera.target.target
 
         if (target == null) {
             this.element = null

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.queue
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
@@ -86,7 +86,7 @@ class CulledQueue(
 
         val world = renderer.world
 
-        world.chunks.lock.acquire()
+        world.lock.acquire()
 
         val list: MutableList<Pair<Chunk, Int>> = mutableListOf()
 
@@ -95,7 +95,7 @@ class CulledQueue(
             if (!renderer.visibilityGraph.isChunkVisible(chunkPosition)) {
                 continue
             }
-            val chunk = world.chunks.unsafe[chunkPosition] ?: continue
+            val chunk = world.chunks.chunks.unsafe[chunkPosition] ?: continue
 
             val heightIterator = sectionHeights.intIterator()
             for (sectionHeight in heightIterator) {
@@ -110,7 +110,7 @@ class CulledQueue(
                 queueIterator.remove()
             }
         }
-        world.chunks.lock.release()
+        world.lock.release()
 
         lock.release()
         renderer.lock.release()

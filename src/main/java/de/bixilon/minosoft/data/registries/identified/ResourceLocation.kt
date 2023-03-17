@@ -73,6 +73,7 @@ open class ResourceLocation(
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
+        if (other is Identified) return this == other.identifier
         if (other !is ResourceLocation) return false
         if (hashCode() != other.hashCode()) return false
 

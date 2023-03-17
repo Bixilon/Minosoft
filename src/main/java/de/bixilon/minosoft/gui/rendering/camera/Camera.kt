@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.camera
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
-import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
 import de.bixilon.minosoft.gui.rendering.camera.view.ViewManager
 import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
 
@@ -26,8 +26,7 @@ class Camera(
     val context: RenderContext,
 ) {
     val fogManager = FogManager(context)
-    val matrixHandler = MatrixHandler(context, fogManager, this)
-    val targetHandler = TargetHandler(context, this)
+    val matrixHandler = MatrixHandler(context, this)
     val visibilityGraph = WorldVisibilityGraph(context, this)
 
     val view = ViewManager(this)
@@ -36,19 +35,20 @@ class Camera(
     fun init() {
         matrixHandler.init()
         view.init()
+        context.connection.camera::entity.observe(this) { context.connection.camera.entity = it }
     }
 
     fun draw() {
-        val entity = matrixHandler.entity
-        entity.tryTick()
+        val entity = context.connection.camera.entity
+        (entity.attachment.getRootVehicle() ?: entity).tryTick() // TODO
         if (entity is LocalPlayerEntity) {
             entity._draw(millis())
         }
         view.draw()
         matrixHandler.draw()
         val latch = CountUpAndDownLatch(2)
-        context.runAsync { visibilityGraph.draw();latch.dec() }
-        context.runAsync { targetHandler.raycast();latch.dec() }
+        context.runAsync { visibilityGraph.draw(); latch.dec() }
+        context.runAsync { context.connection.camera.target.update(); latch.dec() }
         fogManager.draw()
         latch.await()
     }

@@ -25,6 +25,8 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.effects.attributes.AttributeType
+import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.item.items.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -47,7 +49,7 @@ data class EntityType(
     val height: Float,
     val sizeFixed: Boolean,
     val fireImmune: Boolean,
-    val attributes: Map<ResourceLocation, Double>,
+    val attributes: Map<AttributeType, Double>,
     val factory: EntityFactory<out Entity>,
     val spawnEgg: SpawnEggItem?,
 ) : RegistryItem(), Translatable {
@@ -107,11 +109,16 @@ data class EntityType(
                 throw NullPointerException("Can not find entity factory for $resourceLocation")
             }
 
-            val attributes: MutableMap<ResourceLocation, Double> = mutableMapOf()
+            val attributes: MutableMap<AttributeType, Double> = mutableMapOf()
 
             data["attributes"]?.toJsonObject()?.let {
-                for ((attributeResourceLocation, value) in it) {
-                    attributes[ResourceLocation.of(attributeResourceLocation).fix()] = value.unsafeCast()
+                for ((name, value) in it) {
+                    val type = MinecraftAttributes[name.toResourceLocation().fix()]
+                    if (type == null) {
+                        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Can not get entity attribute type: $name" }
+                        continue
+                    }
+                    attributes[type] = value.unsafeCast()
                 }
             }
 

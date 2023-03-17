@@ -12,13 +12,13 @@
  */
 package de.bixilon.minosoft.data.direction
 
-import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.swizzle.*
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
@@ -27,15 +27,13 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.math.abs
 import kotlin.reflect.jvm.javaField
 
 enum class Directions(
-    val horizontalId: Int,
+    @Deprecated("remove") val horizontalId: Int,
     val vector: Vec3i,
 ) {
     DOWN(-1, Vec3i(0, -1, 0)),
@@ -50,28 +48,16 @@ enum class Directions(
     val vectorf = Vec3(vector)
     val vectord = Vec3d(vector)
 
-    inline val axis: Axes get() = Axes[this] // ToDo
-    val debugColor = ChatColors[ordinal]
-
-    val rotatedMatrix: Mat4 by lazy {
-        when (this) {
-            DOWN -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign(180.0f.rad, Vec3(1, 0, 0)).translateAssign(Vec3(-0.5f))
-            UP -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign((-180.0f).rad, Vec3(1, 0, 0)).translateAssign(Vec3(-0.5f)) // ToDo
-            NORTH -> Mat4()
-            SOUTH -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign(180.0f.rad, Vec3(0, 1, 0)).translateAssign(Vec3(-0.5f))
-            WEST -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign((-270.0f).rad, Vec3(0, 1, 0)).translateAssign(Vec3(-0.5f))
-            EAST -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign((-90.0f).rad, Vec3(0, 1, 0)).translateAssign(Vec3(-0.5f))
-        }
-    }
-
+    val axis: Axes = unsafeNull()
+    val rotatedMatrix: Mat4 = unsafeNull()
     val inverted: Directions = unsafeNull()
 
     private fun invert(): Directions {
         val ordinal = ordinal
         return if (ordinal % 2 == 0) {
-            byId(ordinal + 1)
+            Directions[ordinal + 1]
         } else {
-            byId(ordinal - 1)
+            Directions[ordinal - 1]
         }
     }
 
@@ -89,16 +75,7 @@ enum class Directions(
         }
     }
 
-    fun rotateYCC(): Directions {
-        return when (this) {
-            NORTH -> WEST
-            SOUTH -> EAST
-            WEST -> SOUTH
-            EAST -> NORTH
-            else -> Broken("Rotation: $this")
-        }
-    }
-
+    @Deprecated("outsource")
     fun getPositions(from: Vec3, to: Vec3): Array<Vec3> {
         return when (this) {
             DOWN -> arrayOf(Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.z), Vec3(to.x, from.y, from.z), from)
@@ -110,6 +87,7 @@ enum class Directions(
         }
     }
 
+    @Deprecated("outsource")
     fun getSize(rotated: Directions, from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
         var pair = when (this) {
             DOWN, UP -> Pair(from.xz, to.xz)
@@ -128,6 +106,7 @@ enum class Directions(
         return pair
     }
 
+    @Deprecated("outsource")
     fun getFallbackUV(from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
         return when (this) {
             DOWN, UP -> Pair(from.xz, to.xz)
@@ -136,64 +115,54 @@ enum class Directions(
         }
     }
 
-    fun getUVMultiplier(from: Vec3, to: Vec3): Vec2 {
-        return when (this) {
-            DOWN -> from.zx - to.zx
-            UP -> from.xz - to.xz
-            NORTH -> from.xy - to.xy
-            SOUTH -> from.yx - to.yx
-            EAST -> from.zy - to.zy
-            WEST -> from.yz - to.yz
-        }
-    }
-
+    @Deprecated("outsource")
     fun getBlock(x: Int, y: Int, z: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): BlockState? {
         return when (this) {
             DOWN -> {
                 if (y == 0) {
-                    neighbours[Directions.O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
+                    neighbours[Directions.O_DOWN]?.blocks?.let { it[x, ProtocolDefinition.SECTION_MAX_Y, z] }
                 } else {
-                    section.blocks.unsafeGet(x, y - 1, z)
+                    section.blocks[x, y - 1, z]
                 }
             }
 
             UP -> {
                 if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                    neighbours[Directions.O_UP]?.blocks?.unsafeGet(x, 0, z)
+                    neighbours[Directions.O_UP]?.blocks?.let { it[x, 0, z] }
                 } else {
-                    section.blocks.unsafeGet(x, y + 1, z)
+                    section.blocks[x, y + 1, z]
                 }
             }
 
             NORTH -> {
                 if (z == 0) {
-                    neighbours[Directions.O_NORTH]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
+                    neighbours[Directions.O_NORTH]?.blocks?.let { it[x, y, ProtocolDefinition.SECTION_MAX_Z] }
                 } else {
-                    section.blocks.unsafeGet(x, y, z - 1)
+                    section.blocks[x, y, z - 1]
                 }
             }
 
             SOUTH -> {
                 if (z == ProtocolDefinition.SECTION_MAX_Z) {
-                    neighbours[Directions.O_SOUTH]?.blocks?.unsafeGet(x, y, 0)
+                    neighbours[Directions.O_SOUTH]?.blocks?.let { it[x, y, 0] }
                 } else {
-                    section.blocks.unsafeGet(x, y, z + 1)
+                    section.blocks[x, y, z + 1]
                 }
             }
 
             WEST -> {
                 if (x == 0) {
-                    neighbours[Directions.O_WEST]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
+                    neighbours[Directions.O_WEST]?.blocks?.let { it[ProtocolDefinition.SECTION_MAX_X, y, z] }
                 } else {
-                    section.blocks.unsafeGet(x - 1, y, z)
+                    section.blocks[x - 1, y, z]
                 }
             }
 
             EAST -> {
                 if (x == ProtocolDefinition.SECTION_MAX_X) {
-                    neighbours[Directions.O_EAST]?.blocks?.unsafeGet(0, y, z)
+                    neighbours[Directions.O_EAST]?.blocks?.let { it[0, y, z] }
                 } else {
-                    section.blocks.unsafeGet(x + 1, y, z)
+                    section.blocks[x + 1, y, z]
                 }
             }
         }
@@ -214,27 +183,16 @@ enum class Directions(
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = EnumUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
-        val PRIORITY_SIDES = arrayOf(WEST, EAST, NORTH, SOUTH)
-        private val HORIZONTAL = arrayOf(SOUTH, WEST, NORTH, EAST)
+
+        val XYZ = arrayOf(WEST, EAST, DOWN, UP, NORTH, SOUTH)
 
         override fun deserialize(value: Any): Directions {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
 
-        override fun get(name: String): Directions {
-            if (name.lowercase() == "bottom") {
-                return DOWN
-            }
-            return super.get(name)
-        }
-
-        @JvmStatic
-        fun byId(id: Int): Directions {
-            return VALUES[id]
-        }
-
         private const val MIN_ERROR = 0.0001f
 
+        @Deprecated("outsource")
         fun byDirection(direction: Vec3): Directions {
             var minDirection = VALUES[0]
             var minError = 2.0f
@@ -250,20 +208,17 @@ enum class Directions(
             return minDirection
         }
 
-        fun byDirection(direction: Vec3d): Directions {
-            return byDirection(Vec3(direction))
-        }
-
-        fun byHorizontal(value: Int): Directions {
-            return HORIZONTAL[abs(value % HORIZONTAL.size)]
-        }
-
 
         init {
-            val field = Directions::inverted.javaField!!
+            val rotationMatrix = Directions::rotatedMatrix.javaField!!
+            val inverted = Directions::inverted.javaField!!
+            val axis = Directions::axis.javaField!!
             for (direction in VALUES) {
-                field.forceSet(direction, direction.invert())
+                inverted.forceSet(direction, direction.invert())
+                rotationMatrix.forceSet(direction, DirectionUtil.rotateMatrix(direction))
+                axis.forceSet(direction, Axes[direction])
             }
+            NAME_MAP.unsafeCast<MutableMap<String, Directions>>()["bottom"] = DOWN
         }
     }
 }

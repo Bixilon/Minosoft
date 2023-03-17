@@ -13,21 +13,28 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
+import de.bixilon.minosoft.data.entities.entities.properties.riding.ItemRideable
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.fishing.rod.OnAStickItem
+import de.bixilon.minosoft.physics.entities.living.animal.PigPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
-class Pig(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
+class Pig(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation), ItemRideable {
+
+    override val primaryPassenger: Entity?
+        get() = super<ItemRideable>.primaryPassenger
 
     @get:SynchronizedEntityData
-    val hasSaddle: Boolean
+    override val isSaddled: Boolean
         get() = data.getBoolean(HAS_SADDLE_DATA, false)
 
     @get:SynchronizedEntityData
@@ -35,9 +42,15 @@ class Pig(connection: PlayConnection, entityType: EntityType, data: EntityData, 
         get() = data.get(BOOST_TIME_DATA, 0)
 
 
+    override fun isSteerableWith(stack: ItemStack): Boolean {
+        return stack.item.item is OnAStickItem.CarrotOnAStickItem
+    }
+
+    override fun createPhysics() = PigPhysics(this)
+
     companion object : EntityFactory<Pig> {
         override val identifier: ResourceLocation = minecraft("pig")
-        private val HAS_SADDLE_DATA = EntityDataField("PIG_HAS_SADDLE")
+        val HAS_SADDLE_DATA = EntityDataField("PIG_HAS_SADDLE")
         private val BOOST_TIME_DATA = EntityDataField("PIG_BOOST_TIME")
 
 

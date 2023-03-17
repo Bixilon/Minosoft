@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
-import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
+import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
@@ -75,7 +75,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
     }
 
     override fun poll(): Boolean {
-        val riddenEntity = guiRenderer.context.connection.player.vehicle
+        val riddenEntity = guiRenderer.context.connection.player.attachment.vehicle
         if (riddenEntity == null || riddenEntity !is LivingEntity) {
             if (this.shown) {
                 totalHealth = 0.0f
@@ -87,7 +87,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
         }
 
         val health = riddenEntity.health.toFloat()
-        val maxHealth = max(0.0f, riddenEntity.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat())
+        val maxHealth = max(0.0f, riddenEntity.attributes[MinecraftAttributes.MAX_HEALTH].toFloat())
 
         if (health == this.totalHealth && this.totalMaxHealth == maxHealth) {
             return false

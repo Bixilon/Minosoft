@@ -28,8 +28,8 @@ enum class Sorting {
 
     fun sort(center: Vec3d, selected: MutableList<Entity>) {
         when (this) {
-            NEAREST -> selected.sortBy { (center - it.position).length2() }
-            FURTHEST -> selected.sortBy { -(center - it.position).length2() }
+            NEAREST -> selected.sortBy { (center - it.physics.position).length2() }
+            FURTHEST -> selected.sortBy { -(center - it.physics.position).length2() }
             RANDOM -> selected.shuffle()
             ARBITRARY -> selected.sortBy { it.id ?: 0 }
         }

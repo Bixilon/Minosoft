@@ -13,6 +13,9 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.move.vehicle.MoveVehicleC2SP
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -20,11 +23,22 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class MoveVehicleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position: Vec3d = buffer.readVec3d()
     val yaw: Float = buffer.readFloat()
     val pitch: Float = buffer.readFloat()
+
+
+    override fun handle(connection: PlayConnection) {
+        val vehicle = connection.player.attachment.getRootVehicle() ?: return
+        if (!vehicle.clientControlled) {
+            return
+        }
+        vehicle.forceTeleport(position)
+        vehicle.forceRotate(EntityRotation(yaw, pitch))
+        connection.sendPacket(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
+    }
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Vehicle move (position=$position, yaw=$yaw, pitch=$pitch)" }

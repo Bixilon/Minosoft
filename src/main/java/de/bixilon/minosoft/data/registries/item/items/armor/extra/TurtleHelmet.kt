@@ -18,12 +18,12 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
-import de.bixilon.minosoft.data.registries.item.items.armor.DefendingItem
 import de.bixilon.minosoft.data.registries.item.items.armor.WearableItem
 import de.bixilon.minosoft.data.registries.item.items.armor.slots.HelmetItem
+import de.bixilon.minosoft.data.registries.item.items.weapon.defend.DefendingItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class TurtleHelmet(resourceLocation: ResourceLocation = this.identifier) : ArmorItem(resourceLocation), WearableItem, DefendingItem, HelmetItem {
+open class TurtleHelmet(identifier: ResourceLocation = this.identifier) : ArmorItem(identifier), WearableItem, DefendingItem, HelmetItem {
     override val defense: Int get() = 2
 
     companion object : ItemFactory<TurtleHelmet> {

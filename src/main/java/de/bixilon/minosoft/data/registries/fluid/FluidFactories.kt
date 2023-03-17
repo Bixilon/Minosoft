@@ -16,9 +16,8 @@ package de.bixilon.minosoft.data.registries.fluid
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.data.registries.fluid.fluids.EmptyFluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.lava.LavaFluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.registries.Registries

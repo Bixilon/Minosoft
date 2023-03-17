@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.block
 
+import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.registries.blocks.wawla.BlockWawlaProvider
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponentUtil.removeTrailingNewlines
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaElement
@@ -29,7 +29,7 @@ class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : Wawla
     override val elements: List<Element?> = listOf(
         createName(),
         createAdditionalInformation(),
-        createIdentifierElement(target.blockState.block),
+        createIdentifierElement(target.state.block),
         createMod(),
         WawlaBreakProgressElement(this),
     )
@@ -40,11 +40,11 @@ class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : Wawla
     }
 
     private fun createName(): TextElement {
-        return createNameElement(target.blockState.block.item.translationKey) // TODO: use key of block and not item
+        return createNameElement(target.state.block.translationKey)
     }
 
     private fun createMod(): TextElement? {
-        val namespace = target.blockState.block.identifier.namespace
+        val namespace = target.state.block.identifier.namespace
         if (namespace == Namespaces.DEFAULT) {
             return null
         }
@@ -54,8 +54,8 @@ class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : Wawla
     private fun createAdditionalInformation(): TextElement? {
         val component = BaseComponent()
 
-        if (target.blockState.block is BlockWawlaProvider) {
-            component += target.blockState.block.getWawlaInformation(context.connection, target)
+        if (target.state.block is BlockWawlaProvider) {
+            component += target.state.block.getWawlaInformation(context.connection, target)
             component += "\n"
         }
         if (target.entity is BlockWawlaProvider) {

@@ -94,7 +94,7 @@ class CloudLayer(
 
     private fun updatePosition() {
         val offset = this.offset.toInt()
-        val position = clouds.connection.player.positionInfo.chunkPosition + Vec2i(offset / CloudArray.CLOUD_SIZE, 0)
+        val position = clouds.connection.player.physics.positionInfo.chunkPosition + Vec2i(offset / CloudArray.CLOUD_SIZE, 0)
         if (position == this.position) {
             return
         }

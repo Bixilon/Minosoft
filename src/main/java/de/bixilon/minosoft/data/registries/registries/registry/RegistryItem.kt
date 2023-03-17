@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.registries.registry
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.javaField
@@ -24,7 +25,7 @@ abstract class RegistryItem : Identified {
     open val injectable: Boolean get() = true
     private val injects: MutableMap<KProperty<RegistryItem?>, List<Any>> = if (injectable) mutableMapOf() else unsafeNull()
 
-    fun KProperty<RegistryItem?>.inject(vararg keys: Any?) {
+    fun <T : RegistryItem> KProperty<T?>.inject(vararg keys: Any?): T {
         if (!injectable) {
             throw IllegalStateException("Not injectable")
         }
@@ -34,9 +35,10 @@ abstract class RegistryItem : Identified {
             keyList += key
         }
         if (keyList.isEmpty()) {
-            return
+            return unsafeNull()
         }
         injects[this] = keyList
+        return unsafeNull()
     }
 
     fun inject(registries: Registries) {
@@ -63,5 +65,16 @@ abstract class RegistryItem : Identified {
 
     override fun toString(): String {
         return identifier.toString()
+    }
+
+    override fun hashCode(): Int {
+        return identifier.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is ResourceLocation) return this.identifier == other
+        if (other is Identified) return this.identifier == other.identifier
+
+        return false
     }
 }

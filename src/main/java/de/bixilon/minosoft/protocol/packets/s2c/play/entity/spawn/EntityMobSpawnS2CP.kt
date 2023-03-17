@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.util.KUtil.startInit
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -56,8 +57,9 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val data = EntityData(buffer.connection, rawData)
         val entityType = buffer.connection.registries.entityType[typeId]
         entity = entityType.build(buffer.connection, position, rotation, data, buffer.versionId)!!
+        entity.startInit()
         entity.setHeadRotation(headYaw)
-        entity.velocity = velocity
+        entity.physics.velocity = velocity
         if (rawData != null) {
             entity.data.merge(rawData)
         }

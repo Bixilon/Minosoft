@@ -15,35 +15,32 @@ package de.bixilon.minosoft.data.registries.item.items.tool.hoe
 
 import de.bixilon.kutil.cast.CollectionCast.toAnyMap
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.kutil.json.JsonUtil.toJsonList
+import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.tool.InteractingToolItem
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.input.interaction.InteractionResults
 
 abstract class HoeItem(identifier: ResourceLocation, registries: Registries, data: JsonObject) : InteractingToolItem(identifier) {
     override val tag: ResourceLocation get() = TAG
-    override val mineable: Set<Block>? = data["diggable_blocks"]?.toJsonList()?.blocks(registries)
 
     @Deprecated("TillableBlock")
     protected val tillable = data["tillables_block_states"]?.toAnyMap()?.states(registries)
 
 
-    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
-        if (!connection.profiles.controls.interaction.tilling) {
-            return InteractionResults.CONSUME
+    override fun interactBlock(player: LocalPlayerEntity, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
+        if (!player.connection.profiles.controls.interaction.tilling) {
+            return InteractionResults.INVALID
         }
 
-        return super.interact(connection, target.blockPosition, tillable?.get(target.blockState.block))
+        return super.interact(player.connection, target.blockPosition, tillable?.get(target.state.block))
     }
 
     companion object {
-        private val TAG = minecraft("mineable/hoe")
+        val TAG = minecraft("mineable/hoe")
     }
 }

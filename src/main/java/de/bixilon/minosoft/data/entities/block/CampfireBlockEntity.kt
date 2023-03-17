@@ -79,7 +79,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             if (!random.chance(20)) {
                 continue
             }
-            val direction = Directions.byHorizontal(Math.floorMod(index + facing, Directions.SIDES.size))
+            val direction = HORIZONTAL[Math.floorMod(index + facing, Directions.SIDES.size)]
 
             val position = Vec3d(blockPosition) + Vec3d(
                 0.5f - direction.vector.x * DIRECTION_OFFSET + direction.rotateYC().vector.x * DIRECTION_OFFSET,
@@ -95,6 +95,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
 
     companion object : BlockEntityFactory<CampfireBlockEntity> {
         override val identifier: ResourceLocation = minecraft("campfire")
+        private val HORIZONTAL = arrayOf(Directions.SOUTH, Directions.WEST, Directions.NORTH, Directions.EAST)
         const val DIRECTION_OFFSET = 0.3125
 
 

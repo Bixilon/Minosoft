@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,10 +16,13 @@ package de.bixilon.minosoft.data.world.chunk.neighbours
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 
-class ChunkNeighbours(val chunk: Chunk) {
+class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
     val neighbours: Array<Chunk?> = arrayOfNulls(COUNT)
     private var count = 0
 
@@ -33,7 +36,7 @@ class ChunkNeighbours(val chunk: Chunk) {
     }
 
     operator fun set(index: Int, chunk: Chunk) {
-        chunk.lock.lock()
+        this.chunk.lock.lock()
         val current = neighbours[index]
         neighbours[index] = chunk
         if (current == null) {
@@ -42,7 +45,7 @@ class ChunkNeighbours(val chunk: Chunk) {
                 complete(get()!!)
             }
         }
-        chunk.lock.unlock()
+        this.chunk.lock.unlock()
     }
 
     operator fun set(offset: Vec2i, chunk: Chunk) {
@@ -63,22 +66,24 @@ class ChunkNeighbours(val chunk: Chunk) {
         remove(getIndex(offset))
     }
 
-    private fun complete(neighbours: Array<Chunk>) {
-        updateSectionNeighbours(neighbours)
+    fun completeSection(neighbours: Array<Chunk>, section: ChunkSection, sectionHeight: SectionHeight, biomeCacheAccessor: NoiseBiomeAccessor?) {
+        section.neighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, sectionHeight)
+        if (biomeCacheAccessor != null) {
+            section.buildBiomeCache(neighbours, biomeCacheAccessor)
+        }
     }
 
-    private fun updateSectionNeighbours(neighbours: Array<Chunk>) {
-        if (chunk.sections == null) {
-            return
+    private fun complete(neighbours: Array<Chunk>) {
+        val biomeCacheAccessor = chunk.world.cacheBiomeAccessor
+        for ((index, section) in chunk.sections.withIndex()) {
+            if (section == null) continue
+            val sectionHeight = index + chunk.minSection
+            completeSection(neighbours, section, sectionHeight, biomeCacheAccessor)
         }
-        for ((index, section) in chunk.sections!!.withIndex()) {
-            if (section == null) {
-                continue
-            }
-            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, index + chunk.minSection)
-            section.neighbours = sectionNeighbours
-        }
+        chunk.light.recalculate(false)
+        chunk.light.propagateFromNeighbours(fireEvent = false, fireSameChunkEvent = false)
     }
+
 
     operator fun get(index: Int): Chunk? {
         return neighbours[index]
@@ -91,12 +96,23 @@ class ChunkNeighbours(val chunk: Chunk) {
         return this[getIndex(offset)]
     }
 
+    override fun iterator(): Iterator<Chunk?> {
+        return neighbours.iterator()
+    }
+
     companion object {
-        private const val COUNT = 8
+        const val COUNT = 8
         const val NORTH = 3
         const val SOUTH = 4
         const val WEST = 1
         const val EAST = 6
+
+
+        /**
+         * 0 | 3 | 5
+         * 1 | - | 6
+         * 2 | 4 | 7
+         */
 
         val OFFSETS = arrayOf(
             Vec2i(-1, -1), // 0

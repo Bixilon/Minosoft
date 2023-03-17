@@ -24,6 +24,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class AbstractMinecart(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
+    override val canRaycast: Boolean get() = true
+
     @get:SynchronizedEntityData
     val shakingPower: Int
         get() = data.get(SHAKING_POWER_DATA, 0)

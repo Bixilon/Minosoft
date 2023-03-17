@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,9 +19,10 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.CameraView
-import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.input.camera.MovementInputActions
+import de.bixilon.minosoft.input.camera.PlayerMovementInput
 
 // TODO: handle block changes
 class ThirdPersonView(override val camera: Camera) : PersonView {
@@ -32,8 +33,8 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
     override var rotation = EntityRotation.EMPTY
     override var front = Vec3.EMPTY
 
-    override fun onInput(input: MovementInput, delta: Double) {
-        super.onInput(input, delta)
+    override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Double) {
+        super.onInput(input, actions, delta)
         update(eyePosition, front)
     }
 
@@ -46,15 +47,15 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
     }
 
     private fun update() {
-        val entity = camera.matrixHandler.entity
-        this.rotation = entity.rotation
+        val entity = camera.context.connection.camera.entity
+        this.rotation = entity.physics.rotation
         this.front = rotation.front
-        update(entity.eyePosition, front)
+        update(entity.renderInfo.eyePosition, front)
     }
 
     private fun update(position: Vec3, front: Vec3) {
-        val cast = camera.targetHandler.raycast(position.toVec3d, (-front).toVec3d, blocks = true, fluids = false, entities = true)
-        val distance = cast?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
+        val target = camera.context.connection.camera.target.raycastBlock(position.toVec3d, (-front).toVec3d).first
+        val distance = target?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
 
         this.eyePosition = position + (-front * distance)
     }

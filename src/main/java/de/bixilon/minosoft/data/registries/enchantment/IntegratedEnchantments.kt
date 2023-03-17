@@ -14,17 +14,21 @@
 package de.bixilon.minosoft.data.registries.enchantment
 
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
+import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
-import de.bixilon.minosoft.data.registries.enchantment.tool.WeaponEnchantment
+import de.bixilon.minosoft.data.registries.enchantment.tool.weapon.WeaponEnchantment
 import de.bixilon.minosoft.data.registries.integrated.SingletonIntegratedRegistry
 
 object IntegratedEnchantments : SingletonIntegratedRegistry<Enchantment>(
 
     ArmorEnchantment.AquaAffinity,
-    ArmorEnchantment.DepthStrider,
-    ArmorEnchantment.SoulSpeed,
+
+    MovementEnchantment.DepthStrider,
+    MovementEnchantment.SoulSpeed,
+    MovementEnchantment.SwiftSneak,
 
     MiningEnchantment.Efficiency,
 
     WeaponEnchantment.Sharpness,
+    WeaponEnchantment.Infinity,
 )

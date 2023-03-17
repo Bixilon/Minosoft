@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,16 +13,22 @@
 package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.Animal
+import de.bixilon.minosoft.data.entities.entities.properties.riding.Saddleable
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.physics.entities.vehicle.horse.AbstractHorsePhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-abstract class AbstractHorse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
+abstract class AbstractHorse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation), Saddleable {
+    override val primaryPassenger: LivingEntity? get() = if (isSaddled) attachment.passengers.firstOrNull().nullCast() else null
 
     private fun getAbstractHorseFlag(bitMask: Int): Boolean {
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
@@ -33,7 +39,7 @@ abstract class AbstractHorse(connection: PlayConnection, entityType: EntityType,
         get() = getAbstractHorseFlag(0x02)
 
     @get:SynchronizedEntityData
-    val isSaddled: Boolean
+    override val isSaddled: Boolean
         get() = getAbstractHorseFlag(0x04)
 
     @get:SynchronizedEntityData
@@ -56,8 +62,10 @@ abstract class AbstractHorse(connection: PlayConnection, entityType: EntityType,
     val owner: UUID?
         get() = data.get(OWNER_DATA, null)
 
+    override fun physics(): AbstractHorsePhysics<*> = super.physics().unsafeCast()
+
     companion object {
-        private val FLAGS_DATA = EntityDataField("ABSTRACT_HORSE_FLAGS")
+        val FLAGS_DATA = EntityDataField("ABSTRACT_HORSE_FLAGS")
         private val OWNER_DATA = EntityDataField("ABSTRACT_HORSE_OWNER_UUID")
     }
 }

@@ -20,6 +20,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
@@ -46,7 +47,7 @@ object ChunkTestingUtil {
     fun createWorld(): World {
         val objenesis = ObjenesisStd()
         val world = objenesis.newInstance(World::class.java)
-        world::dimension.javaField!!.forceSet(world, DataObserver(DimensionProperties(hasSkyLight = true)))
+        world::dimension.javaField!!.forceSet(world, DataObserver(DimensionProperties(skyLight = true)))
         world::connection.javaField!!.forceSet(world, createConnection())
 
         return world
@@ -58,7 +59,7 @@ object ChunkTestingUtil {
         Chunk::lock.javaField!!.forceSet(chunk, ThreadLock())
         chunk::chunkPosition.forceSet(position)
         Chunk::world.javaField!!.forceSet(chunk, world)
-        Chunk::maxSection.javaField!!.forceSet(chunk, chunk.world.dimension!!.maxSection)
+        Chunk::maxSection.javaField!!.forceSet(chunk, chunk.world.dimension.maxSection)
         Chunk::connection.javaField!!.forceSet(chunk, chunk.world.connection)
         Chunk::light.javaField!!.forceSet(chunk, ChunkLight(chunk))
         Chunk::neighbours.javaField!!.forceSet(chunk, ChunkNeighbours(chunk))

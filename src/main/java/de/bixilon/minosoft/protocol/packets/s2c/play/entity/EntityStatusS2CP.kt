@@ -12,6 +12,11 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.event.EntityEvent
+import de.bixilon.minosoft.data.entities.event.EntityEvents
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -20,11 +25,22 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
+@Deprecated("Will be renamed to EntityEventS2CP")
 class EntityStatusS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val entityId: Int = buffer.readInt()
     private val eventId: Int = buffer.readUnsignedByte()
 
+    override fun handle(connection: PlayConnection) {
+        val entity = connection.world.entities[entityId] ?: return
+        val event = EntityEvents.get(connection.version, entity, eventId)
+        if (event == null) {
+            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Unknown entity event (entity=${entity.type.identifier}, id=$eventId)" }
+            return
+        }
+        event.unsafeCast<EntityEvent<Entity>>().handle(entity)
+    }
+
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity status (entityId=$entityId, eventId=$eventId)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity status (entityId=$entityId, event=$eventId)" }
     }
 }

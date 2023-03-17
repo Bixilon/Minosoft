@@ -18,19 +18,16 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.random.RandomUtil.chance
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.block.CampfireBlockEntity
-import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isLit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.LitBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelItem
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.campfire.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
@@ -40,7 +37,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<CampfireBlockEntity>(resourceLocation, registries, data) {
+open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<CampfireBlockEntity>(resourceLocation, registries, data), LitBlock {
     val lavaParticles = data["lava_particles"]?.toBoolean() ?: true
 
     private val cosySmokeParticle = registries.particleType[CampfireSmokeParticle.CosyFactory]!!
@@ -95,14 +92,17 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         }
     }
 
-    override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        // ToDo: Ignite (flint and steel, etc)
-        if (itemStack?.item?.item !is ShovelItem || target.blockState.isLit()) {
-            return super.onUse(connection, target, hand, itemStack)
-        }
-        connection.world[target.blockPosition] = target.blockState.withProperties(BlockProperties.LIT to false)
-        extinguish(connection, target.blockState, target.blockPosition, Random())
-        return InteractionResults.SUCCESS
+    override fun extinguish(connection: PlayConnection, position: BlockPosition, state: BlockState): Boolean {
+        if (!state.isLit()) return false
+        connection.world[position] = state.withProperties(BlockProperties.LIT to false)
+        extinguish(connection, state, position, Random())
+        return true
+    }
+
+    override fun light(connection: PlayConnection, position: BlockPosition, state: BlockState): Boolean {
+        if (state.isLit()) return false
+        connection.world[position] = state.withProperties(BlockProperties.LIT to true)
+        return true
     }
 
     fun isSignal(state: BlockState): Boolean {

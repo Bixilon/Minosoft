@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.enchantment.armor
 
-import de.bixilon.minosoft.data.container.ArmorSlots
-import de.bixilon.minosoft.data.container.EquipmentSlots
+import de.bixilon.minosoft.data.container.equipment.ArmorSlots
+import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
@@ -49,15 +49,5 @@ interface ArmorEnchantment : SlotSpecificEnchantment {
     object AquaAffinity : Enchantment(), ArmorEnchantment, Identified {
         override val identifier = minecraft("aqua_affinity")
         override val slots: Set<ArmorSlots> = ArmorSlots.ALL
-    }
-
-    object DepthStrider : Enchantment(), ArmorEnchantment, Identified {
-        override val identifier = minecraft("depth_strider")
-        override val slots: Set<ArmorSlots> = ArmorSlots.ALL
-    }
-
-    object SoulSpeed : Enchantment(), ArmorEnchantment, Identified {
-        override val identifier = minecraft("soul_speed")
-        override val slots: Set<ArmorSlots> = setOf(ArmorSlots.FEET)
     }
 }

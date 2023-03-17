@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.move
 
+import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -22,23 +23,24 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class ToggleFlyC2SP(
-    val flying: Boolean,
+    val abilities: Abilities,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
         var flags = 0
-        if (flying) {
+        // TODO: Set all flags
+        if (abilities.flying) {
             flags = flags or 2
         }
         buffer.writeByte(flags)
         if (buffer.versionId < ProtocolVersions.V_1_16_PRE4) {
             // only fly matters, everything else ignored
-            buffer.writeFloat(1.0f) // flyingSpeed
-            buffer.writeFloat(1.0f) // walkingSpeed
+            buffer.writeFloat(abilities.flyingSpeed)
+            buffer.writeFloat(abilities.walkingSpeed) // walkingSpeed
         }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Toggle fly (flying=$flying)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Toggle fly (flying=${abilities.flying})" }
     }
 }

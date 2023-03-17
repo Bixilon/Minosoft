@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.camera
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.lava.LavaFluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation.interpolateSine
 import de.bixilon.minosoft.data.text.formatting.color.Colors
@@ -63,7 +63,7 @@ class FogManager(
     }
 
     private fun calculateFog(): Boolean {
-        val sky = context.connection.world.dimension?.effects
+        val sky = context.connection.world.dimension.effects
         var fogStart = if (!context.connection.profiles.rendering.fog.enabled || sky == null || !sky.fog) {
             Float.MAX_VALUE
         } else {
@@ -72,14 +72,14 @@ class FogManager(
         var fogEnd = fogStart + 15.0f
         var color: RGBColor? = null
 
-        val submergedFluid = player.submergedFluid
+        val submergedFluid = player.physics.submersion.eye
 
         if (submergedFluid is LavaFluid) {
             color = LAVA_FOG_COLOR
             fogStart = 0.2f
             fogEnd = 1.0f
         } else if (submergedFluid is WaterFluid) {
-            color = player.positionInfo.biome?.waterFogColor
+            color = player.physics.positionInfo.biome?.waterFogColor
             fogStart = 5.0f
             fogEnd = 10.0f
         } else if (player.effects[VisionEffect.Blindness] != null) {

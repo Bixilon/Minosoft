@@ -14,9 +14,10 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
+import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockDataUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
-import de.bixilon.minosoft.modding.event.events.blocks.BlockDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -42,13 +43,12 @@ class BlockDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val nbt = buffer.readNBT().toJsonObject()
 
     override fun handle(connection: PlayConnection) {
-        if (nbt == null) {
-            return
-        }
-        val chunk = connection.world[position.chunkPosition] ?: return
-        val blockEntity = chunk.getOrPutBlockEntity(position.inChunkPosition) ?: return
-        blockEntity.updateNBT(nbt)
-        connection.events.fire(BlockDataChangeEvent(connection, chunk, position, blockEntity))
+        if (nbt == null) return
+
+        val chunk = connection.world.chunks[position.chunkPosition] ?: return
+        val entity = chunk.getOrPutBlockEntity(position.inChunkPosition) ?: return
+        entity.updateNBT(nbt)
+        connection.events.fire(WorldUpdateEvent(connection, SingleBlockDataUpdate(position, chunk, entity)))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.container.slots
 
 import de.bixilon.minosoft.data.container.ContainerTestUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.items.AppleTestO
+import de.bixilon.minosoft.data.registries.items.AppleTest0
 import de.bixilon.minosoft.data.registries.items.CoalTest0
 import de.bixilon.minosoft.data.registries.items.LavaBucketTest0
 import de.bixilon.minosoft.data.registries.items.WaterBucketTest0
@@ -27,7 +27,7 @@ import org.testng.annotations.Test
 class FuelSlotTypeTest {
 
     fun apple() {
-        assertFalse(FuelSlotType.canPut(ContainerTestUtil.createContainer(), 0, ItemStack(AppleTestO.item)))
+        assertFalse(FuelSlotType.canPut(ContainerTestUtil.createContainer(), 0, ItemStack(AppleTest0.item)))
     }
 
     fun lavaBucket() {

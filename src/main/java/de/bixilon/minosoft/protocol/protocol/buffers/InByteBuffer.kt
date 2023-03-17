@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
@@ -68,12 +67,12 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
         return Poses[readVarInt()]
     }
 
-    fun readAngle(): Int {
-        return (readByte() * ProtocolDefinition.ROTATION_ANGLE_DIVIDER).toInt()
+    fun readAngle(): Float {
+        return (readByte() * ProtocolDefinition.ROTATION_ANGLE_DIVIDER)
     }
 
     fun readEntityRotation(): EntityRotation {
-        return EntityRotation(readAngle().toFloat(), readAngle().toFloat())
+        return EntityRotation(readAngle(), readAngle())
     }
 
     fun readVec2f(): Vec2 {
@@ -182,15 +181,5 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
             var name = readString(readUnsignedShort()) // ToDo: Should this name be ignored?
         }
         return readNBTTag(type)
-    }
-
-    fun <T> readTag(idResolver: (Int) -> T): Pair<ResourceLocation, Tag<T>> {
-        val resourceLocation = readResourceLocation()
-        val ids = readVarIntArray()
-        val items: MutableSet<T> = mutableSetOf()
-        for (id in ids) {
-            items += idResolver(id)
-        }
-        return Pair(resourceLocation, Tag(items))
     }
 }

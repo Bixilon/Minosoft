@@ -31,7 +31,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position: Vec3d = buffer.readVec3d()
     val rotation: EntityRotation
-    var isOnGround = false
+    var onGround = false
     private var flags: Int = 0
     var teleportId = 0
     private var dismountVehicle = true
@@ -39,7 +39,7 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         rotation = EntityRotation(buffer.readFloat(), buffer.readFloat())
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
-            isOnGround = buffer.readBoolean()
+            onGround = buffer.readBoolean()
         } else {
             flags = buffer.readUnsignedByte()
 
@@ -56,36 +56,41 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val entity = connection.player
         // correct position with flags (relative position possible)
         val position = Vec3d(this.position)
+        val velocity = Vec3d(entity.physics.velocity)
         if (flags.isBitMask(0x01)) {
-            position.x += entity.position.x
+            position.x += entity.physics.position.x
+        } else {
+            velocity.x = 0.0
         }
         if (flags.isBitMask(0x02)) {
-            position.y += entity.position.y
+            position.y += entity.physics.position.y
+        } else {
+            velocity.y = 0.0
         }
         if (flags.isBitMask(0x04)) {
-            position.z += entity.position.z
+            position.z += entity.physics.position.z
+        } else {
+            velocity.z = 0.0
         }
 
         var yaw = rotation.yaw
         if (flags.isBitMask(0x08)) {
-            yaw += entity.rotation.yaw
+            yaw += entity.physics.rotation.yaw
         }
 
         var pitch = rotation.pitch
         if (flags.isBitMask(0x10)) {
-            pitch += entity.rotation.pitch
+            pitch += entity.physics.rotation.pitch
         }
 
-
-        entity.position = position
-        entity.previousPosition = position // Prevent interpolating between 2 positions
-        val rotation = EntityRotation(yaw, pitch)
-        entity.rotation = rotation
+        entity.physics.velocity = velocity
+        entity.forceTeleport(position)
+        entity.forceRotate(EntityRotation(yaw, pitch))
 
         if (connection.version.versionId >= ProtocolVersions.V_15W42A) {
             connection.sendPacket(ConfirmTeleportC2SP(teleportId))
         }
-        connection.sendPacket(PositionRotationC2SP(position, rotation, isOnGround))
+        connection.sendPacket(PositionRotationC2SP(position, rotation, onGround))
 
         if (connection.state == PlayConnectionStates.SPAWNING) {
             connection.state = PlayConnectionStates.PLAYING
@@ -93,6 +98,6 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Position + rotation (position=$position, rotation=$rotation, onGround=$isOnGround, flags=$flags, teleportId=$teleportId, dismountVehicle=$dismountVehicle)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Position + rotation (position=$position, rotation=$rotation, onGround=$onGround, flags=$flags, teleportId=$teleportId, dismountVehicle=$dismountVehicle)" }
     }
 }

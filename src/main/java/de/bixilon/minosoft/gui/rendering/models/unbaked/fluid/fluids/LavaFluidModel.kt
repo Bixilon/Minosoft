@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.fluids
 
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.FlowableFluidModel
+import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.FluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 
-class LavaFluidModel : FlowableFluidModel {
+class LavaFluidModel : FluidModel {
     override var still: AbstractTexture? = null
     override var flowing: AbstractTexture? = null
 

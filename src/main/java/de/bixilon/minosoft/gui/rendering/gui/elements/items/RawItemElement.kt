@@ -17,7 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.item.items.block.BlockItem
+import de.bixilon.minosoft.data.registries.item.items.block.legacy.PixLyzerBlockItem
+import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -73,6 +74,7 @@ class RawItemElement(
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val stack = stack ?: return
+        if (!stack._valid) return
         val size = size
         val textureSize = size - 1
 
@@ -82,7 +84,7 @@ class RawItemElement(
             var element: Element? = null
 
             val color = ChatColors.WHITE
-            if (item is BlockItem) {
+            if (item is PixLyzerBlockItem) {
                 val defaultState = item.block.defaultState
                 defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
                     element = ImageElement(guiRenderer, it, size = textureSize)
@@ -107,7 +109,7 @@ class RawItemElement(
             count < 0 -> TextComponent(count, color = ChatColors.RED) // No clue why I do this...
             count == 0 -> ZERO_TEXT
             count > 99 -> INFINITE_TEXT
-            count > item.item.maxStackSize -> TextComponent(count, color = ChatColors.RED)
+            count > if (item.item is StackableItem) item.item.maxStackSize else 1 -> TextComponent(count, color = ChatColors.RED)
             else -> TextComponent(count)
         }
 

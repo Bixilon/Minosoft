@@ -18,8 +18,9 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.physics.PhysicsEntity
+import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.ParticleCollisionContext
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.data.registries.shapes.AABB
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
@@ -27,6 +28,8 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
+import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collectCollisions
+import de.bixilon.minosoft.physics.parts.CollisionMovementPhysics.collide
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
@@ -112,6 +115,26 @@ abstract class Particle(
         forceMove(Vec3d(move()))
     }
 
+    private fun collide(movement: Vec3d): Vec3d {
+        val aabb = aabb + movement
+        val context = ParticleCollisionContext(this)
+        val collisions = connection.world.collectCollisions(context, movement, aabb, null) // TODO: cache chunk
+        val adjusted = collide(movement, aabb, collisions)
+        if (adjusted.y != movement.y) {
+            onGround = true
+            adjusted.y = 0.0
+        }
+        if (adjusted.x != movement.x) {
+            adjusted.x = 0.0
+        }
+        if (adjusted.z != movement.z) {
+            adjusted.z = 0.0
+        }
+
+
+        return adjusted
+    }
+
     open fun move(velocity: Vec3d) {
         if (alreadyCollided) {
             this.previousPosition = Vec3d(position)
@@ -119,8 +142,7 @@ abstract class Particle(
         }
         var newVelocity = Vec3d(velocity)
         if (this.physics && newVelocity != Vec3d.EMPTY) {
-            val aabb = aabb + position
-            newVelocity = connection.collisionDetector.collide(this, newVelocity, aabb)
+            newVelocity = collide(velocity)
         }
 
         forceMove(newVelocity)

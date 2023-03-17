@@ -47,7 +47,7 @@ abstract class Container(
     val actions = ContainerActions(this)
 
     val id: Int?
-        get() = connection.player.containers.getKey(this)
+        get() = connection.player.items.containers.getKey(this)
 
     open val sections: Array<ContainerSection> get() = emptyArray()
 
@@ -196,12 +196,12 @@ abstract class Container(
         val id = id ?: return
 
         if (id != PlayerInventory.CONTAINER_ID && this !is ClientContainer) {
-            connection.player.containers -= id
+            connection.player.items.containers -= id
         }
 
 
-        if (force && connection.player.openedContainer == this) {
-            connection.player.openedContainer = null
+        if (!force && connection.player.items.opened == this) {
+            connection.player.items.opened = null
             connection.sendPacket(CloseContainerC2SP(id))
         }
 

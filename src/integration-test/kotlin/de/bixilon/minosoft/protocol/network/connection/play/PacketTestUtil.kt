@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.network.connection.play
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
-import org.testng.Assert
 
 object PacketTestUtil {
 
@@ -24,16 +23,40 @@ object PacketTestUtil {
         return network.unsafeCast()
     }
 
-    fun PlayConnection.assertPacket(packet: C2SPacket) {
-        Assert.assertEquals(test().take(), packet)
+    fun PlayConnection.assertPacket(expected: C2SPacket) {
+        val found = test().take() ?: throw AssertionError("Expected packet $expected, but found [null]!")
+        if (found::class.java != expected::class.java) {
+            throw AssertionError("Packet class expected: $expected, but found $found")
+        }
+        for (field in found::class.java.declaredFields) {
+            field.isAccessible = true
+            val gotValue = field.get(found)
+            val expectedValue = field.get(expected)
+            if (gotValue != expectedValue) {
+                throw AssertionError("Field ${field.name} differs: got=$gotValue, expected=$expectedValue")
+            }
+        }
     }
 
     fun PlayConnection.assertNoPacket() {
-        Assert.assertNull(test().take())
+        val packet = test().take()
+        if (packet != null) {
+            throw AssertionError("Expected no packet, but found $packet")
+        }
     }
 
+    @Deprecated("use assertPacket and assertNoPacket")
     fun PlayConnection.assertOnlyPacket(packet: C2SPacket) {
         assertPacket(packet)
         assertNoPacket()
+    }
+
+    fun <T : C2SPacket> PlayConnection.assertPacket(type: Class<T>): T {
+        val packet = test().take() ?: throw AssertionError("Expected packet of type $type, but found [null]!")
+        val clazz = packet::class.java
+        if (type.isAssignableFrom(clazz)) {
+            return packet.unsafeCast()
+        }
+        throw AssertionError("Expected packet of type $type, but found found $packet!")
     }
 }

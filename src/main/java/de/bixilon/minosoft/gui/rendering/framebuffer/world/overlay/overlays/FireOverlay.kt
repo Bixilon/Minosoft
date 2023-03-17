@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
+import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
@@ -32,6 +32,7 @@ class FireOverlay(
     private val player = context.connection.player
     private val shader = context.shaderManager.genericTexture2dShader
     private var texture: AbstractTexture = context.textureManager.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
+    private val lava = context.connection.registries.fluid[LavaFluid]
     override val render: Boolean
         get() {
             if (!config.enabled) {
@@ -40,7 +41,7 @@ class FireOverlay(
             if (player.gamemode == Gamemodes.CREATIVE && !config.creative) {
                 return false
             }
-            if (player.fluidHeights[DefaultFluids.LAVA] != null && !config.lava) {
+            if (player.physics.submersion[lava] != null && !config.lava) {
                 return false
             }
             return player.isOnFire

@@ -7,7 +7,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 (To be clear: This is not clone of minecraft, it is a reimplementation)  
 (This software is not affiliated with Mojang AB, the original developer of Minecraft)
 
-<h2><span style="color:red">Notice: I am **not** responsible for anti cheat banned accounts, this project is heavily in development!</span></h2>
+<h2>Notice: I am *not* responsible for anti cheat banned accounts, this project is heavily in development!</h2>
 
 ## Feature overview
 
@@ -18,6 +18,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Easy use of multiple accounts
 - Multiple connections to servers in 1 process
 - Multithreading and asynchronous loading
+- [Original physics](/doc/Physics.md)
 - Debugging on protocol layer
 - LAN servers
 - Multiple profiles (i.e. settings for servers or minosoft in general)
@@ -47,7 +48,6 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Particles
 - Basic block and skylight (custom light engine)
 - Block and item interactions (e.g. place, break, mining)
-- ~~Original physics~~ ([#91](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/91))
 - A lot more, only listing major things here, see the screenshots:
 
 ![Rendering](doc/img/rendering5.png)  

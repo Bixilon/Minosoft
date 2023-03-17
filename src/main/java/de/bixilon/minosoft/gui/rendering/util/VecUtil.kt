@@ -19,17 +19,11 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.Vec3t
-import de.bixilon.kutil.math.simple.DoubleMath.ceil
-import de.bixilon.kutil.math.simple.DoubleMath.floor
-import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
-import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
-import kotlin.math.abs
 
 @Deprecated(message = "Use VecXUtil instead")
 object VecUtil {
@@ -215,52 +209,6 @@ object VecUtil {
         )
     }
 
-    val Vec3.empty: Boolean
-        get() = this.length() < 0.001f
-
-    val Vec3d.empty: Boolean
-        get() = this.length() < 0.001
-
-    fun getDistanceToNextIntegerAxisInDirection(position: Vec3d, direction: Vec3d): Double {
-        fun getTarget(direction: Vec3d, position: Vec3d, axis: Axes): Int {
-            return if (direction[axis] > 0) {
-                position[axis].floor + 1
-            } else {
-                position[axis].ceil - 1
-            }
-        }
-
-        fun getLengthMultiplier(direction: Vec3d, position: Vec3d, axis: Axes): Double {
-            return (getTarget(direction, position, axis) - position[axis]) / direction[axis]
-        }
-
-        val directionXDistance = getLengthMultiplier(direction, position, Axes.X)
-        val directionYDistance = getLengthMultiplier(direction, position, Axes.Y)
-        val directionZDistance = getLengthMultiplier(direction, position, Axes.Z)
-        return minOf(directionXDistance, directionYDistance, directionZDistance)
-    }
-
-    fun Vec3d.getMinDistanceDirection(aabb: AABB): Directions {
-        var minDistance = Double.MAX_VALUE
-        var minDistanceDirection = Directions.UP
-        fun getDistance(position: Vec3d, direction: Directions): Double {
-            val axis = direction.axis
-            return (position[axis] - this[axis]) * -direction[axis]
-        }
-        for (direction in Directions.VALUES) {
-            val distance = if (direction[direction.axis] > 0f) {
-                getDistance(aabb.max, direction)
-            } else {
-                getDistance(aabb.min, direction)
-            }
-            if (distance < minDistance) {
-                minDistance = distance
-                minDistanceDirection = direction
-            }
-        }
-        return minDistanceDirection
-    }
-
     val <T : Number> Vec3t<T>.toVec3: Vec3
         get() = Vec3(this)
 
@@ -278,18 +226,6 @@ object VecUtil {
 
     fun Double.noised(random: Random): Double {
         return random.nextDouble() / this * if (random.nextBoolean()) 1.0 else -1.0
-    }
-
-    fun Vec3d.clearZero() {
-        if (abs(x) < 0.003) {
-            x = 0.0
-        }
-        if (abs(y) < 0.003) {
-            y = 0.0
-        }
-        if (abs(z) < 0.003) {
-            z = 0.0
-        }
     }
 
     operator fun Directions.plus(direction: Directions): Vec3i {

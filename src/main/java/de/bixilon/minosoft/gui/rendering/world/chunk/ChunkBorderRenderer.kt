@@ -36,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -75,7 +74,7 @@ class ChunkBorderRenderer(
             this.unload = true
             return
         }
-        val eyePosition = context.camera.matrixHandler.entity.eyePosition.blockPosition
+        val eyePosition = connection.camera.entity.renderInfo.eyePosition.blockPosition
         val chunkPosition = eyePosition.chunkPosition
         val sectionHeight = eyePosition.sectionHeight
         if (chunkPosition == this.chunkPosition && sectionHeight == this.sectionHeight && mesh != null) {
@@ -84,7 +83,7 @@ class ChunkBorderRenderer(
         unload = true
         val mesh = LineMesh(context)
 
-        val dimension = context.connection.world.dimension ?: return
+        val dimension = context.connection.world.dimension
         val basePosition = chunkPosition * Vec2i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_WIDTH_Z)
 
         mesh.drawInnerChunkLines(basePosition, dimension)

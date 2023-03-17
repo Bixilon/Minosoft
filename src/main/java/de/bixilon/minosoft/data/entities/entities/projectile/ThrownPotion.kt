@@ -27,7 +27,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil
 
 class ThrownPotion(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, data, position, rotation) {
-    override val gravity: Float = 0.05f
 
     @get:SynchronizedEntityData
     override val item: ItemStack?

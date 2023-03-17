@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.passenger
 
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -25,25 +24,23 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 @LoadPacket
 class EntityPassengerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val vehicleEntityId: Int = buffer.readVarInt()
-    val passengerEntityIds: IntOpenHashSet = IntOpenHashSet(buffer.readVarIntArray())
+    val vehicle: Int = buffer.readVarInt()
+    val passengers: IntOpenHashSet = IntOpenHashSet(buffer.readVarIntArray())
 
     override fun handle(connection: PlayConnection) {
-        val vehicle = connection.world.entities[vehicleEntityId] ?: return
-        val passengers = passengerEntityIds.entities(connection)
+        val vehicle = connection.world.entities[vehicle] ?: return
+        val passengers = passengers.entities(connection)
 
-        for (passenger in vehicle.passengers) {
-            passenger.vehicle = null
+        for (passenger in vehicle.attachment.passengers) {
+            passenger.attachment.vehicle = null
         }
 
-        vehicle.passengers = passengers.toSynchronizedSet()
-
         for (passenger in passengers) {
-            passenger.vehicle = vehicle
+            passenger.attachment.vehicle = vehicle
         }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity passenger (vehicleEntityId=$vehicleEntityId, passengerEntityIds=$passengerEntityIds)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity passenger (vehicle=$vehicle, passengers=$passengers)" }
     }
 }

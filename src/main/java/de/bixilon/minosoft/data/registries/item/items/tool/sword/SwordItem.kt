@@ -13,20 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.item.items.tool.sword
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.tool.LeveledToolItem
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class SwordItem(identifier: ResourceLocation) : LeveledToolItem(identifier) {
-
-    override fun getMiningSpeed(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float? {
-        // TODO: check
-        if (blockState.block.identifier == MinecraftBlocks.COBWEB) {
-            return 15.0f
-        }
-        return null
-    }
-}
+abstract class SwordItem(identifier: ResourceLocation) : LeveledToolItem(identifier)

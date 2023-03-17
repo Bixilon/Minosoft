@@ -16,6 +16,7 @@ package de.bixilon.minosoft.test
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.VersionRegistry
+import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
@@ -34,6 +35,12 @@ object ITUtil {
     }
 
     fun loadPixlyzerData(version: Version): Registries {
-        return version.load(profile, CountUpAndDownLatch(0))
+        val registries = Registries(false)
+
+        val data = PixLyzerUtil.loadPixlyzerData(version, profile)
+
+        registries.load(version, data, CountUpAndDownLatch(0))
+
+        return registries
     }
 }

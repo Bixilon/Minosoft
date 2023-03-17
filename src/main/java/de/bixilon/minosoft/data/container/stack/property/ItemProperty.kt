@@ -46,9 +46,8 @@ class ItemProperty(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is ItemProperty) {
-            return false
-        }
+        if (isDefault() && other == null) return true
+        if (other !is ItemProperty) return false
         if (other.hashCode() != hashCode()) {
             return false
         }

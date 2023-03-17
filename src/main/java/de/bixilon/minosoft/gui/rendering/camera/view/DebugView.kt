@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,12 +19,14 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
-import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.input.camera.MovementInputActions
+import de.bixilon.minosoft.input.camera.PlayerMovementInput
 
 class DebugView(private val camera: Camera) : CameraView {
     override val context: RenderContext get() = camera.context
     override val updateFrustum: Boolean get() = false
+    override val shaking: Boolean get() = false
 
     override var eyePosition = Vec3.EMPTY
 
@@ -32,24 +34,24 @@ class DebugView(private val camera: Camera) : CameraView {
     override var front = Vec3.EMPTY
 
 
-    override fun onInput(input: MovementInput, delta: Double) {
-        camera.context.connection.player.input = MovementInput()
+    override fun onInput(input: PlayerMovementInput, actions: MovementInputActions, delta: Double) {
+        camera.context.connection.player.input = PlayerMovementInput()
         var speedMultiplier = 10
-        if (input.sprinting) {
+        if (input.sprint) {
             speedMultiplier *= 3
         }
-        if (input.sneaking) {
+        if (input.sprint) {
             speedMultiplier *= 2
         }
 
         val movement = Vec3.EMPTY
 
-        if (input.movementForward != 0.0f) {
-            movement += front * input.movementForward
+        if (input.forwards != 0.0f) {
+            movement += front * input.forwards
         }
-        if (input.movementSideways != 0.0f) {
+        if (input.sideways != 0.0f) {
             val cameraRight = (CAMERA_UP_VEC3 cross front).normalize()
-            movement += cameraRight * input.movementSideways
+            movement += cameraRight * input.sideways
         }
 
         if (movement.length2() != 0.0f) {
