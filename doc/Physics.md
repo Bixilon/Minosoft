@@ -1,10 +1,3 @@
-## Check (removed)
-
-getPrimaryPassenger
-fov multiplier
-collision detector
-critical (attack)
-
 # Physics
 
 Matching physics are actually one of the most essential part of this project (because of anti cheat).
