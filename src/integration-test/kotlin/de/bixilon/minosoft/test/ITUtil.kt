@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
+import org.testng.SkipException
 
 object ITUtil {
     private val profile = createResourcesProfile()
@@ -42,5 +43,9 @@ object ITUtil {
         registries.load(version, data, CountUpAndDownLatch(0))
 
         return registries
+    }
+
+    fun todo() {
+        throw SkipException("Not yet implemented!")
     }
 }

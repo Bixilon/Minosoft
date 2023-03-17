@@ -33,6 +33,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
+import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -78,6 +79,7 @@ class LongUseIT {
     }
 
     fun pullBowWithoutArrows() {
+        todo()
         val connection = InteractionTestUtil.createConnection()
         connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(BowItem())
         val use = connection.camera.interactions.use

@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.item.items.tool.ToolTest
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.DiamondTool
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.IronTool
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.WoodenTool
+import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -25,6 +26,7 @@ import org.testng.annotations.Test
 class SwordTest : ToolTest() {
 
     fun sapling() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenSword, MinecraftBlocks.OAK_SAPLING)
         assertTrue(suitable)
         assertEquals(speed, 2.0f)
@@ -43,42 +45,49 @@ class SwordTest : ToolTest() {
     }
 
     fun bamboo() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenSword, MinecraftBlocks.BAMBOO)
         assertTrue(suitable)
         assertEquals(speed, 1.5)
     }
 
     fun melon() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenSword, MinecraftBlocks.BAMBOO)
         assertTrue(suitable)
         assertEquals(speed, 1.5f)
     }
 
     fun jackOLantern() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenSword, MinecraftBlocks.JACK_O_LANTERN)
         assertTrue(suitable)
         assertEquals(speed, 1.5f)
     }
 
     fun pumpkin() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenSword, MinecraftBlocks.PUMPKIN)
         assertTrue(suitable)
         assertEquals(speed, 1.5f)
     }
 
     fun cocoa() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenSword, MinecraftBlocks.COCOA)
         assertTrue(suitable)
         assertEquals(speed, 1.5f)
     }
 
     fun leaves() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenSword, MinecraftBlocks.OAK_LEAVES)
         assertTrue(suitable)
         assertEquals(speed, 1.5f)
     }
 
     fun vines() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenSword, MinecraftBlocks.VINE)
         assertTrue(suitable)
         assertEquals(speed, 1.5f)

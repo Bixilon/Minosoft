@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertPosition
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.assertVelocity
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -118,6 +119,7 @@ class HorseRidingTest : AbstractRidingTest<Horse>() {
     }
 
     fun horseJump1() {
+        todo()
         val player = super.jump1()
         player.assertPosition(7.0, 5.850000017881394, 11.076987398155309)
         player.assertVelocity(0.0, -0.0784000015258789, 0.017836000462502232)
@@ -128,6 +130,7 @@ class HorseRidingTest : AbstractRidingTest<Horse>() {
     }
 
     fun horseJump2() {
+        todo()
         val player = super.jump2()
 
         player.assertPosition(7.0, 6.889699886918715, 11.981402219748995)

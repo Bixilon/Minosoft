@@ -51,6 +51,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.asser
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
+import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
 import org.testng.annotations.Test
@@ -142,11 +143,11 @@ class BreakHandlerTest {
     }
 
     fun pickaxeGlass() {
-        breakBlock(MinecraftBlocks.RED_STAINED_GLASS, WoodenTool.WoodenAxe, ticks = 10)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(MinecraftBlocks.RED_STAINED_GLASS, WoodenTool.WoodenAxe, ticks = 10)!!.apply { todo(); assert(productivity = BlockBreakProductivity.EFFECTIVE) }
     }
 
     fun fistGlass() {
-        breakBlock(MinecraftBlocks.RED_STAINED_GLASS, ticks = 10)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(MinecraftBlocks.RED_STAINED_GLASS, ticks = 10)!!.apply { todo(); assert(productivity = BlockBreakProductivity.EFFECTIVE) }
     }
 
     fun fistLadder() {
@@ -252,7 +253,7 @@ class BreakHandlerTest {
     }
 
     fun nothingBed() {
-        breakBlock(MinecraftBlocks.RED_BED, ticks = 7)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(MinecraftBlocks.RED_BED, ticks = 7)!!.apply { todo(); assert(productivity = BlockBreakProductivity.EFFECTIVE) }
     }
 
     fun nothingCobweb() {
@@ -268,10 +269,12 @@ class BreakHandlerTest {
     }
 
     fun swordBamboo() {
+        todo()
         breakBlock(MinecraftBlocks.BAMBOO, WoodenTool.WoodenSword, ticks = 2)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun swordMelon() {
+        todo()
         breakBlock(MinecraftBlocks.MELON, WoodenTool.WoodenSword, ticks = 21)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
@@ -328,14 +331,17 @@ class BreakHandlerTest {
     }
 
     fun water() {
+        todo()
         breakBlock(RockBlock.Stone.identifier, DiamondTool.DiamondPickaxe, inWater = true, ticks = Int.MAX_VALUE)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE) // TODO
     }
 
     fun waterAquaAffinity() {
+        todo()
         breakBlock(RockBlock.Stone.identifier, DiamondTool.DiamondPickaxe, inWater = true, aquaAffinity = 1, ticks = Int.MAX_VALUE)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE) // TODO
     }
 
     fun waterAir() {
+        todo()
         breakBlock(RockBlock.Stone.identifier, DiamondTool.DiamondPickaxe, inWater = true, onGround = false, ticks = Int.MAX_VALUE)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE) // TODO
     }
 

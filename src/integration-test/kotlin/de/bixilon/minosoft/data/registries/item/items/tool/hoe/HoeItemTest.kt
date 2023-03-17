@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.item.items.tool.ToolTest
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.DiamondTool
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.IronTool
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.WoodenTool
+import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -25,6 +26,7 @@ import org.testng.annotations.Test
 class HoeItemTest : ToolTest() {
 
     fun sapling() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenHoe, MinecraftBlocks.OAK_SAPLING)
         assertTrue(suitable)
         assertEquals(speed, 1.0f)

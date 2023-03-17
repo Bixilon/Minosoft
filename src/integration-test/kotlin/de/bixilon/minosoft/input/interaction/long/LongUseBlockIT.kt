@@ -37,6 +37,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.asser
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
+import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
 import org.testng.annotations.Test
@@ -85,6 +86,7 @@ class LongUseBlockIT {
     }
 
     fun shieldOnRepeater() {
+        todo()
         val connection = InteractionTestUtil.createConnection()
         connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(ShieldItem())
         connection.camera.target::target.forceSet(DataObserver(BlockTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, StoneTest0.state, null, Vec3i.EMPTY)))

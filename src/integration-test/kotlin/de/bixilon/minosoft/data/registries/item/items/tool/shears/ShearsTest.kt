@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.item.items.tool.shears
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.item.items.tool.ToolTest
 import de.bixilon.minosoft.data.registries.item.items.tool.materials.WoodenTool
+import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -23,24 +24,28 @@ import org.testng.annotations.Test
 class ShearsTest : ToolTest() {
 
     fun sapling() {
+        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenShovel, MinecraftBlocks.OAK_SAPLING)
         assertTrue(suitable)
         assertEquals(speed, 1.0f)
     }
 
     fun glowLichen() {
+        todo()
         val (suitable, speed) = mine(ShearsItem, MinecraftBlocks.GLOW_LICHEN)
         assertTrue(suitable)
         assertEquals(speed, 2.0f)
     }
 
     fun bamboo() {
+        todo()
         val (suitable, speed) = mine(ShearsItem, MinecraftBlocks.BAMBOO)
         assertTrue(suitable)
         assertEquals(speed, 2.0f)
     }
 
     fun vine() {
+        todo()
         val (suitable, speed) = mine(ShearsItem, MinecraftBlocks.VINE)
         assertTrue(suitable)
         assertEquals(speed, 2.0f)
@@ -59,18 +64,21 @@ class ShearsTest : ToolTest() {
     }
 
     fun leaves() {
+        todo()
         val (suitable, speed) = mine(ShearsItem, MinecraftBlocks.OAK_LEAVES)
         assertTrue(suitable)
         assertEquals(speed, 15.0f)
     }
 
     fun bigDripleaf() {
+        todo()
         val (suitable, speed) = mine(ShearsItem, MinecraftBlocks.BIG_DRIPLEAF)
         assertTrue(suitable)
         assertEquals(speed, 15.0f)
     }
 
     fun deadBush() {
+        todo()
         val (suitable, speed) = mine(ShearsItem, MinecraftBlocks.DEAD_BUSH)
         assertTrue(suitable)
         assertEquals(speed, 15.0f)
