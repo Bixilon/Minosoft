@@ -327,14 +327,14 @@ dependencies {
     implementation("com.google.guava", "guava", "31.1-jre")
     implementation("dnsjava", "dnsjava", "3.5.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
-    implementation("org.jline", "jline", "3.22.0")
+    implementation("org.jline", "jline", "3.23.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
     implementation("com.github.oshi", "oshi-core", "6.4.0")
-    implementation("com.github.luben", "zstd-jni", "1.5.4-1", classifier = zstdNatives)
+    implementation("com.github.luben", "zstd-jni", "1.5.4-2", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
-    implementation("it.unimi.dsi", "fastutil-core", "8.5.11")
+    implementation("it.unimi.dsi", "fastutil-core", "8.5.12")
     implementation("org.xeustechnologies", "jcl-core", "2.8")
 
 
