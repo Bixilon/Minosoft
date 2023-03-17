@@ -37,13 +37,13 @@ That was simply the newest version when I started rewriting the engine.
 | Basics          | ✅     | walking, jumping, sneaking, ... |
 | Elytra          | ✅     | rocket boosting not working     |
 | Swimming        | ✅     | 1.13                            |
-| Scaffolding     | ❌     | 1.14                            |
+| Scaffolding     | ✅     | 1.14                            |
+| powder snow     | ✅     |                                 |
+| Riding          | ❌     | only partly                     |
 | Trident         | ❌     | riptide attack                  |
 | Piston          | ❌     | entity pushing                  |
 | Shulker box     | ❌     | opening collision box           |
-| Riding          | ❌     |                                 |
 | Entity cramming | ❌     | colliding with other entities   |
-| powder snow     | ❌     | kind of broken                  |
 
 ## Notable version changes
 

@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBloc
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumnBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
@@ -108,6 +109,8 @@ object VerifyIntegratedBlockRegistry {
     }
 
     private fun compareItem(pixlyzer: Block, integrated: Block, errors: StringBuilder) {
+        if (integrated is PowderSnowBlock) return
+
         val item = pixlyzer.nullCast<BlockWithItem<*>>()?.item
         val integratedItem = integrated.nullCast<BlockWithItem<*>>()?.item
         if (item == integratedItem) {

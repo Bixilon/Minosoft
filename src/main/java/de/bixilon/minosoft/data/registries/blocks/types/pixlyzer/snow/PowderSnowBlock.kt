@@ -26,8 +26,12 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.FullOutlinedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.transparency.OpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.armor.materials.LeatherArmor
@@ -38,8 +42,10 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.tags.entity.MinecraftEntityTags.isIn
 
-open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, CollidableBlock {
+open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, CollidableBlock, FullOutlinedBlock, OpaqueBlock, BlockStateBuilder {
     override val hardness: Float get() = 0.25f
+
+    override fun buildState(settings: BlockStateSettings) = BlockState(this, settings)
 
     override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState) {
         if (entity is LivingEntity && physics.positionInfo.block?.block !is PowderSnowBlock) {

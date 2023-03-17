@@ -22,19 +22,26 @@ import de.bixilon.minosoft.data.registries.blocks.handler.entity.landing.Bouncin
 import de.bixilon.minosoft.data.registries.blocks.light.FilteringTransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
+import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.InstantBreakableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.FrictionBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.transparency.TranslucentBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import kotlin.math.abs
 
-open class SlimeBlock(identifier: ResourceLocation = SlimeBlock.identifier, settings: BlockSettings) : Block(identifier, settings), BouncingHandler, StepHandler, InstantBreakableBlock, FrictionBlock, TranslucentBlock, FullBlock {
+open class SlimeBlock(identifier: ResourceLocation = SlimeBlock.identifier, settings: BlockSettings) : Block(identifier, settings), BouncingHandler, StepHandler, InstantBreakableBlock, FrictionBlock, TranslucentBlock, FullBlock, BlockWithItem<Item>, BlockStateBuilder {
+    override val item: Item = this::item.inject(identifier) // TODO
     override val friction: Float get() = 0.8f
+
+    override fun buildState(settings: BlockStateSettings) = BlockState(this, settings)
 
     override fun onEntityStep(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState) {
         val velocity = entity.physics.velocity
