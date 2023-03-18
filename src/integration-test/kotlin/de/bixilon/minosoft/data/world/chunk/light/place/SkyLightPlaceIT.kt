@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.data.world.chunk.light.place
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.registries.blocks.SlimeTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
+import de.bixilon.minosoft.data.world.WorldTestUtil.fill
 import de.bixilon.minosoft.data.world.chunk.light.LightTestUtil.assertLight
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import org.testng.annotations.Test
@@ -42,10 +44,40 @@ class SkyLightPlaceIT {
         world.assertLight(8, 9, 8, 0xE0)
     }
 
+    fun belowBlock3() {
+        val world = createConnection(3, light = true).world
+        world.fill(7, 10, 7, 9, 10, 9, StoneTest0.state, false)
+        world.assertLight(8, 9, 8, 0xD0)
+    }
+
     fun filteredInBlock() {
         val world = createConnection(3, light = true).world
         world[Vec3i(8, 10, 8)] = SlimeTest0.state
         world.assertLight(8, 10, 8, 0xE0)
+    }
+
+    fun filteredBelowBlock5() {
+        val world = createConnection(3, light = true).world
+        world.fill(6, 10, 6, 10, 10, 10, SlimeTest0.state, false)
+        world.assertLight(8, 9, 8, 0xD0)
+    }
+
+    fun filtered2BelowBlock3() {
+        val world = createConnection(3, light = true).world
+        world.fill(7, 10, 7, 9, 10, 9, SlimeTest0.state, false)
+        world.assertLight(8, 8, 8, 0xD0)
+    }
+
+    fun transparentInBlock() {
+        val world = createConnection(3, light = true).world
+        world[Vec3i(8, 10, 8)] = GlassTest0.state
+        world.assertLight(8, 10, 8, 0xF0)
+    }
+
+    fun transparentBelowBlock() {
+        val world = createConnection(3, light = true).world
+        world[Vec3i(8, 10, 8)] = GlassTest0.state
+        world.assertLight(8, 9, 8, 0xF0)
     }
 
     fun belowSection() {
@@ -53,4 +85,6 @@ class SkyLightPlaceIT {
         world[Vec3i(8, 16, 8)] = StoneTest0.state
         world.assertLight(8, 15, 8, 0xE0)
     }
+
+    // TODO: section borders, border light, directed light, distance, max propagation
 }
