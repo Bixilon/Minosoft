@@ -22,14 +22,9 @@ class MultiLanguageManager(
     val translators: MutableMap<String, Translator> = mutableMapOf(),
 ) : Translator {
 
-    override fun canTranslate(key: ResourceLocation?): Boolean {
-        key ?: return false
-        return translators[key.namespace]?.canTranslate(key) == true
-    }
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent? {
+        if (key == null) return null
 
-    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent {
-        key ?: return ChatComponent.of("null: ${data.contentToString()}", restrictedMode = restrictedMode)
-
-        return translators[key.namespace]?.translate(key, parent, restrictedMode, *data) ?: ChatComponent.of("$key: ${data.contentToString()}", restrictedMode = restrictedMode)
+        return translators[key.namespace]?.translate(key, parent, restrictedMode, *data)
     }
 }

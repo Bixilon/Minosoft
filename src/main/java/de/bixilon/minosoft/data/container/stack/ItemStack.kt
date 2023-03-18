@@ -99,10 +99,7 @@ class ItemStack {
             if (item._count <= 0) {
                 return false
             }
-            if (_durability?._valid == false) {
-                return false
-            }
-            return true
+            return _durability?._valid != false
         }
 
     val rarity: Rarities
@@ -128,7 +125,7 @@ class ItemStack {
             _display?.customDisplayName?.let { return it }
             item.item.translationKey.let {
                 val language = holder?.connection?.language ?: return@let
-                val translated = language.translate(it)
+                val translated = language.forceTranslate(it)
                 rarity.color.let { color -> translated.setFallbackColor(color) }
                 return translated
             }

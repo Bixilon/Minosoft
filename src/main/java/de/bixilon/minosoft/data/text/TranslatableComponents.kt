@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,8 +27,8 @@ object TranslatableComponents {
     val GENERAL_EXIT = "minosoft:general.exit".toResourceLocation()
     val GENERAL_REFRESH = "minosoft:general.refresh".toResourceLocation()
 
-    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:server_info.delete.dialog.description".toResourceLocation(), null, name, address) }
-    val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.card.connection_count".toResourceLocation(), null, count) }
-    val CONNECTION_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.kick.description".toResourceLocation(), null, server.name, account.username) }
-    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.login_kick.description".toResourceLocation(), null, server.name, account.username) }
+    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:server_info.delete.dialog.description".toResourceLocation(), null, null, name, address) }
+    val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.card.connection_count".toResourceLocation(), null, null, count) }
+    val CONNECTION_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.kick.description".toResourceLocation(), null, null, server.name, account.username) }
+    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.login_kick.description".toResourceLocation(), null, null, server.name, account.username) }
 }

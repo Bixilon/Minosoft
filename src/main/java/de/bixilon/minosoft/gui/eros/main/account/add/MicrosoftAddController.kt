@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -108,7 +108,7 @@ class MicrosoftAddController(
     companion object {
         private val LAYOUT = "minosoft:eros/main/account/add/microsoft.fxml".toResourceLocation()
         private val TITLE = "minosoft:main.account.add.microsoft.title".toResourceLocation()
-        private val HEADER = { link: URL -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.add.microsoft.header".toResourceLocation(), null, link) }
+        private val HEADER = { link: URL -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.add.microsoft.header".toResourceLocation(), null, null, link) }
         private val CANCEL = "minosoft:main.account.add.microsoft.cancel".toResourceLocation()
     }
 }

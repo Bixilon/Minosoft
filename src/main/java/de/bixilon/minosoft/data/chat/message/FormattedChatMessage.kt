@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.chat.message
 
 import de.bixilon.minosoft.data.chat.ChatUtil
-import de.bixilon.minosoft.data.language.lang.Language
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -32,11 +31,7 @@ FormattedChatMessage(
     init {
         // ToDo: parent (formatting)
         val data = type.chat.formatParameters(parameters)
-        text = if (connection.language.canTranslate(type.chat.translationKey.toResourceLocation())) {
-            connection.language.translate(type.chat.translationKey.toResourceLocation(), restrictedMode = true, data = data)
-        } else {
-            Language.translate(type.chat.translationKey, restrictedMode = true, data = data)
-        }
+        text = connection.language.forceTranslate(type.chat.translationKey.toResourceLocation(), restrictedMode = true, fallback = type.chat.translationKey, data = data)
         text.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
     }
 }

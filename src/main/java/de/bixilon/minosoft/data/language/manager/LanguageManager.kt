@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.language.manager
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
-import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -24,22 +23,11 @@ class LanguageManager(
     private val languages: MutableList<Translator> = synchronizedListOf(),
 ) : Translator {
 
-    override fun canTranslate(key: ResourceLocation?): Boolean {
-        for (language in languages) {
-            if (language.canTranslate(key)) {
-                return true
-            }
-        }
-        return false
-    }
 
-    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent {
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent? {
         for (language in languages) {
-            if (!language.canTranslate(key)) {
-                continue
-            }
-            return language.translate(key, parent, restrictedMode, *data)
+            return language.translate(key, parent, restrictedMode, *data) ?: continue
         }
-        return LanguageUtil.getFallbackTranslation(key, parent, restrictedMode, data)
+        return null
     }
 }

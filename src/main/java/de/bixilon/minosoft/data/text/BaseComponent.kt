@@ -96,8 +96,8 @@ class BaseComponent : ChatComponent {
                     with.add(part ?: continue)
                 }
             }
-            // TODO: 1.19.4 added a "fallback" field
-            this += translator?.translate(it.toResourceLocation(), component, restrictedMode, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, component, restrictedMode)
+            val fallback = json["fallback"]?.toString()
+            this += translator?.forceTranslate(it.toResourceLocation(), component, restrictedMode, fallback, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, component, restrictedMode)
         }
     }
 
@@ -247,7 +247,7 @@ class BaseComponent : ChatComponent {
             }
             pointer -= length
         }
-        throw IllegalArgumentException("Pointer ot of bounds!")
+        throw IllegalArgumentException("Pointer out of bounds!")
     }
 
     override fun trim(): ChatComponent? {

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.language.lang
 
-import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -23,21 +22,10 @@ class LanguageList(
     private val list: MutableList<Language>,
 ) : Translator {
 
-    override fun canTranslate(key: ResourceLocation?): Boolean {
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent? {
         for (language in list) {
-            if (language.canTranslate(key)) {
-                return true
-            }
+            return language.translate(key, parent, restrictedMode, data) ?: continue
         }
-        return false
-    }
-
-    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent {
-        for (language in list) {
-            if (language.canTranslate(key)) {
-                return language.translate(key, parent, restrictedMode, data)
-            }
-        }
-        return LanguageUtil.getFallbackTranslation(key, parent, restrictedMode, data)
+        return null
     }
 }

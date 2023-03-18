@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.language.lang
 
-import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -24,12 +23,8 @@ class Language(
     private val data: LanguageData,
 ) : Translator {
 
-    override fun canTranslate(key: ResourceLocation?): Boolean {
-        return data.containsKey(key?.path)
-    }
-
-    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent {
-        val placeholder = this.data[key?.path] ?: return LanguageUtil.getFallbackTranslation(key, parent, restrictedMode, *data)
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent? {
+        val placeholder = this.data[key?.path] ?: return null
         return Companion.translate(placeholder, parent, this, restrictedMode, *data)
     }
 

@@ -139,7 +139,7 @@ class ServerModifyDialog(
                     version ?: return
 
                     text = if (version == Versions.AUTOMATIC) {
-                        Minosoft.LANGUAGE_MANAGER.translate(VERSION_AUTOMATIC).message
+                        Minosoft.LANGUAGE_MANAGER.forceTranslate(VERSION_AUTOMATIC).message
                     } else {
                         "${version.name} (${version.type.name.lowercase()})"
                     }

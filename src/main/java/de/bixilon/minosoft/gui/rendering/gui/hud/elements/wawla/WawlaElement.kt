@@ -52,7 +52,7 @@ abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawl
     }
 
     protected fun createNameElement(translationKey: ResourceLocation?): TextElement {
-        val name = wawla.context.connection.language.translate(translationKey)
+        val name = wawla.context.connection.language.forceTranslate(translationKey)
         name.setFallbackColor(ChatColors.WHITE)
         return TextElement(guiRenderer, name, background = false, scale = 1.2f)
     }

@@ -13,22 +13,34 @@
 
 package de.bixilon.minosoft.data.language.translate
 
+import de.bixilon.minosoft.data.language.LanguageUtil
+import de.bixilon.minosoft.data.language.lang.Language
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 
 interface Translator {
 
-    fun canTranslate(key: ResourceLocation?): Boolean
+    fun forceTranslate(key: ResourceLocation?, vararg data: Any?): ChatComponent {
+        return forceTranslate(key, null, false, null, *data)
+    }
 
-    fun translate(key: ResourceLocation?, parent: TextComponent? = null, vararg data: Any?): ChatComponent = translate(key, parent, false, *data)
-    fun translate(key: ResourceLocation?, parent: TextComponent? = null, restrictedMode: Boolean = false, vararg data: Any?): ChatComponent
+    fun forceTranslate(key: ResourceLocation?, parent: TextComponent? = null, restrictedMode: Boolean = false, fallback: String? = null, vararg data: Any?): ChatComponent {
+        translate(key, parent, restrictedMode, *data)?.let { return it }
+        if (fallback != null) {
+            return Language.translate(fallback, parent, null, restrictedMode)
+        }
+        return LanguageUtil.getFallbackTranslation(key, parent, restrictedMode, data)
+    }
+
+    fun translate(key: ResourceLocation?, parent: TextComponent? = null, vararg data: Any?): ChatComponent? = translate(key, parent, false, *data)
+    fun translate(key: ResourceLocation?, parent: TextComponent? = null, restrictedMode: Boolean = false, vararg data: Any?): ChatComponent?
 
 
     fun translate(translatable: Any?): ChatComponent {
         return when (translatable) {
             is ChatComponent -> translatable
-            is Translatable -> translate(translatable.translationKey)
+            is Translatable -> forceTranslate(translatable.translationKey)
             else -> ChatComponent.of(translatable)
         }
     }

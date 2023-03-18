@@ -41,7 +41,7 @@ class InfoPane<T>(vararg children: Node) : AnchorPane(*children) {
         for ((key, property) in properties) {
             val propertyValue = property(item) ?: continue
 
-            propertiesPane.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
+            propertiesPane.add(Minosoft.LANGUAGE_MANAGER.forceTranslate(key).textFlow, 0, row)
             propertiesPane.add(propertyValue.format().textFlow, 1, row++)
         }
     }

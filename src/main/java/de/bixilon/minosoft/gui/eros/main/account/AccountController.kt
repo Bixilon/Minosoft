@@ -183,7 +183,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             for ((key, property) in ACCOUNT_INFO_PROPERTIES.extend(accountTypeListViewFX.selectionModel.selectedItem.additionalDetails)) { // ToDo
                 val propertyValue = property(account) ?: continue
 
-                it.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
+                it.add(Minosoft.LANGUAGE_MANAGER.forceTranslate(key).textFlow, 0, row)
                 it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
             }
 

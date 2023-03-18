@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -66,7 +66,7 @@ class ErosErrorReport : DialogController() {
 
     companion object {
         private val LAYOUT = "minosoft:eros/dialog/error.fxml".toResourceLocation()
-        private val TITLE = { exception: Throwable? -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:error.title".toResourceLocation(), null, exception?.let { it::class.java.realName }) }
+        private val TITLE = { exception: Throwable? -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:error.title".toResourceLocation(), null, false, exception?.let { it::class.java.realName }) }
         private val HEADER = "minosoft:error.header".toResourceLocation()
         private val DESCRIPTION = "minosoft:error.description".toResourceLocation()
         private val FATAL_CRASH = "minosoft:error.fatal_crash".toResourceLocation()
