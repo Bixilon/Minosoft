@@ -89,4 +89,25 @@ internal class LightBenchmark {
         println("Placing block took ${totalPlace.formatNanos()}, avg=${(totalPlace / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")
         println("Breaking block took ${totalBreak.formatNanos()}, avg=${(totalBreak / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")
     }
+
+    @Test
+    fun placeBottom() {
+        val chunk = createChunkWithNeighbours()
+
+        val solid = createSolidBlock().defaultState
+        val light = createOpaqueLight().defaultState
+        val highest = chunk.getOrPut(15)!!.blocks
+        for (index in 0 until 256) {
+            highest.unsafeSet(index or (0x0F shl 8), solid)
+        }
+        var totalPlace = 0L
+        var totalBreak = 0L
+        val benchmark = BenchmarkUtil.benchmark(10000) {
+            totalPlace += measureNanoTime { chunk[8, 0, 8] = light }
+            totalBreak += measureNanoTime { chunk[8, 0, 8] = null }
+        }
+
+        println("Placing block took ${totalPlace.formatNanos()}, avg=${(totalPlace / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")
+        println("Breaking block took ${totalBreak.formatNanos()}, avg=${(totalBreak / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")
+    }
 }

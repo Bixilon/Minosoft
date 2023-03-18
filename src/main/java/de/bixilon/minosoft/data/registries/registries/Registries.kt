@@ -248,9 +248,6 @@ class Registries(
     fun update(registries: JsonObject) {
         for ((key, value) in registries) {
             val fixedKey = key.toResourceLocation().fix()
-            if (fixedKey in IGNORED_REGISTRIES) {
-                continue
-            }
             val registry = this[fixedKey]
             if (registry == null) {
                 Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Can not find registry: $fixedKey" }
@@ -265,12 +262,9 @@ class Registries(
             try {
                 registry.update(values, this)
             } catch (error: Throwable) {
-                throw Exception("Can not update $fixedKey registry", error)
+                error.printStackTrace()
+                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Can not update $fixedKey registry: $error" }
             }
         }
-    }
-
-    companion object {
-        val IGNORED_REGISTRIES: Set<ResourceLocation> = setOf()
     }
 }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -243,7 +242,7 @@ class SectionLight(
             }
         }
         blocks.release()
-        section.chunk.light?.recalculateSkylight(section.sectionHeight)
+        section.chunk.light.recalculateSkylight(section.sectionHeight)
     }
 
 
@@ -315,20 +314,20 @@ class SectionLight(
     }
 
     internal inline fun traceSkylightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions?, totalY: Int) {
-        return traceSkylightIncrease(x, y, z, nextLevel, direction, totalY, true)
+        return traceSkylightIncrease(x, y, z, nextLevel, direction, totalY, false)
     }
 
-    fun traceSkylightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, target: Directions?, totalY: Int, noForce: Boolean) {
+    fun traceSkylightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, target: Directions?, totalY: Int, force: Boolean) {
         val chunk = section.chunk
         val heightmapIndex = (z shl 4) or x
-        if (noForce && totalY >= chunk.light.heightmap[heightmapIndex]) {
+        if (!force && totalY >= chunk.light.heightmap[heightmapIndex]) {
             // this light level will be 15, don't care
             return
         }
         val chunkNeighbours = chunk.neighbours.get() ?: return
         val index = heightmapIndex or (y shl 8)
         val currentLight = this[index].toInt()
-        if (noForce && ((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
+        if (!force && ((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
             return
         }
 
