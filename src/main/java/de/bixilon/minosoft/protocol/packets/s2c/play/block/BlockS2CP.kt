@@ -13,7 +13,9 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.input.interaction.breaking.executor.SequencedExecutor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -40,6 +42,9 @@ class BlockS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         connection.world[position] = state
+        if (state != null) {
+            connection.camera.interactions.breaking.executor.nullCast<SequencedExecutor>()?.abort(position, state)
+        }
     }
 
     override fun log(reducedLog: Boolean) {

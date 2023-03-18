@@ -43,7 +43,9 @@ class SequencedExecutorTest {
 
         executor.start(Vec3i(1, 1, 1), state)
 
-        connection.world[Vec3i(1, 1, 1)] = state // <- set the same block -> revert
+
+        executor.abort(Vec3i(1, 1, 1), state) // TODO: simulate packet
+        // connection.world[Vec3i(1, 1, 1)] = state // <- set the same block -> revert/cancel
 
         executor.finish()
         assertEquals(connection.world[Vec3i(1, 1, 1)], state)
@@ -57,6 +59,7 @@ class SequencedExecutorTest {
         executor.start(Vec3i(1, 1, 1), state)
 
         executor.finish()
+        Thread.sleep(10) // async, wait for thread to complete
         assertNull(connection.world[Vec3i(1, 1, 1)])
     }
 }

@@ -43,6 +43,7 @@ abstract class BreakingExecutor(protected val breaking: BreakHandler) {
     open fun finish(): Int {
         val state = this.state ?: Broken()
         val position = this.position ?: Broken()
+        val abort = this.abort
         reset()
         if (!abort) {
             execute(position, state)
