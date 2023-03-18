@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.light.place.block
+package de.bixilon.minosoft.data.world.chunk.light.place
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -108,6 +108,18 @@ class BlockLightPlaceIT {
         val world = ConnectionTestUtil.createConnection(3, light = true).world
         world[Vec3i(17, 17, 17)] = TorchTest0.state
         world.assertLight(17, 17, 16, 0xFD)
+    }
+
+    fun lowerSection() {
+        val world = ConnectionTestUtil.createConnection(3, light = true).world
+        world[Vec3i(8, 16, 8)] = TorchTest0.state
+        world.assertLight(8, 15, 8, 0xFD)
+    }
+
+    fun upperSection() {
+        val world = ConnectionTestUtil.createConnection(3, light = true).world
+        world[Vec3i(8, 15, 8)] = TorchTest0.state
+        world.assertLight(8, 16, 8, 0xFD)
     }
 
     fun totalPropagation1() {

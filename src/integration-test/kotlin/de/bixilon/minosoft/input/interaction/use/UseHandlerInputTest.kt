@@ -25,7 +25,9 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
+import org.testng.SkipException
 import org.testng.annotations.Test
+import kotlin.system.measureTimeMillis
 
 @Test(groups = ["interaction"], dependsOnGroups = ["item"])
 class UseHandlerInputTest {
@@ -54,7 +56,7 @@ class UseHandlerInputTest {
         connection.assertPacket(PositionRotationC2SP::class.java)
         connection.assertPacket(UseItemC2SP::class.java)
         connection.assertPacket(SwingArmC2SP::class.java)
-        Thread.sleep(4 * 50 + 10)
+        if (measureTimeMillis { Thread.sleep(4 * 50 + 10) } > 4 * 50 + 30) throw SkipException("busy")
         connection.assertPacket(PositionRotationC2SP::class.java)
         connection.assertPacket(UseItemC2SP::class.java)
         connection.assertPacket(SwingArmC2SP::class.java)
@@ -71,7 +73,7 @@ class UseHandlerInputTest {
         handler.press()
         connection.assertPacket(PositionRotationC2SP::class.java)
         connection.assertPacket(UseItemC2SP::class.java)
-        Thread.sleep(55)
+        if (measureTimeMillis { Thread.sleep(55) } > 80) throw SkipException("busy")
         connection.assertNoPacket()
         handler.release()
         connection.assertPacket(PlayerActionC2SP::class.java)

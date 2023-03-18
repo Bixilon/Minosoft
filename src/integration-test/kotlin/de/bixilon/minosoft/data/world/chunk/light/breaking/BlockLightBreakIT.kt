@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.chunk.light.breaking.block
+package de.bixilon.minosoft.data.world.chunk.light.breaking
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -121,6 +121,20 @@ class BlockLightBreakIT {
         world[Vec3i(17, 17, 17)] = TorchTest0.state
         world[Vec3i(17, 17, 17)] = null
         world.assertLight(17, 17, 16, 0xF0)
+    }
+
+    fun lowerSection() {
+        val world = ConnectionTestUtil.createConnection(3, light = true).world
+        world[Vec3i(8, 16, 8)] = TorchTest0.state
+        world[Vec3i(8, 16, 8)] = null
+        world.assertLight(8, 15, 8, 0xF0)
+    }
+
+    fun upperSection() {
+        val world = ConnectionTestUtil.createConnection(3, light = true).world
+        world[Vec3i(8, 15, 8)] = TorchTest0.state
+        world[Vec3i(8, 15, 8)] = null
+        world.assertLight(8, 16, 8, 0xF0)
     }
 
     fun totalPropagation1() {
