@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -32,6 +33,7 @@ internal object MinosoftSIT {
     @BeforeSuite
     fun setup() {
         Log.ASYNC_LOGGING = false
+        KUtil.initUtilClasses()
         disableGC()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
         initAssetsManager()

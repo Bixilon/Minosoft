@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,6 +12,8 @@
  */
 
 package de.bixilon.minosoft.data.registries.shapes.side
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 class VoxelSideSet(
     val sides: Set<VoxelSide>,
@@ -28,7 +30,7 @@ class VoxelSideSet(
             return this
         }
 
-        val next: MutableSet<VoxelSide> = mutableSetOf()
+        val next: MutableSet<VoxelSide> = ObjectOpenHashSet()
 
         val array = this.sides.toTypedArray()
         for (i in 1 until sides.size) {

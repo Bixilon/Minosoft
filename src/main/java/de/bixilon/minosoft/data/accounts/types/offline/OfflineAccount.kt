@@ -34,7 +34,7 @@ class OfflineAccount(username: String) : Account(username) {
     override val supportsSkins: Boolean get() = false
 
     @JsonIgnore
-    override val properties: PlayerProperties? = null
+    override val properties: PlayerProperties = PlayerProperties()
 
     override fun join(serverId: String) = Unit
 

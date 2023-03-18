@@ -25,7 +25,7 @@ import java.util.*
 object TestAccount : Account("Bixilon") {
     override val id: String = "id"
     override val type: ResourceLocation = minosoft("test_account")
-    override val properties: PlayerProperties? = null
+    override val properties: PlayerProperties = PlayerProperties()
     override val uuid: UUID = "9e6ce7c5-40d3-483e-8e5a-b6350987d65f".toUUID()
     override var state: AccountStates
         get() = AccountStates.WORKING

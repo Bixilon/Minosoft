@@ -143,20 +143,21 @@ object VerifyIntegratedBlockRegistry {
             if (value["class"] == "AirBlock") {
                 continue
             }
-            val parsed = PixLyzerBlock.deserialize(registries, id.toResourceLocation(), value).unsafeCast<PixLyzerBlock>()
-            registries.block.updateStates(parsed, value, registries)
-            parsed.postInit(registries)
-            parsed.inject(registries)
-            val integrated = registries.block[parsed.identifier] ?: Broken("Block $id does not exist in the registry?")
+            val identifier = id.toResourceLocation()
+            val integrated = registries.block[identifier] ?: Broken("Block $id does not exist in the registry?")
             if (integrated is PixLyzerBlock) {
                 // useless to compare
                 continue
             }
-
             if (integrated is FluidBlock || integrated is BubbleColumnBlock) {
                 // they work different in minosoft
                 continue
             }
+            val parsed = PixLyzerBlock.deserialize(registries, identifier, value).unsafeCast<PixLyzerBlock>()
+            registries.block.updateStates(parsed, value, registries)
+            parsed.postInit(registries)
+            parsed.inject(registries)
+
 
             compare(parsed, integrated, error)
         }

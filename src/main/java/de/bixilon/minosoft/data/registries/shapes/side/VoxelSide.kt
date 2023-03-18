@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,12 +13,16 @@
 
 package de.bixilon.minosoft.data.registries.shapes.side
 
+import com.google.common.base.Objects
 import de.bixilon.kotlinglm.vec2.Vec2
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 data class VoxelSide(
     val min: Vec2,
     val max: Vec2,
 ) {
+    private val hashCode = Objects.hashCode(min.hashCode(), max.hashCode())
+
     constructor(minX: Float, minZ: Float, maxX: Float, maxZ: Float) : this(Vec2(minOf(minX, maxX), minOf(minZ, maxZ)), Vec2(maxOf(minX, maxX), maxOf(minZ, maxZ)))
     constructor(minX: Double, minZ: Double, maxX: Double, maxZ: Double) : this(Vec2(minOf(minX, maxX), minOf(minZ, maxZ)), Vec2(maxOf(minX, maxX), maxOf(minZ, maxZ)))
 
@@ -37,7 +41,7 @@ data class VoxelSide(
     }
 
     infix operator fun minus(set: VoxelSideSet): VoxelSideSet {
-        val result: MutableSet<VoxelSide> = mutableSetOf()
+        val result: MutableSet<VoxelSide> = ObjectOpenHashSet()
 
         for (side in set.sides) {
             result += (this minus side).sides
@@ -47,7 +51,7 @@ data class VoxelSide(
     }
 
     infix operator fun minus(other: VoxelSide): VoxelSideSet {
-        val result: MutableSet<VoxelSide> = mutableSetOf()
+        val result: MutableSet<VoxelSide> = ObjectOpenHashSet()
 
 
         if (other.min.x > min.x && other.min.x < max.x) {
@@ -96,5 +100,9 @@ data class VoxelSide(
         }
 
         return VoxelSideSet(setOf(VoxelSide(minX, minY, maxX, maxY)))
+    }
+
+    override fun hashCode(): Int {
+        return hashCode
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile
 
+import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsType
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfile
@@ -27,13 +28,20 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 
 object ProfileTestUtil {
 
+    private fun createResources(): ResourcesProfile {
+        val profile = ResourcesProfile()
+        profile.assets.indexAssetsTypes -= IndexAssetsType.SOUNDS // we can't play them anyways
+        profile.verify = false  // this just slows down the process, the pipeline will fail no matter what if anything is corrupted
+        return profile
+    }
+
     fun createProfiles(): ConnectionProfiles {
         return ConnectionProfiles(
             eros = ErosProfile(),
             particle = ParticleProfile(),
             audio = AudioProfile(),
             entity = EntityProfile(),
-            resources = ResourcesProfile(),
+            resources = createResources(),
             rendering = RenderingProfile(),
             block = BlockProfile(),
             connection = ConnectionProfile(),

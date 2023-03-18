@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,14 +30,13 @@ class StairsTest : BlockTest<Block>() {
         super.retrieveBlock(MinecraftBlocks.OAK_STAIRS)
     }
 
-    @Test(enabled = false)
+    @Test(enabled = false)    // ToDo: This test is correct, but failing
     fun testLightPropertiesNorth() {
-        // ToDo: This test is correct, but failing
         block.withProperties(BlockProperties.FACING to Directions.NORTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, false, true, true, true))
     }
 
+    @Test(enabled = false)        // ToDo: This test is correct, but failing
     fun testLightPropertiesSouth() {
-        // ToDo: This test is correct, but failing
         block.withProperties(BlockProperties.FACING to Directions.SOUTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, false, true, true))
     }
 

@@ -366,6 +366,8 @@ class ChunkLight(private val chunk: Chunk) {
         val maxHeightSection = maxHeight.sectionHeight
         val skylightStart = getNeighbourMaxHeight(neighbours, x, z, heightmapIndex)
 
+        if (maxHeight == Int.MIN_VALUE && skylightStart == Int.MIN_VALUE) return
+
         val skylightStartSectionHeight = skylightStart.sectionHeight
         if (skylightStart.inSectionHeight == 1) {
             // Create section below max section
@@ -416,10 +418,7 @@ class ChunkLight(private val chunk: Chunk) {
             if (this == null) {
                 return false
             }
-            if (!this.skyLight || !this.effects.skylight) {
-                return false
-            }
-            return true
+            return !(!this.skyLight || !this.effects.skylight)
         }
     }
 }

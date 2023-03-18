@@ -91,7 +91,22 @@ internal class DirectedPropertyTest {
         assertFalse(shape.isSideCovered(Directions.UP))
         assertTrue(shape.isSideCovered(Directions.NORTH))
         assertFalse(shape.isSideCovered(Directions.SOUTH))
-        assertTrue(shape.isSideCovered(Directions.WEST))
-        assertTrue(shape.isSideCovered(Directions.EAST))
+        assertFalse(shape.isSideCovered(Directions.WEST))
+        assertFalse(shape.isSideCovered(Directions.EAST))
+    }
+
+    @Test
+    fun testSideCovered7() {
+        val shape = VoxelShape(
+            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
+            AABB(0.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f),
+        )
+
+        assertTrue(shape.isSideCovered(Directions.DOWN))
+        assertFalse(shape.isSideCovered(Directions.UP))
+        assertFalse(shape.isSideCovered(Directions.NORTH))
+        assertTrue(shape.isSideCovered(Directions.SOUTH))
+        assertFalse(shape.isSideCovered(Directions.WEST))
+        assertFalse(shape.isSideCovered(Directions.EAST))
     }
 }
