@@ -48,6 +48,7 @@ class SequencedExecutorTest {
         // connection.world[Vec3i(1, 1, 1)] = state // <- set the same block -> revert/cancel
 
         executor.finish()
+        Thread.sleep(10) // async, wait for thread to complete
         assertEquals(connection.world[Vec3i(1, 1, 1)], state)
     }
 

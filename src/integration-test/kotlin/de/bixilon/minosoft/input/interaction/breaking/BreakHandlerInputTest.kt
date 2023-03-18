@@ -20,7 +20,9 @@ import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.asser
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
+import org.testng.SkipException
 import org.testng.annotations.Test
+import kotlin.system.measureTimeMillis
 
 @Test(groups = ["input"])
 class BreakHandlerInputTest {
@@ -43,13 +45,15 @@ class BreakHandlerInputTest {
         val handler = BreakHandler(connection.camera.interactions)
         BreakHandlerTest.createTarget(connection, RockBlock.Stone.identifier, 1.0)
 
+        Thread.currentThread().priority = Thread.MAX_PRIORITY
+
 
         handler.press() // key down
         connection.assertPacket(PlayerActionC2SP::class.java)
         connection.assertPacket(SwingArmC2SP::class.java)
         handler.release() // key not down anymore
         connection.assertPacket(PlayerActionC2SP::class.java)
-        Thread.sleep(55)
+        if (measureTimeMillis { Thread.sleep(55) } > 60) throw SkipException("system busy")
         connection.assertNoPacket()
     }
 
@@ -60,17 +64,19 @@ class BreakHandlerInputTest {
         BreakHandlerTest.createTarget(connection, RockBlock.Stone.identifier, 1.0)
 
 
+        Thread.currentThread().priority = Thread.MAX_PRIORITY
+
         handler.press() // key down
         connection.assertPacket(PlayerActionC2SP::class.java)
         connection.assertPacket(SwingArmC2SP::class.java)
         connection.assertNoPacket()
 
-        Thread.sleep(20)
+        if (measureTimeMillis { Thread.sleep(20) } > 30) throw SkipException("system busy")
         connection.assertNoPacket()
-        Thread.sleep(35)
+        if (measureTimeMillis { Thread.sleep(35) } > 45) throw SkipException("system busy")
         connection.assertPacket(SwingArmC2SP::class.java)
         connection.assertNoPacket()
-        Thread.sleep(50)
+        if (measureTimeMillis { Thread.sleep(50) } > 55) throw SkipException("system busy")
         connection.assertPacket(SwingArmC2SP::class.java)
         connection.assertNoPacket()
         handler.release()
