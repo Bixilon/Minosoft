@@ -16,6 +16,8 @@ package de.bixilon.minosoft.assets.minecraft.index
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.assets.util.FileAssetsTypes
+import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
 enum class IndexAssetsType(val type: String) {
     LANGUAGE(FileAssetsTypes.GAME),
@@ -28,12 +30,13 @@ enum class IndexAssetsType(val type: String) {
         override val NAME_MAP: Map<String, IndexAssetsType> = EnumUtil.getEnumValues(VALUES)
 
 
-        fun determinate(path: String): IndexAssetsType? {
+        fun determinate(identifier: ResourceLocation): IndexAssetsType? {
             return when {
-                path.startsWith("lang/") -> LANGUAGE
-                path.startsWith("sounds/") -> SOUNDS
-                path == "sounds.json" -> SOUNDS
-                path.startsWith("textures/") -> TEXTURES
+                identifier.path == "sounds.json" -> SOUNDS
+                identifier.namespace != Namespaces.MINECRAFT -> null
+                identifier.path.startsWith("sounds/") -> SOUNDS
+                identifier.path.startsWith("lang/") -> LANGUAGE
+                identifier.path.startsWith("textures/") -> TEXTURES
                 else -> null
             }
         }

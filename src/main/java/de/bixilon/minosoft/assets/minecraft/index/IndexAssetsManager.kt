@@ -102,7 +102,7 @@ class IndexAssetsManager(
             check(data is Map<*, *>)
             val name = path.toAssetName(false) ?: continue
 
-            val type = IndexAssetsType.determinate(name.path)
+            val type = IndexAssetsType.determinate(name)
             if (type == null || type !in this.types) {
                 continue
             }
