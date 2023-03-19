@@ -23,5 +23,7 @@ object Commands {
         ConnectionManageCommand,
         AccountManageCommand,
         ReloadCommand,
+
+        PingCommand, ConnectCommand,
     )
 }
