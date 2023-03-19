@@ -26,7 +26,7 @@ abstract class KeyHandler {
         private set
 
     private fun queueTick() {
-        val task = TimeWorkerTask(ProtocolDefinition.TICK_TIME, runOnce = false, executionPriority = ThreadPool.HIGH) { onTick() }
+        val task = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME, runOnce = false, executionPriority = ThreadPool.HIGH) { onTick() }
         task.lastExecution = millis() // TODO: remove this workaround, kutil 1.21
         this.task = task
         TimeWorker += task
