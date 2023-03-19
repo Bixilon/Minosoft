@@ -20,5 +20,6 @@ object AccountTargetProperties : TargetProperties<Account>() {
 
     init {
         register(TypeProperty)
+        register(StateProperty)
     }
 }

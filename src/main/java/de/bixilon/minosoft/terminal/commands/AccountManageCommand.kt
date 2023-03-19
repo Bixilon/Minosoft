@@ -13,15 +13,20 @@
 
 package de.bixilon.minosoft.terminal.commands
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.commands.nodes.ArgumentNode
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
 import de.bixilon.minosoft.commands.parser.minosoft.account.AccountParser
 import de.bixilon.minosoft.commands.parser.selector.AbstractTarget
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.table
+import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 
 object AccountManageCommand : Command {
     override var node = LiteralNode("account")
@@ -47,6 +52,34 @@ object AccountManageCommand : Command {
                     stack.print.print("Selected $account")
                 }
             },
+            LiteralNode("add").addChild(
+                LiteralNode("offline").addChild(ArgumentNode("username", StringParser(), executor = { stack ->
+                    val name = stack.get<String>("username")!!
+                    if (!ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(name).matches()) throw CommandException("Invalid username: $name")
+                    val profile = AccountProfileManager.selected
+                    if (profile.entries.containsKey(name)) throw CommandException("Account does already exist!")
+                    val account = OfflineAccount(name)
+                    profile.entries[account.id] = account
+                    profile.selected = account
+                    stack.print.print("Successfully created and selected offline account ${account.username}!")
+                })),
+                LiteralNode("microsoft", executor = { stack ->
+                    stack.print.print("Obtaining device code...")
+                    DefaultThreadPool += {
+                        MicrosoftOAuthUtils.obtainDeviceCodeAsync({
+                            stack.print.print("§fPlease open §e${it.verificationURI}§f and enter the following code §e${it.userCode}§f and login into your microsoft account.")
+                        }, { it.printStackTrace() }, {
+                            stack.print.print("Logging in into microsoft account...")
+                            val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(it)
+                            val profile = AccountProfileManager.selected
+                            profile.entries[account.id] = account
+                            profile.selected = account
+
+                            stack.print.print("Successfully logged in and selected microsoft account ${account.username}!")
+                        })
+                    }
+                }),
+            ),
         )
 
 

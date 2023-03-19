@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.accounts
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -55,4 +57,10 @@ enum class AccountStates : Translatable {
     ;
 
     override val translationKey: ResourceLocation = "minosoft:main.account.state.${name.lowercase()}".toResourceLocation()
+
+
+    companion object : ValuesEnum<AccountStates> {
+        override val VALUES: Array<AccountStates> = values()
+        override val NAME_MAP: Map<String, AccountStates> = EnumUtil.getEnumValues(VALUES)
+    }
 }
