@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,21 +13,13 @@
 
 package de.bixilon.minosoft.commands.parser.minosoft.connection.selector.properties
 
-// See https://minecraft.fandom.com/wiki/Target_selectors
-object ConnectionTargetProperties {
-    val properties: MutableMap<String, ConnectionTargetPropertyFactory<*>> = mutableMapOf()
+import de.bixilon.minosoft.commands.parser.selector.TargetProperties
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
+object ConnectionTargetProperties : TargetProperties<PlayConnection>() {
 
     init {
         register(StateProperty)
         register(ConnectedProperty)
-    }
-
-    fun register(factory: ConnectionTargetPropertyFactory<*>) {
-        properties[factory.name] = factory
-    }
-
-    operator fun get(key: String): ConnectionTargetPropertyFactory<*>? {
-        return properties[key]
     }
 }

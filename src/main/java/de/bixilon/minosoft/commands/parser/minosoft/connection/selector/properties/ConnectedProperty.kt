@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,19 +15,21 @@ package de.bixilon.minosoft.commands.parser.minosoft.connection.selector.propert
 
 import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
 import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser.readBoolean
+import de.bixilon.minosoft.commands.parser.selector.TargetProperty
+import de.bixilon.minosoft.commands.parser.selector.TargetPropertyFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ConnectedProperty(
     val connected: Boolean,
-) : ConnectionTargetProperty {
+) : TargetProperty<PlayConnection> {
 
-    override fun passes(connection: PlayConnection): Boolean {
-        val connected = connection.network.connected
+    override fun passes(value: PlayConnection): Boolean {
+        val connected = value.network.connected
         return connected == this.connected
     }
 
-    companion object : ConnectionTargetPropertyFactory<ConnectedProperty> {
+    companion object : TargetPropertyFactory<PlayConnection> {
         override val name: String = "connected"
 
         override fun read(reader: CommandReader): ConnectedProperty {

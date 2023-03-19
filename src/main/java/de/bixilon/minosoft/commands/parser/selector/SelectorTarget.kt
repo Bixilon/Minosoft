@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,11 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.connection
+package de.bixilon.minosoft.commands.parser.selector
 
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+class SelectorTarget<T>(
+    val properties: Map<String, TargetProperty<T>>
+) : AbstractTarget<T> {
 
-interface ConnectionTarget {
+    override fun filter(entries: Collection<T>): List<T> {
+        val output: MutableList<T> = mutableListOf()
+        entityLoop@ for (connection in entries) {
+            for (property in properties.values) {
+                if (!property.passes(connection)) {
+                    continue@entityLoop
+                }
+            }
+            output += connection
+        }
 
-    fun getConnections(connections: Collection<PlayConnection>): List<PlayConnection>
+        return output
+    }
 }

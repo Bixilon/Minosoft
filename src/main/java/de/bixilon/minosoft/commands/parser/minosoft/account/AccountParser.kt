@@ -11,32 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.connection
+package de.bixilon.minosoft.commands.parser.minosoft.account
 
 import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
-import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser.Companion.readInt
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
-import de.bixilon.minosoft.commands.parser.minosoft.connection.identifier.ConnectionId
-import de.bixilon.minosoft.commands.parser.minosoft.connection.selector.properties.ConnectionTargetProperties
+import de.bixilon.minosoft.commands.parser.minosoft.account.identifier.AccountId
+import de.bixilon.minosoft.commands.parser.minosoft.account.selector.AccountTargetProperties
 import de.bixilon.minosoft.commands.parser.selector.AbstractTarget
 import de.bixilon.minosoft.commands.parser.selector.SelectorParser
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-object ConnectionParser : SelectorParser<PlayConnection>(), ArgumentParserFactory<ConnectionParser> {
-    override val identifier: ResourceLocation = "minosoft:connection".toResourceLocation()
-    override val properties get() = ConnectionTargetProperties
+object AccountParser : SelectorParser<Account>(), ArgumentParserFactory<AccountParser> {
+    override val identifier: ResourceLocation = "minosoft:account".toResourceLocation()
+    override val properties get() = AccountTargetProperties
 
-    override fun parseId(reader: CommandReader): AbstractTarget<PlayConnection> {
-        val result = reader.readResult { reader.readInt() }
+    override fun parseId(reader: CommandReader): AbstractTarget<Account> {
+        val result = reader.readResult { reader.readString() }
         if (result.result == null) {
             throw ExpectedArgumentError(reader)
         }
-        return ConnectionId(result.result)
+        return AccountId(result.result)
     }
 
-    override fun read(buffer: PlayInByteBuffer): ConnectionParser = this
+    override fun read(buffer: PlayInByteBuffer): AccountParser = this
 }

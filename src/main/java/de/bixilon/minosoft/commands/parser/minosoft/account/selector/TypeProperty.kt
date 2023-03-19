@@ -11,36 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.connection.selector.properties
+package de.bixilon.minosoft.commands.parser.minosoft.account.selector
 
 import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
-import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
 import de.bixilon.minosoft.commands.parser.selector.TargetProperty
 import de.bixilon.minosoft.commands.parser.selector.TargetPropertyFactory
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
-class StateProperty(
-    val state: PlayConnectionStates,
-    val negated: Boolean,
-) : TargetProperty<PlayConnection> {
+class TypeProperty(
+    val type: ResourceLocation,
+) : TargetProperty<Account> {
 
-    override fun passes(value: PlayConnection): Boolean {
-        val state = value.state
-        if (negated) {
-            return state != this.state
-        }
-        return state == this.state
+    override fun passes(value: Account): Boolean {
+        return value.type == type
     }
 
-    companion object : TargetPropertyFactory<PlayConnection> {
-        private val parser = EnumParser(PlayConnectionStates)
-        override val name: String = "state"
+    companion object : TargetPropertyFactory<Account> {
+        override val name: String = "type"
 
-        override fun read(reader: CommandReader): StateProperty {
-            val (word, negated) = reader.readNegateable { parser.parse(reader) } ?: throw ExpectedArgumentError(reader)
-            return StateProperty(word, negated)
+        override fun read(reader: CommandReader): TypeProperty {
+            return TypeProperty(reader.readResourceLocation() ?: throw ExpectedArgumentError(reader))
         }
     }
 }

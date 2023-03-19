@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
 import de.bixilon.kotlinglm.vec2.Vec2t
@@ -345,5 +346,15 @@ object KUtil {
             return this[0]
         }
         return this[index + 1]
+    }
+
+    fun <T> table(elements: Collection<T>, vararg headers: AnyString, builder: (T) -> Array<Any?>?): Table {
+        val table = Table(headers.unsafeCast())
+
+        for (element in elements) {
+            table += builder(element) ?: continue
+        }
+
+        return table
     }
 }

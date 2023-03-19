@@ -13,86 +13,63 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-import de.bixilon.jiibles.Table
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.commands.nodes.ArgumentNode
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.parser.minosoft.connection.ConnectionParser
-import de.bixilon.minosoft.commands.parser.minosoft.connection.ConnectionTarget
+import de.bixilon.minosoft.commands.parser.selector.AbstractTarget
 import de.bixilon.minosoft.commands.stack.CommandStack
-import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.cli.CLI
+import de.bixilon.minosoft.util.KUtil.table
 
 object ConnectionManageCommand : Command {
     override var node = LiteralNode("connection")
         .addChild(
             LiteralNode("list", onlyDirectExecution = false, executor = {
-                val connections = PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedList()
-                connections += PlayConnection.ERRORED_CONNECTIONS.toSynchronizedList()
-                val filteredConnections = it.get<ConnectionTarget?>("filter")?.getConnections(connections) ?: connections
-                if (filteredConnections.isEmpty()) {
-                    it.print.print(TextComponent("No connection matched your filter!").color(ChatColors.RED))
-                    return@LiteralNode
-                }
-                val table = Table(arrayOf("Id", "State", "Address"))
-                for (connection in filteredConnections) {
-                    table += arrayOf(connection.connectionId, connection.state, connection.address)
-                }
-                it.print.print(table)
+                val filtered = it.collect()
+                if (filtered.isEmpty()) throw CommandException("No connection matched your filter!")
+
+                it.print.print(table(filtered, "Id", "State", "Address") { c -> arrayOf(c.connectionId, c.state, c.address) })
             })
                 .addChild(ArgumentNode("filter", ConnectionParser, executable = true)),
             LiteralNode("disconnect").apply {
                 addFilter { stack, connections ->
-                    var disconnects = 0
-                    for (connection in connections) {
-                        if (!connection.network.connected) {
-                            continue
-                        }
-                        connection.network.disconnect()
-                        disconnects++
-                    }
-                    stack.print.print("Disconnected from $disconnects connections.")
+                    var count = 0
+                    connections.filter { it.network.connected }.forEach { it.disconnect(); count++ }
+                    stack.print.print("Disconnected from $count connections.")
                 }
             },
             LiteralNode("select").apply {
-                addFilter { stack, connections ->
-                    var toSelect: PlayConnection? = null
-                    for (connection in connections) {
-                        if (!connection.network.connected) {
-                            continue
-                        }
-                        if (toSelect != null) {
-                            stack.print.print(TextComponent("Can not select multiple connections!").color(ChatColors.RED))
-                            return@addFilter
-                        }
-                        toSelect = connection
+                addFilter(false) { stack, connections ->
+                    val connection = connections.first()
+                    if (!connection.network.connected) {
+                        throw CommandException("Not connected to $connection (anymore)!")
                     }
-                    if (toSelect == null) {
-                        stack.print.print(TextComponent("No connection matched your filter!").color(ChatColors.RED))
-                        return@addFilter
-                    }
-                    CLI.connection = toSelect
-                    stack.print.print("Selected ${toSelect.connectionId}")
+                    CLI.connection = connection
+                    stack.print.print("Selected ${connection.connectionId}")
                 }
             },
         )
 
 
-    private fun CommandNode.addFilter(executor: (stack: CommandStack, connections: Collection<PlayConnection>) -> Unit): CommandNode {
+    private fun CommandNode.addFilter(multi: Boolean = true, executor: (stack: CommandStack, connections: Collection<PlayConnection>) -> Unit): CommandNode {
         val node = ArgumentNode("filter", ConnectionParser, executor = {
-            val connections = PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedList()
-            connections += PlayConnection.ERRORED_CONNECTIONS.toSynchronizedList()
-            val filteredConnections = it.get<ConnectionTarget?>("filter")?.getConnections(connections) ?: connections
-            if (filteredConnections.isEmpty()) {
-                it.print.print(TextComponent("No connection matched your filter!").color(ChatColors.RED))
-                return@ArgumentNode
-            }
-            executor(it, connections)
+            val filtered = it.collect()
+            if (filtered.isEmpty()) throw CommandException("No connection matched your filter!")
+            if (!multi && filtered.size > 1) throw CommandException("Can not select multiple connections!")
+            executor(it, filtered)
         })
         addChild(node)
         return node
+    }
+
+
+    private fun CommandStack.collect(): List<PlayConnection> {
+        val connections = PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedList()
+        connections += PlayConnection.ERRORED_CONNECTIONS.toSynchronizedList()
+        if (connections.isEmpty()) throw CommandException("Not connections available!")
+        return this.get<AbstractTarget<PlayConnection>?>("filter")?.filter(connections) ?: connections
     }
 }

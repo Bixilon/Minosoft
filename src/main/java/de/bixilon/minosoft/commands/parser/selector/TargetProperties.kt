@@ -11,17 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.commands.parser.selector
 
-import de.bixilon.minosoft.terminal.commands.connection.SayCommand
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
+abstract class TargetProperties<T> {
+    val properties: MutableMap<String, TargetPropertyFactory<T>> = mutableMapOf()
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
-        ConnectionManageCommand,
-        AccountManageCommand,
-        ReloadCommand,
-    )
+
+    fun register(factory: TargetPropertyFactory<T>) {
+        properties[factory.name] = factory
+    }
+
+    operator fun get(key: String): TargetPropertyFactory<T>? {
+        return properties[key]
+    }
 }

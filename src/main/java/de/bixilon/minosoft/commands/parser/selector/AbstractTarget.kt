@@ -11,17 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.commands.parser.selector
 
-import de.bixilon.minosoft.terminal.commands.connection.SayCommand
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
-
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
-        ConnectionManageCommand,
-        AccountManageCommand,
-        ReloadCommand,
-    )
+interface AbstractTarget<T> {
+    fun filter(entries: Collection<T>): List<T>
 }

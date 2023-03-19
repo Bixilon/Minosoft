@@ -18,6 +18,9 @@ import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.terminal.commands.CommandException
 
 abstract class ExecutableNode(
     name: String,
@@ -32,6 +35,8 @@ abstract class ExecutableNode(
     protected fun execute(stack: CommandStack) {
         try {
             executor?.invoke(stack)
+        } catch (exception: CommandException) {
+            stack.print.print(TextComponent(exception.message).color(ChatColors.RED))
         } catch (exception: Throwable) {
             exception.printStackTrace()
         }

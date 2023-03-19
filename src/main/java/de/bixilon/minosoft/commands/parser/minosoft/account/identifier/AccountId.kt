@@ -11,18 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.connection.identifier
+package de.bixilon.minosoft.commands.parser.minosoft.account.identifier
 
 import de.bixilon.minosoft.commands.parser.selector.AbstractTarget
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.data.accounts.Account
 
-class ConnectionId(
-    val id: Int,
-) : AbstractTarget<PlayConnection> {
+class AccountId(
+    val id: String,
+) : AbstractTarget<Account> {
 
-    override fun filter(entries: Collection<PlayConnection>): List<PlayConnection> {
+    override fun filter(entries: Collection<Account>): List<Account> {
         for (connection in entries) {
-            if (connection.connectionId == id) {
+            if (connection.id == id) {
                 return listOf(connection)
             }
         }
@@ -34,11 +34,11 @@ class ConnectionId(
     }
 
     override fun hashCode(): Int {
-        return id
+        return id.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is ConnectionId) {
+        if (other !is AccountId) {
             return false
         }
         return id == other.id

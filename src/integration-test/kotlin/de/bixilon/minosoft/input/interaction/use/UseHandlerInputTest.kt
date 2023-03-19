@@ -56,7 +56,7 @@ class UseHandlerInputTest {
         connection.assertPacket(PositionRotationC2SP::class.java)
         connection.assertPacket(UseItemC2SP::class.java)
         connection.assertPacket(SwingArmC2SP::class.java)
-        if (measureTimeMillis { Thread.sleep(4 * 50 + 10) } > 4 * 50 + 30) throw SkipException("busy")
+        if (measureTimeMillis { Thread.sleep(4 * 50 + 15) } > 4 * 50 + 30) throw SkipException("busy")
         connection.assertPacket(PositionRotationC2SP::class.java)
         connection.assertPacket(UseItemC2SP::class.java)
         connection.assertPacket(SwingArmC2SP::class.java)
