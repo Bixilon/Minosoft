@@ -70,11 +70,14 @@ object CLI {
 
         this::connection.observe(this) { register() }
 
+        reader.pollLines()
+    }
 
+    private fun LineReader.pollLines() {
         while (true) {
-            var line = ""
+            val line: String
             try {
-                line = reader.readLine().trimWhitespaces()
+                line = readLine().trimWhitespaces()
                 terminal.flush()
             } catch (exception: EndOfFileException) {
                 Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { exception.printStackTrace() }
@@ -87,16 +90,19 @@ object CLI {
                 exception.printStackTrace()
                 continue
             }
-            try {
-                if (line.isBlank()) {
-                    continue
-                }
-                ROOT_NODE.execute(line, connection)
-            } catch (error: ReaderError) {
-                Log.log(LogMessageType.OTHER, LogLevels.WARN) { error.message }
-            } catch (error: Throwable) {
-                error.printStackTrace()
-            }
+            if (line.isBlank()) continue
+
+            processLine(line)
+        }
+    }
+
+    private fun processLine(line: String) {
+        try {
+            ROOT_NODE.execute(line, connection)
+        } catch (error: ReaderError) {
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { error.message }
+        } catch (error: Throwable) {
+            error.printStackTrace()
         }
     }
 
