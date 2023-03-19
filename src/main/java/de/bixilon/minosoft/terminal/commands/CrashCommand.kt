@@ -13,19 +13,11 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-import de.bixilon.minosoft.terminal.commands.connection.SayCommand
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
+import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
-        ConnectionManageCommand,
-        AccountManageCommand,
-        ReloadCommand,
-
-        PingCommand, ConnectCommand,
-
-        CrashCommand,
-    )
+object CrashCommand : Command {
+    override var node = LiteralNode("crash", executor = {
+        Throwable("Intended crash!").crash()
+    })
 }
