@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,13 +15,14 @@ package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.minosoft.commands.stack.CommandExecutor
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 import de.bixilon.minosoft.commands.util.CommandReader
 
 abstract class ExecutableNode(
     name: String,
     aliases: Set<String> = setOf(),
-    val suggestion: SuggestionType<*>? = null,
+    val suggestion: SuggestionType? = null,
     var onlyDirectExecution: Boolean = true,
     var executor: CommandExecutor? = null,
     executable: Boolean = executor != null,
@@ -48,7 +49,7 @@ abstract class ExecutableNode(
         super.execute(reader, stack)
     }
 
-    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Any?> {
+    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Suggestion> {
         if (!reader.canPeek()) {
             // empty string
             if (executable) {

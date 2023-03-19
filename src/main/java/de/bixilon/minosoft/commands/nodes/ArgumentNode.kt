@@ -18,6 +18,7 @@ import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.SignedParser
 import de.bixilon.minosoft.commands.stack.CommandExecutor
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 import de.bixilon.minosoft.commands.util.CommandReader
 
@@ -29,7 +30,7 @@ class ArgumentNode : ExecutableNode, SignedNode {
     constructor(
         name: String,
         parser: ArgumentParser<*>,
-        suggestion: SuggestionType<*>? = null,
+        suggestion: SuggestionType? = null,
         executable: Boolean = false,
         redirect: CommandNode? = null,
     ) : super(name, setOf(), suggestion, false, null, executable, redirect) {
@@ -56,7 +57,7 @@ class ArgumentNode : ExecutableNode, SignedNode {
         super.execute(reader, stack)
     }
 
-    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Any?> {
+    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Suggestion> {
         reader.skipWhitespaces(1)
         val pointer = reader.pointer
         val stackSize = stack.size

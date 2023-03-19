@@ -31,12 +31,6 @@ class ScoreHolderParser(
         TODO()
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
-        return emptyList()
-    }
 
     companion object : ArgumentParserFactory<ScoreHolderParser> {
         override val identifier: ResourceLocation = "minecraft:score_holder".toResourceLocation()

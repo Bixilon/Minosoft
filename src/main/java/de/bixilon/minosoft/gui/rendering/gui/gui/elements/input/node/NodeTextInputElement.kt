@@ -14,15 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.string.StringUtil.codePointAtOrNull
-import de.bixilon.kutil.string.TextUtil
-import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.stack.print.PlayerPrintTarget
+import de.bixilon.minosoft.commands.suggestion.Suggestion
+import de.bixilon.minosoft.commands.suggestion.util.SuggestionUtil
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.commands.util.StringReader.Companion.isWord
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -120,17 +118,13 @@ class NodeTextInputElement(
         errorElement.onClose()
     }
 
-    fun updateSuggestion(suggestion: Any) {
-        val string = suggestion.toString()
-        val value = value.trimWhitespaces()
-        val overlappingLength = TextUtil.getOverlappingText(value, string)
-        var nextValue = value
-        val lastChar = value.codePointAtOrNull(value.length - 1)
-        if (overlappingLength == 0 && lastChar != null && lastChar.isWord()) {
-            nextValue += " "
+    fun updateSuggestion(suggestion: Suggestion) {
+        val slash = value.startsWith("/")
+        var value = SuggestionUtil.apply(value.removePrefix("/"), suggestion)
+        if (slash) {
+            value = "/$value" // TODO: dirty hack
         }
-        nextValue += string.substring(overlappingLength, string.length)
-        _set(nextValue)
+        _set(value)
         forceApply()
     }
 }

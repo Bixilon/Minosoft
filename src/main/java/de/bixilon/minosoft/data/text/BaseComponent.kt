@@ -130,6 +130,15 @@ class BaseComponent : ChatComponent {
         }
     }
 
+    override fun copy(): ChatComponent {
+        val parts: MutableList<ChatComponent> = mutableListOf()
+        for (part in this.parts) {
+            parts += part.copy()
+        }
+
+        return BaseComponent(parts)
+    }
+
     override val ansiColoredMessage: String
         get() {
             val stringBuilder = StringBuilder()

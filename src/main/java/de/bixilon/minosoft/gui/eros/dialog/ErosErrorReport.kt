@@ -66,7 +66,7 @@ class ErosErrorReport : DialogController() {
 
     companion object {
         private val LAYOUT = "minosoft:eros/dialog/error.fxml".toResourceLocation()
-        private val TITLE = { exception: Throwable? -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:error.title".toResourceLocation(), null, false, exception?.let { it::class.java.realName }) }
+        private val TITLE = { exception: Throwable? -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:error.title".toResourceLocation(), exception?.let { it::class.java.realName }) }
         private val HEADER = "minosoft:error.header".toResourceLocation()
         private val DESCRIPTION = "minosoft:error.description".toResourceLocation()
         private val FATAL_CRASH = "minosoft:error.fatal_crash".toResourceLocation()

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.terminal.cli.CLI
 
@@ -72,7 +73,7 @@ class ChatNode(
         return null
     }
 
-    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Any?> {
+    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Suggestion> {
         if (reader.string.isEmpty()) {
             return emptyList()
         }

@@ -32,6 +32,7 @@ object EmptyComponent : ChatComponent {
     override val length: Int get() = 0
 
     override fun cut(length: Int) = Unit
+    override fun copy() = this
     override fun trim(): ChatComponent? = null
 
     override fun strikethrough() = this

@@ -28,12 +28,6 @@ object ResourceLocationParser : ArgumentParser<ResourceLocation>, ArgumentParser
         reader.readResult { readResourceLocation() }.let { return it.result ?: throw InvalidResourceLocationError(reader, it) }
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
-        return emptyList()
-    }
 
     override fun read(buffer: PlayInByteBuffer) = this
 }

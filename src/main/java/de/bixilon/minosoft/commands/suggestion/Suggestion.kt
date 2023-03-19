@@ -11,14 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser
+package de.bixilon.minosoft.commands.suggestion
 
-import de.bixilon.minosoft.commands.suggestion.Suggestion
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
 
-interface ArgumentParser<T> {
-    val examples: List<Any?>
-
-    fun parse(reader: CommandReader): T
-    fun getSuggestions(reader: CommandReader): Collection<Suggestion> = TODO("Can not get suggestions yet")
-}
+data class Suggestion(
+    val offset: Int,
+    val text: String,
+    val name: ChatComponent = TextComponent(text),
+)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.color
 
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -35,7 +37,6 @@ internal class ColorParserTest {
         val parser = ColorParser()
         assertEquals(parser.parse(reader), ChatColors.GREEN)
     }
-
 
     @Test
     fun testInvalidColor() {
@@ -68,7 +69,7 @@ internal class ColorParserTest {
     @Test
     fun testHexDisabled() {
         val reader = CommandReader("#ABCDEF")
-        val parser = ColorParser(supportsRGB = false)
+        val parser = ColorParser(allowRGB = false)
         assertThrows<HexNotSupportedError> { parser.parse(reader) }
     }
 
@@ -76,7 +77,21 @@ internal class ColorParserTest {
     fun testYellowSuggestions() {
         val reader = CommandReader("y")
         val parser = ColorParser()
-        assertEquals(parser.getSuggestions(reader), listOf("yellow"))
+        assertEquals(parser.getSuggestions(reader), listOf(Suggestion(0, "yellow", TextComponent("yellow").color(ChatColors.YELLOW))))
+    }
+
+    @Test
+    fun darkSuggestion() {
+        val reader = CommandReader("dark")
+        val parser = ColorParser()
+        assertEquals(parser.getSuggestions(reader), listOf(
+            Suggestion(0, "dark_blue", TextComponent("dark_blue").color(ChatColors.DARK_BLUE)),
+            Suggestion(0, "dark_green", TextComponent("dark_green").color(ChatColors.DARK_GREEN)),
+            Suggestion(0, "dark_aqua", TextComponent("dark_aqua").color(ChatColors.DARK_AQUA)),
+            Suggestion(0, "dark_red", TextComponent("dark_red").color(ChatColors.DARK_RED)),
+            Suggestion(0, "dark_purple", TextComponent("dark_purple").color(ChatColors.DARK_PURPLE)),
+            Suggestion(0, "dark_gray", TextComponent("dark_gray").color(ChatColors.DARK_GRAY)),
+        ))
     }
 
     @Test

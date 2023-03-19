@@ -30,12 +30,5 @@ object AngleParser : ArgumentParser<Coordinate>, ArgumentParserFactory<AnglePars
         return reader.readCoordinate(caret = false) // ToDo: Check min/max?
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
-        return emptyList()
-    }
-
     override fun read(buffer: PlayInByteBuffer) = this
 }

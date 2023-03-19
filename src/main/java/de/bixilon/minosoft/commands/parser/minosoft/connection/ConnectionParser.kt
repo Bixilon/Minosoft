@@ -71,9 +71,5 @@ object ConnectionParser : ArgumentParser<ConnectionTarget>, ArgumentParserFactor
         return ConnectionId(result.result)
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any?> {
-        return examples // ToDo
-    }
-
     override fun read(buffer: PlayInByteBuffer): ConnectionParser = this
 }

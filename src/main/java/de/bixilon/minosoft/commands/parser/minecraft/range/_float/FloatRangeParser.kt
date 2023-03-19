@@ -31,13 +31,6 @@ class FloatRangeParser(
         return reader.readResult { reader.readFloatRange(defaultMin) }.let { return@let it.result ?: throw FloatRangeParseError(reader, it) }
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
-        return emptyList()
-    }
-
     companion object : ArgumentParserFactory<FloatRangeParser> {
         override val identifier: ResourceLocation = "minecraft:float_range".toResourceLocation()
 

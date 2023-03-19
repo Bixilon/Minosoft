@@ -18,17 +18,18 @@ import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.stack.CommandExecutor
 import de.bixilon.minosoft.commands.stack.CommandStack
-import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
+import de.bixilon.minosoft.commands.suggestion.util.SuggestionUtil
 import de.bixilon.minosoft.commands.util.CommandReader
 
 class LiteralNode : ExecutableNode {
-    private val suggester: ArraySuggestion<String> = ArraySuggestion(listOf(name, *aliases.toTypedArray()))
+    private val suggestions = listOf(name, *aliases.toTypedArray())
 
     constructor(
         name: String,
         aliases: Set<String> = setOf(),
-        suggestion: SuggestionType<*>? = null,
+        suggestion: SuggestionType? = null,
         executable: Boolean = false,
         redirect: CommandNode? = null,
     ) : super(name, aliases, suggestion, false, null, executable, redirect)
@@ -58,13 +59,14 @@ class LiteralNode : ExecutableNode {
         return super.execute(reader, stack)
     }
 
-    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Any?> {
+    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Suggestion> {
+        val pointer = reader.pointer
         val literalName = reader.readUnquotedString()
 
         if (literalName == name || literalName in aliases) {
             stack.push(this, name)
             return super.getSuggestions(reader, stack)
         }
-        return suggester.suggest(literalName) ?: throw InvalidLiteralArgumentError(reader, literalName ?: "")
+        return SuggestionUtil.suggest(suggestions, pointer, literalName, true) ?: throw InvalidLiteralArgumentError(reader, literalName ?: "")
     }
 }

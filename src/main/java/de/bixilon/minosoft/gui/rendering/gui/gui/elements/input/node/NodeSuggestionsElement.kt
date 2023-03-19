@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.array.ArrayUtil
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -31,12 +31,12 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inpu
     private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2i(300, Font.TOTAL_CHAR_HEIGHT) } }
     private var textCount = 0
     private var offset = 0
-    var suggestions: List<Any?>? = null
+    var suggestions: List<Suggestion>? = null
         set(value) {
             if (field == value) {
                 return
             }
-            visible = value != null && value.isNotEmpty()
+            visible = !value.isNullOrEmpty()
             if (visible && value != null) {
                 updateSuggestions(value)
             }
@@ -56,7 +56,7 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inpu
             field = value
         }
 
-    val activeSuggestion: Any?
+    val activeSuggestion: Suggestion?
         get() {
             val suggestions = suggestions ?: return null
             if (suggestions.isEmpty()) {
@@ -77,7 +77,7 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inpu
         }
     }
 
-    private fun updateSuggestions(suggestions: List<Any?>) {
+    private fun updateSuggestions(suggestions: List<Suggestion>) {
         val size = Vec2i()
         var textCount = 0
         val offset = offset
@@ -92,9 +92,10 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inpu
                 break
             }
             val text = suggestionText[index - startCutAt]
-            val textComponent = TextComponent(suggestion.toString().lowercase()).color(ChatColors.WHITE)
+            val textComponent = suggestion.name.copy()
             if (index == offset) {
-                textComponent.color = ChatColors.YELLOW
+                textComponent.setFallbackColor(ChatColors.YELLOW)
+                textComponent.underline()
             }
             text.text = textComponent
             size.x = maxOf(size.x, text.size.x)

@@ -31,13 +31,6 @@ class IntRangeParser(
         return reader.readResult { reader.readIntRange(defaultMin) }.let { return@let it.result ?: throw IntRangeParseError(reader, it) }
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
-        return emptyList()
-    }
-
     companion object : ArgumentParserFactory<IntRangeParser> {
         override val identifier: ResourceLocation = "minecraft:float_range".toResourceLocation()
 

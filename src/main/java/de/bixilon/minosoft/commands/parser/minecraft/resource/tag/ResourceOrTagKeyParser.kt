@@ -31,12 +31,6 @@ class ResourceOrTagKeyParser(
         TODO()
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
-        return emptyList()
-    }
 
     companion object : ArgumentParserFactory<ResourceOrTagKeyParser> {
         override val identifier: ResourceLocation = "minecraft:resource_or_tag_key".toResourceLocation()

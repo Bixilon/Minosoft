@@ -17,6 +17,7 @@ import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.SignedParser
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -34,10 +35,7 @@ object MessageParser : ArgumentParser<String>, ArgumentParserFactory<MessagePars
         return parser.parse(reader)
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
+    override fun getSuggestions(reader: CommandReader): List<Suggestion> {
         return emptyList()
     }
 

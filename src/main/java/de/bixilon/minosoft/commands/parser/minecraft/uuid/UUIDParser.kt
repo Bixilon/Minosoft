@@ -41,12 +41,5 @@ object UUIDParser : ArgumentParser<UUID>, ArgumentParserFactory<UUIDParser> {
         }
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
-        return emptyList()
-    }
-
     override fun read(buffer: PlayInByteBuffer) = this
 }

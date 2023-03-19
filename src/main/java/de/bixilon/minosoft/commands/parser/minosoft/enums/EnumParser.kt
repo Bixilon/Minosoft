@@ -16,17 +16,17 @@ package de.bixilon.minosoft.commands.parser.minosoft.enums
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
-import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
+import de.bixilon.minosoft.commands.suggestion.Suggestion
+import de.bixilon.minosoft.commands.suggestion.util.SuggestionUtil
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class EnumParser<E : Enum<*>>(
     val values: ValuesEnum<E>,
 ) : ArgumentParser<E> {
     override val examples: List<E> = values.VALUES.toList()
-    private val suggestion = ArraySuggestion(examples, ignoreCase = true)
 
     override fun parse(reader: CommandReader): E {
         reader.readResult { reader.readEnum() }.let { return it.result ?: throw EnumParseError(reader, it) }
@@ -36,16 +36,13 @@ class EnumParser<E : Enum<*>>(
         return values.getOrNull(readWord()?.lowercase()) // ToDo: Allow ordinals
     }
 
-    override fun getSuggestions(reader: CommandReader): Collection<E> {
+    override fun getSuggestions(reader: CommandReader): Collection<Suggestion> {
         val text = reader.readResult { reader.readWord() }
-        if (text.result == null) {
-            return examples
-        }
-        return suggestion.suggest(text.result) ?: throw EnumParseError(reader, text)
+        return SuggestionUtil.suggest(examples, text, false) ?: throw EnumParseError(reader, text)
     }
 
     companion object : ArgumentParserFactory<EnumParser<*>> {
-        override val identifier: ResourceLocation = "minosoft:enum".toResourceLocation()
+        override val identifier: ResourceLocation = minosoft("enum")
 
         override fun read(buffer: PlayInByteBuffer) = TODO("Can not construct enum parser yet!")
     }

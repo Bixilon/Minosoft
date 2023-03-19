@@ -29,12 +29,5 @@ object BlockPositionParser : ArgumentParser<BlockCoordinate>, ArgumentParserFact
         return BlockCoordinate(reader.readCoordinate(decimal = false), reader.readCoordinate(decimal = false), reader.readCoordinate(decimal = false))
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
-        return emptyList()
-    }
-
     override fun read(buffer: PlayInByteBuffer) = this
 }

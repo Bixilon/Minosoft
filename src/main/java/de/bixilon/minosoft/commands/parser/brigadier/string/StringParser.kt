@@ -17,6 +17,7 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.commands.parser.brigadier.BrigadierParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -32,9 +33,9 @@ class StringParser(
         reader.readResult { reader.readString(mode) }.let { return it.result ?: throw StringParseError(reader, it) }
     }
 
-    override fun getSuggestions(reader: CommandReader): List<String> {
+    override fun getSuggestions(reader: CommandReader): List<Suggestion> {
         reader.readResult { reader.readString(mode) }.let { it.result ?: throw StringParseError(reader, it) }
-        return examples
+        return emptyList()
     }
 
     enum class StringModes {

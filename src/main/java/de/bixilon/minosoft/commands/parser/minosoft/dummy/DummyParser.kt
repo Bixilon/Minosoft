@@ -15,6 +15,7 @@ package de.bixilon.minosoft.commands.parser.minosoft.dummy
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -25,11 +26,11 @@ object DummyParser : ArgumentParser<Any>, ArgumentParserFactory<DummyParser> {
     override val examples: List<Any> = listOf("?")
 
     override fun parse(reader: CommandReader): String {
-        return "?"
+        return reader.readRest() ?: ""
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        return examples
+    override fun getSuggestions(reader: CommandReader): List<Suggestion> {
+        return emptyList()
     }
 
     override fun read(buffer: PlayInByteBuffer) = this

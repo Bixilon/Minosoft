@@ -78,6 +78,7 @@ interface ChatComponent {
 
 
     fun cut(length: Int)
+    fun copy(): ChatComponent
 
     fun trim(): ChatComponent?
 
@@ -88,6 +89,7 @@ interface ChatComponent {
     fun underline(): ChatComponent
     fun italic(): ChatComponent
     fun setFallbackColor(color: RGBColor): ChatComponent
+
 
     companion object {
         val EMPTY = EmptyComponent

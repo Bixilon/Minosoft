@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -31,7 +32,7 @@ class RootNode : CommandNode {
         execute(CommandReader(command), stack)
     }
 
-    fun getSuggestions(command: String): Collection<Any?> {
+    fun getSuggestions(command: String): Collection<Suggestion> {
         return getSuggestions(CommandReader(command), CommandStack())
     }
 }

@@ -109,9 +109,10 @@ object CLI {
     object NodeCompleter : Completer {
 
         override fun complete(reader: LineReader, line: ParsedLine, candidates: MutableList<Candidate>) {
-            val suggestions = ROOT_NODE.getSuggestions(line.line())
+            val line = line.line()
+            val suggestions = ROOT_NODE.getSuggestions(line)
             for (suggestion in suggestions) {
-                candidates += Candidate(suggestion.toString())
+                candidates += Candidate(suggestion.text) // TODO: add offset, ...
             }
         }
     }

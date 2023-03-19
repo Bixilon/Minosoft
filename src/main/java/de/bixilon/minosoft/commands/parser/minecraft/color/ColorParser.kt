@@ -15,10 +15,13 @@ package de.bixilon.minosoft.commands.parser.minecraft.color
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
-import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
+import de.bixilon.minosoft.commands.suggestion.Suggestion
+import de.bixilon.minosoft.commands.suggestion.util.SuggestionUtil
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
@@ -26,10 +29,10 @@ import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ColorParser(
-    val supportsRGB: Boolean = true,
+    val allowRGB: Boolean = true,
 ) : ArgumentParser<RGBColor> {
-    override val examples: List<Any> = listOf("red", "yellow")
-    private val suggestions = ArraySuggestion(ChatColors.NAME_MAP.keys, true)
+    private val suggestions = ChatColors.NAME_MAP.map { ColorSuggestion(it.key, it.value) }
+    override val examples: List<Any> = listOf("red", "yellow", "#FFFFFF")
 
     override fun parse(reader: CommandReader): RGBColor {
         reader.readResult { reader.readColor() }.let { return it.result ?: throw ColorParseError(reader, it) }
@@ -38,7 +41,7 @@ class ColorParser(
     fun CommandReader.readColor(): RGBColor? {
         val peek = peek() ?: return null
         if (peek == '#'.code) {
-            if (!supportsRGB) {
+            if (!allowRGB) {
                 throw HexNotSupportedError(this, readResult { read()!!.toChar() })
             }
             read()
@@ -56,10 +59,10 @@ class ColorParser(
         return ChatColors.NAME_MAP[string.lowercase()]
     }
 
-    override fun getSuggestions(reader: CommandReader): Collection<Any> {
+    override fun getSuggestions(reader: CommandReader): Collection<Suggestion> {
         if (reader.peek() == '#'.code) {
             reader.read()
-            if (!supportsRGB) {
+            if (!allowRGB) {
                 throw HexNotSupportedError(reader, reader.readResult { reader.read()!!.toChar() })
             }
             val pointer = reader.pointer
@@ -73,7 +76,17 @@ class ColorParser(
         }
         val pointer = reader.pointer
         val string = reader.readWord()
-        return suggestions.suggest(string) ?: throw ColorParseError(reader, ReadResult(pointer, reader.pointer, string ?: "", null))
+        return SuggestionUtil.suggest(suggestions, pointer, string, false) ?: throw ColorParseError(reader, ReadResult(pointer, reader.pointer, string ?: "", null))
+    }
+
+    data class ColorSuggestion(val name: String, val color: RGBColor) : TextFormattable {
+        override fun toText(): TextComponent {
+            return TextComponent(name).color(color)
+        }
+
+        override fun toString(): String {
+            return name
+        }
     }
 
 

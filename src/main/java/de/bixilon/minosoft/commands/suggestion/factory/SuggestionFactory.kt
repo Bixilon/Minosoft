@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-interface SuggestionFactory<T : SuggestionType<*>> : Identified {
+interface SuggestionFactory<T : SuggestionType> : Identified {
 
     fun build(connection: PlayConnection?, buffer: PlayInByteBuffer?): T
 }

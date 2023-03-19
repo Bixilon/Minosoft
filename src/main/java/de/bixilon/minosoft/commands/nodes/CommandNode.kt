@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.commands.nodes
 import de.bixilon.minosoft.commands.errors.DeadEndError
 import de.bixilon.minosoft.commands.errors.literal.TrailingTextError
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 
 abstract class CommandNode(
@@ -61,9 +62,9 @@ abstract class CommandNode(
     }
 
 
-    open fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Any?> {
+    open fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Suggestion> {
         checkForDeadEnd(reader)
-        val suggestions: MutableList<Any?> = mutableListOf()
+        val suggestions: MutableList<Suggestion> = mutableListOf()
 
         val pointer = reader.pointer
         val stackSize = stack.size

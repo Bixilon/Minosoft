@@ -223,6 +223,10 @@ open class TextComponent(
         message = message.substring(0, length)
     }
 
+    override fun copy(): ChatComponent {
+        return TextComponent(message, color, formatting.copy(), clickEvent, hoverEvent)
+    }
+
     override fun hashCode(): Int {
         return message.hashCode()
     }

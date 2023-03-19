@@ -29,12 +29,5 @@ object Vec3Parser : ArgumentParser<Vec3Coordinate>, ArgumentParserFactory<Vec3Pa
         return Vec3Coordinate(reader.readCoordinate(), reader.readCoordinate(), reader.readCoordinate())
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
-        return emptyList()
-    }
-
     override fun read(buffer: PlayInByteBuffer) = this
 }

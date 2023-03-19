@@ -16,6 +16,7 @@ package de.bixilon.minosoft.commands.parser.brigadier._long
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.commands.parser.brigadier.BrigadierParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -38,12 +39,11 @@ class LongParser(
         return long
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Long> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
-        }
+    override fun getSuggestions(reader: CommandReader): List<Suggestion> {
+        parse(reader)
         return emptyList()
     }
+
 
     companion object : ArgumentParserFactory<LongParser> {
         override val identifier: ResourceLocation = "brigadier:long".toResourceLocation()

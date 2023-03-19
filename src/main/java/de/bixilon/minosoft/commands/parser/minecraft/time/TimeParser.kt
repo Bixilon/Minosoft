@@ -17,6 +17,7 @@ import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParser
 import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParser.Companion.readFloat
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
+import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W03A
@@ -45,9 +46,10 @@ class TimeParser(val minimum: Int = 0) : ArgumentParser<Int> {
         return (time * unit.multiplier).toInt()
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        reader.readFloat() ?: return examples
-        val peek = reader.peekNext() ?: return TimeUnit.UNITS
+    override fun getSuggestions(reader: CommandReader): List<Suggestion> {
+        val pointer = reader.pointer
+        reader.readFloat() ?: TODO()
+        val peek = reader.peekNext() ?: TODO()
         try {
             TimeUnit.fromUnit(peek)
         } catch (error: IllegalArgumentException) {

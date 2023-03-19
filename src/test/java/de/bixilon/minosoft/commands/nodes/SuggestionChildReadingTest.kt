@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,6 +20,8 @@ import de.bixilon.minosoft.commands.errors.reader.ExpectedWhitespaceError
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParseError
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.suggestion.Suggestion
+import de.bixilon.minosoft.commands.suggestion.util.SuggestionUtil
 import de.bixilon.minosoft.commands.util.CommandReader
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -80,17 +82,17 @@ internal class SuggestionChildReadingTest {
 
     @Test
     fun testPrefixSuggestions() {
-        assertEquals(createCommand().getSuggestions(CommandReader("1_"), CommandStack()), listOf("1_literal", "1_execute"))
+        assertEquals(createCommand().getSuggestions(CommandReader("1_"), CommandStack()), listOf(Suggestion(0, "1_literal"), Suggestion(0, "1_execute")))
     }
 
     @Test
     fun testEmptySuggestions() {
-        assertEquals(createCommand().getSuggestions(CommandReader(""), CommandStack()), listOf("1_literal", "2_literal", "3_literal", "1_execute"))
+        assertEquals(createCommand().getSuggestions(CommandReader(""), CommandStack()), listOf(Suggestion(0, "1_literal"), Suggestion(0, "2_literal"), Suggestion(0, "3_literal"), Suggestion(0, "1_execute")))
     }
 
     @Test
     fun testWhitespaceSuggestions() {
-        assertEquals(createCommand().getSuggestions(CommandReader(" "), CommandStack()), listOf("1_literal", "2_literal", "3_literal", "1_execute"))
+        assertEquals(createCommand().getSuggestions(CommandReader(" "), CommandStack()), listOf(Suggestion(0, "1_literal"), Suggestion(0, "2_literal"), Suggestion(0, "3_literal"), Suggestion(0, "1_execute")))
     }
 
     @Test
@@ -105,7 +107,7 @@ internal class SuggestionChildReadingTest {
 
     @Test
     fun test2EmptyLevelSuggestions() {
-        assertEquals(createCommand().getSuggestions(CommandReader("1_literal"), CommandStack()), listOf("1_literal_2", "2_literal_2"))
+        assertEquals(createCommand().getSuggestions(CommandReader("1_literal"), CommandStack()), listOf(Suggestion(9, "1_literal_2"), Suggestion(9, "2_literal_2")))
     }
 
     @Test
@@ -157,4 +159,20 @@ internal class SuggestionChildReadingTest {
     fun testNoSuggestionsErrors() {
         assertEquals(createCommand().getSuggestions(CommandReader("1_literal 2_literal_2"), CommandStack()), emptyList())
     }
+
+    @Test
+    fun applySuggestion() {
+        val input = "1_li"
+        val suggestion = createCommand().getSuggestions(CommandReader(input), CommandStack()).first() // 1_literal
+        assertEquals(SuggestionUtil.apply(input, suggestion), "1_literal")
+    }
+
+    @Test
+    fun applySuggestionAndWhitespace() {
+        val input = "1_literal"
+        val suggestion = createCommand().getSuggestions(CommandReader(input), CommandStack()).first() // 1_literal_2
+        assertEquals(SuggestionUtil.apply(input, suggestion), "1_literal 1_literal_2")
+    }
+
+    // TODO: test overlapping apply (e.g. weather rain)
 }

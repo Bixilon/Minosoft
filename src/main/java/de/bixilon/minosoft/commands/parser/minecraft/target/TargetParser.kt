@@ -95,10 +95,6 @@ class TargetParser(
         }
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any?> {
-        return examples // ToDo
-    }
-
     companion object : ArgumentParserFactory<TargetParser> {
         override val identifier: ResourceLocation = "minecraft:entity".toResourceLocation()
         const val DEFAULT_PLAYER_NAME = "Bixilon"

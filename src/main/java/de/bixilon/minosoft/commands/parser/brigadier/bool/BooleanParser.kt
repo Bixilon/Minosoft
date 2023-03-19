@@ -16,7 +16,8 @@ package de.bixilon.minosoft.commands.parser.brigadier.bool
 import de.bixilon.minosoft.commands.errors.suggestion.NoSuggestionError
 import de.bixilon.minosoft.commands.parser.brigadier.BrigadierParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
-import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
+import de.bixilon.minosoft.commands.suggestion.Suggestion
+import de.bixilon.minosoft.commands.suggestion.util.SuggestionUtil
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 object BooleanParser : BrigadierParser<Boolean>, ArgumentParserFactory<BooleanParser> {
     override val identifier: ResourceLocation = "brigadier:bool".toResourceLocation()
     override val examples: List<Boolean> = listOf(true, false)
-    private val suggestion = ArraySuggestion(examples)
 
     override fun parse(reader: CommandReader): Boolean {
         return reader.readRequiredBoolean()
@@ -45,12 +45,9 @@ object BooleanParser : BrigadierParser<Boolean>, ArgumentParserFactory<BooleanPa
         readResult { readBoolean() }.let { return it.result ?: throw BooleanParseError(this, it) }
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Boolean> {
+    override fun getSuggestions(reader: CommandReader): List<Suggestion> {
         val text = reader.readResult { reader.readUnquotedString() }
-        if (text.result == null) {
-            return examples
-        }
-        return suggestion.suggest(text.result)?.toList() ?: throw NoSuggestionError(reader, text)
+        return SuggestionUtil.suggest(examples, text.start, text.result, true) ?: throw NoSuggestionError(reader, text)
     }
 
     override fun read(buffer: PlayInByteBuffer) = this
