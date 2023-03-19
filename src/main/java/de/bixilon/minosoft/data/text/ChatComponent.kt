@@ -93,7 +93,7 @@ interface ChatComponent {
         val EMPTY = EmptyComponent
 
         @JvmOverloads
-        fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false, restrictedMode: Boolean = false): ChatComponent {
+        fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false, restricted: Boolean = false): ChatComponent {
             if (raw == null) {
                 return EMPTY
             }
@@ -101,15 +101,15 @@ interface ChatComponent {
                 return raw
             }
             if (raw is Translatable && raw !is ResourceLocation) {
-                return (translator ?: Minosoft.LANGUAGE_MANAGER).forceTranslate(raw.translationKey, parent, restrictedMode = restrictedMode)
+                return (translator ?: Minosoft.LANGUAGE_MANAGER).forceTranslate(raw.translationKey, parent, restricted = restricted)
             }
 
             when (raw) {
-                is Map<*, *> -> return BaseComponent(translator, parent, raw.unsafeCast(), restrictedMode).trim() ?: EmptyComponent
+                is Map<*, *> -> return BaseComponent(translator, parent, raw.unsafeCast(), restricted).trim() ?: EmptyComponent
                 is List<*> -> {
                     val component = BaseComponent()
                     for (part in raw) {
-                        component += of(part, translator, parent, restrictedMode = restrictedMode).trim() ?: continue
+                        component += of(part, translator, parent, restricted = restricted).trim() ?: continue
                     }
                     return component.trim() ?: EmptyComponent
                 }
@@ -126,7 +126,7 @@ interface ChatComponent {
                     if (codePoint == '{'.code || codePoint == '['.code) {
                         try {
                             val read: Any = Jackson.MAPPER.readValue(string, Any::class.java)
-                            return of(read, translator, parent, ignoreJson = true, restrictedMode).trim() ?: EmptyComponent
+                            return of(read, translator, parent, ignoreJson = true, restricted).trim() ?: EmptyComponent
                         } catch (ignored: JacksonException) {
                             break
                         }
@@ -135,7 +135,7 @@ interface ChatComponent {
                 }
             }
 
-            return LegacyComponentReader.parse(parent, string, restrictedMode).trim() ?: EmptyComponent
+            return LegacyComponentReader.parse(parent, string, restricted).trim() ?: EmptyComponent
         }
 
         fun String.chat(): ChatComponent {

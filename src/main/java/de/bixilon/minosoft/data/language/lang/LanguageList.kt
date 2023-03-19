@@ -22,9 +22,9 @@ class LanguageList(
     private val list: MutableList<Language>,
 ) : Translator {
 
-    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent? {
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, restricted: Boolean, vararg data: Any?): ChatComponent? {
         for (language in list) {
-            return language.translate(key, parent, restrictedMode, data) ?: continue
+            return language.translate(key, parent, restricted, data) ?: continue
         }
         return null
     }

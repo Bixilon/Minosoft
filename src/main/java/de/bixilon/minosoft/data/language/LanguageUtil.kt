@@ -46,7 +46,7 @@ object LanguageUtil {
     }
 
     fun loadJsonLanguage(json: JsonObject): LanguageData {
-        val data: LanguageData = mutableMapOf()
+        val data: LanguageData = HashMap()
 
         for ((key, value) in json) {
             val path = ResourceLocation.of(key).path
@@ -57,7 +57,7 @@ object LanguageUtil {
     }
 
     fun loadLanguage(lines: Sequence<String>): LanguageData {
-        val data: LanguageData = mutableMapOf()
+        val data: LanguageData = HashMap()
 
         for (line in lines) {
             if (line.isBlank() || line.startsWith("#")) {

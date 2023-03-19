@@ -56,7 +56,7 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
     }
 
     open fun readChatComponent(): ChatComponent {
-        return ChatComponent.of(readString(), restrictedMode = true)
+        return ChatComponent.of(readString(), restricted = true)
     }
 
     fun readDirection(): Directions {

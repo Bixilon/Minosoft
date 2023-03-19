@@ -31,7 +31,7 @@ FormattedChatMessage(
     init {
         // ToDo: parent (formatting)
         val data = type.chat.formatParameters(parameters)
-        text = connection.language.forceTranslate(type.chat.translationKey.toResourceLocation(), restrictedMode = true, fallback = type.chat.translationKey, data = data)
+        text = connection.language.forceTranslate(type.chat.translationKey.toResourceLocation(), restricted = true, fallback = type.chat.translationKey, data = data)
         text.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
     }
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.language.translate
 
 import de.bixilon.minosoft.data.language.LanguageUtil
-import de.bixilon.minosoft.data.language.lang.Language
+import de.bixilon.minosoft.data.language.placeholder.PlaceholderUtil
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -25,16 +25,16 @@ interface Translator {
         return forceTranslate(key, null, false, null, *data)
     }
 
-    fun forceTranslate(key: ResourceLocation?, parent: TextComponent? = null, restrictedMode: Boolean = false, fallback: String? = null, vararg data: Any?): ChatComponent {
-        translate(key, parent, restrictedMode, *data)?.let { return it }
+    fun forceTranslate(key: ResourceLocation?, parent: TextComponent? = null, restricted: Boolean = false, fallback: String? = null, vararg data: Any?): ChatComponent {
+        translate(key, parent, restricted, *data)?.let { return it }
         if (fallback != null) {
-            return Language.translate(fallback, parent, null, restrictedMode)
+            return PlaceholderUtil.format(fallback, parent, restricted, *data)
         }
-        return LanguageUtil.getFallbackTranslation(key, parent, restrictedMode, data)
+        return LanguageUtil.getFallbackTranslation(key, parent, restricted, *data)
     }
 
     fun translate(key: ResourceLocation?, parent: TextComponent? = null, vararg data: Any?): ChatComponent? = translate(key, parent, false, *data)
-    fun translate(key: ResourceLocation?, parent: TextComponent? = null, restrictedMode: Boolean = false, vararg data: Any?): ChatComponent?
+    fun translate(key: ResourceLocation?, parent: TextComponent? = null, restricted: Boolean = false, vararg data: Any?): ChatComponent?
 
 
     fun translate(translatable: Any?): ChatComponent {

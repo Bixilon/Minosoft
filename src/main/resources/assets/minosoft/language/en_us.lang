@@ -20,7 +20,7 @@ minosoft:server_info.remote_brand=Remote brand
 minosoft:server_info.active_connections=Connected
 minosoft:server_info.players_online=Players online
 minosoft:server_info.ping=Latency
-minosoft:server_info.delete.dialog.description=Do you really want to delete the server %1$s (%2$s)?
+minosoft:server_info.delete.dialog.description=Do you really want to delete the server %0$s (%1$s)?
 
 
 minosoft:connection.dialog.verify_assets.title=Verifying assets... - Minosoft
@@ -107,7 +107,7 @@ minosoft:main.account.checking_dialog.title=Checking account... - Minosoft
 minosoft:main.account.checking_dialog.header=Checking account... Please wait
 
 
-minosoft:main.account.card.connection_count=%1$s connections
+minosoft:main.account.card.connection_count=%0$s connections
 
 minosoft:main.account.account_info.id=Id
 minosoft:main.account.account_info.state=State
@@ -135,20 +135,20 @@ minosoft:main.account.add.mojang.cancel_button=Cancel
 minosoft:main.account.add.microsoft.please_wait.device_code=Obtaining device code...Please wait!
 
 minosoft:main.account.add.microsoft.title=Add microsoft account - Minosoft
-minosoft:main.account.add.microsoft.header=Please use a web browser to open the page %1$s and enter the following code in order to proceed with the login
+minosoft:main.account.add.microsoft.header=Please use a web browser to open the page %0$s and enter the following code in order to proceed with the login
 minosoft:main.account.add.microsoft.cancel=Cancel
 
 minosoft:connection.kick.title=Kicked from server
 minosoft:connection.kick.header=You got kicked
-minosoft:connection.kick.description=You got kicked from %1$s (connected with: %2$s)
+minosoft:connection.kick.description=You got kicked from %0$s (connected with: %1$s)
 minosoft:connection.kick.reconnect_button=Reconnect
 minosoft:connection.kick.close_button=Close
 
 minosoft:connection.login_kick.title=Kicked from server
 minosoft:connection.login_kick.header=You got kicked
-minosoft:connection.login_kick.description=You got kicked while logging in from %1$s (connected with: %2$s)
+minosoft:connection.login_kick.description=You got kicked while logging in from %0$s (connected with: %0$s)
 
-minosoft:error.title=%1$s - Minosoft
+minosoft:error.title=%0$s - Minosoft
 minosoft:error.header=An error occurred!
 minosoft:error.description=An error in minosoft occurred. You can continue like before, but the behavior might not be the expected one. If this error persists, feel free to open an issue here: https://gitlab.bixilon.de/bixilon/minosoft/-/issues/
 minosoft:error.fatal_crash=Fatal crash

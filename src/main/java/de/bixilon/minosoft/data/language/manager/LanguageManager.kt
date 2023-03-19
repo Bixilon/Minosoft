@@ -24,9 +24,9 @@ class LanguageManager(
 ) : Translator {
 
 
-    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent? {
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, restricted: Boolean, vararg data: Any?): ChatComponent? {
         for (language in languages) {
-            return language.translate(key, parent, restrictedMode, *data) ?: continue
+            return language.translate(key, parent, restricted, *data) ?: continue
         }
         return null
     }

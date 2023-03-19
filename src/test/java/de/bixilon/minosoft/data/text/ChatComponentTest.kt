@@ -108,7 +108,7 @@ internal class ChatComponentTest {
             TextComponent("Test ").color(ChatColors.RED),
             TextComponent("file:/home/moritz").color(ChatColors.GREEN),
         )
-        val actual = ChatComponent.of("§cTest §afile:/home/moritz", restrictedMode = true)
+        val actual = ChatComponent.of("§cTest §afile:/home/moritz", restricted = true)
         assertEquals(expected, actual)
     }
 
