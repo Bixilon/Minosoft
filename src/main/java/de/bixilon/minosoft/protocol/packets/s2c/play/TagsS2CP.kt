@@ -36,6 +36,7 @@ import de.bixilon.minosoft.tags.TagManager
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 @LoadPacket
 class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
@@ -91,7 +92,7 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun <T : RegistryItem> PlayInByteBuffer.readTag(registry: Registry<T>): Tag<T> {
-        val items: MutableSet<T> = mutableSetOf()
+        val items: MutableSet<T> = ObjectOpenHashSet()
         for (id in readVarIntArray()) {
             items += registry.getOrNull(id) ?: continue
         }

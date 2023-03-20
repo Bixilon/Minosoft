@@ -40,7 +40,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
     }
 
     operator fun plus(offset: Vec3t<out Number>): AbstractVoxelShape {
-        val result: MutableSet<AABB> = mutableSetOf()
+        val result: MutableSet<AABB> = ObjectOpenHashSet()
         for (aabb in this) {
             result.add(aabb + offset)
         }
@@ -48,7 +48,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
     }
 
     fun add(other: AbstractVoxelShape): AbstractVoxelShape {
-        val aabbs: MutableSet<AABB> = mutableSetOf()
+        val aabbs: MutableSet<AABB> = ObjectOpenHashSet()
         aabbs += this
         aabbs += other
         return VoxelShape(aabbs)

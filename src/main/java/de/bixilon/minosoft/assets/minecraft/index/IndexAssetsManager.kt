@@ -37,6 +37,7 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -96,7 +97,7 @@ class IndexAssetsManager(
 
         val worker = UnconditionalWorker()
 
-        val hashes: MutableSet<String> = mutableSetOf()
+        val hashes: MutableSet<String> = ObjectOpenHashSet()
 
         for ((path, data) in assets) {
             check(data is Map<*, *>)

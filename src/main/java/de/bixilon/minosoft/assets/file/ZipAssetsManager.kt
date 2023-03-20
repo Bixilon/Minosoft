@@ -18,6 +18,7 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.File
 import java.io.FileInputStream
 import java.util.zip.ZipInputStream
@@ -38,7 +39,7 @@ class ZipAssetsManager(
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
 
-        val namespaces: MutableSet<String> = mutableSetOf()
+        val namespaces: MutableSet<String> = ObjectOpenHashSet()
         while (true) {
             val entry = inputStream.nextEntry ?: break
             if (entry.isDirectory) {

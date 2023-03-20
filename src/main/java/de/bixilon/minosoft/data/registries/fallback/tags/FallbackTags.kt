@@ -34,6 +34,7 @@ import de.bixilon.minosoft.tags.MinecraftTagTypes.ITEM
 import de.bixilon.minosoft.tags.Tag
 import de.bixilon.minosoft.tags.TagList
 import de.bixilon.minosoft.tags.TagManager
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 object FallbackTags {
     private val tags: MutableMap<ResourceLocation, MutableMap<ResourceLocation, Set<ResourceLocation>>> = mutableMapOf()
@@ -41,7 +42,7 @@ object FallbackTags {
     private fun read(type: ResourceLocation, name: ResourceLocation): Set<ResourceLocation> {
         val content = Minosoft.MINOSOFT_ASSETS_MANAGER[ResourceLocation(name.namespace, "tags/${type.path}/${name.path}.json")].readJsonObject()["values"].asAnyCollection()
 
-        val set: MutableSet<ResourceLocation> = mutableSetOf()
+        val set: MutableSet<ResourceLocation> = ObjectOpenHashSet()
         for (entry in content) {
             set += ResourceLocation.of(entry.toString())
         }
@@ -68,7 +69,7 @@ object FallbackTags {
         val map: MutableMap<ResourceLocation, Tag<T>> = mutableMapOf()
 
         for ((name, entries) in entries) {
-            val set: MutableSet<T> = mutableSetOf()
+            val set: MutableSet<T> = ObjectOpenHashSet()
             for (item in entries) {
                 set += registry[item] ?: continue
             }

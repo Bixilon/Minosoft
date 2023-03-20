@@ -21,6 +21,7 @@ import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -38,8 +39,8 @@ class DirectoryAssetsManager(
     val prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX,
 ) : AssetsManager {
     private val basePath = File(rootPath).slashPath + "/" + prefix
-    override val namespaces: MutableSet<String> = mutableSetOf()
-    private var assets: MutableSet<ResourceLocation> = mutableSetOf()
+    override val namespaces: MutableSet<String> = ObjectOpenHashSet()
+    private var assets: MutableSet<ResourceLocation> = ObjectOpenHashSet()
     override var loaded: Boolean = false
         private set
     override var image: ByteArray? = null

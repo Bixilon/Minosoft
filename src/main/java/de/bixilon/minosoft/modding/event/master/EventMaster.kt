@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,6 +22,7 @@ import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.modding.event.listener.OneShotListener
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.util.*
 
 open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaster {
@@ -61,7 +62,7 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
         }
         parentLock.release()
 
-        val toRemove: MutableSet<EventListener> = mutableSetOf()
+        val toRemove: MutableSet<EventListener> = ObjectOpenHashSet()
         eventInvokerLock.acquire()
         val worker = UnconditionalWorker()
         for (invoker in eventListeners) {

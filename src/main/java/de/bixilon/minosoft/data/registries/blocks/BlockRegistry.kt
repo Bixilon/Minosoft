@@ -32,6 +32,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.MetaTypes
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 class BlockRegistry(
     parent: Registry<Block>? = null,
@@ -42,7 +43,7 @@ class BlockRegistry(
     fun updateStates(block: Block, data: JsonObject, registries: Registries) {
         val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
 
-        val states: MutableSet<BlockState> = mutableSetOf()
+        val states: MutableSet<BlockState> = ObjectOpenHashSet()
         for ((stateId, stateJson) in data["states"].asAnyMap()) {
             val settings = BlockStateSettings.of(registries, stateJson.unsafeCast())
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
@@ -53,7 +54,7 @@ class BlockRegistry(
             if (state !is PropertyBlockState) continue
 
             for ((property, value) in state.properties) {
-                properties.getOrPut(property) { mutableSetOf() } += value
+                properties.getOrPut(property) { ObjectOpenHashSet() } += value
             }
         }
 
