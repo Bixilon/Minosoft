@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class EntityDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId = buffer.readEntityId()
     val data: Int2ObjectOpenHashMap<Any?> = buffer.readEntityData()

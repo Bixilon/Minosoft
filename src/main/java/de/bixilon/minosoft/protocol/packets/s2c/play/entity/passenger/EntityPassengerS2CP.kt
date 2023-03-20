@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class EntityPassengerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val vehicle: Int = buffer.readVarInt()
     val passengers: IntOpenHashSet = IntOpenHashSet(buffer.readVarIntArray())
