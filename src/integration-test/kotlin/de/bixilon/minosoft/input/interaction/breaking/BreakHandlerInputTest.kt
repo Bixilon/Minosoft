@@ -15,6 +15,7 @@ package de.bixilon.minosoft.input.interaction.breaking
 
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.registries.blocks.types.stone.RockBlock
+import de.bixilon.minosoft.input.interaction.KeyHandlerUtil.awaitTicks
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
@@ -53,7 +54,7 @@ class BreakHandlerInputTest {
         connection.assertPacket(SwingArmC2SP::class.java)
         handler.release() // key not down anymore
         connection.assertPacket(PlayerActionC2SP::class.java)
-        if (measureTimeMillis { Thread.sleep(55) } > 60) throw SkipException("system busy")
+        Thread.sleep(100)
         connection.assertNoPacket()
     }
 
@@ -73,10 +74,10 @@ class BreakHandlerInputTest {
 
         if (measureTimeMillis { Thread.sleep(20) } > 30) throw SkipException("system busy")
         connection.assertNoPacket()
-        if (measureTimeMillis { Thread.sleep(35) } > 45) throw SkipException("system busy")
+        handler.awaitTicks(1)
         connection.assertPacket(SwingArmC2SP::class.java)
         connection.assertNoPacket()
-        if (measureTimeMillis { Thread.sleep(50) } > 55) throw SkipException("system busy")
+        handler.awaitTicks(1)
         connection.assertPacket(SwingArmC2SP::class.java)
         connection.assertNoPacket()
         handler.release()

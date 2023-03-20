@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.time.TimeWorker
-import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.concurrent.schedule.RepeatedTask
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -60,7 +60,7 @@ class ParticleRenderer(
     private var matrixUpdate = true
 
 
-    private lateinit var particleTask: TimeWorkerTask
+    private lateinit var particleTask: RepeatedTask
 
     override val skipAll: Boolean
         get() = !enabled
@@ -124,9 +124,9 @@ class ParticleRenderer(
 
         connection.world.particleRenderer = this
 
-        particleTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+        particleTask = RepeatedTask(ProtocolDefinition.TICK_TIME, maxDelay = ProtocolDefinition.TICK_TIME / 2) {
             if (!context.state.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {
-                return@TimeWorkerTask
+                return@RepeatedTask
             }
             val cameraPosition = connection.player.physics.positionInfo.chunkPosition
             val particleViewDistance = connection.world.view.particleViewDistance
@@ -155,13 +155,13 @@ class ParticleRenderer(
                 particlesLock.unlock()
             }
         }
-        TimeWorker += particleTask
+        TaskScheduler += particleTask
 
         connection::state.observe(this) {
             if (!it.disconnected) {
                 return@observe
             }
-            TimeWorker.removeTask(particleTask)
+            TaskScheduler -= particleTask
         }
     }
 

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.entities.entities.player.local
 
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.time.TimeWorker
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.accounts.Account
@@ -45,7 +45,7 @@ class SignatureKeyManagement(
     }
 
     private fun registerRefresh(millis: Int) {
-        TimeWorker.runLater(millis) {
+        runLater(millis) {
             if (connection.error != null || (connection.wasConnected && !connection.network.connected) || (connection.network.connected && !connection.network.encrypted)) {
                 // connection is dead
                 return@runLater

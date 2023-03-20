@@ -26,7 +26,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.concurrent.time.TimeWorker
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -270,7 +270,7 @@ object KUtil {
         DefaultThreadPool += { Jackson::class.java.forceInit() }
         DefaultThreadPool += { URLProtocolStreamHandlers::class.java.forceInit() }
         DefaultThreadPool += { MicrosoftOAuthUtils::class.java.forceInit() }
-        DefaultThreadPool += { TimeWorker::class.java.forceInit() }
+        DefaultThreadPool += { TaskScheduler::class.java.forceInit() }
         DefaultThreadPool += { SystemInformation::class.java.forceInit() }
         DefaultThreadPool += { StatusConnection::class.java.forceInit() }
         DefaultThreadPool += { PlayConnection::class.java.forceInit() }

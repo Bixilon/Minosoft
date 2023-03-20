@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.protocol.network.connection.status
 
-import de.bixilon.kutil.concurrent.time.TimeWorker
-import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.concurrent.schedule.QueuedTask
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionCreateEvent
@@ -51,7 +52,7 @@ class StatusConnection(
 
     var state by observed(StatusConnectionStates.WAITING)
 
-    private var timeoutTask: TimeWorkerTask? = null
+    private var timeoutTask: QueuedTask? = null
 
 
     init {
@@ -89,7 +90,7 @@ class StatusConnection(
             if (it == StatusConnectionStates.PING_DONE || it == StatusConnectionStates.ERROR) {
                 val timeoutTask = timeoutTask ?: return@observe
                 timeoutTask.interrupt()
-                TimeWorker -= timeoutTask
+                TaskScheduler -= timeoutTask
                 this.timeoutTask = null
             }
         }
@@ -137,7 +138,7 @@ class StatusConnection(
             error("Already connecting!")
         }
         // timeout task
-        timeoutTask = TimeWorker.runLater(30000) {
+        timeoutTask = runLater(30000) {
             if (state == StatusConnectionStates.ERROR) {
                 return@runLater
             }

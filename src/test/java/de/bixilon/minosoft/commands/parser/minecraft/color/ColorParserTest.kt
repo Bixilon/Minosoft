@@ -84,7 +84,7 @@ internal class ColorParserTest {
     fun darkSuggestion() {
         val reader = CommandReader("dark")
         val parser = ColorParser()
-        assertEquals(parser.getSuggestions(reader), listOf(
+        assertEquals(parser.getSuggestions(reader).toSet(), setOf(
             Suggestion(0, "dark_blue", TextComponent("dark_blue").color(ChatColors.DARK_BLUE)),
             Suggestion(0, "dark_green", TextComponent("dark_green").color(ChatColors.DARK_GREEN)),
             Suggestion(0, "dark_aqua", TextComponent("dark_aqua").color(ChatColors.DARK_AQUA)),

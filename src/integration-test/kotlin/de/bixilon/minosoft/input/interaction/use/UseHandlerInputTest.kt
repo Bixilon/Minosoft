@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil
 import de.bixilon.minosoft.data.registries.item.items.weapon.defend.ShieldItem
 import de.bixilon.minosoft.data.registries.items.EggTest0
+import de.bixilon.minosoft.input.interaction.KeyHandlerUtil.awaitTicks
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
@@ -25,9 +26,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
-import org.testng.SkipException
 import org.testng.annotations.Test
-import kotlin.system.measureTimeMillis
 
 @Test(groups = ["interaction"], dependsOnGroups = ["item"])
 class UseHandlerInputTest {
@@ -57,7 +56,7 @@ class UseHandlerInputTest {
         connection.assertPacket(UseItemC2SP::class.java)
         connection.assertPacket(SwingArmC2SP::class.java)
         connection.assertNoPacket()
-        if (measureTimeMillis { Thread.sleep(4 * 50 + 20) } !in (205..235)) throw SkipException("busy")
+        handler.awaitTicks(4)
         connection.assertPacket(PositionRotationC2SP::class.java)
         connection.assertPacket(UseItemC2SP::class.java)
         connection.assertPacket(SwingArmC2SP::class.java)
@@ -74,7 +73,7 @@ class UseHandlerInputTest {
         handler.press()
         connection.assertPacket(PositionRotationC2SP::class.java)
         connection.assertPacket(UseItemC2SP::class.java)
-        if (measureTimeMillis { Thread.sleep(55) } > 80) throw SkipException("busy")
+        handler.awaitTicks(1)
         connection.assertNoPacket()
         handler.release()
         connection.assertPacket(PlayerActionC2SP::class.java)

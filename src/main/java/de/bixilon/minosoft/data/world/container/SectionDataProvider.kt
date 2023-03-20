@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.EmptyIterator
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
@@ -55,13 +56,11 @@ open class SectionDataProvider<T>(
         return get(ChunkSection.getIndex(x, y, z))
     }
 
-    @Suppress("UNCHECKED_CAST")
     @Deprecated("no locking", ReplaceWith("this[index]"))
     fun unsafeGet(index: Int): T {
         return this[index]
     }
 
-    @Suppress("UNCHECKED_CAST")
     @Deprecated("no locking", ReplaceWith("this[x, y, z]"))
     fun unsafeGet(x: Int, y: Int, z: Int): T {
         return this[x, y, z]
@@ -227,11 +226,6 @@ open class SectionDataProvider<T>(
 
     @Suppress("UNCHECKED_CAST")
     override fun iterator(): Iterator<T> {
-        return (data?.iterator() ?: EMPTY_ITERATOR) as Iterator<T>
-    }
-
-
-    companion object {
-        private val EMPTY_ITERATOR = emptyArray<Any>().iterator() // TODO: kutil 1.20.2
+        return (data?.iterator() ?: EmptyIterator) as Iterator<T>
     }
 }

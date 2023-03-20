@@ -18,8 +18,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.concurrent.time.TimeWorker
-import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.concurrent.schedule.RepeatedTask
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.file.FileUtil
 import de.bixilon.kutil.file.FileUtil.read
 import de.bixilon.kutil.latch.CountUpAndDownLatch
@@ -135,7 +135,7 @@ object GlobalProfileManager {
         if (selectedProfilesChanges) {
             saveSelectedProfiles()
         }
-        TimeWorker += TimeWorkerTask(1000) {
+        TaskScheduler += RepeatedTask(1000) {
             for (manager in DEFAULT_MANAGERS.values) {
                 for (profile in manager.profiles.values) {
                     if (profile.saved) {

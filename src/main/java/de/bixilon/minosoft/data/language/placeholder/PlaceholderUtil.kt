@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.language.placeholder
 
+import de.bixilon.kutil.array.ArrayUtil.isIndex
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -43,7 +44,7 @@ object PlaceholderUtil {
     }
 
     private fun PlaceholderIteratorOptions.appendArgument(index: Int) {
-        val value = if (index >= 0 && index < data.size) data[index] else "<null>" // TODO (kutil 1.21): replace with ArrayUtil::isIndex
+        val value = if (data.isIndex(index)) data[index] else "<null>"
         component += ChatComponent.of(value, parent = previous ?: parent, restricted = restricted)
     }
 

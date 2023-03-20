@@ -14,22 +14,20 @@
 package de.bixilon.minosoft.input.interaction
 
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.time.TimeWorker
-import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.concurrent.schedule.RepeatedTask
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 abstract class KeyHandler {
-    private var task: TimeWorkerTask? = null
+    private var task: RepeatedTask? = null
     var isPressed: Boolean = false
         private set
 
     private fun queueTick() {
-        val task = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME, runOnce = false, executionPriority = ThreadPool.HIGH) { onTick() }
-        task.lastExecution = millis() // TODO: remove this workaround, kutil 1.21
+        val task = RepeatedTask(ProtocolDefinition.TICK_TIME, maxDelay = ProtocolDefinition.TICK_TIME, priority = ThreadPool.HIGH) { onTick() }
         this.task = task
-        TimeWorker += task
+        TaskScheduler += task
     }
 
     fun press() {
@@ -42,7 +40,7 @@ abstract class KeyHandler {
     fun release() {
         if (!isPressed) return
         val task = this.task ?: Broken()
-        TimeWorker -= task
+        TaskScheduler -= task
         this.task = null
         this.isPressed = false
         this.onRelease()

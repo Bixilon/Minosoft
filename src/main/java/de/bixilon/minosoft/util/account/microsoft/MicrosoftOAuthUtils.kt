@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,9 +14,10 @@
 package de.bixilon.minosoft.util.account.microsoft
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.concurrent.time.TimeWorker.runLater
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftTokens
@@ -57,12 +58,12 @@ object MicrosoftOAuthUtils {
             val deviceCode = obtainDeviceCode()
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Obtained device code: ${deviceCode.userCode}" }
             deviceCodeCallback(deviceCode)
-            val start = TimeUtil.millis / 1000
+            val start = millis() / 1000
 
             fun checkToken() {
                 try {
                     val response = checkDeviceCode(deviceCode)
-                    val time = TimeUtil.millis / 1000
+                    val time = millis() / 1000
                     if (time > start + MAX_CHECK_TIME || time > deviceCode.expires) {
                         throw TimeoutException("Could not obtain access for device code: ${deviceCode.userCode}")
                     }

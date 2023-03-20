@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.protocol.network.connection.play.tick
 
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.time.TimeWorker
-import de.bixilon.kutil.concurrent.time.TimeWorker.runLater
-import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.concurrent.schedule.RepeatedTask
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ConnectionTicker(private val connection: PlayConnection) {
-    private val tasks: MutableSet<TimeWorkerTask> = mutableSetOf()
+    private val tasks: MutableSet<RepeatedTask> = mutableSetOf()
     private val lock = SimpleLock()
     private var registered = false
 
@@ -53,21 +53,21 @@ class ConnectionTicker(private val connection: PlayConnection) {
             lock.unlock()
             return
         }
-        tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {
+        tasks += RepeatedTask(INTERVAL, maxDelay = MAX_DELAY) {
             connection.world.entities.tick()
         }
-        tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {
+        tasks += RepeatedTask(INTERVAL, maxDelay = MAX_DELAY) {
             connection.world.tick()
         }
-        tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {
+        tasks += RepeatedTask(INTERVAL, maxDelay = MAX_DELAY) {
             connection.world.randomTick()
         }
 
         if (DebugOptions.LIGHT_DEBUG_MODE || DebugOptions.INFINITE_TORCHES) {
-            tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) { connection.player.items.inventory[44] = ItemStack(connection.registries.item["minecraft:torch"]!!, Int.MAX_VALUE) }
+            tasks += RepeatedTask(INTERVAL, maxDelay = MAX_DELAY) { connection.player.items.inventory[44] = ItemStack(connection.registries.item["minecraft:torch"]!!, Int.MAX_VALUE) }
         }
         if (DebugOptions.SIMULATE_TIME) {
-            tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {
+            tasks += RepeatedTask(INTERVAL, maxDelay = MAX_DELAY) {
                 val time = connection.world.time.time
                 val offset = if (time in 11800..13300 || (time < 300 || time > 22800)) {
                     20
@@ -79,7 +79,7 @@ class ConnectionTicker(private val connection: PlayConnection) {
         }
 
         for (task in tasks) {
-            TimeWorker += task
+            TaskScheduler += task
         }
         registered = true
         lock.unlock()
@@ -92,7 +92,7 @@ class ConnectionTicker(private val connection: PlayConnection) {
         lock.lock()
 
         for (task in tasks) {
-            TimeWorker -= task
+            TaskScheduler -= task
         }
         tasks.clear()
         registered = false
