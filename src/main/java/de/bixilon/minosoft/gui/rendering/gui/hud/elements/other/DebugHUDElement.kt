@@ -173,7 +173,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         }
 
         layout += TextElement(guiRenderer, "Time TBA").apply {
-            connection.world::time.observe(this) { // ToDo: Kutil 1.18: Allow instant fire
+            connection.world::time.observe(this, instant = true) {
                 text = BaseComponent(
                     "Time ", it.time, " (", it.phase, ")", ", cycling=", it.cycling, "\n",
                     "Date ", "day=", it.day, " (", it.moonPhase, ")"
@@ -181,7 +181,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             }
         }
         layout += TextElement(guiRenderer, "Weather TBA").apply {
-            connection.world::weather.observe(this) { // ToDo: Kutil 1.18: Allow instant fire
+            connection.world::weather.observe(this, instant = true) {
                 text = BaseComponent("Weather r=", it.rain, ", t=", it.thunder)
             }
         }
