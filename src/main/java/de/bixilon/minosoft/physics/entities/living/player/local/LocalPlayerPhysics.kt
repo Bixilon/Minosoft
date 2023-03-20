@@ -15,6 +15,7 @@ package de.bixilon.minosoft.physics.entities.living.player.local
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.MovementPacketSen
 import de.bixilon.minosoft.data.entities.entities.properties.riding.InputSteerable
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment.SwiftSneak.getSwiftSneakBoost
@@ -65,11 +67,17 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         sender.tick()
     }
 
-    override fun updateSwimming() {
+
+    fun updateSwimming() {
         if (entity.abilities.flying) {
             entity.isSwimming = false
+            return
+        }
+        val canSwim = entity.attachment.vehicle == null && submersion[WaterFluid] > 0.0 && entity.isSprinting
+        if (isSwimming) {
+            entity.isSwimming = canSwim
         } else {
-            super.updateSwimming()
+            entity.isSwimming = canSwim && positionInfo.block?.block?.nullCast<FluidFilled>()?.fluid is WaterFluid
         }
     }
 
@@ -211,6 +219,8 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
     }
 
     override fun tickMovement() {
+        updateSwimming()
+
         val vehicle = entity.attachment.vehicle
 
         updateInput(vehicle)

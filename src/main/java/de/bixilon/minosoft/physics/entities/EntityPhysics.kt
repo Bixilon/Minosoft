@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.physics.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.minosoft.data.direction.Directions
@@ -25,7 +24,6 @@ import de.bixilon.minosoft.data.registries.blocks.handler.entity.StepHandler
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.landing.LandingHandler
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.landing.LandingHandler.Companion.handleLanding
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
@@ -101,20 +99,10 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     override fun tick() {
         submersion.tick()
-        updateSwimming()
     }
 
     open fun reset() {
         this.velocity = Vec3d.EMPTY
-    }
-
-    open fun updateSwimming() {
-        val canSwim = entity.isSprinting && submersion[WaterFluid] > 0.0 && entity.attachment.vehicle == null
-        if (isSwimming) {
-            entity.isSwimming = canSwim
-        } else {
-            entity.isSwimming = canSwim && positionInfo.block?.block?.nullCast<FluidFilled>()?.fluid is WaterFluid
-        }
     }
 
     fun getLandingPosition(): BlockPosition {
