@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.PacketErrorHandler
@@ -186,6 +187,8 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     companion object : PacketErrorHandler {
 
         override fun onError(error: Throwable, connection: Connection) {
+            error.printStackTrace()
+            error.report()
             connection.network.disconnect()
         }
     }
