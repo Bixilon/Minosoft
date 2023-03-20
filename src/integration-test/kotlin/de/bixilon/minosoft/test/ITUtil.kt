@@ -41,7 +41,7 @@ object ITUtil {
         pixlyzer[version]?.let { return it }
         val registries = Registries(false)
 
-        val data = PixLyzerUtil.loadPixlyzerData(version, profile)
+        val data = PixLyzerUtil.loadPixlyzerData(profile, version)
 
         registries.load(version, data, SimpleLatch(0))
         pixlyzer[version] = registries

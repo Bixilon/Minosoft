@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.assets.properties.version.PreFlattening
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.protocol.versions.Version
@@ -21,11 +22,7 @@ import de.bixilon.minosoft.protocol.versions.Version
 object RegistriesLoader {
 
     fun load(profile: ResourcesProfile, version: Version, latch: AbstractLatch): Registries {
-        if (!version.flattened) {
-            // ToDo: Pre flattening support
-            throw PreFlatteningLoadingError()
-        }
-        val registries = PixLyzerUtil.loadRegistry(version, profile, latch)
+        val registries = if (!version.flattened) PreFlattening.loadRegistry(profile, version, latch) else PixLyzerUtil.loadRegistry(profile, version, latch)
 
         registries.setDefaultParents(version)
 

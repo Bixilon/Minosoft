@@ -49,7 +49,7 @@ object PixLyzerUtil {
         return data.data.read()
     }
 
-    fun loadPixlyzerData(version: Version, profile: ResourcesProfile): JsonObject {
+    fun loadPixlyzerData(profile: ResourcesProfile, version: Version): JsonObject {
         val pixlyzerHash = AssetsVersionProperties[version]?.pixlyzerHash ?: throw IllegalStateException("$version has no pixlyzer data available!")
 
         return verify(profile.source.pixlyzer, pixlyzerHash)
@@ -57,7 +57,7 @@ object PixLyzerUtil {
 
     fun loadRegistry(version: Version, profile: ResourcesProfile, latch: AbstractLatch): Registries {
         val registries = Registries()
-        val data = loadPixlyzerData(version, profile)
+        val data = loadPixlyzerData(profile, version)
 
         registries.load(version, data, latch)
 
