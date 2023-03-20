@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 abstract class AbstractVoxelShape : Iterable<AABB> {
     abstract val aabbs: Int
@@ -109,7 +110,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
             when (data) {
                 is Int -> return this[data]
                 is Collection<*> -> {
-                    val aabbs: MutableSet<AABB> = mutableSetOf()
+                    val aabbs: MutableSet<AABB> = ObjectOpenHashSet()
                     for (id in data) {
                         aabbs += this[id.toInt()]
                     }
@@ -123,7 +124,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
             when (data) {
                 is Int -> return VoxelShape(aabbs[data])
                 is Collection<*> -> {
-                    val shape: MutableSet<AABB> = mutableSetOf()
+                    val shape: MutableSet<AABB> = ObjectOpenHashSet()
                     for (id in data) {
                         shape += aabbs[id.toInt()]
                     }

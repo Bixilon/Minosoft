@@ -32,6 +32,7 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
@@ -78,6 +79,16 @@ abstract class PlayerEntity(
     @get:SynchronizedEntityData
     val score: Int
         get() = data.get(SCORE_DATA, 0)
+
+    protected var aabbPose = pose
+    override var defaultAABB: AABB = createDefaultAABB()
+        get() {
+            val pose = pose
+            if (aabbPose == pose) return field
+            field = createDefaultAABB()
+            aabbPose = pose
+            return field
+        }
 
     val skinParts: MutableSet<SkinParts> by observedSet(mutableSetOf())
 

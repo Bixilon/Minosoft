@@ -62,15 +62,17 @@ abstract class Entity(
     open val clientControlled: Boolean get() = primaryPassenger is LocalPlayerEntity
 
     open val dimensions = Vec2(type.width, type.height)
-    val defaultAABB: AABB
-        get() {
-            val halfWidth = dimensions.x / 2
-            return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth))
-        }
+    open val defaultAABB: AABB = createDefaultAABB()
 
     open val mountHeightOffset: Double get() = dimensions.y * 0.75
     open val heightOffset: Double get() = 0.0
-    
+
+
+    protected fun createDefaultAABB(): AABB {
+        val halfWidth = dimensions.x / 2
+        return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth))
+    }
+
     open fun getDimensions(pose: Poses): Vec2? {
         return dimensions
     }
