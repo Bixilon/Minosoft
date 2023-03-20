@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.fixer
 
 import de.bixilon.minosoft.data.entities.block.FlowerPotBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -27,9 +28,17 @@ object MinecraftRegistryFixer {
             if (it.state != RegistriesLoadEvent.States.POST) {
                 return@listen
             }
-            // add minecraft:flower_pot as block entity, even if it's not a real entity, but we need it for setting the flower type (in earlier versions of the game)
-
-            connection.registries.blockEntityType[FlowerPotBlockEntity] = BlockEntityType(FlowerPotBlockEntity.identifier, setOf(connection.registries.block[FlowerPotBlockEntity]!!), FlowerPotBlockEntity)
+            it.registries.fixBlockEntities()
         }
+    }
+
+    private fun Registries.fixFlowerPot() {
+        // add minecraft:flower_pot as block entity, even if it's not a real entity, but we need it for setting the flower type (in earlier versions of the game)
+        val flowerPot = block[FlowerPotBlockEntity] ?: return
+        blockEntityType[FlowerPotBlockEntity] = BlockEntityType(FlowerPotBlockEntity.identifier, setOf(flowerPot), FlowerPotBlockEntity)
+    }
+
+    private fun Registries.fixBlockEntities() {
+        this.fixFlowerPot()
     }
 }
