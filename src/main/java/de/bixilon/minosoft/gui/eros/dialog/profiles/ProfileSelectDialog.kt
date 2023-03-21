@@ -54,7 +54,7 @@ class ProfileSelectDialog(
     }
 
     override fun init() {
-        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(HEADER)
+        headerFX.text = Minosoft.LANGUAGE_MANAGER.forceTranslate(HEADER)
 
         typeColumnFX.ctext = TYPE_COLUMN_TITLE
         profileColumnFX.ctext = PROFILE_COLUMN_TITLE

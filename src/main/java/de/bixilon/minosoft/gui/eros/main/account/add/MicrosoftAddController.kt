@@ -108,7 +108,7 @@ class MicrosoftAddController(
     companion object {
         private val LAYOUT = "minosoft:eros/main/account/add/microsoft.fxml".toResourceLocation()
         private val TITLE = "minosoft:main.account.add.microsoft.title".toResourceLocation()
-        private val HEADER = { link: URL -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.add.microsoft.header".toResourceLocation(), null, link) }
+        private val HEADER = { link: URL -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:main.account.add.microsoft.header".toResourceLocation(), link) }
         private val CANCEL = "minosoft:main.account.add.microsoft.cancel".toResourceLocation()
     }
 }

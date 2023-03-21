@@ -27,8 +27,8 @@ object TranslatableComponents {
     val GENERAL_EXIT = "minosoft:general.exit".toResourceLocation()
     val GENERAL_REFRESH = "minosoft:general.refresh".toResourceLocation()
 
-    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:server_info.delete.dialog.description".toResourceLocation(), null, name, address) }
-    val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.card.connection_count".toResourceLocation(), null, count) }
-    val CONNECTION_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.kick.description".toResourceLocation(), null, server.name, account.username) }
-    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.login_kick.description".toResourceLocation(), null, server.name, account.username) }
+    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:server_info.delete.dialog.description".toResourceLocation(), name, address) }
+    val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:main.account.card.connection_count".toResourceLocation(), count) }
+    val CONNECTION_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:connection.kick.description".toResourceLocation(), server.name, account.username) }
+    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:connection.login_kick.description".toResourceLocation(), server.name, account.username) }
 }
