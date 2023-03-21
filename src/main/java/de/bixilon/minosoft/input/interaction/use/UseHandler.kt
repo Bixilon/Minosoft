@@ -89,6 +89,10 @@ class UseHandler(
         // check both hands if we can interact
         // if we can, stop further interactions
         for (hand in Hands.VALUES) {
+            if (hand == Hands.OFF && !connection.version.hasOffhand) {
+                // only one hand available
+                return
+            }
             val stack = connection.player.items.inventory[hand]
 
             if (target != null && short.tryUse(hand, target, stack)) {
@@ -115,12 +119,6 @@ class UseHandler(
                 return
             }
             sendItemUse(hand, stack)
-
-
-            if (!connection.version.hasOffhand) {
-                // only one hand available
-                return
-            }
         }
     }
 
