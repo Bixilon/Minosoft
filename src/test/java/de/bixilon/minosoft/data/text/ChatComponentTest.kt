@@ -170,6 +170,13 @@ internal class ChatComponentTest {
     }
 
     @Test
+    fun cuberiteChatJson() {
+        val expected = BaseComponent(TextComponent("<"), TextComponent("Bixilon"), TextComponent("> "), TextComponent("hello"))
+        val actual = """{"extra":[{"text":"<"},{"text":"Bixilon"},{"text":"> "},{"text":"hello"}],"text":""}""".chat()
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun testJson1() {
         val text = TextComponent("dummy")
         assertEquals(text.getJson(), mapOf("text" to "dummy"))
