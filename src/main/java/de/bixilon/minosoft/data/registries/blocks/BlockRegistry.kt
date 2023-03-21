@@ -40,7 +40,23 @@ class BlockRegistry(
 ) : Registry<Block>(parent = parent, codec = PixLyzerBlock, flattened = flattened, metaType = MetaTypes.BLOCK) {
 
 
-    fun updateStates(block: Block, data: JsonObject, registries: Registries) {
+    private fun legacy(block: Block, data: JsonObject, registries: Registries) {
+        val json = data["states"]
+        val id = data["id"]?.toInt()
+        val meta = data["meta"]?.toInt()
+        if (json == null) {
+            // block has only a single state
+            val settings = BlockStateSettings.of(registries, data)
+            val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
+            block.updateStates(setOf(state), state, emptyMap())
+            registries.blockState[id!! shl 4 or (meta ?: 0)] = state
+            return
+        }
+
+        println("TODO")
+    }
+
+    fun flattened(block: Block, data: JsonObject, registries: Registries) {
         val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
@@ -69,7 +85,11 @@ class BlockRegistry(
 
         val block = factory?.build(registries, BlockSettings.of(registries, data)) ?: this.codec!!.deserialize(registries, resourceLocation, data) ?: return null
 
-        updateStates(block, data, registries)
+        if (flattened) {
+            flattened(block, data, registries)
+        } else {
+            legacy(block, data, registries)
+        }
 
         return block
     }

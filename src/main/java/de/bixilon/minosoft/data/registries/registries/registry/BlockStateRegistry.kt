@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -54,14 +55,15 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         idMap[id] = state
     }
 
+    private fun _get(id: Int): BlockState? {
+        return idMap[id] ?: parent.unsafeCast<BlockStateRegistry?>()?._get(id)
+    }
+
     fun forceGet(id: Int): BlockState? {
-        return idMap[id] ?: parent?.getOrNull(id) ?: let {
-            if (flattened) {
-                null
-            } else {
-                idMap[(id shr 4) shl 4] // Remove metadata and test again
-            }
-        }
+        val state = _get(id)
+        if (state != null) return state
+
+        return _get((id shr 4) shl 4) // Remove meta and try again
     }
 
     @Deprecated("Use getOrNull", ReplaceWith("getOrNull(id)"))
@@ -74,6 +76,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         if (id == ProtocolDefinition.AIR_BLOCK_ID) {
             return null
         }
+        if (!flattened && id shr 4 == ProtocolDefinition.AIR_BLOCK_ID) return null
         val state = forceGet(id) ?: return null
         if (state.block is AirBlock) {
             return null

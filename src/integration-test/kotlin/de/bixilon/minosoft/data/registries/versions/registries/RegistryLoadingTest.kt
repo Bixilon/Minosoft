@@ -15,12 +15,14 @@ package de.bixilon.minosoft.data.registries.versions.registries
 
 import de.bixilon.minosoft.data.entities.entities.monster.Zombie
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.factory.VerifyIntegratedBlockRegistry
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_3
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
-import org.testng.Assert
+import org.testng.Assert.assertEquals
+import org.testng.Assert.assertNotNull
 import org.testng.SkipException
 import org.testng.annotations.Test
 
@@ -39,18 +41,24 @@ abstract class RegistryLoadingTest(val versionName: String) {
 
 
     fun testItemSimple() {
-        Assert.assertNotNull(registries.item[MinecraftItems.COAL])
+        assertNotNull(registries.item[MinecraftItems.COAL])
     }
 
     fun testBlockSimple() {
-        Assert.assertNotNull(registries.block[MinecraftBlocks.DIRT])
-    }
-
-    fun testBlockIntegrated() {
-        VerifyIntegratedBlockRegistry.verify(registries, version)
+        assertNotNull(registries.block[MinecraftBlocks.DIRT])
     }
 
     fun testEntitySimple() {
-        Assert.assertNotNull(registries.entityType[Zombie])
+        assertNotNull(registries.entityType[Zombie])
+    }
+
+    fun biome() {
+        if (version > V_1_19_3) return // biomes are datapack only in those versions -> empty registry
+
+        assertNotNull(registries.biome[minecraft("plains")]?.identifier)
+    }
+
+    fun entities() {
+        assertEquals(registries.entityType[minecraft("player")]?.height, 1.8f)
     }
 }

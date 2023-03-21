@@ -13,11 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries.legacy
 
-import org.testng.SkipException
 import org.testng.annotations.Test
 
 @Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], priority = Int.MAX_VALUE, timeOut = 15000L)
-class `1_8_9` : LegacyLoadingTest("1.8.9") {
-
-    override fun loadVersion() = throw SkipException("")
-}
+class `1_8_9` : LegacyLoadingTest("1.8.9")

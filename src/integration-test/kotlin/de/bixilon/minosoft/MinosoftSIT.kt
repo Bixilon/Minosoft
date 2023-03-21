@@ -14,6 +14,7 @@
 package de.bixilon.minosoft
 
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.minosoft.assets.meta.MinosoftMeta
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
@@ -71,6 +72,7 @@ internal object MinosoftSIT {
     fun loadDefaultRegistries() {
         FallbackTags.load()
         FallbackRegistries.load()
+        MinosoftMeta.load()
     }
 
     fun loadPixlyzerData() {

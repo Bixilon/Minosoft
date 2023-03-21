@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfile
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
@@ -22,30 +23,21 @@ import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import java.util.*
 
 object DefaultParticleBehavior {
 
-    fun register(connection: PlayConnection, particleRenderer: ParticleRenderer) {
-        val random = java.util.Random()
-        val explosionParticleType = connection.registries.particleType[ExplosionParticle]!!
-        val explosionEmitterParticleType = connection.registries.particleType[ExplosionEmitterParticle]!!
-        val typesConfig = connection.profiles.particle.types
+    fun register(connection: PlayConnection, renderer: ParticleRenderer) {
+        val random = Random()
+        val profile = connection.profiles.particle
         val invokers = listOf(
-            CallbackEventListener.of<ExplosionEvent> {
-                if (!typesConfig.explosions) {
-                    return@of
-                }
-                if (it.power >= 2.0f) {
-                    particleRenderer += ExplosionEmitterParticle(connection, Vec3d(it.position), explosionEmitterParticleType.default())
-                } else {
-                    particleRenderer += ExplosionParticle(connection, Vec3d(it.position), explosionParticleType.default())
-                }
-            },
+            connection.explosion(renderer, random, profile),
+
             CallbackEventListener.of<ParticleSpawnEvent> {
                 DefaultThreadPool += add@{
                     fun spawn(position: Vec3d, velocity: Vec3d) {
                         val factory = it.data.type.factory ?: return
-                        particleRenderer += factory.build(connection, position, velocity, it.data) ?: return
+                        renderer += factory.build(connection, position, velocity, it.data) ?: return
                     }
                     // ToDo: long distance = always spawn?
                     if (it.count == 0) {
@@ -63,7 +55,22 @@ object DefaultParticleBehavior {
                 }
             },
         )
+        connection.events.register(*invokers.filterNotNull().toTypedArray())
+    }
 
-        connection.events.register(*invokers.toTypedArray())
+    private fun PlayConnection.explosion(renderer: ParticleRenderer, random: Random, profile: ParticleProfile): CallbackEventListener<*>? {
+        val explosion = registries.particleType[ExplosionParticle] ?: return null
+        val emitter = registries.particleType[ExplosionEmitterParticle] ?: return null
+
+        return CallbackEventListener.of<ExplosionEvent> {
+            if (!profile.types.explosions) {
+                return@of
+            }
+            if (it.power >= 2.0f) {
+                renderer += ExplosionEmitterParticle(this, Vec3d(it.position), emitter.default())
+            } else {
+                renderer += ExplosionParticle(this, Vec3d(it.position), explosion.default())
+            }
+        }
     }
 }

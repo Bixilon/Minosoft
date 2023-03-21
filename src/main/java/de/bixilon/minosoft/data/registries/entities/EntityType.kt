@@ -37,6 +37,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 import java.lang.reflect.Modifier
 import java.util.*
 import kotlin.reflect.KProperty1
@@ -68,11 +69,11 @@ data class EntityType(
             check(registries != null) { "Registries is null!" }
             val factory = DefaultEntityFactories[resourceLocation]
 
-            data["meta"]?.toJsonObject()?.let {
+            data["meta", "data"]?.toJsonObject()?.let {
                 val fields: MutableMap<String, EntityDataField> = mutableMapOf()
                 val dataClass = DefaultEntityFactories.ABSTRACT_ENTITY_DATA_CLASSES[resourceLocation]?.companionObject ?: if (factory != null) factory::class else null
                 if (dataClass == null) {
-                    Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find class for entity data ($resourceLocation)" }
+                    Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find entity data class for $resourceLocation, fields $it" }
                     return@let
                 }
                 for (member in dataClass.members) {

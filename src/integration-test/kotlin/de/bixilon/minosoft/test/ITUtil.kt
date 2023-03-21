@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.test
 
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.minosoft.assets.properties.version.PreFlattening
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.VersionRegistry
 import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
@@ -47,6 +48,10 @@ object ITUtil {
         pixlyzer[version] = registries
 
         return registries
+    }
+
+    fun loadPreFlatteningData(version: Version): Registries {
+        return PreFlattening.loadRegistry(profile, version, CountUpAndDownLatch(0))
     }
 
     @Deprecated("Its not implemented")

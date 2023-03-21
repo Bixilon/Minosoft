@@ -13,8 +13,51 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries.legacy
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.versions.registries.RegistryLoadingTest
+import de.bixilon.minosoft.test.ITUtil
+import org.testng.Assert.assertEquals
+import org.testng.Assert.assertNull
 import org.testng.annotations.Test
 
 @Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], singleThreaded = false, threadPoolSize = 8, priority = Int.MAX_VALUE, timeOut = 15000L)
-abstract class LegacyLoadingTest(version: String) : RegistryLoadingTest(version)
+abstract class LegacyLoadingTest(version: String) : RegistryLoadingTest(version) {
+
+    @Test(priority = 100000)
+    open fun loadRegistries() {
+        this._registries = ITUtil.loadPreFlatteningData(version)
+    }
+
+    fun dimension() {
+        assertEquals(registries.dimension[0].identifier, minecraft("overworld"))
+        assertEquals(registries.dimension[1].identifier, minecraft("the_end"))
+        assertEquals(registries.dimension[-1].identifier, minecraft("the_nether"))
+    }
+
+
+    fun biomeId() {
+        assertEquals(registries.biome[1].identifier, minecraft("plains"))
+    }
+
+    fun enchantmentId() {
+        assertEquals(registries.enchantment[16].identifier, minecraft("sharpness"))
+    }
+
+    fun effectId() {
+        assertEquals(registries.statusEffect[10].identifier, minecraft("regeneration"))
+    }
+
+    fun blockId() {
+        assertNull(registries.block.getOrNull(0))
+        assertEquals(registries.block[1 shl 4 or 0].identifier, minecraft("stone"))
+        assertEquals(registries.block[1 shl 4 or 1].identifier, minecraft("granite"))
+        assertEquals(registries.block[1 shl 4 or 3].identifier, minecraft("diorite"))
+        assertEquals(registries.block[41 shl 4 or 0].identifier, minecraft("gold_block"))
+        assertEquals(registries.block[166 shl 4 or 0].identifier, minecraft("barrier"))
+    }
+
+    fun itemId() {
+        assertEquals(registries.item[256].identifier, minecraft("iron_shovel"))
+        assertEquals(registries.item[2256].identifier, minecraft("music_disk"))
+    }
+}

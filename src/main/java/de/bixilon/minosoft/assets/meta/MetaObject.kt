@@ -11,17 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry
+package de.bixilon.minosoft.assets.meta
 
-enum class MetaTypes(val bits: Int) {
-    NONE(0),
-    BLOCK(4),
-    ITEM(16),
-    ;
 
-    private val metaMask = (1 shl bits) - 1
+typealias MetaRoot = Map<String, MetaTypeEntry>
+typealias MetaTypeEntry = List<MetaVersionEntry>
 
-    fun modify(id: Int, meta: Int): Int {
-        return (id shl bits) or (meta and metaMask)
-    }
-}
+data class MetaVersionEntry(
+    val version: String,
+    val hash: String,
+)

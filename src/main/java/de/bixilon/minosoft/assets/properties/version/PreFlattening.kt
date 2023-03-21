@@ -13,34 +13,32 @@
 
 package de.bixilon.minosoft.assets.properties.version
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.minosoft.assets.meta.MinosoftMeta
+import de.bixilon.minosoft.assets.meta.MinosoftMeta.load
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
-import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
-import de.bixilon.minosoft.data.registries.dimension.Dimension
-import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object PreFlattening {
     const val VERSION = "1.12.2"
 
     fun loadRegistry(profile: ResourcesProfile, version: Version, latch: CountUpAndDownLatch): Registries {
         val registries = Registries()
-        registries.loadEntities(version)
-        registries.loadDimensions()
+
+        val json: MutableJsonObject = synchronizedMapOf()
+
+        // val worker = UnconditionalWorker()
+        for ((type, data) in MinosoftMeta.root) {
+            //  worker += { data.load(type, version) }
+            json[type] = data.load(type, version) ?: continue
+        }
+        //    worker.work(latch)
+
+        registries.load(version, json, latch)
 
         return registries
-    }
-
-    @Deprecated("test only")
-    private fun Registries.loadEntities(version: Version) {
-        entityType[RemotePlayerEntity] = EntityType(RemotePlayerEntity.identifier, null, 1.0f, 1.0f, false, false, mutableMapOf(), RemotePlayerEntity, null)
-    }
-
-    @Deprecated("test only")
-    private fun Registries.loadDimensions() {
-        dimension[0] = Dimension("minecraft:overworld".toResourceLocation(), DimensionProperties())
     }
 }
