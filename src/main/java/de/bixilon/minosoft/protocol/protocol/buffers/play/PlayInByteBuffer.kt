@@ -141,20 +141,21 @@ class PlayInByteBuffer : InByteBuffer {
     fun readItemStack(): ItemStack? {
         if (versionId < V_1_13_2_PRE1) {
             val id = readShort().toInt()
-            if (id == -1) {
+            if (id <= 0) {
                 return null
             }
             val count = readUnsignedByte()
-            var metaData = 0
+            var meta = 0
             if (!connection.version.flattened) {
-                metaData = readUnsignedShort()
+                meta = readUnsignedShort()
             }
-            val nbt = readNBT()?.toMutableJsonObject()
+            val nbt = readNBTTag()?.toMutableJsonObject()
+            val item = connection.registries.item.getOrNull(id shl 16 or meta) ?: return null
             return ItemStackUtil.of(
-                item = connection.registries.item[id shl 16 or metaData],
+                item = item,
                 connection = connection,
                 count = count,
-                durability = metaData,
+                durability = meta,
                 nbt = nbt ?: mutableMapOf(),
             )
         }

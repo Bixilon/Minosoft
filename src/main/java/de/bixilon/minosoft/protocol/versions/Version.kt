@@ -59,6 +59,10 @@ class Version(
         PacketDirections.SERVER_TO_CLIENT -> s2c
     }
 
+    operator fun compareTo(version: Version): Int {
+        return this.versionId.compareTo(version.versionId)
+    }
+
     val flattened: Boolean get() = versionId >= V_17W47A
     val hasOffhand: Boolean get() = versionId >= V_15W31A
     val maxPacketLength get() = if (versionId < V_1_17_1_RC2) 1 shl 21 else 1 shl 23
