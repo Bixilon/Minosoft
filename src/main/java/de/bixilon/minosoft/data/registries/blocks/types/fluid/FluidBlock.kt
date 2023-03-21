@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.legacy.CustomBlockModel
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
@@ -30,8 +31,9 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FluidHolder, OutlinedBlock, LightedBlock, RandomDisplayTickable {
+abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FluidHolder, OutlinedBlock, LightedBlock, RandomDisplayTickable, CustomBlockModel {
     override val hardness: Float get() = Broken("Fluid is kind of unbreakable?")
+    override val modelName: ResourceLocation? get() = null
 
     override fun getOutlineShape(connection: PlayConnection, blockState: BlockState): VoxelShape {
         return VoxelShape(AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(blockState), 1.0f)))

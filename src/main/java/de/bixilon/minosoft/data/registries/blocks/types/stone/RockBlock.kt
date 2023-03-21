@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -55,7 +56,8 @@ abstract class RockBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class PolishedGranite(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : RockBlock(identifier, settings) {
+    open class PolishedGranite(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : RockBlock(identifier, settings), FlatteningRenamedModel {
+        override val legacyModelName = minecraft("smooth_granite")
 
         companion object : BlockFactory<PolishedGranite> {
             override val identifier = minecraft("polished_granite")
@@ -74,7 +76,8 @@ abstract class RockBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class PolishedDiorite(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : RockBlock(identifier, settings) {
+    open class PolishedDiorite(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : RockBlock(identifier, settings), FlatteningRenamedModel {
+        override val legacyModelName = minecraft("smooth_diorite")
 
         companion object : BlockFactory<PolishedDiorite> {
             override val identifier = minecraft("polished_diorite")
@@ -93,7 +96,9 @@ abstract class RockBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class PolishedAndesite(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : RockBlock(identifier, settings) {
+    open class PolishedAndesite(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : RockBlock(identifier, settings), FlatteningRenamedModel {
+        override val legacyModelName = minecraft("smooth_andesite")
+
 
         companion object : BlockFactory<PolishedAndesite> {
             override val identifier = minecraft("polished_andesite")

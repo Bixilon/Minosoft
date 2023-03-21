@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.legacy.LegacyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -52,6 +53,7 @@ class BlockRegistry(
             registries.blockState[id!! shl 4 or (meta ?: 0)] = state
             return
         }
+        block.updateStates(setOf(BlockState(block, 0)), BlockState(block, 0), emptyMap())
 
         println("TODO")
     }
@@ -83,7 +85,14 @@ class BlockRegistry(
         val factory = BlockFactories[resourceLocation]
         if (registries == null) throw NullPointerException("registries?")
 
-        val block = factory?.build(registries, BlockSettings.of(registries, data)) ?: this.codec!!.deserialize(registries, resourceLocation, data) ?: return null
+        var block = factory?.build(registries, BlockSettings.of(registries, data))
+        if (block == null) {
+            if (flattened) {
+                block = this.codec!!.deserialize(registries, resourceLocation, data) ?: return null
+            } else {
+                block = LegacyBlock(resourceLocation, registries, data)
+            }
+        }
 
         if (flattened) {
             flattened(block, data, registries)
