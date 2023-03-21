@@ -88,13 +88,13 @@ class ChunkS2CPTest {
         assertEquals(packet.position, Vec2i(0, 0))
         val blocks = packet.prototype.blocks
         assertNotNull(blocks); blocks!!
-        assertEquals(blocks[0]!![0]!!.block.identifier, MinecraftBlocks.BEDROCK)
-        assertEquals(blocks[0]!![1]!!.block.identifier, MinecraftBlocks.STONE)
-        assertEquals(blocks[1]!![0]!!.block.identifier, MinecraftBlocks.STONE)
-        assertEquals(blocks[2]!![0]!!.block.identifier, MinecraftBlocks.STONE)
-        assertEquals(blocks[3]!![0]!!.block.identifier, MinecraftBlocks.STONE)
-        assertEquals(blocks[3]!![8]!!.block.identifier, MinecraftBlocks.STONE)
-        assertEquals(blocks[3]!![9]!!.block.identifier, MinecraftBlocks.GRASS_BLOCK)
+        assertEquals(blocks[0]!![0, 0, 0]!!.block.identifier, MinecraftBlocks.BEDROCK)
+        assertEquals(blocks[0]!![0, 1, 0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[1]!![0, 0, 0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[2]!![0, 0, 0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[3]!![0, 0, 0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[3]!![0, 8, 0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[3]!![0, 11, 0]!!.block.identifier, MinecraftBlocks.DIRT)
     }
 }
 
