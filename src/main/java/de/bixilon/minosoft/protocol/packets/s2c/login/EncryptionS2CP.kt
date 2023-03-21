@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.login
 
 import com.google.common.primitives.Longs
 import de.bixilon.kutil.base64.Base64Util.toBase64
-import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.protocol.PacketErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -72,8 +71,7 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     companion object : PacketErrorHandler {
         override fun onError(error: Throwable, connection: Connection) {
-            error.printStackTrace()
-            error.report()
+            connection.error = error
             connection.network.disconnect()
         }
     }
