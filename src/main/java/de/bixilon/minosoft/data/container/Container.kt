@@ -212,6 +212,8 @@ abstract class Container(
         floatingItem = null // ToDo: Does not seem correct
     }
 
+    open fun onOpen() = Unit
+
     fun lock() {
         lock.lock()
         if (edit == null) {

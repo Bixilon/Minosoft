@@ -54,4 +54,8 @@ class PlayerItemManager(private val player: LocalPlayerEntity) {
         inventory.clear()
         opened = null
     }
+
+    init {
+        this::opened.observe(this) { it?.onOpen() }
+    }
 }
