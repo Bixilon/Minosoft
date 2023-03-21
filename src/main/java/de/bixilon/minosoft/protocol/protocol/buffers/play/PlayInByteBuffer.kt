@@ -373,4 +373,12 @@ class PlayInByteBuffer : InByteBuffer {
 
         return source
     }
+
+    fun readLegacyBitSet(bytes: Int): BitSet {
+        val array = ByteArray(bytes)
+        for (index in (array.size - 1) downTo 0) { // java BitSet.valueOf is little endian
+            array[index] = readByte()
+        }
+        return BitSet.valueOf(array)
+    }
 }

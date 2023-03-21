@@ -82,5 +82,19 @@ class ChunkS2CPTest {
         assertNotNull(prototype.blocks)
         assertEquals(packet.prototype.blocks!![0]!![0]!!.block.identifier, MinecraftBlocks.BEDROCK)
     }
+
+    fun cuberite_1_8_9() {
+        val packet = read("cuberite_1_8_9", "1.8.9", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
+        assertEquals(packet.position, Vec2i(0, 0))
+        val blocks = packet.prototype.blocks
+        assertNotNull(blocks); blocks!!
+        assertEquals(blocks[0]!![0]!!.block.identifier, MinecraftBlocks.BEDROCK)
+        assertEquals(blocks[0]!![1]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[1]!![0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[2]!![0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[3]!![0]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[3]!![8]!!.block.identifier, MinecraftBlocks.STONE)
+        assertEquals(blocks[3]!![9]!!.block.identifier, MinecraftBlocks.GRASS_BLOCK)
+    }
 }
 

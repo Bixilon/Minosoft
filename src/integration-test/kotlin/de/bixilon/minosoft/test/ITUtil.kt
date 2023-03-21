@@ -54,6 +54,11 @@ object ITUtil {
         return PreFlattening.loadRegistry(profile, version, CountUpAndDownLatch(0))
     }
 
+    fun loadRegistries(version: Version): Registries {
+        if (version.flattened) return loadPixlyzerData(version)
+        return loadPreFlatteningData(version)
+    }
+
     @Deprecated("Its not implemented")
     fun todo() {
         throw SkipException("Not yet implemented!")

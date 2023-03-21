@@ -85,8 +85,8 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 buffer.readBoolean() // ToDo: ignore old data???
             }
             val sectionBitMask = when {
-                buffer.versionId < V_15W34C -> BitSet.valueOf(buffer.readByteArray(2))
-                buffer.versionId < V_15W36D -> BitSet.valueOf(buffer.readByteArray(4))
+                buffer.versionId < V_15W34C -> buffer.readLegacyBitSet(2)
+                buffer.versionId < V_15W36D -> buffer.readLegacyBitSet(4)
                 buffer.versionId < V_21W03A -> BitSet.valueOf(longArrayOf(buffer.readVarInt().toLong()))
                 buffer.versionId < V_21W37A -> BitSet.valueOf(buffer.readLongArray())
                 else -> null

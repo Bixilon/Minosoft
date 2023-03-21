@@ -52,7 +52,7 @@ object ConnectionTestUtil {
         connection::account.forceSet(TestAccount)
         connection::version.forceSet(version)
         connection::registries.forceSet(Registries())
-        connection.registries.parent = if (version == IT.VERSION) IT.REGISTRIES else ITUtil.loadPixlyzerData(version)
+        connection.registries.parent = if (version == IT.VERSION) IT.REGISTRIES else ITUtil.loadRegistries(version)
         connection::world.forceSet(createWorld(connection, light, (worldSize * 2 + 1).pow(2)))
         connection::player.forceSet(LocalPlayerEntity(connection.account, connection, SignatureKeyManagement(connection, TestAccount)))
         connection.player.startInit()
