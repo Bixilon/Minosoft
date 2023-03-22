@@ -11,19 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities
+package de.bixilon.minosoft.gui.rendering.models.raw.block.legacy
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.raw.block.legacy.SingleBlockRenderable
+import de.bixilon.kotlinglm.vec2.Vec2
 
-interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
-    override var light: Int
-        get() = 0
-        set(value) {}
+@Deprecated("legacy")
+object ModelBakeUtil {
 
-    override fun draw(context: RenderContext) = Unit
-    override fun load() = Unit
-    override fun unload() = Unit
-
+    fun getTextureCoordinates(uvStart: Vec2, uvEnd: Vec2): Array<Vec2> {
+        return arrayOf(
+            Vec2(uvEnd.x, uvStart.y),
+            uvStart,
+            Vec2(uvStart.x, uvEnd.y),
+            uvEnd,
+        )
+    }
 }

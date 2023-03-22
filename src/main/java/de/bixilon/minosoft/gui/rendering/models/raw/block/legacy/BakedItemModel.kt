@@ -11,19 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities
+package de.bixilon.minosoft.gui.rendering.models.raw.block.legacy
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.raw.block.legacy.SingleBlockRenderable
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
-interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
-    override var light: Int
-        get() = 0
-        set(value) {}
-
-    override fun draw(context: RenderContext) = Unit
-    override fun load() = Unit
-    override fun unload() = Unit
-
+@Deprecated("legacy")
+interface BakedItemModel {
+    fun render2d(guiRenderer: GUIRenderer, offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, textureSize: Vec2i, stack: ItemStack)
 }

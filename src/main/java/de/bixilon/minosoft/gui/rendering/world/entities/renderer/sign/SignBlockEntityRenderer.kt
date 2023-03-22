@@ -26,19 +26,15 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
-import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
+import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
-import java.util.*
 
 class SignBlockEntityRenderer(
     val sign: SignBlockEntity,
@@ -52,6 +48,7 @@ class SignBlockEntityRenderer(
         return rotation * 22.5f
     }
 
+    /*
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val block = this.blockState.block
         if (block is StandingSignBlock) {
@@ -62,6 +59,8 @@ class SignBlockEntityRenderer(
 
         return true
     }
+    // TODO
+     */
 
     private fun renderText(position: Vec3i, rotationVector: Vec3, yRotation: Float, mesh: WorldMesh, light: Int) {
         val textPosition = position.toVec3 + rotationVector
@@ -82,7 +81,7 @@ class SignBlockEntityRenderer(
     private fun renderStandingText(position: Vec3i, mesh: WorldMesh, light: Int) {
         val yRotation = getRotation()
 
-        val rotationVector = Vec3(X_OFFSET, 17.5f / UnbakedElement.BLOCK_RESOLUTION - Y_OFFSET, 9.0f / UnbakedElement.BLOCK_RESOLUTION + Z_OFFSET)
+        val rotationVector = Vec3(X_OFFSET, 17.5f / BLOCK_SIZE - Y_OFFSET, 9.0f / BLOCK_SIZE + Z_OFFSET)
         rotationVector.signRotate(yRotation.rad)
         renderText(position, rotationVector, yRotation, mesh, light)
     }
@@ -96,7 +95,7 @@ class SignBlockEntityRenderer(
             else -> Broken("Sign rotation: $rotation")
         }
 
-        val rotationVector = Vec3(X_OFFSET, 12.5f / UnbakedElement.BLOCK_RESOLUTION - Y_OFFSET, 2.0f / UnbakedElement.BLOCK_RESOLUTION + Z_OFFSET)
+        val rotationVector = Vec3(X_OFFSET, 12.5f / BLOCK_SIZE - Y_OFFSET, 2.0f / BLOCK_SIZE + Z_OFFSET)
         rotationVector.signRotate(yRotation.rad)
         renderText(position, rotationVector, yRotation, mesh, light)
     }

@@ -13,11 +13,9 @@
 package de.bixilon.minosoft.data.direction
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kotlinglm.vec3.swizzle.*
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
@@ -84,34 +82,6 @@ enum class Directions(
             SOUTH -> arrayOf(Vec3(from.x, to.y, to.z), to, Vec3(to.x, from.y, to.z), Vec3(from.x, from.y, to.z))
             WEST -> arrayOf(Vec3(from.x, to.y, from.z), Vec3(from.x, to.y, to.z), Vec3(from.x, from.y, to.z), from)
             EAST -> arrayOf(to, Vec3(to.x, to.y, from.z), Vec3(to.x, from.y, from.z), Vec3(to.x, from.y, to.z))
-        }
-    }
-
-    @Deprecated("outsource")
-    fun getSize(rotated: Directions, from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
-        var pair = when (this) {
-            DOWN, UP -> Pair(from.xz, to.xz)
-            NORTH, SOUTH -> Pair(from.xy, to.xy)
-            WEST, EAST -> Pair(from.yz, to.yz)
-        }
-        if (rotated.negative != negative) {
-            pair = Pair(Vec2(1.0f) - pair.first, Vec2(1.0f) - pair.second)
-
-            pair = Pair(
-                Vec2(minOf(pair.first.x, pair.second.x), minOf(pair.first.y, pair.second.y)),
-                Vec2(maxOf(pair.first.x, pair.second.x), maxOf(pair.first.y, pair.second.y)),
-            )
-        }
-
-        return pair
-    }
-
-    @Deprecated("outsource")
-    fun getFallbackUV(from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
-        return when (this) {
-            DOWN, UP -> Pair(from.xz, to.xz)
-            SOUTH, NORTH -> Pair(Vec2(1) - to.xy, Vec2(1) - from.xy)
-            WEST, EAST -> Pair(Vec2(1) - to.zy, Vec2(1) - from.zy)
         }
     }
 

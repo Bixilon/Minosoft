@@ -34,9 +34,7 @@ import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
@@ -68,7 +66,7 @@ class SolidCullSectionPreparer(
         val sectionLight = section.light
         val blockEntities: MutableSet<BlockEntityRenderer<*>> = mutableSetOf()
         var blockEntity: BlockEntity?
-        var model: SingleBlockRenderable
+        // var model: SingleBlockRenderable
         var blockState: BlockState
         val position = BlockPosition()
         var rendered: Boolean
@@ -106,12 +104,13 @@ class SolidCullSectionPreparer(
                         blockEntities += blockEntityModel
                         mesh.addBlock(x, y, z)
                     }
-                    model = blockState.blockModel ?: if (blockEntityModel is MeshedBlockEntityRenderer) {
+                    /*
+                    model = blockState.model ?: if (blockEntityModel is MeshedBlockEntityRenderer) {
                         blockEntityModel
                     } else {
                         continue
                     }
-
+                     */
 
                     if (y == 0) {
                         if (fastBedrock && blockState === bedrock) {
@@ -158,15 +157,18 @@ class SolidCullSectionPreparer(
                         random.setSeed(0L)
                     }
                     tints = tintColorCalculator.getAverageBlockTint(chunk, neighbourChunks, blockState, x, y, z)
+                    /*
                     rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, tints)
 
                     if (blockEntityModel is MeshedBlockEntityRenderer<*>) {
                         rendered = blockEntityModel.singleRender(position, mesh, random, blockState, neighbourBlocks, light, tints) || rendered
                     }
 
+
                     if (rendered) {
                         mesh.addBlock(x, y, z)
                     }
+                     */
                     if (Thread.interrupted()) throw InterruptedException()
                 }
             }

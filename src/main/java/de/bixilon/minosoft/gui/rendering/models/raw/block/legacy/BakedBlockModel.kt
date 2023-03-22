@@ -11,19 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities
+package de.bixilon.minosoft.gui.rendering.models.raw.block.legacy
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.raw.block.legacy.SingleBlockRenderable
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import java.util.*
 
-interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
-    override var light: Int
-        get() = 0
-        set(value) {}
+@Deprecated("legacy")
+interface BakedBlockModel {
 
-    override fun draw(context: RenderContext) = Unit
-    override fun load() = Unit
-    override fun unload() = Unit
-
+    fun getParticleTexture(random: Random, position: Vec3i): AbstractTexture?
 }

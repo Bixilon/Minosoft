@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettin
 import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
+import de.bixilon.minosoft.gui.rendering.models.raw.block.legacy.BakedBlockModel
 
 open class BlockState(
     val block: Block,
     val luminance: Int,
 ) {
-    var blockModel: BakedBlockModel? = null
+    var model: BakedBlockModel? = null
 
     constructor(block: Block, settings: BlockStateSettings) : this(block, settings.luminance)
 

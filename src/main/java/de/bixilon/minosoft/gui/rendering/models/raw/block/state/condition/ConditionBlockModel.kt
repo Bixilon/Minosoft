@@ -11,19 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities
+package de.bixilon.minosoft.gui.rendering.models.raw.block.state.condition
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.raw.block.legacy.SingleBlockRenderable
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.gui.rendering.models.raw.block.state.DirectBlockModel
 
-interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
-    override var light: Int
-        get() = 0
-        set(value) {}
+class ConditionBlockModel : DirectBlockModel {
 
-    override fun draw(context: RenderContext) = Unit
-    override fun load() = Unit
-    override fun unload() = Unit
+    companion object {
 
+        fun deserialize(data: JsonObject): ConditionBlockModel? {
+            TODO()
+        }
+    }
 }

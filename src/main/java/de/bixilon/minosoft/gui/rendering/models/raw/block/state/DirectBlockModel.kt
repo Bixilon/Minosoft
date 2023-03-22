@@ -11,19 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities
+package de.bixilon.minosoft.gui.rendering.models.raw.block.state
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.raw.block.legacy.SingleBlockRenderable
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.minosoft.gui.rendering.models.raw.block.state.condition.ConditionBlockModel
+import de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant.VariantBlockModel
 
-interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
-    override var light: Int
-        get() = 0
-        set(value) {}
+interface DirectBlockModel {
 
-    override fun draw(context: RenderContext) = Unit
-    override fun load() = Unit
-    override fun unload() = Unit
+    companion object {
+        fun deserialize(data: JsonObject): DirectBlockModel? {
+            data["variants"]?.toJsonObject()?.let { return VariantBlockModel.deserialize(it) }
+            data["multipart"]?.toJsonObject()?.let { return ConditionBlockModel.deserialize(it) }
 
+            return null
+        }
+    }
 }

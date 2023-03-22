@@ -33,9 +33,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
-import de.bixilon.minosoft.gui.rendering.models.properties.FaceProperties
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -98,10 +95,14 @@ class FluidCullSectionPreparer(
                         if (fluid.matches(neighbour)) {
                             return true
                         }
-                        val model = neighbour.blockModel ?: return false
+                        val model = neighbour.model ?: return false
                         random.setSeed(neighbourPosition.positionHash)
+                        /*
                         val size = model.getTouchingFaceProperties(random, direction.inverted)
                         return size?.canCull(FLUID_FACE_PROPERTY, false) ?: false
+
+                         */
+                        return false
                     }
 
                     val topBlock = if (y == ProtocolDefinition.SECTION_MAX_Y) {
@@ -310,10 +311,12 @@ class FluidCullSectionPreparer(
         private val TEXTURE_1 = Vec2(0.0f, 0.5f)
         private val TEXTURE_2 = Vec2(0.5f, 0.5f)
 
+        /*
         private val FLUID_FACE_PROPERTY = FaceProperties(
             Vec2.EMPTY,
             Vec2(1.0f, 1.0f),
             TextureTransparencies.OPAQUE,
         )
+         */
     }
 }
