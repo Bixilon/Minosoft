@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries.legacy
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.versions.registries.RegistryLoadingTest
 import de.bixilon.minosoft.test.ITUtil
@@ -56,8 +59,21 @@ abstract class LegacyLoadingTest(version: String) : RegistryLoadingTest(version)
         assertEquals(registries.block[166 shl 4 or 0].identifier, minecraft("barrier"))
     }
 
+    fun blockStates() {
+        assertNull(registries.blockState.getOrNull(0 shl 4 or 0))
+        assertNull(registries.blockState.getOrNull(0 shl 4 or 1))
+
+        assertEquals(registries.blockState.getOrNull(41 shl 4 or 0)?.block?.identifier, minecraft("gold_block"))
+        assertEquals(registries.blockState.getOrNull(41 shl 4 or 12)?.block?.identifier, minecraft("gold_block"))
+
+        assertEquals(registries.blockState.getOrNull(55 shl 4 or 0)?.block?.identifier, minecraft("redstone_wire"))
+        assertEquals(registries.blockState.getOrNull(55 shl 4 or 1)?.block?.identifier, minecraft("redstone_wire"))
+        assertEquals(registries.blockState.getOrNull(55 shl 4 or 2)?.nullCast<PropertyBlockState>()?.properties?.get(BlockProperties.REDSTONE_POWER), 2)
+    }
+
     fun itemId() {
         assertEquals(registries.item[256].identifier, minecraft("iron_shovel"))
-        assertEquals(registries.item[2256].identifier, minecraft("music_disk"))
+        assertEquals(registries.item[450].identifier, minecraft("shulker_shell"))
+        assertEquals(registries.item[2256].identifier, minecraft("record_13"))
     }
 }

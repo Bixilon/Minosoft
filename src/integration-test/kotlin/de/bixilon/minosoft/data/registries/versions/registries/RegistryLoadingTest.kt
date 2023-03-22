@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries
 
+import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.entities.entities.monster.Zombie
+import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
@@ -48,17 +50,15 @@ abstract class RegistryLoadingTest(val versionName: String) {
         assertNotNull(registries.block[MinecraftBlocks.DIRT])
     }
 
-    fun testEntitySimple() {
-        assertNotNull(registries.entityType[Zombie])
+    fun entities() {
+        assertEquals(registries.entityType[RemotePlayerEntity]?.height, 1.8f)
+        assertEquals(registries.entityType[Zombie]?.height, 1.95f)
+        assertEquals(registries.entityType[ItemEntity]?.height, 0.25f)
     }
 
     fun biome() {
         if (version > V_1_19_3) return // biomes are datapack only in those versions -> empty registry
 
         assertNotNull(registries.biome[minecraft("plains")]?.identifier)
-    }
-
-    fun entities() {
-        assertEquals(registries.entityType[minecraft("player")]?.height, 1.8f)
     }
 }
