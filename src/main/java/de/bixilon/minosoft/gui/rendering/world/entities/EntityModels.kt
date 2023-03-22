@@ -18,11 +18,16 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntityModels(val context: RenderContext) {
+class EntityModels(private val loader: ModelLoader) {
+    val context: RenderContext = loader.context
     private val unbakedModels: MutableMap<ResourceLocation, SkeletalModel> = mutableMapOf()
     val skeletal: MutableMap<ResourceLocation, BakedSkeletalModel> = mutableMapOf()
 
@@ -52,5 +57,16 @@ class EntityModels(val context: RenderContext) {
         for (model in skeletal.values) {
             model.load()
         }
+    }
+
+
+    fun load(latch: CountUpAndDownLatch) {
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading entity models..." }
+        val innerLatch = CountUpAndDownLatch(DefaultEntityModels.MODELS.size, latch)
+
+        for (register in DefaultEntityModels.MODELS) {
+            DefaultThreadPool += { register.register(context, loader); innerLatch.dec() }
+        }
+        innerLatch.await()
     }
 }

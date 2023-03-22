@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.raw.block.element.face.ModelFace
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
-class ModelElement(
+data class ModelElement(
     val from: Vec3,
     val to: Vec3,
     val faces: Map<Directions, ModelFace>,

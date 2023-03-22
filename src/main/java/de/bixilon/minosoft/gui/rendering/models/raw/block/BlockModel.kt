@@ -20,14 +20,14 @@ import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement
+import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
-import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.light.GUILights
 import java.util.*
 
 data class BlockModel(
     val guiLight: GUILights,
-    val display: Map<ModelDisplayPositions, ModelDisplay>?,
+    val display: Map<DisplayPositions, ModelDisplay>?,
     val elements: List<ModelElement>?,
     val textures: Map<String, String>?,
     val ambientOcclusion: Boolean,
@@ -35,13 +35,13 @@ data class BlockModel(
 
     companion object {
 
-        private fun display(data: JsonObject, parent: Map<ModelDisplayPositions, ModelDisplay>?): Map<ModelDisplayPositions, ModelDisplay>? {
+        private fun display(data: JsonObject, parent: Map<DisplayPositions, ModelDisplay>?): Map<DisplayPositions, ModelDisplay>? {
             if (data.isEmpty()) return parent
 
-            val display: MutableMap<ModelDisplayPositions, ModelDisplay> = parent?.toMutableMap() ?: EnumMap(ModelDisplayPositions::class.java)
+            val display: MutableMap<DisplayPositions, ModelDisplay> = parent?.toMutableMap() ?: EnumMap(DisplayPositions::class.java)
 
             for ((key, value) in data) {
-                display[ModelDisplayPositions[key]] = ModelDisplay.deserialize(value.asJsonObject())
+                display[DisplayPositions[key]] = ModelDisplay.deserialize(value.asJsonObject())
             }
 
             return display

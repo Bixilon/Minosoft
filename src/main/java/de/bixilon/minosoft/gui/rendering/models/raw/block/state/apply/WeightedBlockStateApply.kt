@@ -13,6 +13,23 @@
 
 package de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply
 
-class WeightedBlockStateApply(
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+
+data class WeightedBlockStateApply(
     val models: List<BlockStateModel>
-) : BlockStateApply
+) : BlockStateApply {
+
+    companion object {
+
+        fun deserialize(loader: BlockLoader, data: List<JsonObject>): WeightedBlockStateApply {
+            val models: MutableList<BlockStateModel> = mutableListOf()
+
+            for (entry in data) {
+                models += BlockStateModel.deserialize(loader, entry)
+            }
+
+            return WeightedBlockStateApply(models)
+        }
+    }
+}

@@ -16,9 +16,11 @@ package de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.models.raw.block.BlockModel
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class BlockStateModel(
+data class BlockStateModel(
     val model: BlockModel,
     val uvLock: Boolean,
     val weight: Int,
@@ -26,12 +28,21 @@ class BlockStateModel(
     val y: Int,
 ) : BlockStateApply {
 
-    fun deserialize(model: BlockModel, data: JsonObject): BlockStateModel {
-        val uvLock = data["uvlock"]?.toBoolean() ?: false
-        val weight = data["weight"]?.toInt() ?: 1
-        val x = data["x"]?.toInt() ?: 0
-        val y = data["y"]?.toInt() ?: 0
 
-        return BlockStateModel(model, uvLock, weight, x, y)
+    companion object {
+        fun deserialize(model: BlockModel, data: JsonObject): BlockStateModel {
+            val uvLock = data["uvlock"]?.toBoolean() ?: false
+            val weight = data["weight"]?.toInt() ?: 1
+            val x = data["x"]?.toInt() ?: 0
+            val y = data["y"]?.toInt() ?: 0
+
+            return BlockStateModel(model, uvLock, weight, x, y)
+        }
+
+        fun deserialize(loader: BlockLoader, data: JsonObject): BlockStateModel {
+            val model = loader.loadBlock(data["model"].toString().toResourceLocation())
+
+            return deserialize(model, data)
+        }
     }
 }

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.raw.block.element.face
 
 import de.bixilon.kotlinglm.vec2.Vec2
 
-class FaceUV(
+data class FaceUV(
     val start: Vec2,
     val end: Vec2,
 )

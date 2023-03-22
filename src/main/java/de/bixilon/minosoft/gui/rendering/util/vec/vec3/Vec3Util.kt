@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
 import de.bixilon.kotlinglm.func.cos
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.func.sin
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
@@ -54,6 +55,9 @@ object Vec3Util {
 
     val Vec3.blockPosition: Vec3i
         get() = this.floor
+
+
+    val Vec3.rad: Vec3 get() = Vec3(x.rad, y.rad, z.rad)
 
     fun rotate(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
         val result = Vec2(x * cos - y * sin, x * sin + y * cos)

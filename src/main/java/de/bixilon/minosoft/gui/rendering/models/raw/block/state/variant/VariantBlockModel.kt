@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply.BlockStateApply
 
@@ -35,14 +36,14 @@ interface VariantBlockModel : DirectBlockModel {
             return properties
         }
 
-        fun deserialize(data: JsonObject): VariantBlockModel? {
+        fun deserialize(loader: BlockLoader, data: JsonObject): VariantBlockModel? {
             if (data.isEmpty()) return null
 
             val variants: MutableMap<BlockVariant, BlockStateApply> = linkedMapOf()
 
 
             for ((variant, entry) in data) {
-                val apply = BlockStateApply.deserialize(entry.asJsonObject())
+                val apply = BlockStateApply.deserialize(loader, entry.asJsonObject())
                 if (variant == "") {
                     // no further conditions
                     return SingleVariantBlockModel(apply)

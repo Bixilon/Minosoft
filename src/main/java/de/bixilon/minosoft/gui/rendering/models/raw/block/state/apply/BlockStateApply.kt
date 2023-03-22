@@ -13,15 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply
 
-import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 
 interface BlockStateApply {
 
-
     companion object {
 
-        fun deserialize(data: JsonObject): BlockStateApply {
-            TODO()
+        fun deserialize(loader: BlockLoader, data: Any): BlockStateApply {
+            if (data is Map<*, *>) return BlockStateModel.deserialize(loader, data.asJsonObject())
+            if (data is List<*>) return WeightedBlockStateApply.deserialize(loader, data.unsafeCast())
+
+            throw IllegalArgumentException("Can not deserialize $data!")
         }
     }
 }

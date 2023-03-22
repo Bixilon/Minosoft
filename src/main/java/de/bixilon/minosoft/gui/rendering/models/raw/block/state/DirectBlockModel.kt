@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.raw.block.state
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.condition.ConditionBlockModel
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant.VariantBlockModel
 
@@ -22,9 +23,9 @@ interface DirectBlockModel {
 
     companion object {
 
-        fun deserialize(data: JsonObject): DirectBlockModel? {
-            data["variants"]?.toJsonObject()?.let { return VariantBlockModel.deserialize(it) }
-            data["multipart"]?.toJsonObject()?.let { return ConditionBlockModel.deserialize(it) }
+        fun deserialize(loader: BlockLoader, data: JsonObject): DirectBlockModel? {
+            data["variants"]?.toJsonObject()?.let { return VariantBlockModel.deserialize(loader, it) }
+            data["multipart"]?.toJsonObject()?.let { return ConditionBlockModel.deserialize(loader, it) }
 
             return null
         }

@@ -18,7 +18,7 @@ import de.bixilon.kutil.enums.AliasableEnum
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 
-enum class ModelDisplayPositions(vararg names: String = arrayOf()) : AliasableEnum {
+enum class DisplayPositions(vararg names: String = arrayOf()) : AliasableEnum {
     THIRD_PERSON_RIGHT_HAND("thirdperson_righthand"),
     THIRD_PERSON_LEFT_HAND("thirdperson_lefthand"),
     FIRST_PERSON_RIGHT_HAND("firstperson_righthand"),
@@ -31,8 +31,8 @@ enum class ModelDisplayPositions(vararg names: String = arrayOf()) : AliasableEn
 
     override val names: Array<String> = names.unsafeCast()
 
-    companion object : ValuesEnum<ModelDisplayPositions> {
-        override val VALUES: Array<ModelDisplayPositions> = values()
-        override val NAME_MAP: Map<String, ModelDisplayPositions> = EnumUtil.getEnumValues(VALUES)
+    companion object : ValuesEnum<DisplayPositions> {
+        override val VALUES: Array<DisplayPositions> = values()
+        override val NAME_MAP: Map<String, DisplayPositions> = EnumUtil.getEnumValues(VALUES)
     }
 }

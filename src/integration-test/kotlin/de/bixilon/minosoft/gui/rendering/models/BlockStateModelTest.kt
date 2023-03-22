@@ -14,9 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.gui.rendering.models.BlockModelTest.Companion.BLOCK
-import de.bixilon.minosoft.gui.rendering.models.BlockModelTest.Companion.CUBE
-import de.bixilon.minosoft.gui.rendering.models.BlockModelTest.Companion.CUBE_ALL
+import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply.BlockStateModel
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant.SingleVariantBlockModel
@@ -28,13 +26,11 @@ class BlockStateModelTest {
 
     private fun loadModel(state: String, files: Map<String, String>): DirectBlockModel = TODO()
 
+
     fun redWool() {
         val state = """{"variants":{"":{"model":"minecraft:block/red_wool"}}}"""
-        val models = mapOf(
+        val models = BlockModelTest.FILES.extend<String, String>(
             "block/red_wool" to """{"parent":"minecraft:block/cube_all","textures":{"all":"minecraft:block/red_wool"}}""",
-            "block/cube_all" to CUBE_ALL,
-            "bloc/cube" to CUBE,
-            "block/block" to BLOCK,
         )
         val model = loadModel(state, models)
 

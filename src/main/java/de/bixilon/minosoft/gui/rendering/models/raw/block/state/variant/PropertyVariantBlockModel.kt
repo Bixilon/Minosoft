@@ -15,6 +15,6 @@ package de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant
 
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply.BlockStateApply
 
-class PropertyVariantBlockModel(
+data class PropertyVariantBlockModel(
     val variants: Map<BlockVariant, BlockStateApply>,
 ) : VariantBlockModel

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
-class ElementRotation(
+data class ElementRotation(
     val origin: Vec3,
     val axis: Axes,
     val angle: Float,

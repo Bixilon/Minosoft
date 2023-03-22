@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Com
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.ModelLoader
-import de.bixilon.minosoft.gui.rendering.models.ModelLoader.Companion.bbModel
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture

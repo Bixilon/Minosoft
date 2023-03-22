@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import java.util.*
 
-class ModelFace(
+data class ModelFace(
     val texture: String,
     val uv: FaceUV,
     val rotation: Int,

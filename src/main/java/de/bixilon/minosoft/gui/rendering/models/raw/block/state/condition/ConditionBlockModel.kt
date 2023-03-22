@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.raw.block.state.condition
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.DirectBlockModel
 
 @Deprecated("TODO")
@@ -21,7 +22,7 @@ class ConditionBlockModel : DirectBlockModel {
 
     companion object {
 
-        fun deserialize(data: JsonObject): ConditionBlockModel? {
+        fun deserialize(loader: BlockLoader, data: JsonObject): ConditionBlockModel? {
             TODO()
         }
     }
