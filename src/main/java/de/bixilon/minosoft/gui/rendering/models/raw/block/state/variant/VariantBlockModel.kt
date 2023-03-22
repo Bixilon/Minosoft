@@ -32,7 +32,7 @@ interface VariantBlockModel : DirectBlockModel {
                 properties[property] = value
             }
 
-            return BlockVariant(properties)
+            return properties
         }
 
         fun deserialize(data: JsonObject): VariantBlockModel? {

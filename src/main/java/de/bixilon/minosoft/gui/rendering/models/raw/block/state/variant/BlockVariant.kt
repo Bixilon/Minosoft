@@ -15,6 +15,4 @@ package de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant
 
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 
-class BlockVariant(
-    val properties: Map<BlockProperties, Any>
-)
+typealias BlockVariant = Map<BlockProperties, Any>

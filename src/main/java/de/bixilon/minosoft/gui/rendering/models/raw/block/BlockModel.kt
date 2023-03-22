@@ -30,7 +30,7 @@ data class BlockModel(
     val display: Map<ModelDisplayPositions, ModelDisplay>?,
     val elements: List<ModelElement>?,
     val textures: Map<String, String>?,
-    val ambientOcclusion: Boolean?,
+    val ambientOcclusion: Boolean,
 ) {
 
     companion object {

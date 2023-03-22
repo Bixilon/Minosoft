@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.raw.block.state.condition
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.DirectBlockModel
 
+@Deprecated("TODO")
 class ConditionBlockModel : DirectBlockModel {
 
     companion object {

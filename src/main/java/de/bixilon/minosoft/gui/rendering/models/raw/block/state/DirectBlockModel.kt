@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant.VariantB
 interface DirectBlockModel {
 
     companion object {
+
         fun deserialize(data: JsonObject): DirectBlockModel? {
             data["variants"]?.toJsonObject()?.let { return VariantBlockModel.deserialize(it) }
             data["multipart"]?.toJsonObject()?.let { return ConditionBlockModel.deserialize(it) }
