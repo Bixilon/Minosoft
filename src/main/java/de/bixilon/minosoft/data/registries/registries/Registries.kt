@@ -132,8 +132,6 @@ class Registries(
     var isFullyLoaded = false
         private set
 
-    private var isFlattened = false
-
 
     override var parent: Registries? = null
         set(value) {
@@ -146,11 +144,15 @@ class Registries(
         return entityDataIndexMap[field] ?: parent?.getEntityDataIndex(field)
     }
 
+    fun updateFlattened(flattened: Boolean) {
+        block.flattened = flattened
+        blockState.flattened = flattened
+        item.flattened = flattened
+    }
+
     fun load(version: Version, pixlyzerData: Map<String, Any>, latch: AbstractLatch) {
-        isFlattened = version.flattened
-        block.flattened = isFlattened
-        blockState.flattened = isFlattened
-        item.flattened = isFlattened
+        updateFlattened(version.flattened)
+
 
         var error: Throwable? = null
         val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it })
