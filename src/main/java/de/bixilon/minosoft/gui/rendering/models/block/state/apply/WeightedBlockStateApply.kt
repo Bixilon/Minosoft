@@ -11,19 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.state.condition
+package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
-import de.bixilon.minosoft.gui.rendering.models.raw.block.state.DirectBlockModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-@Deprecated("TODO")
-class ConditionBlockModel : DirectBlockModel {
+data class WeightedBlockStateApply(
+    val models: List<SingleBlockStateApply>
+) : BlockStateApply {
+
+    override fun bake(textures: TextureManager): BakedModel {
+        TODO("Not yet implemented")
+    }
 
     companion object {
 
-        fun deserialize(loader: BlockLoader, data: JsonObject): ConditionBlockModel? {
-            TODO()
+        fun deserialize(loader: BlockLoader, data: List<JsonObject>): WeightedBlockStateApply {
+            val models: MutableList<SingleBlockStateApply> = mutableListOf()
+
+            for (entry in data) {
+                models += SingleBlockStateApply.deserialize(loader, entry)
+            }
+
+            return WeightedBlockStateApply(models)
         }
     }
 }

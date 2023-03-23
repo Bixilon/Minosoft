@@ -11,25 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply
+package de.bixilon.minosoft.gui.rendering.models.block.state.condition
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 
-data class WeightedBlockStateApply(
-    val models: List<BlockStateModel>
-) : BlockStateApply {
+@Deprecated("TODO")
+class ConditionBlockModel : DirectBlockModel {
 
     companion object {
 
-        fun deserialize(loader: BlockLoader, data: List<JsonObject>): WeightedBlockStateApply {
-            val models: MutableList<BlockStateModel> = mutableListOf()
-
-            for (entry in data) {
-                models += BlockStateModel.deserialize(loader, entry)
-            }
-
-            return WeightedBlockStateApply(models)
+        fun deserialize(loader: BlockLoader, data: JsonObject): ConditionBlockModel? {
+            TODO()
         }
     }
 }

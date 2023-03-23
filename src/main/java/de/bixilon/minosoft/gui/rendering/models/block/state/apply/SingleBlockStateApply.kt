@@ -11,35 +11,41 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply
+package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
-import de.bixilon.minosoft.gui.rendering.models.raw.block.BlockModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-data class BlockStateModel(
+data class SingleBlockStateApply(
     val model: BlockModel,
-    val uvLock: Boolean,
-    val weight: Int,
-    val x: Int,
-    val y: Int,
+    val uvLock: Boolean = false,
+    val weight: Int = 1,
+    val x: Int = 0,
+    val y: Int = 0,
 ) : BlockStateApply {
+
+    override fun bake(textures: TextureManager): BakedModel {
+        TODO("Not yet implemented")
+    }
 
 
     companion object {
-        fun deserialize(model: BlockModel, data: JsonObject): BlockStateModel {
+        fun deserialize(model: BlockModel, data: JsonObject): SingleBlockStateApply {
             val uvLock = data["uvlock"]?.toBoolean() ?: false
             val weight = data["weight"]?.toInt() ?: 1
             val x = data["x"]?.toInt() ?: 0
             val y = data["y"]?.toInt() ?: 0
 
-            return BlockStateModel(model, uvLock, weight, x, y)
+            return SingleBlockStateApply(model, uvLock, weight, x, y)
         }
 
-        fun deserialize(loader: BlockLoader, data: JsonObject): BlockStateModel {
+        fun deserialize(loader: BlockLoader, data: JsonObject): SingleBlockStateApply {
             val model = loader.loadBlock(data["model"].toString().toResourceLocation())
 
             return deserialize(model, data)

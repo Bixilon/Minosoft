@@ -11,10 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant
+package de.bixilon.minosoft.gui.rendering.models.block.legacy
 
-import de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply.BlockStateApply
+import de.bixilon.kotlinglm.vec2.Vec2
 
-data class SingleVariantBlockModel(
-    val apply: BlockStateApply,
-) : VariantBlockModel
+@Deprecated("legacy")
+object ModelBakeUtil {
+
+    fun getTextureCoordinates(uvStart: Vec2, uvEnd: Vec2): Array<Vec2> {
+        return arrayOf(
+            Vec2(uvEnd.x, uvStart.y),
+            uvStart,
+            Vec2(uvStart.x, uvEnd.y),
+            uvEnd,
+        )
+    }
+}

@@ -11,8 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant
+package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 
-typealias BlockVariant = Map<BlockProperties, Any>
+data class SingleVariantBlockModel(
+    val apply: BlockStateApply,
+) : VariantBlockModel

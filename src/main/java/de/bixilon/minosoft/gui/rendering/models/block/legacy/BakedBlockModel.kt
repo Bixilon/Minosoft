@@ -11,11 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.element.face
+package de.bixilon.minosoft.gui.rendering.models.block.legacy
 
-import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import java.util.*
 
-data class FaceUV(
-    val start: Vec2,
-    val end: Vec2,
-)
+@Deprecated("legacy")
+interface BakedBlockModel {
+
+    fun getParticleTexture(random: Random, position: Vec3i): AbstractTexture?
+}

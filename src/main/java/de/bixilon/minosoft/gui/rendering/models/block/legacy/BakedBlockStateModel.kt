@@ -11,7 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.legacy
+package de.bixilon.minosoft.gui.rendering.models.block.legacy
 
 @Deprecated("legacy")
-interface SingleBlockRenderable
+
+interface BakedBlockStateModel : BakedBlockModel

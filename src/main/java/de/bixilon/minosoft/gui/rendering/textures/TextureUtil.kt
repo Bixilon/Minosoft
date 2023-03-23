@@ -15,10 +15,8 @@ package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -57,34 +55,6 @@ object TextureUtil {
         }!!
     }
 
-    fun resolveTextures(textureArray: StaticTextureArray, textures: Map<String, String>): Map<String, AbstractTexture> {
-        val resolvedTextures: MutableMap<String, AbstractTexture> = mutableMapOf()
-
-        fun resolveTexture(key: String, value: String): AbstractTexture {
-            resolvedTextures[key]?.let { return it }
-
-            val variable = value.removePrefix("#")
-            var texture: AbstractTexture? = null
-            if (variable.length != value.length) {
-                // resolve variable first
-                texture = resolveTexture(variable, textures[variable]!!)
-            }
-
-            if (texture == null) {
-                texture = textureArray.createTexture(value.toResourceLocation().texture())
-            }
-
-            resolvedTextures[key] = texture
-            return texture
-        }
-
-
-
-        for ((key, value) in textures) {
-            resolveTexture(key, value)
-        }
-        return resolvedTextures
-    }
 
     /**
      * Other way of reading a texture if the first (preferred one) method does not work

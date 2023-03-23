@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.state
+package de.bixilon.minosoft.gui.rendering.models.block.state
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.minosoft.gui.rendering.models.block.state.condition.ConditionBlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.variant.VariantBlockModel
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
-import de.bixilon.minosoft.gui.rendering.models.raw.block.state.condition.ConditionBlockModel
-import de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant.VariantBlockModel
 
 interface DirectBlockModel {
 

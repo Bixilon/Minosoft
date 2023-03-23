@@ -11,15 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.legacy
+package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
-@Deprecated("legacy")
-interface BakedItemModel {
-    fun render2d(guiRenderer: GUIRenderer, offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, textureSize: Vec2i, stack: ItemStack)
-}
+class BakedFace(
+    val positions: FloatArray,
+    val uv: FloatArray,
+    val shade: Float,
+    val tintIndex: Int,
+    val cullface: Directions?,
+    val texture: AbstractTexture,
+)

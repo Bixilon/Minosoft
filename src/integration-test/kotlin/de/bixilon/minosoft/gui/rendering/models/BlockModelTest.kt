@@ -19,10 +19,10 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.createAssets
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.createLoader
-import de.bixilon.minosoft.gui.rendering.models.raw.block.BlockModel
-import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement
-import de.bixilon.minosoft.gui.rendering.models.raw.block.element.face.FaceUV
-import de.bixilon.minosoft.gui.rendering.models.raw.block.element.face.ModelFace
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
+import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
+import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.raw.light.GUILights
@@ -63,6 +63,42 @@ class BlockModelTest {
         val model = loadModel(CUBE_ALL, FILES)
 
         assertEquals(model, CUBE_ALL_MODEL)
+    }
+
+    fun fallbackUV1() {
+        val model = loadModel("""{"textures":{"a":"a:b"},"elements":[{"from":[0,0,0],"to":[16,16,16],"faces":{"down": {"texture":"#a"},"up":{"texture":"#a"},"north":{"texture":"#a"},"south":{"texture":"#a"},"west": {"texture":"#a"},"east": {"texture":"#a"}}}]}""")
+
+        val faces = model.elements?.firstOrNull()?.faces ?: throw NullPointerException("no models?")
+        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(0, 0, 16, 16))
+        assertEquals(faces[Directions.UP]?.uv, FaceUV(0, 0, 16, 16))
+        assertEquals(faces[Directions.NORTH]?.uv, FaceUV(0, 0, 16, 16))
+        assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(0, 0, 16, 16))
+        assertEquals(faces[Directions.WEST]?.uv, FaceUV(0, 0, 16, 16))
+        assertEquals(faces[Directions.EAST]?.uv, FaceUV(0, 0, 16, 16))
+    }
+
+    fun fallbackUV2() {
+        val model = loadModel("""{"textures":{"a":"a:b"},"elements":[{"from":[1,2,3],"to":[13,14,15],"faces":{"down": {"texture":"#a"},"up":{"texture":"#a"},"north":{"texture":"#a"},"south":{"texture":"#a"},"west": {"texture":"#a"},"east": {"texture":"#a"}}}]}""")
+
+        val faces = model.elements?.firstOrNull()?.faces ?: throw NullPointerException("no models?")
+        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(1, 1, 13, 13))
+        assertEquals(faces[Directions.UP]?.uv, FaceUV(1, 3, 13, 15))
+        assertEquals(faces[Directions.NORTH]?.uv, FaceUV(3, 2, 15, 14))
+        assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(1, 2, 13, 14))
+        assertEquals(faces[Directions.WEST]?.uv, FaceUV(3, 2, 15, 14))
+        assertEquals(faces[Directions.EAST]?.uv, FaceUV(1, 2, 13, 14))
+    }
+
+    fun fallbackUV3() {
+        val model = loadModel("""{"textures":{"a":"a:b"},"elements":[{"from":[5,3,1],"to":[15,13,11],"faces":{"down": {"texture":"#a"},"up":{"texture":"#a"},"north":{"texture":"#a"},"south":{"texture":"#a"},"west": {"texture":"#a"},"east": {"texture":"#a"}}}]}""")
+
+        val faces = model.elements?.firstOrNull()?.faces ?: throw NullPointerException("no models?")
+        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(5, 5, 14, 14))
+        assertEquals(faces[Directions.UP]?.uv, FaceUV(5, 1, 15, 11))
+        assertEquals(faces[Directions.NORTH]?.uv, FaceUV(1, 3, 11, 13))
+        assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(5, 3, 15, 13))
+        assertEquals(faces[Directions.WEST]?.uv, FaceUV(1, 3, 11, 13))
+        assertEquals(faces[Directions.EAST]?.uv, FaceUV(5, 3, 15, 13))
     }
 
     companion object {
@@ -125,13 +161,13 @@ class BlockModelTest {
                 rotation = null,
             )),
             textures = mapOf(
-                "particle" to "#all",
-                "down" to "#all",
-                "up" to "#all",
-                "north" to "#all",
-                "east" to "#all",
-                "south" to "#all",
-                "west" to "#all"
+                "particle" to "all",
+                "down" to "all",
+                "up" to "all",
+                "north" to "all",
+                "east" to "all",
+                "south" to "all",
+                "west" to "all"
             ),
             ambientOcclusion = true,
         )

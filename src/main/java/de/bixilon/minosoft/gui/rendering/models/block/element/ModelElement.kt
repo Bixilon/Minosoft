@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.element
+package de.bixilon.minosoft.gui.rendering.models.block.element
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -19,15 +19,15 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.models.raw.block.element.face.ModelFace
+import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
 data class ModelElement(
     val from: Vec3,
     val to: Vec3,
     val faces: Map<Directions, ModelFace>,
-    val shade: Boolean,
-    val rotation: ElementRotation?,
+    val shade: Boolean = true,
+    val rotation: ElementRotation? = null,
 ) {
 
     companion object {

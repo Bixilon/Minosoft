@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.element.face
+package de.bixilon.minosoft.gui.rendering.models.block.element.face
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import java.util.*
@@ -36,6 +36,7 @@ data class ModelFace(
             val texture = data["texture"].toString()
 
             val rawUV = data["uv"]?.listCast<Number>()
+            // TODO: that is wrong, fallback is element start/end
             val uv = FaceUV(
                 start = rawUV?.let { Vec2(rawUV[0], rawUV[1]) / BLOCK_SIZE } ?: Vec2(0.0f),
                 end = rawUV?.let { Vec2(rawUV[0], rawUV[1]) / BLOCK_SIZE } ?: Vec2(1.0f),

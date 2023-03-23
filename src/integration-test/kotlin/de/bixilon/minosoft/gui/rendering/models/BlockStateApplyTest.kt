@@ -22,11 +22,11 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.CustomBlockModel
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.createAssets
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply
+import de.bixilon.minosoft.gui.rendering.models.block.state.variant.SingleVariantBlockModel
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader.Companion.blockState
-import de.bixilon.minosoft.gui.rendering.models.raw.block.BlockModel
-import de.bixilon.minosoft.gui.rendering.models.raw.block.state.DirectBlockModel
-import de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply.BlockStateModel
-import de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant.SingleVariantBlockModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.test.IT
@@ -34,13 +34,13 @@ import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["models"])
-class BlockStateModelTest {
+class BlockStateApplyTest {
 
     private fun loadModel(block: Block, state: String, version: Version = IT.VERSION, files: Map<String, String>): DirectBlockModel {
         val loader = ModelTestUtil.createLoader()
         loader.block::version.forceSet(version)
         val assets = loader.createAssets(files)
-        val modelName = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier)?.blockState() ?: throw NullPointerException("Can not get model name: $block")
+        val modelName = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier).blockState()
         assets.push(modelName, state)
 
 
@@ -56,7 +56,7 @@ class BlockStateModelTest {
         val model = loadModel(WoolBlock.RedWool(settings = BlockSettings()), state, files = models)
         val texture = minecraft("block/red_wool").texture()
 
-        assertEquals(model.unsafeCast<SingleVariantBlockModel>().apply, BlockStateModel(
+        assertEquals(model.unsafeCast<SingleVariantBlockModel>().apply, SingleBlockStateApply(
             model = BlockModel(
                 BlockModelTest.CUBE_ALL_MODEL.guiLight,
                 BlockModelTest.CUBE_ALL_MODEL.display,

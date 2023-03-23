@@ -21,7 +21,7 @@ import de.bixilon.kotlinglm.vec4.swizzle.xy
 import de.bixilon.kotlinglm.vec4.swizzle.zw
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.models.raw.block.legacy.ModelBakeUtil
+import de.bixilon.minosoft.gui.rendering.models.block.legacy.ModelBakeUtil
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.fromBlockCoordinates
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner

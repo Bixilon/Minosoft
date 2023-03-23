@@ -11,21 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply
+package de.bixilon.minosoft.gui.rendering.models.block.element.face
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 
-interface BlockStateApply {
-
-    companion object {
-
-        fun deserialize(loader: BlockLoader, data: Any): BlockStateApply {
-            if (data is Map<*, *>) return BlockStateModel.deserialize(loader, data.asJsonObject())
-            if (data is List<*>) return WeightedBlockStateApply.deserialize(loader, data.unsafeCast())
-
-            throw IllegalArgumentException("Can not deserialize $data!")
-        }
-    }
+data class FaceUV(
+    val start: Vec2,
+    val end: Vec2,
+) {
+    constructor(u1: Float, v1: Float, u2: Float, v2: Float) : this(Vec2(u1 / BLOCK_SIZE, v1 / BLOCK_SIZE), Vec2(u2 / BLOCK_SIZE, v2 / BLOCK_SIZE))
+    constructor(u1: Int, v1: Int, u2: Int, v2: Int) : this(u1.toFloat(), v1.toFloat(), u2.toFloat(), v2.toFloat())
 }

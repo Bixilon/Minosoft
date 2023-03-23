@@ -11,14 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.element
+package de.bixilon.minosoft.gui.rendering.models.block.element
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
 data class ElementRotation(

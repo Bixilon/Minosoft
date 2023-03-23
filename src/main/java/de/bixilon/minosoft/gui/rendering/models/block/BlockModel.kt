@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block
+package de.bixilon.minosoft.gui.rendering.models.block
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
@@ -19,7 +19,7 @@ import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.raw.light.GUILights
@@ -28,11 +28,11 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 data class BlockModel(
-    val guiLight: GUILights,
-    val display: Map<DisplayPositions, ModelDisplay>?,
+    val guiLight: GUILights = GUILights.SIDE,
+    val display: Map<DisplayPositions, ModelDisplay>? = null,
     val elements: List<ModelElement>?,
     val textures: Map<String, Any>?, // either String or ResourceLocation
-    val ambientOcclusion: Boolean,
+    val ambientOcclusion: Boolean = true,
 ) {
 
     companion object {

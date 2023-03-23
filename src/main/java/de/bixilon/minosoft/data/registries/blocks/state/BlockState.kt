@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettin
 import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.models.raw.block.legacy.BakedBlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.legacy.BakedBlockModel
 
 open class BlockState(
     val block: Block,

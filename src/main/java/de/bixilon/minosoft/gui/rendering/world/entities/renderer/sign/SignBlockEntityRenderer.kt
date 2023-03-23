@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
-import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer

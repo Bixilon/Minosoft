@@ -18,9 +18,9 @@ import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.CustomBlockModel
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
-import de.bixilon.minosoft.gui.rendering.models.raw.block.BlockModel
-import de.bixilon.minosoft.gui.rendering.models.raw.block.state.DirectBlockModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BlockLoader(private val loader: ModelLoader) {
@@ -38,7 +38,7 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun loadState(block: Block): DirectBlockModel? {
-        val file = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier)?.blockState() ?: return null
+        val file = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier).blockState()
         val data = assets[file].readJsonObject()
 
         return DirectBlockModel.deserialize(this, data)

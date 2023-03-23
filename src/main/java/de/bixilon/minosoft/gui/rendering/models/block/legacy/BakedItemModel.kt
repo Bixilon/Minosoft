@@ -11,14 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.legacy
+package de.bixilon.minosoft.gui.rendering.models.block.legacy
 
-import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import java.util.*
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 @Deprecated("legacy")
-interface BakedBlockModel {
-
-    fun getParticleTexture(random: Random, position: Vec3i): AbstractTexture?
+interface BakedItemModel {
+    fun render2d(guiRenderer: GUIRenderer, offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, textureSize: Vec2i, stack: ItemStack)
 }

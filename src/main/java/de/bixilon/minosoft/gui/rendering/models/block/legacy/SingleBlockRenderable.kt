@@ -11,10 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant
+package de.bixilon.minosoft.gui.rendering.models.block.legacy
 
-import de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply.BlockStateApply
-
-data class PropertyVariantBlockModel(
-    val variants: Map<BlockVariant, BlockStateApply>,
-) : VariantBlockModel
+@Deprecated("legacy")
+interface SingleBlockRenderable

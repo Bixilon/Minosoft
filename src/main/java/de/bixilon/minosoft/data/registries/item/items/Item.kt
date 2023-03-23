@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.gui.rendering.models.raw.block.legacy.BakedItemModel
+import de.bixilon.minosoft.gui.rendering.models.block.legacy.BakedItemModel
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
