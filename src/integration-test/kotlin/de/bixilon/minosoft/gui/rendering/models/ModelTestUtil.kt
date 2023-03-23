@@ -13,9 +13,32 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.assets.MemoryAssetsManager
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
+import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
+
 object ModelTestUtil {
 
-    fun createAssets(vararg files: Pair<String, String>) {
+    fun createLoader(): ModelLoader {
+        val instance = IT.OBJENESIS.newInstance(ModelLoader::class.java)
+        instance::block.forceSet(IT.OBJENESIS.newInstance(BlockLoader::class.java))
 
+
+        return instance
+    }
+
+    fun ModelLoader.createAssets(files: Map<String, String>): MemoryAssetsManager {
+        val assets = MemoryAssetsManager()
+
+        for ((name, value) in files) {
+            assets.push(name.toResourceLocation().model(), value)
+        }
+        this.block::assets.forceSet(assets)
+
+        return assets
     }
 }

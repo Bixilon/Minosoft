@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.models.loader
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -27,7 +26,6 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class BlockLoader(private val loader: ModelLoader) {
     val assets = loader.context.connection.assetsManager
     val version = loader.context.connection.version
-    private val cache: MutableMap<ResourceLocation, BlockModel> = synchronizedMapOf()
 
     fun loadBlock(name: ResourceLocation): BlockModel {
         val file = name.model("block/")
@@ -39,11 +37,11 @@ class BlockLoader(private val loader: ModelLoader) {
         return BlockModel.deserialize(parent, data)
     }
 
-    private fun loadState(block: Block) {
-        val file = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier)?.blockState() ?: return
+    fun loadState(block: Block): DirectBlockModel? {
+        val file = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier)?.blockState() ?: return null
         val data = assets[file].readJsonObject()
 
-        val model = DirectBlockModel.deserialize(this, data)
+        return DirectBlockModel.deserialize(this, data)
     }
 
     fun load(latch: CountUpAndDownLatch) {
@@ -53,7 +51,7 @@ class BlockLoader(private val loader: ModelLoader) {
 
     companion object {
 
-        private fun ResourceLocation.blockState(): ResourceLocation {
+        fun ResourceLocation.blockState(): ResourceLocation {
             return ResourceLocation(this.namespace, "blockstates/" + this.path + ".json")
         }
     }

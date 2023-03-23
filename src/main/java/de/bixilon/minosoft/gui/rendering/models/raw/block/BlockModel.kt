@@ -23,13 +23,15 @@ import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.raw.light.GUILights
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 data class BlockModel(
     val guiLight: GUILights,
     val display: Map<DisplayPositions, ModelDisplay>?,
     val elements: List<ModelElement>?,
-    val textures: Map<String, String>?,
+    val textures: Map<String, Any>?, // either String or ResourceLocation
     val ambientOcclusion: Boolean,
 ) {
 
@@ -62,16 +64,41 @@ data class BlockModel(
             return elements
         }
 
-        private fun textures(data: JsonObject, parent: Map<String, String>?): Map<String, String>? {
+        private fun textures(data: JsonObject, parent: Map<String, Any>?): Map<String, Any>? {
             if (data.isEmpty()) return parent
 
-            val textures: MutableMap<String, String> = parent?.toMutableMap() ?: mutableMapOf()
+            val textures: MutableMap<String, Any> = parent?.toMutableMap() ?: mutableMapOf()
 
             for ((name, value) in data) {
-                textures[name] = value.toString()
+                val string = value.toString()
+                if (!string.startsWith('#')) {
+                    // not a variable
+                    textures[name] = string.toResourceLocation().texture()
+                } else {
+                    textures[name] = string.substring(1)
+                }
             }
 
-            return textures
+            return textures.resolveTextures()
+        }
+
+        private fun Map<String, Any>.resolve(value: Any, output: MutableMap<String, Any>): Any {
+            if (value !is String) return value // texture identifier
+            val resolved = this[value] ?: return value
+            output[value] = resolved // cache result, even if not needed
+            return resolved
+        }
+
+        private fun Map<String, Any>.resolveTextures(): Map<String, Any> {
+            if (size <= 1) return this // if it has just one element, we can not resolve anything
+
+            val output: MutableMap<String, Any> = mutableMapOf()
+
+            for ((entry, value) in this) {
+                output[entry] = resolve(value, output)
+            }
+
+            return output
         }
 
         fun deserialize(parent: BlockModel?, data: JsonObject): BlockModel {

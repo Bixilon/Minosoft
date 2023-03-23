@@ -15,16 +15,37 @@ package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.extend
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
+import de.bixilon.minosoft.data.registries.blocks.types.legacy.CustomBlockModel
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.createAssets
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader.Companion.blockState
+import de.bixilon.minosoft.gui.rendering.models.raw.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.apply.BlockStateModel
 import de.bixilon.minosoft.gui.rendering.models.raw.block.state.variant.SingleVariantBlockModel
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["models"])
 class BlockStateModelTest {
 
-    private fun loadModel(state: String, files: Map<String, String>): DirectBlockModel = TODO()
+    private fun loadModel(block: Block, state: String, version: Version = IT.VERSION, files: Map<String, String>): DirectBlockModel {
+        val loader = ModelTestUtil.createLoader()
+        loader.block::version.forceSet(version)
+        val assets = loader.createAssets(files)
+        val modelName = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier)?.blockState() ?: throw NullPointerException("Can not get model name: $block")
+        assets.push(modelName, state)
+
+
+        return loader.block.loadState(block) ?: throw NullPointerException("empty block model!")
+    }
 
 
     fun redWool() {
@@ -32,14 +53,36 @@ class BlockStateModelTest {
         val models = BlockModelTest.FILES.extend<String, String>(
             "block/red_wool" to """{"parent":"minecraft:block/cube_all","textures":{"all":"minecraft:block/red_wool"}}""",
         )
-        val model = loadModel(state, models)
+        val model = loadModel(WoolBlock.RedWool(settings = BlockSettings()), state, files = models)
+        val texture = minecraft("block/red_wool").texture()
 
         assertEquals(model.unsafeCast<SingleVariantBlockModel>().apply, BlockStateModel(
-            model = BlockModelTest.CUBE_ALL_MODEL,
+            model = BlockModel(
+                BlockModelTest.CUBE_ALL_MODEL.guiLight,
+                BlockModelTest.CUBE_ALL_MODEL.display,
+                BlockModelTest.CUBE_ALL_MODEL.elements,
+                textures = mapOf(
+                    "particle" to texture,
+                    "down" to texture,
+                    "up" to texture,
+                    "north" to texture,
+                    "east" to texture,
+                    "south" to texture,
+                    "west" to texture,
+                    "all" to texture,
+                ),
+                BlockModelTest.CUBE_ALL_MODEL.ambientOcclusion,
+            ),
             x = 0,
             y = 0,
             uvLock = false,
             weight = 1,
         ))
     }
+
+
+    // TODO: simple, variants, pre-flattening variants (e.g. grass snowy), multipart, multipart pre-flattening
+    // TODO: model rename (silver wool vs light_gray_wool)
+
+    // TODO: bakery
 }

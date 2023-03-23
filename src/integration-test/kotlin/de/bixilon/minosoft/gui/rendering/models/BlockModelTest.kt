@@ -15,13 +15,10 @@ package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.assets.MemoryAssetsManager
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
-import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
-import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
+import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.createAssets
+import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.createLoader
 import de.bixilon.minosoft.gui.rendering.models.raw.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.raw.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.raw.block.element.face.FaceUV
@@ -30,32 +27,18 @@ import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.raw.light.GUILights
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
-import de.bixilon.minosoft.test.IT.OBJENESIS
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["models"])
 class BlockModelTest {
 
-    private fun createLoader(): ModelLoader {
-        val instance = OBJENESIS.newInstance(ModelLoader::class.java)
-        instance::block.forceSet(OBJENESIS.newInstance(BlockLoader::class.java))
-
-
-        return instance
-    }
 
     private fun loadModel(json: String, files: Map<String, String> = emptyMap()): BlockModel {
         val loader = createLoader()
-
-        val assets = MemoryAssetsManager()
+        val assets = loader.createAssets(files)
         assets.push(minosoft("models/block/named.json"), json)
 
-        for ((name, value) in files) {
-            assets.push(name.toResourceLocation().model(), value)
-        }
-        loader.block::assets.forceSet(assets)
 
         return loader.block.loadBlock(minosoft("block/named"))
     }
