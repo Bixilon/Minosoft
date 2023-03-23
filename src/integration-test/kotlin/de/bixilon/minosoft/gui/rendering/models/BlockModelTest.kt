@@ -93,7 +93,7 @@ class BlockModelTest {
         val model = loadModel("""{"textures":{"a":"a:b"},"elements":[{"from":[5,3,1],"to":[15,13,11],"faces":{"down": {"texture":"#a"},"up":{"texture":"#a"},"north":{"texture":"#a"},"south":{"texture":"#a"},"west": {"texture":"#a"},"east": {"texture":"#a"}}}]}""")
 
         val faces = model.elements?.firstOrNull()?.faces ?: throw NullPointerException("no models?")
-        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(5, 5, 14, 14))
+        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(5, 5, 15, 15))
         assertEquals(faces[Directions.UP]?.uv, FaceUV(5, 1, 15, 11))
         assertEquals(faces[Directions.NORTH]?.uv, FaceUV(1, 3, 11, 13))
         assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(5, 3, 15, 13))

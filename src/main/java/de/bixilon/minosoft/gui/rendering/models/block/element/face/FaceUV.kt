@@ -20,6 +20,6 @@ data class FaceUV(
     val start: Vec2,
     val end: Vec2,
 ) {
-    constructor(u1: Float, v1: Float, u2: Float, v2: Float) : this(Vec2(u1 / BLOCK_SIZE, v1 / BLOCK_SIZE), Vec2(u2 / BLOCK_SIZE, v2 / BLOCK_SIZE))
-    constructor(u1: Int, v1: Int, u2: Int, v2: Int) : this(u1.toFloat(), v1.toFloat(), u2.toFloat(), v2.toFloat())
+    constructor(u1: Float, v1: Float, u2: Float, v2: Float) : this(Vec2(u1, v1), Vec2(u2, v2))
+    constructor(u1: Int, v1: Int, u2: Int, v2: Int) : this(u1 / BLOCK_SIZE, v1 / BLOCK_SIZE, u2 / BLOCK_SIZE, v2 / BLOCK_SIZE)
 }

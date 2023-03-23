@@ -40,7 +40,7 @@ data class ModelElement(
             val shade = data["shade"]?.toBoolean() ?: true
             val rotation = data["rotation"]?.toJsonObject()?.let { ElementRotation.deserialize(it) }
 
-            val faces = ModelFace.deserialize(data["faces"].unsafeCast()) ?: return null
+            val faces = ModelFace.deserialize(from, to, data["faces"].unsafeCast()) ?: return null
 
 
             return ModelElement(from, to, faces, shade, rotation)

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.element.face
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.direction.Directions
@@ -32,15 +33,21 @@ data class ModelFace(
 
     companion object {
 
-        fun deserialize(data: JsonObject): ModelFace {
+        fun fallbackUV(direction: Directions, from: Vec3, to: Vec3): FaceUV {
+            return when (direction) {
+                Directions.DOWN -> FaceUV(from.x, 1.0f - to.z, to.x, 1.0f - from.z)
+                Directions.UP -> FaceUV(from.x, from.z, to.x, to.z)
+                Directions.NORTH -> FaceUV(1.0f - to.x, 1.0f - to.y, 1.0f - from.x, 1.0f - from.y)
+                Directions.SOUTH -> FaceUV(from.x, 1.0f - to.y, to.x, 1.0f - from.y)
+                Directions.WEST -> FaceUV(from.z, 1.0f - to.y, to.z, 1.0f - from.y)
+                Directions.EAST -> FaceUV(1.0f - to.z, 1.0f - to.y, 1.0f - from.z, 1.0f - from.y)
+            }
+        }
+
+        fun deserialize(direction: Directions, from: Vec3, to: Vec3, data: JsonObject): ModelFace {
             val texture = data["texture"].toString()
 
-            val rawUV = data["uv"]?.listCast<Number>()
-            // TODO: that is wrong, fallback is element start/end
-            val uv = FaceUV(
-                start = rawUV?.let { Vec2(rawUV[0], rawUV[1]) / BLOCK_SIZE } ?: Vec2(0.0f),
-                end = rawUV?.let { Vec2(rawUV[0], rawUV[1]) / BLOCK_SIZE } ?: Vec2(1.0f),
-            )
+            val uv = data["uv"]?.listCast<Number>()?.let { FaceUV(start = Vec2(it[0], it[1]) / BLOCK_SIZE, end = Vec2(it[2], it[3]) / BLOCK_SIZE) } ?: fallbackUV(direction, from, to)
 
             val rotation = data["rotation"]?.toInt() ?: 0
             val cullface = data["cullface"]?.toString()?.let { if (it == "none") null else Directions[it] }
@@ -49,12 +56,12 @@ data class ModelFace(
             return ModelFace(texture, uv, rotation, cullface, tintIndex)
         }
 
-        fun deserialize(data: Map<String, JsonObject>): Map<Directions, ModelFace>? {
+        fun deserialize(from: Vec3, to: Vec3, data: Map<String, JsonObject>): Map<Directions, ModelFace>? {
             val map: MutableMap<Directions, ModelFace> = EnumMap(Directions::class.java)
 
             for ((key, value) in data) {
                 val direction = Directions[key]
-                val face = deserialize(value)
+                val face = deserialize(direction, from, to, value)
 
                 map[direction] = face
             }
