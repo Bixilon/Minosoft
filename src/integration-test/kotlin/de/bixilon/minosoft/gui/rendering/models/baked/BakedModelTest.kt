@@ -36,7 +36,7 @@ class BakedModelTest {
         val map: MutableMap<Directions, ModelFace> = mutableMapOf()
 
         for (direction in Directions) {
-            map[direction] = ModelFace(texture, FaceUV(Vec2(0), Vec2(1)), cullface = direction, rotation = 0)
+            map[direction] = ModelFace(texture, FaceUV(Vec2(0), Vec2(1)), cull = direction, rotation = 0)
         }
 
         return map
