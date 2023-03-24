@@ -46,6 +46,23 @@ class FaceRotationTest {
         baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.6f)
     }
 
+    fun rotation1Y90() {
+        val from = Vec3(0.0f)
+        val to = Vec3(1.0f)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(rotation = 1))), textures = mapOf("test" to minecraft("block/test").texture())), y = 90)
+
+        val baked = model.bake(createTextureManager("block/test"))!!
+
+
+        // we can use positions() here, because it is not rotated and already unit tested
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.6f)
+    }
+
     fun rotation3() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
