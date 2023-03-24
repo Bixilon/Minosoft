@@ -13,4 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-class BakedModel
+class BakedModel(
+    val face: Array<Array<BakedFace>>,
+    val sizes: Array<SideSize>,
+)

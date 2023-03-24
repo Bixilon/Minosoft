@@ -16,11 +16,16 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.positions
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.SideSize
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import java.util.*
 
 data class SingleBlockStateApply(
     val model: BlockModel,
@@ -30,8 +35,22 @@ data class SingleBlockStateApply(
     val y: Int = 0,
 ) : BlockStateApply {
 
-    override fun bake(textures: TextureManager): BakedModel {
-        TODO("Not yet implemented")
+
+    override fun bake(textures: TextureManager): BakedModel? {
+        if (model.elements == null) return null
+
+        val bakedFaces: MutableMap<Directions, MutableList<BakedFace>> = EnumMap(Directions::class.java) // TODO: use array
+        val sizes: MutableMap<Directions, MutableList<SideSize.FaceSize>> = EnumMap(Directions::class.java)
+
+        for (element in model.elements) {
+            for ((direction, face) in element.faces) {
+                val texture = face.createTexture(model, textures)
+
+
+                val positions = positions(direction, element.from, element.to)
+            }
+        }
+        TODO()
     }
 
 

@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.kotlinglm.vec2.Vec2
 
-class BakedFace(
-    val positions: FloatArray,
-    val uv: FloatArray,
-    val shade: Float,
-    val tintIndex: Int,
-    val cull: Directions?,
-    val texture: AbstractTexture,
-)
+class SideSize(
+    val sizes: Array<FaceSize>,
+) {
+
+
+    class FaceSize(
+        val start: Vec2,
+        val end: Vec2,
+    )
+}

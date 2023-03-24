@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 interface BlockStateApply {
 
-    fun bake(textures: TextureManager): BakedModel
+    fun bake(textures: TextureManager): BakedModel?
 
     companion object {
 
