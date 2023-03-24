@@ -26,6 +26,8 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
@@ -35,6 +37,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer.Companion.SELF_LIGHT_INDEX
+import java.util.*
 
 class SignBlockEntityRenderer(
     val sign: SignBlockEntity,
@@ -48,19 +52,16 @@ class SignBlockEntityRenderer(
         return rotation * 22.5f
     }
 
-    /*
-    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun render(position: Vec3i, mesh: WorldMesh, random: Random, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val block = this.blockState.block
         if (block is StandingSignBlock) {
-            renderStandingText(position, mesh, light[SolidCullSectionPreparer.SELF_LIGHT_INDEX].toInt())
+            renderStandingText(position, mesh, light[SELF_LIGHT_INDEX].toInt())
         } else if (block is WallSignBlock) {
-            renderWallText(position, mesh, light[SolidCullSectionPreparer.SELF_LIGHT_INDEX].toInt())
+            renderWallText(position, mesh, light[SELF_LIGHT_INDEX].toInt())
         }
 
         return true
     }
-    // TODO
-     */
 
     private fun renderText(position: Vec3i, rotationVector: Vec3, yRotation: Float, mesh: WorldMesh, light: Int) {
         val textPosition = position.toVec3 + rotationVector

@@ -13,7 +13,38 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import java.util.*
+
 class BakedModel(
-    val face: Array<Array<BakedFace>>,
+    val faces: Array<Array<BakedFace>>,
     val sizes: Array<SideSize>,
-)
+    val particle: AbstractTexture?,
+) : BlockRender {
+
+    override fun getParticleTexture(random: Random, position: Vec3i) = particle
+
+    override fun render(position: BlockPosition, mesh: WorldMesh, random: Random, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+        val float = position.toVec3
+
+        val array = float.array
+
+        var rendered = true
+
+        for ((index, faces) in faces.withIndex()) {
+            for (face in faces) {
+                face.render(array, mesh, light, tints)
+
+                rendered = true
+            }
+        }
+
+        return rendered
+    }
+}

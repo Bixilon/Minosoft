@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
@@ -55,19 +56,19 @@ data class SingleBlockStateApply(
 
                 val positions = positions(rotatedDirection, element.from, element.to)
 
-                var uv = face.uv.toArray(direction, face.rotation)
-                if (y != 0 && !uvLock) {
+                var uv = face.uv.toArray(rotatedDirection, face.rotation)
+                if (direction.axis == Axes.Y && y != 0 && !uvLock) {
                     uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y)
                 }
-                val shade = direction.shade
+                val shade = rotatedDirection.shade
 
                 val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, face.cull, texture)
 
-                bakedFaces[direction.ordinal] += bakedFace
+                bakedFaces[rotatedDirection.ordinal] += bakedFace
             }
         }
 
-        return BakedModel(bakedFaces.compact(), emptyArray())
+        return BakedModel(bakedFaces.compact(), emptyArray(), null) // TODO
     }
 
     companion object {

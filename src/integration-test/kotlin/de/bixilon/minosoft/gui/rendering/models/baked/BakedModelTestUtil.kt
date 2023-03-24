@@ -54,7 +54,7 @@ object BakedModelTestUtil {
     }
 
     fun BakedModel.assertFace(direction: Directions, positions: FloatArray, uv: FloatArray, shade: Float, texture: String? = null) {
-        val faces = this.face[direction.ordinal]
+        val faces = this.faces[direction.ordinal]
         if (faces.size != 1) throw IllegalArgumentException("Model has more/less than once face!")
         val face = faces.first()
 
