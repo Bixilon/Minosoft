@@ -30,7 +30,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.reflect.jvm.javaField
 
 enum class Directions(
-    @Deprecated("remove") val horizontalId: Int,
+    @Deprecated("remove") val campfireId: Int,
     val vector: Vec3i,
     val horizontal: Int,
 ) {

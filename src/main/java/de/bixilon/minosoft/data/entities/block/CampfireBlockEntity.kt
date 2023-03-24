@@ -73,7 +73,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             }
         }
 
-        val facing = blockState.getFacing().horizontalId
+        val facing = blockState.getFacing().campfireId
 
         for ((index, item) in items.withIndex()) {
             item ?: continue

@@ -43,11 +43,11 @@ object BakedModelTestUtil {
         return rendering.context.textureManager
     }
 
-    fun createFaces(from: Vec3 = Vec3(0.0f), to: Vec3 = Vec3(1.0f), texture: String = "#test"): Map<Directions, ModelFace> {
+    fun createFaces(from: Vec3 = Vec3(0.0f), to: Vec3 = Vec3(1.0f), rotation: Int = 0, texture: String = "#test"): Map<Directions, ModelFace> {
         val map: MutableMap<Directions, ModelFace> = mutableMapOf()
 
         for (direction in Directions) {
-            map[direction] = ModelFace(texture, fallbackUV(direction, from, to), cull = direction, rotation = 0)
+            map[direction] = ModelFace(texture, fallbackUV(direction, from, to), cull = direction, rotation = rotation)
         }
 
         return map

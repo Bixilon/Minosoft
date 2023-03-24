@@ -27,7 +27,7 @@ object DirectionUtil {
         var count = count % Directions.SIZE_SIDES
         if (count < 0) count += Directions.SIZE_SIDES
 
-        return Directions.HORIZONTAL[ArrayUtil.modifyArrayIndex((horizontalId - Directions.SIDE_OFFSET) + count, Directions.SIZE_SIDES)]
+        return Directions.HORIZONTAL[ArrayUtil.modifyArrayIndex(horizontal + count, Directions.SIZE_SIDES)]
     }
 
     fun rotateMatrix(direction: Directions): Mat4 {

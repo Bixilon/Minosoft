@@ -73,17 +73,19 @@ data class SingleBlockStateApply(
     companion object {
         const val ROTATION_STEP = 90
 
+        fun Int.rotation(): Int {
+            var rotation = this
+
+            if (rotation % ROTATION_STEP != 0) throw IllegalArgumentException("Invalid rotation: $rotation")
+            rotation /= ROTATION_STEP
+            return rotation and 0x03
+        }
+
         fun deserialize(model: BlockModel, data: JsonObject): SingleBlockStateApply {
             val uvLock = data["uvlock"]?.toBoolean() ?: false
             val weight = data["weight"]?.toInt() ?: 1
-            var x = data["x"]?.toInt() ?: 0
-            var y = data["y"]?.toInt() ?: 0
-
-            if (x % ROTATION_STEP != 0) throw IllegalArgumentException("Invalid x rotation: $x")
-            x /= ROTATION_STEP
-
-            if (y % ROTATION_STEP != 0) throw IllegalArgumentException("Invalid x rotation: $y")
-            y /= ROTATION_STEP
+            val x = data["x"]?.toInt()?.rotation() ?: 0
+            val y = data["y"]?.toInt()?.rotation() ?: 0
 
             return SingleBlockStateApply(model, uvLock, weight, x, y)
         }

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply.Companion.rotation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
@@ -69,7 +70,7 @@ data class ModelFace(
 
             val uv = data["uv"]?.listCast<Number>()?.let { FaceUV(start = Vec2(it[0], it[1]) / BLOCK_SIZE, end = Vec2(it[2], it[3]) / BLOCK_SIZE) } ?: fallbackUV(direction, from, to)
 
-            val rotation = data["rotation"]?.toInt() ?: 0
+            val rotation = data["rotation"]?.toInt()?.rotation() ?: 0
             val cull = data["cullface"]?.toString()?.let { if (it == "none") null else Directions[it] }
             val tintIndex = data["tintindex"]?.toInt() ?: TintManager.DEFAULT_TINT_INDEX
 

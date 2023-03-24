@@ -30,10 +30,10 @@ data class FaceUV(
             // @formatter:off
             Directions.DOWN,
             Directions.SOUTH,
-            Directions.WEST ->  floatArrayOf(start.x, start.y,   start.x, end.y,     end.x,   end.y,     end.x, start.y)
-            Directions.UP ->    floatArrayOf(start.x, end.y,     end.x,   end.y,     end.x,   start.y,   start.x, start.y)
+            Directions.WEST ->  floatArrayOf(start.x, start.y,   start.x, end.y,     end.x,   end.y,     end.x,   start.y )
+            Directions.UP ->    floatArrayOf(start.x, end.y,     end.x,   end.y,     end.x,   start.y,   start.x, start.y )
             Directions.NORTH,
-            Directions.EAST -> floatArrayOf(end.x,   start.y,   start.x, start.y,   start.x, end.y,     end.x, end.y)
+            Directions.EAST ->  floatArrayOf(end.x,   start.y,   start.x, start.y,   start.x, end.y,     end.x,   end.y   )
             // @formatter:on
         }
     }
