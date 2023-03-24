@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.element.face
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
 
 data class FaceUV(
     val start: Vec2,
@@ -25,8 +26,8 @@ data class FaceUV(
     constructor(u1: Int, v1: Int, u2: Int, v2: Int) : this(u1 / BLOCK_SIZE, v1 / BLOCK_SIZE, u2 / BLOCK_SIZE, v2 / BLOCK_SIZE)
 
 
-    fun toArray(direction: Directions): FloatArray {
-        return when (direction) {
+    fun toArray(direction: Directions, rotation: Int): FloatArray {
+        val floats = when (direction) {
             // @formatter:off
             Directions.DOWN,
             Directions.SOUTH,
@@ -36,5 +37,7 @@ data class FaceUV(
             Directions.EAST ->  floatArrayOf(end.x,   start.y,   start.x, start.y,   start.x, end.y,     end.x,   end.y   )
             // @formatter:on
         }
+        if (rotation == 0) return floats
+        return floats.pushRight(2, rotation)
     }
 }

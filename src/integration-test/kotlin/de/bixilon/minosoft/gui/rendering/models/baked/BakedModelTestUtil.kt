@@ -58,11 +58,11 @@ object BakedModelTestUtil {
         if (faces.size != 1) throw IllegalArgumentException("Model has more/less than once face!")
         val face = faces.first()
 
-        Assert.assertEquals(face.positions, positions)
-        Assert.assertEquals(face.uv, uv)
-        Assert.assertEquals(face.shade, shade)
+        Assert.assertEquals(face.positions, positions, "Vertices mismatch")
+        Assert.assertEquals(face.uv, uv, "UV mismatch")
+        Assert.assertEquals(face.shade, shade, "Shade mismatch")
         if (texture != null) {
-            Assert.assertEquals(face.texture.resourceLocation, texture.toResourceLocation().texture())
+            Assert.assertEquals(face.texture.resourceLocation, texture.toResourceLocation().texture(), "Texture mismatch")
         }
     }
 }

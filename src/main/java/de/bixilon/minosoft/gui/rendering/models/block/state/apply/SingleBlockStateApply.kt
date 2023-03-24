@@ -55,7 +55,7 @@ data class SingleBlockStateApply(
 
                 val positions = positions(rotatedDirection, element.from, element.to)
 
-                var uv = face.uv.toArray(direction)
+                var uv = face.uv.toArray(direction, face.rotation)
                 if (y != 0 && !uvLock) {
                     uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y)
                 }
