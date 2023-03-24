@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.preparer.cull
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_NORTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_SOUTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_UP
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
@@ -36,8 +36,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -61,18 +59,14 @@ class SolidCullSectionPreparer(
         val random = Random(0L)
 
 
-        val randomBlockModels = profile.antiMoirePattern
+        val randomness = profile.antiMoirePattern
         val isLowestSection = sectionHeight == chunk.minSection
         val isHighestSection = sectionHeight == chunk.maxSection
         val blocks = section.blocks
         val sectionLight = section.light
-        val blockEntities: MutableSet<BlockEntityRenderer<*>> = mutableSetOf()
-        var blockEntity: BlockEntity?
-        var model: BlockRender
-        var blockState: BlockState
+        val entities: MutableList<BlockEntityRenderer<*>> = ArrayList()
+
         val position = BlockPosition()
-        var rendered: Boolean
-        var tints: IntArray?
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
         val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
 
@@ -88,10 +82,9 @@ class SolidCullSectionPreparer(
                 for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                     val baseIndex = (z shl 4) or x
                     val index = (y shl 8) or baseIndex
-                    blockState = blocks[index] ?: continue
-                    if (blockState.block is FluidBlock) {
-                        continue
-                    }
+                    val state = blocks[index] ?: continue
+                    if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
+
                     light[SELF_LIGHT_INDEX] = sectionLight[index]
                     position.z = offsetZ + z
 
@@ -100,28 +93,20 @@ class SolidCullSectionPreparer(
                         light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or 0xF0).toByte()
                     }
 
-                    blockEntity = section.blockEntities[index]
-                    val blockEntityModel = blockEntity?.getRenderer(context, blockState, position, light[SELF_LIGHT_INDEX].toInt())
-                    if (blockEntityModel != null && (blockEntityModel !is OnlyMeshedBlockEntityRenderer)) {
-                        blockEntities += blockEntityModel
+                    val entity = section.blockEntities[index]?.getRenderer(context, state, position, light[SELF_LIGHT_INDEX].toInt())
+                    if (entity != null && entity.enabled) {
+                        entities += entity
                         mesh.addBlock(x, y, z)
                     }
-                    model = blockState.model ?: if (blockEntityModel is MeshedBlockEntityRenderer) {
-                        blockEntityModel
-                    } else {
-                        continue
-                    }
+                    val blockModel = state.block.model ?: state.model
+                    val model = blockModel ?: entity.nullCast<BlockRender>() ?: continue
 
                     if (y == 0) {
-                        if (fastBedrock && blockState === bedrock) {
+                        if (fastBedrock && state === bedrock) {
                             neighbourBlocks[O_DOWN] = someFullBlock
                         } else {
                             neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.let { it[x, ProtocolDefinition.SECTION_MAX_Y, z] }
-                            light[O_DOWN] = if (isLowestSection) {
-                                chunk.light.bottom
-                            } else {
-                                neighbours[O_DOWN]?.light
-                            }?.get(ProtocolDefinition.SECTION_MAX_Y shl 8 or baseIndex) ?: 0x00
+                            light[O_DOWN] = (if (isLowestSection) chunk.light.bottom else neighbours[O_DOWN]?.light)?.get(ProtocolDefinition.SECTION_MAX_Y shl 8 or baseIndex) ?: 0x00
                         }
                     } else {
                         neighbourBlocks[O_DOWN] = blocks[(y - 1) shl 8 or baseIndex]
@@ -129,11 +114,7 @@ class SolidCullSectionPreparer(
                     }
                     if (y == ProtocolDefinition.SECTION_MAX_Y) {
                         neighbourBlocks[O_UP] = neighbours[O_UP]?.blocks?.let { it[x, 0, z] }
-                        light[O_UP] = if (isHighestSection) {
-                            chunk.light.top
-                        } else {
-                            neighbours[O_UP]?.light
-                        }?.get((z shl 4) or x) ?: 0x00
+                        light[O_UP] = (if (isHighestSection) chunk.light.top else neighbours[O_UP]?.light)?.get((z shl 4) or x) ?: 0x00
                     } else {
                         neighbourBlocks[O_UP] = blocks[(y + 1) shl 8 or baseIndex]
                         light[O_UP] = sectionLight[(y + 1) shl 8 or baseIndex]
@@ -151,16 +132,16 @@ class SolidCullSectionPreparer(
                         light[O_UP] = (light[O_UP].toInt() or 0xF0).toByte()
                     }
 
-                    if (randomBlockModels) {
+                    if (randomness) {
                         random.setSeed(position.positionHash)
                     } else {
                         random.setSeed(0L)
                     }
-                    tints = tintColorCalculator.getAverageBlockTint(chunk, neighbourChunks, blockState, x, y, z)
-                    rendered = model.render(position, mesh, random, blockState, neighbourBlocks, light, tints)
+                    val tints = tintColorCalculator.getAverageBlockTint(chunk, neighbourChunks, state, x, y, z)
+                    var rendered = model.render(position, mesh, random, state, neighbourBlocks, light, tints)
 
-                    if (blockEntityModel is MeshedBlockEntityRenderer<*>) {
-                        rendered = blockEntityModel.render(position, mesh, random, blockState, neighbourBlocks, light, tints) || rendered
+                    if (blockModel == null && entity is BlockRender) {
+                        rendered = entity.render(position, mesh, random, state, neighbourBlocks, light, tints) || rendered
                     }
 
 
@@ -171,7 +152,7 @@ class SolidCullSectionPreparer(
                 }
             }
         }
-        mesh.blockEntities = blockEntities
+        mesh.blockEntities = entities
     }
 
     private inline fun checkNorth(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, section: ChunkSection, chunk: Chunk) {

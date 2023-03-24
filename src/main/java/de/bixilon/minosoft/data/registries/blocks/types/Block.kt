@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.Hard
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.PushingBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -40,6 +41,8 @@ abstract class Block(
     val properties: Map<BlockProperties, Array<Any>> = unsafeNull()
     val states: Set<BlockState> = unsafeNull()
     val defaultState: BlockState = unsafeNull()
+
+    val model: BlockRender? = null
 
     override val translationKey: ResourceLocation = identifier.translation("block")
 

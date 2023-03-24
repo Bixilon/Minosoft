@@ -32,9 +32,10 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
-import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer.Companion.SELF_LIGHT_INDEX
@@ -44,7 +45,8 @@ class SignBlockEntityRenderer(
     val sign: SignBlockEntity,
     val context: RenderContext,
     override val blockState: BlockState,
-) : OnlyMeshedBlockEntityRenderer<SignBlockEntity> {
+) : BlockEntityRenderer<SignBlockEntity>, BlockRender {
+    override val enabled: Boolean get() = false
 
     private fun getRotation(): Float {
         if (blockState !is PropertyBlockState) return 0.0f
