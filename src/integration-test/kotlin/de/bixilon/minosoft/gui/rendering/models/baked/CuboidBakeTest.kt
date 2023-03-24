@@ -49,6 +49,9 @@ class CuboidBakeTest {
 
         baked.assertFace(Directions.DOWN, block(2, 2, 1, 2, 2, 16, 13, 2, 16, 13, 2, 1), block(1, 14, 16, 14, 16, 3, 1, 3), 0.5f)
         baked.assertFace(Directions.UP, block(2, 15, 1, 13, 15, 1, 13, 15, 16, 2, 15, 16), block(1, 2, 1, 13, 16, 13, 16, 2), 1.0f)
-        // TODO: other sides
+        baked.assertFace(Directions.NORTH, block(2, 2, 1, 13, 2, 1, 13, 15, 1, 2, 15, 1), block(14, 2, 3, 2, 3, 15, 14, 15), 0.8f)
+        baked.assertFace(Directions.SOUTH, block(2, 2, 16, 2, 15, 16, 13, 15, 16, 13, 2, 16), block(2, 2, 2, 15, 13, 15, 13, 2), 0.8f)
+        baked.assertFace(Directions.WEST, block(2, 2, 1, 2, 15, 1, 2, 15, 16, 2, 2, 16), block(1, 2, 1, 15, 16, 15, 16, 2), 0.6f)
+        baked.assertFace(Directions.EAST, block(13, 2, 1, 13, 2, 16, 13, 15, 16, 13, 15, 1), block(15, 2, 0, 2, 0, 15, 15, 15), 0.6f)
     }
 }
