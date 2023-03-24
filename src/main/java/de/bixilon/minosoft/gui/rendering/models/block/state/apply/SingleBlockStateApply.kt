@@ -16,11 +16,14 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compact
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.positions
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.SideSize
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
@@ -39,27 +42,48 @@ data class SingleBlockStateApply(
     override fun bake(textures: TextureManager): BakedModel? {
         if (model.elements == null) return null
 
-        val bakedFaces: MutableMap<Directions, MutableList<BakedFace>> = EnumMap(Directions::class.java) // TODO: use array
+        val bakedFaces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
         val sizes: MutableMap<Directions, MutableList<SideSize.FaceSize>> = EnumMap(Directions::class.java)
 
         for (element in model.elements) {
             for ((direction, face) in element.faces) {
                 val texture = face.createTexture(model, textures)
+                var rotatedDirection = direction
+                if (y != 0) {
+                    rotatedDirection = rotatedDirection.rotateY(this.y)
+                }
 
+                val positions = positions(rotatedDirection, element.from, element.to)
 
-                val positions = positions(direction, element.from, element.to)
+                var uv = face.uv.toArray(direction)
+                if (y != 0 && !uvLock) {
+                    uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y)
+                }
+                val shade = direction.shade
+
+                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, face.cull, texture)
+
+                bakedFaces[direction.ordinal] += bakedFace
             }
         }
-        TODO()
+
+        return BakedModel(bakedFaces.compact(), emptyArray())
     }
 
-
     companion object {
+        const val ROTATION_STEP = 90
+
         fun deserialize(model: BlockModel, data: JsonObject): SingleBlockStateApply {
             val uvLock = data["uvlock"]?.toBoolean() ?: false
             val weight = data["weight"]?.toInt() ?: 1
-            val x = data["x"]?.toInt() ?: 0
-            val y = data["y"]?.toInt() ?: 0
+            var x = data["x"]?.toInt() ?: 0
+            var y = data["y"]?.toInt() ?: 0
+
+            if (x % ROTATION_STEP != 0) throw IllegalArgumentException("Invalid x rotation: $x")
+            x /= ROTATION_STEP
+
+            if (y % ROTATION_STEP != 0) throw IllegalArgumentException("Invalid x rotation: $y")
+            y /= ROTATION_STEP
 
             return SingleBlockStateApply(model, uvLock, weight, x, y)
         }
@@ -69,5 +93,13 @@ data class SingleBlockStateApply(
 
             return deserialize(model, data)
         }
+
+        val Directions.shade: Float
+            get() = when (this) {
+                Directions.UP -> 1.0f
+                Directions.DOWN -> 0.5f
+                Directions.NORTH, Directions.SOUTH -> 0.8f
+                Directions.WEST, Directions.EAST -> 0.6f
+            }
     }
 }

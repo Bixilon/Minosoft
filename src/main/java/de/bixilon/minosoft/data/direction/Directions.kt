@@ -20,7 +20,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
@@ -33,13 +32,14 @@ import kotlin.reflect.jvm.javaField
 enum class Directions(
     @Deprecated("remove") val horizontalId: Int,
     val vector: Vec3i,
+    val horizontal: Int,
 ) {
-    DOWN(-1, Vec3i(0, -1, 0)),
-    UP(-1, Vec3i(0, 1, 0)),
-    NORTH(2, Vec3i(0, 0, -1)),
-    SOUTH(0, Vec3i(0, 0, 1)),
-    WEST(1, Vec3i(-1, 0, 0)),
-    EAST(3, Vec3i(1, 0, 0));
+    DOWN(-1, Vec3i(0, -1, 0), -1),
+    UP(-1, Vec3i(0, 1, 0), -1),
+    NORTH(2, Vec3i(0, 0, -1), 0),
+    SOUTH(0, Vec3i(0, 0, 1), 2),
+    WEST(1, Vec3i(-1, 0, 0), 3),
+    EAST(3, Vec3i(1, 0, 0), 1);
 
     val negative = ordinal % 2 == 0
 
@@ -63,15 +63,6 @@ enum class Directions(
         return vector[axis]
     }
 
-    fun rotateYC(): Directions {
-        return when (this) {
-            NORTH -> EAST
-            SOUTH -> WEST
-            WEST -> NORTH
-            EAST -> SOUTH
-            else -> Broken("Rotation: $this")
-        }
-    }
 
     @Deprecated("outsource")
     fun getPositions(from: Vec3, to: Vec3): Array<Vec3> {
@@ -153,6 +144,7 @@ enum class Directions(
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = EnumUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
+        val HORIZONTAL = arrayOf(NORTH, EAST, SOUTH, WEST)
 
         val XYZ = arrayOf(WEST, EAST, DOWN, UP, NORTH, SOUTH)
 

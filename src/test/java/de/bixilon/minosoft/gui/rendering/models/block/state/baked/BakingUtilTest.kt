@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
@@ -69,5 +70,47 @@ class BakingUtilTest {
             BakingUtil.positions(Directions.EAST, from, to),
             floatArrayOf(6.0f, 2.0f, 3.0f, 6.0f, 2.0f, 4.0f, 6.0f, 5.0f, 4.0f, 6.0f, 5.0f, 3.0f)
         )
+    }
+
+    @Test
+    fun pushRight1() {
+        val array = floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f)
+        val expected = floatArrayOf(4f, 5f, 0f, 1f, 2f, 3f)
+        assertContentEquals(expected, array.pushRight(2, 1))
+    }
+
+    @Test
+    fun pushRight2() {
+        val array = floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f)
+        val expected = floatArrayOf(2f, 3f, 4f, 5f, 0f, 1f)
+        assertContentEquals(expected, array.pushRight(2, 2))
+    }
+
+    @Test
+    fun pushRight3() {
+        val array = floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f)
+        val expected = floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f)
+        assertContentEquals(expected, array.pushRight(2, 3))
+    }
+
+    @Test
+    fun pushLeft1() {
+        val array = floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f)
+        val expected = floatArrayOf(2f, 3f, 4f, 5f, 0f, 1f)
+        assertContentEquals(expected, array.pushRight(2, -1))
+    }
+
+    @Test
+    fun pushLeft2() {
+        val array = floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f)
+        val expected = floatArrayOf(4f, 5f, 0f, 1f, 2f, 3f)
+        assertContentEquals(expected, array.pushRight(2, -2))
+    }
+
+    @Test
+    fun pushLeft3() {
+        val array = floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f)
+        val expected = floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f)
+        assertContentEquals(expected, array.pushRight(2, -3))
     }
 }

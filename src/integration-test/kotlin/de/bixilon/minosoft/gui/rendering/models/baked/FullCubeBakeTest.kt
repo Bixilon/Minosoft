@@ -49,7 +49,7 @@ class FullCubeBakeTest {
     fun fullCubeY90() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 90)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
@@ -66,7 +66,7 @@ class FullCubeBakeTest {
     fun fullCubeX90() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 90)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
@@ -82,7 +82,7 @@ class FullCubeBakeTest {
     fun fullCubeX90Y90() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 90, y = 90)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.minosoft.data.direction.Directions
 
 object BakingUtil {
@@ -31,4 +32,33 @@ object BakingUtil {
         }
     }
 
+    inline fun <reified T> Array<MutableList<T>>.compact(): Array<Array<T>> {
+        val array: Array<Array<T>?> = arrayOfNulls(size)
+
+        for ((index, entries) in this.withIndex()) {
+            array[index] = entries.toTypedArray()
+        }
+
+        return array.cast()
+    }
+
+
+    fun FloatArray.pushRight(components: Int, steps: Int): FloatArray {
+        if (this.size % components != 0) throw IllegalArgumentException("Size mismatch!")
+        var steps = steps % (size / components)
+        if (steps < 0) steps += size * components
+
+        val target = FloatArray(size)
+
+        // push every value $components*steps right
+
+        val count = components * steps
+
+        for ((index, value) in this.withIndex()) {
+            val destination = (index + count) % this.size // TODO: allow negative steps
+            target[destination] = value
+        }
+
+        return target
+    }
 }
