@@ -39,6 +39,22 @@ class CuboidBakeTest {
         return result
     }
 
+    fun cuboidY90_1() {
+        val from = Vec3(1, 0, 0) / BLOCK_SIZE
+        val to = Vec3(16, 16, 16) / BLOCK_SIZE
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
+
+        val baked = model.bake(createTextureManager("block/test"))!!
+
+
+        baked.assertFace(Directions.DOWN, block(0, 0, 1, 0, 0, 16, 16, 0, 16, 16, 0, 1), block(1, 16, 16, 16, 16, 0, 1, 0), 0.5f)
+        baked.assertFace(Directions.UP, block(0, 16, 1, 16, 16, 1, 16, 16, 16, 0, 16, 16), block(1, 0, 1, 16, 16, 16, 16, 0), 1.0f)
+        baked.assertFace(Directions.NORTH, block(0, 0, 1, 16, 0, 1, 16, 16, 1, 0, 16, 1), block(16, 0, 0, 0, 0, 16, 16, 16), 0.8f)
+        baked.assertFace(Directions.SOUTH, block(0, 0, 16, 0, 16, 16, 16, 16, 16, 16, 0, 16), block(0, 0, 0, 16, 16, 16, 16, 0), 0.8f)
+        baked.assertFace(Directions.WEST, block(0, 0, 1, 0, 16, 1, 0, 16, 16, 0, 0, 16), block(1, 0, 1, 16, 16, 16, 16, 0), 0.6f)
+        baked.assertFace(Directions.EAST, block(16, 0, 1, 16, 0, 16, 16, 16, 16, 16, 16, 1), block(15, 0, 0, 0, 0, 16, 15, 16), 0.6f)
+    }
+
     fun cuboidY90() {
         val from = Vec3(1, 2, 3) / BLOCK_SIZE
         val to = Vec3(16, 15, 14) / BLOCK_SIZE
