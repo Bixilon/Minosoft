@@ -56,10 +56,9 @@ class SolidCullSectionPreparer(
     }
 
     override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: WorldMesh) {
-        val random = Random(0L)
+        val random = if (profile.antiMoirePattern) Random(0L) else null
 
 
-        val randomness = profile.antiMoirePattern
         val isLowestSection = sectionHeight == chunk.minSection
         val isHighestSection = sectionHeight == chunk.maxSection
         val blocks = section.blocks
@@ -132,11 +131,8 @@ class SolidCullSectionPreparer(
                         light[O_UP] = (light[O_UP].toInt() or 0xF0).toByte()
                     }
 
-                    if (randomness) {
-                        random.setSeed(position.positionHash)
-                    } else {
-                        random.setSeed(0L)
-                    }
+                    random?.setSeed(position.positionHash)
+
                     val tints = tintColorCalculator.getAverageBlockTint(chunk, neighbourChunks, state, x, y, z)
                     var rendered = model.render(position, mesh, random, state, neighbourBlocks, light, tints)
 

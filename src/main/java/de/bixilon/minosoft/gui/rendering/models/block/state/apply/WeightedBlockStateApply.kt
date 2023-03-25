@@ -13,26 +13,48 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
+import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.WeightedBlockRender
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 data class WeightedBlockStateApply(
-    val models: List<SingleBlockStateApply>
+    val models: List<WeightedApply>
 ) : BlockStateApply {
 
-    override fun bake(textures: TextureManager): BakedModel {
-        TODO("Not yet implemented")
+    override fun bake(textures: TextureManager): WeightedBlockRender? {
+        val baked: Array<WeightedBlockRender.WeightedEntry?> = arrayOfNulls(models.size)
+        var totalWeight = 0
+
+        for ((index, entry) in models.withIndex()) {
+            val model = entry.apply.bake(textures) ?: continue
+            baked[index] = WeightedBlockRender.WeightedEntry(entry.weight, model)
+            totalWeight += entry.weight
+        }
+
+        if (totalWeight == 0) return null
+
+        return WeightedBlockRender(baked.cast(), totalWeight)
     }
+
+    data class WeightedApply(
+        val weight: Int,
+        val apply: SingleBlockStateApply,
+    )
 
     companion object {
 
-        fun deserialize(loader: BlockLoader, data: List<JsonObject>): WeightedBlockStateApply {
-            val models: MutableList<SingleBlockStateApply> = mutableListOf()
+        fun deserialize(loader: BlockLoader, data: List<JsonObject>): WeightedBlockStateApply? {
+            if (data.isEmpty()) return null
+            val models: MutableList<WeightedApply> = mutableListOf()
 
             for (entry in data) {
-                models += SingleBlockStateApply.deserialize(loader, entry)
+                var weight = entry["weight"]?.toInt() ?: 1
+                if (weight < 0) weight = 1
+                val apply = SingleBlockStateApply.deserialize(loader, entry)
+                models += WeightedApply(weight, apply)
             }
 
             return WeightedBlockStateApply(models)

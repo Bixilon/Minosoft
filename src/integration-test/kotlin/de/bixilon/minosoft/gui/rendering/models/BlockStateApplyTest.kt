@@ -76,7 +76,6 @@ class BlockStateApplyTest {
             x = 0,
             y = 0,
             uvLock = false,
-            weight = 1,
         ))
     }
 

@@ -43,13 +43,15 @@ interface VariantBlockModel : DirectBlockModel {
 
 
             for ((variant, entry) in data) {
-                val apply = BlockStateApply.deserialize(loader, entry.asJsonObject())
+                val apply = BlockStateApply.deserialize(loader, entry.asJsonObject()) ?: continue
                 if (variant == "") {
                     // no further conditions
                     return SingleVariantBlockModel(apply)
                 }
                 variants[parseVariant(variant)] = apply
             }
+
+            if (variants.isEmpty()) return null
 
             return PropertyVariantBlockModel(variants)
         }

@@ -28,9 +28,9 @@ class BakedModel(
     val particle: AbstractTexture?,
 ) : BlockRender {
 
-    override fun getParticleTexture(random: Random, position: Vec3i) = particle
+    override fun getParticleTexture(random: Random?, position: Vec3i) = particle
 
-    override fun render(position: BlockPosition, mesh: WorldMesh, random: Random, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun render(position: BlockPosition, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val float = position.toVec3
 
         val array = float.array

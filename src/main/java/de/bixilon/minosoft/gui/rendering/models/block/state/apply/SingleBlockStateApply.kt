@@ -34,7 +34,6 @@ import java.util.*
 data class SingleBlockStateApply(
     val model: BlockModel,
     val uvLock: Boolean = false,
-    val weight: Int = 1,
     val x: Int = 0,
     val y: Int = 0,
 ) : BlockStateApply {
@@ -84,11 +83,10 @@ data class SingleBlockStateApply(
 
         fun deserialize(model: BlockModel, data: JsonObject): SingleBlockStateApply {
             val uvLock = data["uvlock"]?.toBoolean() ?: false
-            val weight = data["weight"]?.toInt() ?: 1
             val x = data["x"]?.toInt()?.rotation() ?: 0
             val y = data["y"]?.toInt()?.rotation() ?: 0
 
-            return SingleBlockStateApply(model, uvLock, weight, x, y)
+            return SingleBlockStateApply(model, uvLock, x, y)
         }
 
         fun deserialize(loader: BlockLoader, data: JsonObject): SingleBlockStateApply {

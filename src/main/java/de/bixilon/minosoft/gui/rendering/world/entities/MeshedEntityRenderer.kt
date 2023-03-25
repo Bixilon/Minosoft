@@ -11,25 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.block.state.apply
+package de.bixilon.minosoft.gui.rendering.world.entities
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
-import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-interface BlockStateApply {
-
-    fun bake(textures: TextureManager): BlockRender?
-
-    companion object {
-
-        fun deserialize(loader: BlockLoader, data: Any): BlockStateApply? {
-            if (data is Map<*, *>) return SingleBlockStateApply.deserialize(loader, data.asJsonObject())
-            if (data is List<*>) return WeightedBlockStateApply.deserialize(loader, data.unsafeCast())
-
-            throw IllegalArgumentException("Can not deserialize $data!")
-        }
-    }
-}
+interface MeshedEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, BlockRender

@@ -32,10 +32,9 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
-import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
-import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.MeshedEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer.Companion.SELF_LIGHT_INDEX
@@ -45,7 +44,7 @@ class SignBlockEntityRenderer(
     val sign: SignBlockEntity,
     val context: RenderContext,
     override val blockState: BlockState,
-) : BlockEntityRenderer<SignBlockEntity>, BlockRender {
+) : MeshedEntityRenderer<SignBlockEntity> {
     override val enabled: Boolean get() = false
 
     private fun getRotation(): Float {
@@ -54,7 +53,7 @@ class SignBlockEntityRenderer(
         return rotation * 22.5f
     }
 
-    override fun render(position: Vec3i, mesh: WorldMesh, random: Random, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun render(position: Vec3i, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val block = this.blockState.block
         if (block is StandingSignBlock) {
             renderStandingText(position, mesh, light[SELF_LIGHT_INDEX].toInt())
