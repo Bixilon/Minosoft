@@ -57,4 +57,5 @@ class Version(
     val requiresSignedLogin get() = requiresSignedChat && versionId < ProtocolVersions.V_22W43A
     val supportsRGBChat get() = versionId >= ProtocolVersions.V_20W17A
     val jsonLanguage get() = versionId >= ProtocolVersions.V_18W02A
+    val doubleSigns get() = versionId >= ProtocolVersions.V_23W12A
 }

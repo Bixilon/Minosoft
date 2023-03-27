@@ -13,7 +13,8 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.entities.block.SignBlockEntity
+import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
+import de.bixilon.minosoft.data.entities.block.sign.SignSides
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class SignTextC2SP(
     val position: Vec3i,
+    val side: SignSides,
     val lines: Array<ChatComponent>,
 ) : PlayC2SPacket {
 
@@ -38,6 +40,9 @@ class SignTextC2SP(
             buffer.writeByteBlockPosition(position)
         } else {
             buffer.writeBlockPosition(position)
+        }
+        if (buffer.versionId >= ProtocolVersions.V_23W12A) {
+            buffer.writeBoolean(if (side == SignSides.FRONT) true else false)
         }
         for (line in lines) {
             buffer.writeString(line.message)

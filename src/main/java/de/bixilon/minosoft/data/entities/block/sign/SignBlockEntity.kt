@@ -11,10 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.block.sign
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.entities.block.MeshedBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -39,6 +41,7 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
 
             lines[i - 1] = ChatComponent.of(tag, translator = connection.language)
         }
+        // TODO: update front/back text
     }
 
     override fun createMeshedRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i): SignBlockEntityRenderer {

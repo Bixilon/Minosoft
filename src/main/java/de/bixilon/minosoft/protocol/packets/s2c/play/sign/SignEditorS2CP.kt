@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.sign
 
-import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.entities.block.sign.SignSides
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -25,11 +25,8 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class SignEditorS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    var blockPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
-        buffer.readIntBlockPosition()
-    } else {
-        buffer.readBlockPosition()
-    }
+    val position = if (buffer.versionId < ProtocolVersions.V_14W03B) buffer.readIntBlockPosition() else buffer.readBlockPosition()
+    val side = if (buffer.versionId >= ProtocolVersions.V_22W12A) if (buffer.readBoolean()) SignSides.FRONT else SignSides.BACK else SignSides.FRONT
 
     override fun handle(connection: PlayConnection) {
         if (connection.events.fire(OpenSignEditorEvent(connection, this))) {
@@ -38,6 +35,6 @@ class SignEditorS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sign editor (blockPosition=$blockPosition)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sign editor (position=$position, side=$side)" }
     }
 }

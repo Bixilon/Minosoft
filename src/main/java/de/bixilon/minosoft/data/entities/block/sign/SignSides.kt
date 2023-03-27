@@ -10,19 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.entities.block.sign.SignSides
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.sign.SignEditorS2CP
+package de.bixilon.minosoft.data.entities.block.sign
 
-class OpenSignEditorEvent(
-    connection: PlayConnection,
-    val position: Vec3i,
-    val side: SignSides,
-) : PlayConnectionEvent(connection), CancelableEvent {
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-    constructor(connection: PlayConnection, packet: SignEditorS2CP) : this(connection, packet.position, packet.side)
+enum class SignSides {
+    FRONT,
+    BACK,
+    ;
+
+    companion object : ValuesEnum<SignSides> {
+        override val VALUES: Array<SignSides> = values()
+        override val NAME_MAP: Map<String, SignSides> = EnumUtil.getEnumValues(VALUES)
+    }
 }

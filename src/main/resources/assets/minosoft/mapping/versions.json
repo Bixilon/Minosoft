@@ -1,4 +1,9 @@
 {
+  "888": {
+    "name": "23w12a",
+    "protocol_id": 1073741951,
+    "packets": 880
+  },
   "887": {
     "name": "1.19.4",
     "protocol_id": 762,

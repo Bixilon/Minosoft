@@ -19,7 +19,8 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.entities.block.SignBlockEntity
+import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
+import de.bixilon.minosoft.data.entities.block.sign.SignSides
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.SignBlock
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -52,6 +53,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.block.SignTextC2SP
 class SignEditorScreen(
     guiRenderer: GUIRenderer,
     val blockPosition: Vec3i,
+    val side: SignSides,
     val blockState: BlockState? = guiRenderer.connection.world[blockPosition],
     val blockEntity: SignBlockEntity? = guiRenderer.connection.world.getBlockEntity(blockPosition).nullCast(),
 ) : Screen(guiRenderer), AbstractLayout<Element> {
@@ -118,7 +120,7 @@ class SignEditorScreen(
     override fun onClose() {
         super.onClose()
         val text = getText()
-        guiRenderer.connection.sendPacket(SignTextC2SP(blockPosition, text))
+        guiRenderer.connection.sendPacket(SignTextC2SP(blockPosition, this.side, text))
     }
 
     override fun forceSilentApply() {
@@ -220,7 +222,7 @@ class SignEditorScreen(
         private val BACKGROUND_SIZE = Vec2i(24, 12) * BACKGROUND_SCALE
 
         fun register(guiRenderer: GUIRenderer) {
-            guiRenderer.connection.events.listen<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.blockPosition)) }
+            guiRenderer.connection.events.listen<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.position, it.side)) }
         }
     }
 }
