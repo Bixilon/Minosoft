@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.baked
+package de.bixilon.minosoft.gui.rendering.models.baked.rotation
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.block
+import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.assertFace
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.createFaces
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel

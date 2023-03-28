@@ -30,6 +30,24 @@ import org.testng.annotations.Test
 @Test(groups = ["models"])
 class CuboidBakeTest {
 
+
+    fun noRotation() {
+        val from = Vec3(6, 0, 6) / BLOCK_SIZE
+        val to = Vec3(10, 16, 16) / BLOCK_SIZE
+
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+
+        val baked = model.bake(createTextureManager("block/test"))!!
+
+
+        baked.assertFace(Directions.DOWN, block(6, 0, 6, 6, 0, 16, 10, 0, 16, 10, 0, 6))
+        baked.assertFace(Directions.UP, block(6, 16, 6, 10, 16, 6, 10, 16, 16, 6, 16, 16))
+        baked.assertFace(Directions.NORTH, block(6, 0, 6, 10, 0, 6, 10, 16, 6, 6, 16, 6))
+        baked.assertFace(Directions.SOUTH, block(6, 0, 16, 6, 16, 16, 10, 16, 16, 10, 0, 16))
+        baked.assertFace(Directions.WEST, block(6, 0, 6, 6, 16, 6, 6, 16, 16, 6, 0, 16))
+        baked.assertFace(Directions.EAST, block(10, 0, 6, 10, 0, 16, 10, 16, 16, 10, 16, 6))
+    }
+
     fun cuboidY90_1() {
         val from = Vec3(1, 0, 0) / BLOCK_SIZE
         val to = Vec3(16, 16, 16) / BLOCK_SIZE
