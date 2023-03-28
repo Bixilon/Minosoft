@@ -29,7 +29,6 @@ import org.testng.annotations.Test
 @Test(groups = ["models"])
 class XYRotationTest {
 
-
     fun `x=90_y=90`() {
         val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
         val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
@@ -41,8 +40,8 @@ class XYRotationTest {
         baked.assertFace(Directions.UP, block(0, 16, 6, 16, 16, 6, 16, 16, 10, 0, 16, 10))
         baked.assertFace(Directions.NORTH, block(0, 6, 6, 16, 6, 6, 16, 16, 6, 0, 16, 6))
         baked.assertFace(Directions.SOUTH, block(0, 6, 10, 0, 16, 10, 16, 16, 10, 16, 6, 10))
-        baked.assertFace(Directions.WEST, block(16, 6, 6, 16, 16, 6, 16, 16, 10, 16, 6, 10))
-        baked.assertFace(Directions.EAST, block(0, 6, 6, 0, 6, 10, 0, 16, 10, 0, 16, 6))
+        baked.assertFace(Directions.WEST, block(0, 6, 6, 0, 16, 6, 0, 16, 10, 0, 6, 10))
+        baked.assertFace(Directions.EAST, block(16, 6, 6, 16, 6, 10, 16, 16, 10, 16, 16, 6))
     }
 
     fun `x=90_y=270`() {
@@ -53,7 +52,7 @@ class XYRotationTest {
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         baked.assertFace(Directions.DOWN, block(0, 6, 6, 0, 6, 10, 16, 6, 10, 16, 6, 6))
-        baked.assertFace(Directions.UP, block(0, 16, 6, 16, 16, 6, 16, 16, 10, 6, 16, 10))
+        baked.assertFace(Directions.UP, block(0, 16, 6, 16, 16, 6, 16, 16, 10, 0, 16, 10))
     }
 
     // TODO: 90x180, 90x270, 180x90, 180x180, 180x270, 270x90, 270x180, 270x270
