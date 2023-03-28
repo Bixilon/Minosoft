@@ -79,7 +79,54 @@ class XRotationTest {
         bake(3).assertFace(Directions.NORTH, block(6, 0, 0, 10, 0, 0, 10, 16, 0, 6, 16, 0))
     }
 
-    // TODO: south, west, east
+    fun rotatedSouth() {
+        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+
+        fun bake(rotation: Int): BakedModel {
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.SOUTH to createFaces(from, to)[Directions.SOUTH]!!))), textures = mapOf("test" to Namespaces.minecraft("block/test").texture())), x = rotation)
+
+            return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
+        }
+
+
+        bake(1).assertFace(Directions.SOUTH, block(6, 6, 16, 6, 16, 16, 10, 16, 16, 10, 6, 16))
+        bake(2).assertFace(Directions.SOUTH, block(6, 0, 10, 6, 16, 10, 10, 16, 10, 10, 0, 10))
+        bake(3).assertFace(Directions.SOUTH, block(6, 0, 16, 6, 10, 16, 10, 10, 16, 10, 0, 16))
+    }
+
+    fun rotatedWest() {
+        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+
+        fun bake(rotation: Int): BakedModel {
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.WEST to createFaces(from, to)[Directions.WEST]!!))), textures = mapOf("test" to Namespaces.minecraft("block/test").texture())), x = rotation)
+
+            return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
+        }
+
+
+        bake(1).assertFace(Directions.WEST, block(6, 6, 0, 6, 16, 0, 6, 16, 16, 6, 6, 16))
+        bake(2).assertFace(Directions.WEST, block(6, 0, 0, 6, 16, 0, 6, 16, 10, 6, 0, 10))
+        bake(3).assertFace(Directions.WEST, block(6, 0, 0, 6, 10, 0, 6, 10, 16, 6, 0, 16))
+    }
+
+    fun rotatedEast() {
+        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+
+        fun bake(rotation: Int): BakedModel {
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.EAST to createFaces(from, to)[Directions.EAST]!!))), textures = mapOf("test" to Namespaces.minecraft("block/test").texture())), x = rotation)
+
+            return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
+        }
+
+
+        bake(1).assertFace(Directions.EAST, block(10, 6, 0, 10, 6, 16, 10, 16, 16, 10, 16, 0))
+        bake(2).assertFace(Directions.EAST, block(10, 0, 0, 10, 0, 10, 10, 16, 10, 10, 16, 0))
+        bake(3).assertFace(Directions.EAST, block(10, 0, 0, 10, 0, 16, 10, 10, 16, 10, 10, 0))
+    }
+
 
     // TODO: combined
     // TODO: split rotations in all tests (directions)
