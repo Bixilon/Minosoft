@@ -87,7 +87,7 @@ data class SingleBlockStateApply(
 
                 var uv = face.uv.toArray(rotatedDirection, face.rotation)
                 if (direction.axis == Axes.Y && y != 0 && !uvLock) {
-                    uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y)
+                    uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y) // TODO, this is wrong
                 }
                 val shade = rotatedDirection.shade
 

@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 
 data class SingleVariantBlockModel(
     val apply: BlockStateApply,
-) : VariantBlockModel
+) : VariantBlockModel {
+    override fun choose(state: BlockState): BlockStateApply = apply
+}

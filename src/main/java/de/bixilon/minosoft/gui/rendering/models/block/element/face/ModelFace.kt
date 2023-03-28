@@ -56,12 +56,14 @@ data class ModelFace(
 
         fun fallbackUV(direction: Directions, from: Vec3, to: Vec3): FaceUV {
             return when (direction) {
-                Directions.DOWN -> FaceUV(from.x, 1.0f - to.z, to.x, 1.0f - from.z)
-                Directions.UP -> FaceUV(from.x, from.z, to.x, to.z)
-                Directions.NORTH -> FaceUV(1.0f - to.x, 1.0f - to.y, 1.0f - from.x, 1.0f - from.y)
-                Directions.SOUTH -> FaceUV(from.x, 1.0f - to.y, to.x, 1.0f - from.y)
-                Directions.WEST -> FaceUV(from.z, 1.0f - to.y, to.z, 1.0f - from.y)
-                Directions.EAST -> FaceUV(1.0f - to.z, 1.0f - to.y, 1.0f - from.z, 1.0f - from.y)
+                // @formatter:off
+                Directions.DOWN ->  FaceUV(from.x,      1.0f - to.z,     to.x,            1.0f - from.z  )
+                Directions.UP ->    FaceUV(from.x,      from.z,          to.x,            to.z           )
+                Directions.NORTH -> FaceUV(1.0f - to.x, 1.0f - to.y,     1.0f - from.x,   1.0f - from.y  )
+                Directions.SOUTH -> FaceUV(from.x,      1.0f - to.y,     to.x,            1.0f - from.y  )
+                Directions.WEST ->  FaceUV(from.z,      1.0f - to.y,     to.z,            1.0f - from.y  )
+                Directions.EAST ->  FaceUV(1.0f - to.z, 1.0f - to.y,     1.0f - from.z,   1.0f - from.y  )
+                // @formatter:on
             }
         }
 

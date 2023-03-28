@@ -15,11 +15,15 @@ package de.bixilon.minosoft.gui.rendering.models.block.state
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.block.state.condition.ConditionBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.variant.VariantBlockModel
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 
 interface DirectBlockModel {
+
+    fun choose(state: BlockState): BlockStateApply?
 
     companion object {
 

@@ -14,11 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.condition
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 
 @Deprecated("TODO")
 class ConditionBlockModel : DirectBlockModel {
+
+    override fun choose(state: BlockState): BlockStateApply? {
+        TODO("Not yet implemented")
+    }
 
     companion object {
 

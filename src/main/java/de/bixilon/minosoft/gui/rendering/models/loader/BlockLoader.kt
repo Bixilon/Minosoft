@@ -45,7 +45,14 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun load(latch: CountUpAndDownLatch) {
+        for (block in loader.context.connection.registries.block) {
+            val model = loadState(block) ?: continue
 
+            for (state in block.states) {
+                val apply = model.choose(state) ?: continue
+                state.model = apply.bake(loader.context.textureManager)
+            }
+        }
     }
 
 
