@@ -21,13 +21,22 @@ import de.bixilon.minosoft.data.Axes
 
 object DirectionUtil {
 
+    fun Directions.rotateX(count: Int = 1): Directions {
+        if (count == 0) return this
+        if (axis == Axes.X) return this
+        var count = count % Directions.SIZE_SIDES
+        if (count < 0) count += Directions.SIZE_SIDES
+
+        return Directions.INDEXED[0][ArrayUtil.modifyArrayIndex(index.x + count, Directions.SIZE_SIDES)]
+    }
+
     fun Directions.rotateY(count: Int = 1): Directions {
         if (count == 0) return this
         if (axis == Axes.Y) return this
         var count = count % Directions.SIZE_SIDES
         if (count < 0) count += Directions.SIZE_SIDES
 
-        return Directions.HORIZONTAL[ArrayUtil.modifyArrayIndex(horizontal + count, Directions.SIZE_SIDES)]
+        return Directions.INDEXED[1][ArrayUtil.modifyArrayIndex(index.y + count, Directions.SIZE_SIDES)]
     }
 
     fun rotateMatrix(direction: Directions): Mat4 {

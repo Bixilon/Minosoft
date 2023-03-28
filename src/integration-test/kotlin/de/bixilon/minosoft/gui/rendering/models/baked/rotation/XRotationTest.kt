@@ -40,11 +40,9 @@ class XRotationTest {
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }
-
-
-        bake(1).assertFace(Directions.DOWN, block(6, 6, 0, 6, 6, 16, 10, 6, 16, 10, 6, 0))
-        bake(2).assertFace(Directions.DOWN, block(6, 0, 0, 6, 0, 10, 10, 0, 10, 10, 0, 0))
-        bake(3).assertFace(Directions.DOWN, block(6, 0, 0, 6, 0, 16, 10, 0, 16, 10, 0, 0))
+        bake(1).assertFace(Directions.SOUTH, block(6, 6, 16, 6, 16, 16, 10, 16, 16, 10, 6, 16))
+        bake(2).assertFace(Directions.UP, block(6, 16, 0, 10, 16, 0, 10, 16, 10, 6, 16, 10))
+        bake(3).assertFace(Directions.NORTH, block(6, 0, 0, 10, 0, 0, 10, 10, 0, 6, 10, 0))
     }
 
     fun rotatedUp() {
@@ -56,11 +54,9 @@ class XRotationTest {
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }
-
-
-        bake(1).assertFace(Directions.UP, block(6, 16, 0, 10, 16, 0, 10, 16, 16, 6, 16, 16))
-        bake(2).assertFace(Directions.UP, block(6, 16, 0, 10, 16, 0, 10, 16, 10, 6, 16, 10))
-        bake(3).assertFace(Directions.UP, block(6, 10, 0, 10, 10, 0, 10, 10, 16, 6, 10, 16))
+        bake(1).assertFace(Directions.NORTH, block(6, 6, 0, 10, 6, 0, 10, 16, 0, 6, 16, 0))
+        bake(2).assertFace(Directions.DOWN, block(6, 0, 0, 6, 0, 10, 10, 0, 10, 10, 0, 0))
+        bake(3).assertFace(Directions.SOUTH, block(6, 0, 16, 6, 10, 16, 10, 10, 16, 10, 0, 16))
     }
 
     fun rotatedNorth() {
@@ -72,11 +68,9 @@ class XRotationTest {
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }
-
-
-        bake(1).assertFace(Directions.NORTH, block(6, 6, 0, 10, 6, 0, 10, 16, 0, 6, 16, 0))
-        bake(2).assertFace(Directions.NORTH, block(6, 0, 0, 10, 0, 0, 10, 16, 0, 6, 16, 0))
-        bake(3).assertFace(Directions.NORTH, block(6, 0, 0, 10, 0, 0, 10, 16, 0, 6, 16, 0))
+        bake(1).assertFace(Directions.DOWN, block(6, 6, 0, 6, 6, 16, 10, 6, 16, 10, 6, 0))
+        bake(2).assertFace(Directions.SOUTH, block(6, 0, 10, 6, 16, 10, 10, 16, 10, 10, 0, 10))
+        bake(3).assertFace(Directions.UP, block(6, 10, 0, 10, 10, 0, 10, 10, 16, 6, 10, 16))
     }
 
     fun rotatedSouth() {
@@ -88,11 +82,9 @@ class XRotationTest {
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }
-
-
-        bake(1).assertFace(Directions.SOUTH, block(6, 6, 16, 6, 16, 16, 10, 16, 16, 10, 6, 16))
-        bake(2).assertFace(Directions.SOUTH, block(6, 0, 10, 6, 16, 10, 10, 16, 10, 10, 0, 10))
-        bake(3).assertFace(Directions.SOUTH, block(6, 0, 16, 6, 10, 16, 10, 10, 16, 10, 0, 16))
+        bake(1).assertFace(Directions.UP, block(6, 16, 0, 10, 16, 0, 10, 16, 16, 6, 16, 16))
+        bake(2).assertFace(Directions.NORTH, block(6, 0, 0, 10, 0, 0, 10, 16, 0, 6, 16, 0))
+        bake(3).assertFace(Directions.DOWN, block(6, 0, 0, 6, 0, 16, 10, 0, 16, 10, 0, 0))
     }
 
     fun rotatedWest() {
@@ -128,6 +120,5 @@ class XRotationTest {
     }
 
 
-    // TODO: combined
-    // TODO: split rotations in all tests (directions)
+    // TODO: combined (x;y)
 }

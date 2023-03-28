@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.direction
 
+import de.bixilon.minosoft.data.direction.DirectionUtil.rotateX
 import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -77,5 +78,16 @@ class DirectionUtilTest {
         assertEquals(Directions.EAST.rotateY(4), Directions.EAST)
         assertEquals(Directions.SOUTH.rotateY(4), Directions.SOUTH)
         assertEquals(Directions.WEST.rotateY(4), Directions.WEST)
+    }
+
+    @Test
+    fun rotateX1() {
+        assertEquals(Directions.EAST.rotateX(1), Directions.EAST)
+        assertEquals(Directions.WEST.rotateX(1), Directions.WEST)
+
+        assertEquals(Directions.UP.rotateX(1), Directions.NORTH)
+        assertEquals(Directions.DOWN.rotateX(1), Directions.SOUTH)
+        assertEquals(Directions.NORTH.rotateX(1), Directions.DOWN)
+        assertEquals(Directions.SOUTH.rotateX(1), Directions.UP)
     }
 }

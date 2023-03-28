@@ -17,6 +17,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.DirectionUtil.rotateX
 import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
@@ -38,9 +39,42 @@ data class SingleBlockStateApply(
     val y: Int = 0,
 ) : BlockStateApply {
 
+    private fun FloatArray.rotateX(count: Int) {
+
+        fun FloatArray.rotateOffsetX(offset: Int) {
+            val y = this[offset + 1]
+            val z = this[offset + 2]
+
+            this[offset + 1] = z
+            this[offset + 2] = -y + 1.0f
+        }
+
+        for (c in 0 until count) {
+            for (i in 0 until 4) {
+                rotateOffsetX(i * 3)
+            }
+        }
+    }
+
+    private fun FloatArray.rotateX(direction: Directions): FloatArray {
+        if (x == 0) return this
+
+        rotateX(x)
+        if (direction.axis == Axes.X) {
+            return pushRight(3, if (direction.negative) -x else x)
+        }
+
+        if (direction.axis == Axes.Y && (x == 2 || x == 3)) {
+            return pushRight(3, if (direction.negative) -1 else 1)
+        } else if (direction.axis == Axes.Z && (x == 1 || x == 2)) {
+            return pushRight(3, if (direction.negative) 1 else -1)
+        }
+
+        return this
+    }
+
 
     private fun FloatArray.rotateY(count: Int) {
-        if (count == 0) return
 
         fun FloatArray.rotateOffsetY(offset: Int) {
             val x = this[offset + 0]
@@ -57,6 +91,22 @@ data class SingleBlockStateApply(
         }
     }
 
+    private fun FloatArray.rotateY(direction: Directions): FloatArray {
+        if (y == 0) return this
+
+        rotateY(y)
+        if (direction.axis == Axes.Y) {
+            return pushRight(3, if (direction.negative) -y else y)
+        }
+
+        if ((direction.axis == Axes.Z && (y == 2 || y == 3))) {
+            return pushRight(3, if (direction.negative) -1 else 1)
+        } else if (direction.axis == Axes.X && (y == 1 || y == 2)) {
+            return pushRight(3, if (direction.negative) 1 else -1)
+        }
+        return this
+    }
+
 
     override fun bake(textures: TextureManager): BakedModel? {
         if (model.elements == null) return null
@@ -67,23 +117,15 @@ data class SingleBlockStateApply(
         for (element in model.elements) {
             for ((direction, face) in element.faces) {
                 val texture = face.createTexture(model, textures)
-                var rotatedDirection = direction
-                if (y != 0) {
-                    rotatedDirection = rotatedDirection.rotateY(this.y)
-                }
+
+                val rotatedDirection = direction
+                    .rotateY(this.y)
+                    .rotateX(this.x)
 
 
-                var positions = positions(direction, element.from, element.to)
-                positions.rotateY(y)
-                if (direction.axis == Axes.Y) {
-                    positions = positions.pushRight(3, if (direction.negative) -y else y)
-                } else {
-                    if ((direction.axis == Axes.Z && (y == 2 || y == 3))) {
-                        positions = positions.pushRight(3, if (direction.negative) -1 else 1)
-                    } else if (direction.axis == Axes.X && (y == 1 || y == 2)) {
-                        positions = positions.pushRight(3, if (direction.negative) 1 else -1)
-                    }
-                }
+                val positions = positions(direction, element.from, element.to)
+                    .rotateY(direction)
+                    .rotateX(direction)
 
                 var uv = face.uv.toArray(rotatedDirection, face.rotation)
                 if (direction.axis == Axes.Y && y != 0 && !uvLock) {

@@ -32,14 +32,15 @@ import kotlin.reflect.jvm.javaField
 enum class Directions(
     @Deprecated("remove") val campfireId: Int,
     val vector: Vec3i,
-    val horizontal: Int,
+    val index: Vec3i,
 ) {
-    DOWN(-1, Vec3i(0, -1, 0), -1),
-    UP(-1, Vec3i(0, 1, 0), -1),
-    NORTH(2, Vec3i(0, 0, -1), 0),
-    SOUTH(0, Vec3i(0, 0, 1), 2),
-    WEST(1, Vec3i(-1, 0, 0), 3),
-    EAST(3, Vec3i(1, 0, 0), 1);
+    DOWN(-1, Vec3i(0, -1, 0), Vec3i(1, -1, 1)),
+    UP(-1, Vec3i(0, 1, 0), Vec3i(3, -1, 3)),
+    NORTH(2, Vec3i(0, 0, -1), Vec3i(0, 0, -1)),
+    SOUTH(0, Vec3i(0, 0, 1), Vec3i(2, 2, -1)),
+    WEST(1, Vec3i(-1, 0, 0), Vec3i(-1, 3, 2)),
+    EAST(3, Vec3i(1, 0, 0), Vec3i(-1, 1, 0)),
+    ;
 
     val negative = ordinal % 2 == 0
 
@@ -144,7 +145,12 @@ enum class Directions(
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = EnumUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
-        val HORIZONTAL = arrayOf(NORTH, EAST, SOUTH, WEST)
+
+        val INDEXED = arrayOf(
+            arrayOf(NORTH, DOWN, SOUTH, UP), // X
+            arrayOf(NORTH, EAST, SOUTH, WEST), // y
+            arrayOf(EAST, DOWN, WEST, UP), // z
+        )
 
         val XYZ = arrayOf(WEST, EAST, DOWN, UP, NORTH, SOUTH)
 
