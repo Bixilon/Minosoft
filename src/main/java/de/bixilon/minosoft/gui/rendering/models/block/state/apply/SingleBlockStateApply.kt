@@ -57,7 +57,7 @@ data class SingleBlockStateApply(
         val x = this[offset + 0]
         val y = this[offset + 2]
 
-        this[offset + 0] = -y + 1.0f
+        this[offset + 0] = -y + 1.0f // translates to origin and back; same as (y-0.5f) + 0.5f
         this[offset + 2] = x
     }
 

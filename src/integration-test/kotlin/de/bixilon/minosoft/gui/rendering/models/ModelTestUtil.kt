@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.MemoryAssetsManager
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
@@ -40,5 +41,15 @@ object ModelTestUtil {
         this.block::assets.forceSet(assets)
 
         return assets
+    }
+
+    fun block(vararg elements: Int): FloatArray {
+        val result = FloatArray(elements.size)
+
+        for ((index, value) in elements.withIndex()) {
+            result[index] = value / ModelElement.BLOCK_SIZE
+        }
+
+        return result
     }
 }
