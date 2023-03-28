@@ -97,4 +97,38 @@ class YRotationTest {
         bake(2).assertFace(Directions.SOUTH, block(6, 0, 10, 6, 16, 10, 10, 16, 10, 10, 0, 10))
         bake(3).assertFace(Directions.SOUTH, block(6, 0, 10, 6, 16, 10, 16, 16, 10, 16, 0, 10))
     }
+
+    fun rotatedWest() {
+        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+
+        fun bake(rotation: Int): BakedModel {
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.WEST to createFaces(from, to)[Directions.WEST]!!))), textures = mapOf("test" to Namespaces.minecraft("block/test").texture())), y = rotation)
+
+            return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
+        }
+
+
+        bake(0).assertFace(Directions.WEST, block(6, 0, 6, 6, 16, 6, 6, 16, 16, 6, 0, 16))
+        bake(1).assertFace(Directions.WEST, block(0, 0, 6, 0, 16, 6, 0, 16, 10, 0, 0, 10))
+        bake(2).assertFace(Directions.WEST, block(6, 0, 0, 6, 16, 0, 6, 16, 10, 6, 0, 10))
+        bake(3).assertFace(Directions.WEST, block(6, 0, 6, 6, 16, 6, 6, 16, 10, 6, 0, 10))
+    }
+
+    fun rotatedEast() {
+        val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
+        val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
+
+        fun bake(rotation: Int): BakedModel {
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.EAST to createFaces(from, to)[Directions.EAST]!!))), textures = mapOf("test" to Namespaces.minecraft("block/test").texture())), y = rotation)
+
+            return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
+        }
+
+
+        bake(0).assertFace(Directions.WEST, block(10, 0, 6, 10, 0, 16, 10, 16, 16, 10, 16, 6))
+        bake(1).assertFace(Directions.WEST, block(10, 0, 6, 10, 0, 10, 10, 16, 10, 10, 16, 6))
+        bake(2).assertFace(Directions.WEST, block(10, 0, 0, 10, 0, 10, 10, 16, 10, 10, 16, 0))
+        bake(3).assertFace(Directions.WEST, block(16, 0, 6, 16, 0, 10, 16, 16, 10, 16, 16, 6))
+    }
 }
