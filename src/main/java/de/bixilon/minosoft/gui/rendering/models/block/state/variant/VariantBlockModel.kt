@@ -44,7 +44,7 @@ interface VariantBlockModel : DirectBlockModel {
 
             for ((variant, entry) in data) {
                 val apply = BlockStateApply.deserialize(loader, entry.asJsonObject()) ?: continue
-                if (variant == "") {
+                if (variant == "" || variant == "normal") {
                     // no further conditions
                     return SingleVariantBlockModel(apply)
                 }

@@ -38,6 +38,41 @@ data class SingleBlockStateApply(
     val y: Int = 0,
 ) : BlockStateApply {
 
+    /*
+    private fun FloatArray.rotateUp(count: Int): FloatArray {
+        if (count == 0) return this
+        val a = this.map { it - 0.5f }.toFloatArray()
+        val b = when (count) {
+            1 -> floatArrayOf(a[2], a[1], -a[0], a[5], a[4], -a[3], a[8], a[7], -a[6], a[11], a[10], -a[9])
+            else -> this
+        }
+        val c = b.pushRight(3, -count)
+        val d = c.map { it + 0.5f }.toFloatArray()
+
+        return d
+    }
+     */
+
+    private fun FloatArray.rotateOffset(offset: Int) {
+        val x = this[offset + 0]
+        val y = this[offset + 2]
+
+        this[offset + 0] = -y + 1.0f
+        this[offset + 2] = x
+    }
+
+    private fun FloatArray.rotateY(count: Int, negative: Boolean): FloatArray {
+        if (count == 0) return this
+
+        for (c in 0 until count) {
+            for (i in 0 until 4) {
+                rotateOffset(i * 3)
+            }
+        }
+
+        return this.pushRight(3, if (negative) -count else count)
+    }
+
 
     override fun bake(textures: TextureManager): BakedModel? {
         if (model.elements == null) return null
@@ -53,7 +88,11 @@ data class SingleBlockStateApply(
                     rotatedDirection = rotatedDirection.rotateY(this.y)
                 }
 
-                val positions = positions(rotatedDirection, element.from, element.to)
+
+                var positions = positions(rotatedDirection, element.from, element.to)
+                if (direction.axis == Axes.Y) {
+                    positions = positions.rotateY(y, direction.negative)
+                }
 
                 var uv = face.uv.toArray(rotatedDirection, face.rotation)
                 if (direction.axis == Axes.Y && y != 0 && !uvLock) {

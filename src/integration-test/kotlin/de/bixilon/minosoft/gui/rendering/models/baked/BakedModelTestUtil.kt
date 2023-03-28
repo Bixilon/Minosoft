@@ -53,16 +53,14 @@ object BakedModelTestUtil {
         return map
     }
 
-    fun BakedModel.assertFace(direction: Directions, positions: FloatArray, uv: FloatArray, shade: Float, texture: String? = null) {
+    fun BakedModel.assertFace(direction: Directions, positions: FloatArray, uv: FloatArray? = null, shade: Float? = null, texture: String? = null) {
         val faces = this.faces[direction.ordinal]
         if (faces.size != 1) throw IllegalArgumentException("Model has more/less than once face!")
         val face = faces.first()
 
         Assert.assertEquals(face.positions, positions, "Vertices mismatch")
-        Assert.assertEquals(face.uv, uv, "UV mismatch")
-        Assert.assertEquals(face.shade, shade, "Shade mismatch")
-        if (texture != null) {
-            Assert.assertEquals(face.texture.resourceLocation, texture.toResourceLocation().texture(), "Texture mismatch")
-        }
+        uv?.let { Assert.assertEquals(face.uv, it, "UV mismatch") }
+        shade?.let { Assert.assertEquals(face.shade, it, "Shade mismatch") }
+        texture?.toResourceLocation()?.texture()?.let { Assert.assertEquals(face.texture.resourceLocation, it, "Texture mismatch") }
     }
 }
