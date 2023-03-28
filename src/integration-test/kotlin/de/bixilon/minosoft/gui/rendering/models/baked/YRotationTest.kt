@@ -76,9 +76,9 @@ class YRotationTest {
 
 
         bake(0).assertFace(Directions.NORTH, block(6, 0, 6, 10, 0, 6, 10, 16, 6, 6, 16, 6))
-        bake(1).assertFace(Directions.NORTH, block(0, 0, 6, 10, 0, 6, 10, 16, 6, 0, 16, 6))
-        bake(2).assertFace(Directions.NORTH, block(6, 0, 0, 10, 0, 0, 10, 16, 0, 6, 16, 0))
-        bake(3).assertFace(Directions.NORTH, block(6, 0, 6, 16, 0, 6, 16, 16, 6, 6, 16, 6))
+        bake(1).assertFace(Directions.EAST, block(10, 0, 6, 10, 0, 10, 10, 16, 10, 10, 16, 6))
+        bake(2).assertFace(Directions.SOUTH, block(6, 0, 10, 6, 16, 10, 10, 16, 10, 10, 0, 10))
+        bake(3).assertFace(Directions.WEST, block(6, 0, 6, 6, 16, 6, 6, 16, 10, 6, 0, 10))
     }
 
     fun rotatedSouth() {
@@ -93,9 +93,9 @@ class YRotationTest {
 
 
         bake(0).assertFace(Directions.SOUTH, block(6, 0, 16, 6, 16, 16, 10, 16, 16, 10, 0, 16))
-        bake(1).assertFace(Directions.SOUTH, block(0, 0, 10, 0, 16, 10, 10, 16, 10, 10, 0, 10))
-        bake(2).assertFace(Directions.SOUTH, block(6, 0, 10, 6, 16, 10, 10, 16, 10, 10, 0, 10))
-        bake(3).assertFace(Directions.SOUTH, block(6, 0, 10, 6, 16, 10, 16, 16, 10, 16, 0, 10))
+        bake(1).assertFace(Directions.WEST, block(0, 0, 6, 0, 16, 6, 0, 16, 10, 0, 0, 10))
+        bake(2).assertFace(Directions.NORTH, block(6, 0, 0, 10, 0, 0, 10, 16, 0, 6, 16, 0))
+        bake(3).assertFace(Directions.EAST, block(16, 0, 6, 16, 0, 10, 16, 16, 10, 16, 16, 6))
     }
 
     fun rotatedWest() {
@@ -110,9 +110,9 @@ class YRotationTest {
 
 
         bake(0).assertFace(Directions.WEST, block(6, 0, 6, 6, 16, 6, 6, 16, 16, 6, 0, 16))
-        bake(1).assertFace(Directions.WEST, block(0, 0, 6, 0, 16, 6, 0, 16, 10, 0, 0, 10))
-        bake(2).assertFace(Directions.WEST, block(6, 0, 0, 6, 16, 0, 6, 16, 10, 6, 0, 10))
-        bake(3).assertFace(Directions.WEST, block(6, 0, 6, 6, 16, 6, 6, 16, 10, 6, 0, 10))
+        bake(1).assertFace(Directions.NORTH, block(0, 0, 6, 10, 0, 6, 10, 16, 6, 0, 16, 6))
+        bake(2).assertFace(Directions.EAST, block(10, 0, 0, 10, 0, 10, 10, 16, 10, 10, 16, 0))
+        bake(3).assertFace(Directions.SOUTH, block(6, 0, 10, 6, 16, 10, 16, 16, 10, 16, 0, 10))
     }
 
     fun rotatedEast() {
@@ -126,9 +126,9 @@ class YRotationTest {
         }
 
 
-        bake(0).assertFace(Directions.WEST, block(10, 0, 6, 10, 0, 16, 10, 16, 16, 10, 16, 6))
-        bake(1).assertFace(Directions.WEST, block(10, 0, 6, 10, 0, 10, 10, 16, 10, 10, 16, 6))
-        bake(2).assertFace(Directions.WEST, block(10, 0, 0, 10, 0, 10, 10, 16, 10, 10, 16, 0))
-        bake(3).assertFace(Directions.WEST, block(16, 0, 6, 16, 0, 10, 16, 16, 10, 16, 16, 6))
+        bake(0).assertFace(Directions.EAST, block(10, 0, 6, 10, 0, 16, 10, 16, 16, 10, 16, 6))
+        bake(1).assertFace(Directions.SOUTH, block(0, 0, 10, 0, 16, 10, 10, 16, 10, 10, 0, 10))
+        bake(2).assertFace(Directions.WEST, block(6, 0, 0, 6, 16, 0, 6, 16, 10, 6, 0, 10))
+        bake(3).assertFace(Directions.NORTH, block(6, 0, 6, 16, 0, 6, 16, 16, 6, 6, 16, 6))
     }
 }
