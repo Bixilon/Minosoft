@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
@@ -43,7 +42,7 @@ interface VariantBlockModel : DirectBlockModel {
 
 
             for ((variant, entry) in data) {
-                val apply = BlockStateApply.deserialize(loader, entry.asJsonObject()) ?: continue
+                val apply = BlockStateApply.deserialize(loader, entry) ?: continue
                 if (variant == "" || variant == "normal") {
                     // no further conditions
                     return SingleVariantBlockModel(apply)
