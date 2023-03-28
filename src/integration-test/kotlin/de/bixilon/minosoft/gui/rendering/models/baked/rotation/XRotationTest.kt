@@ -118,7 +118,4 @@ class XRotationTest {
         bake(2).assertFace(Directions.EAST, block(10, 0, 0, 10, 0, 10, 10, 16, 10, 10, 16, 0))
         bake(3).assertFace(Directions.EAST, block(10, 0, 0, 10, 0, 16, 10, 10, 16, 10, 10, 0))
     }
-
-
-    // TODO: combined (x;y)
 }

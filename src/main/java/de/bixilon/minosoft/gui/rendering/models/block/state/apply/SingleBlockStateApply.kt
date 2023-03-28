@@ -119,13 +119,14 @@ data class SingleBlockStateApply(
                 val texture = face.createTexture(model, textures)
 
                 val rotatedDirection = direction
-                    .rotateY(this.y)
                     .rotateX(this.x)
+                    .rotateY(this.y)
 
 
                 val positions = positions(direction, element.from, element.to)
-                    .rotateY(direction)
                     .rotateX(direction)
+                    .rotateY(direction.rotateX(this.x))
+
 
                 var uv = face.uv.toArray(rotatedDirection, face.rotation)
                 if (direction.axis == Axes.Y && y != 0 && !uvLock) {
