@@ -38,39 +38,23 @@ data class SingleBlockStateApply(
     val y: Int = 0,
 ) : BlockStateApply {
 
-    /*
-    private fun FloatArray.rotateUp(count: Int): FloatArray {
-        if (count == 0) return this
-        val a = this.map { it - 0.5f }.toFloatArray()
-        val b = when (count) {
-            1 -> floatArrayOf(a[2], a[1], -a[0], a[5], a[4], -a[3], a[8], a[7], -a[6], a[11], a[10], -a[9])
-            else -> this
+
+    private fun FloatArray.rotateY(count: Int) {
+        if (count == 0) return
+
+        fun FloatArray.rotateOffsetY(offset: Int) {
+            val x = this[offset + 0]
+            val z = this[offset + 2]
+
+            this[offset + 0] = -z + 1.0f // translates to origin and back; same as -(z-0.5f) + 0.5f
+            this[offset + 2] = x
         }
-        val c = b.pushRight(3, -count)
-        val d = c.map { it + 0.5f }.toFloatArray()
-
-        return d
-    }
-     */
-
-    private fun FloatArray.rotateOffset(offset: Int) {
-        val x = this[offset + 0]
-        val y = this[offset + 2]
-
-        this[offset + 0] = -y + 1.0f // translates to origin and back; same as (y-0.5f) + 0.5f
-        this[offset + 2] = x
-    }
-
-    private fun FloatArray.rotateY(count: Int, negative: Boolean): FloatArray {
-        if (count == 0) return this
 
         for (c in 0 until count) {
             for (i in 0 until 4) {
-                rotateOffset(i * 3)
+                rotateOffsetY(i * 3)
             }
         }
-
-        return this.pushRight(3, if (negative) -count else count)
     }
 
 
@@ -89,9 +73,16 @@ data class SingleBlockStateApply(
                 }
 
 
-                var positions = positions(rotatedDirection, element.from, element.to)
+                var positions = positions(direction, element.from, element.to)
+                positions.rotateY(y)
                 if (direction.axis == Axes.Y) {
-                    positions = positions.rotateY(y, direction.negative)
+                    positions = positions.pushRight(3, if (direction.negative) -y else y)
+                } else {
+                    if ((direction.axis == Axes.Z && (y == 2 || y == 3))) {
+                        positions = positions.pushRight(3, if (direction.negative) -1 else 1)
+                    } else if (direction.axis == Axes.X && (y == 1 || y == 2)) {
+                        positions = positions.pushRight(3, if (direction.negative) 1 else -1)
+                    }
                 }
 
                 var uv = face.uv.toArray(rotatedDirection, face.rotation)
