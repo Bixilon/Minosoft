@@ -38,7 +38,7 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun loadState(block: Block): DirectBlockModel? {
-        val file = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier).blockState()
+        val file = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier)?.blockState() ?: return null
         val data = assets[file].readJsonObject()
 
         return DirectBlockModel.deserialize(this, data)
