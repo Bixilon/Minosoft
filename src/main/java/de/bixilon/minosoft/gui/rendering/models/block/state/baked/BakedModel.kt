@@ -38,6 +38,7 @@ class BakedModel(
         var rendered = true
 
         for ((index, faces) in faces.withIndex()) {
+            if (neighbours[index] != null) continue // TODO
             for (face in faces) {
                 face.render(array, mesh, light, tints)
 
