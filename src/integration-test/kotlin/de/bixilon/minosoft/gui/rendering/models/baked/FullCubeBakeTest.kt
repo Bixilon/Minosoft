@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.block
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.assertFace
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.createFaces
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.createTextureManager
@@ -29,7 +30,7 @@ import org.testng.annotations.Test
 @Test(groups = ["models"])
 class FullCubeBakeTest {
 
-    fun fullCube() {
+    fun cube() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
@@ -37,16 +38,15 @@ class FullCubeBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        // we can use positions() here, because it is not rotated and already unit tested
         baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.5f)
         baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.6f)
+        baked.assertFace(Directions.NORTH, block(0, 0, 0, 16, 0, 0, 16, 16, 0, 0, 16, 0), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, block(0, 0, 16, 0, 16, 16, 16, 16, 16, 16, 0, 16), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
+        baked.assertFace(Directions.WEST, block(0, 0, 0, 0, 16, 0, 0, 16, 16, 0, 0, 16), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.6f)
         baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.6f)
     }
 
-    fun fullCubeY90() {
+    fun y90() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
@@ -63,7 +63,7 @@ class FullCubeBakeTest {
         baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.6f)
     }
 
-    fun fullCubeY180() {
+    fun y180() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 2)
@@ -80,7 +80,24 @@ class FullCubeBakeTest {
         baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.6f)
     }
 
-    fun fullCubeX90() {
+    fun y270() {
+        val from = Vec3(0.0f)
+        val to = Vec3(1.0f)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 3)
+
+        val baked = model.bake(createTextureManager("block/test"))!!
+
+
+        // rotating 270° -> only top/bottom texture rotated, rest is the same
+        baked.assertFace(Directions.DOWN, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
+        baked.assertFace(Directions.UP, uv = floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f))
+        baked.assertFace(Directions.NORTH, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
+        baked.assertFace(Directions.SOUTH, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
+        baked.assertFace(Directions.WEST, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
+        baked.assertFace(Directions.EAST, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
+    }
+
+    fun x90() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1)
@@ -96,7 +113,7 @@ class FullCubeBakeTest {
         baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.6f)
     }
 
-    fun fullCubeX180() {
+    fun x180() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 2)
@@ -112,7 +129,23 @@ class FullCubeBakeTest {
         baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.6f)
     }
 
-    fun fullCubeX90Y90() {
+    fun x270() {
+        val from = Vec3(0.0f)
+        val to = Vec3(1.0f)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 3)
+
+        val baked = model.bake(createTextureManager("block/test"))!!
+
+
+        baked.assertFace(Directions.DOWN, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
+        baked.assertFace(Directions.UP, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
+        baked.assertFace(Directions.NORTH, uv = floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f))
+        baked.assertFace(Directions.SOUTH, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
+        baked.assertFace(Directions.WEST, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
+        baked.assertFace(Directions.EAST, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
+    }
+
+    fun x90y90() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 1)
@@ -128,7 +161,7 @@ class FullCubeBakeTest {
         baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.6f)
     }
 
-    fun fullCubeX180Y180() {
+    fun x180y180() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
         val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 2, y = 2)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,7 +28,7 @@ object AssetsLoader {
     fun create(profile: ResourcesProfile, version: Version, latch: CountUpAndDownLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): AssetsManager {
         val assetsManager = PriorityAssetsManager()
 
-        assetsManager += Minosoft.OVERRIDE_ASSETS_MANAGER
+        // assetsManager += Minosoft.OVERRIDE_ASSETS_MANAGER
         for (resourcePack in profile.assets.resourcePacks.reversed()) {
             resourcePack.type.creator(resourcePack).let {
                 it.load(latch)

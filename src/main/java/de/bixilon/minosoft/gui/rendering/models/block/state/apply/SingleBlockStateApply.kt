@@ -129,8 +129,16 @@ data class SingleBlockStateApply(
 
 
                 var uv = face.uv.toArray(rotatedDirection, face.rotation)
+
+                if (x > 0 && !uvLock) {
+                    if (direction.axis == Axes.X) uv = uv.pushRight(2, if (rotatedDirection.negative) -x else x)
+
+                    if ((rotatedDirection == Directions.DOWN && x == 1 || rotatedDirection == Directions.UP && x == 3 || rotatedDirection == Directions.NORTH || rotatedDirection == Directions.SOUTH && x == 2)) {
+                        uv = uv.pushRight(2, 2)
+                    }
+                }
                 if (direction.axis == Axes.Y && y != 0 && !uvLock) {
-                    uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y) // TODO, this is wrong
+                    uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y)
                 }
                 val shade = rotatedDirection.shade
 
