@@ -69,8 +69,8 @@ open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
             end + normal1 + directionWidth,
             end + normal2 + directionWidth,
         )
-        for ((positionIndex, _) in order) {
-            addVertex(positions[positionIndex], color)
+        for (index in 0 until order.size step 2) {
+            addVertex(positions[order[index]], color)
         }
     }
 
@@ -82,8 +82,8 @@ open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
         data.ensureSize(6 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         for (direction in Directions.VALUES) {
             val positions = direction.getPositions(Vec3(aabb.min), Vec3(aabb.max))
-            for ((positionIndex, _) in order) {
-                addVertex(positions[positionIndex], color)
+            for (index in 0 until order.size step 2) {
+                addVertex(positions[order[index]], color)
             }
         }
     }

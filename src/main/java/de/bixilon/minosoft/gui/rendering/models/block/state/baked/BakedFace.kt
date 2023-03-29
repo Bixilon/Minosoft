@@ -50,9 +50,9 @@ class BakedFace(
 
         val mesh = mesh.opaqueMesh!! // TODO: use correct mesh
 
-        for ((vertexIndex, textureIndex) in mesh.order) {
-            val vertexOffset = vertexIndex * 3
-            val uvOffset = textureIndex * 2
+        for (index in 0 until mesh.order.size step 2) {
+            val vertexOffset = mesh.order[index] * 3
+            val uvOffset = mesh.order[index + 1] * 2
 
             mesh.addVertex(
                 x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 
 
 class WorldGUIConsumer(val mesh: SingleWorldMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
-    override val order: Array<Pair<Int, Int>> get() = mesh.order
+    override val order: IntArray get() = mesh.order
 
     override fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         val transformed = transform.fastTimes(position.x.toFloat() / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y.toFloat() / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)

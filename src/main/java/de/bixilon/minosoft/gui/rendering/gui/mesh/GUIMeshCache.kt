@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class GUIMeshCache(
     var matrix: Mat4,
-    override val order: Array<Pair<Int, Int>>,
+    override val order: IntArray,
     initialCacheSize: Int = 1000,
     var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
 ) : GUIVertexConsumer {

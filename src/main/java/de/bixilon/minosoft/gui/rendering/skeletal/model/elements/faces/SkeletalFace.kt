@@ -69,9 +69,9 @@ data class SkeletalFace(
         val textureShaderId = texture.shaderId.buffer()
         val floatFlags = flags.buffer()
 
-        for ((index, textureIndex) in consumer.order) {
-            val indexPosition = positions[index].array
-            val transformedUV = texture.transformUV(texturePositions[textureIndex])
+        for (index in 0 until consumer.order.size step 2) {
+            val indexPosition = positions[consumer.order[index]].array
+            val transformedUV = texture.transformUV(texturePositions[consumer.order[index + 1]])
             consumer.addVertex(indexPosition, transformedUV, transform, textureShaderId, floatFlags)
         }
     }

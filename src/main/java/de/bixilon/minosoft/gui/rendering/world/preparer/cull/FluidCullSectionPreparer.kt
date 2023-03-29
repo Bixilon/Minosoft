@@ -252,11 +252,11 @@ class FluidCullSectionPreparer(
     }
 
     private inline fun addFluidVertices(meshToUse: SingleWorldMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: AbstractTexture, fluidTint: Int, fluidLight: Int) {
-        for ((positionIndex, textureIndex) in meshToUse.order) {
-            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
+        for (index in 0 until meshToUse.order.size step 2) {
+            meshToUse.addVertex(positions[meshToUse.order[index]].array, texturePositions[meshToUse.order[index + 1]], flowingTexture, fluidTint, fluidLight)
         }
-        for ((positionIndex, textureIndex) in meshToUse.reversedOrder) {
-            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
+        for (index in (meshToUse.order.size - 2) downTo 0 step 2) {
+            meshToUse.addVertex(positions[meshToUse.order[index]].array, texturePositions[meshToUse.order[index + 1]], flowingTexture, fluidTint, fluidLight)
         }
     }
 

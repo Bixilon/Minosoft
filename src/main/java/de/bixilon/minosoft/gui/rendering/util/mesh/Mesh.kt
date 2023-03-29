@@ -26,14 +26,13 @@ import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 abstract class Mesh(
     val context: RenderContext,
     private val struct: MeshStruct,
-    private val primitiveType: PrimitiveTypes = context.renderSystem.preferredPrimitiveType,
+    private val quadType: PrimitiveTypes = context.renderSystem.quadType,
     var initialCacheSize: Int = 10000,
     val clearOnLoad: Boolean = true,
     data: AbstractFloatList? = null,
     val onDemand: Boolean = false,
 ) : AbstractVertexConsumer {
-    override val order = context.renderSystem.primitiveMeshOrder
-    val reversedOrder = order.reversedArray()
+    override val order = context.renderSystem.quadOrder
     private var _data: AbstractFloatList? = data ?: if (onDemand) null else FloatListUtil.direct(initialCacheSize)
     var data: AbstractFloatList
         get() {
@@ -58,7 +57,7 @@ abstract class Mesh(
     fun finish() {
         if (state != MeshStates.PREPARING) throw IllegalStateException("Mesh is not preparing: $state")
         val data = this.data
-        buffer = context.renderSystem.createVertexBuffer(struct, data, primitiveType)
+        buffer = context.renderSystem.createVertexBuffer(struct, data, quadType)
         state = MeshStates.FINISHED
     }
 
@@ -129,8 +128,8 @@ abstract class Mesh(
             Vec2(uvEnd.x, uvStart.y),
         )
 
-        for ((vertexIndex, textureIndex) in order) {
-            vertexConsumer.invoke(positions[vertexIndex], texturePositions[textureIndex])
+        for (index in 0 until order.size step 2) {
+            vertexConsumer.invoke(positions[order[index]], texturePositions[order[index + 1]])
         }
     }
 
@@ -139,22 +138,5 @@ abstract class Mesh(
         FINISHED,
         LOADED,
         UNLOADED,
-    }
-
-    companion object {
-        val TRIANGLE_TO_QUAD_ORDER = arrayOf(
-            0 to 1,
-            3 to 2,
-            2 to 3,
-            2 to 3,
-            1 to 0,
-            0 to 1,
-        )
-        val QUAD_TO_QUAD_ORDER = arrayOf(
-            0 to 1,
-            3 to 2,
-            2 to 3,
-            1 to 0,
-        )
     }
 }
