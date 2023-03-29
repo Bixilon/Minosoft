@@ -40,7 +40,7 @@ class BlockStateApplyTest {
         val loader = ModelTestUtil.createLoader()
         loader.block::version.forceSet(version)
         val assets = loader.createAssets(files)
-        val modelName = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier).blockState()
+        val modelName = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier)!!.blockState()
         assets.push(modelName, state)
 
 
