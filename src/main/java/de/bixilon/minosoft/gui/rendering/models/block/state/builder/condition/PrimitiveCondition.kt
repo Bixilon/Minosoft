@@ -11,25 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.block.state.condition
+package de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition
 
-import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
-import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
-import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 
-@Deprecated("TODO")
-class ConditionBlockModel : DirectBlockModel {
+class PrimitiveCondition private constructor(val matches: Boolean) : BuilderCondition {
 
-    override fun choose(state: BlockState): BlockStateApply? {
-        TODO("Not yet implemented")
-    }
+    override fun matches(properties: Map<BlockProperties, Any>) = matches
+
 
     companion object {
-
-        fun deserialize(loader: BlockLoader, data: JsonObject): ConditionBlockModel? {
-            TODO()
-        }
+        val TRUE = PrimitiveCondition(true)
+        val FALSE = PrimitiveCondition(false)
     }
 }
