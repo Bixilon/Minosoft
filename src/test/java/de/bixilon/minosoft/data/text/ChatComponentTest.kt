@@ -227,6 +227,13 @@ internal class ChatComponentTest {
         assertEquals(expected, component)
     }
 
+    @Test
+    fun `JSON not escaped new line`() {
+        val text = ChatComponent.of("""{"text":"Unsupported protocol version 762.""" + "\n" + """Try connecting with Minecraft 1.8.x-1.12.x"}""")
+        val expected = TextComponent("Unsupported protocol version 762.\nTry connecting with Minecraft 1.8.x-1.12.x")
+        assertEquals(text, expected)
+    }
+
     private fun assertEquals(expected: ChatComponent, actual: ChatComponent) {
         when (expected) {
             is BaseComponent -> {
