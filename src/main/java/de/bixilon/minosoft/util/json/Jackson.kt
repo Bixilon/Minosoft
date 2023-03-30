@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.util.json
 
 import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.json.JsonReadFeature
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
@@ -31,6 +32,7 @@ object Jackson {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .disable(JsonParser.Feature.AUTO_CLOSE_SOURCE)
         .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        .enable(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS)
         .build()
         .registerModule(
             KotlinModule.Builder()
