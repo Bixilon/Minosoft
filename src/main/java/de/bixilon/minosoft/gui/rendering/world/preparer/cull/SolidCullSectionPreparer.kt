@@ -32,7 +32,6 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
@@ -130,8 +129,6 @@ class SolidCullSectionPreparer(
                     } else if (position.y + 1 >= maxHeight) {
                         light[O_UP] = (light[O_UP].toInt() or 0xF0).toByte()
                     }
-
-                    random?.setSeed(position.positionHash)
 
                     val tints = tintColorCalculator.getAverageBlockTint(chunk, neighbourChunks, state, x, y, z)
                     var rendered = model.render(position, mesh, random, state, neighbourBlocks, light, tints)

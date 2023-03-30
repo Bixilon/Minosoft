@@ -30,8 +30,9 @@ class WeightedBlockRender(
 ) : BlockRender {
 
 
-    private fun getModel(random: Random?): BlockRender {
+    private fun getModel(random: Random?, position: BlockPosition): BlockRender {
         if (random == null) return models.first().model
+        random.setSeed(position.positionHash)
 
         var weightLeft = abs(random.nextLong() % totalWeight)
 
@@ -46,12 +47,11 @@ class WeightedBlockRender(
     }
 
     override fun getParticleTexture(random: Random?, position: Vec3i): AbstractTexture? {
-        random?.setSeed(position.positionHash)
-        return getModel(random).getParticleTexture(random, position)
+        return getModel(random, position).getParticleTexture(random, position)
     }
 
     override fun render(position: BlockPosition, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        return getModel(random).render(position, mesh, random, state, neighbours, light, tints)
+        return getModel(random, position).render(position, mesh, random, state, neighbours, light, tints)
     }
 
 
