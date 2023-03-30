@@ -31,7 +31,15 @@ class OrCondition(
         const val KEY = "OR"
 
         fun deserialize(data: List<JsonObject>): OrCondition? {
-            TODO()
+            val conditions: MutableSet<BuilderCondition> = mutableSetOf()
+
+            for (entry in data) {
+                conditions += AndCondition.deserialize(entry) ?: continue
+            }
+
+            if (conditions.isEmpty()) return null
+
+            return OrCondition(conditions)
         }
     }
 }

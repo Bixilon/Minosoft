@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.builder
 
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
@@ -22,6 +23,20 @@ class BuilderApply(
 ) : BlockStateApply {
 
     override fun bake(textures: TextureManager): BlockRender? {
-        TODO("Not yet implemented")
+        val static: MutableList<BakedModel> = mutableListOf()
+        val dynamic: MutableList<BlockRender> = mutableListOf()
+
+        for (apply in this.applies) {
+            val baked = apply.bake(textures) ?: continue
+            if (baked is BakedModel) {
+                static += baked
+            } else {
+                dynamic += baked
+            }
+        }
+
+        if (static.isEmpty() && dynamic.isEmpty()) return null
+
+        TODO("Can not combine them yet")
     }
 }
