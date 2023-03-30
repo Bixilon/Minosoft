@@ -63,6 +63,7 @@ class PropertyCondition(
 
             for ((key, value) in data) {
                 if (key == OrCondition.KEY) continue
+                if (key == AndCondition.KEY) continue
 
                 if (value is List<*>) {
                     val (property, values) = deserializeOr(key, value.unsafeCast())

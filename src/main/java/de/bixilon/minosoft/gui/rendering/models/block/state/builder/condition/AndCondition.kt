@@ -29,15 +29,31 @@ class AndCondition(
     }
 
     companion object {
+        const val KEY = "AND"
+
+        fun deserialize(data: List<JsonObject>): BuilderCondition? {
+            val conditions: MutableSet<PropertyCondition> = mutableSetOf()
+
+            for (entry in data) {
+                conditions += PropertyCondition.deserialize(entry) ?: continue
+            }
+            if (conditions.isEmpty()) return null
+
+            return AndCondition(conditions) // TODO: They can be compacted into one Property condition, could speed up memory usage and performance a bit
+        }
 
         fun deserialize(data: JsonObject): BuilderCondition? {
             if (data.isEmpty()) return null
-            val property = PropertyCondition.deserialize(data)
-            val or = data[OrCondition.KEY]?.let { OrCondition.deserialize(it.unsafeCast()) } ?: return property
 
-            if (property == null) return or
+            val conditions: MutableSet<BuilderCondition> = mutableSetOf()
 
-            return AndCondition(mutableSetOf(property, or))
+            PropertyCondition.deserialize(data)?.let { conditions += it }
+            data[KEY]?.let { deserialize(it.unsafeCast<List<JsonObject>>()) }?.let { conditions += it }
+            data[OrCondition.KEY]?.let { OrCondition.deserialize(it.unsafeCast()) }?.let { conditions += it }
+
+            if (conditions.isEmpty()) return null
+
+            return AndCondition(conditions)
         }
     }
 }
