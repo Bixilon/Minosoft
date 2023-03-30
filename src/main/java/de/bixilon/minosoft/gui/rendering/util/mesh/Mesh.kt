@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 abstract class Mesh(
     val context: RenderContext,
     private val struct: MeshStruct,
-    private val quadType: PrimitiveTypes = context.renderSystem.quadType,
+    val quadType: PrimitiveTypes = context.renderSystem.quadType,
     var initialCacheSize: Int = 10000,
     val clearOnLoad: Boolean = true,
     data: AbstractFloatList? = null,

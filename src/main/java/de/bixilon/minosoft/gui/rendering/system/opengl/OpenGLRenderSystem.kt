@@ -329,6 +329,7 @@ class OpenGLRenderSystem(
 
     companion object {
         val TRIANGLE_ORDER = intArrayOf(
+            // TOOD: they are all rotated 90° wrong, fix this for triangle and quad order
             0, 1,
             3, 2,
             2, 3,

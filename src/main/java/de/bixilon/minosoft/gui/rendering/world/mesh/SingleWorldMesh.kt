@@ -17,12 +17,15 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, WorldMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand) {
     var distance: Float = 0.0f // Used for sorting
+
+    override val order = if (quadType == PrimitiveTypes.QUAD) QUAD_ORDER else TRIANGLE_ORDER
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
@@ -54,5 +57,23 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         val tintLight: Int,
     ) {
         companion object : MeshStruct(WorldMeshStruct::class)
+    }
+
+    companion object {
+        // TODO: uv coordinates should start in the upper left corner, then a 0=>0 mapping is possible
+        val TRIANGLE_ORDER = intArrayOf(
+            0, 3,
+            3, 0,
+            2, 1,
+            2, 1,
+            1, 2,
+            0, 3,
+        )
+        val QUAD_ORDER = intArrayOf(
+            0, 3,
+            3, 0,
+            2, 1,
+            1, 2,
+        )
     }
 }
