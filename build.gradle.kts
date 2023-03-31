@@ -188,7 +188,7 @@ testing {
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
-                implementation("it.unimi.dsi:fastutil-core:8.5.11")
+                implementation("it.unimi.dsi:fastutil-core:8.5.12")
 
                 implementation("de.bixilon:mbf-kotlin:1.0") { exclude("com.github.luben", "zstd-jni") }
 
@@ -323,13 +323,13 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 }
 
 dependencies {
-    implementation("org.slf4j", "slf4j-api", "2.0.6")
+    implementation("org.slf4j", "slf4j-api", "2.0.7")
     implementation("com.google.guava", "guava", "31.1-jre")
     implementation("dnsjava", "dnsjava", "3.5.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.23.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.4.0")
+    implementation("com.github.oshi", "oshi-core", "6.4.1")
     implementation("com.github.luben", "zstd-jni", "1.5.4-2", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")
