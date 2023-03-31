@@ -136,6 +136,8 @@ enum class BlockProperties {
 
     DUSTED("dusted", IntBlockPropertiesSerializer),
     FLOWER_AMOUNT("flower_amount", IntBlockPropertiesSerializer),
+
+    CRACKED("cracked", BooleanBlockPropertiesSerializer),
     ;
 
     val group: String
