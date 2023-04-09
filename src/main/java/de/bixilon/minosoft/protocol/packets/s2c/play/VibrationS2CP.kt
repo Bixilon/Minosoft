@@ -29,7 +29,7 @@ class VibrationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     /**
      * @return Depends on vibration target type, if block: block postion, if entity: entity id
      */
-    val targetData: Any = when (targetType.toString()) {
+    val targetData: Any = when (targetType.toString()) { // todo: combine with VibrationParticleData
         "minecraft:block" -> buffer.readBlockPosition()
         "minecraft:entity" -> buffer.readEntityId()
         else -> error("Unknown target type: $targetType")
