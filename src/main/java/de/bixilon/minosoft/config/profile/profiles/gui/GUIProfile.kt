@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.profile.profiles.gui.chat.ChatC
 import de.bixilon.minosoft.config.profile.profiles.gui.confirmation.ConfirmationC
 import de.bixilon.minosoft.config.profile.profiles.gui.hud.HudC
 import de.bixilon.minosoft.config.profile.profiles.gui.sign.SignC
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for gui (rendering)
@@ -35,7 +36,7 @@ class GUIProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 

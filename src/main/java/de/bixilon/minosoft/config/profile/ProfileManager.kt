@@ -178,7 +178,7 @@ interface ProfileManager<T : Profile> {
             val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
 
             val file = getPath(profile.name).toFile()
-            profile.ignoreNextReload = true
+            profile.ignoreReloads.incrementAndGet()
             FileUtil.safeSaveToFile(file, jsonString)
             profile.saved = true
         } catch (exception: Exception) {
@@ -259,8 +259,8 @@ interface ProfileManager<T : Profile> {
     fun watchProfile(profileName: String, path: File = getPath(profileName).toFile()) {
         FileWatcherService.register(FileWatcher(path.toPath(), arrayOf(StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE)) { _, it ->
             val profile = profiles[profileName] ?: return@FileWatcher
-            if (profile.ignoreNextReload) {
-                profile.ignoreNextReload = false
+            if (profile.ignoreReloads.get() > 0) {
+                profile.ignoreReloads.decrementAndGet()
                 return@FileWatcher
             }
             try {

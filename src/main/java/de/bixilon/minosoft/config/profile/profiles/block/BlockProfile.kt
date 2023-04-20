@@ -22,6 +22,7 @@ import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.lat
 import de.bixilon.minosoft.config.profile.profiles.block.outline.OutlineC
 import de.bixilon.minosoft.config.profile.profiles.block.rendering.RenderingC
 import de.bixilon.minosoft.data.world.World
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for block rendering
@@ -34,7 +35,7 @@ class BlockProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.particle.types.TypesC
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for particle
@@ -34,7 +35,7 @@ class ParticleProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 

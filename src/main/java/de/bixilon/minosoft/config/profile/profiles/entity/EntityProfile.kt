@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.entity.hitbox.HitboxC
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for entity
@@ -31,7 +32,7 @@ class EntityProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 

@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonMerge
 import com.fasterxml.jackson.annotation.OptBoolean
 import de.bixilon.minosoft.config.profile.ProfileManager
+import java.util.concurrent.atomic.AtomicInteger
 
 interface Profile {
     @get:JsonMerge(OptBoolean.FALSE)
@@ -29,5 +30,5 @@ interface Profile {
     @get:JsonIgnore var saved: Boolean
     @get:JsonIgnore val initializing: Boolean
     @get:JsonIgnore var reloading: Boolean
-    @get:JsonIgnore var ignoreNextReload: Boolean // used for saving and not instantly reloading
+    @get:JsonIgnore var ignoreReloads: AtomicInteger// used for saving and not instantly reloading
 }

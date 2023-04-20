@@ -29,6 +29,7 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
 import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.OverlayC
 import de.bixilon.minosoft.config.profile.profiles.rendering.performance.PerformanceC
 import de.bixilon.minosoft.config.profile.profiles.rendering.sky.SkyC
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for general rendering
@@ -41,7 +42,7 @@ class RenderingProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 

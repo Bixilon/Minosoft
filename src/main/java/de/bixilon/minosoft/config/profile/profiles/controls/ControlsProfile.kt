@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManag
 import de.bixilon.minosoft.config.profile.profiles.controls.interaction.InteractionC
 import de.bixilon.minosoft.config.profile.profiles.controls.mouse.MouseC
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for controls
@@ -35,7 +36,7 @@ class ControlsProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 
