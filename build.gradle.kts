@@ -377,7 +377,7 @@ dependencies {
     if (os == OSTypes.LINUX) {
         val nettyNatives = when (architecture) {
             Architectures.AMD64, Architectures.X86 -> "x86_64"
-            Architectures.ARM, Architectures.AARCH64 -> "aarch64"
+            Architectures.ARM, Architectures.AARCH64 -> "aarch_64"
             else -> throw IllegalArgumentException("Can not determinate netty natives for $architecture")
         }
         implementation("io.netty", "netty-transport-native-epoll", nettyVersion, classifier = "linux-$nettyNatives")
