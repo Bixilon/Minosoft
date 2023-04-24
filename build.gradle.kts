@@ -26,10 +26,10 @@ import java.nio.charset.StandardCharsets
 
 
 plugins {
-    kotlin("jvm") version "1.8.10"
+    kotlin("jvm") version "1.8.20"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit.service") version "5.0.0"
+    id("org.ajoberstar.grgit.service") version "5.2.0"
     id("com.github.ben-manes.versions") version "0.46.0"
 }
 
@@ -142,9 +142,8 @@ testing {
 
             dependencies {
                 implementation(project())
-                // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
+                implementation("org.jetbrains.kotlin:kotlin-test:1.8.20")
             }
 
             targets {
@@ -330,7 +329,7 @@ dependencies {
     implementation("org.jline", "jline", "3.23.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
     implementation("com.github.oshi", "oshi-core", "6.4.1")
-    implementation("com.github.luben", "zstd-jni", "1.5.4-2", classifier = zstdNatives)
+    implementation("com.github.luben", "zstd-jni", "1.5.5-2", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
