@@ -13,10 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.builder
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compact
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.SideSize
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
 class BuilderApply(
     val applies: List<BlockStateApply>
@@ -37,6 +42,32 @@ class BuilderApply(
 
         if (static.isEmpty() && dynamic.isEmpty()) return null
 
-        TODO("Can not combine them yet")
+        val combined = static.combine()
+
+        if (dynamic.isEmpty()) return combined
+
+
+        return BuiltModel(combined, dynamic.toTypedArray())
+    }
+
+
+    private fun List<BakedModel>.combine(): BakedModel {
+        val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
+        val sizes: Array<MutableList<SideSize.FaceSize>> = Array(Directions.SIZE) { mutableListOf() }
+        var particle: AbstractTexture? = null
+
+        for (model in this) {
+            if (particle == null) {
+                particle = model.particle
+            }
+
+            for (direction in Directions) {
+                faces[direction.ordinal] += model.faces[direction.ordinal]
+                sizes[direction.ordinal] += model.sizes[direction.ordinal].sizes
+            }
+        }
+
+        // TODO: sizes
+        return BakedModel(faces.compact(), emptyArray(), particle)
     }
 }
