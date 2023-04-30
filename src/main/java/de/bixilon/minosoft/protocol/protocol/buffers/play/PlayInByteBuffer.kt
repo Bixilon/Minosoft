@@ -334,4 +334,15 @@ class PlayInByteBuffer : InByteBuffer {
     fun readVelocity(): Vec3d {
         return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_NETWORK_DIVIDER
     }
+
+    fun readVibrationSource(): Any {
+        val type = readResourceLocation()
+        val source: Any = when (type.toString()) { // TODO: dynamic, factories
+            "minecraft:block" -> readBlockPosition()
+            "minecraft:entity" -> readEntityId()
+            else -> error("Unknown vibration source: $type")
+        }
+
+        return source
+    }
 }

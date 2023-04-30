@@ -16,18 +16,15 @@ import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 class VibrationParticleData(val source: Any, val arrival: Int, type: ParticleType) : ParticleData(type) {
+
     override fun toString(): String {
         return "$type: $source in $arrival"
     }
 
     companion object : ParticleDataFactory<VibrationParticleData> {
+
         override fun read(buffer: PlayInByteBuffer, type: ParticleType): VibrationParticleData {
-            val sourceType = buffer.readResourceLocation()
-            val source: Any = when (sourceType.toString()) { // TODO: combine with VibrationS2CP
-                "minecraft:block" -> buffer.readBlockPosition()
-                "minecraft:entity" -> buffer.readEntityId()
-                else -> error("Unknown target type: $sourceType")
-            }
+            val source = buffer.readVibrationSource()
             val arrival = buffer.readVarInt()
             return VibrationParticleData(source, arrival, type)
         }
