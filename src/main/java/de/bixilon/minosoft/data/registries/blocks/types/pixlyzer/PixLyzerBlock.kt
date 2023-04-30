@@ -64,16 +64,18 @@ open class PixLyzerBlock(
 
     override val jumpBoost = data["jump_velocity_multiplier"]?.toFloat() ?: 1.0f
 
-    var material: Material = unsafeNull()
+    private val material: Material?
     override var hardness: Float = 0.0f
     val requiresTool: Boolean
+    val replaceable: Boolean
     override val item: Item = unsafeNull()
 
     init {
         val state = data["states"]?.asAnyMap()!!.iterator().next().value.asJsonObject()
-        material = registries.material[data["material"] ?: state["material"]]!!
         hardness = data["hardness"]?.toFloat() ?: state["hardness"].toFloat()
-        requiresTool = state["requires_tool"]?.toBoolean() ?: !material.soft
+        material = registries.material[data["material"] ?: state["material"]]
+        requiresTool = data["requires_tool"]?.toBoolean() ?: state["requires_tool"]?.toBoolean() ?: material?.let { !it.soft } ?: false
+        replaceable = data["replaceable"]?.toBoolean() ?: false
 
         this::item.inject(data["item"])
     }
@@ -83,7 +85,7 @@ open class PixLyzerBlock(
     }
 
     override fun canReplace(connection: PlayConnection, state: BlockState, position: BlockPosition): Boolean {
-        return material.replaceable
+        return replaceable
     }
 
     override fun isFullOpaque(state: BlockState): Boolean {
