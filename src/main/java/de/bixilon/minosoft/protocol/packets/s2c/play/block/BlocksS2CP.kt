@@ -41,15 +41,14 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 buffer.readInt() // data size, always 4*size
                 update = arrayOfNulls(size)
                 for (i in 0 until size) {
-                    val raw = buffer.readInt()
-                    val meta = (raw and 0xF)
-                    val blockId = (raw and 0xFFF0 ushr 4)
-                    val y = (raw and 0xFF0000 ushr 16)
-                    val z = (raw and 0x0F000000 ushr 24)
-                    val x = (raw and -0x10000000 ushr 28)
+                    val combined = buffer.readInt()
                     update[i] = ChunkLocalBlockUpdate.LocalUpdate(
-                        Vec3i(x, y, z),
-                        buffer.connection.registries.blockState.getOrNull((blockId shl 4) or meta),
+                        Vec3i(
+                            x = (combined ushr 16 and 0xFF),
+                            y = (combined ushr 24 and 0x0F),
+                            z = (combined ushr 28 and 0x0F),
+                        ),
+                        buffer.connection.registries.blockState.getOrNull(combined and 0xFFFF),
                     )
                 }
             }
