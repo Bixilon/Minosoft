@@ -28,7 +28,7 @@ class BakingUtilTest {
     fun positionsDown() {
         assertContentEquals(
             BakingUtil.positions(Directions.DOWN, from, to),
-            floatArrayOf(1.0f, 2.0f, 3.0f, 6.0f, 2.0f, 3.0f, 6.0f, 2.0f, 4.0f, 1.0f, 2.0f, 4.0f)
+            floatArrayOf(1.0f, 2.0f, 3.0f, 1.0f, 2.0f, 4.0f, 6.0f, 2.0f, 4.0f, 6.0f, 2.0f, 3.0f)
         )
     }
 
@@ -36,7 +36,7 @@ class BakingUtilTest {
     fun positionsUp() {
         assertContentEquals(
             BakingUtil.positions(Directions.UP, from, to),
-            floatArrayOf(1.0f, 5.0f, 3.0f, 1.0f, 5.0f, 4.0f, 6.0f, 5.0f, 4.0f, 6.0f, 5.0f, 3.0f)
+            floatArrayOf(1.0f, 5.0f, 3.0f, 6.0f, 5.0f, 3.0f, 6.0f, 5.0f, 4.0f, 1.0f, 5.0f, 4.0f)
         )
     }
 

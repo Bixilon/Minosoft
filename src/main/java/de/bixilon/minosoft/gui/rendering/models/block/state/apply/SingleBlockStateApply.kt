@@ -30,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.SideSize
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import java.util.*
 
 data class SingleBlockStateApply(
     val model: BlockModel,
@@ -112,7 +111,7 @@ data class SingleBlockStateApply(
         if (model.elements == null) return null
 
         val bakedFaces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
-        val sizes: MutableMap<Directions, MutableList<SideSize.FaceSize>> = EnumMap(Directions::class.java)
+        val sizes: Array<MutableList<SideSize.FaceSize>> = Array(Directions.SIZE) { mutableListOf() } // TODO
 
         for (element in model.elements) {
             for ((direction, face) in element.faces) {
