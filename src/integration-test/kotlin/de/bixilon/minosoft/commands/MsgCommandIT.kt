@@ -21,19 +21,22 @@ import de.bixilon.minosoft.commands.parser.minecraft.message.MessageParser
 import de.bixilon.minosoft.commands.parser.minecraft.target.TargetParser
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.NameEntityTarget
 import de.bixilon.minosoft.commands.stack.CommandStack
-import org.testng.Assert.*
+import org.testng.Assert.assertEquals
+import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["command"])
 class MsgCommandIT {
 
     private fun createNode(executor: (CommandStack) -> Unit): RootNode {
-        return RootNode().addChild(
-            LiteralNode("msg").addChild(
-                ArgumentNode("targets", TargetParser()).addChild(
-                    ArgumentNode("message", MessageParser, executor = executor)
-                )
+        val msg = LiteralNode("msg").addChild(
+            ArgumentNode("targets", TargetParser()).addChild(
+                ArgumentNode("message", MessageParser, executor = executor)
             )
+        )
+        return RootNode().addChild(
+            msg,
+            LiteralNode(name = "redirect", redirect = msg)
         ).unsafeCast()
     }
 
@@ -48,11 +51,30 @@ class MsgCommandIT {
 
     fun validateStack() {
         val node = createNode {
-            assertNotNull(it["msg"])
+            assertEquals(it["msg"], "msg")
             assertEquals(it["targets"], NameEntityTarget("Bixilon"))
             assertEquals(it["message"], "hi there!")
         }
 
         node.execute("msg Bixilon hi there!")
+    }
+
+    fun redirectExecution() {
+        var executed = false
+        val node = createNode { executed = true }
+
+        node.execute("redirect Bixilon hi there!")
+
+        assertTrue(executed)
+    }
+
+    fun redirectStack() {
+        val node = createNode {
+            assertEquals(it["msg"], "redirect")
+            assertEquals(it["targets"], NameEntityTarget("Bixilon"))
+            assertEquals(it["message"], "hi there!")
+        }
+
+        node.execute("redirect Bixilon hi there!")
     }
 }
