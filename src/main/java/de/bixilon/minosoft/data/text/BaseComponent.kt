@@ -93,7 +93,8 @@ class BaseComponent : ChatComponent {
             val with: MutableList<Any> = mutableListOf()
             json["with"].toJsonList()?.let { withArray ->
                 for (part in withArray) {
-                    with.add(part ?: continue)
+                    if (part == null) continue
+                    with += ChatComponent.of(raw = part, translator, component, restricted = restrictedMode)
                 }
             }
             val fallback = json["fallback"]?.toString()

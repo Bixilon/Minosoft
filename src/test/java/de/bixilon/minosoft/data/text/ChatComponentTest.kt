@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.url.URLUtil.toURL
+import de.bixilon.minosoft.data.language.lang.Language
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.chat
 import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.data.text.events.click.OpenURLClickEvent
@@ -231,6 +232,17 @@ internal class ChatComponentTest {
     fun `JSON not escaped new line`() {
         val text = ChatComponent.of("""{"text":"Unsupported protocol version 762.""" + "\n" + """Try connecting with Minecraft 1.8.x-1.12.x"}""")
         val expected = TextComponent("Unsupported protocol version 762.\nTry connecting with Minecraft 1.8.x-1.12.x")
+        assertEquals(text, expected)
+    }
+
+    @Test
+    fun `Nested translations`() {
+        val language = Language("en_US", mutableMapOf(
+            "gameMode.changed" to "Dein Spielmodus wurde zu %s geändert",
+            "gameMode.creative" to "Kreativmodus",
+        ))
+        val text = ChatComponent.of("""{"translate":"gameMode.changed","with":[{"translate":"gameMode.creative"}]}""", translator = language)
+        val expected = BaseComponent(TextComponent("Dein Spielmodus wurde zu "), TextComponent("Kreativmodus"), TextComponent(" geändert"))
         assertEquals(text, expected)
     }
 
