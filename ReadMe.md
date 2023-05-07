@@ -122,7 +122,7 @@ Thanks to @jugendhacker you can get minosoft directly from the arch user reposit
 2. Clone this repository (`git clone --depth=1 https://gitlab.bixilon.de/bixilon/minosoft.git`) or click on download master and extract the archive.
 3. Change directory (`cd minosoft`)
 4. Optional: Checkout a current feature branch (Warning: might be unstable; might not even build) (`git checkout <branch>`)
-5. Build and run Minosoft with `./gradlew run` (or on windows `./gradlew.bat run`). If any errors occur, feel free to open an issue
+5. Build and run Minosoft with `./gradlew run` (or on windows `./gradlew.bat run`). Alternatively just click on `run.cmd`. If any errors occur, feel free to contact me or open an issue
 
 
 ## Code mirrors
