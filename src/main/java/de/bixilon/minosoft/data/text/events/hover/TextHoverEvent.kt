@@ -55,7 +55,7 @@ class TextHoverEvent(
     companion object : HoverEventFactory<TextHoverEvent> {
         override val name: String = "show_text"
 
-        override fun build(json: JsonObject, restrictedMode: Boolean): TextHoverEvent {
+        override fun build(json: JsonObject, restricted: Boolean): TextHoverEvent {
             return TextHoverEvent(ChatComponent.of(json.data))
         }
     }

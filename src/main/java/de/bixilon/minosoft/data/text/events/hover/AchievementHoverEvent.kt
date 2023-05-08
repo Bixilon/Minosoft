@@ -24,7 +24,7 @@ class AchievementHoverEvent(
     companion object : HoverEventFactory<AchievementHoverEvent> {
         override val name: String = "show_achievement"
 
-        override fun build(json: JsonObject, restrictedMode: Boolean): AchievementHoverEvent {
+        override fun build(json: JsonObject, restricted: Boolean): AchievementHoverEvent {
             return AchievementHoverEvent(json.data.toResourceLocation())
         }
     }
