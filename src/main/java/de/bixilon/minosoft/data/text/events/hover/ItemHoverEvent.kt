@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ class ItemHoverEvent(
     companion object : HoverEventFactory<ItemHoverEvent> {
         override val name: String = "show_item"
 
-        override fun build(json: JsonObject, restrictedMode: Boolean): ItemHoverEvent {
+        override fun build(json: JsonObject, restricted: Boolean): ItemHoverEvent {
             return ItemHoverEvent(null, ChatComponent.of(json.data))
         }
     }

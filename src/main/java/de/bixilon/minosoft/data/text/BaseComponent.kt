@@ -46,7 +46,7 @@ class BaseComponent : ChatComponent {
         }
     }
 
-    constructor(translator: Translator? = null, parent: TextComponent? = null, json: Map<String, Any>, restrictedMode: Boolean = false) {
+    constructor(translator: Translator? = null, parent: TextComponent? = null, json: Map<String, Any>, restricted: Boolean = false) {
         val color = json["color"]?.nullCast<String>()?.toColor() ?: parent?.color
 
         val formatting = parent?.formatting?.copy() ?: TextFormatting()
@@ -57,8 +57,8 @@ class BaseComponent : ChatComponent {
         json["strikethrough"]?.toBoolean()?.let { formatting[FormattingCodes.STRIKETHROUGH] = it }
         json["obfuscated"]?.toBoolean()?.let { formatting[FormattingCodes.OBFUSCATED] = it }
 
-        val clickEvent = parent?.clickEvent ?: json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restrictedMode) }
-        val hoverEvent = parent?.hoverEvent ?: json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restrictedMode) }
+        val clickEvent = parent?.clickEvent ?: json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restricted) }
+        val hoverEvent = parent?.hoverEvent ?: json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restricted) }
 
         val text = json["text"]?.nullCast<String>() ?: ""
 
@@ -74,13 +74,13 @@ class BaseComponent : ChatComponent {
         fun parseExtra() {
             json["extra"].toJsonList()?.let {
                 for (data in it) {
-                    this += ChatComponent.of(data, translator, component, restrictedMode)
+                    this += ChatComponent.of(data, translator, component, restricted)
                 }
             }
         }
 
         if (text.indexOf(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX) != -1) {
-            this += ChatComponent.of(text, translator, component, restrictedMode)
+            this += ChatComponent.of(text, translator, component, restricted)
             parseExtra()
             return
         }
@@ -92,9 +92,9 @@ class BaseComponent : ChatComponent {
         parseExtra()
 
         json["translate"]?.toString()?.let {
-            val with: Array<ChatComponent> = json.with(translator, component, restrictedMode) ?: emptyArray()
+            val with: Array<ChatComponent> = json.with(translator, component, restricted) ?: emptyArray()
             val fallback = json["fallback"]?.toString()
-            this += translator?.forceTranslate(it.toResourceLocation(), component, restrictedMode, fallback, data = with.unsafeCast()) ?: ChatComponent.of(json["with"], translator, component, restrictedMode)
+            this += translator?.forceTranslate(it.toResourceLocation(), component, restricted, fallback, data = with.unsafeCast()) ?: ChatComponent.of(json["with"], translator, component, restricted)
         }
     }
 
