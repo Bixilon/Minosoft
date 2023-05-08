@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
@@ -90,15 +92,9 @@ class BaseComponent : ChatComponent {
         parseExtra()
 
         json["translate"]?.toString()?.let {
-            val with: MutableList<Any> = mutableListOf()
-            json["with"].toJsonList()?.let { withArray ->
-                for (part in withArray) {
-                    if (part == null) continue
-                    with += ChatComponent.of(raw = part, translator, component, restricted = restrictedMode)
-                }
-            }
+            val with: Array<ChatComponent> = json.with(translator, component, restrictedMode) ?: emptyArray()
             val fallback = json["fallback"]?.toString()
-            this += translator?.forceTranslate(it.toResourceLocation(), component, restrictedMode, fallback, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, component, restrictedMode)
+            this += translator?.forceTranslate(it.toResourceLocation(), component, restrictedMode, fallback, data = with.unsafeCast()) ?: ChatComponent.of(json["with"], translator, component, restrictedMode)
         }
     }
 
@@ -275,5 +271,16 @@ class BaseComponent : ChatComponent {
                 return BaseComponent(parts)
             }
         }
+    }
+
+    private fun JsonObject.with(translator: Translator?, parent: TextComponent, restricted: Boolean): Array<ChatComponent>? {
+        val with = this["with"]?.toJsonList() ?: return null
+        val parts: MutableList<ChatComponent> = mutableListOf()
+        for (part in with) {
+            if (part == null) continue
+            parts += ChatComponent.of(raw = part, translator, parent, restricted = restricted)
+        }
+
+        return parts.toTypedArray()
     }
 }
