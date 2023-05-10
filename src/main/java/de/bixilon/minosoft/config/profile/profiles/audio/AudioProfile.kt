@@ -22,6 +22,7 @@ import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.lat
 import de.bixilon.minosoft.config.profile.profiles.audio.gui.GuiC
 import de.bixilon.minosoft.config.profile.profiles.audio.types.TypesC
 import de.bixilon.minosoft.config.profile.profiles.audio.volume.VolumeC
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for audio
@@ -34,7 +35,7 @@ class AudioProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 

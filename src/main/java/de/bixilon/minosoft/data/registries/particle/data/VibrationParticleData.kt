@@ -10,23 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.registries.particle.data
 
-package de.bixilon.minosoft.data.text.events.hover
+import de.bixilon.minosoft.data.registries.particle.ParticleType
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.text.ChatComponent
+class VibrationParticleData(val source: Any, val arrival: Int, type: ParticleType) : ParticleData(type) {
 
-class ItemHoverEvent(
-    val item: ItemStack?,
-    val text: ChatComponent,
-) : HoverEvent {
+    override fun toString(): String {
+        return "$type: $source in $arrival"
+    }
 
-    companion object : HoverEventFactory<ItemHoverEvent> {
-        override val name: String = "show_item"
+    companion object : ParticleDataFactory<VibrationParticleData> {
 
-        override fun build(json: JsonObject, restricted: Boolean): ItemHoverEvent {
-            return ItemHoverEvent(null, ChatComponent.of(json.data))
+        override fun read(buffer: PlayInByteBuffer, type: ParticleType): VibrationParticleData {
+            val source = buffer.readVibrationSource()
+            val arrival = buffer.readVarInt()
+            return VibrationParticleData(source, arrival, type)
         }
     }
 }

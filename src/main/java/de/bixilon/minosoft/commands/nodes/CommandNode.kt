@@ -25,6 +25,7 @@ abstract class CommandNode(
 ) {
     protected val children: MutableList<CommandNode> = mutableListOf()
 
+
     open fun addChild(vararg node: CommandNode): CommandNode {
         children += node
         return this
@@ -42,7 +43,7 @@ abstract class CommandNode(
         var childError: Throwable? = null
         var errorStack = -1
 
-        for (child in children) {
+        for (child in (redirect?.children ?: children)) {
             reader.pointer = pointer
             stack.reset(stackSize)
             try {
@@ -73,7 +74,7 @@ abstract class CommandNode(
         var errorStack = -1
         var parserSucceeds = 0
 
-        for (child in children) {
+        for (child in (redirect?.children ?: children)) {
             reader.pointer = pointer
             stack.reset(stackSize)
             try {
@@ -114,7 +115,7 @@ abstract class CommandNode(
 
 
     protected fun checkForDeadEnd(reader: CommandReader) {
-        if (children.isEmpty()) {
+        if ((redirect?.children ?: children).isEmpty()) {
             if (reader.canPeek()) {
                 throw TrailingTextError(reader)
             } else {

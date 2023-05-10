@@ -10,23 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.registries.particle.data
 
-package de.bixilon.minosoft.data.text.events.hover
+import de.bixilon.minosoft.data.registries.particle.ParticleType
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.text.ChatComponent
+class SculkChargeParticleData(val roll: Float, type: ParticleType) : ParticleData(type) {
 
-class ItemHoverEvent(
-    val item: ItemStack?,
-    val text: ChatComponent,
-) : HoverEvent {
+    override fun toString(): String {
+        return "$type: $roll"
+    }
 
-    companion object : HoverEventFactory<ItemHoverEvent> {
-        override val name: String = "show_item"
-
-        override fun build(json: JsonObject, restricted: Boolean): ItemHoverEvent {
-            return ItemHoverEvent(null, ChatComponent.of(json.data))
+    companion object : ParticleDataFactory<SculkChargeParticleData> {
+        override fun read(buffer: PlayInByteBuffer, type: ParticleType): SculkChargeParticleData {
+            return SculkChargeParticleData(buffer.readFloat(), type)
         }
     }
 }

@@ -74,11 +74,11 @@ object LanguageUtil {
         return this.replace("\\n", "\n")
     }
 
-    fun getFallbackTranslation(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean = false, vararg data: Any?): ChatComponent {
+    fun getFallbackTranslation(key: ResourceLocation?, parent: TextComponent?, restricted: Boolean = false, vararg data: Any?): ChatComponent {
         if (data.isEmpty()) {
-            return ChatComponent.of(key.toString(), null, parent, restrictedMode)
+            return ChatComponent.of(key.toString(), null, parent, restricted)
         }
-        return ChatComponent.of(key.toString() + "->" + data.contentToString(), null, parent, restrictedMode)
+        return ChatComponent.of(key.toString() + "->" + data.contentToString(), null, parent, restricted)
     }
 
     fun loadLanguage(language: String, assetsManager: AssetsManager, json: Boolean, path: ResourceLocation): Translator {

@@ -24,6 +24,7 @@ import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileM
 import de.bixilon.minosoft.config.profile.profiles.connection.signature.SignatureC
 import de.bixilon.minosoft.config.profile.profiles.connection.skin.SkinC
 import de.bixilon.minosoft.data.entities.entities.player.Arms
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for connection
@@ -36,7 +37,7 @@ class ConnectionProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 

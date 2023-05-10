@@ -21,6 +21,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.resources.assets.AssetsC
 import de.bixilon.minosoft.config.profile.profiles.resources.source.SourceC
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for resources
@@ -33,7 +34,7 @@ class ResourcesProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 

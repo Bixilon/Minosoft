@@ -22,6 +22,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.general.GeneralC
 import de.bixilon.minosoft.config.profile.profiles.eros.server.ServerC
 import de.bixilon.minosoft.config.profile.profiles.eros.text.TextC
 import de.bixilon.minosoft.config.profile.profiles.eros.theme.ThemeC
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for Eros
@@ -34,7 +35,7 @@ class ErosProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 

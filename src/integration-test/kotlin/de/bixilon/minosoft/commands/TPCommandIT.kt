@@ -17,64 +17,45 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.commands.nodes.ArgumentNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.nodes.RootNode
-import de.bixilon.minosoft.commands.parser.minecraft.message.MessageParser
+import de.bixilon.minosoft.commands.parser.minecraft.coordinate.Coordinate
+import de.bixilon.minosoft.commands.parser.minecraft.coordinate.CoordinateRelatives
+import de.bixilon.minosoft.commands.parser.minecraft.coordinate.vec3.Vec3Coordinate
+import de.bixilon.minosoft.commands.parser.minecraft.coordinate.vec3.Vec3Parser
 import de.bixilon.minosoft.commands.parser.minecraft.target.TargetParser
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.NameEntityTarget
+import de.bixilon.minosoft.commands.parser.minecraft.target.TargetSelectors
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorEntityTarget
 import de.bixilon.minosoft.commands.stack.CommandStack
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["command"])
-class MsgCommandIT {
+class TPCommandIT {
 
     private fun createNode(executor: (CommandStack) -> Unit): RootNode {
-        val msg = LiteralNode("msg").addChild(
-            ArgumentNode("targets", TargetParser()).addChild(
-                ArgumentNode("message", MessageParser, executor = executor)
+        return RootNode().addChild(LiteralNode("tp").addChild(
+            ArgumentNode("target", TargetParser()).addChild(
+                ArgumentNode("destination", Vec3Parser, executor = executor)
             )
-        )
-        return RootNode().addChild(
-            msg,
-            LiteralNode(name = "redirect", redirect = msg)
-        ).unsafeCast()
+        )).unsafeCast()
     }
 
-    fun basicExecution() {
+    fun relative() {
         var executed = false
         val node = createNode { executed = true }
 
-        node.execute("msg Bixilon hi there!")
+        node.execute("tp @s ~ ~10 ~")
 
         assertTrue(executed)
     }
 
-    fun validateStack() {
+    fun relativeStack() {
         val node = createNode {
-            assertEquals(it["msg"], "msg")
-            assertEquals(it["targets"], NameEntityTarget("Bixilon"))
-            assertEquals(it["message"], "hi there!")
+            assertEquals(it["tp"], "tp")
+            assertEquals(it["target"], SelectorEntityTarget(TargetSelectors.SELF, emptyMap()))
+            assertEquals(it["destination"], Vec3Coordinate(Coordinate(CoordinateRelatives.TILDE, 0.0f), Coordinate(CoordinateRelatives.TILDE, +10.0f), Coordinate(CoordinateRelatives.TILDE, 0.0f)))
         }
 
-        node.execute("msg Bixilon hi there!")
-    }
-
-    fun redirectExecution() {
-        var executed = false
-        val node = createNode { executed = true }
-
-        node.execute("redirect Bixilon hi there!")
-
-        assertTrue(executed)
-    }
-
-    fun redirectStack() {
-        val node = createNode {
-            assertEquals(it["msg"], "redirect")
-            assertEquals(it["targets"], NameEntityTarget("Bixilon"))
-            assertEquals(it["message"], "hi there!")
-        }
-
-        node.execute("redirect Bixilon hi there!")
+        node.execute("tp @s ~ ~10 ~")
     }
 }

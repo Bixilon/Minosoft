@@ -50,7 +50,7 @@ class RenderLight(val context: RenderContext) {
             "minosoft:toggle_fullbright".toResourceLocation(),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                KeyActions.CHANGE to setOf(KeyCodes.KEY_C),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_C),
             ),
             defaultPressed = connection.profiles.rendering.light.fullbright,
         ) {

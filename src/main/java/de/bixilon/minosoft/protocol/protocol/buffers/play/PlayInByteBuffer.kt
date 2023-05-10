@@ -16,17 +16,15 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
-import de.bixilon.minosoft.data.chat.signature.*
+import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
+import de.bixilon.minosoft.data.chat.signature.MessageHeader
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.registries.particle.ParticleType
-import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
-import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
-import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
-import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.particle.data.*
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.EnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
@@ -117,9 +115,12 @@ class PlayInByteBuffer : InByteBuffer {
         }
 
         return when (type.identifier.toString()) {
-            "minecraft:block", "minecraft:falling_dust" -> BlockParticleData.read(this, type)
+            "minecraft:block", "minecraft:falling_dust", "minecraft:block_marker" -> BlockParticleData.read(this, type)
             "minecraft:dust" -> DustParticleData.read(this, type)
             "minecraft:item" -> ItemParticleData.read(this, type)
+            "minecraft:shriek" -> ShriekParticleData.read(this, type)
+            "minecraft:sculk_charge" -> SculkChargeParticleData.read(this, type)
+            "minecraft:vibration" -> VibrationParticleData.read(this, type)
             else -> ParticleData(type)
         }
     }
@@ -332,5 +333,16 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun readVelocity(): Vec3d {
         return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_NETWORK_DIVIDER
+    }
+
+    fun readVibrationSource(): Any {
+        val type = readResourceLocation()
+        val source: Any = when (type.toString()) { // TODO: dynamic, factories
+            "minecraft:block" -> readBlockPosition()
+            "minecraft:entity" -> readEntityId()
+            else -> error("Unknown vibration source: $type")
+        }
+
+        return source
     }
 }

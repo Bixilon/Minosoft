@@ -73,7 +73,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 val raw = buffer.readLong()
                 chunkPosition = Vec2i((raw shr 42).toInt(), (raw shl 22 shr 42).toInt())
                 val yOffset = (raw shl 44 shr 44) * ProtocolDefinition.SECTION_HEIGHT_Y
-                if (buffer.versionId > ProtocolVersions.V_1_16_2_PRE3) {
+                if (buffer.versionId > ProtocolVersions.V_1_16_2_PRE3 && buffer.versionId < ProtocolVersions.V_23W17A) {
                     buffer.readBoolean() // ignore light updates
                 }
                 val data = buffer.readVarLongArray()

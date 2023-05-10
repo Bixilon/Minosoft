@@ -58,9 +58,9 @@ class OpenURLClickEvent(
     companion object : ClickEventFactory<OpenURLClickEvent> {
         override val name: String = "open_url"
 
-        override fun build(json: JsonObject, restrictedMode: Boolean): OpenURLClickEvent {
+        override fun build(json: JsonObject, restricted: Boolean): OpenURLClickEvent {
             val url = json.data.toString().toURL()
-            if (restrictedMode) {
+            if (restricted) {
                 url.checkWeb()
             }
             return OpenURLClickEvent(url)

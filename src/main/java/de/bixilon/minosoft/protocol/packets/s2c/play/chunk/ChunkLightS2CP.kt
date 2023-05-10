@@ -39,7 +39,7 @@ class ChunkLightS2CP @JvmOverloads constructor(
     val prototype: ChunkPrototype
 
     init {
-        if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
+        if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3 && buffer.versionId < ProtocolVersions.V_23W17A) {
             recalculateNeighbours = buffer.readBoolean()
         }
 

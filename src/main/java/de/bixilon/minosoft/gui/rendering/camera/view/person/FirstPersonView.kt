@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering.camera.view.person
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.CameraView
@@ -25,7 +27,14 @@ class FirstPersonView(override val camera: Camera) : PersonView {
     override val context: RenderContext get() = camera.context
 
     override val renderSelf: Boolean get() = false
-    override val renderArm: Boolean get() = true
+    override val renderArm: Boolean
+        get() {
+            val entity = camera.context.connection.camera.entity
+            if (entity is PlayerEntity && entity.gamemode == Gamemodes.SURVIVAL) {
+                return false
+            }
+            return true
+        }
     override val renderOverlays: Boolean get() = true
 
     override var eyePosition: Vec3 = Vec3.EMPTY
@@ -41,7 +50,7 @@ class FirstPersonView(override val camera: Camera) : PersonView {
     }
 
     private fun update() {
-        val entity = camera.context.connection.camera.entity
+        val entity = context.connection.camera.entity
         this.eyePosition = entity.renderInfo.eyePosition
         this.rotation = entity.physics.rotation
         this.front = this.rotation.front

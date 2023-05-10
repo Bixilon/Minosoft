@@ -48,7 +48,7 @@ class CopyToClipboardClickEvent(
     companion object : ClickEventFactory<CopyToClipboardClickEvent> {
         override val name = "copy_to_clipboard"
 
-        override fun build(json: JsonObject, restrictedMode: Boolean): CopyToClipboardClickEvent {
+        override fun build(json: JsonObject, restricted: Boolean): CopyToClipboardClickEvent {
             return CopyToClipboardClickEvent(json.data.toString())
         }
     }

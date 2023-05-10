@@ -32,7 +32,7 @@ class EntityHoverEvent(
     companion object : HoverEventFactory<EntityHoverEvent> {
         override val name: String = "show_entity"
 
-        override fun build(json: JsonObject, restrictedMode: Boolean): EntityHoverEvent {
+        override fun build(json: JsonObject, restricted: Boolean): EntityHoverEvent {
             val data = json.data
             var json: JsonObject = if (data is String) {
                 Jackson.MAPPER.readValue(data, Jackson.JSON_MAP_TYPE)

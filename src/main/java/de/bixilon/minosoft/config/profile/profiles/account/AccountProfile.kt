@@ -29,6 +29,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.latestVersion
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.util.KUtil
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Profile for accounts
@@ -41,7 +42,7 @@ class AccountProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
-    override var ignoreNextReload: Boolean = false
+    override var ignoreReloads = AtomicInteger()
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 
