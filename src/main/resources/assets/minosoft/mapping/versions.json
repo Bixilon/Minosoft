@@ -1,4 +1,9 @@
 {
+  "894": {
+    "name": "1.20-pre1",
+    "protocol_id": 1073741958,
+    "packets": 880
+  },
   "893": {
     "name": "23w18a",
     "protocol_id": 1073741957,

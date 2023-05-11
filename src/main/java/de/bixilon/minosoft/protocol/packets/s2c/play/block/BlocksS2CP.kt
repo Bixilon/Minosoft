@@ -62,7 +62,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     val y = buffer.readUnsignedByte()
                     val blockId = buffer.readVarInt()
                     update[i] = ChunkLocalBlockUpdate.LocalUpdate(
-                        Vec3i(position and 0xF0 ushr 4 and 0xF, y, position and 0x0F),
+                        Vec3i(position ushr 4 and 0x0F, y, position and 0x0F),
                         buffer.connection.registries.blockState.getOrNull(blockId),
                     )
                 }
