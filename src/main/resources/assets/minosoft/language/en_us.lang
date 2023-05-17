@@ -107,6 +107,11 @@ minosoft:main.account.checking_dialog.title=Checking account... - Minosoft
 minosoft:main.account.checking_dialog.header=Checking account... Please wait
 
 
+minosoft:main.account.no_account.warning.title=No account!
+minosoft:main.account.no_account.warning.header=You didn't add any account yet!
+minosoft:main.account.no_account.warning.description=In order to use minosoft, you'll first have to add an account!\nThis can either be an offline account (only playable on offline servers) or an microsoft account.
+minosoft:main.account.no_account.warning.button=Manage accounts
+
 minosoft:main.account.card.connection_count=%0$s connections
 
 minosoft:main.account.account_info.id=Id
