@@ -67,7 +67,7 @@ object AccountManageCommand : Command {
                     stack.print.print("Obtaining device code...")
                     DefaultThreadPool += {
                         MicrosoftOAuthUtils.obtainDeviceCodeAsync({
-                            stack.print.print("Please open §e${it.verificationURI}§r and enter the following code §e${it.userCode}§r and login into your microsoft account.")
+                            stack.print.print("Please open §e${it.verificationURI}§r and enter the code §e${it.userCode}§r and login into your microsoft account.")
                         }, { it.printStackTrace() }, {
                             stack.print.print("Logging in into microsoft account...")
                             val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(it)
