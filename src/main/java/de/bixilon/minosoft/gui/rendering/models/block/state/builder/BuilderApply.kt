@@ -63,7 +63,7 @@ class BuilderApply(
 
             for (direction in Directions) {
                 faces[direction.ordinal] += model.faces[direction.ordinal]
-                sizes[direction.ordinal] += model.sizes[direction.ordinal].sizes
+                // TODO sizes[direction.ordinal] += model.sizes[direction.ordinal].sizes
             }
         }
 
