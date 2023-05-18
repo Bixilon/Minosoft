@@ -38,7 +38,7 @@ open class ProgressDialog(
     @FXML private lateinit var progressFX: ProgressBar
     @FXML private lateinit var cancelButtonFX: Button
 
-    private var progress = Int.MAX_VALUE
+    private var step = Int.MAX_VALUE
 
     public override fun show() {
         JavaFXUtil.runLater {
@@ -68,16 +68,16 @@ open class ProgressDialog(
         val count = latch.count
         val total = latch.total
         val progress = getProgress(count, total)
-        val int = (progress * 100).toInt()
-        if (int == this.progress) {
+        val step = progress.steps()
+        if (step == this.step) {
             return
         }
-        this.progress = int
+        this.step = step
         JavaFXUtil.runLater { _update(count, total, progress) }
     }
 
     private fun _update(count: Int, total: Int, progress: Double) {
-        if ((progress * 100).toInt() != this.progress) {
+        if (progress.steps() != this.step) {
             return
         }
         if (count <= 0 && total > 0) {
@@ -107,6 +107,12 @@ open class ProgressDialog(
     }
 
     companion object {
+        private const val GUI_STEPS = 1000 // 0.1%
         private val LAYOUT = "minosoft:eros/dialog/loading.fxml".toResourceLocation()
+
+
+        fun Double.steps(): Int {
+            return (this * GUI_STEPS).toInt()
+        }
     }
 }
