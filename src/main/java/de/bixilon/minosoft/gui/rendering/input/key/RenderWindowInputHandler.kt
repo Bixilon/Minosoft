@@ -282,8 +282,10 @@ class RenderWindowInputHandler(
             keysLastDownTime[keyCode] = currentTime
         }
 
-
-        if (inputHandler != this.inputHandler && this.inputHandler != null) {
+        if (this.inputHandler == null) {
+            skipCharPress = false
+            skipMouseMove = false
+        } else if (inputHandler != this.inputHandler) {
             skipCharPress = true
             skipMouseMove = true
         }
