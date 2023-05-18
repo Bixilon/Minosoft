@@ -98,12 +98,6 @@ class TintManager(val connection: PlayConnection) {
         return tints
     }
 
-
-    private fun createDefaultTints(): Map<Set<ResourceLocation>, TintProvider> {
-        return mapOf(
-        )
-    }
-
     companion object {
         const val DEFAULT_TINT_INDEX = -1
 
