@@ -47,6 +47,7 @@ abstract class Account(
     abstract val uuid: UUID
 
 
+    @get:JsonIgnore open val supportsEncryption: Boolean get() = true
     @get:JsonIgnore open val supportsSkins: Boolean get() = true
 
     @Transient

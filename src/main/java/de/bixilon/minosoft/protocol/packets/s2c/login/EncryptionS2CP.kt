@@ -38,6 +38,10 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val nonce: ByteArray = buffer.readByteArray()
 
     override fun handle(connection: PlayConnection) {
+        if (!connection.account.supportsEncryption && !connection.profiles.account.ignoreNotEncryptedAccount) {
+            throw IllegalAccessError("Account does not support encryption, but the server requested it!\nMaybe you try to join with an offline account on an online server?")
+        }
+
         val secretKey = CryptManager.createNewSharedKey()
         val publicKey = CryptManager.decodePublicKey(publicKey)
         val serverHash = BigInteger(CryptManager.getServerHash(serverId, publicKey, secretKey)).toString(16)

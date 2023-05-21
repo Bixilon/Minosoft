@@ -63,6 +63,12 @@ class AccountProfile(
     var alwaysFetchProfile by BooleanDelegate(this, true)
 
     /**
+     * Minosoft prevents joining online servers with offline accounts.
+     * If you still need to join that server (with an invalid secret key), enable it.
+     */
+    var ignoreNotEncryptedAccount by BooleanDelegate(this, false)
+
+    /**
      * All accounts
      */
     @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
