@@ -35,10 +35,10 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         data.add(position[2])
         data.add(transformedUV)
         data.add(texture.renderData.shaderTextureId.buffer())
-        data.add((tintColor or (light shl 24)).buffer())
+        data.add(((light shl 24) or tintColor).buffer())
     }
 
-    fun addVertex(x: Float, y: Float, z: Float, uv: FloatArray, texture: AbstractTexture, shaderTextureId: Float, tintLight: Float) {
+    fun addVertex(x: Float, y: Float, z: Float, uv: FloatArray, texture: AbstractTexture, shaderTextureId: Float, lightTint: Float) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.renderData.transformUV(uv)
         data.add(x)
@@ -46,7 +46,7 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         data.add(z)
         data.add(transformedUV)
         data.add(shaderTextureId)
-        data.add(tintLight)
+        data.add(lightTint)
     }
 
 
@@ -54,7 +54,7 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         val position: Vec3,
         val uv: Vec2,
         val indexLayerAnimation: Int,
-        val tintLight: Int,
+        val lightTint: Int,
     ) {
         companion object : MeshStruct(WorldMeshStruct::class)
     }
