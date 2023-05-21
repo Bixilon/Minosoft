@@ -57,12 +57,12 @@ data class ModelFace(
         fun fallbackUV(direction: Directions, from: Vec3, to: Vec3): FaceUV {
             return when (direction) {
                 // @formatter:off
-                Directions.DOWN ->  FaceUV(from.x,      1.0f - to.z,     to.x,            1.0f - from.z  )
-                Directions.UP ->    FaceUV(from.x,      from.z,          to.x,            to.z           )
-                Directions.NORTH -> FaceUV(1.0f - to.x, 1.0f - to.y,     1.0f - from.x,   1.0f - from.y  )
-                Directions.SOUTH -> FaceUV(from.x,      1.0f - to.y,     to.x,            1.0f - from.y  )
-                Directions.WEST ->  FaceUV(from.z,      1.0f - to.y,     to.z,            1.0f - from.y  )
-                Directions.EAST ->  FaceUV(1.0f - to.z, 1.0f - to.y,     1.0f - from.z,   1.0f - from.y  )
+                Directions.DOWN ->  FaceUV(from.x,      1.0f - from.z,   to.x,             1.0f - to.z)
+                Directions.UP ->    FaceUV(from.x,      to.z,            to.x,             from.z     )
+                Directions.NORTH -> FaceUV(1.0f - to.x, 1.0f - from.y,   1.0f - from.x,    1.0f - to.y)
+                Directions.SOUTH -> FaceUV(from.x,      1.0f - from.y,   to.x,             1.0f - to.y)
+                Directions.WEST ->  FaceUV(from.z,      1.0f - from.y,   to.z,             1.0f - to.y)
+                Directions.EAST ->  FaceUV(1.0f - to.z, 1.0f - from.y,   1.0f - from.z,    1.0f - to.y)
                 // @formatter:on
             }
         }
@@ -70,7 +70,13 @@ data class ModelFace(
         fun deserialize(direction: Directions, from: Vec3, to: Vec3, data: JsonObject): ModelFace {
             val texture = data["texture"].toString()
 
-            val uv = data["uv"]?.listCast<Number>()?.let { FaceUV(start = Vec2(it[0], it[1]) / BLOCK_SIZE, end = Vec2(it[2], it[3]) / BLOCK_SIZE) } ?: fallbackUV(direction, from, to)
+            val uv = data["uv"]?.listCast<Number>()?.let {
+                // auto transform (flip) y coordinate (in minosoft 0|0 is left up, not like in minecraft/opengl where it is left down)
+                FaceUV(
+                    start = Vec2(it[0], it[3].toFloat()) / BLOCK_SIZE,
+                    end = Vec2(it[2], it[1].toFloat()) / BLOCK_SIZE,
+                )
+            } ?: fallbackUV(direction, from, to)
 
             val rotation = data["rotation"]?.toInt()?.rotation() ?: 0
             val cull = data["cullface"]?.toString()?.let { if (it == "none") null else Directions[it] }

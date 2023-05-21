@@ -62,18 +62,18 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
     companion object {
         // TODO: uv coordinates should start in the upper left corner, then a 0=>0 mapping is possible
         val TRIANGLE_ORDER = intArrayOf(
-            0, 3,
-            3, 0,
-            2, 1,
-            2, 1,
-            1, 2,
-            0, 3,
+            0, 0,
+            3, 3,
+            2, 2,
+            2, 2,
+            1, 1,
+            0, 0,
         )
         val QUAD_ORDER = intArrayOf(
-            0, 3,
-            3, 0,
-            2, 1,
-            1, 2,
+            0, 0,
+            3, 3,
+            2, 2,
+            1, 1,
         )
     }
 }
