@@ -55,7 +55,7 @@ class BakedFaceTest {
 
     }
 
-    fun renderFull() {
+    fun mixed() {
         val face = BakedFace(floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f), floatArrayOf(-1f, -2f, -3f, -4f, -5f, -6f, -7f, -8f), 1.0f, -1, null, texture())
 
         val mesh = mesh()
@@ -67,13 +67,38 @@ class BakedFaceTest {
 
         val data = mesh.opaqueMesh!!.data.toArray()
         val expected = floatArrayOf(
-            0f, 1f, 2f, -7f, -8f, texture, lightTint,
-            9f, 10f, 11f, -1f, -2f, texture, lightTint,
-            6f, 7f, 8f, -3f, -4f, texture, lightTint,
-            3f, 4f, 5f, -5f, -6f, texture, lightTint,
+            0f, 1f, 2f, -1f, -2f, texture, lightTint,
+            9f, 10f, 11f, -7f, -8f, texture, lightTint,
+            6f, 7f, 8f, -5f, -6f, texture, lightTint,
+            3f, 4f, 5f, -3f, -4f, texture, lightTint,
         )
 
 
         assertEquals(data, expected)
     }
+
+    fun blockSouth() {
+        val face = BakedFace(floatArrayOf(0f, 0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f, 0f, 0f, 1f), floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f), 1.0f, -1, null, texture())
+
+        val mesh = mesh()
+
+        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null)
+
+        val texture = 0.buffer()
+        val lightTint = 0xFFFFFF.buffer()
+
+        val data = mesh.opaqueMesh!!.data.toArray()
+        val expected = floatArrayOf(
+            0f, 0f, 0f, 0f, 0f, texture, lightTint,
+            0f, 0f, 1f, 1f, 0f, texture, lightTint,
+            0f, 1f, 1f, 1f, 1f, texture, lightTint,
+            0f, 1f, 0f, 0f, 1f, texture, lightTint,
+        )
+
+
+        assertEquals(data, expected)
+    }
+
+
+    // TODO: triangle order
 }
