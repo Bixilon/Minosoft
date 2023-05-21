@@ -55,7 +55,7 @@ data class BlockModel(
 
             val elements: MutableList<ModelElement> = mutableListOf()
 
-            for (entry in data) {
+            for (entry in data.reversed()) {
                 elements += ModelElement.deserialize(entry) ?: continue
             }
 
