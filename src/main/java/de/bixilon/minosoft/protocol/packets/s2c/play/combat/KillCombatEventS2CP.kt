@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.combat
 
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_PRE3
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -21,11 +22,11 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(parent = true)
 class KillCombatEventS2CP(buffer: PlayInByteBuffer) : CombatEventS2CP {
-    val killerEntityId = buffer.readVarInt()
-    val deadEntityId = buffer.readInt()
+    val deadEntityId = buffer.readVarInt()
+    val killerEntityId = if (buffer.versionId >= V_1_20_PRE3) -1 else buffer.readInt()
     val message = buffer.readChatComponent()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Combat event kill (killerEntityId=$killerEntityId, deadEntityId=$deadEntityId, message=$message )" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Combat event kill (deadEntityId=$deadEntityId, killerEntityId=$killerEntityId, message=$message )" }
     }
 }
