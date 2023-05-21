@@ -30,7 +30,7 @@ class FirstPersonView(override val camera: Camera) : PersonView {
     override val renderArm: Boolean
         get() {
             val entity = camera.context.connection.camera.entity
-            if (entity is PlayerEntity && entity.gamemode == Gamemodes.SURVIVAL) {
+            if (entity is PlayerEntity && entity.gamemode == Gamemodes.SPECTATOR) {
                 return false
             }
             return true
