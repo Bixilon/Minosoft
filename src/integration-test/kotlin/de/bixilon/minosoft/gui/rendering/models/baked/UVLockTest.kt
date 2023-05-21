@@ -36,12 +36,12 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.6f)
     }
 
     fun y90Rotation1() {
@@ -51,12 +51,12 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.6f)
     }
 
     fun x90() {
@@ -66,11 +66,11 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.6f)
     }
 }

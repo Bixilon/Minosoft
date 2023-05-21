@@ -56,12 +56,12 @@ class CuboidBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        baked.assertFace(Directions.DOWN, block(0, 0, 1, 0, 0, 16, 16, 0, 16, 16, 0, 1), block(1, 16, 16, 16, 16, 0, 1, 0), 0.5f)
-        baked.assertFace(Directions.UP, block(0, 16, 1, 16, 16, 1, 16, 16, 16, 0, 16, 16), block(1, 0, 1, 16, 16, 16, 16, 0), 1.0f)
-        baked.assertFace(Directions.NORTH, block(0, 0, 1, 16, 0, 1, 16, 16, 1, 0, 16, 1), block(16, 0, 0, 0, 0, 16, 16, 16), 0.8f)
-        baked.assertFace(Directions.SOUTH, block(0, 0, 16, 0, 16, 16, 16, 16, 16, 16, 0, 16), block(0, 0, 0, 16, 16, 16, 16, 0), 0.8f)
-        baked.assertFace(Directions.WEST, block(0, 0, 1, 0, 16, 1, 0, 16, 16, 0, 0, 16), block(1, 0, 1, 16, 16, 16, 16, 0), 0.6f)
-        baked.assertFace(Directions.EAST, block(16, 0, 1, 16, 0, 16, 16, 16, 16, 16, 16, 1), block(15, 0, 0, 0, 0, 16, 15, 16), 0.6f)
+        baked.assertFace(Directions.DOWN, block(0, 0, 1, 0, 0, 16, 16, 0, 16, 16, 0, 1), block(1, 0, 16, 0, 16, 16, 1, 16), 0.5f)
+        baked.assertFace(Directions.UP, block(0, 16, 1, 16, 16, 1, 16, 16, 16, 0, 16, 16), block(1, 16, 1, 0, 16, 0, 16, 16), 1.0f)
+        baked.assertFace(Directions.NORTH, block(0, 0, 1, 16, 0, 1, 16, 16, 1, 0, 16, 1), block(16, 16, 0, 16, 0, 0, 16, 0), 0.8f)
+        baked.assertFace(Directions.SOUTH, block(0, 0, 16, 0, 16, 16, 16, 16, 16, 16, 0, 16), block(0, 16, 0, 0, 16, 0, 16, 16), 0.8f)
+        baked.assertFace(Directions.WEST, block(0, 0, 1, 0, 16, 1, 0, 16, 16, 0, 0, 16), block(1, 16, 1, 0, 16, 0, 16, 16), 0.6f)
+        baked.assertFace(Directions.EAST, block(16, 0, 1, 16, 0, 16, 16, 16, 16, 16, 16, 1), block(15, 16, 0, 16, 0, 0, 15, 0), 0.6f)
     }
 
     fun cuboidY90() {
@@ -72,11 +72,11 @@ class CuboidBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        baked.assertFace(Directions.DOWN, block(2, 2, 1, 2, 2, 16, 13, 2, 16, 13, 2, 1), block(1, 14, 16, 14, 16, 3, 1, 3), 0.5f)
-        baked.assertFace(Directions.UP, block(2, 15, 1, 13, 15, 1, 13, 15, 16, 2, 15, 16), block(1, 2, 1, 13, 16, 13, 16, 2), 1.0f)
-        baked.assertFace(Directions.NORTH, block(2, 2, 1, 13, 2, 1, 13, 15, 1, 2, 15, 1), block(14, 2, 3, 2, 3, 15, 14, 15), 0.8f)
-        baked.assertFace(Directions.SOUTH, block(2, 2, 16, 2, 15, 16, 13, 15, 16, 13, 2, 16), block(2, 2, 2, 15, 13, 15, 13, 2), 0.8f)
-        baked.assertFace(Directions.WEST, block(2, 2, 1, 2, 15, 1, 2, 15, 16, 2, 2, 16), block(1, 2, 1, 15, 16, 15, 16, 2), 0.6f)
-        baked.assertFace(Directions.EAST, block(13, 2, 1, 13, 2, 16, 13, 15, 16, 13, 15, 1), block(15, 2, 0, 2, 0, 15, 15, 15), 0.6f)
+        baked.assertFace(Directions.DOWN, block(2, 2, 1, 2, 2, 16, 13, 2, 16, 13, 2, 1), block(1, 3, 16, 3, 16, 14, 1, 14), 0.5f)
+        baked.assertFace(Directions.UP, block(2, 15, 1, 13, 15, 1, 13, 15, 16, 2, 15, 16), block(1, 13, 1, 2, 16, 2, 16, 13), 1.0f)
+        baked.assertFace(Directions.NORTH, block(2, 2, 1, 13, 2, 1, 13, 15, 1, 2, 15, 1), block(14, 15, 3, 15, 3, 2, 14, 2), 0.8f)
+        baked.assertFace(Directions.SOUTH, block(2, 2, 16, 2, 15, 16, 13, 15, 16, 13, 2, 16), block(2, 15, 2, 2, 13, 2, 13, 15), 0.8f)
+        baked.assertFace(Directions.WEST, block(2, 2, 1, 2, 15, 1, 2, 15, 16, 2, 2, 16), block(1, 15, 1, 2, 16, 2, 16, 15), 0.6f)
+        baked.assertFace(Directions.EAST, block(13, 2, 1, 13, 2, 16, 13, 15, 16, 13, 15, 1), block(15, 15, 0, 15, 0, 2, 15, 2), 0.6f)
     }
 }

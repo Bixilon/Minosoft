@@ -69,36 +69,36 @@ class BlockModelTest {
         val model = loadModel("""{"textures":{"a":"a:b"},"elements":[{"from":[0,0,0],"to":[16,16,16],"faces":{"down": {"texture":"#a"},"up":{"texture":"#a"},"north":{"texture":"#a"},"south":{"texture":"#a"},"west": {"texture":"#a"},"east": {"texture":"#a"}}}]}""")
 
         val faces = model.elements?.firstOrNull()?.faces ?: throw NullPointerException("no models?")
-        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(0, 0, 16, 16))
-        assertEquals(faces[Directions.UP]?.uv, FaceUV(0, 0, 16, 16))
-        assertEquals(faces[Directions.NORTH]?.uv, FaceUV(0, 0, 16, 16))
-        assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(0, 0, 16, 16))
-        assertEquals(faces[Directions.WEST]?.uv, FaceUV(0, 0, 16, 16))
-        assertEquals(faces[Directions.EAST]?.uv, FaceUV(0, 0, 16, 16))
+        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(0, 16, 16, 0))
+        assertEquals(faces[Directions.UP]?.uv, FaceUV(0, 16, 16, 0))
+        assertEquals(faces[Directions.NORTH]?.uv, FaceUV(0, 16, 16, 0))
+        assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(0, 16, 16, 0))
+        assertEquals(faces[Directions.WEST]?.uv, FaceUV(0, 16, 16, 0))
+        assertEquals(faces[Directions.EAST]?.uv, FaceUV(0, 16, 16, 0))
     }
 
     fun fallbackUV2() {
         val model = loadModel("""{"textures":{"a":"a:b"},"elements":[{"from":[1,2,3],"to":[13,14,15],"faces":{"down": {"texture":"#a"},"up":{"texture":"#a"},"north":{"texture":"#a"},"south":{"texture":"#a"},"west": {"texture":"#a"},"east": {"texture":"#a"}}}]}""")
 
         val faces = model.elements?.firstOrNull()?.faces ?: throw NullPointerException("no models?")
-        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(1, 1, 13, 13))
-        assertEquals(faces[Directions.UP]?.uv, FaceUV(1, 3, 13, 15))
-        assertEquals(faces[Directions.NORTH]?.uv, FaceUV(3, 2, 15, 14))
-        assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(1, 2, 13, 14))
-        assertEquals(faces[Directions.WEST]?.uv, FaceUV(3, 2, 15, 14))
-        assertEquals(faces[Directions.EAST]?.uv, FaceUV(1, 2, 13, 14))
+        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(1, 13, 13, 1))
+        assertEquals(faces[Directions.UP]?.uv, FaceUV(1, 15, 13, 3))
+        assertEquals(faces[Directions.NORTH]?.uv, FaceUV(3, 14, 15, 2))
+        assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(1, 14, 13, 2))
+        assertEquals(faces[Directions.WEST]?.uv, FaceUV(3, 14, 15, 2))
+        assertEquals(faces[Directions.EAST]?.uv, FaceUV(1, 14, 13, 2))
     }
 
     fun fallbackUV3() {
         val model = loadModel("""{"textures":{"a":"a:b"},"elements":[{"from":[5,3,1],"to":[15,13,11],"faces":{"down": {"texture":"#a"},"up":{"texture":"#a"},"north":{"texture":"#a"},"south":{"texture":"#a"},"west": {"texture":"#a"},"east": {"texture":"#a"}}}]}""")
 
         val faces = model.elements?.firstOrNull()?.faces ?: throw NullPointerException("no models?")
-        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(5, 5, 15, 15))
-        assertEquals(faces[Directions.UP]?.uv, FaceUV(5, 1, 15, 11))
-        assertEquals(faces[Directions.NORTH]?.uv, FaceUV(1, 3, 11, 13))
-        assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(5, 3, 15, 13))
-        assertEquals(faces[Directions.WEST]?.uv, FaceUV(1, 3, 11, 13))
-        assertEquals(faces[Directions.EAST]?.uv, FaceUV(5, 3, 15, 13))
+        assertEquals(faces[Directions.DOWN]?.uv, FaceUV(5, 15, 15, 5))
+        assertEquals(faces[Directions.UP]?.uv, FaceUV(5, 11, 15, 1))
+        assertEquals(faces[Directions.NORTH]?.uv, FaceUV(1, 13, 11, 3))
+        assertEquals(faces[Directions.SOUTH]?.uv, FaceUV(5, 13, 15, 3))
+        assertEquals(faces[Directions.WEST]?.uv, FaceUV(1, 13, 11, 3))
+        assertEquals(faces[Directions.EAST]?.uv, FaceUV(5, 13, 15, 3))
     }
 
     companion object {
@@ -150,12 +150,12 @@ class BlockModelTest {
                 from = Vec3(0, 0, 0),
                 to = Vec3(1, 1, 1),
                 faces = mapOf(
-                    Directions.DOWN to ModelFace("#down", FaceUV(Vec2(0), Vec2(1)), 0, Directions.DOWN, -1),
-                    Directions.UP to ModelFace("#up", FaceUV(Vec2(0), Vec2(1)), 0, Directions.UP, -1),
-                    Directions.NORTH to ModelFace("#north", FaceUV(Vec2(0), Vec2(1)), 0, Directions.NORTH, -1),
-                    Directions.SOUTH to ModelFace("#south", FaceUV(Vec2(0), Vec2(1)), 0, Directions.SOUTH, -1),
-                    Directions.WEST to ModelFace("#west", FaceUV(Vec2(0), Vec2(1)), 0, Directions.WEST, -1),
-                    Directions.EAST to ModelFace("#east", FaceUV(Vec2(0), Vec2(1)), 0, Directions.EAST, -1),
+                    Directions.DOWN to ModelFace("#down", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, Directions.DOWN, -1),
+                    Directions.UP to ModelFace("#up", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, Directions.UP, -1),
+                    Directions.NORTH to ModelFace("#north", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, Directions.NORTH, -1),
+                    Directions.SOUTH to ModelFace("#south", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, Directions.SOUTH, -1),
+                    Directions.WEST to ModelFace("#west", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, Directions.WEST, -1),
+                    Directions.EAST to ModelFace("#east", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, Directions.EAST, -1),
                 ),
                 shade = true,
                 rotation = null,

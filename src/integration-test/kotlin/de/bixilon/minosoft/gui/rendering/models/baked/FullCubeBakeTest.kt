@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.block
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.assertFace
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.createFaces
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.createTextureManager
@@ -38,28 +37,12 @@ class FullCubeBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, block(0, 0, 0, 16, 0, 0, 16, 16, 0, 0, 16, 0), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, block(0, 0, 16, 0, 16, 16, 16, 16, 16, 16, 0, 16), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.WEST, block(0, 0, 0, 0, 16, 0, 0, 16, 16, 0, 0, 16), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.6f)
-    }
-
-    fun cube2() {
-        val from = Vec3(0.0f)
-        val to = Vec3(1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
-
-        val baked = model.bake(createTextureManager("block/test"))!!
-
-
-        baked.assertFace(Directions.DOWN, floatArrayOf(0f, 0f, 0f, 0f, 0f, 1f, 1f, 0f, 1f, 1f, 0f, 0f), floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f), 0.5f)
-        baked.assertFace(Directions.UP, floatArrayOf(0f, 1f, 0f, 1f, 1f, 0f, 1f, 1f, 1f, 0f, 1f, 1f), floatArrayOf(0f, 1f, 1f, 1f, 1f, 0f, 0f, 0f), 1.0f)
-        baked.assertFace(Directions.NORTH, floatArrayOf(0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f, 0f, 0f, 1f, 0f), floatArrayOf(1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f), 0.8f)
-        baked.assertFace(Directions.SOUTH, floatArrayOf(0f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 1f, 1f, 0f, 1f), floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f), 0.8f)
-        baked.assertFace(Directions.WEST, floatArrayOf(0f, 0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f, 0f, 0f, 1f), floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f), 0.6f)
-        baked.assertFace(Directions.EAST, floatArrayOf(1f, 0f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 1f, 1f, 0f), floatArrayOf(1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f), 0.6f)
+        baked.assertFace(Directions.DOWN, floatArrayOf(0f, 0f, 0f, 0f, 0f, 1f, 1f, 0f, 1f, 1f, 0f, 0f), floatArrayOf(0f, 1f, 0f, 0f, 1f, 0f, 1f, 1f), 0.5f)
+        baked.assertFace(Directions.UP, floatArrayOf(0f, 1f, 0f, 1f, 1f, 0f, 1f, 1f, 1f, 0f, 1f, 1f), floatArrayOf(0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f), 1.0f)
+        baked.assertFace(Directions.NORTH, floatArrayOf(0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f, 0f, 0f, 1f, 0f), floatArrayOf(1f, 1f, 0f, 1f, 0f, 0f, 1f, 0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, floatArrayOf(0f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 1f, 1f, 0f, 1f), floatArrayOf(0f, 1f, 0f, 0f, 1f, 0f, 1f, 1f), 0.8f)
+        baked.assertFace(Directions.WEST, floatArrayOf(0f, 0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f, 0f, 0f, 1f), floatArrayOf(0f, 1f, 0f, 0f, 1f, 0f, 1f, 1f), 0.6f)
+        baked.assertFace(Directions.EAST, floatArrayOf(1f, 0f, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 1f, 1f, 0f), floatArrayOf(1f, 1f, 0f, 1f, 0f, 0f, 1f, 0f), 0.6f)
     }
 
     fun y90() {
@@ -71,12 +54,12 @@ class FullCubeBakeTest {
 
 
         // rotating 90° -> only top/bottom texture rotated, rest is the same
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.6f)
     }
 
     fun y180() {
@@ -88,12 +71,12 @@ class FullCubeBakeTest {
 
 
         // rotating 180° -> only top/bottom texture rotated, rest is the same
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.6f)
     }
 
     fun y270() {
@@ -105,12 +88,12 @@ class FullCubeBakeTest {
 
 
         // rotating 270° -> only top/bottom texture rotated, rest is the same
-        baked.assertFace(Directions.DOWN, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
-        baked.assertFace(Directions.UP, uv = floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f))
-        baked.assertFace(Directions.NORTH, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
-        baked.assertFace(Directions.SOUTH, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
-        baked.assertFace(Directions.WEST, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
-        baked.assertFace(Directions.EAST, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
+        baked.assertFace(Directions.DOWN, uv = floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f))
+        baked.assertFace(Directions.UP, uv = floatArrayOf(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f))
+        baked.assertFace(Directions.NORTH, uv = floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f))
+        baked.assertFace(Directions.SOUTH, uv = floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f))
+        baked.assertFace(Directions.WEST, uv = floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f))
+        baked.assertFace(Directions.EAST, uv = floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f))
     }
 
     fun x90() {
@@ -121,12 +104,12 @@ class FullCubeBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f), 0.6f)
     }
 
     fun x180() {
@@ -137,12 +120,12 @@ class FullCubeBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.6f)
     }
 
     fun x270() {
@@ -153,12 +136,12 @@ class FullCubeBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        baked.assertFace(Directions.DOWN, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
-        baked.assertFace(Directions.UP, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
-        baked.assertFace(Directions.NORTH, uv = floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f))
-        baked.assertFace(Directions.SOUTH, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
-        baked.assertFace(Directions.WEST, uv = floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f))
-        baked.assertFace(Directions.EAST, uv = floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f))
+        baked.assertFace(Directions.DOWN, uv = floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f))
+        baked.assertFace(Directions.UP, uv = floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f))
+        baked.assertFace(Directions.NORTH, uv = floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f))
+        baked.assertFace(Directions.SOUTH, uv = floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f))
+        baked.assertFace(Directions.WEST, uv = floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f))
+        baked.assertFace(Directions.EAST, uv = floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f))
     }
 
     fun x90y90() {
@@ -169,12 +152,12 @@ class FullCubeBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.6f)
     }
 
     fun x180y180() {
@@ -185,11 +168,11 @@ class FullCubeBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f), 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f), 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 0.6f)
     }
 }
