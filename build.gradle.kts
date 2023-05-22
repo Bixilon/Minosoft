@@ -428,7 +428,7 @@ val versionJsonTask = tasks.register("versionJson") {
                 "branch" to git.branch.current().name,
                 "commit" to commit.id,
                 "commit_short" to commit.abbreviatedId,
-                "dirty" to git.status().isClean,
+                "dirty" to !git.status().isClean,
             )
         }
 
