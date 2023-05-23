@@ -58,7 +58,7 @@ class LanguageTest {
 
     @Test
     fun ordered() {
-        val language = create("Hi %2\$s, my name is %1\$s and I like %0\$s!")
+        val language = create("Hi %3\$s, my name is %2\$s and I like %1\$s!")
         assertEquals(language.translate(KEY, data = arrayOf("sleeping", "Moritz", "Gustaf"))?.message, "Hi Gustaf, my name is Moritz and I like sleeping!")
     }
 
@@ -88,7 +88,7 @@ class LanguageTest {
 
     @Test
     fun complex() {
-        val language = create("Prefix, %s%2\$s again %s and %1\$s lastly %s and also %1\$s again!")
+        val language = create("Prefix, %s%3\$s again %s and %2\$s lastly %s and also %2\$s again!")
         assertEquals(language.translate(KEY, data = arrayOf("aaa", "bbb", "ccc"))?.message, "Prefix, aaaccc again bbb and bbb lastly ccc and also bbb again!")
     }
 
@@ -148,7 +148,7 @@ class LanguageTest {
 
     @Test
     fun tailingIndex() {
-        val language = create("Hi %0\$s!!!")
+        val language = create("Hi %1\$s!!!")
         assertEquals(language.translate(KEY, data = arrayOf(null, "not me"))?.message, "Hi !!!")
     }
 
