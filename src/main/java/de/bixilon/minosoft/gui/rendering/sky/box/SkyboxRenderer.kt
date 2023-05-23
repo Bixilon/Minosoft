@@ -45,8 +45,8 @@ import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import java.util.*
 import kotlin.math.PI

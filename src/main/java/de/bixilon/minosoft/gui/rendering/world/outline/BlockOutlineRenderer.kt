@@ -113,7 +113,9 @@ class BlockOutlineRenderer(
             }
         }
 
-        if (target.blockPosition == position && target.state == state && !reload) { // TODO: also compare shapes, some blocks dynamically change it (e.g. scaffolding)
+        val offsetPosition = (target.blockPosition - context.camera.offset.offset)
+
+        if (offsetPosition == position && target.state == state && !reload) { // TODO: also compare shapes, some blocks dynamically change it (e.g. scaffolding)
             return
         }
 
@@ -123,7 +125,7 @@ class BlockOutlineRenderer(
 
         val mesh = LineMesh(context)
 
-        val blockOffset = target.blockPosition.toVec3d
+        val blockOffset = offsetPosition.toVec3d
         if (target.state.block is RandomOffsetBlock) {
             target.state.block.randomOffset?.let { blockOffset += target.blockPosition.getWorldOffset(it) }
         }
@@ -139,7 +141,7 @@ class BlockOutlineRenderer(
         this.nextMesh = mesh
 
 
-        this.position = target.blockPosition
+        this.position = offsetPosition
         this.state = target.state
         this.reload = false
     }

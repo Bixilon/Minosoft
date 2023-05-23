@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.shader.types.CameraPositionShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -45,9 +45,9 @@ class MatrixHandler(
     private val connection = context.connection
     private val profile = context.connection.profiles.rendering.camera
     val shaking = CameraShaking(camera, profile.shaking)
-    val frustum = Frustum(this, connection.world)
+    val frustum = Frustum(camera, this, connection.world)
 
-    private var eyePosition = Vec3.EMPTY
+    private var matrixPosition = Vec3.EMPTY
     private var previousFOV = 0.0f
 
     private var front = Vec3.EMPTY
@@ -112,12 +112,13 @@ class MatrixHandler(
         shaking.draw()
         val fov = calculateFOV()
         val view = camera.view.view
-        val eyePosition = view.matrixPosition
+        val eyePosition = view.eyePosition
+        val matrixPosition = view.matrixPosition
         val front = view.front
-        if (upToDate && eyePosition == this.eyePosition && front == this.front && fov == previousFOV && shaking.isEmpty) {
+        if (upToDate && matrixPosition == this.matrixPosition && front == this.front && fov == previousFOV && shaking.isEmpty) {
             return
         }
-        this.eyePosition = eyePosition
+        this.matrixPosition = matrixPosition
         this.front = front
         val cameraBlockPosition = eyePosition.blockPosition
         if (fov != previousFOV) {
@@ -126,17 +127,18 @@ class MatrixHandler(
         previousFOV = fov
 
         updateFront(front)
-        updateViewMatrix(eyePosition, front)
+        updateViewMatrix(matrixPosition, front)
         updateViewProjectionMatrix()
 
-        val usePosition = if (view.updateFrustum) eyePosition else Vec3(connection.camera.entity.renderInfo.eyePosition - camera.offset.offset)
+        val useMatrixPosition = if (view.updateFrustum) matrixPosition else Vec3(connection.camera.entity.renderInfo.eyePosition - camera.offset.offset)
+        val useEyePosition = if (view.updateFrustum) eyePosition else connection.camera.entity.renderInfo.eyePosition
 
         if (view.updateFrustum) {
             frustum.recalculate()
             camera.visibilityGraph.updateCamera(cameraBlockPosition.chunkPosition, cameraBlockPosition.sectionHeight)
         }
 
-        connection.events.fire(CameraPositionChangeEvent(context, usePosition))
+        connection.events.fire(CameraPositionChangeEvent(context, useEyePosition))
 
         connection.events.fire(
             CameraMatrixChangeEvent(
@@ -147,7 +149,7 @@ class MatrixHandler(
             )
         )
 
-        updateShaders(usePosition)
+        updateShaders(useMatrixPosition)
         upToDate = true
     }
 

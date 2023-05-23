@@ -17,11 +17,10 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class WorldOffset(private val camera: Camera) : Drawable {
-    var offset by observed(Vec3i.EMPTY)
+    var offset by observed(Vec3i(100, 100, 100))
         private set
 
     override fun draw() {
