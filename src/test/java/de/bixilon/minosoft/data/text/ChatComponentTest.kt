@@ -14,11 +14,14 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.url.URLUtil.toURL
+import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.language.lang.Language
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.chat
 import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.data.text.events.click.OpenURLClickEvent
 import de.bixilon.minosoft.data.text.events.click.SendMessageClickEvent
+import de.bixilon.minosoft.data.text.events.hover.EntityHoverEvent
 import de.bixilon.minosoft.data.text.events.hover.TextHoverEvent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
@@ -243,6 +246,24 @@ internal class ChatComponentTest {
         ))
         val text = ChatComponent.of("""{"translate":"gameMode.changed","with":[{"translate":"gameMode.creative"}]}""", translator = language)
         val expected = BaseComponent(TextComponent("Dein Spielmodus wurde zu "), TextComponent("Kreativmodus"), TextComponent(" geändert"))
+        assertEquals(text, expected)
+    }
+
+    @Test
+    fun `inserted translations`() {
+        val language = Language("en_US", mutableMapOf(
+            "death.attack.generic" to "%1\$s starb",
+        ))
+        val text = ChatComponent.of("""{"translate":"death.attack.generic","with":[{"color":"light_purple","insertion":"Bixilon","clickEvent":{"action":"suggest_command","value":"/tell Bixilon "},"hoverEvent":{"action":"show_entity","contents":{"type":"minecraft:player","id":"1d410d09-750b-3200-993c-47f31b30baf0","name":{"text":"Bixilon"}}},"extra":[{"bold":true,"color":"green","text":"[Admin] "},{"text":"Bixilon"}],"text":""}]}""", translator = language)
+
+        val click = SendMessageClickEvent("/tell Bixilon")
+        val hover = EntityHoverEvent("1d410d09-750b-3200-993c-47f31b30baf0".toUUID(), minecraft("player"), name = TextComponent("Bixilon"))
+
+        val expected = BaseComponent(
+            BaseComponent(
+                TextComponent("[Admin] ").color(ChatColors.GREEN).bold().clickEvent(click).hoverEvent(hover),
+                TextComponent("Bixilon").color(ChatColors.LIGHT_PURPLE).clickEvent(click).hoverEvent(hover),
+            ), TextComponent(" starb"))
         assertEquals(text, expected)
     }
 
