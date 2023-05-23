@@ -85,7 +85,7 @@ object PlaceholderUtil {
         }
 
         push()
-        appendArgument(Integer.parseInt(indexBuilder.toString()))
+        appendArgument(Integer.parseInt(indexBuilder.toString()) - 1)
     }
 
     private fun PlaceholderIteratorOptions.processChar() = processChar(iterator.nextInt())

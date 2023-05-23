@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
 import java.util.*
 
-class EntityHoverEvent(
+data class EntityHoverEvent(
     val uuid: UUID,
     val type: ResourceLocation?,
     val name: ChatComponent,
