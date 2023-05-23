@@ -47,6 +47,11 @@ abstract class EntityModel<E : Entity>(
         return update
     }
 
+    override fun reset() {
+        update = true
+        hitbox.reset()
+    }
+
     override fun prepareAsync() {
         if (!update) {
             return

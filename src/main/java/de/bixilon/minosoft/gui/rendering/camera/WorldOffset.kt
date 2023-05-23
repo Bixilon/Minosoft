@@ -38,7 +38,7 @@ class WorldOffset(private val camera: Camera) : Drawable {
 
 
     companion object {
-        const val MAX_DISTANCE = (World.MAX_RENDER_DISTANCE * 2) * ProtocolDefinition.SECTION_WIDTH_X // coordinates higher than that value are not allowed
+        const val MAX_DISTANCE = World.MAX_RENDER_DISTANCE * ProtocolDefinition.SECTION_WIDTH_X // coordinates higher than that value are not allowed
         const val MIN_DISTANCE = MAX_DISTANCE - (World.MAX_RENDER_DISTANCE / 4) * ProtocolDefinition.SECTION_WIDTH_X // only if value is lower that that value coordinates will be back offset
     }
 }

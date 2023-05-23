@@ -63,12 +63,16 @@ class CloudRenderer(
     var delta = 0.0f
         private set
 
+    private var reset = false
+
     override val skipOpaque: Boolean
         get() = !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || layers.isEmpty()
 
 
     override fun asyncInit(latch: CountUpAndDownLatch) {
         matrix.load(connection.assetsManager)
+
+        context.camera.offset::offset.observe(this) { reset() }
     }
 
     private fun getCloudHeight(index: Int): IntRange {
@@ -103,6 +107,10 @@ class CloudRenderer(
         sky.profile.clouds::flat.observe(this, instant = true) { this.flat = it }
     }
 
+    private fun reset() {
+        reset = true
+    }
+
     private fun updateLayers(layers: Int) {
         while (layers < this.layers.size) {
             toUnload += this.layers.removeLast()
@@ -116,6 +124,11 @@ class CloudRenderer(
     override fun prepareDrawAsync() {
         if (!sky.effects.clouds) {
             return
+        }
+        if (reset) {
+            updateLayers(0)
+            updateLayers(nextLayers)
+            reset = false
         }
         if (layers.size != nextLayers) {
             updateLayers(nextLayers)
@@ -236,8 +249,8 @@ class CloudRenderer(
         setYOffset()
 
 
-        for (array in layers) {
-            array.draw()
+        for (layer in layers) {
+            layer.draw()
         }
     }
 

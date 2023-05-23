@@ -63,7 +63,6 @@ class BlockOutlineRenderer(
     override var unload: Boolean = false
 
     override fun init(latch: CountUpAndDownLatch) {
-        val profile = connection.profiles.block
         this.profile::enabled.observe(this) { reload = true }
         this.profile::collisions.observe(this) { reload = true }
         this.profile::outlineColor.observe(this) { reload = true }
