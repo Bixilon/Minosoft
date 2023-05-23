@@ -190,7 +190,11 @@ class ChunkBorderRenderer(
     }
 
     override fun setupOpaque() {
-        context.renderSystem.reset()
+        context.renderSystem.reset(
+            polygonOffset = true,
+            polygonOffsetFactor = -1.0f,
+            polygonOffsetUnit = -2.0f,
+        )
         context.shaderManager.genericColorShader.use()
     }
 

@@ -77,7 +77,11 @@ class BlockOutlineRenderer(
     }
 
     override fun setupOther() {
-        context.renderSystem.reset()
+        context.renderSystem.reset(
+            polygonOffset = true,
+            polygonOffsetFactor = -3.0f,
+            polygonOffsetUnit = -3.0f,
+        )
         if (profile.showThroughWalls) {
             context.renderSystem.depth = DepthFunctions.ALWAYS
         }
