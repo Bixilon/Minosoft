@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pro
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.set
+import java.util.*
 
 abstract class CenterProperty(
     val axis: Axes,
@@ -30,5 +31,14 @@ abstract class CenterProperty(
 
     override fun updateProperties(properties: EntitySelectorProperties) {
         properties.center[axis] = value
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(axis, value)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is CenterProperty) return false
+        return axis == other.axis && value == other.value
     }
 }

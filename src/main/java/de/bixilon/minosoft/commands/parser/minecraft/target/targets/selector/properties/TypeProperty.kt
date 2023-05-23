@@ -19,7 +19,7 @@ import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
-class TypeProperty(
+data class TypeProperty(
     val type: ResourceLocation,
     val negated: Boolean,
 ) : EntityTargetProperty {
