@@ -22,4 +22,6 @@ object DebugOptions {
 
     const val LIGHTMAP_DEBUG_WINDOW = false
     const val LIGHT_DEBUG_MODE = false
+
+    const val LOG_RAW_CHAT = false
 }

@@ -20,13 +20,18 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
+import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import java.nio.charset.StandardCharsets
 
@@ -56,7 +61,11 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
     }
 
     open fun readChatComponent(): ChatComponent {
-        return ChatComponent.of(readString(), restricted = true)
+        val string = readString()
+        if (DebugOptions.LOG_RAW_CHAT) {
+            Log.log(LogMessageType.CHAT_IN, LogLevels.VERBOSE) { TextComponent(string) }
+        }
+        return ChatComponent.of(string, null, restricted = true)
     }
 
     fun readDirection(): Directions {
