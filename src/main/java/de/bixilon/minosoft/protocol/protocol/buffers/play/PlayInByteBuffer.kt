@@ -101,7 +101,7 @@ class PlayInByteBuffer : InByteBuffer {
         if (DebugOptions.LOG_RAW_CHAT) {
             Log.log(LogMessageType.CHAT_IN, LogLevels.VERBOSE) { TextComponent(string) }
         }
-        return ChatComponent.of(string, connection.language, null)
+        return ChatComponent.of(string, connection.language, null, restricted = true)
     }
 
     fun readParticleData(): ParticleData {
