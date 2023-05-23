@@ -51,7 +51,7 @@ class TPCommandIT {
 
     fun relativeStack() {
         var stack: CommandStack? = null
-        val node = createNode { stack = it.copy() }
+        val node = createNode { stack = it.fork() }
 
         node.execute("tp @s ~ ~10 ~")
 
