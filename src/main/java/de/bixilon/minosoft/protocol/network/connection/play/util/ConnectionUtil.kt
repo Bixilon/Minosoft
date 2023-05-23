@@ -34,6 +34,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.CommandC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.SignedChatMessageC2SP
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.security.SecureRandom
 import java.time.Instant
@@ -72,7 +73,11 @@ class ConnectionUtil(
         val keyManagement = connection.player.keyManagement
         keyManagement.acquire()
         try {
-            val key = keyManagement.key ?: return connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.EPOCH, salt = 0, signature = null, false, Acknowledgement.EMPTY))
+            val key = keyManagement.key
+            if (key == null) {
+                connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.EPOCH, salt = 0, signature = null, false, Acknowledgement.EMPTY))
+                return
+            }
             sendSignedMessage(key, trimmed)
         } finally {
             keyManagement.release()
@@ -104,6 +109,7 @@ class ConnectionUtil(
         ChatUtil.validateChatMessage(connection, trimmed)
         if (stack.size == 0) {
             connection.sendPacket(CommandC2SP(trimmed, Instant.EPOCH, 0L, emptyMap(), false, Acknowledgement.EMPTY)) // TODO: remove
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Command $trimmed failed to pars!" }
             throw IllegalArgumentException("Empty command stack! Did the command fail to parse?")
         }
         val time = Instant.now()

@@ -51,7 +51,7 @@ class MsgCommandIT {
 
     fun validateStack() {
         var stack: CommandStack? = null
-        val node = createNode { stack = it.copy() }
+        val node = createNode { stack = it.fork() }
 
         node.execute("msg Bixilon hi there!")
         assertEquals(stack!!["msg"], "msg")
@@ -70,7 +70,7 @@ class MsgCommandIT {
 
     fun redirectStack() {
         var stack: CommandStack? = null
-        val node = createNode { stack = it.copy() }
+        val node = createNode { stack = it.fork() }
 
         node.execute("redirect Bixilon hi there!")
 
