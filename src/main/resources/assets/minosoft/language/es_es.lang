@@ -19,7 +19,7 @@ minosoft:server_info.active_connections=Conexiones activas
 minosoft:server_info.players_online=Jugadores conectados
 minosoft:server_info.ping=Latencia
 
-minosoft:server_info.delete.dialog.description=Estas seguro de que quieres eliminar el servidor: %0$s (%1$s)?
+minosoft:server_info.delete.dialog.description=Estas seguro de que quieres eliminar el servidor: %1$s (%2$s)?
 
 
 minosoft:connection.status.state.waiting=Esperando...
@@ -68,7 +68,7 @@ minosoft:main.account.type.microsoft=Microsoft
 minosoft:main.account.type.offline=Offline
 
 
-minosoft:main.account.card.connection_count=%0$s conexiones
+minosoft:main.account.card.connection_count=%1$s conexiones
 
 minosoft:main.account.account_info.id=Id
 minosoft:main.account.account_info.email=E-Mail
@@ -97,15 +97,15 @@ minosoft:main.account.add.microsoft.title=Añadir cuenta de Microsoft
 
 minosoft:connection.kick.title=Expulsado del servidor
 minosoft:connection.kick.header=Te han expulsado
-minosoft:connection.kick.description=Te han expulsado de %0$s (conectado con: %1$s)
+minosoft:connection.kick.description=Te han expulsado de %1$s (conectado con: %2$s)
 minosoft:connection.kick.reconnect_button=Reconectarse
 minosoft:connection.kick.close_button=Cerrar
 
 minosoft:connection.login_kick.title=Expulsado del servidor
 minosoft:connection.login_kick.header=Te han expulsado
-minosoft:connection.login_kick.description=Te han expulsado mientras iniciabas sesion de %0$s (conectado con: %1$s)
+minosoft:connection.login_kick.description=Te han expulsado mientras iniciabas sesion de %1$s (conectado con: %2$s)
 
-minosoft:error.title=%0$s - Minosoft
+minosoft:error.title=%1$s - Minosoft
 minosoft:error.header=¡Ha ocurrido un error!
 minosoft:error.description=Ha ocurrido un error en Minosoft. Puedes continuar como antes, pero el comportamiento puede ser inesperado. Si el error continua, sientete libre de abrir un ticket aquí: https://gitlab.bixilon.de/bixilon/minosoft/-/issues/
 minosoft:error.fatal_crash=Cierre inesperado
