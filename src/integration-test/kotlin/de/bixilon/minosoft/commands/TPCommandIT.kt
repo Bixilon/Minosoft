@@ -50,12 +50,13 @@ class TPCommandIT {
     }
 
     fun relativeStack() {
-        val node = createNode {
-            assertEquals(it["tp"], "tp")
-            assertEquals(it["target"], SelectorEntityTarget(TargetSelectors.SELF, emptyMap()))
-            assertEquals(it["destination"], Vec3Coordinate(Coordinate(CoordinateRelatives.TILDE, 0.0f), Coordinate(CoordinateRelatives.TILDE, +10.0f), Coordinate(CoordinateRelatives.TILDE, 0.0f)))
-        }
+        var stack: CommandStack? = null
+        val node = createNode { stack = it.copy() }
 
         node.execute("tp @s ~ ~10 ~")
+
+        assertEquals(stack!!["tp"], "tp")
+        assertEquals(stack!!["target"], SelectorEntityTarget(TargetSelectors.SELF, emptyMap()))
+        assertEquals(stack!!["destination"], Vec3Coordinate(Coordinate(CoordinateRelatives.TILDE, 0.0f), Coordinate(CoordinateRelatives.TILDE, +10.0f), Coordinate(CoordinateRelatives.TILDE, 0.0f)))
     }
 }

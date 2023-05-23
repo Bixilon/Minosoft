@@ -68,4 +68,16 @@ class CommandStack(
         }
         return output
     }
+
+
+    fun copy(): CommandStack {
+        val stack = CommandStack(null, print)
+        stack.stack += this.stack
+        stack.executor = this.executor
+        if (this::connection.isInitialized) {
+            stack.connection = this.connection
+        }
+
+        return stack
+    }
 }
