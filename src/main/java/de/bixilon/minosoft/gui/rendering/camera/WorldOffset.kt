@@ -26,19 +26,23 @@ class WorldOffset(private val camera: Camera) : Drawable {
         private set
 
     override fun draw() {
-        val previous = offset
-        val position = camera.view.view.eyePosition
+        val blockPosition = camera.view.view.eyePosition.blockPosition
 
-        val mod = (position.blockPosition / MAX_DISTANCE) * MAX_DISTANCE
-        if (mod != previous) {
-            this.offset = mod
+        val previous = offset / MAX_DISTANCE
+        val maxOffset = (blockPosition + THRESHOLD) / MAX_DISTANCE
+        val minOffset = (blockPosition - THRESHOLD) / MAX_DISTANCE
+        if (maxOffset == previous || minOffset == previous) {
+            // we need to get away further
+            // this makes the "border" not just 1 pixel wide, it is 256 blocks wide
+            return
         }
-        // TODO: optimize this and use MIN_DISTANCE
+        this.offset = (blockPosition / MAX_DISTANCE) * MAX_DISTANCE
+        // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Offset changed: $offset" }
     }
 
 
     companion object {
         const val MAX_DISTANCE = World.MAX_RENDER_DISTANCE * ProtocolDefinition.SECTION_WIDTH_X // coordinates higher than that value are not allowed
-        const val MIN_DISTANCE = MAX_DISTANCE - (World.MAX_RENDER_DISTANCE / 4) * ProtocolDefinition.SECTION_WIDTH_X // only if value is lower that that value coordinates will be back offset
+        const val THRESHOLD = (World.MAX_RENDER_DISTANCE / 8) * ProtocolDefinition.SECTION_WIDTH_X // only if value is lower that that value coordinates will be back offset
     }
 }
