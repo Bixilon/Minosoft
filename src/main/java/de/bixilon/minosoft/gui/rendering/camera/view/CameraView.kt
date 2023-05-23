@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera.view
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.input.camera.MovementInputActions
@@ -30,7 +31,8 @@ interface CameraView {
 
     val updateFrustum: Boolean get() = true
 
-    val eyePosition: Vec3
+    val eyePosition: Vec3d
+    val matrixPosition: Vec3
 
     val rotation: EntityRotation
     val front: Vec3
@@ -47,4 +49,12 @@ interface CameraView {
 
 
     fun draw() = Unit
+
+
+    companion object {
+
+        fun CameraView.matrix(eye: Vec3d): Vec3 {
+            return Vec3(eye - context.camera.offset.offset)
+        }
+    }
 }

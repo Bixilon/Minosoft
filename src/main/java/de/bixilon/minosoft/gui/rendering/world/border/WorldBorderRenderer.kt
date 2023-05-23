@@ -74,10 +74,10 @@ class WorldBorderRenderer(
         }
         val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
         shader.textureOffset = 1.0f - textureOffset
-        shader.cameraHeight = context.connection.camera.entity.renderInfo.eyePosition.y
+        shader.cameraHeight = (context.connection.camera.entity.renderInfo.eyePosition.y - context.camera.offset.offset.y).toFloat()
 
-        val distance = border.getDistanceTo(context.connection.player.physics.position)
-        val strength = 1.0f - (distance.toFloat().clamp(0.0f, 100.0f) / 100.0f)
+        val distance = border.getDistanceTo(context.connection.player.physics.position).toFloat()
+        val strength = 1.0f - (distance.clamp(0.0f, 100.0f) / 100.0f)
         var color = when (border.state) {
             WorldBorderState.GROWING -> GROWING_COLOR
             WorldBorderState.SHRINKING -> SHRINKING_COLOR

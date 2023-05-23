@@ -156,4 +156,8 @@ object Vec3Util {
 
         return Vec3(interpolate(start.x, end.x), interpolate(start.y, end.y), interpolate(start.z, end.z))
     }
+
+    fun FloatArray.toVec3(): Vec3 {
+        return Vec3(this[0], this[1], this[2])
+    }
 }

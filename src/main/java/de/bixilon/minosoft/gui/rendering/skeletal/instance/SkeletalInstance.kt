@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -71,9 +72,9 @@ class SkeletalInstance(
         context.skeletalManager.draw(this, light)
     }
 
-    fun updatePosition(position: Vec3, rotation: EntityRotation) {
+    fun updatePosition(position: Vec3d, rotation: EntityRotation) {
         val matrix = Mat4()
-            .translateAssign(position)
+            .translateAssign(Vec3(position - context.camera.offset.offset))
             .rotateAssign((180.0f - rotation.yaw).rad, Vec3(0, 1, 0))
             .translateAssign(Vec3(-0.5, 0.0f, -0.5)) // move to bottom center
 

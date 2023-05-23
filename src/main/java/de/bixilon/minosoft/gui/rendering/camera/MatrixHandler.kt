@@ -112,7 +112,7 @@ class MatrixHandler(
         shaking.draw()
         val fov = calculateFOV()
         val view = camera.view.view
-        val eyePosition = view.eyePosition
+        val eyePosition = view.matrixPosition
         val front = view.front
         if (upToDate && eyePosition == this.eyePosition && front == this.front && fov == previousFOV && shaking.isEmpty) {
             return
@@ -129,7 +129,7 @@ class MatrixHandler(
         updateViewMatrix(eyePosition, front)
         updateViewProjectionMatrix()
 
-        val usePosition = if (view.updateFrustum) eyePosition else connection.camera.entity.renderInfo.eyePosition
+        val usePosition = if (view.updateFrustum) eyePosition else Vec3(connection.camera.entity.renderInfo.eyePosition - camera.offset.offset)
 
         if (view.updateFrustum) {
             frustum.recalculate()

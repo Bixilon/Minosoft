@@ -15,11 +15,14 @@ package de.bixilon.minosoft.gui.rendering.camera.view
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
+import de.bixilon.minosoft.gui.rendering.camera.view.CameraView.Companion.matrix
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 
@@ -28,7 +31,8 @@ class DebugView(private val camera: Camera) : CameraView {
     override val updateFrustum: Boolean get() = false
     override val shaking: Boolean get() = false
 
-    override var eyePosition = Vec3.EMPTY
+    override var eyePosition = Vec3d.EMPTY
+    override var matrixPosition = Vec3.EMPTY
 
     override var rotation = EntityRotation.EMPTY
     override var front = Vec3.EMPTY
@@ -44,7 +48,7 @@ class DebugView(private val camera: Camera) : CameraView {
             speedMultiplier *= 2
         }
 
-        val movement = Vec3.EMPTY
+        val movement = Vec3d.EMPTY
 
         if (input.forwards != 0.0f) {
             movement += front * input.forwards
@@ -54,13 +58,14 @@ class DebugView(private val camera: Camera) : CameraView {
             movement += cameraRight * input.sideways
         }
 
-        if (movement.length2() != 0.0f) {
+        if (movement.length2() != 0.0) {
             movement.normalizeAssign()
         }
         movement *= speedMultiplier
         movement *= delta
 
         eyePosition = eyePosition + movement
+        this.matrixPosition = matrix(this.eyePosition)
     }
 
     override fun onMouse(delta: Vec2d) {
@@ -73,7 +78,8 @@ class DebugView(private val camera: Camera) : CameraView {
     }
 
     override fun onAttach(previous: CameraView?) {
-        this.eyePosition = previous?.eyePosition ?: Vec3.EMPTY
+        this.eyePosition = previous?.eyePosition ?: Vec3d.EMPTY
+        this.matrixPosition = matrix(this.eyePosition)
         this.rotation = previous?.rotation ?: EntityRotation.EMPTY
         this.front = previous?.front ?: Vec3.EMPTY
     }

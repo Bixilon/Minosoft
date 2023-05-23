@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFacePropertie
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import java.util.*
@@ -40,8 +40,8 @@ class BakedBlockStateModel(
         return touchingFaceProperties[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        val floatPosition = position.toVec3()
+    override fun singleRender(position: Vec3i, offset: FloatArray, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+        val floatPosition = offset.toVec3()
         if (blockState.block is RandomOffsetBlock) {
             blockState.block.randomOffset?.let { floatPosition += position.getWorldOffset(it) }
         }
