@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.CameraView
-import de.bixilon.minosoft.gui.rendering.camera.view.CameraView.Companion.matrix
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -32,7 +31,6 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
     override val context: RenderContext get() = camera.context
 
     override var eyePosition: Vec3d = Vec3d.EMPTY
-    override var matrixPosition: Vec3 = Vec3.EMPTY
 
     override var rotation = EntityRotation.EMPTY
     override var front = Vec3.EMPTY
@@ -62,7 +60,6 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
         val distance = target?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
 
         this.eyePosition = position + (-front * distance)
-        this.matrixPosition = matrix(this.eyePosition)
     }
 
     override fun onAttach(previous: CameraView?) {

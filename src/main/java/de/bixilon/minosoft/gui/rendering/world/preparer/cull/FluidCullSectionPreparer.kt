@@ -68,6 +68,8 @@ class FluidCullSectionPreparer(
         var rendered = false
         var tint: Int
 
+        val cameraOffset = context.camera.offset.offset
+
         val offsetX = chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
         val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
         val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
@@ -130,6 +132,8 @@ class FluidCullSectionPreparer(
                         getCornerHeight(chunk, chunkPosition, position + Directions.SOUTH, fluid),
                     )
 
+                    val offsetPosition = Vec3(position - cameraOffset)
+
                     if (!skip[Directions.O_UP]) {
                         val velocity = fluid.getVelocity(blockState, position, chunk)
                         val still = velocity.x == 0.0 && velocity.z == 0.0
@@ -164,10 +168,10 @@ class FluidCullSectionPreparer(
                         val meshToUse = texture.transparency.getMesh(mesh)
 
                         val positions = arrayOf(
-                            Vec3(position.x, position.y + cornerHeights[0], position.z),
-                            Vec3(position.x + 1, position.y + cornerHeights[1], position.z),
-                            Vec3(position.x + 1, position.y + cornerHeights[2], position.z + 1),
-                            Vec3(position.x, position.y + cornerHeights[3], position.z + 1),
+                            Vec3(offsetPosition.x, offsetPosition.y + cornerHeights[0], offsetPosition.z),
+                            Vec3(offsetPosition.x + 1, offsetPosition.y + cornerHeights[1], offsetPosition.z),
+                            Vec3(offsetPosition.x + 1, offsetPosition.y + cornerHeights[2], offsetPosition.z + 1),
+                            Vec3(offsetPosition.x, offsetPosition.y + cornerHeights[3], offsetPosition.z + 1),
                         )
 
 
@@ -182,9 +186,9 @@ class FluidCullSectionPreparer(
                         if (skip[Directions.SIDE_OFFSET + direction]) {
                             continue
                         }
-                        var faceX = position.x.toFloat()
+                        var faceX = offsetPosition.x
                         var faceXEnd = faceX
-                        var faceZ = position.z.toFloat()
+                        var faceZ = offsetPosition.z
                         var faceZEnd = faceZ
                         var v1 = 0.0f
                         var v2 = 0.0f
@@ -222,10 +226,10 @@ class FluidCullSectionPreparer(
 
 
                         val positions = arrayOf(
-                            Vec3(faceX, position.y + v1, faceZ),
-                            Vec3(faceX, position.y, faceZ),
-                            Vec3(faceXEnd, position.y, faceZEnd),
-                            Vec3(faceXEnd, position.y + v2, faceZEnd),
+                            Vec3(faceX, offsetPosition.y + v1, faceZ),
+                            Vec3(faceX, offsetPosition.y, faceZ),
+                            Vec3(faceXEnd, offsetPosition.y, faceZEnd),
+                            Vec3(faceXEnd, offsetPosition.y + v2, faceZEnd),
                         )
                         val texturePositions = arrayOf(
                             TEXTURE_1,

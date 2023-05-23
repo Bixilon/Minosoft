@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
-import de.bixilon.minosoft.gui.rendering.camera.view.CameraView.Companion.matrix
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
@@ -32,7 +31,6 @@ class DebugView(private val camera: Camera) : CameraView {
     override val shaking: Boolean get() = false
 
     override var eyePosition = Vec3d.EMPTY
-    override var matrixPosition = Vec3.EMPTY
 
     override var rotation = EntityRotation.EMPTY
     override var front = Vec3.EMPTY
@@ -65,7 +63,6 @@ class DebugView(private val camera: Camera) : CameraView {
         movement *= delta
 
         eyePosition = eyePosition + movement
-        this.matrixPosition = matrix(this.eyePosition)
     }
 
     override fun onMouse(delta: Vec2d) {
@@ -79,7 +76,6 @@ class DebugView(private val camera: Camera) : CameraView {
 
     override fun onAttach(previous: CameraView?) {
         this.eyePosition = previous?.eyePosition ?: Vec3d.EMPTY
-        this.matrixPosition = matrix(this.eyePosition)
         this.rotation = previous?.rotation ?: EntityRotation.EMPTY
         this.front = previous?.front ?: Vec3.EMPTY
     }

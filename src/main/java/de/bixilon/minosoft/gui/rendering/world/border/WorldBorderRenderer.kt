@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.border
 
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -86,7 +87,8 @@ class WorldBorderRenderer(
         color = color.with(alpha = (strength * strength))
         shader.tintColor = color
         shader.radius = border.diameter.toFloat() / 2.0f
-        shader.center = Vec2(border.center)
+        val offset = context.camera.offset.offset
+        shader.center = Vec2(border.center - Vec2d(offset.x, offset.z))
     }
 
     override fun drawTranslucent() {

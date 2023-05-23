@@ -17,15 +17,23 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class WorldOffset(private val camera: Camera) : Drawable {
-    var offset by observed(Vec3i(100, 100, 100))
+    var offset by observed(Vec3i.EMPTY)
         private set
 
     override fun draw() {
         val previous = offset
         val position = camera.view.view.eyePosition
+
+        val mod = (position.blockPosition / MAX_DISTANCE) * MAX_DISTANCE
+        if (mod != previous) {
+            this.offset = mod
+        }
+        // TODO: optimize this and use MIN_DISTANCE
     }
 
 

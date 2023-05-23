@@ -32,7 +32,6 @@ interface CameraView {
     val updateFrustum: Boolean get() = true
 
     val eyePosition: Vec3d
-    val matrixPosition: Vec3
 
     val rotation: EntityRotation
     val front: Vec3
@@ -49,12 +48,4 @@ interface CameraView {
 
 
     fun draw() = Unit
-
-
-    companion object {
-
-        fun CameraView.matrix(eye: Vec3d): Vec3 {
-            return Vec3(eye - context.camera.offset.offset)
-        }
-    }
 }

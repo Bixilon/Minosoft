@@ -113,7 +113,8 @@ class MatrixHandler(
         val fov = calculateFOV()
         val view = camera.view.view
         val eyePosition = view.eyePosition
-        val matrixPosition = view.matrixPosition
+        context.camera.offset.draw()
+        val matrixPosition = Vec3(eyePosition - context.camera.offset.offset)
         val front = view.front
         if (upToDate && matrixPosition == this.matrixPosition && front == this.front && fov == previousFOV && shaking.isEmpty) {
             return
