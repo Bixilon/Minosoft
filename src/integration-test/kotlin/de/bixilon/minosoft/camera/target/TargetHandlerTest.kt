@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.camera.target
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver
@@ -24,7 +23,6 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.registries.blocks.DirtTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -44,7 +42,7 @@ class TargetHandlerTest {
         connection.world[7, 69, 6] = DirtTest0.state
         connection.world[8, 69, 6] = StoneTest0.state
 
-        player.renderInfo::eyePosition.forceSet(player.physics.position.toVec3 + Vec3(0.0, 1.5, 0.0))
+        player.renderInfo::eyePosition.forceSet(player.physics.position + Vec3d(0.0, 1.5, 0.0))
         player.renderInfo::rotation.forceSet(player.physics.rotation)
 
         connection.camera.target.update()
@@ -68,7 +66,7 @@ class TargetHandlerTest {
 
         connection.world[8, 70, 2] = StoneTest0.state
 
-        player.renderInfo::eyePosition.forceSet(player.physics.position.toVec3 + Vec3(0.0, 1.5, 0.0))
+        player.renderInfo::eyePosition.forceSet(player.physics.position + Vec3d(0.0, 1.5, 0.0))
         player.renderInfo::rotation.forceSet(player.physics.rotation)
 
         connection.camera.target.update()
@@ -92,7 +90,7 @@ class TargetHandlerTest {
 
         connection.world[9, 70, 2] = StoneTest0.state
 
-        player.renderInfo::eyePosition.forceSet(player.physics.position.toVec3 + Vec3(0.0, 1.5, 0.0))
+        player.renderInfo::eyePosition.forceSet(player.physics.position + Vec3d(0.0, 1.5, 0.0))
         player.renderInfo::rotation.forceSet(player.physics.rotation)
 
         connection.camera.target.update()
