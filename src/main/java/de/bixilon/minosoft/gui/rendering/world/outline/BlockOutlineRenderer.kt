@@ -128,7 +128,7 @@ class BlockOutlineRenderer(
 
         val mesh = LineMesh(context)
 
-        val blockOffset = offsetPosition.toVec3d
+        val blockOffset = target.blockPosition.toVec3d
         if (target.state.block is RandomOffsetBlock) {
             target.state.block.randomOffset?.let { blockOffset += target.blockPosition.getWorldOffset(it) }
         }
