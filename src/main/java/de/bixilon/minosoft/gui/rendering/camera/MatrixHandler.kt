@@ -109,12 +109,12 @@ class MatrixHandler(
     fun draw() {
         dynamicFOV += camera.view.view.fovMultiplier
 
-        shaking.draw()
+        val update = shaking.update()
         val fov = calculateFOV()
         val view = camera.view.view
         val eyePosition = view.eyePosition
         val front = view.front
-        if (upToDate && eyePosition == this.eyePosition && front == this.front && fov == previousFOV && shaking.isEmpty) {
+        if (!update && upToDate && eyePosition == this.eyePosition && front == this.front && fov == previousFOV && shaking.isEmpty) {
             return
         }
         this.eyePosition = eyePosition

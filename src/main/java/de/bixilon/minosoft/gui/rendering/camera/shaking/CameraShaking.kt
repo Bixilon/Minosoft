@@ -20,24 +20,33 @@ import de.bixilon.kutil.avg.FloatAverage
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.shaking.ShakingC
 import de.bixilon.minosoft.gui.rendering.camera.Camera
-import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.math.PI
 import kotlin.math.sin
 
 class CameraShaking(
     private val camera: Camera,
     private val profile: ShakingC,
-) : Drawable {
+) {
     private var rotation = 0.0f
     private var strength = FloatAverage(5 * ProtocolDefinition.TICK_TIME * 1_000_000L, 1.0f)
-    private val speed = FloatAverage(5 * ProtocolDefinition.TICK_TIME * 1_000_000L, 0.0f)
+    private val speed = FloatAverage(10 * ProtocolDefinition.TICK_TIME * 1_000_000L, 0.0f)
 
     val isEmpty: Boolean get() = rotation == 0.0f
 
-    override fun draw() {
+    fun update(): Boolean {
         this.strength += 1.0f
-        val strength = this.strength.avg * profile.amplifier // strength affects how far it goes
+        val time = millis()
+        val walking = bobbing(time)
+        val damage = damage(time)
 
+        val previous = this.rotation
+        this.rotation = walking + damage
+
+        return this.rotation != previous
+    }
+
+    private fun bobbing(time: Long): Float {
         val physics = camera.context.connection.camera.entity.physics
         val velocity = physics.velocity.xz.length2().toFloat() // velocity affects how quick it goes
         if (velocity > 0.003 && physics.onGround) {
@@ -45,14 +54,31 @@ class CameraShaking(
         } else {
             this.speed += 0.0f // TODO: remove this, kutil 1.21
         }
-        val time = (millis() % 100L).toFloat() / 100.0f
 
-        this.rotation = sin(time * minOf(this.speed.avg, 0.5f) / 3.0f) * strength * 0.03f
+        val speed = minOf(this.speed.avg, 0.5f)
+
+        if (speed == 0.0f) return 0.0f
+
+        val intensity = speed * 100
+        val time = sin(millis().toDouble() / 1000.0)
+        val timeIntensity = sin(time / intensity)
+
+        println(timeIntensity)
+        return sin(timeIntensity * PI * 2).toFloat() / 10
+    }
+
+    private fun damage(time: Long): Float {
+        val strength = this.strength.avg * profile.amplifier // strength affects how far it goes
+
+
+        //  this.rotation = sin(time * minOf(this.speed.avg, 0.5f) / 3.0f) * strength * 0.03f
+
+        // TODO
+        return 0.0f
     }
 
     fun onDamage() {
-        strength += 1000.0f
-        speed += 0.05f
+        strength += 10.0f
     }
 
     fun transform(): Mat4? {
