@@ -25,7 +25,6 @@ uniform float uCameraHeight;
 
 flat out uint finTextureIndex;
 out vec3 finTextureCoordinates;
-out vec3 finFragmentPosition;
 
 
 #include "minosoft:uv"
@@ -43,7 +42,6 @@ void main() {
     position.x += uCenter.x;
     position.z += uCenter.y;
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0f);
-    finFragmentPosition = position;
 
     finTextureIndex = uIndexLayer >> 28u;
     vec2 uv = CONST_UV[floatBitsToUint(uvIndex)];
