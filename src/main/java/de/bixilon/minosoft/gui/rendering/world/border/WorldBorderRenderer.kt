@@ -76,8 +76,8 @@ class WorldBorderRenderer(
         shader.textureOffset = 1.0f - textureOffset
         shader.cameraHeight = context.connection.camera.entity.renderInfo.eyePosition.y.toFloat()
 
-        val distance = border.getDistanceTo(context.connection.player.physics.position).toFloat()
-        val strength = 1.0f - (distance.clamp(0.0f, 100.0f) / 100.0f)
+        val distance = border.getDistanceTo(context.connection.player.physics.position).toFloat() - 1.0f // 1 block padding
+        val strength = 1.0f - (distance.clamp(0.0f, MAX_DISTANCE) / MAX_DISTANCE) // slowly fade in
         var color = when (border.state) {
             WorldBorderState.GROWING -> GROWING_COLOR
             WorldBorderState.SHRINKING -> SHRINKING_COLOR
@@ -99,7 +99,7 @@ class WorldBorderRenderer(
         val SHRINKING_COLOR = "#FF3030".asColor()
         val STATIC_COLOR = "#20A0FF".asColor()
         const val ANIMATION_SPEED = 2000
-        const val MAX_DISTANCE = 1000
+        const val MAX_DISTANCE = 100.0f
 
         private val TEXTURE = "minecraft:misc/forcefield".toResourceLocation().texture()
 
