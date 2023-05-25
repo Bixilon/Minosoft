@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.sound
 
-import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
@@ -33,7 +33,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var category: SoundCategories? = null
         private set
-    val position: Vec3i
+    val position: Vec3d
     val sound: ResourceLocation
     val volume: Float
     val pitch: Float
@@ -65,7 +65,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (buffer.versionId >= V_16W02A && (buffer.versionId !in V_17W15A until V_17W18A)) {
             this.category = SoundCategories[buffer.readVarInt()]
         }
-        position = Vec3i(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4)
+        position = Vec3d(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4)
         volume = buffer.readFloat()
         pitch = buffer.readSoundPitch()
 

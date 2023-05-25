@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.data.world.audio
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
 @Deprecated("")
 interface WorldAudioPlayer : AbstractAudioPlayer {
     val audioPlayer: AbstractAudioPlayer?
 
-    override fun playSound(sound: ResourceLocation, position: Vec3?, volume: Float, pitch: Float) {
+    override fun playSound(sound: ResourceLocation, position: Vec3d?, volume: Float, pitch: Float) {
         audioPlayer?.playSound(sound, position, volume, pitch)
     }
 
