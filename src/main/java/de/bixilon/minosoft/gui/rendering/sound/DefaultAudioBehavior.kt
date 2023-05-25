@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
@@ -29,9 +28,9 @@ object DefaultAudioBehavior {
         val world = connection.world
         val invokers = listOf(
             CallbackEventListener.of<PlaySoundEvent> { world.playSound(it.soundEvent, it.position, it.volume, it.pitch) },
-            CallbackEventListener.of<ExplosionEvent> { world.playSound(ENTITY_GENERIC_EXPLODE, Vec3(it.position), 4.0f, (1.0f + (random.nextFloat() - random.nextFloat()) * 0.2f) * 0.7f) },
+            CallbackEventListener.of<ExplosionEvent> { world.playSound(ENTITY_GENERIC_EXPLODE, it.position, 4.0f, (1.0f + (random.nextFloat() - random.nextFloat()) * 0.2f) * 0.7f) },
         )
 
-        connection.register(*invokers.toTypedArray())
+        connection.events.register(*invokers.toTypedArray())
     }
 }

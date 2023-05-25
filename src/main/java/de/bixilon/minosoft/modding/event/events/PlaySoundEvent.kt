@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
@@ -24,15 +24,15 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.sound.SoundEventS2CP
 class PlaySoundEvent(
     connection: PlayConnection,
     val category: SoundCategories?,
-    position: Vec3,
+    position: Vec3d,
     val soundEvent: ResourceLocation,
     val volume: Float,
     val pitch: Float,
 ) : PlayConnectionEvent(connection), CancelableEvent {
-    val position: Vec3 = position
-        get() = Vec3(field)
+    val position: Vec3d = position
+        get() = Vec3d(field)
 
-    constructor(connection: PlayConnection, packet: SoundEventS2CP) : this(connection, packet.category, Vec3(packet.position), packet.sound, packet.volume, packet.pitch.toFloat())
+    constructor(connection: PlayConnection, packet: SoundEventS2CP) : this(connection, packet.category, packet.position, packet.sound, packet.volume, packet.pitch)
 
-    constructor(connection: PlayConnection, packet: NamedSoundS2CP) : this(connection, packet.category, packet.position, packet.soundEvent!!, packet.volume, packet.pitch.toFloat())
+    constructor(connection: PlayConnection, packet: NamedSoundS2CP) : this(connection, packet.category, packet.position, packet.soundEvent!!, packet.volume, packet.pitch)
 }

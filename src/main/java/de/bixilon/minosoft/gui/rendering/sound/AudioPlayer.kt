@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.queue.Queue
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -121,7 +123,7 @@ class AudioPlayer(
         latch.dec()
     }
 
-    override fun playSound(sound: ResourceLocation, position: Vec3?, volume: Float, pitch: Float) {
+    override fun playSound(sound: ResourceLocation, position: Vec3d?, volume: Float, pitch: Float) {
         if (!initialized) {
             return
         }
@@ -180,9 +182,9 @@ class AudioPlayer(
         return source
     }
 
-    private fun shouldPlay(sound: Sound, position: Vec3?): Boolean {
+    private fun shouldPlay(sound: Sound, position: Vec3d?): Boolean {
         if (position == null) return true
-        val distance = (this.listener.position - position).length2()
+        val distance = (this.listener.position - position.toVec3).length2()
         if (distance >= sound.attenuationDistance * sound.attenuationDistance) {
             return false
         }
@@ -190,7 +192,7 @@ class AudioPlayer(
         return true
     }
 
-    private fun playSound(sound: Sound, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+    private fun playSound(sound: Sound, position: Vec3d? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         if (!profile.enabled) {
             return
         }
@@ -205,7 +207,7 @@ class AudioPlayer(
             }
             position?.let {
                 source.relative = false
-                source.position = it
+                source.position = it.toVec3
             } ?: let {
                 source.position = Vec3.EMPTY
                 source.relative = true

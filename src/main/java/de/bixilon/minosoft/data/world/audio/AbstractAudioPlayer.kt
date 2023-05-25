@@ -13,21 +13,21 @@
 
 package de.bixilon.minosoft.data.world.audio
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.centerf
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.center
 
 interface AbstractAudioPlayer {
 
     fun playSoundEvent(sound: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        playSound(sound, position?.centerf, volume, pitch)
+        playSound(sound, position?.center, volume, pitch)
     }
 
-    fun playSound(sound: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f)
+    fun playSound(sound: ResourceLocation, position: Vec3d? = null, volume: Float = 1.0f, pitch: Float = 1.0f)
 
     fun play2DSound(sound: ResourceLocation, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        playSound(sound, null as Vec3?, volume, pitch)
+        playSound(sound, null as Vec3d?, volume, pitch)
     }
 
     fun stopAllSounds()
