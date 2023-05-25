@@ -103,7 +103,7 @@ class WorldBorderRenderer(
         val radius = getRadius()
 
         val previous = this.borderMesh
-        //  if (previous != null && !reload && center == previous.center && radius == previous.radius) return
+        if (previous != null && !reload && center == previous.center && radius == previous.radius) return
 
         context.queue += { previous?.unload() }
 

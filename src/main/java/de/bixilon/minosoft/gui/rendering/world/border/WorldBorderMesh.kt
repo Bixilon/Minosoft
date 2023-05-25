@@ -32,69 +32,65 @@ class WorldBorderMesh(
     val radius: Double,
 ) : Mesh(context, WorldBorderMeshStruct, initialCacheSize = 6 * 2 * 3 * WorldBorderMeshStruct.FLOATS_PER_VERTEX) {
 
-    private fun x() {
-        val width = minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ProtocolDefinition.SECTION_WIDTH_X)
-        val left = (center.y - width).toFloat()
-        val right = (center.y + width).toFloat()
 
-        val positions = arrayOf(
+    private fun width(): Float {
+        return minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ProtocolDefinition.SECTION_WIDTH_X)
+    }
+
+    private fun positions(width: Float, center: Double): Array<Vec2> {
+        val left = (center - width).toFloat()
+        val right = (center + width).toFloat()
+
+        return arrayOf(
             Vec2(left, -1.0f),
             Vec2(left, +1.0f),
             Vec2(right, +1.0f),
             Vec2(right, -1.0f),
         )
+    }
 
-        val x = (maxOf(-WorldBorder.MAX_RADIUS, center.x - radius) - offset.x).toFloat()
-        for ((position, texture) in order) {
-            val (z, y) = positions[position]
-            addVertex(x, y, z, texture, width)
-        }
-
-        val x1 = (minOf(WorldBorder.MAX_RADIUS, center.x + radius) - offset.x).toFloat()
-        for ((position, texture) in order) {
-            val (z, y) = positions[position]
-            addVertex(x1, y, z, when (texture) {
-                1 -> 2
-                2 -> 1
-                3 -> 0
-                else -> 3
-            }, width)
+    private fun textureIndex(index: Int): Int {
+        return when (index) {
+            1 -> 2
+            2 -> 1
+            3 -> 0
+            else -> 3
         }
     }
 
-    private fun z() {
-        val width = minOf(radius.toFloat(), World.MAX_RENDER_DISTANCE.toFloat() * ProtocolDefinition.SECTION_WIDTH_X)
-        val left = (center.x - width).toFloat()
-        val right = (center.x + width).toFloat()
+    private fun addVertexX(x: Float, width: Float, positions: Array<Vec2>, index: Boolean) {
+        for ((position, texture) in order) {
+            val (z, y) = positions[position]
+            val texture = if (index) textureIndex(texture) else texture
+            addVertex(x, y, z, textureIndex(texture), width)
+        }
+    }
 
-        val positions = arrayOf(
-            Vec2(left, -1.0f),
-            Vec2(left, +1.0f),
-            Vec2(right, +1.0f),
-            Vec2(right, -1.0f),
-        )
+    private fun x(width: Float) {
+        val positions = positions(width, center.y)
+        addVertexX((maxOf(-WorldBorder.MAX_RADIUS, center.x - radius) - offset.x).toFloat(), width, positions, false)
+        addVertexX((minOf(WorldBorder.MAX_RADIUS, center.x + radius) - offset.x).toFloat(), width, positions, true)
+    }
 
-        val z = (maxOf(-WorldBorder.MAX_RADIUS, center.y - radius) - offset.z).toFloat()
+    private fun addVertexZ(z: Float, width: Float, positions: Array<Vec2>, index: Boolean) {
         for ((position, texture) in order) {
             val (x, y) = positions[position]
-            addVertex(x, y, z, when (texture) {
-                1 -> 2
-                2 -> 1
-                3 -> 0
-                else -> 3
-            }, width)
+            val texture = if (index) textureIndex(texture) else texture
+            addVertex(x, y, z, textureIndex(texture), width)
         }
+    }
 
-        val z1 = (minOf(WorldBorder.MAX_RADIUS, center.y + radius) - offset.z).toFloat()
-        for ((position, texture) in order) {
-            val (x, y) = positions[position]
-            addVertex(x, y, z1, texture, width)
-        }
+    private fun z(width: Float) {
+        val positions = positions(width, center.x)
+
+        addVertexZ((maxOf(-WorldBorder.MAX_RADIUS, center.y - radius) - offset.z).toFloat(), width, positions, true)
+        addVertexZ((minOf(WorldBorder.MAX_RADIUS, center.y + radius) - offset.z).toFloat(), width, positions, false)
     }
 
     fun build() {
-        x()
-        z()
+        val width = width()
+        x(width)
+        z(width)
     }
 
     private fun addVertex(x: Float, y: Float, z: Float, uvIndex: Int, width: Float) {
