@@ -14,18 +14,21 @@
 #version 330 core
 
 layout (location = 0) in vec3 vinPosition;
-layout (location = 1) in float uvIndex;
+layout (location = 1) in float vinUVIndex;
+layout (location = 2) in float vinWidth;
 
 uniform mat4 uViewProjectionMatrix;
 uniform uint uIndexLayer;
 uniform float uTextureOffset;
-uniform float uRadius;
-uniform vec2 uCenter;
-uniform float uCameraHeight;
+
+uniform vec3 uCameraPosition;
 
 flat out uint finTextureIndex;
 out vec3 finTextureCoordinates;
+out vec3 finFragmentPosition; // fog
 
+#define DENSITY 2.0f
+#define HEIGHT 150.0f
 
 #include "minosoft:uv"
 #include "minosoft:color"
@@ -33,22 +36,22 @@ out vec3 finTextureCoordinates;
 
 void main() {
     vec3 position = vinPosition;
-    position = position * uRadius;
     if (position.y < 0.0f) {
-        position.y = uCameraHeight - 300;
+        position.y = uCameraPosition.y - HEIGHT;
     } else if (position.y > 0.0f) {
-        position.y = uCameraHeight + 300;
+        position.y = uCameraPosition.y + HEIGHT;
     }
-    position.x += uCenter.x;
-    position.z += uCenter.y;
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0f);
 
     finTextureIndex = uIndexLayer >> 28u;
-    vec2 uv = CONST_UV[floatBitsToUint(uvIndex)];
-    uv.x *= (uRadius / 5.0f);
-    uv.y *= (300 / 5.0f);
 
-    finTextureCoordinates = vec3(uv, ((uIndexLayer >> 12) & 0xFFFFu));
+    vec2 uv = CONST_UV[floatBitsToUint(vinUVIndex)];
+    uv.x *= (vinWidth / DENSITY); // TODO: insert width
+    uv.y *= (HEIGHT / DENSITY);
+
+    finTextureCoordinates = vec3(uv, ((uIndexLayer >> 12u) & 0xFFFFu));
     finTextureCoordinates.x += uTextureOffset;
     finTextureCoordinates.y += uTextureOffset;
+
+    finFragmentPosition = position.xyz;
 }
