@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.sound
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
@@ -33,7 +33,7 @@ class NamedSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val soundEvent: ResourceLocation?
     val volume: Float
     val pitch: Float
-    lateinit var position: Vec3
+    lateinit var position: Vec3d
         private set
     lateinit var category: SoundCategories
         private set
@@ -49,13 +49,13 @@ class NamedSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readString() // parrot entity type
         }
         if (buffer.versionId < V_16W02A) {
-            position = Vec3(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8) // ToDo: check if it is not * 4
+            position = Vec3d(buffer.readInt() * 4, buffer.readInt() * 4, buffer.readInt() * 4)
         }
         if (buffer.versionId >= V_16W02A && (buffer.versionId !in V_17W15A until V_17W18A)) {
             this.category = SoundCategories[buffer.readVarInt()]
         }
         if (buffer.versionId >= V_16W02A) {
-            position = Vec3(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4)
+            position = Vec3d(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4)
         }
         volume = buffer.readFloat()
         pitch = buffer.readSoundPitch()

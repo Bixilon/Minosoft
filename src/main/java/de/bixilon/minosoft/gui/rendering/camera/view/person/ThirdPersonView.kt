@@ -15,12 +15,14 @@ package de.bixilon.minosoft.gui.rendering.camera.view.person
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.CameraView
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 
@@ -28,7 +30,7 @@ import de.bixilon.minosoft.input.camera.PlayerMovementInput
 class ThirdPersonView(override val camera: Camera) : PersonView {
     override val context: RenderContext get() = camera.context
 
-    override var eyePosition: Vec3 = Vec3.EMPTY
+    override var eyePosition: Vec3d = Vec3d.EMPTY
 
     override var rotation = EntityRotation.EMPTY
     override var front = Vec3.EMPTY
@@ -53,8 +55,8 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
         update(entity.renderInfo.eyePosition, front)
     }
 
-    private fun update(position: Vec3, front: Vec3) {
-        val target = camera.context.connection.camera.target.raycastBlock(position.toVec3d, (-front).toVec3d).first
+    private fun update(position: Vec3d, front: Vec3) {
+        val target = camera.context.connection.camera.target.raycastBlock(position, (-front).toVec3d).first
         val distance = target?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
 
         this.eyePosition = position + (-front * distance)

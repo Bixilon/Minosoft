@@ -76,15 +76,21 @@ class SolidCullSectionPreparer(
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
         val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
 
+        val cameraOffset = context.camera.offset.offset
+
         val offsetX = chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
         val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
         val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
 
+        val floatOffset = FloatArray(3)
+
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             position.y = offsetY + y
+            floatOffset[1] = (position.y - cameraOffset.y).toFloat()
             val fastBedrock = y == 0 && isLowestSection && fastBedrock
             for (x in blocks.minPosition.x..blocks.maxPosition.x) {
                 position.x = offsetX + x
+                floatOffset[0] = (position.x - cameraOffset.x).toFloat()
                 for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                     val baseIndex = (z shl 4) or x
                     val index = (y shl 8) or baseIndex
@@ -94,6 +100,7 @@ class SolidCullSectionPreparer(
                     }
                     light[SELF_LIGHT_INDEX] = sectionLight[index]
                     position.z = offsetZ + z
+                    floatOffset[2] = (position.z - cameraOffset.z).toFloat()
 
                     val maxHeight = chunk.light.heightmap[baseIndex]
                     if (position.y >= maxHeight) {
@@ -158,10 +165,10 @@ class SolidCullSectionPreparer(
                         random.setSeed(0L)
                     }
                     tints = tintColorCalculator.getAverageBlockTint(chunk, neighbourChunks, blockState, x, y, z)
-                    rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, tints)
+                    rendered = model.singleRender(position, floatOffset, mesh, random, blockState, neighbourBlocks, light, tints)
 
                     if (blockEntityModel is MeshedBlockEntityRenderer<*>) {
-                        rendered = blockEntityModel.singleRender(position, mesh, random, blockState, neighbourBlocks, light, tints) || rendered
+                        rendered = blockEntityModel.singleRender(position, floatOffset, mesh, random, blockState, neighbourBlocks, light, tints) || rendered
                     }
 
                     if (rendered) {

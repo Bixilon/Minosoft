@@ -35,9 +35,10 @@ class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(conte
         }
         val maxTransformedUV = texture.renderData.transformUV(uvMax)
         val data = data
-        data.add(position.x.toFloat())
-        data.add(position.y.toFloat())
-        data.add(position.z.toFloat())
+        val offset = context.camera.offset.offset
+        data.add((position.x - offset.x).toFloat())
+        data.add((position.y - offset.y).toFloat())
+        data.add((position.z - offset.z).toFloat())
         data.add(minTransformedUV)
         data.add(maxTransformedUV)
         data.add(texture.renderData.shaderTextureId.buffer())

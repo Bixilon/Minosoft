@@ -13,23 +13,23 @@
 
 package de.bixilon.minosoft.data.entities
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
-    private var position0 = Vec3(entity.physics.position)
+    private var position0 = Vec3d(entity.physics.position)
     private var position1 = position0
 
-    var position: Vec3 = position0
+    var position: Vec3d = position0
         private set
-    var eyePosition: Vec3 = position
+    var eyePosition: Vec3d = position
         private set
     var cameraAABB: AABB = AABB.EMPTY
         private set
@@ -44,8 +44,8 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
     private fun interpolatePosition(delta: Float) {
         // TODO: Only interpolate if changed
-        position = Vec3Util.interpolateLinear(delta, position0, position1)
-        eyePosition = position + Vec3(0.0f, entity.eyeHeight, 0.0f)
+        position = Vec3dUtil.interpolateLinear(delta.toDouble(), position0, position1)
+        eyePosition = position + Vec3d(0.0, entity.eyeHeight, 0.0)
         cameraAABB = entity.defaultAABB + position
         eyeBlockPosition = position1.blockPosition
     }
@@ -62,7 +62,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
     override fun tick() {
         position0 = position1
-        position1 = Vec3(entity.physics.position)
+        position1 = Vec3d(entity.physics.position)
 
         rotation0 = rotation1
         rotation1 = entity.physics.rotation

@@ -38,7 +38,7 @@ class DoubleChestRenderer(
     light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    SkeletalInstance(context, model, blockPosition.toVec3, (blockState.getFacing()).rotatedMatrix),
+    SkeletalInstance(context, model, (blockPosition - context.camera.offset.offset).toVec3, (blockState.getFacing()).rotatedMatrix),
     light,
 ) {
 

@@ -53,12 +53,13 @@ class OpenGLNativeShader(
             throw ShaderLoadingException()
         }
 
-        glShaderSource(program, code.code)
+        val glsl = code.code
+        glShaderSource(program, glsl)
 
         glCompileShader(program)
 
         if (glGetShaderi(program, GL_COMPILE_STATUS) == GL_FALSE) {
-            throw ShaderLoadingException(getShaderInfoLog(program))
+            throw ShaderLoadingException(getShaderInfoLog(program), glsl)
         }
 
         return program

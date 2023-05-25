@@ -22,15 +22,15 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(parent = true)
 class InterpolateWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
-    val oldDiameter = buffer.readDouble()
-    val newDiameter = buffer.readDouble()
+    val oldRadius = buffer.readDouble() / 2.0
+    val newRadius = buffer.readDouble() / 2.0
     val millis = buffer.readVarLong()
 
     override fun handle(connection: PlayConnection) {
-        connection.world.border.interpolate(oldDiameter, newDiameter, millis)
+        connection.world.border.interpolate(oldRadius, newRadius, millis)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Interpolate size world border (oldDiameter=$oldDiameter, newDiameter=$newDiameter, millis=$millis)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Interpolate size world border (oldRadius=$oldRadius, newRadius=$newRadius, millis=$millis)" }
     }
 }
