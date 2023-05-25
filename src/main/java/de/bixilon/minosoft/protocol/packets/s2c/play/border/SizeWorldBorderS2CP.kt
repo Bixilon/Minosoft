@@ -22,14 +22,14 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(parent = true)
 class SizeWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
-    val diameter = buffer.readDouble()
+    val radius = buffer.readDouble() / 2.0
 
     override fun handle(connection: PlayConnection) {
         connection.world.border.stopInterpolating()
-        connection.world.border.diameter = diameter
+        connection.world.border.radius = radius
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Size set world border (diameter=$diameter)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Size set world border (diameter=$radius)" }
     }
 }

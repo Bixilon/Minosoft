@@ -19,7 +19,6 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -28,7 +27,7 @@ import kotlin.math.abs
 
 class WorldBorder {
     var center = Vec2d.EMPTY
-    var diameter = DEFAULT_DIAMETER
+    var radius = DEFAULT_RADIUS
     var warningTime = 0
     var warningBlocks = 0
     var portalBound = 0
@@ -36,10 +35,14 @@ class WorldBorder {
     var state = WorldBorderState.STATIC
         private set
 
-    private var interpolationStart = -1L
-    private var interpolationEnd = -1L
-    private var oldDiameter = DEFAULT_DIAMETER
-    private var newDiameter = DEFAULT_DIAMETER
+    var interpolationStart = -1L
+        private set
+    var interpolationEnd = -1L
+        private set
+    var oldRadius = DEFAULT_RADIUS
+        private set
+    var newRadius = DEFAULT_RADIUS
+        private set
 
     val lock = SimpleLock()
 
@@ -57,7 +60,7 @@ class WorldBorder {
 
     fun isOutside(x: Double, z: Double): Boolean {
         lock.acquire()
-        val radius = diameter / 2
+        val radius = radius
         val inside = x in (center.x - radius)..(radius + center.x) && z in (center.y - radius)..(radius + center.y)
         lock.release()
         return !inside
@@ -74,7 +77,7 @@ class WorldBorder {
 
     fun getDistanceTo(x: Double, z: Double): Double {
         lock.acquire()
-        val radius = diameter / 2
+        val radius = radius
 
         val closestDistance = minOf(
             radius - abs(x) - abs(center.x),
@@ -90,17 +93,17 @@ class WorldBorder {
         lock.unlock()
     }
 
-    fun interpolate(oldDiameter: Double, newDiameter: Double, millis: Long) {
+    fun interpolate(oldRadius: Double, newRadius: Double, millis: Long) {
         if (millis == 0L) {
             stopInterpolating()
-            diameter = newDiameter
+            radius = newRadius
         }
         lock.lock()
         val time = millis()
         interpolationStart = time
         interpolationEnd = time + millis
-        this.oldDiameter = oldDiameter
-        this.newDiameter = newDiameter
+        this.oldRadius = oldRadius
+        this.newRadius = newRadius
         lock.unlock()
     }
 
@@ -117,16 +120,16 @@ class WorldBorder {
             lock.unlock()
             return
         }
-        val oldDiameter = diameter
+        val oldRadius = radius
 
         val remaining = interpolationEnd - time
         val totalTime = (interpolationEnd - interpolationStart)
-        val diameter = interpolateLinear(remaining.toDouble() / totalTime.toDouble(), this.newDiameter, this.oldDiameter)
-        this.diameter = diameter
+        val radius = interpolateLinear(remaining.toDouble() / totalTime.toDouble(), this.newRadius, this.oldRadius)
+        this.radius = radius
 
-        state = if (oldDiameter > diameter) {
+        state = if (oldRadius > radius) {
             WorldBorderState.SHRINKING
-        } else if (oldDiameter < diameter) {
+        } else if (oldRadius < radius) {
             WorldBorderState.GROWING
         } else {
             interpolationStart = -1L
@@ -137,12 +140,12 @@ class WorldBorder {
 
     fun reset() {
         lock.lock()
-        diameter = DEFAULT_DIAMETER
+        radius = DEFAULT_RADIUS
         interpolationStart = -1L
         lock.unlock()
     }
 
     companion object {
-        const val DEFAULT_DIAMETER = World.MAX_SIZE.toDouble() * 2
+        const val DEFAULT_RADIUS = World.MAX_SIZE.toDouble()
     }
 }
