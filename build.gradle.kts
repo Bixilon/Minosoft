@@ -52,6 +52,8 @@ val kutilVersion = getProperty("kutil.version")
 val os = properties["platform"]?.let { OSTypes[it] } ?: PlatformInfo.OS
 val architecture = properties["architecture"]?.let { Architectures[it] } ?: PlatformInfo.ARCHITECTURE
 
+logger.info("Building for ${os.name.lowercase()}, ${architecture.name.lowercase()}")
+
 repositories {
     mavenCentral()
     maven("https://oss.sonatype.org/content/repositories/snapshots")
