@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.world.border
 
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
@@ -23,6 +22,7 @@ import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.abs
 
 class WorldBorder {
@@ -50,10 +50,6 @@ class WorldBorder {
         return isOutside(blockPosition.x.toDouble(), blockPosition.z.toDouble()) && isOutside(blockPosition.x + 1.0, blockPosition.z + 1.0)
     }
 
-    fun isOutside(position: Vec3): Boolean {
-        return isOutside(position.x.toDouble(), position.z.toDouble())
-    }
-
     fun isOutside(position: Vec3d): Boolean {
         return isOutside(position.x, position.z)
     }
@@ -61,7 +57,7 @@ class WorldBorder {
     fun isOutside(x: Double, z: Double): Boolean {
         lock.acquire()
         val radius = radius
-        val inside = x in (center.x - radius)..(radius + center.x) && z in (center.y - radius)..(radius + center.y)
+        val inside = x in maxOf(-MAX_RADIUS, center.x - radius)..minOf(MAX_RADIUS, center.x + radius) && z in maxOf(-MAX_RADIUS, center.y - radius)..minOf(MAX_RADIUS, center.y + radius)
         lock.release()
         return !inside
     }
@@ -80,8 +76,8 @@ class WorldBorder {
         val radius = radius
 
         val closestDistance = minOf(
-            radius - abs(x) - abs(center.x),
-            radius - abs(z) - abs(center.y),
+            minOf(MAX_RADIUS, radius - abs(center.x)) - abs(x),
+            minOf(MAX_RADIUS, radius - abs(center.y)) - abs(z),
         )
         lock.release()
         return closestDistance
@@ -147,6 +143,7 @@ class WorldBorder {
     }
 
     companion object {
-        const val DEFAULT_RADIUS = World.MAX_SIZE.toDouble()
+        const val MAX_RADIUS = (World.MAX_SIZE - ProtocolDefinition.SECTION_WIDTH_X).toDouble()
+        const val DEFAULT_RADIUS = MAX_RADIUS
     }
 }
