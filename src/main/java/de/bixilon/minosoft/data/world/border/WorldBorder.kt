@@ -67,7 +67,7 @@ class WorldBorder {
     }
 
 
-    operator fun contains(position:BlockPosition) = !isOutside(position)
+    operator fun contains(position: BlockPosition) = !isOutside(position)
     operator fun contains(position: Vec3d) = !isOutside(position)
 
 
@@ -94,7 +94,7 @@ class WorldBorder {
     }
 
     fun interpolate(oldRadius: Double, newRadius: Double, millis: Long) {
-        if (millis == 0L) {
+        if (millis <= 0L) {
             stopInterpolating()
             radius = newRadius
         }
@@ -115,6 +115,7 @@ class WorldBorder {
         }
         val time = millis()
         if (interpolationEnd <= time) {
+            this.radius = newRadius // also get the last interpolation step
             state = WorldBorderState.STATIC
             interpolationStart = -1L
             lock.unlock()
@@ -124,12 +125,12 @@ class WorldBorder {
 
         val remaining = interpolationEnd - time
         val totalTime = (interpolationEnd - interpolationStart)
-        val radius = interpolateLinear(remaining.toDouble() / totalTime.toDouble(), this.newRadius, this.oldRadius)
+        val radius = interpolateLinear(remaining.toDouble() / totalTime.toDouble(), this.oldRadius, this.newRadius)
         this.radius = radius
 
-        state = if (oldRadius > radius) {
+        state = if (oldRadius > newRadius) {
             WorldBorderState.SHRINKING
-        } else if (oldRadius < radius) {
+        } else if (oldRadius < newRadius) {
             WorldBorderState.GROWING
         } else {
             interpolationStart = -1L
