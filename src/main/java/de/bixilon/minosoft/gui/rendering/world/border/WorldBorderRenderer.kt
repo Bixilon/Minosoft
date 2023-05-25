@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.world.border
 
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -65,7 +64,7 @@ class WorldBorderRenderer(
     private fun calculateColor(): RGBColor {
         val distance = border.getDistanceTo(context.connection.player.physics.position).toFloat() - 1.0f // 1 block padding
         val strength = 1.0f - distance.clamp(0.0f, MAX_DISTANCE) / MAX_DISTANCE // slowly fade in
-        val color = when (border.state) {
+        val color = when (border.area.state) {
             WorldBorderState.GROWING -> GROWING_COLOR
             WorldBorderState.SHRINKING -> SHRINKING_COLOR
             WorldBorderState.STATIC -> STATIC_COLOR
@@ -86,21 +85,12 @@ class WorldBorderRenderer(
         shader.tintColor = calculateColor()
     }
 
-    private fun getRadius(): Double {
-        val start = border.interpolationStart
-        if (start < 0L) return border.radius
-
-        val progress = (millis() - start).toDouble() / (border.interpolationEnd - start)
-
-        return interpolateLinear(progress, border.oldRadius, border.newRadius)
-    }
-
 
     override fun prepareDrawAsync() {
         if (skipAll) return
 
         val center = border.center
-        val radius = getRadius()
+        val radius = border.area.radius()
 
         val previous = this.borderMesh
         if (previous != null && !reload && center == previous.center && radius == previous.radius) return
