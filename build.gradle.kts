@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets
 
 
 plugins {
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "1.9.0-Beta"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.2.0"
@@ -145,7 +145,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:1.8.20")
+                implementation("org.jetbrains.kotlin:kotlin-test:1.9.0-Beta")
             }
 
             targets {
@@ -371,7 +371,7 @@ dependencies {
     lwjgl("stb")
 
     // kotlin
-    implementation(kotlin("reflect"))
+    implementation(kotlin("reflect", "1.9.0-Beta"))
 
 
     // platform specific
@@ -462,7 +462,7 @@ java {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
-    // kotlinOptions.useK2 = true // ToDo: Really? boosts the performance a lot, see https://youtrack.jetbrains.com/issue/KT-55806/K2-Property-must-be-initialized-or-be-abstract and https://youtrack.jetbrains.com/issue/KT-55804/K2-Non-nullable-generic-marked-as-nullable-even-if-assertNonNull
+    kotlinOptions.languageVersion = "2.0"
 }
 
 tasks.withType<JavaCompile> {
