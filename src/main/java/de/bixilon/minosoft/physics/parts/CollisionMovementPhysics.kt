@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.physics.parts
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.swizzle.xz
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
@@ -27,9 +28,9 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.set
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import kotlin.math.abs
@@ -41,6 +42,8 @@ object CollisionMovementPhysics {
         // TODO: add entity collisions (boat, shulker)
         // TODO: add world border collision shape
 
+        val inChunk = Vec3i.EMPTY
+
         for ((position, state, chunk) in WorldIterator(aabb.extend(movement).grow(1.0).positions(), this, chunk)) {
             if (state.block !is CollidableBlock) continue
 
@@ -49,7 +52,12 @@ object CollisionMovementPhysics {
 
             var shape = when (state.block) {
                 is FixedCollidable -> state.block.getCollisionShape(state)
-                else -> state.block.getCollisionShape(context, position, state, chunk.getBlockEntity(position.inChunkPosition))
+                else -> {
+                    inChunk.x = position.x and 0x0F
+                    inChunk.z = position.z and 0x0F
+
+                    state.block.getCollisionShape(context, position, state, chunk.getBlockEntity(inChunk))
+                }
             } ?: continue
             shape += position
 
