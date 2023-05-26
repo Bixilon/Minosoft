@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.gui.rendering.entity.models.DamageableModel
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -24,6 +27,13 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class DamageTiltS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readVarInt()
     val yaw = buffer.readFloat()
+
+
+    override fun handle(connection: PlayConnection) {
+        val entity = connection.world.entities[entityId] ?: return
+
+        entity.model?.nullCast<DamageableModel>()?.onDamage()
+    }
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Damage tilt (entityId=$entityId, yaw=$yaw)" }
