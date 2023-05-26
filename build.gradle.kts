@@ -188,7 +188,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
+                implementation("de.bixilon:kotlin-glm:0.9.9.1-7")
                 implementation("it.unimi.dsi:fastutil-core:8.5.12")
 
                 implementation("de.bixilon:mbf-kotlin:1.0") { exclude("com.github.luben", "zstd-jni") }
@@ -246,7 +246,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
+                implementation("de.bixilon:kotlin-glm:0.9.9.1-7")
             }
 
             targets {
@@ -353,7 +353,7 @@ dependencies {
     // de.bixilon
     implementation("de.bixilon", "kutil", kutilVersion)
     implementation("de.bixilon", "jiibles", "1.1.1")
-    implementation("de.bixilon", "kotlin-glm", "0.9.9.1-6")
+    implementation("de.bixilon", "kotlin-glm", "0.9.9.1-7")
     implementation("de.bixilon", "mbf-kotlin", "1.0") { exclude("com.github.luben", "zstd-jni") }
     implementation("de.bixilon.javafx", "javafx-svg", "0.3") { exclude("org.openjfx", "javafx-controls") }
 
