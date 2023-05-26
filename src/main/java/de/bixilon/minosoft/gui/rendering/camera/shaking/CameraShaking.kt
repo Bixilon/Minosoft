@@ -29,61 +29,46 @@ class CameraShaking(
     private val profile: ShakingC,
 ) {
     private var rotation = 0.0f
-    private var strength = FloatAverage(5 * ProtocolDefinition.TICK_TIME * 1_000_000L, 1.0f)
+    private var previous_velocity = 0.0f
+    private var strength = 0.02f
     private val speed = FloatAverage(10 * ProtocolDefinition.TICK_TIME * 1_000_000L, 0.0f)
+    private val physics = camera.context.connection.camera.entity.physics
 
     val isEmpty: Boolean get() = rotation == 0.0f
 
     fun update(): Boolean {
-        this.strength += 1.0f
-        val time = millis()
-        val walking = bobbing(time)
-        val damage = damage(time)
-
-        val previous = this.rotation
-        this.rotation = walking + damage
-
-        return this.rotation != previous
-    }
-
-    private fun bobbing(time: Long): Float {
-        val physics = camera.context.connection.camera.entity.physics
-        val velocity = physics.velocity.xz.length2().toFloat() // velocity affects how quick it goes
-        if (velocity > 0.003 && physics.onGround) {
-            this.speed += velocity
-        } else {
-            this.speed += 0.0f // TODO: remove this, kutil 1.21
+        if(!this.physics.onGround){
+            this.speed += 0.0f
+            this.rotation = 0.0f
+            return false
         }
-
-        val speed = minOf(this.speed.avg, 0.5f)
-
-        if (speed == 0.0f) return 0.0f
-
-        val intensity = speed * 100
-        val time = sin(millis().toDouble() / 1000.0)
-        val timeIntensity = sin(time / intensity)
-
-        println(timeIntensity)
-        return sin(timeIntensity * PI * 2).toFloat() / 10
+        val time = millis()
+        this.rotation = bobbing(time,10f,this.strength)
+        this.strength = 0.02f
+        return true
     }
 
-    private fun damage(time: Long): Float {
-        val strength = this.strength.avg * profile.amplifier // strength affects how far it goes
-
-
-        //  this.rotation = sin(time * minOf(this.speed.avg, 0.5f) / 3.0f) * strength * 0.03f
-
-        // TODO
-        return 0.0f
+    private fun bobbing(time: Long,frequency: Float, intensity: Float): Float {
+        var velocity = this.physics.velocity.xz.length2().toFloat() // velocity affects how quick it goes
+        if(this.previous_velocity != 0.0f){
+            velocity = this.previous_velocity + (velocity - this.previous_velocity) * 0.25f // interpolate
+            this.speed += velocity
+        }else{
+            this.speed += 0.0f
+        }
+        this.previous_velocity = velocity
+        var seconds = (time/1000.0).toDouble()
+        val minimum_speed = 0.14f
+        return (sin(seconds * frequency).toFloat() * minOf(this.speed.avg, 0.1f) * intensity) / minimum_speed
     }
-
     fun onDamage() {
-        strength += 10.0f
+        //TODO: verify this properly, frequency may need to be changed as well
+        this.strength += 1f
     }
 
     fun transform(): Mat4? {
-        if (rotation == 0.0f) return null
+        if (this.rotation == 0.0f) return null
         return Mat4()
-            .rotateAssign(rotation, Vec3(0, 0, 1))
+            .rotateAssign(this.rotation, Vec3(0, 0, 1))
     }
 }
