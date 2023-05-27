@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer.Companion.SELF_LIGHT_INDEX
+import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer.Companion.SELF_LIGHT_INDEX
 
 class BakedFace(
     val positions: FloatArray,

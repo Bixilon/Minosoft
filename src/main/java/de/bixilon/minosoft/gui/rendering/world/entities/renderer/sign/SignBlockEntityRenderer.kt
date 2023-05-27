@@ -37,7 +37,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import de.bixilon.minosoft.gui.rendering.world.entities.MeshedEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer.Companion.SELF_LIGHT_INDEX
+import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer.Companion.SELF_LIGHT_INDEX
 import java.util.*
 
 class SignBlockEntityRenderer(

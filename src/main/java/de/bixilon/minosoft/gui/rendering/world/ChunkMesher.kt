@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,8 +17,6 @@ import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
-import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPreparer
-import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.world.util.WorldRendererUtil.smallMesh
 import de.bixilon.minosoft.util.chunk.ChunkUtil
@@ -26,8 +24,8 @@ import de.bixilon.minosoft.util.chunk.ChunkUtil
 class ChunkMesher(
     private val renderer: WorldRenderer,
 ) {
-    private val solidSectionPreparer: SolidSectionPreparer = SolidCullSectionPreparer(renderer.context)
-    private val fluidSectionPreparer: FluidSectionPreparer = FluidCullSectionPreparer(renderer.context)
+    private val solidSectionPreparer: SolidSectionPreparer = SolidSectionPreparer(renderer.context)
+    private val fluidSectionPreparer: FluidSectionPreparer = FluidSectionPreparer(renderer.context)
 
     private fun mesh(item: WorldQueueItem): WorldMesh? {
         if (item.section.blocks.isEmpty) {
