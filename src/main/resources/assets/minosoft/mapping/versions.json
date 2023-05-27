@@ -1,4 +1,34 @@
 {
+  "899": {
+    "name": "1.20-pre6",
+    "protocol_id": 1073741963,
+    "packets": 880
+  },
+  "898": {
+    "name": "1.20-pre5",
+    "protocol_id": 1073741962,
+    "packets": 880
+  },
+  "897": {
+    "name": "1.20-pre4",
+    "protocol_id": 1073741961,
+    "packets": 880
+  },
+  "896": {
+    "name": "1.20-pre3",
+    "protocol_id": 1073741960,
+    "packets": 880
+  },
+  "895": {
+    "name": "1.20-pre2",
+    "protocol_id": 1073741959,
+    "packets": 880
+  },
+  "894": {
+    "name": "1.20-pre1",
+    "protocol_id": 1073741958,
+    "packets": 880
+  },
   "893": {
     "name": "23w18a",
     "protocol_id": 1073741957,

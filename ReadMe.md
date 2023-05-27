@@ -24,6 +24,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Multiple profiles (i.e. settings for servers or minosoft in general)
 - Modding
 - Independent, I will probably accept almost all patches
+- [Headless mode](/doc/Headless.md)
 - Way more stuff
 
 (some ~~technical~~ explanation about the render system is [here](/doc/rendering/ReadMe.md)). You can find information about the architecture design [here](/doc/Architecture.md)

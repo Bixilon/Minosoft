@@ -26,10 +26,13 @@ import java.time.Instant
 
 class CommandStack(
     connection: PlayConnection? = null,
-    val print: PrintTarget = SystemPrintTarget,
+    print: PrintTarget = SystemPrintTarget,
 ) {
     private val stack: MutableList<CommandStackEntry> = mutableListOf()
     val size: Int get() = stack.size
+
+    var print = print
+        private set
 
     var executor: Entity? = null
     lateinit var connection: PlayConnection
@@ -67,5 +70,27 @@ class CommandStack(
             output[entry.node.name] = entry.sign(connection, signer, key, salt, time)
         }
         return output
+    }
+
+
+    fun fork(): CommandStack {
+        val stack = CommandStack(null, print)
+        stack.stack += this.stack
+        stack.executor = this.executor
+        if (this::connection.isInitialized) {
+            stack.connection = this.connection
+        }
+
+        return stack
+    }
+
+    fun join(stack: CommandStack) {
+        this.stack.clear()
+        this.stack += stack.stack
+        this.print = stack.print
+        this.executor = stack.executor
+        if (stack::connection.isInitialized) {
+            this.connection = stack.connection
+        }
     }
 }

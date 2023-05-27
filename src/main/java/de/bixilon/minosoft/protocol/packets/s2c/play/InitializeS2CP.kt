@@ -65,6 +65,8 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         private set
     var lastDeathPosition: GlobalPosition? = null
         private set
+    var portalCooldown = 0
+        private set
 
     init {
         entityId = buffer.readInt()
@@ -138,6 +140,9 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
             if (buffer.versionId >= ProtocolVersions.V_1_19_PRE2) {
                 lastDeathPosition = buffer.readOptional { GlobalPositionEntityDataType.read(buffer) }
+            }
+            if (buffer.versionId >= ProtocolVersions.V_1_20_PRE1) {
+                portalCooldown = buffer.readVarInt()
             }
         }
     }

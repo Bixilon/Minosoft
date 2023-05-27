@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.sky.clouds
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
@@ -30,9 +31,9 @@ class CloudMesh(context: RenderContext) : Mesh(context, CloudMeshStruct, context
     }
 
 
-    fun createCloud(start: Vec2i, end: Vec2i, yStart: Int, yEnd: Int, flat: Boolean, culling: BooleanArray) {
-        val start = Vec3(start.x, yStart, start.y) + CLOUD_OFFSET
-        val end = Vec3(end.x, yEnd, end.y) + CLOUD_OFFSET
+    fun createCloud(start: Vec2i, end: Vec2i, offset: Vec3i, yStart: Int, yEnd: Int, flat: Boolean, culling: BooleanArray) {
+        val start = Vec3(start.x - offset.x, yStart - offset.y, start.y - offset.z) + CLOUD_OFFSET
+        val end = Vec3(end.x - offset.x, yEnd - offset.y, end.y - offset.z) + CLOUD_OFFSET
 
         addYQuad(Vec2(start.x, start.z), start.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.DOWN) }
         if (!flat) {

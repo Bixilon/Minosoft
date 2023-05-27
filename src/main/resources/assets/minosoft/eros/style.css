@@ -250,6 +250,10 @@
     -fx-icon-color: -secondary-light-light-color;
 }
 
+.warning-icon, .warning-icon:hover {
+    -fx-icon-color: #FFCC00;
+}
+
 /* context menu */
 .context-menu {
     -fx-background-color: -secondary-color;

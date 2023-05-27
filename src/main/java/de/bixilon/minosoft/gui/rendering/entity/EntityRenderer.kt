@@ -61,6 +61,8 @@ class EntityRenderer(
     var visibleCount: Int = 0
         private set
 
+    private var reset = false
+
     override fun init(latch: CountUpAndDownLatch) {
         connection.events.listen<EntitySpawnEvent> { event ->
             if (event.entity is LocalPlayerEntity) return@listen
@@ -75,6 +77,7 @@ class EntityRenderer(
         }
 
         profile.hitbox::enabled.observe(this) { this.hitboxes = it }
+        context.camera.offset::offset.observe(this) { reset = true }
 
         context.inputHandler.registerKeyCallback(
             HITBOX_TOGGLE_KEY_COMBINATION,
@@ -104,8 +107,12 @@ class EntityRenderer(
 
     override fun prePrepareDraw() {
         val count = AtomicInteger()
+        val reset = reset
         runAsync {
             it.entity.draw(millis())
+            if (reset) {
+                it.reset()
+            }
             it.update = it.checkUpdate()
             it.prepareAsync()
             if (it.visible) {
@@ -113,6 +120,9 @@ class EntityRenderer(
             }
         }
         this.visibleCount = count.get()
+        if (reset) {
+            this.reset = false
+        }
     }
 
     override fun postPrepareDraw() {

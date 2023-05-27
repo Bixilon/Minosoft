@@ -50,13 +50,13 @@ class MsgCommandIT {
     }
 
     fun validateStack() {
-        val node = createNode {
-            assertEquals(it["msg"], "msg")
-            assertEquals(it["targets"], NameEntityTarget("Bixilon"))
-            assertEquals(it["message"], "hi there!")
-        }
+        var stack: CommandStack? = null
+        val node = createNode { stack = it.fork() }
 
         node.execute("msg Bixilon hi there!")
+        assertEquals(stack!!["msg"], "msg")
+        assertEquals(stack!!["targets"], NameEntityTarget("Bixilon"))
+        assertEquals(stack!!["message"], "hi there!")
     }
 
     fun redirectExecution() {
@@ -69,12 +69,14 @@ class MsgCommandIT {
     }
 
     fun redirectStack() {
-        val node = createNode {
-            assertEquals(it["msg"], "redirect")
-            assertEquals(it["targets"], NameEntityTarget("Bixilon"))
-            assertEquals(it["message"], "hi there!")
-        }
+        var stack: CommandStack? = null
+        val node = createNode { stack = it.fork() }
 
         node.execute("redirect Bixilon hi there!")
+
+
+        assertEquals(stack!!["msg"], "redirect")
+        assertEquals(stack!!["targets"], NameEntityTarget("Bixilon"))
+        assertEquals(stack!!["message"], "hi there!")
     }
 }

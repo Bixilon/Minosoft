@@ -56,7 +56,7 @@ class RenderWindowInputHandler(
     private val keysLastDownTime: MutableMap<KeyCodes, Long> = mutableMapOf()
 
 
-    var currentMousePosition: Vec2d = Vec2d.EMPTY
+    var mousePosition: Vec2d = Vec2d.EMPTY
         private set
 
     val interactionKeys = InteractionManagerKeys(this, connection.camera.interactions)
@@ -85,13 +85,13 @@ class RenderWindowInputHandler(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_M),
                 ignoreConsumer = true,
             ), defaultPressed = StaticConfiguration.DEBUG_MODE) {
-            val nextMode = when (context.window.cursorMode) {
+            val next = when (context.window.cursorMode) {
                 CursorModes.DISABLED -> CursorModes.NORMAL
                 CursorModes.NORMAL -> CursorModes.DISABLED
                 CursorModes.HIDDEN -> CursorModes.NORMAL
             }
-            context.window.cursorMode = nextMode
-            connection.util.sendDebugMessage("Cursor mode: ${nextMode.format()}")
+            context.window.cursorMode = next
+            connection.util.sendDebugMessage("Cursor mode: ${next.format()}")
         }
     }
 
@@ -104,7 +104,7 @@ class RenderWindowInputHandler(
 
         connection.events.listen<MouseMoveEvent> {
             val inputHandler = inputHandler
-            currentMousePosition = it.position
+            mousePosition = it.position
             if (inputHandler != null) {
                 if (skipMouseMove) {
                     skipMouseMove = false
@@ -282,8 +282,10 @@ class RenderWindowInputHandler(
             keysLastDownTime[keyCode] = currentTime
         }
 
-
-        if (inputHandler != this.inputHandler && this.inputHandler != null) {
+        if (this.inputHandler == null) {
+            skipCharPress = false
+            skipMouseMove = false
+        } else if (inputHandler != this.inputHandler) {
             skipCharPress = true
             skipMouseMove = true
         }

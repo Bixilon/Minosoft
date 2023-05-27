@@ -23,6 +23,7 @@ import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pro
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.SortProperty
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.world.WorldEntities
+import java.util.*
 
 class SelectorEntityTarget(
     val selector: TargetSelectors,
@@ -60,5 +61,18 @@ class SelectorEntityTarget(
         }
 
         return output
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(selector, properties)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is SelectorEntityTarget) return false
+        return selector == other.selector && properties == other.properties
+    }
+
+    override fun toString(): String {
+        return "@${selector.char}$properties" // TODO: square brackets
     }
 }

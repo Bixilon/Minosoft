@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.config.profile
 
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsType
+import de.bixilon.minosoft.config.profile.profiles.account.AccountProfile
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfile
@@ -38,6 +39,7 @@ object ProfileTestUtil {
     fun createProfiles(): ConnectionProfiles {
         return ConnectionProfiles(
             eros = ErosProfile(),
+            account = AccountProfile(),
             particle = ParticleProfile(),
             audio = AudioProfile(),
             entity = EntityProfile(),

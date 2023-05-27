@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.commands.errors.literal.ExpectedLiteralArgument
 import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
@@ -49,7 +50,7 @@ class LiteralNode : ExecutableNode {
         if (literalName != name && literalName !in aliases) {
             throw InvalidLiteralArgumentError(reader, literalName)
         }
-        stack.push(this, name)
+        stack.push(redirect?.nullCast<NamedNode>() ?: this, name)
         return name
     }
 

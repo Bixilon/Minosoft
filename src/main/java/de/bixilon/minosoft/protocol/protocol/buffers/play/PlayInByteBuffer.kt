@@ -16,6 +16,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
+import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
 import de.bixilon.minosoft.data.chat.signature.MessageHeader
 import de.bixilon.minosoft.data.container.ItemStackUtil
@@ -30,6 +31,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.EnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -95,7 +97,11 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     override fun readChatComponent(): ChatComponent {
-        return ChatComponent.of(readString(), connection.language, null)
+        val string = readString()
+        if (DebugOptions.LOG_RAW_CHAT) {
+            Log.log(LogMessageType.CHAT_IN, LogLevels.VERBOSE) { TextComponent(string) }
+        }
+        return ChatComponent.of(string, connection.language, null, restricted = true)
     }
 
     fun readParticleData(): ParticleData {

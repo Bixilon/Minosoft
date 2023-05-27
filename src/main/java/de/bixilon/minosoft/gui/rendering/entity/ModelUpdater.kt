@@ -23,4 +23,6 @@ interface ModelUpdater : Drawable {
     fun prepare() = Unit
 
     fun unload() = Unit
+
+    fun reset() = Unit
 }

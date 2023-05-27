@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import java.util.*
 
@@ -30,17 +29,14 @@ class BakedModel(
 
     override fun getParticleTexture(random: Random?, position: Vec3i) = particle
 
-    override fun render(position: BlockPosition, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        val float = position.toVec3
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
 
-        val array = float.array
-
-        var rendered = true
+        var rendered = false
 
         for ((index, faces) in faces.withIndex()) {
             if (neighbours[index] != null) continue // TODO
             for (face in faces) {
-                face.render(array, mesh, light, tints)
+                face.render(offset, mesh, light, tints)
 
                 rendered = true
             }

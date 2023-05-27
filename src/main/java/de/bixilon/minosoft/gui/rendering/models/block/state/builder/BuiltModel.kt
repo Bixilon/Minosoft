@@ -26,11 +26,11 @@ class BuiltModel(
     val dynamic: Array<BlockRender>,
 ) : BlockRender {
 
-    override fun render(position: BlockPosition, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        var rendered = model.render(position, mesh, random, state, neighbours, light, tints)
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+        var rendered = model.render(position, offset, mesh, random, state, neighbours, light, tints)
 
         for (dynamic in this.dynamic) {
-            if (dynamic.render(position, mesh, random, state, neighbours, light, tints)) {
+            if (dynamic.render(position, offset, mesh, random, state, neighbours, light, tints)) {
                 rendered = true
             }
         }

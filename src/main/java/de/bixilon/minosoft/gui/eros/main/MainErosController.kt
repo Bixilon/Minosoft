@@ -18,8 +18,10 @@ import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.dialog.SimpleErosWarningDialog
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -158,7 +160,7 @@ class MainErosController : JavaFXWindowController() {
         val profile = ErosProfileManager.selected.general.accountProfile
         val account = account ?: profile.selected
         if (account == null) {
-            activity = ErosMainActivities.ACCOUNT
+            SimpleErosWarningDialog(title = NO_ACCOUNT_WARNING_TITLE, header = NO_ACCOUNT_WARNING_HEADER, description = NO_ACCOUNT_WARNING_DESCRIPTION, ignoreButtonText = NO_ACCOUNT_WARNING_BUTTON, onIgnore = { JavaFXUtil.runLater { activity = ErosMainActivities.ACCOUNT } }).show()
             return
         }
 
@@ -173,5 +175,9 @@ class MainErosController : JavaFXWindowController() {
 
     companion object {
         private val NO_ACCOUNT_SELECTED = "minosoft:main.account.no_account_selected".toResourceLocation()
+        private val NO_ACCOUNT_WARNING_TITLE = minosoft("main.account.no_account.warning.title")
+        private val NO_ACCOUNT_WARNING_HEADER = minosoft("main.account.no_account.warning.header")
+        private val NO_ACCOUNT_WARNING_DESCRIPTION = minosoft("main.account.no_account.warning.description")
+        private val NO_ACCOUNT_WARNING_BUTTON = minosoft("main.account.no_account.warning.button")
     }
 }

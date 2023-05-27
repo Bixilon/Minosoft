@@ -63,7 +63,6 @@ class BlockOutlineRenderer(
     override var unload: Boolean = false
 
     override fun init(latch: CountUpAndDownLatch) {
-        val profile = connection.profiles.block
         this.profile::enabled.observe(this) { reload = true }
         this.profile::collisions.observe(this) { reload = true }
         this.profile::outlineColor.observe(this) { reload = true }
@@ -77,7 +76,11 @@ class BlockOutlineRenderer(
     }
 
     override fun setupOther() {
-        context.renderSystem.reset()
+        context.renderSystem.reset(
+            polygonOffset = true,
+            polygonOffsetFactor = -3.0f,
+            polygonOffsetUnit = -3.0f,
+        )
         if (profile.showThroughWalls) {
             context.renderSystem.depth = DepthFunctions.ALWAYS
         }
@@ -113,7 +116,9 @@ class BlockOutlineRenderer(
             }
         }
 
-        if (target.blockPosition == position && target.state == state && !reload) { // TODO: also compare shapes, some blocks dynamically change it (e.g. scaffolding)
+        val offsetPosition = (target.blockPosition - context.camera.offset.offset)
+
+        if (offsetPosition == position && target.state == state && !reload) { // TODO: also compare shapes, some blocks dynamically change it (e.g. scaffolding)
             return
         }
 
@@ -139,7 +144,7 @@ class BlockOutlineRenderer(
         this.nextMesh = mesh
 
 
-        this.position = target.blockPosition
+        this.position = offsetPosition
         this.state = target.state
         this.reload = false
     }

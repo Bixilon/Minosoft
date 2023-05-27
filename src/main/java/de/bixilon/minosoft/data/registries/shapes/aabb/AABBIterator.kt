@@ -17,12 +17,15 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 
 class AABBIterator(val range: Array<IntRange>) : Iterator<Vec3i> {
     private var count = 0
     private var x = range[0].first
     private var y = range[1].first
     private var z = range[2].first
+
+    private val position = Vec3i.EMPTY
 
     val size: Int = maxOf(0, range[0].last - range[0].first + 1) * maxOf(0, range[1].last - range[1].first + 1) * maxOf(0, range[2].last - range[2].first + 1)
 
@@ -36,11 +39,17 @@ class AABBIterator(val range: Array<IntRange>) : Iterator<Vec3i> {
         return count < size
     }
 
+    private fun updatePosition() {
+        position.x = x
+        position.y = y
+        position.z = z
+    }
+
     override fun next(): Vec3i {
         if (count >= size) throw IllegalStateException("No positions available anymore!")
 
 
-        val position = Vec3i(x, y, z)
+        updatePosition()
         if (z < range[2].last) z++ else {
             z = range[2].first
             if (y < range[1].last) y++ else {

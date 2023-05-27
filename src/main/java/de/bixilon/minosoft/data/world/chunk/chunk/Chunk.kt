@@ -31,11 +31,11 @@ import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -231,12 +231,9 @@ class Chunk(
 
     @Deprecated("neighbours")
     fun traceBlock(offset: Vec3i, origin: Vec3i, blockPosition: Vec3i = origin + offset): BlockState? {
-        val originChunkPosition = origin.chunkPosition
-        val targetChunkPosition = blockPosition.chunkPosition
+        val chunkDelta = (origin - blockPosition).chunkPosition
 
-        val deltaChunkPosition = targetChunkPosition - originChunkPosition
-
-        return traceBlock(blockPosition.inChunkPosition, deltaChunkPosition)
+        return traceBlock(blockPosition.x and 0x0F, blockPosition.y, blockPosition.z and 0x0F, chunkDelta)
     }
 
     @Deprecated("neighbours")
@@ -273,6 +270,11 @@ class Chunk(
     @Deprecated("neighbours")
     private fun traceBlock(inChunkPosition: Vec3i, chunkOffset: Vec2i): BlockState? {
         return traceChunk(chunkOffset)?.get(inChunkPosition)
+    }
+
+    @Deprecated("neighbours")
+    fun traceBlock(x: Int, y: Int, z: Int, chunkOffset: Vec2i): BlockState? {
+        return traceChunk(chunkOffset)?.get(x, y, z)
     }
 }
 

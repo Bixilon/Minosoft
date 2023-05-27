@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.config.profile
 
+import de.bixilon.minosoft.config.profile.profiles.account.AccountProfile
+import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
@@ -40,6 +42,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 class ConnectionProfiles(
     overrides: Map<ResourceLocation, String> = emptyMap(),
     val eros: ErosProfile = ErosProfileManager.selected,
+    val account: AccountProfile = overrides[AccountProfileManager.namespace]?.let { return@let AccountProfileManager.profiles[it] } ?: AccountProfileManager.selected,
     val particle: ParticleProfile = overrides[ParticleProfileManager.namespace]?.let { return@let ParticleProfileManager.profiles[it] } ?: ParticleProfileManager.selected,
     val audio: AudioProfile = overrides[AudioProfileManager.namespace]?.let { return@let AudioProfileManager.profiles[it] } ?: AudioProfileManager.selected,
     val entity: EntityProfile = overrides[EntityProfileManager.namespace]?.let { return@let EntityProfileManager.profiles[it] } ?: EntityProfileManager.selected,

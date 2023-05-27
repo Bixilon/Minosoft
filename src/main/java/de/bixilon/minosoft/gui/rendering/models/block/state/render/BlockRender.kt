@@ -23,5 +23,5 @@ import java.util.*
 interface BlockRender {
     fun getParticleTexture(random: Random?, position: Vec3i): AbstractTexture? = null
 
-    fun render(position: BlockPosition, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean
+    fun render(position: BlockPosition, offset: FloatArray, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean
 }

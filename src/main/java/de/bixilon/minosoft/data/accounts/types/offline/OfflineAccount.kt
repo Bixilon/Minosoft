@@ -31,6 +31,7 @@ class OfflineAccount(username: String) : Account(username) {
         get() = AccountStates.WORKING
         set(value) {}
 
+    override val supportsEncryption: Boolean get() = false
     override val supportsSkins: Boolean get() = false
 
     @JsonIgnore

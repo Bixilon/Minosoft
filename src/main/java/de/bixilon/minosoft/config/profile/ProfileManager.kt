@@ -181,6 +181,7 @@ interface ProfileManager<T : Profile> {
             profile.ignoreReloads.incrementAndGet()
             FileUtil.safeSaveToFile(file, jsonString)
             profile.saved = true
+            Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Saved profile ${profile.name} ($namespace)" }
         } catch (exception: Exception) {
             exception.printStackTrace()
             exception.crash()
@@ -257,13 +258,14 @@ interface ProfileManager<T : Profile> {
     }
 
     fun watchProfile(profileName: String, path: File = getPath(profileName).toFile()) {
-        FileWatcherService.register(FileWatcher(path.toPath(), arrayOf(StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE)) { _, it ->
+        FileWatcherService.register(FileWatcher(path.toPath(), arrayOf(StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE)) { a, _ ->
             val profile = profiles[profileName] ?: return@FileWatcher
             if (profile.ignoreReloads.get() > 0) {
                 profile.ignoreReloads.decrementAndGet()
                 return@FileWatcher
             }
             try {
+                profile.reloading = true
                 val data = readAndMigrate(path.toPath()).second
                 updateValue(profile, data)
             } catch (exception: Exception) {
@@ -272,7 +274,7 @@ interface ProfileManager<T : Profile> {
             } finally {
                 profile.reloading = false
             }
-            Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Reloaded profile: $profileName ($it)" }
+            Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Reloaded profile: $profileName ($namespace);" }
         })
     }
 
