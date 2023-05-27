@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.Registry
 class BlockEntityTypeRegistry(
     parentRegistry: BlockEntityTypeRegistry? = null,
 ) : Registry<BlockEntityType<*>>(parentRegistry, codec = BlockEntityType) {
-    private val blockTypeMap: MutableMap<Block, BlockEntityType<*>> = mutableMapOf()
+    private val blockTypeMap: MutableMap<Block, BlockEntityType<*>> = HashMap()
 
     operator fun get(block: Block): BlockEntityType<*>? {
         val parentRegistry = super.parent as BlockEntityTypeRegistry?

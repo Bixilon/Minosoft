@@ -36,7 +36,7 @@ open class Registry<T : RegistryItem>(
 ) : AbstractRegistry<T> {
     protected val idValueMap: Int2ObjectOpenHashMap<T> = Int2ObjectOpenHashMap()
     protected val valueIdMap: Object2IntOpenHashMap<T> = Object2IntOpenHashMap()
-    protected val resourceLocationMap: MutableMap<ResourceLocation, T> = mutableMapOf()
+    protected val resourceLocationMap: MutableMap<ResourceLocation, T> = HashMap()
 
     override val size: Int
         get() {
@@ -157,5 +157,10 @@ open class Registry<T : RegistryItem>(
 
     override fun noParentIterator(): Iterator<T> {
         return resourceLocationMap.values.iterator()
+    }
+
+    override fun optimize() {
+        idValueMap.trim()
+        valueIdMap.trim()
     }
 }
