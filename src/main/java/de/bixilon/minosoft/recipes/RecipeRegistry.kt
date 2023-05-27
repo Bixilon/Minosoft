@@ -81,4 +81,9 @@ class RecipeRegistry(
             recipeResourceLocationMap[recipe] = resourceLocation
         }
     }
+
+    override fun optimize() {
+        idValueMap.trim()
+        valueIdMap.trim()
+    }
 }

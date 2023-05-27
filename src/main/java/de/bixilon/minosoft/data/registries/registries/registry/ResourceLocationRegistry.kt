@@ -81,4 +81,9 @@ class ResourceLocationRegistry(
     override fun noParentIterator(): Iterator<ResourceLocation> {
         return idValueMap.values.iterator()
     }
+
+    override fun optimize() {
+        idValueMap.trim()
+        valueIdMap.trim()
+    }
 }

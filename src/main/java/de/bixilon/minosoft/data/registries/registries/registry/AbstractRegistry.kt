@@ -48,4 +48,6 @@ interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegis
     override fun iterator(): Iterator<T> {
         return RegistryIterator(this)
     }
+
+    fun optimize() = Unit
 }

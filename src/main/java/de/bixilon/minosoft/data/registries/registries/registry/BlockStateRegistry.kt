@@ -86,4 +86,8 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
     }
 
     override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?) = Broken()
+
+    override fun optimize() {
+        idMap.trim()
+    }
 }
