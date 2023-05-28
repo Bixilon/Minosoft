@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui
 
-import de.bixilon.kotlinglm.GLM
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
@@ -55,9 +53,9 @@ class GUIRenderer(
     val hud = HUDManager(this)
     val popper = PopperManager(this)
     val dragged = DraggedManager(this)
-    var matrix: Mat4 = Mat4()
+    var halfSize: Vec2 = Vec2()
         private set
-    var matrixChange = true
+    var resolutionUpdate = true
     override val framebuffer: Framebuffer
         get() = context.framebufferManager.gui.framebuffer
     override val polygonMode: PolygonModes
@@ -92,8 +90,8 @@ class GUIRenderer(
 
     private fun recalculateMatrices(windowSize: Vec2i = context.window.size, scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
         scaledSize = windowSize.scale(systemScale, scale)
-        matrix = GLM.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
-        matrixChange = true
+        halfSize = Vec2(scaledSize / 2.0f)
+        resolutionUpdate = true
 
         gui.onMatrixChange()
         hud.onMatrixChange()
@@ -143,8 +141,8 @@ class GUIRenderer(
         gui.draw()
         popper.draw()
         dragged.draw()
-        if (this.matrixChange) {
-            this.matrixChange = false
+        if (this.resolutionUpdate) {
+            this.resolutionUpdate = false
         }
     }
 

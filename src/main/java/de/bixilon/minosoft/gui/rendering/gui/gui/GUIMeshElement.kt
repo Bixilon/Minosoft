@@ -34,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.Initializable
-import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 
 open class GUIMeshElement<T : Element>(
@@ -44,7 +43,7 @@ open class GUIMeshElement<T : Element>(
     override val context: RenderContext = guiRenderer.context
     private val clickCounter = MouseClickCounter()
     private var _mesh: GUIMesh? = null
-    var mesh: GUIMesh = GUIMesh(context, guiRenderer.matrix, FloatListUtil.direct(1000))
+    var mesh: GUIMesh = GUIMesh(context, guiRenderer.halfSize, FloatListUtil.direct(1000))
     override val skipDraw: Boolean
         get() = if (element is BaseDrawable) element.skipDraw else false
     protected var lastRevision = 0L
@@ -92,7 +91,7 @@ open class GUIMeshElement<T : Element>(
     protected fun createNewMesh() {
         if (this._mesh != null) throw MemoryLeakException("Mesh to unload is already set!")
         this._mesh = this.mesh
-        this.mesh = GUIMesh(context, guiRenderer.matrix, mesh.data)
+        this.mesh = GUIMesh(context, guiRenderer.halfSize, mesh.data)
         this.mesh.finish()
     }
 

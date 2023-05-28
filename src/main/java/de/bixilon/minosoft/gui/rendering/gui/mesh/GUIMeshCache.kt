@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec2.Vec2t
@@ -24,10 +23,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class GUIMeshCache(
-    var matrix: Mat4,
-    override val order: Array<Pair<Int, Int>>,
-    initialCacheSize: Int = 1000,
-    var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
+        var halfSize: Vec2,
+        override val order: Array<Pair<Int, Int>>,
+        initialCacheSize: Int = 1000,
+        var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
 ) : GUIVertexConsumer {
     var revision: Long = 0
     var offset: Vec2i = Vec2i.EMPTY
@@ -42,7 +41,7 @@ class GUIMeshCache(
     }
 
     override fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        GUIMesh.addVertex(data, matrix, position, texture, uv, tint, options)
+        GUIMesh.addVertex(data, halfSize, position, texture, uv, tint, options)
         revision++
     }
 

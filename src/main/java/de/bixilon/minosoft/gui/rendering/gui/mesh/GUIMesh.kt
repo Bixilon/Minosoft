@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
@@ -23,16 +22,15 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.orthoTimes
 
 class GUIMesh(
-    context: RenderContext,
-    val matrix: Mat4,
-    data: AbstractFloatList,
+        context: RenderContext,
+        val halfSize: Vec2,
+        data: AbstractFloatList,
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
 
     override fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        addVertex(data, matrix, position, texture, uv, tint, options)
+        addVertex(data, halfSize, position, texture, uv, tint, options)
     }
 
     override fun addCache(cache: GUIMeshCache) {
@@ -50,8 +48,13 @@ class GUIMesh(
 
     companion object {
 
-        fun addVertex(data: AbstractFloatList, matrix: Mat4, position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-            val outPosition = matrix orthoTimes position
+        fun transformPosition(position: Vec2, halfSize: Vec2): Vec2 {
+            val pixel = position / halfSize
+            return Vec2(pixel.x - 1.0f, 1.0f - pixel.y)
+        }
+
+        fun addVertex(data: AbstractFloatList, halfSize: Vec2, position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+            val outPosition = transformPosition(Vec2(position), halfSize)
             var color = tint.rgba
 
             if (options != null) {

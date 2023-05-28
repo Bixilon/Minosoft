@@ -67,7 +67,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         }
 
     @Deprecated("Warning: Should not be directly accessed!")
-    open val cache = GUIMeshCache(guiRenderer.matrix, context.renderSystem.primitiveMeshOrder, initialCacheSize)
+    open val cache = GUIMeshCache(guiRenderer.halfSize, context.renderSystem.primitiveMeshOrder, initialCacheSize)
 
     private var previousMaxSize = Vec2i.EMPTY
 
@@ -162,9 +162,9 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             }
             return
         }
-        if (!cacheUpToDate || cache.offset != offset || guiRenderer.matrixChange || cache.options != options || cache.matrix !== guiRenderer.matrix) {
+        if (!cacheUpToDate || cache.offset != offset || guiRenderer.resolutionUpdate || cache.options != options || cache.halfSize !== guiRenderer.halfSize) {
             this.cache.clear()
-            cache.matrix = guiRenderer.matrix
+            cache.halfSize = guiRenderer.halfSize
             cache.offset = Vec2i(offset)
             cache.options = options
             forceRender(offset, cache, options)
