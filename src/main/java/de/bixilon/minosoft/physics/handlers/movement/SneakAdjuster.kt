@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.set
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.set
 import de.bixilon.minosoft.physics.handlers.general.AbstractEntityPhysics
 
 interface SneakAdjuster : StepAdjuster, AbstractEntityPhysics {

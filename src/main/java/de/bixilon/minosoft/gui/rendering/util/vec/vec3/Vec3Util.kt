@@ -18,7 +18,6 @@ import de.bixilon.kotlinglm.func.sin
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kotlinglm.vec3.swizzle.xy
 import de.bixilon.kotlinglm.vec3.swizzle.xz
 import de.bixilon.kotlinglm.vec3.swizzle.yz
@@ -94,7 +93,7 @@ object Vec3Util {
         this += origin
     }
 
-    operator fun <T : Number> Vec3t<T>.get(axis: Axes): T {
+    operator fun Vec3.get(axis: Axes): Float {
         return when (axis) {
             Axes.X -> x
             Axes.Y -> y
@@ -102,7 +101,7 @@ object Vec3Util {
         }
     }
 
-    operator fun <T : Number> Vec3t<T>.set(axis: Axes, value: T) {
+    operator fun Vec3.set(axis: Axes, value: Float) {
         when (axis) {
             Axes.X -> x = value
             Axes.Y -> y = value

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.Ent
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetProperty
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.set
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.set
 import java.util.*
 
 abstract class CenterProperty(
