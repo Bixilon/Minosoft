@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entity.hitbox
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -31,7 +32,6 @@ class EntityHitbox(
     private var aabb: AABB = model.aabb
     private var data: HitboxData? = null
 
-    private var update = true
 
     var enabled: Boolean = true
         get() = field && model.renderer.hitboxes
@@ -52,7 +52,6 @@ class EntityHitbox(
         }
         this.data = data
         this.aabb = aabb
-        update = true
 
         return true
     }
@@ -80,18 +79,21 @@ class EntityHitbox(
         } else {
             mesh.drawAABB(aabb = shrunk, color = data.color, margin = 0.1f)
         }
-        val center = Vec3(shrunk.center)
+        val offset = model.context.camera.offset.offset
+        val center = Vec3(shrunk.center - offset)
+
+
 
         data.velocity?.let { mesh.drawLine(center, center + Vec3(it) * 3, color = ChatColors.YELLOW) }
 
         val eyeHeight = shrunk.min.y + model.entity.eyeHeight
-        val eyeAABB = AABB(Vec3(shrunk.min.x, eyeHeight, shrunk.min.z), Vec3(shrunk.max.x, eyeHeight, shrunk.max.z)).hShrink(RenderConstants.DEFAULT_LINE_WIDTH)
+        val eyeAABB = AABB(Vec3d(shrunk.min.x, eyeHeight, shrunk.min.z), Vec3d(shrunk.max.x, eyeHeight, shrunk.max.z)).hShrink(-RenderConstants.DEFAULT_LINE_WIDTH)
         mesh.drawAABB(eyeAABB, RenderConstants.DEFAULT_LINE_WIDTH, ChatColors.DARK_RED)
 
 
-        val eyeStart = Vec3(center.x, eyeHeight, center.z)
+        val eyeStart = Vec3(center.x, eyeHeight - offset.y, center.z)
 
-        mesh.drawLine(eyeStart, eyeStart + Vec3(data.rotation.front) * 5.0f, color = ChatColors.BLUE)
+        mesh.drawLine(eyeStart, eyeStart + data.rotation.front * 5.0f, color = ChatColors.BLUE)
         this.mesh = mesh
     }
 

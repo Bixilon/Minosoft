@@ -41,7 +41,7 @@ abstract class CommandNode(
         val stackSize = stack.size
 
         var childError: Throwable? = null
-        var errorStack = -1
+        var errorStack: CommandStack? = null
 
         for (child in (redirect?.children ?: children)) {
             reader.pointer = pointer
@@ -53,12 +53,13 @@ abstract class CommandNode(
                 }
                 return
             } catch (error: Throwable) {
-                if (stack.size > errorStack) {
-                    errorStack = stack.size
+                if (errorStack == null || stack.size > errorStack.size) {
+                    errorStack = stack.fork()
                     childError = error
                 }
             }
         }
+        errorStack?.let { stack.join(it) }
         throw childError ?: return
     }
 
@@ -71,7 +72,7 @@ abstract class CommandNode(
         val stackSize = stack.size
 
         var childError: Throwable? = null
-        var errorStack = -1
+        var errorStack: CommandStack? = null
         var parserSucceeds = 0
 
         for (child in (redirect?.children ?: children)) {
@@ -92,8 +93,8 @@ abstract class CommandNode(
 
                 return childSuggestions
             } catch (error: Throwable) {
-                if (stack.size > errorStack) {
-                    errorStack = stack.size
+                if (errorStack == null || stack.size > errorStack.size) {
+                    errorStack = stack.fork()
                     childError = error
                 }
             }
@@ -103,6 +104,8 @@ abstract class CommandNode(
             if (!reader.canPeek(pointer) && executable) {
                 return emptyList()
             }
+            errorStack?.let { stack.join(it) }
+
             throw childError ?: return emptyList()
         }
 

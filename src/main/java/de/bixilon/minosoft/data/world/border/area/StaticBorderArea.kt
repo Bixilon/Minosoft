@@ -11,22 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text.events.hover
+package de.bixilon.minosoft.data.world.border.area
 
-import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.world.border.WorldBorderState
 
-class ItemHoverEvent(
-    val item: ItemStack?,
-    val text: ChatComponent,
-) : HoverEvent {
+class StaticBorderArea(
+    override val radius: Double,
+) : BorderArea {
+    override val state: WorldBorderState get() = WorldBorderState.STATIC
 
-    companion object : HoverEventFactory<ItemHoverEvent> {
-        override val name: String = "show_item"
-
-        override fun build(json: JsonObject, restricted: Boolean): ItemHoverEvent {
-            return ItemHoverEvent(null, ChatComponent.of(json.data))
-        }
-    }
+    override fun tick() = Unit
 }

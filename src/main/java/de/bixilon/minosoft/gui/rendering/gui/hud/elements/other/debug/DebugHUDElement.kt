@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec4.Vec4i
@@ -198,6 +198,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", HorizontalAlignments.RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
+
+        layout += AutoTextElement(guiRenderer, 1) { "Allocation rate ${AllocationRate.allocationRate.formatBytes()}/s}" }
 
         SystemInformation.RUNTIME.apply {
             layout += AutoTextElement(guiRenderer, 1) {

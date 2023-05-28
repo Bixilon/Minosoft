@@ -31,6 +31,7 @@ class Camera(
 
     val view = ViewManager(this)
 
+    val offset = WorldOffset(this)
 
     fun init() {
         matrixHandler.init()

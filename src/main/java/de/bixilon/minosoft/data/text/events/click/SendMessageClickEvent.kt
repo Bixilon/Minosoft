@@ -50,7 +50,7 @@ class SendMessageClickEvent(
         override val name: String = "send_message"
         override val aliases: Set<String> = setOf("run_command")
 
-        override fun build(json: JsonObject, restrictedMode: Boolean): SendMessageClickEvent {
+        override fun build(json: JsonObject, restricted: Boolean): SendMessageClickEvent {
             return SendMessageClickEvent(json.data.toString())
         }
     }

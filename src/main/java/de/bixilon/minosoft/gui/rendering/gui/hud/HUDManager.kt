@@ -31,8 +31,8 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar.BossbarLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.ChatElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.CrosshairHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.DebugHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.PerformanceHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug.DebugHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardSideElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleElement

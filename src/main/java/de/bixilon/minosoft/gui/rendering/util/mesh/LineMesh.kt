@@ -80,8 +80,9 @@ open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
 
     fun drawLazyAABB(aabb: AABB, color: RGBColor) {
         data.ensureSize(6 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
+        val offset = context.camera.offset.offset
         for (direction in Directions.VALUES) {
-            val positions = direction.getPositions(Vec3(aabb.min), Vec3(aabb.max))
+            val positions = direction.getPositions(Vec3(aabb.min - offset), Vec3(aabb.max - offset))
             for ((positionIndex, _) in order) {
                 addVertex(positions[positionIndex], color)
             }
@@ -90,8 +91,9 @@ open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
 
     fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f, shape: AbstractVoxelShape? = null) {
         data.ensureSize(12 * 4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
-        val min = aabb.min - margin
-        val max = aabb.max + margin
+        val offset = context.camera.offset.offset
+        val min = aabb.min - margin - offset
+        val max = aabb.max + margin - offset
 
         fun tryDrawLine(start: Vec3, end: Vec3) {
             tryDrawLine(start, end, lineWidth, color, shape)

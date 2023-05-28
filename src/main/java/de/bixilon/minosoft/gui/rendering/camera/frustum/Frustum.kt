@@ -25,6 +25,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
@@ -33,6 +34,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class Frustum(
+    private val camera: Camera,
     private val matrixHandler: MatrixHandler,
     private val world: World,
 ) {
@@ -152,7 +154,8 @@ class Frustum(
     }
 
     fun containsChunkSection(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
-        val base = Vec3i.of(chunkPosition, sectionHeight)
+        val offset = camera.offset.offset
+        val base = Vec3i.of(chunkPosition, sectionHeight) - offset
         val min = base + minPosition
         val max = base + maxPosition + 1
         return containsRegion(Vec3(min), Vec3(max))
@@ -160,18 +163,21 @@ class Frustum(
 
     fun containsChunk(chunkPosition: Vec2i): Boolean {
         val dimension = world.dimension
-        val minY = dimension.minY
-        val maxY = dimension.maxY
-        val base = Vec2i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z)
+        val offset = camera.offset.offset
+        val minY = dimension.minY - offset.y
+        val maxY = dimension.maxY - offset.y
+        val base = Vec2i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X - offset.x, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z - offset.z)
         return containsRegion(Vec3(base.x, minY, base.y), Vec3(base.x + ProtocolDefinition.SECTION_WIDTH_X, maxY, base.y + ProtocolDefinition.SECTION_WIDTH_Z))
     }
 
     fun containsRegion(min: Vec3i, max: Vec3i): Boolean {
-        return containsRegion(Vec3(min), Vec3(max))
+        val offset = camera.offset.offset
+        return containsRegion(Vec3(min - offset), Vec3(max - offset))
     }
 
     fun containsAABB(aabb: AABB): Boolean {
-        return containsRegion(Vec3(aabb.min), Vec3(aabb.max))
+        val offset = camera.offset.offset
+        return containsRegion(Vec3(aabb.min - offset), Vec3(aabb.max - offset))
     }
 
     private data class FrustumData(val normals: Array<Vec3>, val planes: Array<Vec4>)

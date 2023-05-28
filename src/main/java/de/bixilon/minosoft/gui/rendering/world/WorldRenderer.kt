@@ -113,6 +113,7 @@ class WorldRenderer(
                 paused = false
             }
         }
+        context.camera.offset::offset.observe(this) { silentlyClearChunkCache() }
 
         context.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
@@ -265,7 +266,7 @@ class WorldRenderer(
 
     private fun onFrustumChange() {
         var sortQueue = false
-        val cameraPosition = connection.player.renderInfo.eyePosition
+        val cameraPosition = Vec3(connection.player.renderInfo.eyePosition - context.camera.offset.offset)
         val cameraChunkPosition = cameraPosition.blockPosition.chunkPosition
         val cameraSectionHeight = this.cameraSectionHeight
         if (this.cameraPosition != cameraPosition) {

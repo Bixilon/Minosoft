@@ -12,7 +12,10 @@
  */
 package de.bixilon.minosoft.gui.rendering.exceptions
 
+import de.bixilon.minosoft.config.StaticConfiguration
+
 class ShaderLoadingException : Exception {
     constructor()
     constructor(message: String) : super(message)
+    constructor(message: String, code: String) : super(message + if (StaticConfiguration.DEBUG_MODE) "\n\n\n" + code else "")
 }

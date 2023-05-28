@@ -60,8 +60,8 @@ class OpenFileClickEvent(
     companion object : ClickEventFactory<OpenFileClickEvent> {
         override val name: String = "open_file"
 
-        override fun build(json: JsonObject, restrictedMode: Boolean): OpenFileClickEvent {
-            if (restrictedMode) {
+        override fun build(json: JsonObject, restricted: Boolean): OpenFileClickEvent {
+            if (restricted) {
                 throw IllegalStateException("Can not use $name action in restricted mode!")
             }
             return OpenFileClickEvent(json.data.toString())

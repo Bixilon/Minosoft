@@ -33,7 +33,7 @@ class SuggestChatClickEvent(
         override val name: String = "suggest_chat"
         override val aliases: Set<String> = setOf("suggest_command")
 
-        override fun build(json: JsonObject, restrictedMode: Boolean): SuggestChatClickEvent {
+        override fun build(json: JsonObject, restricted: Boolean): SuggestChatClickEvent {
             return SuggestChatClickEvent(json.data.toString())
         }
     }

@@ -77,6 +77,10 @@ class CloudLayer(
         if (offset.y != 0) pushZ(offset.y == 1)
     }
 
+    fun reset() {
+
+    }
+
     private fun reset(cloudPosition: Vec2i) {
         for (array in arrays.unsafeCast<Array<CloudArray?>>()) {
             array?.unload()
@@ -92,9 +96,13 @@ class CloudLayer(
         return this shr 4
     }
 
-    private fun updatePosition() {
+    private fun calculateCloudPosition(): Vec2i {
         val offset = this.offset.toInt()
-        val position = clouds.connection.player.physics.positionInfo.chunkPosition + Vec2i(offset / CloudArray.CLOUD_SIZE, 0)
+        return clouds.connection.player.physics.positionInfo.chunkPosition + Vec2i(offset / CloudArray.CLOUD_SIZE, 0)
+    }
+
+    private fun updatePosition() {
+        val position = calculateCloudPosition()
         if (position == this.position) {
             return
         }

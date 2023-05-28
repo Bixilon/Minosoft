@@ -11,22 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text.events.hover
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug
 
-import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.kutil.concurrent.schedule.RepeatedTask
+import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 
-class ItemHoverEvent(
-    val item: ItemStack?,
-    val text: ChatComponent,
-) : HoverEvent {
+object AllocationRate {
+    const val RUNS_PER_SECOND = 3
+    private val RUNTIME = Runtime.getRuntime()
+    var allocationRate = 0L
+        private set
+    private var previous = 0L
 
-    companion object : HoverEventFactory<ItemHoverEvent> {
-        override val name: String = "show_item"
+    init {
+        TaskScheduler += RepeatedTask(1000 / RUNS_PER_SECOND) { tick() }
+    }
 
-        override fun build(json: JsonObject, restricted: Boolean): ItemHoverEvent {
-            return ItemHoverEvent(null, ChatComponent.of(json.data))
+    private fun tick() {
+        val previous = this.previous
+        val allocated = RUNTIME.totalMemory() - RUNTIME.freeMemory()
+        this.previous = allocated
+        if (allocated < previous) {
+            // gc was active
+            return
         }
+        this.allocationRate = (allocated - previous) * RUNS_PER_SECOND
     }
 }

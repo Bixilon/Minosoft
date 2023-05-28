@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets
 
 
 plugins {
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "1.9.0-Beta"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.2.0"
@@ -51,6 +51,8 @@ val kutilVersion = getProperty("kutil.version")
 
 val os = properties["platform"]?.let { OSTypes[it] } ?: PlatformInfo.OS
 val architecture = properties["architecture"]?.let { Architectures[it] } ?: PlatformInfo.ARCHITECTURE
+
+logger.info("Building for ${os.name.lowercase()}, ${architecture.name.lowercase()}")
 
 repositories {
     mavenCentral()
@@ -143,7 +145,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:1.8.20")
+                implementation("org.jetbrains.kotlin:kotlin-test:1.9.0-Beta")
             }
 
             targets {
@@ -186,7 +188,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
+                implementation("de.bixilon:kotlin-glm:0.9.9.1-7")
                 implementation("it.unimi.dsi:fastutil-core:8.5.12")
 
                 implementation("de.bixilon:mbf-kotlin:1.0") { exclude("com.github.luben", "zstd-jni") }
@@ -244,7 +246,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
+                implementation("de.bixilon:kotlin-glm:0.9.9.1-7")
             }
 
             targets {
@@ -328,8 +330,8 @@ dependencies {
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.23.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.4.1")
-    implementation("com.github.luben", "zstd-jni", "1.5.5-2", classifier = zstdNatives)
+    implementation("com.github.oshi", "oshi-core", "6.4.2")
+    implementation("com.github.luben", "zstd-jni", "1.5.5-3", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
@@ -351,7 +353,7 @@ dependencies {
     // de.bixilon
     implementation("de.bixilon", "kutil", kutilVersion)
     implementation("de.bixilon", "jiibles", "1.1.1")
-    implementation("de.bixilon", "kotlin-glm", "0.9.9.1-6")
+    implementation("de.bixilon", "kotlin-glm", "0.9.9.1-7")
     implementation("de.bixilon", "mbf-kotlin", "1.0") { exclude("com.github.luben", "zstd-jni") }
     implementation("de.bixilon.javafx", "javafx-svg", "0.3") { exclude("org.openjfx", "javafx-controls") }
 
@@ -369,7 +371,7 @@ dependencies {
     lwjgl("stb")
 
     // kotlin
-    implementation(kotlin("reflect"))
+    implementation(kotlin("reflect", "1.9.0-Beta"))
 
 
     // platform specific
@@ -428,7 +430,7 @@ val versionJsonTask = tasks.register("versionJson") {
                 "branch" to git.branch.current().name,
                 "commit" to commit.id,
                 "commit_short" to commit.abbreviatedId,
-                "dirty" to git.status().isClean,
+                "dirty" to !git.status().isClean,
             )
         }
 
@@ -460,7 +462,7 @@ java {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
-    // kotlinOptions.useK2 = true // ToDo: Really? boosts the performance a lot, see https://youtrack.jetbrains.com/issue/KT-55806/K2-Property-must-be-initialized-or-be-abstract and https://youtrack.jetbrains.com/issue/KT-55804/K2-Non-nullable-generic-marked-as-nullable-even-if-assertNonNull
+    kotlinOptions.languageVersion = "2.0"
 }
 
 tasks.withType<JavaCompile> {

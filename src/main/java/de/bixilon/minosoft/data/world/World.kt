@@ -47,6 +47,8 @@ import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPositio
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import java.util.*
@@ -174,24 +176,31 @@ class World(
     }
 
     fun randomTick() {
-        val blockPosition = connection.player.physics.positionInfo.blockPosition
-        val chunk = this.chunks[blockPosition.chunkPosition] ?: return
+        val origin = connection.player.physics.positionInfo.blockPosition
+        val chunk = this.chunks[origin.chunkPosition] ?: return
 
+        val offset = Vec3i.EMPTY
+        val chunkDelta = Vec2i.EMPTY
 
-        // ToDo: Split that up in multiple threads?
         for (i in 0 until 667) {
-            randomTick(16, blockPosition, chunk)
-            randomTick(32, blockPosition, chunk)
+            randomTick(16, origin, offset, chunkDelta, chunk)
+            randomTick(32, origin, offset, chunkDelta, chunk)
         }
     }
 
-    private fun randomTick(radius: Int, origin: BlockPosition, chunk: Chunk) {
-        val offset = Vec3i(random.nextInt(-radius, radius), random.nextInt(-radius, radius), random.nextInt(-radius, radius))
-        val blockPosition = origin + offset
+    private fun randomTick(radius: Int, origin: BlockPosition, offset: BlockPosition, chunkDelta: Vec2i, chunk: Chunk) {
+        offset.x = random.nextInt(-radius, radius)
+        offset.y = random.nextInt(-radius, radius)
+        offset.z = random.nextInt(-radius, radius)
 
-        val blockState = chunk.traceBlock(offset, origin, blockPosition) ?: return
+        val position = origin + offset
 
-        blockState.block.randomTick(connection, blockState, blockPosition, random)
+        chunkDelta.x = (origin.x - position.x) shr 4
+        chunkDelta.y = (origin.z - position.z) shr 4
+
+        val state = chunk.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
+
+        state.block.randomTick(connection, state, position, random)
     }
 
     operator fun get(aabb: AABB): WorldIterator {
@@ -239,7 +248,7 @@ class World(
     }
 
     companion object {
-        const val MAX_SIZE = 29999999
+        const val MAX_SIZE = 30_000_000
         const val MAX_SIZEf = MAX_SIZE.toFloat()
         const val MAX_SIZEd = MAX_SIZE.toDouble()
         const val MAX_RENDER_DISTANCE = 64

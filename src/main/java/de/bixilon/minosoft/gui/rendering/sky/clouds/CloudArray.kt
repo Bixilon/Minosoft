@@ -27,6 +27,7 @@ class CloudArray(
     }
 
     private fun build() {
+        val offset = layer.clouds.context.camera.offset.offset
         val matrix = layer.clouds.matrix
         val matrixOffset = (offset * ARRAY_SIZE) and 0xFF
 
@@ -47,7 +48,7 @@ class CloudArray(
                     matrix[matrixX - 1, matrixZ + 0], // WEST
                     matrix[matrixX + 1, matrixZ + 0], // EAST
                 )
-                mesh.createCloud(start, start + CLOUD_SIZE, layer.height.first, layer.height.last, layer.clouds.flat, cull)
+                mesh.createCloud(start, start + CLOUD_SIZE, offset, layer.height.first, layer.height.last, layer.clouds.flat, cull)
             }
         }
     }
