@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -29,7 +28,7 @@ class GUIMesh(
         data: AbstractFloatList,
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
 
-    override fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         addVertex(data, halfSize, position, texture, uv, tint, options)
     }
 
@@ -38,10 +37,10 @@ class GUIMesh(
     }
 
     data class GUIMeshStruct(
-        val position: Vec2,
-        val uv: Vec2,
-        val indexLayerAnimation: Int,
-        val tintColor: RGBColor,
+            val position: Vec2,
+            val uv: Vec2,
+            val indexLayerAnimation: Int,
+            val tintColor: RGBColor,
     ) {
         companion object : MeshStruct(GUIMeshStruct::class)
     }
@@ -49,12 +48,15 @@ class GUIMesh(
     companion object {
 
         fun transformPosition(position: Vec2, halfSize: Vec2): Vec2 {
-            val pixel = position / halfSize
-            return Vec2(pixel.x - 1.0f, 1.0f - pixel.y)
+            val res = Vec2(position)
+            res /= halfSize
+            res.x -= 1.0f
+            res.y = 1.0f - res.y
+            return res
         }
 
-        fun addVertex(data: AbstractFloatList, halfSize: Vec2, position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-            val outPosition = transformPosition(Vec2(position), halfSize)
+        fun addVertex(data: AbstractFloatList, halfSize: Vec2, position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+            val outPosition = transformPosition(position, halfSize)
             var color = tint.rgba
 
             if (options != null) {

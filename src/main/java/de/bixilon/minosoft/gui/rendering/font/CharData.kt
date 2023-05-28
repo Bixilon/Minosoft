@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -47,12 +46,12 @@ class CharData(
         _render(position, color, false, italic, bold, strikethrough, underlined, consumer, options, scale)
     }
 
-    private fun GUIVertexConsumer.addQuad(start: Vec2t<*>, end: Vec2t<*>, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
-        val italicOffset = if (italic) (end.y.toFloat() - start.y.toFloat()) / Font.CHAR_HEIGHT.toFloat() * ITALIC_OFFSET else 0.0f
+    private fun GUIVertexConsumer.addQuad(start: Vec2, end: Vec2, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+        val italicOffset = if (italic) (end.y - start.y) / Font.CHAR_HEIGHT.toFloat() * ITALIC_OFFSET else 0.0f
 
         val positions = arrayOf(
-            Vec2(start.x.toFloat() + italicOffset, start.y),
-            Vec2(end.x.toFloat() + italicOffset, start.y),
+            Vec2(start.x + italicOffset, start.y),
+            Vec2(end.x + italicOffset, start.y),
             end,
             Vec2(start.x, end.y),
         )
@@ -107,7 +106,7 @@ class CharData(
         }
 
         if (underlined) {
-            vertexConsumer.addQuad(startPosition + Vec2i(-horizontalSpacing, charHeight), Vec2i(endPosition.x + boldOffset + horizontalSpacing, startPosition.y + charHeight + verticalSpacing / 2.0f), whiteTexture.texture, whiteTexture.uvStart, whiteTexture.uvEnd, italic, color, options)
+            vertexConsumer.addQuad(startPosition + Vec2(-horizontalSpacing, charHeight), Vec2(endPosition.x + boldOffset + horizontalSpacing, startPosition.y + charHeight + verticalSpacing / 2.0f), whiteTexture.texture, whiteTexture.uvStart, whiteTexture.uvEnd, italic, color, options)
         }
 
         // ToDo: Obfuscated

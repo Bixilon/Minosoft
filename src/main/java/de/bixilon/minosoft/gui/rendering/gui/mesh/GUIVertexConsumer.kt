@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2t
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
@@ -22,9 +22,12 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 interface GUIVertexConsumer {
     val order: Array<Pair<Int, Int>>
 
-    fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?)
+    fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?)
+    fun addVertex(position: Vec2i, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+        addVertex(Vec2(position), texture, uv, tint, options)
+    }
 
-    fun addQuad(start: Vec2t<*>, end: Vec2t<*>, texture: ShaderIdentifiable, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), tint: RGBColor, options: GUIVertexOptions?) {
+    fun addQuad(start: Vec2, end: Vec2, texture: ShaderIdentifiable, uvStart: Vec2 = UV_START, uvEnd: Vec2 = UV_END, tint: RGBColor, options: GUIVertexOptions?) {
         val positions = arrayOf(
             start,
             Vec2(end.x, start.y),
@@ -43,11 +46,39 @@ interface GUIVertexConsumer {
         }
     }
 
-    fun addQuad(start: Vec2t<*>, end: Vec2t<*>, texture: TextureLike, tint: RGBColor, options: GUIVertexOptions?) {
+    fun addQuad(start: Vec2i, end: Vec2i, texture: ShaderIdentifiable, uvStart: Vec2 = UV_START, uvEnd: Vec2 = UV_END, tint: RGBColor, options: GUIVertexOptions?) {
+        val positions = arrayOf(
+            Vec2(start),
+            Vec2(end.x, start.y),
+            Vec2(end),
+            Vec2(start.x, end.y),
+        )
+        val texturePositions = arrayOf(
+            Vec2(uvEnd.x, uvStart.y),
+            uvStart,
+            Vec2(uvStart.x, uvEnd.y),
+            uvEnd,
+        )
+
+        for ((vertexIndex, textureIndex) in order) {
+            addVertex(positions[vertexIndex], texture, texturePositions[textureIndex], tint, options)
+        }
+    }
+
+    fun addQuad(start: Vec2, end: Vec2, texture: TextureLike, tint: RGBColor, options: GUIVertexOptions?) {
+        addQuad(start, end, texture.texture, texture.uvStart, texture.uvEnd, tint, options)
+    }
+
+    fun addQuad(start: Vec2i, end: Vec2i, texture: TextureLike, tint: RGBColor, options: GUIVertexOptions?) {
         addQuad(start, end, texture.texture, texture.uvStart, texture.uvEnd, tint, options)
     }
 
     fun addCache(cache: GUIMeshCache)
 
     fun ensureSize(size: Int)
+
+    companion object {
+        val UV_START = Vec2(0.0f, 0.0f)
+        val UV_END = Vec2(1.0f, 1.0f)
+    }
 }

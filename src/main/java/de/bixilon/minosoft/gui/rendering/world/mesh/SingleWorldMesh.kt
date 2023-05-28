@@ -27,9 +27,7 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.renderData.transformUV(uv).array
-        data.add(position[0])
-        data.add(position[1])
-        data.add(position[2])
+        data.add(position)
         data.add(transformedUV)
         data.add(texture.renderData.shaderTextureId.buffer())
         data.add((tintColor or (light shl 24)).buffer())

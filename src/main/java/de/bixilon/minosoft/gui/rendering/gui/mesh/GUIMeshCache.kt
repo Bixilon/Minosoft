@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -40,7 +39,7 @@ class GUIMeshCache(
         }
     }
 
-    override fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         GUIMesh.addVertex(data, halfSize, position, texture, uv, tint, options)
         revision++
     }
