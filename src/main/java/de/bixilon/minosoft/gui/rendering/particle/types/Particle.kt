@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -96,7 +95,7 @@ abstract class Particle(
         val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15
         val divider = this.velocity.length()
 
-        this.velocity assign (this.velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf)
+        this.velocity(this.velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf)
         this.velocity.y += 0.1
 
         spacing = Vec3(0.2)

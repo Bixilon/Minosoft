@@ -22,10 +22,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class GUIMeshCache(
-        var halfSize: Vec2,
-        override val order: Array<Pair<Int, Int>>,
-        initialCacheSize: Int = 1000,
-        var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
+    var halfSize: Vec2,
+    override val order: Array<Pair<Int, Int>>,
+    initialCacheSize: Int = 1000,
+    var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
 ) : GUIVertexConsumer {
     var revision: Long = 0
     var offset: Vec2i = Vec2i.EMPTY

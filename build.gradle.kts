@@ -48,6 +48,7 @@ val ikonliVersion = getProperty("ikonli.version")
 val nettyVersion = getProperty("netty.version")
 val jacksonVersion = getProperty("jackson.version")
 val kutilVersion = getProperty("kutil.version")
+val glmVersion = getProperty("glm.version")
 
 val os = properties["platform"]?.let { OSTypes[it] } ?: PlatformInfo.OS
 val architecture = properties["architecture"]?.let { Architectures[it] } ?: PlatformInfo.ARCHITECTURE
@@ -188,7 +189,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:0.9.9.1-7")
+                implementation("de.bixilon:kotlin-glm:$glmVersion")
                 implementation("it.unimi.dsi:fastutil-core:8.5.12")
 
                 implementation("de.bixilon:mbf-kotlin:1.0") { exclude("com.github.luben", "zstd-jni") }
@@ -246,7 +247,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:0.9.9.1-7")
+                implementation("de.bixilon:kotlin-glm:$glmVersion")
             }
 
             targets {
@@ -353,7 +354,7 @@ dependencies {
     // de.bixilon
     implementation("de.bixilon", "kutil", kutilVersion)
     implementation("de.bixilon", "jiibles", "1.1.1")
-    implementation("de.bixilon", "kotlin-glm", "0.9.9.1-7")
+    implementation("de.bixilon", "kotlin-glm", glmVersion)
     implementation("de.bixilon", "mbf-kotlin", "1.0") { exclude("com.github.luben", "zstd-jni") }
     implementation("de.bixilon.javafx", "javafx-svg", "0.3") { exclude("org.openjfx", "javafx-controls") }
 

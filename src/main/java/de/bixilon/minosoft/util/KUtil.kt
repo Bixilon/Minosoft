@@ -178,9 +178,9 @@ object KUtil {
                 is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
                 is ResourceLocation -> TextComponent(this.toString()).color(ChatColors.GOLD)
                 is Identified -> identifier.format()
-                is Vec4t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()} ${this.w.format()})"
-                is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
-                is Vec2t<*> -> "(${this.x.format()} ${this.y.format()})"
+                is Vec4t<*> -> "(${this._x.format()} ${this._y.format()} ${this._z.format()} ${this._w.format()})"
+                is Vec3t<*> -> "(${this._x.format()} ${this._y.format()} ${this._z.format()})"
+                is Vec2t<*> -> "(${this._x.format()} ${this._y.format()})"
                 else -> this.toString()
             }
         )
