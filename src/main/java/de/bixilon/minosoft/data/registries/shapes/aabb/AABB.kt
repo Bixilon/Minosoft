@@ -60,10 +60,16 @@ class AABB {
     }
 
     operator fun plus(other: Vec3t<out Number>): AABB = offset(other)
+    fun offset(other: Vec3t<out Number>) = AABB(true, min + other, max + other)
 
-    fun offset(other: Vec3t<out Number>): AABB {
-        return AABB(true, min + other, max + other)
-    }
+    operator fun plus(other: Vec3d): AABB = offset(other)
+    fun offset(other: Vec3d) = AABB(true, min + other, max + other)
+
+    operator fun plus(other: Vec3): AABB = offset(other)
+    fun offset(other: Vec3) = AABB(true, min + other, max + other)
+
+    operator fun plus(other: Vec3i): AABB = offset(other)
+    fun offset(other: Vec3i) = AABB(true, min + other, max + other)
 
     operator fun plus(other: AABB): AABB {
         val newMin = Vec3d(minOf(min.x, other.min.x), minOf(min.y, other.min.y), minOf(min.z, other.min.z))
@@ -122,11 +128,17 @@ class AABB {
     }
 
     private fun intersects(axis: Axes, other: AABB): Boolean {
-        return min[axis].isIn(other.min[axis], other.max[axis])
-            || max[axis].isIn(other.min[axis], other.max[axis])
-            || other.min[axis].isIn(min[axis], max[axis])
-            || other.max[axis].isIn(min[axis], max[axis])
-            || (min[axis] == other.min[axis] && max[axis] == other.max[axis])
+        val min = min[axis]
+        val max = max[axis]
+
+        val otherMin = other.min[axis]
+        val otherMax = other.max[axis]
+
+        return min.isIn(otherMin, otherMax)
+                || max.isIn(otherMin, otherMax)
+                || otherMin.isIn(min, max)
+                || otherMax.isIn(min, max)
+                || (min == otherMin && max == otherMax)
     }
 
     fun calculateMaxOffset(other: AABB, offset: Double, axis: Axes): Double {
@@ -258,19 +270,19 @@ class AABB {
 
         fun checkSide(x: Double): Boolean {
             return (this.min == Vec3d(x, min.y, min.z) && this.max == Vec3d(x, max.y, min.z))
-                || (this.min == Vec3d(x, min.y, min.z) && this.max == Vec3d(x, min.y, max.z))
-                || (this.min == Vec3d(x, max.y, min.z) && this.max == Vec3d(x, max.y, max.z))
-                || (this.min == Vec3d(x, min.y, max.z) && this.max == Vec3d(x, max.y, max.z))
+                    || (this.min == Vec3d(x, min.y, min.z) && this.max == Vec3d(x, min.y, max.z))
+                    || (this.min == Vec3d(x, max.y, min.z) && this.max == Vec3d(x, max.y, max.z))
+                    || (this.min == Vec3d(x, min.y, max.z) && this.max == Vec3d(x, max.y, max.z))
         }
 
 
         return checkSide(min.x) // left quad
-            || checkSide(max.x) // right quad
-            // connections between 2 quads
-            || (this.min == min && this.max == Vec3d(max.x, min.y, min.z))
-            || (this.min == Vec3d(min.x, max.y, min.z) && this.max == Vec3d(max.x, max.y, min.z))
-            || (this.min == Vec3d(min.x, max.y, max.z) && this.max == max)
-            || (this.min == Vec3d(min.x, min.y, max.z) && this.max == Vec3d(max.x, min.y, max.z))
+                || checkSide(max.x) // right quad
+                // connections between 2 quads
+                || (this.min == min && this.max == Vec3d(max.x, min.y, min.z))
+                || (this.min == Vec3d(min.x, max.y, min.z) && this.max == Vec3d(max.x, max.y, min.z))
+                || (this.min == Vec3d(min.x, max.y, max.z) && this.max == max)
+                || (this.min == Vec3d(min.x, min.y, max.z) && this.max == Vec3d(max.x, min.y, max.z))
     }
 
     override fun toString(): String {
