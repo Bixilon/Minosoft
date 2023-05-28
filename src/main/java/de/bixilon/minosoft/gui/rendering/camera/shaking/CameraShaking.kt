@@ -42,7 +42,7 @@ class CameraShaking(
         }
         val time = millis()
         this.rotation = bobbing(time, 10.0f, this.strength)
-        this.strength = STRENGTH
+        this.strength = STRENGTH * profile.amplifier
         return true
     }
 
