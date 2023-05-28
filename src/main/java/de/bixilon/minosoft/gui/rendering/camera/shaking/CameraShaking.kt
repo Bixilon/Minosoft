@@ -28,7 +28,7 @@ class CameraShaking(
     private val profile: ShakingC,
 ) {
     private var rotation = 0.0f
-    private var strength = 0.02f
+    private var strength = 0.0f
     private val speed = FloatAverage(10 * ProtocolDefinition.TICK_TIME * 1_000_000L, 0.0f)
     private val physics = camera.context.connection.camera.entity.physics
 
@@ -41,15 +41,18 @@ class CameraShaking(
             return false
         }
         val time = millis()
-        this.rotation = bobbing(time, 10f, this.strength)
-        this.strength = 0.02f
+        this.rotation = bobbing(time, 10.0f, this.strength)
+        this.strength = STRENGTH
         return true
     }
 
     private fun bobbing(time: Long, frequency: Float, intensity: Float): Float {
         this.speed += this.physics.velocity.xz.length2().toFloat() // velocity affects how quick it goes
         val seconds = time / 1000.0
-        return (sin(seconds * frequency).toFloat() * minOf(this.speed.avg, 0.25f) * intensity) / MINIMUM_SPEED
+
+        val sin = sin(seconds * frequency).toFloat()
+        val speed = minOf(this.speed.avg, 0.25f)
+        return (sin * speed * intensity) / MINIMUM_SPEED
     }
 
     fun onDamage() {
@@ -64,6 +67,7 @@ class CameraShaking(
     }
 
     companion object {
+        private const val STRENGTH = 0.001f
         private const val MINIMUM_SPEED = 0.1f
     }
 }
