@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 
 class WorldIterator(
     private val iterator: Iterator<Vec3i>,
@@ -57,7 +56,7 @@ class WorldIterator(
                 this.chunk = chunk
             }
 
-            val state = chunk[position.inChunkPosition] ?: continue
+            val state = chunk[position.x and 0x0F, position.y, position.z and 0x0F] ?: continue
             this.next = BlockPair(position, state, chunk)
             return true
         }

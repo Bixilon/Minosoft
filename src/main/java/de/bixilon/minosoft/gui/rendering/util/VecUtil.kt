@@ -205,8 +205,12 @@ object VecUtil {
 
     val <T : Number> Vec3t<T>.toVec3: Vec3
         get() = Vec3(this)
+    val Vec3d.toVec3: Vec3
+        get() = Vec3(this)
 
     val <T : Number> Vec3t<T>.toVec3d: Vec3d
+        get() = Vec3d(this)
+    val Vec3.toVec3d: Vec3d
         get() = Vec3d(this)
 
 

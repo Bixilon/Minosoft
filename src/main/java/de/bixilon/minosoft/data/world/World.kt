@@ -179,21 +179,19 @@ class World(
         val origin = connection.player.physics.positionInfo.blockPosition
         val chunk = this.chunks[origin.chunkPosition] ?: return
 
-        val offset = Vec3i.EMPTY
+        val position = Vec3i.EMPTY
         val chunkDelta = Vec2i.EMPTY
 
         for (i in 0 until 667) {
-            randomTick(16, origin, offset, chunkDelta, chunk)
-            randomTick(32, origin, offset, chunkDelta, chunk)
+            randomTick(16, origin, position, chunkDelta, chunk)
+            randomTick(32, origin, position, chunkDelta, chunk)
         }
     }
 
-    private fun randomTick(radius: Int, origin: BlockPosition, offset: BlockPosition, chunkDelta: Vec2i, chunk: Chunk) {
-        offset.x = random.nextInt(-radius, radius)
-        offset.y = random.nextInt(-radius, radius)
-        offset.z = random.nextInt(-radius, radius)
-
-        val position = origin + offset
+    private fun randomTick(radius: Int, origin: BlockPosition, position: BlockPosition, chunkDelta: Vec2i, chunk: Chunk) {
+        position.x = origin.x + random.nextInt(-radius, radius)
+        position.y = origin.x + random.nextInt(-radius, radius)
+        position.z = origin.x + random.nextInt(-radius, radius)
 
         chunkDelta.x = (origin.x - position.x) shr 4
         chunkDelta.y = (origin.z - position.z) shr 4

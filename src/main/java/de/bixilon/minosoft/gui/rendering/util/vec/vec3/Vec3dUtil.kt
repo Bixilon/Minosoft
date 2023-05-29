@@ -149,4 +149,11 @@ object Vec3dUtil {
             Axes.Z -> z = value
         }
     }
+
+    fun Vec3d.addY(y: Double): Vec3d {
+        val res = Vec3d(this)
+        res.y += y
+
+        return res
+    }
 }

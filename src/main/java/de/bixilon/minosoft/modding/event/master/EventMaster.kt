@@ -57,8 +57,10 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
 
     override fun fire(event: Event): Boolean {
         parentLock.acquire()
-        for (parent in parents) {
-            parent.fire(event)
+        if (parents.isNotEmpty()) {
+            for (parent in parents) {
+                parent.fire(event)
+            }
         }
         parentLock.release()
 

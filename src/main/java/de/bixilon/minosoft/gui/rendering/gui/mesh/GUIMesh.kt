@@ -70,10 +70,8 @@ class GUIMesh(
                 }
             }
 
-            data.add(outPosition.x)
-            data.add(outPosition.y)
-            data.add(uv.x)
-            data.add(uv.y)
+            data.add(outPosition.array)
+            data.add(uv.array)
             data.add(texture.shaderId.buffer())
             data.add(color.buffer())
         }

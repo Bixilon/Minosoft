@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.physics
 
-import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.sectionHeight
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.addY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.EntityPhysics
@@ -54,11 +54,11 @@ class EntityPositionInfo(
             val blockPosition = position.blockPosition
             val chunkPosition = blockPosition.chunkPosition
             val sectionHeight = blockPosition.sectionHeight
-            val eyePosition = (position + Vec3d(0.0f, physics.entity.eyeHeight, 0.0f)).blockPosition
+            val eyePosition = position.addY(physics.entity.eyeHeight.toDouble()).blockPosition
             val inChunkPosition = blockPosition.inChunkPosition
             val inSectionPosition = blockPosition.inChunkSectionPosition
 
-            val velocityPosition = Vec3i(blockPosition.x, position.y - 0.5000001, blockPosition.z)
+            val velocityPosition = Vec3i(blockPosition.x, (position.y - 0.5000001).toInt(), blockPosition.z)
 
             val chunks = physics.entity.connection.world.chunks
             val revision = chunks.revision
