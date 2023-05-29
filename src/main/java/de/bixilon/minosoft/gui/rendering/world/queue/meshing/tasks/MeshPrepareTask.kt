@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.world.queue.meshing.tasks
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.HeavyPoolRunnable
 
 class MeshPrepareTask(
     val chunkPosition: Vec2i,
     val sectionHeight: Int,
-    val runnable: ThreadPoolRunnable,
+    val runnable: HeavyPoolRunnable,
 )

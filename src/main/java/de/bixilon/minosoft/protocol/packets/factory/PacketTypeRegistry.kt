@@ -19,7 +19,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.reflection.KotlinReflection.kClass
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.string.StringUtil.toSnakeCase
@@ -78,7 +78,7 @@ object PacketTypeRegistry {
     }
 
 
-    fun init(latch: CountUpAndDownLatch) {
+    fun init(latch: AbstractLatch?) {
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Initializing packets..." }
         val classLoader = Thread.currentThread().contextClassLoader
 

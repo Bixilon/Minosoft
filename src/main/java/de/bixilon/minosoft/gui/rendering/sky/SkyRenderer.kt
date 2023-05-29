@@ -14,10 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.minosoft.data.registries.dimension.effects.OverworldEffects
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
@@ -35,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class SkyRenderer(
     val connection: PlayConnection,
@@ -57,7 +55,7 @@ class SkyRenderer(
     val sunScatter = SunScatterRenderer(this, sun)
     val moon = MoonRenderer(this)
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun init(latch: AbstractLatch) {
         box.register()
         sunScatter.register()
         sun.register()
@@ -68,7 +66,7 @@ class SkyRenderer(
         }
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) {
+    override fun postInit(latch: AbstractLatch) {
         for (renderer in renderer) {
             renderer.postInit()
         }

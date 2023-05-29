@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.assets.directory
 
 import de.bixilon.kutil.file.FileUtil.slashPath
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
@@ -63,7 +63,7 @@ class DirectoryAssetsManager(
         }
     }
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
         check(!loaded) { "Already loaded!" }
         scanDirectory(File(basePath))
         File("$rootPath/pack.png").let { if (it.exists() && it.isFile) image = FileInputStream(it).readAllBytes() }

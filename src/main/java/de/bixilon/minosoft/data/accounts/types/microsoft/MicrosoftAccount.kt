@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.child
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
@@ -60,20 +61,20 @@ class MicrosoftAccount(
     override fun logout(clientToken: String) = Unit
 
     @Synchronized
-    override fun check(latch: CountUpAndDownLatch?, @Nullable clientToken: String) {
-        val innerLatch = CountUpAndDownLatch(1, latch)
+    override fun check(latch: AbstractLatch?, @Nullable clientToken: String) {
+        val innerLatch = latch?.child(1)
         try {
             this.error = null
             checkMinecraftToken(innerLatch)
-            innerLatch.dec()
+            innerLatch?.dec()
             state = AccountStates.WORKING
         } catch (exception: ConnectException) {
-            innerLatch.count = 0
+            innerLatch?.count = 0
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Could not check account ($this), we are probably offline" }
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { exception }
             this.state = AccountStates.OFFLINE
         } catch (exception: Throwable) {
-            innerLatch.count = 0
+            innerLatch?.count = 0
             this.error = exception
             this.state = AccountStates.ERRORED
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { exception }
@@ -81,7 +82,7 @@ class MicrosoftAccount(
         }
     }
 
-    override fun tryCheck(latch: CountUpAndDownLatch?, clientToken: String) {
+    override fun tryCheck(latch: AbstractLatch?, clientToken: String) {
         if (state == AccountStates.CHECKING || state == AccountStates.REFRESHING) {
             // already checking
             return
@@ -96,14 +97,14 @@ class MicrosoftAccount(
         check(latch, clientToken)
     }
 
-    private fun refreshMicrosoftToken(latch: CountUpAndDownLatch?) {
+    private fun refreshMicrosoftToken(latch: AbstractLatch?) {
         state = AccountStates.REFRESHING
         latch?.inc()
         msa = MicrosoftOAuthUtils.refreshToken(msa).saveTokens()
         latch?.dec()
     }
 
-    private fun refreshMinecraftToken(latch: CountUpAndDownLatch?) {
+    private fun refreshMinecraftToken(latch: AbstractLatch?) {
         state = AccountStates.REFRESHING
         val time = millis() / 1000
         if (time >= msa.expires) {
@@ -127,7 +128,7 @@ class MicrosoftAccount(
         save()
     }
 
-    private fun checkMinecraftToken(latch: CountUpAndDownLatch?) {
+    private fun checkMinecraftToken(latch: AbstractLatch?) {
         state = AccountStates.CHECKING
         val time = millis() / 1000
         if (time >= minecraft.expires) {
@@ -147,7 +148,7 @@ class MicrosoftAccount(
         }
     }
 
-    override fun fetchKey(latch: CountUpAndDownLatch?): MinecraftPrivateKey {
+    override fun fetchKey(latch: AbstractLatch?): MinecraftPrivateKey {
         var key = key
         if (key == null || key.shouldRefresh() || key.signatureV2 == null) {
             keyLock.lock()

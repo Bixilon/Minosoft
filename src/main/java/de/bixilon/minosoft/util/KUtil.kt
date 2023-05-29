@@ -27,6 +27,9 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -356,5 +359,10 @@ object KUtil {
         }
 
         return table
+    }
+
+    fun AbstractLatch?.child(count: Int): AbstractLatch {
+        if (this == null) return SimpleLatch(count)
+        return ParentLatch(count, this)
     }
 }

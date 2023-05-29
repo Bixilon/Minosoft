@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -66,7 +66,7 @@ class GUIRenderer(
     var currentMousePosition: Vec2i by observed(Vec2i.EMPTY)
         private set
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun init(latch: AbstractLatch) {
         atlasManager.init()
         gui.init()
         hud.init()
@@ -74,7 +74,7 @@ class GUIRenderer(
         dragged.init()
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) {
+    override fun postInit(latch: AbstractLatch) {
         atlasManager.postInit()
         shader.load()
 

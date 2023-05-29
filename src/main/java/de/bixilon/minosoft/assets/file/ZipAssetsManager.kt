@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.assets.file
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
@@ -36,7 +36,7 @@ class ZipAssetsManager(
     constructor(file: File, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX) : this(ZipInputStream(FileInputStream(file)), canUnload, prefix)
     constructor(path: String, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX) : this(File(path), canUnload, prefix)
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
         check(!loaded) { "Already loaded!" }
 
         val namespaces: MutableSet<String> = ObjectOpenHashSet()

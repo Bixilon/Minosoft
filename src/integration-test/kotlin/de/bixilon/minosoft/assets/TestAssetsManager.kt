@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.assets
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -30,7 +30,7 @@ object TestAssetsManager : AssetsManager {
         return null
     }
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
     }
 
     override fun unload() {

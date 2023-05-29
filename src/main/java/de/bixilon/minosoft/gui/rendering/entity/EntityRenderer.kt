@@ -20,7 +20,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyActions
@@ -63,7 +63,7 @@ class EntityRenderer(
 
     private var reset = false
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun init(latch: AbstractLatch) {
         connection.events.listen<EntitySpawnEvent> { event ->
             if (event.entity is LocalPlayerEntity) return@listen
             DefaultThreadPool += { event.entity.createModel(this)?.let { models[event.entity] = it } }
@@ -92,7 +92,7 @@ class EntityRenderer(
         }
     }
 
-    override fun postAsyncInit(latch: CountUpAndDownLatch) {
+    override fun postAsyncInit(latch: AbstractLatch) {
         localModel = context.connection.player.createModel(this)
 
         models[connection.player] = localModel

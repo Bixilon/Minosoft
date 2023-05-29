@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -33,13 +33,13 @@ class DummyStaticTextureArray(renderSystem: RenderSystem) : StaticTextureArray {
         return textures.getOrPut(resourceLocation) { DummyTexture(resourceLocation) }
     }
 
-    override fun preLoad(latch: CountUpAndDownLatch) {
+    override fun preLoad(latch: AbstractLatch) {
         for (texture in textures.values) {
             (texture as DummyTexture).state = TextureStates.LOADED
         }
     }
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
         animator.init()
     }
 

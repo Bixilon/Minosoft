@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.queue.Queue
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
@@ -67,7 +67,7 @@ class AudioPlayer(
     private var enabled = profile.enabled
 
 
-    fun init(latch: CountUpAndDownLatch) {
+    fun init(latch: AbstractLatch) {
         Log.log(LogMessageType.AUDIO, LogLevels.INFO) { "Loading OpenAL..." }
 
         soundManager.load()

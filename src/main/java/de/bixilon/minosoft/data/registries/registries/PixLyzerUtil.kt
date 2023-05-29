@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
@@ -55,7 +55,7 @@ object PixLyzerUtil {
         return verify(profile.source.pixlyzer, pixlyzerHash)
     }
 
-    fun loadRegistry(version: Version, profile: ResourcesProfile, latch: CountUpAndDownLatch): Registries {
+    fun loadRegistry(version: Version, profile: ResourcesProfile, latch: AbstractLatch): Registries {
         val registries = Registries()
         val data = loadPixlyzerData(version, profile)
 

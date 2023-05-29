@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.world.border
 
 import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -48,7 +48,7 @@ class WorldBorderRenderer(
         get() = border.getDistanceTo(context.connection.player.physics.position) > MAX_DISTANCE
     private var reload = false
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun init(latch: AbstractLatch) {
         shader.native.defines["MAX_DISTANCE"] = MAX_DISTANCE
         shader.load()
 
@@ -56,7 +56,7 @@ class WorldBorderRenderer(
         context.camera.offset::offset.observe(this) { reload = true }
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) {
+    override fun postInit(latch: AbstractLatch) {
         context.textureManager.staticTextures.use(shader)
         shader.textureIndexLayer = texture.renderData.shaderTextureId
     }

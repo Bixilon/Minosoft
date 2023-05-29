@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
@@ -122,7 +122,7 @@ class OpenGLDynamicTextureArray(
     }
 
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
         val textureId = OpenGLTextureUtil.createTextureArray()
         this.textureId = textureId
 
@@ -169,7 +169,7 @@ class OpenGLDynamicTextureArray(
     private fun reload() {
         lock.lock()
         glDeleteTextures(textureId)
-        load(CountUpAndDownLatch(0))
+        load(null)
 
         for ((index, textureReference) in textures.withIndex()) {
             val texture = textureReference?.get() ?: continue

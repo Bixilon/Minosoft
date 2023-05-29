@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
@@ -47,7 +47,7 @@ class Camera(
         }
         view.draw()
         matrixHandler.draw()
-        val latch = CountUpAndDownLatch(2)
+        val latch = SimpleLatch(2)
         context.runAsync { visibilityGraph.draw(); latch.dec() }
         context.runAsync { context.connection.camera.target.update(); latch.dec() }
         fogManager.draw()

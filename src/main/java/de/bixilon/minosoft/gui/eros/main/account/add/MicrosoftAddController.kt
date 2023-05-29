@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.account.add
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
@@ -72,7 +72,7 @@ class MicrosoftAddController(
 
     private fun successCallback(response: AuthenticationResponse) {
         JavaFXUtil.runLater { close() }
-        val latch = CountUpAndDownLatch(1)
+        val latch = CallbackLatch(1)
         val checkingDialog = CheckingDialog(latch)
         checkingDialog.show()
 

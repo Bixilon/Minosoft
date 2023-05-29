@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font.provider
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -38,7 +38,7 @@ class SpaceFontProvider(
         }
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) = Unit
+    override fun postInit(latch: AbstractLatch) = Unit
 
     override fun get(char: Int): CharData? {
         return chars[char]

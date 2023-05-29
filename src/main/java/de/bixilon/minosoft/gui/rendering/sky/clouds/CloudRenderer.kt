@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.sky.clouds
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -69,7 +69,7 @@ class CloudRenderer(
         get() = !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || layers.isEmpty()
 
 
-    override fun asyncInit(latch: CountUpAndDownLatch) {
+    override fun asyncInit(latch: AbstractLatch) {
         matrix.load(connection.assetsManager)
 
         context.camera.offset::offset.observe(this) { reset() }
@@ -83,7 +83,7 @@ class CloudRenderer(
         return IntRange(baseHeight + index * cloudHeight, baseHeight + (index + 1) * cloudHeight)
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) {
+    override fun postInit(latch: AbstractLatch) {
         shader.load()
         sky.profile.clouds::movement.observe(this, instant = true) {
             for (layer in layers) {

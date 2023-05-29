@@ -18,7 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -65,7 +65,7 @@ class HUDManager(
     }
 
     private fun registerDefaultElements() {
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
 
         for (builder in DEFAULT_ELEMENTS) {
             latch.inc()

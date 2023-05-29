@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world
 
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.InterruptableRunnable
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
@@ -50,7 +50,7 @@ class ChunkMesher(
         return mesh
     }
 
-    private fun mesh(item: WorldQueueItem, runnable: ThreadPoolRunnable) {
+    private fun mesh(item: WorldQueueItem, runnable: InterruptableRunnable) {
         val mesh = mesh(item) ?: return
         runnable.interruptable = false
         if (Thread.interrupted()) return
@@ -62,7 +62,7 @@ class ChunkMesher(
         renderer.loadingQueue.queue(mesh)
     }
 
-    fun tryMesh(item: WorldQueueItem, task: MeshPrepareTask, runnable: ThreadPoolRunnable) {
+    fun tryMesh(item: WorldQueueItem, task: MeshPrepareTask, runnable: InterruptableRunnable) {
         try {
             mesh(item, runnable)
         } catch (ignored: InterruptedException) {

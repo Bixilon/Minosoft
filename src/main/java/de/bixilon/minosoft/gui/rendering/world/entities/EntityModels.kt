@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.world.entities
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -41,7 +41,7 @@ class EntityModels(val context: RenderContext) {
     }
 
     fun loadSkeletal() {
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
         for (model in skeletal.values) {
             latch.inc()
             DefaultThreadPool += { model.preload(context); latch.dec() }

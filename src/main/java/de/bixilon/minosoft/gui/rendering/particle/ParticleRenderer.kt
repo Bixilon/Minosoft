@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -99,7 +99,7 @@ class ParticleRenderer(
     val size: Int
         get() = particles.size
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun init(latch: AbstractLatch) {
         profile::maxAmount.observe(this, true) { maxAmount = minOf(it, MAXIMUM_AMOUNT) }
         profile::enabled.observe(this, true) { enabled = it }
 
@@ -118,7 +118,7 @@ class ParticleRenderer(
         DefaultParticleBehavior.register(connection, this)
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) {
+    override fun postInit(latch: AbstractLatch) {
         transparentShader.load()
         translucentShader.load()
 

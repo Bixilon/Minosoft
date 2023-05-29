@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.outline
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -62,7 +62,7 @@ class BlockOutlineRenderer(
     override var nextMesh: LineMesh? = null
     override var unload: Boolean = false
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun init(latch: AbstractLatch) {
         this.profile::enabled.observe(this) { reload = true }
         this.profile::collisions.observe(this) { reload = true }
         this.profile::outlineColor.observe(this) { reload = true }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.dialog.connection
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.minosoft.gui.eros.dialog.progress.ProgressDialog
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 
 class LoadingDialog(
-    latch: CountUpAndDownLatch,
+    latch: CallbackLatch,
     connection: PlayConnection,
 ) : ProgressDialog(title = TITLE, header = HEADER, latch = latch) {
 

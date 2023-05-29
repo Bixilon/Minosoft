@@ -14,12 +14,9 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -40,23 +37,11 @@ class ClientPacketHandler(
     private val client: NettyClient,
 ) : SimpleChannelInboundHandler<QueuedS2CP<*>>() {
     private val connection: Connection = client.connection
-    private val handlers: MutableSet<ThreadPoolRunnable> = synchronizedSetOf()
-
-    init {
-        client::connected.observe(this) {
-            if (!it) {
-                for (handler in handlers.toSynchronizedList()) {
-                    handler.interrupt()
-                }
-            }
-        }
-    }
 
     override fun channelRead0(context: ChannelHandlerContext, queued: QueuedS2CP<*>) {
         if (queued.type.threadSafe && (DefaultThreadPool.queueSize < DefaultThreadPool.threadCount - 1 || queued.type.lowPriority)) { // only handle async when thread pool not busy
-            val runnable = ThreadPoolRunnable(priority = if (queued.type.lowPriority) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.HIGHER)
-            runnable.runnable = Runnable { tryHandle(context, queued.type, queued.packet);handlers -= runnable }
-            handlers += runnable
+            val runnable = SimplePoolRunnable(priority = if (queued.type.lowPriority) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.HIGHER)
+            runnable.runnable = Runnable { tryHandle(context, queued.type, queued.packet) }
             DefaultThreadPool += runnable
         } else {
             tryHandle(context, queued.type, queued.packet)

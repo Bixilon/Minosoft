@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -48,7 +48,7 @@ class PopperManager(
             lastTickTime = time
         }
 
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
         for (popper in poppers) {
             if (popper.layout.dead) {
                 toRemove += popper

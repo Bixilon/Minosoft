@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
@@ -57,10 +57,10 @@ abstract class Account(
     abstract fun join(serverId: String)
 
     abstract fun logout(clientToken: String)
-    abstract fun check(latch: CountUpAndDownLatch?, clientToken: String)
+    abstract fun check(latch: AbstractLatch?, clientToken: String)
 
     @Synchronized
-    open fun tryCheck(latch: CountUpAndDownLatch?, clientToken: String) {
+    open fun tryCheck(latch: AbstractLatch?, clientToken: String) {
         if (state == AccountStates.CHECKING || state == AccountStates.REFRESHING) {
             // already checking
             return
@@ -84,5 +84,5 @@ abstract class Account(
         }
     }
 
-    open fun fetchKey(latch: CountUpAndDownLatch?): MinecraftPrivateKey? = null
+    open fun fetchKey(latch: AbstractLatch?): MinecraftPrivateKey? = null
 }

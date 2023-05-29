@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.util
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -58,7 +58,7 @@ class ScreenshotTaker(
                 }
             }
 
-            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGHER) {
+            DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.HIGHER) {
                 try {
                     val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 

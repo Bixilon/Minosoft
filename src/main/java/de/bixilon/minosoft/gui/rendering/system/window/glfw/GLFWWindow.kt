@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
@@ -430,7 +430,7 @@ class GLFWWindow(
     }
 
     companion object {
-        private val initLatch = CountUpAndDownLatch(1)
+        private val initLatch = SimpleLatch(1)
 
         init {
             if (PlatformInfo.OS == OSTypes.MAC) {

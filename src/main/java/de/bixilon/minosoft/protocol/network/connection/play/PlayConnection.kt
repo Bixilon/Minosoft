@@ -18,7 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -65,6 +65,7 @@ import de.bixilon.minosoft.tags.TagManager
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.child
 import de.bixilon.minosoft.util.KUtil.startInit
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -175,8 +176,8 @@ class PlayConnection(
     }
 
 
-    fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
-        val count = latch.count
+    fun connect(latch: AbstractLatch? = null) {
+        val count = latch?.count ?: 0
         check(!wasConnected) { "Connection was already connected!" }
         try {
             state = PlayConnectionStates.WAITING_MODS
@@ -187,14 +188,14 @@ class PlayConnection(
             val taskWorker = TaskWorker(errorHandler = { _, exception -> if (error == null) error = exception })
             taskWorker += {
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
-                registries.parent = version.load(profiles.resources, latch)
+                registries.parent = version.load(profiles.resources, latch.child(0))
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
                 this::legacyTags.forceSet(FallbackTags.map(registries))
             }
 
             taskWorker += {
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
-                assetsManager = AssetsLoader.create(profiles.resources, version, latch)
+                assetsManager = AssetsLoader.create(profiles.resources, version, latch.child(0))
                 assetsManager.load(latch)
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
             }
@@ -220,11 +221,11 @@ class PlayConnection(
             if (!RunConfiguration.DISABLE_RENDERING) {
                 val rendering = Rendering(this)
                 this.rendering = rendering
-                val renderLatch = CountUpAndDownLatch(0, latch)
+                val renderLatch = latch.child(0)
                 rendering.start(renderLatch)
                 renderLatch.awaitWithChange()
             }
-            latch.dec() // remove initial value
+            latch?.dec() // remove initial value
             Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
             network.connect(address, profiles.other.nativeNetwork)
             state = PlayConnectionStates.ESTABLISHING
@@ -236,7 +237,7 @@ class PlayConnection(
             error = exception
             retry = false
         }
-        latch.count = count
+        latch?.count = count
     }
 
     override fun disconnect() {

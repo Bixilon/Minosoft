@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -116,7 +116,7 @@ class GUIManager(
         if (tick) {
             lastTickTime = time
         }
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
         for ((index, element) in order.withIndex()) {
             if (!element.enabled) {
                 continue

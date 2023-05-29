@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.dialog.progress
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -29,7 +29,7 @@ import javafx.scene.text.TextFlow
 open class ProgressDialog(
     private val title: ResourceLocation,
     private val header: ResourceLocation,
-    val latch: CountUpAndDownLatch,
+    val latch: CallbackLatch,
     private val onCancel: (() -> Unit)? = null,
     private val layout: ResourceLocation = LAYOUT,
 ) : DialogController() {

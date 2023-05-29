@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.assets
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.FileNotFoundException
@@ -72,7 +72,7 @@ interface AssetsManager {
     /**
      * Loads all assets
      */
-    fun load(latch: CountUpAndDownLatch)
+    fun load(latch: AbstractLatch? = null)
 
     /**
      * Deletes all assets from memory

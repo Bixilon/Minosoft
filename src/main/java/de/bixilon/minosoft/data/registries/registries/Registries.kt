@@ -18,7 +18,8 @@ import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
@@ -146,7 +147,7 @@ class Registries(
         return entityDataIndexMap[field] ?: parent?.getEntityDataIndex(field)
     }
 
-    fun load(version: Version, pixlyzerData: Map<String, Any>, latch: CountUpAndDownLatch) {
+    fun load(version: Version, pixlyzerData: Map<String, Any>, latch: AbstractLatch) {
         isFlattened = version.flattened
         block.flattened = isFlattened
         blockState.flattened = isFlattened
@@ -207,7 +208,7 @@ class Registries(
         worker += WorkerTask(this::statistic) { statistic.rawUpdate(pixlyzerData["statistics"]?.toJsonObject(), this) }
         worker += WorkerTask(this::misc, dependencies = arrayOf(this::item)) { misc.rawUpdate(pixlyzerData["misc"]?.toJsonObject(), this) }
 
-        val inner = CountUpAndDownLatch(1, latch)
+        val inner = ParentLatch(1, latch)
         worker.work(inner)
         inner.dec()
         while (inner.count > 0) {

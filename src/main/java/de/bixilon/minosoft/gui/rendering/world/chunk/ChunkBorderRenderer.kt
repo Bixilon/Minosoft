@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world.chunk
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -58,7 +58,7 @@ class ChunkBorderRenderer(
     override val skipOpaque: Boolean
         get() = mesh == null || !profile.chunkBorder.enabled
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun init(latch: AbstractLatch) {
         context.inputHandler.registerKeyCallback(
             CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
             KeyBinding(

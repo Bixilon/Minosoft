@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.dialog.connection
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.minosoft.gui.eros.dialog.progress.ProgressDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -21,7 +21,7 @@ import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 
 class VerifyAssetsDialog(
-    latch: CountUpAndDownLatch,
+    latch: CallbackLatch,
 ) : ProgressDialog(title = TITLE, header = HEADER, latch = latch, layout = LAYOUT) {
     @FXML private lateinit var mibTextFX: TextFlow
 

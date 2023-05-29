@@ -18,7 +18,9 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
@@ -64,8 +66,8 @@ class RendererManager(
         return renderers[resourceLocation]
     }
 
-    fun init(latch: CountUpAndDownLatch) {
-        val inner = CountUpAndDownLatch(0, latch)
+    fun init(latch: AbstractLatch) {
+        val inner = ParentLatch(0, latch)
         var worker = UnconditionalWorker()
         for (renderer in renderers.values) {
             worker += { renderer.preAsyncInit(inner) }
@@ -83,11 +85,11 @@ class RendererManager(
         worker.work(inner)
     }
 
-    fun postInit(latch: CountUpAndDownLatch) {
+    fun postInit(latch: AbstractLatch) {
         for (renderer in renderers.values) {
             renderer.postInit(latch)
         }
-        val inner = CountUpAndDownLatch(0, latch)
+        val inner = ParentLatch(0, latch)
         val worker = UnconditionalWorker()
         for (renderer in renderers.values) {
             worker += { renderer.postAsyncInit(inner) }
@@ -120,7 +122,7 @@ class RendererManager(
             renderer.prePrepareDraw()
         }
 
-        val latch = CountUpAndDownLatch(0)
+        val latch = SimpleLatch(0)
         val worker = UnconditionalWorker()
         for (renderer in rendererList) {
             if (renderer !is AsyncRenderer) {

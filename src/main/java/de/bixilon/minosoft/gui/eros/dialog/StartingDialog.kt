@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.dialog
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.data.text.TranslatableComponents
@@ -28,7 +28,7 @@ import javafx.scene.control.ProgressBar
 import javafx.scene.text.TextFlow
 
 class StartingDialog(
-    val latch: CountUpAndDownLatch,
+    val latch: CallbackLatch,
 ) : DialogController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var countTextFX: TextFlow

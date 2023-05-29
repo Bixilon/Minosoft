@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.eros.util
 import afester.javafx.svg.SvgLoader
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
@@ -49,7 +49,7 @@ class JavaFXInitializer internal constructor() : Application() {
     }
 
     companion object {
-        private val LATCH = CountUpAndDownLatch(2)
+        private val LATCH = SimpleLatch(2)
 
         val initialized: Boolean
             get() = LATCH.count == 0

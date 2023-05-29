@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.primitive.Clearable
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.reflection.generic.GenericUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.Parentable
@@ -73,7 +73,7 @@ object RegistriesUtil {
         return field?.get(registries).unsafeCast()
     }
 
-    fun Registries.postInit(latch: CountUpAndDownLatch) {
+    fun Registries.postInit(latch: AbstractLatch) {
         val worker = UnconditionalWorker()
         for (field in types.values) {
             worker += { field.get(this).unsafeCast<Registry<*>>().postInit(this) }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.assets.multi
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.FileNotFoundException
@@ -82,7 +82,7 @@ class PriorityAssetsManager(
         }
     }
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
         for ((_, managers) in managers) {
             for (manager in managers) {
                 if (manager.loaded) {

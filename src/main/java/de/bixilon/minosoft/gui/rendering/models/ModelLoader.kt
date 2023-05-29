@@ -17,7 +17,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.fluid.Fluid
@@ -101,8 +102,8 @@ class ModelLoader(
         return model
     }
 
-    private fun loadBlockModels(latch: CountUpAndDownLatch) {
-        val blockLatch = CountUpAndDownLatch(1, latch)
+    private fun loadBlockModels(latch: AbstractLatch) {
+        val blockLatch = ParentLatch(1, latch)
         // ToDo: Optimize performance
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading block models..." }
 
@@ -122,9 +123,9 @@ class ModelLoader(
         }
     }
 
-    private fun loadItemModels(latch: CountUpAndDownLatch) {
+    private fun loadItemModels(latch: AbstractLatch) {
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading item models..." }
-        val itemLatch = CountUpAndDownLatch(1, latch)
+        val itemLatch = ParentLatch(1, latch)
 
 
         for (item in registry.item) {
@@ -135,9 +136,9 @@ class ModelLoader(
         itemLatch.await()
     }
 
-    private fun loadEntityModels(latch: CountUpAndDownLatch) {
+    private fun loadEntityModels(latch: AbstractLatch) {
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading entity models..." }
-        val innerLatch = CountUpAndDownLatch(DefaultEntityModels.MODELS.size, latch)
+        val innerLatch = ParentLatch(DefaultEntityModels.MODELS.size, latch)
 
         for (register in DefaultEntityModels.MODELS) {
             DefaultThreadPool += { register.register(context, this); innerLatch.dec() }
@@ -145,7 +146,7 @@ class ModelLoader(
         innerLatch.await()
     }
 
-    fun load(latch: CountUpAndDownLatch) {
+    fun load(latch: AbstractLatch) {
         loadBlockModels(latch)
         loadFluidModels()
         loadItemModels(latch)

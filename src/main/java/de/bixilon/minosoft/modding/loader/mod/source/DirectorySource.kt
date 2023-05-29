@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.loader.mod.source
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -33,7 +32,7 @@ class DirectorySource(
     override fun process(mod: MinosoftMod) {
         val files = directory.listFiles()!!
         val assets = DirectoryAssetsManager(directory.path)
-        assets.load(CountUpAndDownLatch(0))
+        assets.load()
 
         for (sub in files) {
             if (sub.isDirectory && sub.name == "assets") {

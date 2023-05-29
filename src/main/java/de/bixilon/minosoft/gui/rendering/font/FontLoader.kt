@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kutil.array.ArrayUtil.trim
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -35,7 +35,7 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
     private val FONT_INDEX = "font/default.json".toResourceLocation()
 
 
-    fun load(context: RenderContext, latch: CountUpAndDownLatch): Font {
+    fun load(context: RenderContext, latch: AbstractLatch): Font {
         val fontIndex = context.connection.assetsManager.getOrNull(FONT_INDEX)?.readJsonObject() ?: return Font(arrayOf())
 
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!

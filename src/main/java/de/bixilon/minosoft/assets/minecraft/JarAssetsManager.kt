@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.assets.minecraft
 
 import com.fasterxml.jackson.databind.JsonNode
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.InvalidAssetException
@@ -87,7 +87,7 @@ class JarAssetsManager(
         return ByteArrayInputStream(downloaded.data).readZipArchive()
     }
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
         check(!loaded) { "Already loaded!" }
 
         if (tryLoadAssets()) {

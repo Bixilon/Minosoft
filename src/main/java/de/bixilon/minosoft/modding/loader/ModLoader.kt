@@ -15,7 +15,8 @@ package de.bixilon.minosoft.modding.loader
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.loader.error.*
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.modding.loader.mod.ModMain
 import de.bixilon.minosoft.modding.loader.mod.logger.ModLogger
 import de.bixilon.minosoft.modding.loader.mod.source.ModSource
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.child
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -32,7 +34,7 @@ import kotlin.reflect.jvm.javaField
 
 object ModLoader {
     private val BASE_PATH = RunConfiguration.HOME_DIRECTORY.resolve("mods")
-    private var latch: CountUpAndDownLatch? = null
+    private var latch: AbstractLatch? = null
     val mods = ModList()
     var currentPhase by observed(LoadingPhases.PRE_BOOT)
         private set
@@ -77,8 +79,8 @@ object ModLoader {
         main!!.postInit()
     }
 
-    private fun inject(list: ModList, source: ModSource, phase: LoadingPhases, latch: CountUpAndDownLatch) {
-        val mod = MinosoftMod(source, phase, CountUpAndDownLatch(4, latch))
+    private fun inject(list: ModList, source: ModSource, phase: LoadingPhases, latch: AbstractLatch) {
+        val mod = MinosoftMod(source, phase, ParentLatch(4, latch))
         Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE) { "Injecting $source" }
         try {
             source.process(mod)
@@ -119,7 +121,7 @@ object ModLoader {
     }
 
     @Synchronized
-    fun load(phase: LoadingPhases, latch: CountUpAndDownLatch) {
+    fun load(phase: LoadingPhases, latch: AbstractLatch? = null) {
         if (RunConfiguration.IGNORE_MODS || phase in RunConfiguration.MOD_PARAMETERS.ignorePhases) {
             return
         }
@@ -127,7 +129,7 @@ object ModLoader {
         // ToDo: check phase
         this.currentPhase = phase
 
-        val inner = CountUpAndDownLatch(1, latch)
+        val inner = latch.child(1)
         this.latch = inner
         this.state = PhaseStates.LISTING
 

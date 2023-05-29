@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
@@ -28,7 +28,7 @@ interface GUIElementDrawer {
 
     fun tickElements(elements: Collection<GUIElement>) {
         val time = millis()
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
         if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
             for (element in elements) {
                 if (!element.enabled) {
@@ -53,7 +53,7 @@ interface GUIElementDrawer {
     }
 
     fun prepareElements(elements: Collection<GUIElement>) {
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
         for (element in elements) {
             if (!element.enabled) {
                 continue
@@ -77,7 +77,7 @@ interface GUIElementDrawer {
     }
 
     fun drawElements(elements: Collection<GUIElement>) {
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
         for (element in elements) {
             if (!element.enabled) {
                 continue

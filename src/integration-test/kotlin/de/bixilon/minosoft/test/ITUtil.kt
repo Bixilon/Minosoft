@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.test
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.VersionRegistry
 import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
@@ -40,7 +40,7 @@ object ITUtil {
 
         val data = PixLyzerUtil.loadPixlyzerData(version, profile)
 
-        registries.load(version, data, CountUpAndDownLatch(0))
+        registries.load(version, data, SimpleLatch(0))
 
         return registries
     }

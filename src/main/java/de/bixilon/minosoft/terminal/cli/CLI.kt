@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.terminal.cli
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
@@ -53,7 +53,7 @@ object CLI {
     }
 
 
-    fun startThread(latch: CountUpAndDownLatch) {
+    fun startThread(latch: AbstractLatch) {
         latch.inc()
         Thread({ latch.dec(); startLoop() }, "CLI").start()
     }

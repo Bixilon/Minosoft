@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.string.StringUtil.getBetween
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
@@ -22,6 +22,7 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.LANServerType
+import de.bixilon.minosoft.util.KUtil.child
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -45,7 +46,7 @@ object LANServerListener {
     val listening: Boolean
         get() = listeningThread != null
 
-    fun listen(latch: CountUpAndDownLatch?) {
+    fun listen(latch: AbstractLatch?) {
         OtherProfileManager.selected::listenLAN.observe(this) {
             if (it && listeningThread == null) {
                 startListener()
@@ -54,9 +55,9 @@ object LANServerListener {
             }
         }
         if (OtherProfileManager.selected.listenLAN) {
-            val innerLatch = CountUpAndDownLatch(1, latch)
+            val innerLatch = latch?.child(1)
             startListener(innerLatch)
-            innerLatch.await()
+            innerLatch?.await()
         }
     }
 
@@ -66,7 +67,7 @@ object LANServerListener {
         listeningThread.interrupt()
     }
 
-    private fun startListener(latch: CountUpAndDownLatch? = null) {
+    private fun startListener(latch: AbstractLatch? = null) {
         stop = false
         val thread = Thread({
             try {

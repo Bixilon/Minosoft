@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.assets.properties.version.generator
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
@@ -39,7 +38,7 @@ object AssetsPropertiesGenerator {
 
         val assetsManager = JarAssetsManager("829c3804401b0727f70f73d4415e162400cbe57b", clientJarHash, profile, Version(versionId, -1, -1, VersionTypes.APRIL_FOOL, emptyMap(), emptyMap()))
         try {
-            assetsManager.load(CountUpAndDownLatch(1))
+            assetsManager.load()
         } catch (exception: InvalidAssetException) {
             // this exception is thrown, because our initial hash is "dummy"
             stream.print(exception.hash + ":" + exception.tarBytes)

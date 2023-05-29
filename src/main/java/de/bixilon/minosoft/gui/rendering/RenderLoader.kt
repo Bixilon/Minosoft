@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -48,7 +50,7 @@ object RenderLoader {
         }
     }
 
-    fun RenderContext.load(latch: CountUpAndDownLatch) {
+    fun RenderContext.load(latch: AbstractLatch) {
         setThread()
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
         val stopwatch = Stopwatch()
@@ -71,7 +73,7 @@ object RenderLoader {
         renderSystem.reset()
 
         // Init stage
-        val initLatch = CountUpAndDownLatch(1, latch)
+        val initLatch = ParentLatch(1, latch)
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (after ${stopwatch.labTime()})..." }
         textureManager.dynamicTextures.load(initLatch)
         textureManager.initializeSkins(connection)
@@ -141,7 +143,7 @@ object RenderLoader {
     fun RenderContext.awaitPlaying() {
         state = RenderingStates.AWAITING
 
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
 
         connection::state.observe(this) {
             if (it == PlayConnectionStates.PLAYING && latch.count > 0) {

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
@@ -29,7 +29,7 @@ class RenderTestLoader {
 
     fun init() {
         val connection = createConnection(5)
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
         connection::assetsManager.forceSet(AssetsLoader.create(connection.profiles.resources, connection.version, latch))
         FontLoader.remove(BitmapFontProvider) // TODO: remove
         connection.assetsManager.load(latch)
