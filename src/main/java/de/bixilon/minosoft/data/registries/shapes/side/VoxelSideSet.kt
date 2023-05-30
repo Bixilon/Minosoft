@@ -44,4 +44,14 @@ class VoxelSideSet(
 
         return set
     }
+
+    override fun hashCode(): Int {
+        return sides.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is VoxelSideSet) return false
+        if (hashCode() != other.hashCode()) return false
+        return sides == other.sides
+    }
 }

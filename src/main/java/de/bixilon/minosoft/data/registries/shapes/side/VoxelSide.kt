@@ -108,4 +108,10 @@ data class VoxelSide(
     override fun hashCode(): Int {
         return hashCode
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is VoxelSide) return false
+        if (hashCode != other.hashCode) return false
+        return min == other.min && max == other.max
+    }
 }
