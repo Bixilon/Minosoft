@@ -99,7 +99,7 @@ class SectionOcclusion(
                     }
                     val nRegion = regions[indexPrefix].toInt()
                     if (nRegion > 0) {
-                        sideRegions[nDirection.ordinal] += nRegion
+                        sideRegions[nDirection.ordinal].add(nRegion) // primitive
                     }
 
                     val pDirection = when (axis) {
@@ -114,7 +114,7 @@ class SectionOcclusion(
                     }
                     val pRegion = regions[index2].toInt()
                     if (pRegion > 0) {
-                        sideRegions[pDirection.ordinal] += pRegion
+                        sideRegions[pDirection.ordinal].add(pRegion) // primitive
                     }
                 }
             }
@@ -148,8 +148,10 @@ class SectionOcclusion(
         val first = if (preferIn) inSides else outSides
         val second = if (preferIn) outSides else inSides
 
-        for (region in first.intIterator()) {
-            if (region in second) {
+        val iterator = first.intIterator()
+        while (iterator.hasNext()) {
+            val region = iterator.nextInt()
+            if (second.contains(region)) {
                 return false
             }
         }
