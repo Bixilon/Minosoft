@@ -45,7 +45,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
     private fun interpolatePosition(delta: Float) {
         // TODO: Only interpolate if changed
         position = Vec3dUtil.interpolateLinear(delta.toDouble(), position0, position1)
-        eyePosition = position + Vec3d(0.0, entity.eyeHeight, 0.0)
+        eyePosition = position + Vec3d(0.0, entity.eyeHeight.toDouble(), 0.0)
         cameraAABB = entity.defaultAABB + position
         eyeBlockPosition = position1.blockPosition
     }

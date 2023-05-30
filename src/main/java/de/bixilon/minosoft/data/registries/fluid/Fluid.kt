@@ -103,7 +103,7 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
     protected fun LivingEntityPhysics<*>.applyBouncing(y: Double) {
         val velocity = this.velocity
         if (!horizontalCollision || !doesNotCollide(Vec3d(velocity.x, velocity.y + 0.6f - position.y + y, velocity.z))) return
-        this.velocity = Vec3d(velocity.x, 0.3f, velocity.z)
+        this.velocity = Vec3d(velocity.x, 0.3, velocity.z)
     }
 
     protected fun LivingEntityPhysics<*>.applyFriction(horizontal: Double, vertical: Double = 0.8f.toDouble()) {

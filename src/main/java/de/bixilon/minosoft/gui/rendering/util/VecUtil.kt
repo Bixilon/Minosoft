@@ -111,7 +111,7 @@ object VecUtil {
         get() = this shr 4
 
     val Vec3i.entityPosition: Vec3d
-        get() = Vec3d(x + 0.5f, y, z + 0.5f) // ToDo: Confirm
+        get() = Vec3d(x + 0.5, y + 0.0, z + 0.5) // ToDo: Confirm
 
     val Vec3i.centerf: Vec3
         get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f)

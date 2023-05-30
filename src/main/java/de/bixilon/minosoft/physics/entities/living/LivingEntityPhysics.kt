@@ -83,7 +83,7 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
     }
 
     fun swimUpwards(fluid: Identified) {
-        this.velocity = velocity + Vec3d(0.0, 0.04f, 0.0)
+        this.velocity = velocity + SWIM_UPWARDS
     }
 
     fun doesNotCollide(offset: Vec3d): Boolean {
@@ -172,5 +172,9 @@ open class LivingEntityPhysics<E : LivingEntity>(entity: E) : EntityPhysics<E>(e
     override fun tickRiding() {
         super.tickRiding()
         fallDistance = 0.0f
+    }
+
+    private companion object {
+        val SWIM_UPWARDS = Vec3d(0.0, 0.04f, 0.0)
     }
 }

@@ -134,7 +134,7 @@ object CollisionMovementPhysics {
 
         if (!grounded || !(collided.x || collided.z)) return collision
 
-        val stepHeight = stepHeight
+        val stepHeight = stepHeight.toDouble()
 
         var total = collide(Vec3d(movement.x, stepHeight, movement.z), aabb, collisions)
         val vertical = collide(Vec3d(0.0, stepHeight, 0.0), aabb.extend(Vec3d(movement.x, 0.0, movement.z)), collisions)
