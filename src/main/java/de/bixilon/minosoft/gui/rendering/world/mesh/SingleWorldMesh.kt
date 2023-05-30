@@ -45,10 +45,9 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
     }
 
     override fun compareTo(other: SingleWorldMesh): Int {
-        if (distance < other.distance) {
-            return -1
-        }
-        return 1
+        if (distance < other.distance) return -1
+        if (distance > other.distance) return 1
+        return 0
     }
 
     data class WorldMeshStruct(
