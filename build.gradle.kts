@@ -326,7 +326,7 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 
 dependencies {
     implementation("org.slf4j", "slf4j-api", "2.0.7")
-    implementation("com.google.guava", "guava", "31.1-jre")
+    implementation("com.google.guava", "guava", "32.0.0-jre")
     implementation("dnsjava", "dnsjava", "3.5.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.23.0")
