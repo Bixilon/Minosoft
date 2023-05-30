@@ -24,7 +24,7 @@ data class VoxelSide(
     private val hashCode = Objects.hashCode(min.hashCode(), max.hashCode())
 
     constructor(minX: Float, minZ: Float, maxX: Float, maxZ: Float) : this(Vec2(minOf(minX, maxX), minOf(minZ, maxZ)), Vec2(maxOf(minX, maxX), maxOf(minZ, maxZ)))
-    constructor(minX: Double, minZ: Double, maxX: Double, maxZ: Double) : this(Vec2(minOf(minX, maxX), minOf(minZ, maxZ)), Vec2(maxOf(minX, maxX), maxOf(minZ, maxZ)))
+    constructor(minX: Double, minZ: Double, maxX: Double, maxZ: Double) : this(Vec2(minOf(minX, maxX).toFloat(), minOf(minZ, maxZ).toFloat()), Vec2(maxOf(minX, maxX).toFloat(), maxOf(minZ, maxZ).toFloat()))
 
 
     fun touches(set: VoxelSideSet): Boolean {
@@ -96,7 +96,10 @@ data class VoxelSide(
         }
 
         if (changes == 0) {
-            return VoxelSideSet(setOf(this, side))
+            val set: MutableSet<VoxelSide> = ObjectOpenHashSet(2)
+            set += this
+            set += side
+            return VoxelSideSet(set)
         }
 
         return VoxelSideSet(setOf(VoxelSide(minX, minY, maxX, maxY)))
