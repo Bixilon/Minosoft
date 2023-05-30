@@ -39,7 +39,7 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMesh
             opaque += it
         }
         mesh.translucentMesh?.let {
-            it.distance = distance
+            it.distance = -distance
             translucent += it
         }
         mesh.transparentMesh?.let {
@@ -58,10 +58,10 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMesh
 
     fun sort() {
         val worker = UnconditionalWorker()
-        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sortBy { it.distance } }
-        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sortBy { -it.distance } }
-        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { transparent.sortBy { it.distance } }
-        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sortBy { it.distance } }
+        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sort() }
+        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sort() }
+        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { transparent.sort() }
+        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sort() }
         worker.work()
     }
 

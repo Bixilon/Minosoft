@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, WorldMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand) {
+class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, WorldMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand), Comparable<SingleWorldMesh> {
     var distance: Float = 0.0f // Used for sorting
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
@@ -44,6 +44,12 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         data.add(tintLight)
     }
 
+    override fun compareTo(other: SingleWorldMesh): Int {
+        if (distance < other.distance) {
+            return -1
+        }
+        return 1
+    }
 
     data class WorldMeshStruct(
         val position: Vec3,

@@ -250,8 +250,10 @@ class WorldVisibilityGraph(
 
         val section = chunk.sections.getOrNull(sectionIndex)?.blocks
 
+        val nextPosition = Vec2i()
+
         if (directionX <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.WEST) != true) && chunkPosition.x > chunkMin.x) {
-            val nextPosition = chunkPosition + Directions.WEST
+            nextPosition.x = chunkPosition.x - 1; nextPosition.y = chunkPosition.y // + WEST
             val nextChunk = chunk.neighbours[ChunkNeighbours.WEST]
             if (nextChunk != null) {
                 val nextVisibilities = getVisibility(nextPosition) ?: return
@@ -263,7 +265,7 @@ class WorldVisibilityGraph(
         }
 
         if (directionX >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.EAST) != true) && chunkPosition.x < chunkMax.x) {
-            val nextPosition = chunkPosition + Directions.EAST
+            nextPosition.x = chunkPosition.x + 1; nextPosition.y = chunkPosition.y // + EAST
             val nextChunk = chunk.neighbours[ChunkNeighbours.EAST]
             if (nextChunk != null) {
                 val nextVisibilities = getVisibility(nextPosition) ?: return
@@ -288,7 +290,7 @@ class WorldVisibilityGraph(
         }
 
         if (directionZ <= 0 && (section?.occlusion?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.y > chunkMin.y) {
-            val nextPosition = chunkPosition + Directions.NORTH
+            nextPosition.x = chunkPosition.x; nextPosition.y = chunkPosition.y - 1 // + NORTH
             val nextChunk = chunk.neighbours[ChunkNeighbours.NORTH]
             if (nextChunk != null) {
                 val nextVisibilities = getVisibility(nextPosition) ?: return
@@ -300,7 +302,7 @@ class WorldVisibilityGraph(
         }
 
         if (directionZ >= 0 && (section?.occlusion?.isOccluded(inverted, Directions.SOUTH) != true) && chunkPosition.y < chunkMax.y) {
-            val nextPosition = chunkPosition + Directions.SOUTH
+            nextPosition.x = chunkPosition.x; nextPosition.y = chunkPosition.y + 1 // + SOUTH
             val nextChunk = chunk.neighbours[ChunkNeighbours.SOUTH]
             if (nextChunk != null) {
                 val nextVisibilities = getVisibility(nextPosition) ?: return
