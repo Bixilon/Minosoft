@@ -45,7 +45,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
     private fun interpolatePosition(delta: Float) {
         val position1 = this.position1
 
-        if (position == position1) {
+        if (position.isEqual(position1)) {
             interpolateAABB(false)
             return
         }
@@ -58,7 +58,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
     private fun interpolateAABB(force: Boolean) {
         val defaultAABB = entity.defaultAABB
-        if (!force && this.defaultAABB == defaultAABB) {
+        if (!force && this.defaultAABB === defaultAABB) {
             return
         }
         cameraAABB = defaultAABB + position
@@ -66,7 +66,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
     private fun interpolateRotation(delta: Float) {
         val rotation1 = this.rotation1
-        if (rotation == rotation1) {
+        if (rotation === rotation1) {
             return
         }
         val rotation0 = this.rotation0
@@ -81,7 +81,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
     private fun tickPosition() {
         val entityPosition = entity.physics.position
-        if (position0 == entityPosition && position1 == entityPosition) return
+        if (position0.isEqual(entityPosition) && position1.isEqual(entityPosition)) return
 
         position0 = position1
         position1 = entityPosition
@@ -89,7 +89,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
     private fun tickRotation() {
         val entityRotation = entity.physics.rotation
-        if (rotation0 == entityRotation && rotation1 == entityRotation) return
+        if (rotation0 === entityRotation && rotation1 === entityRotation) return
 
         rotation0 = rotation1
         rotation1 = entityRotation
@@ -98,5 +98,11 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
     override fun tick() {
         tickPosition()
         tickRotation()
+    }
+
+    private fun Vec3d.isEqual(other: Vec3d): Boolean {
+        val ta = this.array
+        val oa = other.array
+        return ta[0] == oa[0] && ta[1] == oa[1] && oa[2] == ta[2]
     }
 }
