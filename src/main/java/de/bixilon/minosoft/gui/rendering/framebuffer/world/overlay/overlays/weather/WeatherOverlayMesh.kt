@@ -23,11 +23,8 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 open class WeatherOverlayMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.renderSystem.preferredPrimitiveType) : Mesh(context, WeatherOverlayMeshStruct, primitiveType, initialCacheSize = 2 * 3 * WeatherOverlayMeshStruct.FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3, uv: Vec2, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) {
-        data.add(position.x)
-        data.add(position.y)
-        data.add(position.z)
-        data.add(uv.x)
-        data.add(uv.y)
+        data.add(position.array)
+        data.add(uv.array)
         data.add(offset)
         data.add(offsetMultiplicator)
         data.add(alphaMultiplicator)

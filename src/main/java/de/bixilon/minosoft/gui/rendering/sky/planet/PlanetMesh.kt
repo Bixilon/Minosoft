@@ -25,11 +25,8 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 open class PlanetMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.renderSystem.preferredPrimitiveType) : Mesh(context, SunMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SunMeshStruct.FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3, texture: AbstractTexture, uv: Vec2) {
-        data.add(position.x)
-        data.add(position.y)
-        data.add(position.z)
-        data.add(uv.x)
-        data.add(uv.y)
+        data.add(position.array)
+        data.add(uv.array)
         data.add(texture.renderData.shaderTextureId.buffer())
     }
 
