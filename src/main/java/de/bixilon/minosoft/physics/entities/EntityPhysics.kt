@@ -15,7 +15,6 @@ package de.bixilon.minosoft.physics.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -49,7 +48,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
         protected set
     var headYaw = 0.0f
         protected set
-    override var positionInfo by observed(EntityPositionInfo.EMPTY)
+    override var positionInfo = EntityPositionInfo.EMPTY
         protected set
 
 
@@ -94,7 +93,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     override fun preTick() {
         super.preTick()
-        updatePositionInfo()
+        updatePositionInfo() // TODO: this kills performance, it is not needed most if the times. Only if the world changes
     }
 
     override fun tick() {

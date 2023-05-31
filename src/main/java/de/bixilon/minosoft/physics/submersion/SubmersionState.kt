@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.fluid.handler.FluidCollisionHandler
 import de.bixilon.minosoft.data.registries.fluid.handler.FluidEnterHandler
@@ -45,8 +44,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
     private val world = physics.entity.connection.world
     var eye: Fluid? = null
         private set
-    var heights: Object2DoubleOpenHashMap<Fluid> = Object2DoubleOpenHashMap()
-        private set
+    val heights: Object2DoubleOpenHashMap<Fluid> = Object2DoubleOpenHashMap(0, 0.1f)
 
     @Deprecated("eye is WaterFluid")
     var waterSubmersionState: Boolean = false
@@ -171,19 +169,21 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
     }
 
     private fun clear() {
-        this.heights = Object2DoubleOpenHashMap(0)
+        this.heights.clear()
         primaryFluid = null
     }
 
     private fun update() {
-        val previous = this.heights
+        val previousWater = this.heights.getDouble(WaterFluid)
+        val previousLava = this.heights.getDouble(WaterFluid)
+
         clear()
 
         val aabb = physics.aabb.shrink(0.001)
         val pushable = physics.fluidPushable
 
-        updateWater(aabb, pushable, previous.getDouble(WaterFluid))
-        update(physics.entity.connection.registries.fluid.lava, aabb, pushable, previous.getDouble(LavaFluid))
+        updateWater(aabb, pushable, previousWater)
+        update(physics.entity.connection.registries.fluid.lava, aabb, pushable, previousLava)
     }
 
     override fun tick() {

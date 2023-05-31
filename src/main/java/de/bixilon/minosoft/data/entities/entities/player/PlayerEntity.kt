@@ -41,6 +41,7 @@ import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerMo
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import java.util.*
 
 abstract class PlayerEntity(
     connection: PlayConnection,
@@ -169,7 +170,7 @@ abstract class PlayerEntity(
         private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
         private val LAST_DEATH_POSITION_DATA = EntityDataField("PLAYER_LAST_DEATH_POSITION")
 
-        private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
+        private val DIMENSIONS: Map<Poses, Vec2> = EnumMap(mapOf(
             Poses.STANDING to Vec2(0.6f, 1.8f),
             Poses.SLEEPING to Vec2(0.2f, 0.2f),
             Poses.ELYTRA_FLYING to Vec2(0.6f, 0.6f),
@@ -177,6 +178,6 @@ abstract class PlayerEntity(
             Poses.SPIN_ATTACK to Vec2(0.6f, 0.6f),
             Poses.SNEAKING to Vec2(0.6f, 1.5f), // ToDo: This changed at some time
             Poses.DYING to Vec2(0.2f, 0.2f),
-        )
+        ))
     }
 }
