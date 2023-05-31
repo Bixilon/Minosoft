@@ -150,10 +150,16 @@ object Vec3dUtil {
         }
     }
 
-    fun Vec3d.addY(y: Double): Vec3d {
+    fun Vec3d.addedY(y: Double): Vec3d {
         val res = Vec3d(this)
         res.y += y
 
         return res
+    }
+
+    fun Vec3d.assign(other: Vec3d) {
+        this.x = other.x
+        this.y = other.y
+        this.z = other.z
     }
 }

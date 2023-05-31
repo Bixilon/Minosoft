@@ -20,37 +20,56 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.addedY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
-    private var position0 = Vec3d(entity.physics.position)
-    private var position1 = position0
+    private var position0 = Vec3d.EMPTY
+    private var position1 = Vec3d(entity.physics.position)
+    private var defaultAABB = entity.defaultAABB
 
-    var position: Vec3d = position0
+    var position: Vec3d = position1
         private set
     var eyePosition: Vec3d = position
         private set
     var cameraAABB: AABB = AABB.EMPTY
         private set
-    var eyeBlockPosition = position1.blockPosition
-        private set
 
-    private var rotation0 = entity.physics.rotation
-    private var rotation1 = rotation0
-    var rotation: EntityRotation = rotation0
+    private var rotation0 = EntityRotation.EMPTY
+    private var rotation1 = entity.physics.rotation
+    var rotation: EntityRotation = rotation1
         private set
 
 
     private fun interpolatePosition(delta: Float) {
-        // TODO: Only interpolate if changed
+        val position1 = this.position1
+
+        if (position == position1) {
+            interpolateAABB(false)
+            return
+        }
+
         position = Vec3dUtil.interpolateLinear(delta.toDouble(), position0, position1)
-        eyePosition = position + Vec3d(0.0, entity.eyeHeight.toDouble(), 0.0)
-        cameraAABB = entity.defaultAABB + position
-        eyeBlockPosition = position1.blockPosition
+        eyePosition = position.addedY(entity.eyeHeight.toDouble())
+
+        interpolateAABB(true)
+    }
+
+    private fun interpolateAABB(force: Boolean) {
+        val defaultAABB = entity.defaultAABB
+        if (!force && this.defaultAABB == defaultAABB) {
+            return
+        }
+        cameraAABB = defaultAABB + position
     }
 
     private fun interpolateRotation(delta: Float) {
+        val rotation1 = this.rotation1
+        if (rotation == rotation1) {
+            return
+        }
+        val rotation0 = this.rotation0
         rotation = EntityRotation(interpolateLinear(delta, rotation0.yaw, rotation1.yaw), interpolateLinear(delta, rotation0.pitch, rotation1.pitch))
     }
 
@@ -60,11 +79,24 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
         interpolateRotation(delta)
     }
 
-    override fun tick() {
+    private fun tickPosition() {
+        val entityPosition = entity.physics.position
+        if (position0 == entityPosition && position1 == entityPosition) return
+
         position0 = position1
-        position1 = Vec3d(entity.physics.position)
+        position1 = entityPosition
+    }
+
+    private fun tickRotation() {
+        val entityRotation = entity.physics.rotation
+        if (rotation0 == entityRotation && rotation1 == entityRotation) return
 
         rotation0 = rotation1
-        rotation1 = entity.physics.rotation
+        rotation1 = entityRotation
+    }
+
+    override fun tick() {
+        tickPosition()
+        tickRotation()
     }
 }

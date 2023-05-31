@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.sectionHeight
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.addY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.addedY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.EntityPhysics
@@ -54,7 +54,7 @@ class EntityPositionInfo(
             val blockPosition = position.blockPosition
             val chunkPosition = blockPosition.chunkPosition
             val sectionHeight = blockPosition.sectionHeight
-            val eyePosition = position.addY(physics.entity.eyeHeight.toDouble()).blockPosition
+            val eyePosition = position.addedY(physics.entity.eyeHeight.toDouble()).blockPosition
             val inChunkPosition = blockPosition.inChunkPosition
             val inSectionPosition = blockPosition.inChunkSectionPosition
 
