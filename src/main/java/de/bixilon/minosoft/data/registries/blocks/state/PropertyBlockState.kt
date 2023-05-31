@@ -37,7 +37,7 @@ open class PropertyBlockState(
 
     override fun equals(other: Any?): Boolean {
         if (other is ResourceLocation) return other == block.identifier
-        if (other is PropertyBlockState) return other.block == this.block && other.properties == this.properties
+        if (other is PropertyBlockState) return other.block == block && other.luminance == luminance && other.properties == this.properties
 
         return false
     }

@@ -142,27 +142,34 @@ class Chunk(
         if (updates.isEmpty()) return
         if (updates.size == 1) return apply(updates.first())
 
-        lock.lock()
         val executed: MutableSet<ChunkLocalBlockUpdate.LocalUpdate> = hashSetOf()
         val sections: MutableSet<ChunkSection> = hashSetOf()
+
+        lock.lock()
         for (update in updates) {
-            val section = getOrPut(update.position.y.sectionHeight, lock = false) ?: continue
+            val sectionHeight = update.position.y.sectionHeight
+            var section = this[sectionHeight]
+            if (update.state == null && section == null) continue
+
+            section = getOrPut(sectionHeight, lock = false) ?: continue
             val previous = section.blocks.noOcclusionSet(update.position.x, update.position.y.inSectionHeight, update.position.z, update.state)
             if (previous == update.state) continue
             getOrPutBlockEntity(update.position)
             executed += update
             sections += section
         }
-        if (executed.isNotEmpty()) {
-            for (section in sections) {
-                section.blocks.occlusion.recalculate(true)
-            }
-            light.recalculateHeightmap()
-            light.recalculate()
+
+        if (executed.isEmpty()) {
+            return lock.unlock()
+        }
+        light.recalculateHeightmap()
+        light.recalculate()
+
+        for (section in sections) {
+            section.blocks.occlusion.recalculate(true)
         }
 
         lock.unlock()
-        if (executed.isEmpty()) return
 
         ChunkLocalBlockUpdate(chunkPosition, this, executed).fire(connection)
     }
