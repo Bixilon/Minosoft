@@ -133,17 +133,30 @@ class Chunk(
     @JvmName("set2")
     fun set(position: Vec3i, blockEntity: BlockEntity?) = set(position.x, position.y, position.z, blockEntity)
 
+
+    fun apply(update: ChunkLocalBlockUpdate.LocalUpdate) {
+        this[update.position] = update.state
+    }
+
     fun apply(updates: Collection<ChunkLocalBlockUpdate.LocalUpdate>) {
+        if (updates.isEmpty()) return
+        if (updates.size == 1) return apply(updates.first())
+
         lock.lock()
         val executed: MutableSet<ChunkLocalBlockUpdate.LocalUpdate> = hashSetOf()
+        val sections: MutableSet<ChunkSection> = hashSetOf()
         for (update in updates) {
             val section = getOrPut(update.position.y.sectionHeight, lock = false) ?: continue
-            val previous = section.set(update.position.x, update.position.y.inSectionHeight, update.position.z, update.state)
+            val previous = section.blocks.noOcclusionSet(update.position.x, update.position.y.inSectionHeight, update.position.z, update.state)
             if (previous == update.state) continue
             getOrPutBlockEntity(update.position)
             executed += update
+            sections += section
         }
         if (executed.isNotEmpty()) {
+            for (section in sections) {
+                section.blocks.occlusion.recalculate(true)
+            }
             light.recalculateHeightmap()
             light.recalculate()
         }

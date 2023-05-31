@@ -90,4 +90,10 @@ object Vec3iUtil {
             Axes.Z -> z = value
         }
     }
+
+    fun Vec3i.assignPlus(a: Vec3i, b: Vec3i) {
+        this.x = a.x + b.x
+        this.y = a.y + b.y
+        this.z = a.z + b.z
+    }
 }

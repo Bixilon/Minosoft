@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.assignChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class WorldIterator(
@@ -49,8 +50,7 @@ class WorldIterator(
         val offset = Vec2i.EMPTY
         for (position in iterator) {
             if (position.y !in minY..maxY) continue
-            chunkPosition.x = position.x shr 4
-            chunkPosition.y = position.z shr 4
+            chunkPosition.assignChunkPosition(position)
 
             if (chunk == null) {
                 chunk = world.chunks[chunkPosition] ?: continue // TODO: Don't query same chunk multiple times

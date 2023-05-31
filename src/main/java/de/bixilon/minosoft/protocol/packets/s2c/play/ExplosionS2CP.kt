@@ -15,6 +15,11 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -42,19 +47,36 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    override fun handle(connection: PlayConnection) {
-        val offsetPosition = Vec3i(position.floor)
-        for (blockDelta in explodedBlocks) {
-            val blockPosition = offsetPosition + blockDelta
-            connection.world[blockPosition] = null
-            // ToDo: Mass set blocks
+    private fun World.clearBlock(offset: Vec3i, position: Vec3i) {
+        this[offset + position] = null
+    }
+
+    private fun World.clearBlocks(offset: Vec3i, positions: Array<Vec3i>) {
+        if (positions.isEmpty()) return
+        if (positions.size == 1) return clearBlock(offset, positions.first())
+
+        val updates: MutableMap<ChunkPosition, MutableSet<ChunkLocalBlockUpdate.LocalUpdate>> = mutableMapOf()
+
+        for (entry in positions) {
+            val total = offset + entry
+            val chunkPosition = total.chunkPosition
+            val update = ChunkLocalBlockUpdate.LocalUpdate(total.inChunkPosition, null)
+            updates.getOrPut(chunkPosition) { hashSetOf() } += update
         }
+
+        for ((chunkPosition, updates) in updates) {
+            this.chunks[chunkPosition]?.apply(updates)
+        }
+    }
+
+    override fun handle(connection: PlayConnection) {
+        connection.world.clearBlocks(position.floor, this.explodedBlocks)
         connection.player.physics.velocity = connection.player.physics.velocity + velocity
 
         connection.events.fire(ExplosionEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Explosion (position=$position, radius=$power, explodedBlocks=$explodedBlocks, velocity=$velocity)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Explosion (position=$position, power=$power, explodedBlocks=$explodedBlocks, velocity=$velocity)" }
     }
 }
