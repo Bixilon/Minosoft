@@ -15,7 +15,11 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -58,7 +62,7 @@ class OpenGLTextureArray(
         textures[resourceLocation]?.let { return it }
 
         // load .mcmeta
-        val properties = readImageProperties(resourceLocation) ?: ImageProperties()
+        val properties = readImageProperties(resourceLocation) ?: ImageProperties() // TODO: That kills performance
 
         val texture = if (properties.animation == null) {
             default()
@@ -69,7 +73,7 @@ class OpenGLTextureArray(
         texture.properties = properties
         textures[resourceLocation] = texture
         if (loadTexturesAsync) {
-            DefaultThreadPool += { texture.load(context.connection.assetsManager) }
+            DefaultThreadPool += ForcePooledRunnable { texture.load(context.connection.assetsManager) }
         }
 
         return texture
@@ -85,17 +89,24 @@ class OpenGLTextureArray(
         return null
     }
 
+
     @Synchronized
     override fun preLoad(latch: AbstractLatch) {
         if (state == TextureArrayStates.LOADED || state == TextureArrayStates.PRE_LOADED) {
             return
         }
+        val preLoadLatch = SimpleLatch(textures.size)
+        for (texture in textures.values) {
+            if (texture.state != TextureStates.DECLARED) {
+                preLoadLatch.dec()
+                continue
+            }
+            DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGH) { texture.load(context.connection.assetsManager) }
+        }
+        preLoadLatch.await()
+
         var lastAnimationIndex = 0
         for (texture in textures.values) {
-            if (texture.state == TextureStates.DECLARED) {
-                texture.load(context.connection.assetsManager)
-            }
-
             check(texture.size.x <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.x}" }
             check(texture.size.y <= TEXTURE_MAX_RESOLUTION) { "Texture's height exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.y}" }
 
