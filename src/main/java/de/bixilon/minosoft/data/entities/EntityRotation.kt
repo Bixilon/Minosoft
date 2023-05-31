@@ -16,6 +16,8 @@ import de.bixilon.kotlinglm.func.cos
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.func.sin
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import kotlin.math.abs
 
 data class EntityRotation(
     val yaw: Float,
@@ -33,6 +35,24 @@ data class EntityRotation(
     }
 
     companion object {
+        const val CIRCLE_DEGREE = 360
+        const val HALF_CIRCLE_DEGREE = 180
         val EMPTY = EntityRotation(0.0f, 0.0f)
+
+
+        fun interpolateYaw(delta: Float, start: Float, end: Float): Float {
+            if (delta <= 0.0) return start
+            if (delta >= 1.0) return end
+
+            var end = end
+
+            if (abs(end - start) > HALF_CIRCLE_DEGREE) {
+                end += if (start > end) CIRCLE_DEGREE else -CIRCLE_DEGREE
+            }
+
+            val i = interpolateLinear(delta, start, end)
+
+            return (i + HALF_CIRCLE_DEGREE) % CIRCLE_DEGREE - HALF_CIRCLE_DEGREE
+        }
     }
 }

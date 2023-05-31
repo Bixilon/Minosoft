@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import de.bixilon.kutil.hash.HashUtil.murmur64
 import de.bixilon.kutil.random.RandomUtil.nextFloat
+import de.bixilon.minosoft.data.entities.EntityRotation.Companion.CIRCLE_DEGREE
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
@@ -37,7 +38,7 @@ class SunRenderer(
         // 180: night (13k-23k)
 
 
-        return ((time.time / ProtocolDefinition.TICKS_PER_DAYf) - 0.25f) * 360.0f
+        return ((time.time / ProtocolDefinition.TICKS_PER_DAYf) - 0.25f) * CIRCLE_DEGREE
     }
 
     override fun calculateIntensity(): Float {

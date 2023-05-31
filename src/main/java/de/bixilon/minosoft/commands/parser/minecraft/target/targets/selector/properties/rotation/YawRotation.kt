@@ -28,8 +28,8 @@ data class YawRotation(
     }
 
     companion object : EntityTargetPropertyFactory<YawRotation> {
-        const val MIN = -180.0f
-        const val MAX = 180.0f
+        const val MIN = -EntityRotation.HALF_CIRCLE_DEGREE
+        const val MAX = EntityRotation.HALF_CIRCLE_DEGREE
         override val name: String = "y_rotation"
         private val parser = FloatRangeParser(null)
 

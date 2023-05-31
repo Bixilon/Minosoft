@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.data.Tickable
+import de.bixilon.minosoft.data.entities.EntityRotation.Companion.interpolateYaw
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
@@ -66,11 +67,11 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
     private fun interpolateRotation(delta: Float) {
         val rotation1 = this.rotation1
-        if (rotation === rotation1) {
+        if (rotation == rotation1) {
             return
         }
         val rotation0 = this.rotation0
-        rotation = EntityRotation(interpolateLinear(delta, rotation0.yaw, rotation1.yaw), interpolateLinear(delta, rotation0.pitch, rotation1.pitch))
+        rotation = EntityRotation(interpolateYaw(delta, rotation0.yaw, rotation1.yaw), interpolateLinear(delta, rotation0.pitch, rotation1.pitch))
     }
 
     override fun draw(millis: Long) {

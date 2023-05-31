@@ -19,6 +19,8 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.EntityRotation.Companion.CIRCLE_DEGREE
+import de.bixilon.minosoft.data.entities.EntityRotation.Companion.HALF_CIRCLE_DEGREE
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.input.camera.MovementInputActions
@@ -114,12 +116,12 @@ class CameraInput(
     fun calculateRotation(delta: Vec2d, rotation: EntityRotation): EntityRotation {
         val delta = delta * 0.1f * controlsProfile.mouse.sensitivity
         var yaw = delta.x + rotation.yaw
-        if (yaw > 180) {
-            yaw -= 360
-        } else if (yaw < -180) {
-            yaw += 360
+        if (yaw > HALF_CIRCLE_DEGREE) {
+            yaw -= CIRCLE_DEGREE
+        } else if (yaw < -HALF_CIRCLE_DEGREE) {
+            yaw += CIRCLE_DEGREE
         }
-        yaw %= 180
+        yaw %= HALF_CIRCLE_DEGREE
         val pitch = GLM.clamp(delta.y + rotation.pitch, -89.9, 89.9)
         return EntityRotation(yaw.toFloat(), pitch.toFloat())
     }
