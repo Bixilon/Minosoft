@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.world.queue.meshing
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.length2
 import de.bixilon.minosoft.gui.rendering.world.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.world.queue.QueuePosition
@@ -30,6 +28,7 @@ import de.bixilon.minosoft.util.SystemInformation
 class ChunkMeshingQueue(
     private val renderer: WorldRenderer,
 ) {
+    private val comparator = ChunkQueueComparator()
     val tasks = MeshPrepareTaskManager(renderer)
     val maxMeshesToLoad = if (SystemInformation.RUNTIME.maxMemory() > 1_000_000_000) 150 else 80
 
@@ -46,16 +45,8 @@ class ChunkMeshingQueue(
 
     fun sort() {
         lock()
-        val position = renderer.cameraChunkPosition
-        val height = renderer.cameraSectionHeight
-        val cameraSectionPosition = Vec3i(position.x, height, position.y)
-        queue.sortBy {
-            if (it.chunkPosition == position) {
-                // our own chunk always has the highest priority
-                return@sortBy -Int.MAX_VALUE
-            }
-            (it.sectionPosition - cameraSectionPosition).length2()
-        }
+        comparator.update(renderer)
+        queue.sortWith(comparator)
         unlock()
     }
 
