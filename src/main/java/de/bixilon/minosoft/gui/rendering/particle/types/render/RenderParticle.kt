@@ -13,15 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class RenderParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : Particle(connection, position, velocity, data) {
@@ -41,11 +42,20 @@ abstract class RenderParticle(connection: PlayConnection, position: Vec3d, veloc
         var maxBlockLight = emittingLight
         var maxSkyLight = 0
 
-        val chunkPosition = position.blockPosition.chunkPosition
-        val chunk = connection.world[chunkPosition] ?: return maxBlockLight
+        val chunkPosition = position.chunkPosition
+        val chunk = connection.world.chunks[chunkPosition] ?: return maxBlockLight
 
+        val offset = Vec2i.EMPTY
+        val inChunk = Vec3i()
         for (position in aabb.positions()) {
-            val light = chunk.traceChunk(position.chunkPosition - chunkPosition)?.light?.get(position.inChunkPosition) ?: SectionLight.SKY_LIGHT_MASK
+            offset.x = (position.x shr 4) - chunkPosition.x
+            offset.y = (position.z shr 4) - chunkPosition.y
+
+            inChunk.x = position.x and 0x0F
+            inChunk.y = position.y
+            inChunk.z = position.z and 0x0F
+
+            val light = chunk.traceChunk(offset)?.light?.get(inChunk) ?: SectionLight.SKY_LIGHT_MASK
             if (light and SectionLight.BLOCK_LIGHT_MASK > maxBlockLight) {
                 maxBlockLight = light and SectionLight.BLOCK_LIGHT_MASK
             }

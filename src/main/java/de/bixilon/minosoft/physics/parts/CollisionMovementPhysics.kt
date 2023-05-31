@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.CollisionPredicate
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EntityCollisionContext
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
@@ -29,7 +30,6 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.set
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
@@ -52,11 +52,15 @@ object CollisionMovementPhysics {
 
             var shape = when (state.block) {
                 is FixedCollidable -> state.block.getCollisionShape(state)
-                else -> {
+                is BlockWithEntity<*> -> {
                     inChunk.x = position.x and 0x0F
                     inChunk.z = position.z and 0x0F
 
                     state.block.getCollisionShape(context, position, state, chunk.getBlockEntity(inChunk))
+                }
+
+                else -> {
+                    state.block.getCollisionShape(context, position, state, null)
                 }
             } ?: continue
             shape += position
@@ -81,9 +85,7 @@ object CollisionMovementPhysics {
         }
         value = collisions.calculateMaxDistance(aabb, value, axis)
         if (offsetAABB && value != 0.0) {
-            val offset = Vec3d()
-            offset[axis] = value
-            aabb += offset
+            aabb.unsafePlus(axis, value)
         }
         return value
     }
@@ -109,7 +111,7 @@ object CollisionMovementPhysics {
         }
 
 
-        if (adjusted.length() > movement.length()) {
+        if (adjusted.length2() > movement.length2()) {
             return Vec3d.EMPTY // movement exceeds expected, some value gets invalid
         }
 

@@ -86,7 +86,7 @@ abstract class Particle(
             val x = ((aabb.min.x + aabb.max.x) - spacing.x) / 2.0
             val z = ((aabb.min.z + aabb.max.z) - spacing.z) / 2.0
 
-            aabb = AABB(Vec3(x, aabb.min.y, z), Vec3(x + spacing.x, aabb.min.y + spacing.y, z + spacing.z))
+            aabb = AABB(Vec3d(x, aabb.min.y, z), Vec3d(x + spacing.x, aabb.min.y + spacing.y, z + spacing.z))
         }
 
 
@@ -98,7 +98,7 @@ abstract class Particle(
         this.velocity(this.velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf)
         this.velocity.y += 0.1
 
-        spacing = Vec3(0.2)
+        spacing = DEFAULT_SPACING
     }
 
     fun getCameraPosition(time: Long): Vec3d {
@@ -221,5 +221,6 @@ abstract class Particle(
         private const val MAGIC_VELOCITY_CONSTANT = 0.4
         private const val MAGIC_VELOCITY_CONSTANTf = MAGIC_VELOCITY_CONSTANT.toFloat()
         private const val Y_VELOCITY_TO_CHECK = 9.999999747378752E-6f
+        private val DEFAULT_SPACING = Vec3(0.2)
     }
 }

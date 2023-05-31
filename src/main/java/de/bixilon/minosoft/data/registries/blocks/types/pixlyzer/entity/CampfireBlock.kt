@@ -65,14 +65,14 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
             cosySmokeParticle
         }
 
-        connection.world += CampfireSmokeParticle(connection, position, Vec3d(0.0f, 0.07f, 0.0f), particleType.default(), isSignal)
+        connection.world += CampfireSmokeParticle(connection, position, SMOKE_VELOCITY, particleType.default(), isSignal)
 
         if (extinguished) {
             val position = Vec3d(blockPosition).horizontalPlus(
                 { 0.5 + 4.0.noised(random) },
                 0.5
             )
-            connection.world += SmokeParticle(connection, position, Vec3d(0.0f, 0.005f, 0.0f), smokeParticle.default())
+            connection.world += SmokeParticle(connection, position, EXTINGUISHED_VELOCITY, smokeParticle.default())
         }
     }
 
@@ -113,6 +113,8 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     companion object : PixLyzerBlockFactory<CampfireBlock> {
         private val CAMPFIRE_CRACKLE_SOUND = "minecraft:block.campfire.crackle".toResourceLocation()
         const val MAX_ITEMS = 4
+        private val SMOKE_VELOCITY = Vec3d(0.0f, 0.07f, 0.0f)
+        private val EXTINGUISHED_VELOCITY = Vec3d(0.0f, 0.005f, 0.0f)
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CampfireBlock {
             return CampfireBlock(resourceLocation, registries, data)

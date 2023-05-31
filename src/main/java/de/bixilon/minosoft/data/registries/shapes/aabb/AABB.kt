@@ -160,10 +160,10 @@ class AABB {
         return offset
     }
 
-    @Deprecated("mutable???")
-    operator fun plusAssign(vec3d: Vec3d) {
-        min += vec3d
-        max += vec3d
+    @Deprecated("mutable")
+    fun unsafePlus(axis: Axes, value: Double) {
+        min.array[axis.ordinal] += value
+        max.array[axis.ordinal] += value
     }
 
     fun offset(axis: Axes, offset: Double): AABB {
@@ -293,8 +293,8 @@ class AABB {
         val BLOCK: AABB = AABB(Vec3.EMPTY, Vec3.ONE)
         val EMPTY: AABB = AABB(Vec3.EMPTY, Vec3.EMPTY)
 
-        fun getRange(min: Double, max: Double): IntRange {
-            return IntRange(min.floor, max.ceil - 1)
+        inline fun getRange(min: Double, max: Double): IntRange {
+            return min.floor until max.ceil
         }
     }
 }

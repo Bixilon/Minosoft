@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.iterator
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -25,7 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collisi
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class WorldIterator(
     private val iterator: Iterator<Vec3i>,
@@ -43,14 +44,20 @@ class WorldIterator(
         var chunk = this.chunk
         val minY = world.dimension.minY
         val maxY = world.dimension.maxY
+
+        val chunkPosition = Vec2i.EMPTY
+        val offset = Vec2i.EMPTY
         for (position in iterator) {
             if (position.y !in minY..maxY) continue
-            val chunkPosition = position.chunkPosition
+            chunkPosition.x = position.x shr 4
+            chunkPosition.y = position.z shr 4
 
             if (chunk == null) {
                 chunk = world.chunks[chunkPosition] ?: continue // TODO: Don't query same chunk multiple times
             } else if (chunk.chunkPosition != chunkPosition) {
-                chunk = chunk.traceChunk(chunkPosition - chunk.chunkPosition) ?: continue
+                offset.x = chunkPosition.x - chunk.chunkPosition.x
+                offset.y = chunkPosition.y - chunk.chunkPosition.y
+                chunk = chunk.traceChunk(offset) ?: continue
             }
             if (this.chunk !== chunk) {
                 this.chunk = chunk
