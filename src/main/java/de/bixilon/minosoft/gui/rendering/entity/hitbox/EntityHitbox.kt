@@ -72,9 +72,10 @@ class EntityHitbox(
             return
         }
 
+        val lazy = model.renderer.profile.hitbox.lazy
         val shrunk = aabb.shrink(0.01f)
-        val mesh = LineMesh(model.context)
-        if (model.renderer.profile.hitbox.lazy) {
+        val mesh = LineMesh(model.context, if (lazy) 1488 else 2496)
+        if (lazy) {
             mesh.drawLazyAABB(shrunk, color = data.color)
         } else {
             mesh.drawAABB(aabb = shrunk, color = data.color, margin = 0.1f)

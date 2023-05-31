@@ -174,12 +174,8 @@ abstract class Entity(
     val ticksFrozen: Int
         get() = data.get(TICKS_FROZEN_DATA, 0)
 
-
     open val hitboxColor: RGBColor?
-        get() = when {
-            isInvisible -> ChatColors.GREEN
-            else -> ChatColors.WHITE
-        }
+        get() = ChatColors.WHITE
 
 
     fun forceTick(time: Long = millis()) {

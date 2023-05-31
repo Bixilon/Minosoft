@@ -120,7 +120,7 @@ class AABB {
     }
 
     fun grow(size: Float): AABB {
-        return AABB(min - size, max + size)
+        return grow(size.toDouble())
     }
 
     private fun Double.isIn(min: Double, max: Double): Boolean {
