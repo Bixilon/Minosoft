@@ -189,6 +189,7 @@ class PlayConnection(
             taskWorker += {
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 registries.parent = version.load(profiles.resources, latch.child(0))
+                registries.fluid.updateWaterLava()
                 events.fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
                 this::legacyTags.forceSet(FallbackTags.map(registries))
             }

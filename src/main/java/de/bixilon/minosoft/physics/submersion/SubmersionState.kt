@@ -35,7 +35,6 @@ import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPositio
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.physics.VanillaMath.vanillaNormalizeAssign
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.properties.SwimmingVehicle
@@ -107,7 +106,8 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         physics.velocity = physics.velocity + update.velocity
     }
 
-    private fun update(fluid: Fluid, aabb: AABB, pushable: Boolean, previousHeight: Double) {
+    private fun update(fluid: Fluid?, aabb: AABB, pushable: Boolean, previousHeight: Double) {
+        if (fluid == null) return
         val update = getFluidUpdate(fluid, aabb, pushable)
 
         if (update == null) {
@@ -130,11 +130,13 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         }
     }
 
+    @Deprecated("performance")
     private fun update(type: ResourceLocation, aabb: AABB, pushable: Boolean, previousHeight: Double) {
-        val fluid = physics.entity.connection.registries.fluid[type] ?: return // TODO: remove this and stream fluids: waterlogged makes problems
+        val fluid = physics.entity.connection.registries.fluid[type] // TODO: remove this and stream fluids: waterlogged makes problems
         update(fluid, aabb, pushable, previousHeight)
     }
 
+    @Deprecated("performance")
     private fun update(type: Identified, aabb: AABB, pushable: Boolean, previous: Double) = update(type.identifier, aabb, pushable, previous)
 
     private fun updateWaterSubmersion() {
@@ -146,11 +148,12 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         if (vehicle is Boat) {
             // TODO
         }
-        val eyePosition = Vec3d(physics.position.x, eyeHeight, physics.position.z).blockPosition
-        val block = world[eyePosition] ?: return
+        val position = physics.position
+        val block = physics.positionInfo.chunk?.get(position.x.toInt() and 0x0F, position.y.toInt(), position.z.toInt() and 0x0F) ?: return
         if (block.block !is FluidHolder) {
             return
         }
+        val eyePosition = Vec3i(physics.position.x.toInt(), eyeHeight.toInt(), physics.position.z.toInt())
 
         val fluidHeight = eyePosition.y + getFluidHeight(eyePosition, block, block.block.fluid)
         if (fluidHeight > eyeHeight) {
@@ -164,11 +167,11 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         if (vehicle is SwimmingVehicle && !vehicle.canUpdatePassengerFluidMovement(WaterFluid)) {
             return
         }
-        update(WaterFluid, aabb, pushable, previous)
+        update(physics.entity.connection.registries.fluid.water, aabb, pushable, previous)
     }
 
     private fun clear() {
-        this.heights = Object2DoubleOpenHashMap()
+        this.heights = Object2DoubleOpenHashMap(0)
         primaryFluid = null
     }
 
@@ -180,7 +183,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         val pushable = physics.fluidPushable
 
         updateWater(aabb, pushable, previous.getDouble(WaterFluid))
-        update(LavaFluid, aabb, pushable, previous.getDouble(LavaFluid))
+        update(physics.entity.connection.registries.fluid.lava, aabb, pushable, previous.getDouble(LavaFluid))
     }
 
     override fun tick() {

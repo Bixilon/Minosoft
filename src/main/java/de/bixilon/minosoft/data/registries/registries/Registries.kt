@@ -43,9 +43,7 @@ import de.bixilon.minosoft.data.registries.entities.damage.DamageType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
-import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.data.registries.fluid.FluidFactories
-import de.bixilon.minosoft.data.registries.fluid.fluids.PixLyzerFluid
+import de.bixilon.minosoft.data.registries.fluid.FluidRegistry
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.ItemRegistry
 import de.bixilon.minosoft.data.registries.materials.Material
@@ -89,7 +87,7 @@ class Registries(
     val biome: Registry<Biome> = register("biome", Registry(codec = Biome))
     val dimension: Registry<Dimension> = register("dimension_type", Registry(codec = Dimension))
     val material: Registry<Material> = register("material", Registry(codec = Material))
-    val fluid: Registry<Fluid> = register("fluid", Registry(codec = PixLyzerFluid, integrated = FluidFactories))
+    val fluid: FluidRegistry = register("fluid", FluidRegistry())
     val soundEvent: ResourceLocationRegistry = register("sound_event", ResourceLocationRegistry())
     val recipes = RecipeRegistry()
 
