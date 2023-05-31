@@ -42,6 +42,10 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
     var rotation: EntityRotation = rotation1
         private set
 
+    init {
+        interpolateAABB(true)
+    }
+
 
     private fun interpolatePosition(delta: Float) {
         val position1 = this.position1
