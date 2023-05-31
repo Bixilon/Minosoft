@@ -12,14 +12,16 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
-import de.bixilon.minosoft.data.world.positions.ChunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.assignChunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -55,17 +57,34 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (positions.isEmpty()) return
         if (positions.size == 1) return clearBlock(offset, positions.first())
 
-        val updates: MutableMap<ChunkPosition, MutableSet<ChunkLocalBlockUpdate.LocalUpdate>> = mutableMapOf()
+        val updates: MutableMap<Chunk, MutableSet<ChunkLocalBlockUpdate.LocalUpdate>> = hashMapOf()
+
+        val chunkPosition = Vec2i.EMPTY
+        val chunkOffset = Vec2i.EMPTY
+        var chunk: Chunk? = null
 
         for (entry in positions) {
             val total = offset + entry
-            val chunkPosition = total.chunkPosition
-            val update = ChunkLocalBlockUpdate.LocalUpdate(total.inChunkPosition, null)
-            updates.getOrPut(chunkPosition) { hashSetOf() } += update
+            chunkPosition.assignChunkPosition(total)
+
+            if (chunk == null) {
+                chunk = this.chunks[chunkPosition] ?: continue // TODO: Don't query same chunk multiple times
+            } else if (chunk.chunkPosition != chunkPosition) {
+                chunkOffset.x = chunkPosition.x - chunk.chunkPosition.x
+                chunkOffset.y = chunkPosition.y - chunk.chunkPosition.y
+                chunk = chunk.traceChunk(chunkOffset) ?: continue
+            }
+
+            val inChunkPosition = total.inChunkPosition
+            if (chunk[inChunkPosition] == null) continue
+
+            val update = ChunkLocalBlockUpdate.LocalUpdate(inChunkPosition, null)
+
+            updates.getOrPut(chunk) { hashSetOf() } += update
         }
 
-        for ((chunkPosition, updates) in updates) {
-            this.chunks[chunkPosition]?.apply(updates)
+        for ((chunk, updates) in updates) {
+            chunk.apply(updates)
         }
     }
 
