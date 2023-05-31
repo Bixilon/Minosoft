@@ -32,7 +32,7 @@ object DefaultParticleBehavior {
         val typesConfig = connection.profiles.particle.types
         val invokers = listOf(
             CallbackEventListener.of<ExplosionEvent> {
-                if (typesConfig.explosions) {
+                if (!typesConfig.explosions) {
                     return@of
                 }
                 if (it.power >= 2.0f) {
@@ -64,6 +64,6 @@ object DefaultParticleBehavior {
             },
         )
 
-        connection.register(*invokers.toTypedArray())
+        connection.events.register(*invokers.toTypedArray())
     }
 }
