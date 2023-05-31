@@ -15,6 +15,7 @@ package de.bixilon.minosoft.physics.submersion
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.fluid.handler.FluidCollisionHandler
 import de.bixilon.minosoft.data.registries.fluid.handler.FluidEnterHandler
@@ -147,11 +149,12 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
             // TODO
         }
         val position = physics.position
-        val block = physics.positionInfo.chunk?.get(position.x.toInt() and 0x0F, position.y.toInt(), position.z.toInt() and 0x0F) ?: return
+        val eyePosition = Vec3i(position.x.floor, eyeHeight.floor, position.z.floor)
+
+        val block = physics.positionInfo.chunk?.get(eyePosition.x and 0x0F, eyePosition.y, eyePosition.z and 0x0F) ?: return
         if (block.block !is FluidHolder) {
             return
         }
-        val eyePosition = Vec3i(physics.position.x.toInt(), eyeHeight.toInt(), physics.position.z.toInt())
 
         val fluidHeight = eyePosition.y + getFluidHeight(eyePosition, block, block.block.fluid)
         if (fluidHeight > eyeHeight) {
@@ -175,7 +178,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
 
     private fun update() {
         val previousWater = this.heights.getDouble(WaterFluid)
-        val previousLava = this.heights.getDouble(WaterFluid)
+        val previousLava = this.heights.getDouble(LavaFluid)
 
         clear()
 
