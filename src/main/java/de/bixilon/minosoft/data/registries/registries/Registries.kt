@@ -139,6 +139,7 @@ class Registries(
         set(value) {
             field = value
             this.setParent(value)
+            fluid.updateWaterLava()
         }
 
     fun getEntityDataIndex(field: EntityDataField): Int? {
@@ -227,6 +228,7 @@ class Registries(
         if (cleanup) {
             shape.cleanup()
         }
+        fluid.updateWaterLava()
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
     }
 
