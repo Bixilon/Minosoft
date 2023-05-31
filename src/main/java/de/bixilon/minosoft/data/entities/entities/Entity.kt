@@ -38,6 +38,7 @@ import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import java.util.*
 
@@ -218,7 +219,9 @@ abstract class Entity(
 
     open fun postTick() {
         physics.postTick()
-        renderInfo.tick()
+        if (!RunConfiguration.DISABLE_RENDERING) {
+            renderInfo.tick()
+        }
     }
 
     open fun setObjectData(data: Int) = Unit
@@ -246,7 +249,9 @@ abstract class Entity(
         Entity::class.java.getDeclaredField("physics").forceSet(this, createPhysics())
         forceTeleport(initialPosition)
         forceRotate(initialRotation)
-        this::renderInfo.forceSet(EntityRenderInfo(this))
+        if (!RunConfiguration.DISABLE_RENDERING) {
+            this::renderInfo.forceSet(EntityRenderInfo(this))
+        }
     }
 
     open fun tickRiding() {
