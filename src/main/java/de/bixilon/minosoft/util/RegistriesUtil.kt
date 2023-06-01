@@ -81,7 +81,7 @@ object RegistriesUtil {
         worker.work(latch)
     }
 
-    fun Registries.optimize(latch: CountUpAndDownLatch) {
+    fun Registries.optimize(latch: AbstractLatch) {
         val worker = UnconditionalWorker()
         for (field in types.values) {
             worker += { field.get(this).unsafeCast<Registry<*>>().optimize() }
