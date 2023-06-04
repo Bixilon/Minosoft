@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
@@ -33,9 +34,13 @@ class BakedModel(
 
         var rendered = false
 
-        for ((index, faces) in faces.withIndex()) {
-            if (neighbours[index] != null) continue // TODO
+        for ((direction, faces) in faces.withIndex()) {
+            val neighbour = neighbours[direction]
+
             for (face in faces) {
+                if (FaceCulling.canCull(face, neighbour)) {
+                    continue
+                }
                 face.render(offset, mesh, light, tints)
 
                 rendered = true

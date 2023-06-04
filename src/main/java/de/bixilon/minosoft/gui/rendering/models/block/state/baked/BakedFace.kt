@@ -31,6 +31,7 @@ class BakedFace(
     val tintIndex: Int,
     val cull: Directions?,
     val texture: AbstractTexture,
+    val size: SideSize.FaceSize?,
 ) {
     private var cullIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
 
