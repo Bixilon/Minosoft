@@ -17,8 +17,10 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer.Companion.SELF_LIGHT_INDEX
 
@@ -48,7 +50,7 @@ class BakedFace(
         val textureId = this.texture.shaderId.buffer()
 
 
-        val mesh = mesh.opaqueMesh!! // TODO: use correct mesh
+        val mesh = mesh.mesh(texture)
 
         for (index in 0 until mesh.order.size step 2) {
             val vertexOffset = mesh.order[index] * 3
@@ -62,5 +64,13 @@ class BakedFace(
                 lightTint = lightTint,
             )
         }
+    }
+
+    private fun WorldMesh.mesh(texture: AbstractTexture): SingleWorldMesh {
+        return when (texture.transparency) {
+            TextureTransparencies.OPAQUE -> opaqueMesh
+            TextureTransparencies.TRANSPARENT -> transparentMesh
+            TextureTransparencies.TRANSLUCENT -> translucentMesh
+        }!!
     }
 }
