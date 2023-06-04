@@ -52,7 +52,7 @@ object RenderLoader {
 
     fun RenderContext.load(latch: AbstractLatch) {
         setThread()
-        Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Creating window..." }
         val stopwatch = Stopwatch()
         registerRenderer()
 
