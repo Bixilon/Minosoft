@@ -1,4 +1,14 @@
 {
+  "901": {
+    "name": "1.20-rc1",
+    "protocol_id": 1073741965,
+    "packets": 880
+  },
+  "900": {
+    "name": "1.20-pre7",
+    "protocol_id": 1073741964,
+    "packets": 880
+  },
   "899": {
     "name": "1.20-pre6",
     "protocol_id": 1073741963,
