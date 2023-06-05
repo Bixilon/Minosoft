@@ -18,10 +18,12 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
+@Deprecated("renderer")
 class CharData(
     private val context: RenderContext,
     val texture: AbstractTexture?,

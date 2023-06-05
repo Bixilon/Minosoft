@@ -24,7 +24,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.font.FontLoader
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -78,7 +78,7 @@ object RenderLoader {
         textureManager.dynamicTextures.load(initLatch)
         textureManager.initializeSkins(connection)
         textureManager.loadDefaultTextures()
-        font = FontLoader.load(this, initLatch)
+        font = FontManager.create(this, initLatch)
 
 
         framebufferManager.init()

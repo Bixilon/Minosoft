@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,24 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
+package de.bixilon.minosoft.gui.rendering.font.loader
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class LineSpacerElement(
-    guiRenderer: GUIRenderer,
-    lines: Int = 1,
-) : SpacerElement(guiRenderer, Vec2i.EMPTY) {
-    var lines: Int = 0
-        set(value) {
-            field = value
-            size = Vec2i(0, lines * Font.TOTAL_CHAR_HEIGHT)
-        }
-
-    init {
-        this.lines = lines
-    }
+object DefaultFontIndices {
+    val DEFAULT = "font/default.json".toResourceLocation()
+    val ALT = "font/alt.json".toResourceLocation()
+    val ILLAGERALT = "font/allageralt.json".toResourceLocation()
+    val UNIFORM = "font/uniform.json".toResourceLocation()
 }

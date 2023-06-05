@@ -13,12 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types
 
-import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 
 interface FontType {
-
-    fun postInit(latch: AbstractLatch) = Unit
 
     operator fun get(codePoint: Int): CodePointRenderer?
 }

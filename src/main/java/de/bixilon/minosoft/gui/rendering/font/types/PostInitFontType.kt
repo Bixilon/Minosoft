@@ -11,24 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
+package de.bixilon.minosoft.gui.rendering.font.types
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.kutil.latch.AbstractLatch
 
-class LineSpacerElement(
-    guiRenderer: GUIRenderer,
-    lines: Int = 1,
-) : SpacerElement(guiRenderer, Vec2i.EMPTY) {
-    var lines: Int = 0
-        set(value) {
-            field = value
-            size = Vec2i(0, lines * Font.TOTAL_CHAR_HEIGHT)
-        }
+interface PostInitFontType : FontType {
 
-    init {
-        this.lines = lines
-    }
+    fun postInit(latch: AbstractLatch) = Unit
 }

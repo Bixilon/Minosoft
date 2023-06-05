@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.font.types.factory
 
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
-import de.bixilon.minosoft.gui.rendering.font.types.bitmap.BitmapFontProvider
+import de.bixilon.minosoft.gui.rendering.font.types.bitmap.BitmapFontType
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyFontType
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy.LegacyUnicodeFontType
 
 object FontTypes : DefaultFactory<FontTypeFactory<*>>(
-    BitmapFontProvider,
+    BitmapFontType,
     LegacyUnicodeFontType,
     EmptyFontType,
     // TODO

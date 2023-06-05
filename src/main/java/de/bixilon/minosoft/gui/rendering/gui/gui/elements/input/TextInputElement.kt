@@ -18,7 +18,7 @@ import de.bixilon.kutil.string.StringUtil.codePointAtOrNull
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement

@@ -18,9 +18,10 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
@@ -103,7 +104,7 @@ open class TextFlowElement(
         val visibleLines: MutableList<TextFlowLineElement> = mutableListOf()
         val maxSize = maxSize
         val maxLines = maxSize.y / Font.TOTAL_CHAR_HEIGHT
-        val currentTime = TimeUtil.millis
+        val currentTime = millis()
         var textSize = Vec2i.EMPTY
         val active = this.active
 
@@ -172,7 +173,7 @@ open class TextFlowElement(
         if (active) {
             return
         }
-        val currentTime = TimeUtil.millis
+        val currentTime = millis()
 
         for (line in visibleLines) {
             if (currentTime - line.text.addTime > messageExpireTime) {
@@ -205,7 +206,7 @@ open class TextFlowElement(
 
     private data class TextFlowTextElement(
         val text: ChatComponent,
-        val addTime: Long = TimeUtil.millis,
+        val addTime: Long = millis(),
     )
 
     private data class TextFlowLineElement(

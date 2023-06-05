@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,20 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font
+package de.bixilon.minosoft.gui.rendering.font.types.font
 
+import de.bixilon.kutil.array.ArrayUtil.isIndex
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
+import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
+import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 
 class Font(
     val providers: Array<FontType>,
-) : FontType {
+) : PostInitFontType {
+    private val cache: Array<CodePointRenderer?> = arrayOfNulls(CACHE_SIZE)
 
-    override fun postInit(latch: AbstractLatch) {
+
+    private fun postInitFonts(latch: AbstractLatch) {
         val fontLatch = ParentLatch(1, latch)
         for (provider in providers) {
+            if (provider !is PostInitFontType) continue
             fontLatch.inc()
             DefaultThreadPool += {
                 provider.postInit(latch)
@@ -35,15 +41,36 @@ class Font(
         fontLatch.await()
     }
 
-    override fun get(char: Int): CharData? {
+    private fun buildCache() {
+        for (i in cache.indices) {
+            cache[i] = forceGet(i)
+        }
+    }
+
+    override fun postInit(latch: AbstractLatch) {
+        postInitFonts(latch)
+        buildCache()
+    }
+
+    fun forceGet(codePoint: Int): CodePointRenderer? {
         for (provider in providers) {
-            provider[char]?.let { return it }
+            provider[codePoint]?.let { return it }
         }
         return null
     }
 
+    override fun get(codePoint: Int): CodePointRenderer? {
+        if (cache.isIndex(codePoint)) {
+            return cache[codePoint]
+        }
+        return forceGet(codePoint)
+    }
 
+
+    @Deprecated("FontProperties")
     companion object {
+        private const val CACHE_SIZE = 127 // ascii
+
         const val CHAR_HEIGHT = 8
         const val CHAR_MARGIN = 1 // used for background ToDo: Set to 2, because underline does not match!
         const val TOTAL_CHAR_HEIGHT = CHAR_HEIGHT + 2 * CHAR_MARGIN // top and bottom

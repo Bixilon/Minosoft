@@ -11,14 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font
+package de.bixilon.minosoft.gui.rendering.font.loader
 
 import de.bixilon.kutil.array.ArrayUtil.trim
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.font.types.*
+import de.bixilon.minosoft.gui.rendering.font.types.FontType
+import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypes
+import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -26,11 +29,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 object FontLoader {
-    private val FONT_INDEX = "font/default.json".toResourceLocation()
 
 
-    fun load(context: RenderContext, latch: AbstractLatch): Font {
-        val fontIndex = context.connection.assetsManager.getOrNull(FONT_INDEX)?.readJsonObject() ?: return Font(arrayOf())
+    fun load(context: RenderContext, fontIndex: ResourceLocation, latch: AbstractLatch): Font? {
+        val fontIndex = context.connection.assetsManager.getOrNull(fontIndex)?.readJsonObject() ?: return null
 
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
         val providers: Array<FontType?> = arrayOfNulls(providersRaw.size)
@@ -39,7 +41,7 @@ object FontLoader {
         for ((index, provider) in providersRaw.withIndex()) {
             val type = provider["type"].toResourceLocation()
             worker += add@{
-                val factory = this[type]
+                val factory = FontTypes[type]
                 if (factory == null) {
                     Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Unknown font provider: $type" }
                     return@add
@@ -49,8 +51,6 @@ object FontLoader {
         }
         worker.work(latch)
 
-        return Font(
-            providers = providers.trim(),
-        )
+        return Font(providers = providers.trim())
     }
 }

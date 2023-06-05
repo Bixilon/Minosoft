@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments

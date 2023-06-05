@@ -32,6 +32,10 @@ class EmptyFontType(
     val chars: Int2ObjectOpenHashMap<EmptyCodeRenderer>,
 ) : FontType {
 
+    init {
+        chars.trim()
+    }
+
     override fun get(codePoint: Int): CodePointRenderer? {
         return chars[codePoint]
     }

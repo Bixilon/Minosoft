@@ -18,7 +18,7 @@ import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.gui.rendering.camera.Camera
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
@@ -65,7 +65,7 @@ class RenderContext(
     lateinit var renderStats: AbstractRenderStats
         private set
 
-    var font: Font = unsafeNull()
+    var font: FontManager = unsafeNull()
 
 
     val thread: Thread = unsafeNull()
