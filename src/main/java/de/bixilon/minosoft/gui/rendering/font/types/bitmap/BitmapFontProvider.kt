@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.provider
+package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -23,6 +23,8 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.types.FontType
+import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -30,7 +32,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 class BitmapFontProvider(
     context: RenderContext,
     data: Map<String, Any>,
-) : FontProvider {
+) : FontType {
     val ascent = data["ascent"].toDouble()
     private val chars: Int2ObjectOpenHashMap<CharData> = Int2ObjectOpenHashMap()
     var charWidth = 8
@@ -125,7 +127,7 @@ class BitmapFontProvider(
         return chars[char]
     }
 
-    companion object : FontProviderFactory<BitmapFontProvider> {
+    companion object : FontTypeFactory<BitmapFontProvider> {
         private const val EMPTY_CHAR_WIDTH = 4
         private const val CHARS_PER_ROW = 16
         override val identifier: ResourceLocation = "minecraft:bitmap".toResourceLocation()

@@ -11,12 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.provider
+package de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy
 
-import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+
+class LegacyUnicodeCodeRenderer(
+    val texture: AbstractTexture,
+    var uvStart: Vec2,
+    var uvEnd: Vec2,
+    val width: Float,
+) : CodePointRenderer {
 
 
-interface FontProviderFactory<T : FontProvider> : Identified {
-    fun build(context: RenderContext, data: Map<String, Any>): T
+    fun updateArray() {
+        uvStart = uvStart * texture.textureArrayUV
+        uvEnd = uvEnd * texture.textureArrayUV
+    }
 }

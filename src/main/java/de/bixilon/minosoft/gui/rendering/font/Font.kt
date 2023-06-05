@@ -16,11 +16,11 @@ package de.bixilon.minosoft.gui.rendering.font
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
-import de.bixilon.minosoft.gui.rendering.font.provider.FontProvider
+import de.bixilon.minosoft.gui.rendering.font.types.FontType
 
 class Font(
-    val providers: Array<FontProvider>,
-) : FontProvider {
+    val providers: Array<FontType>,
+) : FontType {
 
     override fun postInit(latch: AbstractLatch) {
         val fontLatch = ParentLatch(1, latch)

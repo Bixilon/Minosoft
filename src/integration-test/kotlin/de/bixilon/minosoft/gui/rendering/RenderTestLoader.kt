@@ -17,7 +17,7 @@ import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
-import de.bixilon.minosoft.gui.rendering.font.provider.BitmapFontProvider
+import de.bixilon.minosoft.gui.rendering.font.types.bitmap.BitmapFontProvider
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection

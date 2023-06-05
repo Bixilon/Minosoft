@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
-import de.bixilon.minosoft.data.text.BaseComponent
-
-data class TextLineInfo(
-    val text: BaseComponent = BaseComponent(),
-    var width: Int = 0,
-)
+object FontProperties {
+    const val MAX_CHAR_WIDTH = 16 // maximum width that a char can have
+    const val CHAR_HEIGHT = 12 // height every char has
+    const val CHAR_SPACING = 1  // spacing every char has around itself
+}

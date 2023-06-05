@@ -17,21 +17,15 @@ import de.bixilon.kutil.array.ArrayUtil.trim
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
-import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.font.provider.*
+import de.bixilon.minosoft.gui.rendering.font.types.*
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
-object FontLoader : DefaultFactory<FontProviderFactory<*>>(
-    BitmapFontProvider,
-    LegacyUnicodeFontProvider,
-    SpaceFontProvider,
-    // ToDo: True type font
-) {
+object FontLoader {
     private val FONT_INDEX = "font/default.json".toResourceLocation()
 
 
@@ -39,7 +33,7 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
         val fontIndex = context.connection.assetsManager.getOrNull(FONT_INDEX)?.readJsonObject() ?: return Font(arrayOf())
 
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
-        val providers: Array<FontProvider?> = arrayOfNulls(providersRaw.size)
+        val providers: Array<FontType?> = arrayOfNulls(providersRaw.size)
 
         val worker = UnconditionalWorker()
         for ((index, provider) in providersRaw.withIndex()) {
