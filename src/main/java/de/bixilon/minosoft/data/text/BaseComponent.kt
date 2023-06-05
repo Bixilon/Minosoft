@@ -57,8 +57,8 @@ class BaseComponent : ChatComponent {
         json["strikethrough"]?.toBoolean()?.let { formatting[FormattingCodes.STRIKETHROUGH] = it }
         json["obfuscated"]?.toBoolean()?.let { formatting[FormattingCodes.OBFUSCATED] = it }
 
-        val clickEvent = parent?.clickEvent ?: json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restricted) }
-        val hoverEvent = parent?.hoverEvent ?: json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restricted) }
+        val clickEvent = json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restricted) } ?: parent?.clickEvent
+        val hoverEvent = json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restricted) } ?: parent?.hoverEvent
 
         val text = json["text"]?.nullCast<String>() ?: ""
 
