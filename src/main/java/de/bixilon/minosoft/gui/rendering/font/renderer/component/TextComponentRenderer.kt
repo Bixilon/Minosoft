@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
@@ -29,22 +30,20 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
+    override fun render(initialOffset: Vec2, offset: Vec2, size: Vec2, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
         if (text.message.isEmpty()) {
             return false
         }
+        val font = context.font[text.font]
         val elementMaxSize = element.maxSize
         val elementSize = element.size
         val color = text.color ?: ChatColors.WHITE
         val shadow = renderInfo.shadow
-        val italic: Boolean = text.formatting.contains(FormattingCodes.ITALIC)
         val bold: Boolean = text.formatting.contains(FormattingCodes.BOLD)
-        val strikethrough: Boolean = text.formatting.contains(FormattingCodes.STRIKETHROUGH)
-        val underlined: Boolean = text.formatting.contains(FormattingCodes.UNDERLINED)
 
         // ToDo: Only 1 quad for the underline and the strikethrough
 
-        var alignmentXOffset = 0
+        var alignmentXOffset = 0.0f
         var currentLineText = ""
         if (size.x > elementMaxSize.x || size.y > elementMaxSize.y) {
             // The size is already bigger/equals the maximum size
@@ -65,15 +64,15 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         fun applyOffset() {
             val lastLine = renderInfo.lines.getOrNull(renderInfo.lineIndex)
-            if (consumer == null && offset.x == initialOffset.x + renderInfo.charMargin && (lastLine == null || lastLine.width != 0)) {
+            if (consumer == null && offset.x == initialOffset.x + renderInfo.charMargin && (lastLine == null || lastLine.width != 0.0f)) {
                 // preparing phase
                 renderInfo.lines += TextLineInfo()
             } else {
-                alignmentXOffset = renderInfo.fontAlignment.getOffset(elementSize.x, renderInfo.currentLine.width)
+                alignmentXOffset = renderInfo.fontAlignment.getOffset(elementSize.x.toFloat(), renderInfo.currentLine.width)
             }
         }
 
-        fun addY(height: Int): Boolean {
+        fun addY(height: Float): Boolean {
             val nextY = offset.y + height
             val nextSizeY = nextY - initialOffset.y + renderInfo.charHeight // add initial height for chars + end margin
             if (nextSizeY > elementMaxSize.y) {
@@ -97,7 +96,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             return false
         }
 
-        fun addX(width: Int, wrap: Boolean = true): Boolean {
+        fun addX(width: Float, wrap: Boolean = true): Boolean {
             val nextX = offset.x + width
             val nextSizeX = nextX - initialOffset.x - renderInfo.charMargin // end margin
             if (nextSizeX > elementMaxSize.x) {
@@ -121,7 +120,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
 
-        if (size.y == 0) {
+        if (size.y == 0.0f) {
             // Add initial height of the letter for the first line
             val nextSizeY = renderInfo.charHeight
             if (nextSizeY > elementMaxSize.y) {
@@ -147,7 +146,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 continue
             }
 
-            val charData = context.font[char] ?: continue
+            val charData = font?.get(char) ?: context.font.default[char] ?: continue
 
             val charWidth = charData.calculateWidth(renderInfo.scale, renderInfo.shadow)
             var width = charWidth
@@ -168,7 +167,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 return true
             }
 
-            val letterOffset = Vec2i(offset.x + alignmentXOffset, offset.y)
+            val letterOffset = Vec2(offset.x + alignmentXOffset, offset.y)
 
             // remove width from the offset again
             letterOffset.x -= charWidth
@@ -178,7 +177,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 // ToDo: Remove Font.HORIZONTAL_SPACING
             }
 
-            consumer?.let { charData.render(letterOffset, color, shadow, italic, bold, strikethrough, underlined, it, options, renderInfo.scale) }
+            consumer?.let { charData.render(letterOffset, color, shadow, text.formatting, it, options, renderInfo.scale) }
 
             if (consumer == null) {
                 currentLineText += char.toChar()
@@ -207,18 +206,16 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
     override fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: TextComponent, light: Int) {
         val color = text.color ?: ChatColors.BLACK
-        val italic = text.formatting.contains(FormattingCodes.ITALIC)
-        val bold = text.formatting.contains(FormattingCodes.BOLD)
-        val strikethrough = text.formatting.contains(FormattingCodes.STRIKETHROUGH)
-        val underlined = text.formatting.contains(FormattingCodes.UNDERLINED)
+
+        val font = context.font[text.font]
 
         for (char in text.message.codePoints()) {
-            val data = context.font[char] ?: continue
-            val expectedWidth = ((data.width + Font.HORIZONTAL_SPACING) * scale).toInt()
+            val data = font?.get(char) ?: context.font.default[char] ?: continue
+            val expectedWidth = ((data.calculateWidth(scale, false) + Font.HORIZONTAL_SPACING) * scale).toInt()
             if (maxSize.x - offset.x < expectedWidth) { // ToDo
                 return
             }
-            val width = ((data.render3d(consumer, color, shadow = false, italic = italic, bold = bold, strikethrough = strikethrough, underlined = underlined, scale = scale) + Font.HORIZONTAL_SPACING) * scale).toInt()
+            val width = ((data.render3d(consumer, color, shadow = false, text.formatting, scale = scale) + Font.HORIZONTAL_SPACING) * scale).toInt()
             offset.x += width
             consumer.offset((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION.toFloat()))
         }

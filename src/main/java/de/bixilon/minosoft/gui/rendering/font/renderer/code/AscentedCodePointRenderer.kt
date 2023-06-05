@@ -11,10 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.renderer
+package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
-object FontProperties {
-    const val MAX_CHAR_WIDTH = 16 // maximum width that a char can have
-    const val CHAR_HEIGHT = 12 // height every char has
-    const val CHAR_SPACING = 1  // spacing every char has around itself
+/**
+ * Font that is shifted vertically
+ * See the great explanation of @Suragch at https://stackoverflow.com/questions/27631736/meaning-of-top-ascent-baseline-descent-bottom-and-leading-in-androids-font
+ */
+interface AscentedCodePointRenderer : CodePointRenderer {
+    val descent: Float
+    val ascent: Float
 }

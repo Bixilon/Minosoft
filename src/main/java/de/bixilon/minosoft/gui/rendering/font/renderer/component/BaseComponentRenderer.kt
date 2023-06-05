@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: BaseComponent): Boolean {
+    override fun render(initialOffset: Vec2, offset: Vec2, size: Vec2, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: BaseComponent): Boolean {
         for (part in text.parts) {
             if (ChatComponentRenderer.render(initialOffset, offset, size, element, context, consumer, options, renderInfo, part)) {
                 return true

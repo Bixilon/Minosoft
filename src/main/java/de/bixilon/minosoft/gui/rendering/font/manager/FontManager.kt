@@ -16,18 +16,31 @@ package de.bixilon.minosoft.gui.rendering.font.manager
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.font.loader.DefaultFontIndices
+import de.bixilon.minosoft.gui.rendering.font.loader.FontLoader
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
+import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
+import de.bixilon.minosoft.gui.rendering.font.types.font.EmptyFont
 import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 
-class FontManager {
-    val default: FontType
+class FontManager(
+    val default: FontType,
+) {
 
-    fun postInit(latch: AbstractLatch)
+    fun postInit(latch: AbstractLatch) {
+        if (default is PostInitFontType) {
+            default.postInit(latch)
+        }
+    }
 
 
-    operator fun get(font: ResourceLocation): Font?
+    operator fun get(font: ResourceLocation?): Font? = null
 
     companion object {
-        fun create(context: RenderContext, latch: AbstractLatch): FontManager {}
+        fun create(context: RenderContext, latch: AbstractLatch): FontManager {
+            val font = FontLoader.load(context, DefaultFontIndices.DEFAULT, latch)
+
+            return FontManager(font ?: EmptyFont)
+        }
     }
 }

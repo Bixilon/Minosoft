@@ -18,12 +18,14 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class GUIMeshCache(
     var halfSize: Vec2,
     override val order: Array<Pair<Int, Int>>,
+    override val context: RenderContext,
     initialCacheSize: Int = 1000,
     var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
 ) : GUIVertexConsumer {

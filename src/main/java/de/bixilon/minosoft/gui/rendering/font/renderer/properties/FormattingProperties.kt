@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,11 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.renderer.element
+package de.bixilon.minosoft.gui.rendering.font.renderer.properties
 
-import de.bixilon.minosoft.data.text.BaseComponent
+object FormattingProperties {
+    const val ITALIC_OFFSET = 2.5f
+    const val SHADOW_OFFSET = 1.0f
+    const val BOLD_OFFSET = 0.5f
 
-data class TextLineInfo(
-    val text: BaseComponent = BaseComponent(),
-    var width: Float = 0.0f,
-)
+
+    const val SHADOW_COLOR = 0.25f
+}

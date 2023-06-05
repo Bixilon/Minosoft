@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.hover.HoverEvent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
@@ -37,6 +38,7 @@ open class TextComponent(
     message: Any? = "",
     override var color: RGBColor? = null,
     override val formatting: TextFormatting = TextFormatting(),
+    var font: ResourceLocation? = null,
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
 ) : ChatComponent, TextStyle {
@@ -224,7 +226,7 @@ open class TextComponent(
     }
 
     override fun copy(): ChatComponent {
-        return TextComponent(message, color, formatting.copy(), clickEvent, hoverEvent)
+        return TextComponent(message, color, formatting.copy(), font, clickEvent, hoverEvent)
     }
 
     override fun hashCode(): Int {

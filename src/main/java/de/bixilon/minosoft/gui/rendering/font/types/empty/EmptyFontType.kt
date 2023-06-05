@@ -57,7 +57,7 @@ class EmptyFontType(
         fun load(data: JsonObject): Int2ObjectOpenHashMap<EmptyCodeRenderer>? {
             val advances = data["advances"]?.toJsonObject() ?: return null
 
-            val spaces = Int2ObjectOpenHashMap<EmptyCodeRenderer>(advances.size, 0.0f)
+            val spaces = Int2ObjectOpenHashMap<EmptyCodeRenderer>(advances.size, 0.01f)
             for ((char, spacing) in advances) {
                 val codePoint = char.codePointAt(0)
 

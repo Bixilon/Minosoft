@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 
 
 class WorldGUIConsumer(val mesh: SingleWorldMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
+    override val context: RenderContext get() = mesh.context
     override val order: Array<Pair<Int, Int>> get() = mesh.order
 
     override fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {

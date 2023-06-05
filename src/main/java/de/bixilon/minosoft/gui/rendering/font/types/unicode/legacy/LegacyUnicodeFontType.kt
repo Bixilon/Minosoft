@@ -21,8 +21,8 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.font.renderer.FontProperties
-import de.bixilon.minosoft.gui.rendering.font.types.FontType
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
+import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -32,7 +32,7 @@ import java.io.InputStream
 
 class LegacyUnicodeFontType(
     val chars: Array<LegacyUnicodeCodeRenderer?>,
-) : FontType {
+) : PostInitFontType {
 
     override fun postInit(latch: AbstractLatch) {
         for (char in chars) {
@@ -51,7 +51,7 @@ class LegacyUnicodeFontType(
         private const val CHAR_ROW = 0x0F
         private const val CHAR_SIZE = 0x0F
         private const val PIXEL = 1.0f / (CHAR_SIZE * CHAR_ROW)
-        private const val WIDTH_SCALE = FontProperties.CHAR_HEIGHT / CHAR_SIZE.toFloat()
+        private const val WIDTH_SCALE = FontProperties.CHAR_BASE_HEIGHT / CHAR_SIZE.toFloat()
 
         override fun build(context: RenderContext, data: Map<String, Any>): LegacyUnicodeFontType? {
             val assets = context.connection.assetsManager

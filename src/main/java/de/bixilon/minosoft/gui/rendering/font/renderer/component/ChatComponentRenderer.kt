@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -35,7 +36,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
     /**
      * Returns true if the text exceeded the maximum size
      */
-    fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: T): Boolean
+    fun render(initialOffset: Vec2, offset: Vec2, size: Vec2, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: T): Boolean
 
     fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: T, light: Int)
 
@@ -44,7 +45,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
     companion object : ChatComponentRenderer<ChatComponent> {
         const val TEXT_BLOCK_RESOLUTION = 128
 
-        override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: ChatComponent): Boolean {
+        override fun render(initialOffset: Vec2, offset: Vec2, size: Vec2, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: ChatComponent): Boolean {
             return when (text) {
                 is BaseComponent -> BaseComponentRenderer.render(initialOffset, offset, size, element, context, consumer, options, renderInfo, text)
                 is TextComponent -> TextComponentRenderer.render(initialOffset, offset, size, element, context, consumer, options, renderInfo, text)

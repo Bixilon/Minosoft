@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.decide
@@ -36,6 +37,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import de.bixilon.minosoft.util.KUtil.charCount
@@ -118,12 +120,12 @@ open class TextElement(
             if (!emptyMessage) {
                 val renderInfo = TextRenderInfo(
                     fontAlignment = fontAlignment,
-                    charHeight = charHeight,
+                    charHeight = charHeight.toFloat(),
                     charMargin = charMargin,
                     scale = scale,
                     shadow = shadow,
                 )
-                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, InfiniteSizeElement(guiRenderer), context, null, null, renderInfo, value)
+                ChatComponentRenderer.render(Vec2.EMPTY, Vec2.EMPTY, Vec2(prefSize), InfiniteSizeElement(guiRenderer), context, null, null, renderInfo, value)
             }
             _prefSize = prefSize
         }
@@ -151,13 +153,13 @@ open class TextElement(
         val size = Vec2i.EMPTY
         val renderInfo = TextRenderInfo(
             fontAlignment = fontAlignment,
-            charHeight = charHeight,
+            charHeight = charHeight.toFloat(),
             charMargin = charMargin,
             scale = scale,
             shadow = shadow,
         )
         if (!emptyMessage) {
-            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, this, context, null, null, renderInfo, chatComponent)
+            ChatComponentRenderer.render(Vec2.EMPTY, Vec2.EMPTY, Vec2(size), this, context, null, null, renderInfo, chatComponent)
             renderInfo.lineIndex = 0
         }
         if (renderInfo.lines.size > 1 && size.y > Font.CHAR_HEIGHT) {
@@ -180,7 +182,7 @@ open class TextElement(
 
         if (background) {
             for ((line, info) in renderInfo.lines.withIndex()) {
-                val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * charHeight)
+                val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x.toFloat(), info.width), line * charHeight)
                 consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), context.textureManager.whiteTexture, backgroundColor, options)
             }
         }
@@ -190,7 +192,7 @@ open class TextElement(
             vertices *= 2
         }
         consumer.ensureSize(vertices)
-        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, this, context, consumer, options, renderInfo, chatComponent)
+        ChatComponentRenderer.render(Vec2(initialOffset), Vec2(initialOffset), Vec2.EMPTY, this, context, consumer, options, renderInfo, chatComponent)
         renderInfo.lineIndex = 0
     }
 
@@ -262,10 +264,10 @@ open class TextElement(
             charToCheck++
         }
         val text = line.text.getTextAt(charToCheck)
-        offset.x -= line0.width // ToDo: Not 100% correct
+        offset.x -= line0.width.toInt() // ToDo: Not 100% correct
 
 
-        offset.x += fontAlignment.getOffset(size.x, line.width)
+        offset.x += fontAlignment.getOffset(size.x, line.width.toInt())
         return Pair(text, offset)
     }
 

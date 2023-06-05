@@ -16,10 +16,12 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 
 interface GUIVertexConsumer {
+    val context: RenderContext
     val order: Array<Pair<Int, Int>>
 
     fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?)

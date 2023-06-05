@@ -344,8 +344,8 @@ open class TextInputElement(
                 continue
             }
             val charDelta = position.x - line.width
-            val width = guiRenderer.context.font[value.codePointAtOrNull(pointer) ?: break]?.width ?: break
-            if (charDelta != 0 && charDelta >= width / 2) {
+            val width = guiRenderer.context.font.default[value.codePointAtOrNull(pointer) ?: break]?.calculateWidth(1.0f, true) ?: break
+            if (charDelta != 0.0f && charDelta >= width / 2) {
                 pointer++
             }
             break

@@ -14,16 +14,20 @@
 package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.code.AscentedCodePointRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.code.RasterizedCodePointRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
 class BitmapCodeRenderer(
-    val texture: AbstractTexture,
-    var uvStart: Vec2,
-    var uvEnd: Vec2,
-    val width: Float,
-) : CodePointRenderer {
-
+    override val texture: AbstractTexture,
+    override var uvStart: Vec2,
+    override var uvEnd: Vec2,
+    override val width: Float,
+) : RasterizedCodePointRenderer, AscentedCodePointRenderer {
+    override val ascent: Float
+        get() = 1.0f
+    override val descent: Float
+        get() = 1.0f
 
     fun updateArray() {
         uvStart = uvStart * texture.textureArrayUV

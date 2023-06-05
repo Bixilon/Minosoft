@@ -14,13 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.math.simple.FloatMath.ceil
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
 @Deprecated("renderer")
@@ -31,106 +25,4 @@ class CharData(
     val scaledWidth: Int,
     var uvStart: Vec2,
     var uvEnd: Vec2,
-) {
-
-    fun postInit() {
-        if (texture == null) {
-            return
-        }
-        uvStart = uvStart * texture.textureArrayUV
-        uvEnd = uvEnd * texture.textureArrayUV
-    }
-
-    fun render(position: Vec2i, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, consumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float) {
-        if (shadow) {
-            _render(position, color, true, italic, bold, strikethrough, underlined, consumer, options, scale)
-        }
-        _render(position, color, false, italic, bold, strikethrough, underlined, consumer, options, scale)
-    }
-
-    private fun GUIVertexConsumer.addQuad(start: Vec2, end: Vec2, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
-        val italicOffset = if (italic) (end.y - start.y) / Font.CHAR_HEIGHT.toFloat() * ITALIC_OFFSET else 0.0f
-
-        val positions = arrayOf(
-            Vec2(start.x + italicOffset, start.y),
-            Vec2(end.x + italicOffset, start.y),
-            end,
-            Vec2(start.x, end.y),
-        )
-        val texturePositions = arrayOf(
-            Vec2(uvEnd.x, uvStart.y),
-            uvStart,
-            Vec2(uvStart.x, uvEnd.y),
-            uvEnd,
-        )
-
-        for ((vertexIndex, textureIndex) in this.order) {
-            addVertex(positions[vertexIndex], texture, texturePositions[textureIndex], tint, options)
-        }
-    }
-
-    private fun _render(position: Vec2i, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, vertexConsumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float) {
-        if (texture == null) {
-            return
-        }
-        var color = color
-
-        var shadowOffset = 0.0f
-        if (shadow) {
-            shadowOffset = SHADOW_OFFSET
-            color *= 0.25f
-        }
-
-        var boldOffset = 0.0f
-
-        if (bold) {
-            boldOffset = BOLD_OFFSET * scale
-        }
-        val charHeight = Font.CHAR_HEIGHT * scale
-        val horizontalSpacing = Font.HORIZONTAL_SPACING * scale
-        val verticalSpacing = Font.VERTICAL_SPACING * scale
-
-
-        val startPosition = Vec2(position) + (shadowOffset * scale)
-        val endPosition = startPosition + (Vec2(scaledWidth * scale, charHeight))
-
-
-
-        vertexConsumer.addQuad(startPosition, endPosition, texture, uvStart, uvEnd, italic, color, options)
-
-        if (bold) {
-            vertexConsumer.addQuad(startPosition + Vec2(boldOffset, 0.0f), endPosition + Vec2(boldOffset, 0.0f), texture, uvStart, uvEnd, italic, color, options)
-        }
-        val whiteTexture = context.textureManager.whiteTexture
-
-        if (strikethrough) {
-            vertexConsumer.addQuad(startPosition + Vec2(-horizontalSpacing, charHeight / 2.0f - scale / 2), Vec2(endPosition.x + horizontalSpacing, startPosition.y + charHeight / 2.0f + scale / 2), whiteTexture.texture, whiteTexture.uvStart, whiteTexture.uvEnd, italic, color, options)
-        }
-
-        if (underlined) {
-            vertexConsumer.addQuad(startPosition + Vec2(-horizontalSpacing, charHeight), Vec2(endPosition.x + boldOffset + horizontalSpacing, startPosition.y + charHeight + verticalSpacing / 2.0f), whiteTexture.texture, whiteTexture.uvStart, whiteTexture.uvEnd, italic, color, options)
-        }
-
-        // ToDo: Obfuscated
-    }
-
-    fun calculateWidth(scale: Float, shadow: Boolean): Int {
-        var width = scaledWidth.toFloat()
-        if (shadow) {
-            width += SHADOW_OFFSET
-        }
-
-        return (width * scale).ceil
-    }
-
-    fun render3d(consumer: WorldGUIConsumer, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, scale: Float): Float {
-        render(Vec2i(0, 0), color, shadow, italic, bold, strikethrough, underlined, consumer, null, scale)
-        return scaledWidth.toFloat()
-    }
-
-    companion object {
-        const val ITALIC_OFFSET = 2.5f
-        const val SHADOW_OFFSET = 1.0f
-        const val BOLD_OFFSET = 0.5f
-    }
-}
+)

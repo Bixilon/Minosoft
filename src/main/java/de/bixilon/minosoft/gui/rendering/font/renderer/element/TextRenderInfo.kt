@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class TextRenderInfo(
     val fontAlignment: HorizontalAlignments,
-    val charHeight: Int,
+    val charHeight: Float,
     val charMargin: Int,
     val scale: Float,
     val shadow: Boolean,

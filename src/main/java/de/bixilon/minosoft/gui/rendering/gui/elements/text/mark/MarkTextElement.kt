@@ -83,7 +83,7 @@ class MarkTextElement(
             val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), scale = scale, parent = _parent)
             val mark = TextElement(guiRenderer, message.substring(markStartPosition, markEndPosition), scale = scale, parent = _parent)
             val markOffset = Vec2i(preMark.renderInfo.lines.lastOrNull()?.width ?: 0, preMark.size.y)
-            if (markOffset.y > 0 && (preMark.renderInfo.lines.lastOrNull()?.width ?: 0) <= (renderInfo.lines.lastOrNull()?.width ?: 0)) {
+            if (markOffset.y > 0 && (preMark.renderInfo.lines.lastOrNull()?.width ?: 0.0f) <= (renderInfo.lines.lastOrNull()?.width ?: 0.0f)) {
                 markOffset.y -= (Font.TOTAL_CHAR_HEIGHT * scale).toInt()
             }
 
