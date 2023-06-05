@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.advancements
 
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+
 data class Advancement(
-    val parent: String?,
+    val parent: ResourceLocation?,
     val display: AdvancementDisplay?,
     val criteria: Set<String>,
     val requirements: Set<Set<String>>,

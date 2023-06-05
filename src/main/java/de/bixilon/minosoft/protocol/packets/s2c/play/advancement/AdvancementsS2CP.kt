@@ -18,8 +18,10 @@ import de.bixilon.minosoft.advancements.Advancement
 import de.bixilon.minosoft.advancements.AdvancementDisplay
 import de.bixilon.minosoft.advancements.AdvancementFrames
 import de.bixilon.minosoft.advancements.AdvancementProgress
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W18A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -28,45 +30,15 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class AdvancementsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val reset = buffer.readBoolean()
-    val advancements: Map<String, Advancement?>
-    val progress: Map<String, Set<AdvancementProgress>>
+    val advancements: Map<ResourceLocation, Advancement>
+    val remove: Set<ResourceLocation>
+    val progress: Map<ResourceLocation, Set<AdvancementProgress>>
 
     init {
-        val advancements: MutableMap<String, Advancement?> = mutableMapOf()
-        for (i in 0 until buffer.readVarInt()) {
-            val key = buffer.readString()
-            val parent = buffer.readOptional { readString() }
-            val display = buffer.readOptional { buffer.readDisplay() }
-            val criteria = buffer.readArray { buffer.readString() }.toSet()
-            val requirements = buffer.readArray { buffer.readArray { buffer.readString() }.toSet() }.toSet()
+        this.advancements = buffer.readMap(key = { buffer.readResourceLocation() }, value = { buffer.readAdvancement() })
+        this.remove = buffer.readSet { buffer.readResourceLocation() }
 
-            advancements[key] = Advancement(
-                parent = parent,
-                display = display,
-                criteria = criteria,
-                requirements = requirements,
-            )
-        }
-        for (remove in buffer.readArray { buffer.readString() }) {
-            advancements[remove] = null
-        }
-        this.advancements = advancements
-
-        val progress: MutableMap<String, Set<AdvancementProgress>> = mutableMapOf()
-        for (i in 0 until buffer.readVarInt()) {
-            val name = buffer.readString()
-            val criteria: MutableSet<AdvancementProgress> = mutableSetOf()
-            for (ii in 0 until buffer.readVarInt()) {
-                val criterion = buffer.readString()
-                val archiveTime = buffer.readOptional { readLong() }
-                criteria += AdvancementProgress(
-                    criterion = criterion,
-                    archiveTime = archiveTime,
-                )
-            }
-            progress[name] = criteria
-        }
-        this.progress = progress
+        this.progress = buffer.readMap(key = { buffer.readResourceLocation() }, value = { buffer.readSet { buffer.readProgress() } })
     }
 
     override fun log(reducedLog: Boolean) {
@@ -77,13 +49,40 @@ class AdvancementsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
+    fun PlayInByteBuffer.readProgress(): AdvancementProgress {
+        val criterion = readString()
+        val archiveTime = readOptional { readLong() }
+
+        return AdvancementProgress(
+            criterion = criterion,
+            archiveTime = archiveTime,
+        )
+    }
+
+    fun PlayInByteBuffer.readAdvancement(): Advancement {
+        val parent = readOptional { readResourceLocation() }
+        val display = readOptional { readDisplay() }
+        val criteria = readSet { readString() }
+        val requirements = readSet { readSet { readString() } }
+        if (versionId >= V_23W18A) { // TODO: not 100% sure
+            val sendTelemetry = readBoolean()
+        }
+
+        return Advancement(
+            parent = parent,
+            display = display,
+            criteria = criteria,
+            requirements = requirements,
+        )
+    }
+
     fun PlayInByteBuffer.readDisplay(): AdvancementDisplay {
         val title = readChatComponent()
         val description = readChatComponent()
         val icon = readItemStack()
         val frame = AdvancementFrames[readVarInt()]
         val flags = readInt()
-        val background = if (flags.isBit(0)) readString() else null
+        val background = if (flags.isBit(0)) readResourceLocation() else null
         val position = readVec2f()
 
         return AdvancementDisplay(
