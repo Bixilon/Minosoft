@@ -22,6 +22,9 @@ import de.bixilon.minosoft.gui.rendering.font.types.FontType
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.font.EmptyFont
 import de.bixilon.minosoft.gui.rendering.font.types.font.Font
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class FontManager(
     val default: FontType,
@@ -39,6 +42,12 @@ class FontManager(
     companion object {
         fun create(context: RenderContext, latch: AbstractLatch): FontManager {
             val font = FontLoader.load(context, DefaultFontIndices.DEFAULT, latch)
+
+            // TODO: load multiple fonts
+
+            if (font == null) {
+                Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Font ${DefaultFontIndices.DEFAULT} seems to be empty!" }
+            }
 
             return FontManager(font ?: EmptyFont)
         }

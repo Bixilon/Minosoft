@@ -51,6 +51,9 @@ object FontLoader {
         }
         worker.work(latch)
 
-        return Font(providers = providers.trim())
+        val trimmed = providers.trim()
+        if (trimmed.isEmpty()) return null
+
+        return Font(trimmed)
     }
 }
