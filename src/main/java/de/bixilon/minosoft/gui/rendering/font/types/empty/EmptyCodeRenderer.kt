@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
-class EmptyCodeRenderer(
+data class EmptyCodeRenderer(
     val width: Int,
 ) : CodePointRenderer {
 

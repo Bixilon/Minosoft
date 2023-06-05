@@ -23,13 +23,13 @@ class EmptyFontTypeTest {
     @Test
     fun singleChar() {
         val json: JsonObject = mapOf("advances" to mapOf(" " to 10))
-        assertEquals(EmptyFontType.load(json), mapOf(' '.code to 10))
+        assertEquals(EmptyFontType.load(json), mapOf(' '.code to EmptyCodeRenderer(10)))
     }
 
     @Test
     fun multipleChars() {
         val json: JsonObject = mapOf("advances" to mapOf(" " to 10, "a" to 0))
-        assertEquals(EmptyFontType.load(json), mapOf(' '.code to 10, 'a'.code to 0))
+        assertEquals(EmptyFontType.load(json), mapOf(' '.code to EmptyCodeRenderer(10), 'a'.code to EmptyCodeRenderer(0)))
     }
 
     @Test
