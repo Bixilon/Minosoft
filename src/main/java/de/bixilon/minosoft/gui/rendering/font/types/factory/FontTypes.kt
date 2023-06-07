@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font.types.factory
 
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.gui.rendering.font.types.ReferenceFontType
 import de.bixilon.minosoft.gui.rendering.font.types.bitmap.BitmapFontType
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyFontType
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy.LegacyUnicodeFontType
@@ -22,8 +23,8 @@ object FontTypes : DefaultFactory<FontTypeFactory<*>>(
     BitmapFontType,
     LegacyUnicodeFontType,
     EmptyFontType,
+    ReferenceFontType,
     // TODO
     //  - ttf
     // - unihex
-    // - reference
 )
