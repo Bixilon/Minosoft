@@ -1,4 +1,10 @@
 {
+  "921": {
+    "name": "1.20",
+    "protocol_id": 763,
+    "packets": 880,
+    "type": "release"
+  },
   "901": {
     "name": "1.20-rc1",
     "protocol_id": 1073741965,

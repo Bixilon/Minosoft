@@ -11,13 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol
+package de.bixilon.minosoft.data.registries.versions.registries.pixlyzer
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_13W41B
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20
+import org.testng.annotations.Test
 
-object VersionSupport {
-    const val MINIMUM_VERSION = V_13W41B
-    const val LATEST_VERSION = V_1_20
-    const val LATEST_RELEASE = V_1_20
-}
+@Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], priority = Int.MAX_VALUE, timeOut = 15000L)
+class `1_20` : PixLyzerLoadingTest("1.20")
