@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLikeTexture
+import de.bixilon.minosoft.gui.rendering.gui.atlas.CodeTexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
@@ -32,7 +32,7 @@ abstract class TextureManager {
 
     lateinit var debugTexture: AbstractTexture
         private set
-    lateinit var whiteTexture: TextureLikeTexture
+    lateinit var whiteTexture: CodeTexturePart
         private set
     lateinit var skins: SkinManager
         private set
@@ -42,7 +42,7 @@ abstract class TextureManager {
             throw IllegalStateException("Already initialized!")
         }
         debugTexture = staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
-        whiteTexture = TextureLikeTexture(texture = staticTextures.createTexture(minosoft("white").texture()), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
+        whiteTexture = CodeTexturePart(texture = staticTextures.createTexture(minosoft("white").texture()), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
     }
 
     fun initializeSkins(connection: PlayConnection) {

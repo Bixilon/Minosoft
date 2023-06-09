@@ -15,45 +15,36 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
-import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.gui.atlas.CodeTexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
-class GUIMeshCache(
-    var halfSize: Vec2,
-    override val order: Array<Pair<Int, Int>>,
-    val context: RenderContext,
-    initialCacheSize: Int = 1000,
-    var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
-) : GUIVertexConsumer {
-    override val whiteTexture = context.textureManager.whiteTexture
-
-    var revision: Long = 0
-    var offset: Vec2i = Vec2i.EMPTY
-    var options: GUIVertexOptions? = null
-
-    fun clear() {
-        if (data.finished) {
-            data = HeapArrayFloatList(initialSize = data.size)
-        } else {
-            data.clear()
-        }
-    }
-
-    override fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        GUIMesh.addVertex(data, halfSize, position, texture, uv, tint, options)
-        revision++
-    }
+open class DummyGUIVertexConsumer : GUIVertexConsumer {
+    override val whiteTexture = CodeTexturePart(texture = DummyTexture(minosoft("white")), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
+    override val order: Array<Pair<Int, Int>> get() = Mesh.QUAD_TO_QUAD_ORDER
+    var char = 0
 
     override fun addCache(cache: GUIMeshCache) {
-        data.add(cache.data)
-        revision++
+        TODO("Not yet implemented")
     }
 
     override fun ensureSize(size: Int) {
-        data.ensureSize(size)
+        TODO("Not yet implemented")
+    }
+
+    override fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun addChar(start: Vec2, end: Vec2, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+        addChar(start, end, this.char++)
+    }
+
+    open fun addChar(start: Vec2, end: Vec2, index: Int) {
+        TODO("Abstract")
     }
 }

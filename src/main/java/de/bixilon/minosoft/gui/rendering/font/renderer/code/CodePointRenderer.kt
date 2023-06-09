@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.data.text.formatting.TextFormatting
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -25,10 +24,10 @@ interface CodePointRenderer {
 
     fun calculateWidth(scale: Float, shadow: Boolean): Float
 
-    fun render(position: Vec2, color: RGBColor, shadow: Boolean, formatting: TextFormatting, consumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float)
+    fun render(position: Vec2, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
 
-    fun render3d(consumer: WorldGUIConsumer, color: RGBColor, shadow: Boolean, formatting: TextFormatting, scale: Float): Float {
-        render(Vec2.EMPTY, color, shadow, formatting, consumer, null, scale)
+    fun render3d(color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: WorldGUIConsumer): Float {
+        render(Vec2.EMPTY, color, shadow, bold, italic, scale, consumer, null)
 
         return calculateWidth(scale, shadow)
     }

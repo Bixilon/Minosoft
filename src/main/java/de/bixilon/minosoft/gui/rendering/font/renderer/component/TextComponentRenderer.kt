@@ -40,8 +40,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         val color = text.color ?: ChatColors.WHITE
         val shadow = renderInfo.shadow
         val bold: Boolean = text.formatting.contains(FormattingCodes.BOLD)
+        val italic: Boolean = text.formatting.contains(FormattingCodes.ITALIC)
 
         // ToDo: Only 1 quad for the underline and the strikethrough
+        // TODO: strike, underlined
 
         var alignmentXOffset = 0.0f
         var currentLineText = ""
@@ -177,7 +179,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 // ToDo: Remove Font.HORIZONTAL_SPACING
             }
 
-            consumer?.let { charData.render(letterOffset, color, shadow, text.formatting, it, options, renderInfo.scale) }
+            consumer?.let { charData.render(letterOffset, color, shadow, bold, italic, renderInfo.scale, it, options) }
 
             if (consumer == null) {
                 currentLineText += char.toChar()
@@ -209,13 +211,16 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         val font = context.font[text.font]
 
+
+        // TODO: strike, underlined
+
         for (char in text.message.codePoints()) {
             val data = font?.get(char) ?: context.font.default[char] ?: continue
             val expectedWidth = ((data.calculateWidth(scale, false) + Font.HORIZONTAL_SPACING) * scale).toInt()
             if (maxSize.x - offset.x < expectedWidth) { // ToDo
                 return
             }
-            val width = ((data.render3d(consumer, color, shadow = false, text.formatting, scale = scale) + Font.HORIZONTAL_SPACING) * scale).toInt()
+            val width = ((data.render3d(color, shadow = false, FormattingCodes.BOLD in text.formatting, FormattingCodes.ITALIC in text.formatting, scale = scale, consumer) + Font.HORIZONTAL_SPACING) * scale).toInt()
             offset.x += width
             consumer.offset((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION.toFloat()))
         }

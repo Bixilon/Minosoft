@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLike
+import de.bixilon.minosoft.gui.rendering.gui.atlas.TexturePart
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -28,11 +28,11 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 open class AtlasImageElement(
     guiRenderer: GUIRenderer,
-    textureLike: TextureLike?,
-    size: Vec2i = textureLike?.size ?: Vec2i.EMPTY,
+    texturePart: TexturePart?,
+    size: Vec2i = texturePart?.size ?: Vec2i.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
-    var texture: AbstractTexture? = textureLike?.texture
+    var texture: AbstractTexture? = texturePart?.texture
         set(value) {
             field = value
             cacheUpToDate = false
@@ -67,7 +67,7 @@ open class AtlasImageElement(
             cacheUpToDate = false
         }
 
-    var textureLike: TextureLike? = textureLike
+    var texturePart: TexturePart? = texturePart
         set(value) {
             if (field === value) {
                 return
@@ -87,7 +87,7 @@ open class AtlasImageElement(
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val texture = texture ?: return
-        val textureLike = textureLike ?: return
+        val textureLike = texturePart ?: return
         consumer.addQuad(offset, offset + size, texture, uvStart ?: textureLike.uvStart, uvEnd ?: textureLike.uvEnd, tint, options)
     }
 

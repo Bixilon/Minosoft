@@ -17,9 +17,9 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
-class TextureLikeTexture(
+class CodeTexturePart(
     override val texture: AbstractTexture,
     override val uvStart: Vec2,
     override val uvEnd: Vec2,
     override val size: Vec2i,
-) : TextureLike
+) : TexturePart

@@ -16,12 +16,15 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLike
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
+import de.bixilon.minosoft.gui.rendering.gui.atlas.CodeTexturePart
+import de.bixilon.minosoft.gui.rendering.gui.atlas.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
 interface GUIVertexConsumer {
-    val context: RenderContext
+    val whiteTexture: CodeTexturePart
     val order: Array<Pair<Int, Int>>
 
     fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?)
@@ -67,12 +70,34 @@ interface GUIVertexConsumer {
         }
     }
 
-    fun addQuad(start: Vec2, end: Vec2, texture: TextureLike, tint: RGBColor, options: GUIVertexOptions?) {
+    fun addQuad(start: Vec2, end: Vec2, texture: TexturePart, tint: RGBColor, options: GUIVertexOptions?) {
         addQuad(start, end, texture.texture, texture.uvStart, texture.uvEnd, tint, options)
     }
 
-    fun addQuad(start: Vec2i, end: Vec2i, texture: TextureLike, tint: RGBColor, options: GUIVertexOptions?) {
+    fun addQuad(start: Vec2i, end: Vec2i, texture: TexturePart, tint: RGBColor, options: GUIVertexOptions?) {
         addQuad(start, end, texture.texture, texture.uvStart, texture.uvEnd, tint, options)
+    }
+
+
+    fun addChar(start: Vec2, end: Vec2, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+        val topOffset = if (italic) (end.y - start.y) / FontProperties.CHAR_BASE_HEIGHT * FormattingProperties.ITALIC_OFFSET else 0.0f
+
+        val positions = arrayOf(
+            Vec2(start.x + topOffset, start.y),
+            Vec2(end.x + topOffset, start.y),
+            end,
+            Vec2(start.x, end.y),
+        )
+        val texturePositions = arrayOf(
+            Vec2(uvEnd.x, uvStart.y),
+            uvStart,
+            Vec2(uvStart.x, uvEnd.y),
+            uvEnd,
+        )
+
+        for ((vertexIndex, textureIndex) in this.order) {
+            addVertex(positions[vertexIndex], texture, texturePositions[textureIndex], tint, options)
+        }
     }
 
     fun addCache(cache: GUIMeshCache)
