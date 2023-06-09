@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -23,8 +22,10 @@ import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
@@ -36,7 +37,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
     /**
      * Returns true if the text exceeded the maximum size
      */
-    fun render(initialOffset: Vec2, offset: Vec2, size: Vec2, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: T): Boolean
+    fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: T)
 
     fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: T, light: Int)
 
@@ -45,11 +46,11 @@ interface ChatComponentRenderer<T : ChatComponent> {
     companion object : ChatComponentRenderer<ChatComponent> {
         const val TEXT_BLOCK_RESOLUTION = 128
 
-        override fun render(initialOffset: Vec2, offset: Vec2, size: Vec2, element: Element, context: RenderContext, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: ChatComponent): Boolean {
-            return when (text) {
-                is BaseComponent -> BaseComponentRenderer.render(initialOffset, offset, size, element, context, consumer, options, renderInfo, text)
-                is TextComponent -> TextComponentRenderer.render(initialOffset, offset, size, element, context, consumer, options, renderInfo, text)
-                is EmptyComponent -> return false
+        override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: ChatComponent) {
+            when (text) {
+                is BaseComponent -> BaseComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
+                is TextComponent -> TextComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
+                is EmptyComponent -> return
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }

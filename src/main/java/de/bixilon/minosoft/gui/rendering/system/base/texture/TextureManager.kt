@@ -42,7 +42,7 @@ abstract class TextureManager {
             throw IllegalStateException("Already initialized!")
         }
         debugTexture = staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
-        whiteTexture = CodeTexturePart(texture = staticTextures.createTexture(minosoft("white").texture()), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
+        whiteTexture = CodeTexturePart(texture = staticTextures.createTexture(minosoft("white").texture(), mipmaps = false), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
     }
 
     fun initializeSkins(connection: PlayConnection) {

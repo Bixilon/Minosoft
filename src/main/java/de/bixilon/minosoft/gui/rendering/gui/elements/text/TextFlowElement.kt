@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -120,7 +119,7 @@ open class TextFlowElement(
 
             // ToDo: Cache lines
             val textElement = TextElement(guiRenderer, message.text, background = false, parent = this)
-            val lines = textElement.renderInfo.lines
+            val lines = textElement.info.lines
 
             val lineIterator = lines.reversed().iterator()
 

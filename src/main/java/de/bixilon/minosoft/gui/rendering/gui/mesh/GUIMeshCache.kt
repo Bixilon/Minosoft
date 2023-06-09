@@ -29,7 +29,7 @@ class GUIMeshCache(
     initialCacheSize: Int = 1000,
     var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
 ) : GUIVertexConsumer {
-    override val whiteTexture = context.textureManager.whiteTexture
+    private val whiteTexture = context.textureManager.whiteTexture
 
     var revision: Long = 0
     var offset: Vec2i = Vec2i.EMPTY
@@ -43,8 +43,8 @@ class GUIMeshCache(
         }
     }
 
-    override fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        GUIMesh.addVertex(data, halfSize, position, texture, uv, tint, options)
+    override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+        GUIMesh.addVertex(data, halfSize, position, texture ?: whiteTexture.texture, uv, tint, options)
         revision++
     }
 

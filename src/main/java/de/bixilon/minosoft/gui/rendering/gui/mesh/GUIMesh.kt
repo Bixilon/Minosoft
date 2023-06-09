@@ -27,10 +27,10 @@ class GUIMesh(
         val halfSize: Vec2,
         data: AbstractFloatList,
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
-    override val whiteTexture = context.textureManager.whiteTexture
+    private val whiteTexture = context.textureManager.whiteTexture
 
-    override fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        addVertex(data, halfSize, position, texture, uv, tint, options)
+    override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+        addVertex(data, halfSize, position, texture ?: whiteTexture.texture, uv, tint, options)
     }
 
     override fun addCache(cache: GUIMeshCache) {
@@ -38,9 +38,9 @@ class GUIMesh(
     }
 
     data class GUIMeshStruct(
-            val position: Vec2,
-            val uv: Vec2,
-            val indexLayerAnimation: Int,
+        val position: Vec2,
+        val uv: Vec2,
+        val indexLayerAnimation: Int,
             val tintColor: RGBColor,
     ) {
         companion object : MeshStruct(GUIMeshStruct::class)

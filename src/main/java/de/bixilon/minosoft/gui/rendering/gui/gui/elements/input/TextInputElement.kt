@@ -114,7 +114,7 @@ open class TextInputElement(
         }
 
         val newValue = StringBuilder()
-        for (line in textElement.renderInfo.lines) {
+        for (line in textElement.info.lines) {
             newValue.append(line.text.message)
         }
         if (newValue.length != this._value.length) {
@@ -144,7 +144,7 @@ open class TextInputElement(
             } else {
                 TextElement(guiRenderer, value.substring(0, _pointer), scale = textElement.scale, parent = this)
             }
-            Vec2i(preCursorText.renderInfo.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.renderInfo.lines.size - 1, 0) * preCursorText.charHeight)
+            Vec2i(preCursorText.info.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.info.lines.size - 1, 0) * preCursorText.charHeight)
         }
         cacheUpToDate = false
     }
@@ -336,7 +336,7 @@ open class TextInputElement(
         leftText.prefMaxSize = Vec2i(position.x, size.y)
         var pointer = 0
         var heightLeft = position.y
-        for (line in leftText.renderInfo.lines) {
+        for (line in leftText.info.lines) {
             val message = line.text.message
             pointer += message.length // ToDo: No formatting
             heightLeft -= Font.TOTAL_CHAR_HEIGHT

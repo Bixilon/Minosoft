@@ -13,29 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.element
 
-import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class TextRenderInfo(
-    val fontAlignment: HorizontalAlignments,
-    val charHeight: Float,
-    val charMargin: Int,
-    val scale: Float,
-    val shadow: Boolean,
-    val lines: MutableList<TextLineInfo> = mutableListOf(),
-    var lineIndex: Int = 0,
+    val parentSize: Vec2,
 ) {
-    val currentLine: TextLineInfo
-        get() {
-            if (StaticConfiguration.DEBUG_MODE) {
-                if (lineIndex >= lines.size) {
-                    Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Out of lines! Did you apply?: $lines ($lineIndex)" }
-                    return TextLineInfo()
-                }
-            }
-            return lines[lineIndex]
-        }
+    val lines: MutableList<TextLineInfo> = mutableListOf()
+    var lineIndex: Int = 0
+
+    var size = Vec2.EMPTY
+    var cutOff = false
 }

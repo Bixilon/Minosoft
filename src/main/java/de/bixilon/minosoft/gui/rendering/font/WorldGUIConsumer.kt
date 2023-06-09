@@ -26,12 +26,12 @@ import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 
 
 class WorldGUIConsumer(val mesh: SingleWorldMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
-    override val whiteTexture = mesh.context.textureManager.whiteTexture
+    private val whiteTexture = mesh.context.textureManager.whiteTexture
     override val order: Array<Pair<Int, Int>> get() = mesh.order
 
-    override fun addVertex(position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         val transformed = transform.fastTimes(position.x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)
-        mesh.addVertex(transformed, uv, texture as AbstractTexture, tint.rgb, light)
+        mesh.addVertex(transformed, uv, (texture as AbstractTexture?) ?: whiteTexture.texture, tint.rgb, light)
     }
 
     override fun addCache(cache: GUIMeshCache) {

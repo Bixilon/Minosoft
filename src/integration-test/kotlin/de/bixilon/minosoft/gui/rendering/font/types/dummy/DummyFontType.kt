@@ -11,16 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.renderer.code
+package de.bixilon.minosoft.gui.rendering.font.types.dummy
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
+import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
+import de.bixilon.minosoft.gui.rendering.font.types.FontType
 
-class DummyCodePointRenderer(
-    override val uvStart: Vec2 = Vec2(0.1f, 0.2f),
-    override val uvEnd: Vec2 = Vec2(0.6f, 0.7f),
-    override val width: Float = 5.0f,
-) : RasterizedCodePointRenderer {
-    override val texture = DummyTexture(minosoft("test"))
+object DummyFontType : FontType {
+    private val chars: Array<DummyCodePointRenderer?> = arrayOfNulls(26) // a-z
+
+    init {
+        build()
+    }
+
+    fun build() {
+        for (i in 0 until chars.size) {
+            chars[i] = DummyCodePointRenderer(width = i / 2.0f)
+        }
+    }
+
+    override fun get(codePoint: Int): CodePointRenderer? {
+        if (codePoint in 'a'.code..'z'.code) {
+            return chars[codePoint - 'a'.code]
+        }
+        return null
+    }
 }

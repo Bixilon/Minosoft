@@ -24,20 +24,22 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import de.bixilon.minosoft.util.KUtil.charCount
@@ -54,7 +56,7 @@ open class TextElement(
     shadow: Boolean = true,
 ) : Element(guiRenderer, text.charCount * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
     private var activeElement: TextComponent? = null
-    lateinit var renderInfo: TextRenderInfo
+    lateinit var info: TextRenderInfo
         private set
 
     // ToDo: Reapply if backgroundColor or fontAlignment changes
@@ -118,14 +120,15 @@ open class TextElement(
             emptyMessage = value is EmptyComponent || value.message.isEmpty()
             val prefSize = Vec2i.EMPTY
             if (!emptyMessage) {
-                val renderInfo = TextRenderInfo(
-                    fontAlignment = fontAlignment,
-                    charHeight = charHeight.toFloat(),
-                    charMargin = charMargin,
+                val info = TextRenderInfo(Vec2.MAX)
+                val properties = TextRenderProperties(
+                    alignment = fontAlignment,
+                    charBaseHeight = charHeight.toFloat(),
+                    charSpacing = CharSpacing(charMargin.toFloat(), charMargin.toFloat()),
                     scale = scale,
                     shadow = shadow,
                 )
-                ChatComponentRenderer.render(Vec2.EMPTY, Vec2.EMPTY, Vec2(prefSize), InfiniteSizeElement(guiRenderer), context, null, null, renderInfo, value)
+                ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, value)
             }
             _prefSize = prefSize
         }
@@ -150,22 +153,22 @@ open class TextElement(
     }
 
     override fun forceSilentApply() {
-        val size = Vec2i.EMPTY
-        val renderInfo = TextRenderInfo(
-            fontAlignment = fontAlignment,
-            charHeight = charHeight.toFloat(),
-            charMargin = charMargin,
+        val info = TextRenderInfo(Vec2(size))
+        val properties = TextRenderProperties(
+            alignment = fontAlignment,
+            charBaseHeight = charHeight.toFloat(),
+            charSpacing = CharSpacing(charMargin.toFloat(), charMargin.toFloat()),
             scale = scale,
             shadow = shadow,
         )
         if (!emptyMessage) {
-            ChatComponentRenderer.render(Vec2.EMPTY, Vec2.EMPTY, Vec2(size), this, context, null, null, renderInfo, chatComponent)
-            renderInfo.lineIndex = 0
+            ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, chatComponent)
+            info.lineIndex = 0
         }
-        if (renderInfo.lines.size > 1 && size.y > Font.CHAR_HEIGHT) {
+        if (info.lines.size > 1 && size.y > Font.CHAR_HEIGHT) {
             size.y-- // remove char margin from bottom
         }
-        this.renderInfo = renderInfo
+        this.info = info
 
         this.cacheUpToDate = false
         _size = size
@@ -181,7 +184,7 @@ open class TextElement(
 
 
         if (background) {
-            for ((line, info) in renderInfo.lines.withIndex()) {
+            for ((line, info) in info.lines.withIndex()) {
                 val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x.toFloat(), info.width), line * charHeight)
                 consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), context.textureManager.whiteTexture, backgroundColor, options)
             }
@@ -192,8 +195,16 @@ open class TextElement(
             vertices *= 2
         }
         consumer.ensureSize(vertices)
-        ChatComponentRenderer.render(Vec2(initialOffset), Vec2(initialOffset), Vec2.EMPTY, this, context, consumer, options, renderInfo, chatComponent)
-        renderInfo.lineIndex = 0
+
+        val properties = TextRenderProperties(
+            alignment = fontAlignment,
+            charBaseHeight = charHeight.toFloat(),
+            charSpacing = CharSpacing(charMargin.toFloat(), charMargin.toFloat()),
+            scale = scale,
+            shadow = shadow,
+        )
+        ChatComponentRenderer.render(TextOffset(Vec2(initialOffset)), context.font, properties, info, consumer, options, chatComponent)
+        info.lineIndex = 0
     }
 
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
@@ -248,7 +259,7 @@ open class TextElement(
 
     private fun getTextComponentAt(position: Vec2i): Pair<TextComponent, Vec2i>? {
         val offset = Vec2i(position)
-        val line = renderInfo.lines.getOrNull(offset.y / charHeight) ?: return null
+        val line = info.lines.getOrNull(offset.y / charHeight) ?: return null
         offset.y = offset.y % charHeight
 
         val cutText = TextElement(guiRenderer, line.text, fontAlignment, false, backgroundColor, noBorder, parent, scale)
@@ -256,7 +267,7 @@ open class TextElement(
         cutText.forceSilentApply()
 
 
-        val line0 = cutText.renderInfo.lines.getOrNull(0) ?: return null
+        val line0 = cutText.info.lines.getOrNull(0) ?: return null
         val message = line0.text.message
         var charToCheck = message.length
         if (line0.width < offset.x && charToCheck < line.text.message.length) {

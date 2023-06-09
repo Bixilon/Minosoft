@@ -82,12 +82,12 @@ class MarkTextElement(
             val message = chatComponent.message // ToDo: This does not include formatting
             val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), scale = scale, parent = _parent)
             val mark = TextElement(guiRenderer, message.substring(markStartPosition, markEndPosition), scale = scale, parent = _parent)
-            val markOffset = Vec2i(preMark.renderInfo.lines.lastOrNull()?.width ?: 0, preMark.size.y)
-            if (markOffset.y > 0 && (preMark.renderInfo.lines.lastOrNull()?.width ?: 0.0f) <= (renderInfo.lines.lastOrNull()?.width ?: 0.0f)) {
+            val markOffset = Vec2i(preMark.info.lines.lastOrNull()?.width ?: 0, preMark.size.y)
+            if (markOffset.y > 0 && (preMark.info.lines.lastOrNull()?.width ?: 0.0f) <= (info.lines.lastOrNull()?.width ?: 0.0f)) {
                 markOffset.y -= (Font.TOTAL_CHAR_HEIGHT * scale).toInt()
             }
 
-            for (line in mark.renderInfo.lines) {
+            for (line in mark.info.lines) {
                 ColorElement(guiRenderer, size = Vec2i(line.width, Font.TOTAL_CHAR_HEIGHT * scale), color = ChatColors.DARK_BLUE).render(offset + markOffset, consumer, options)
                 markOffset.x = 0
                 markOffset.y += (Font.TOTAL_CHAR_HEIGHT * scale).toInt()
