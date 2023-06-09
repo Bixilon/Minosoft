@@ -47,9 +47,9 @@ class LegacyUnicodeFontType(
     companion object : FontTypeFactory<LegacyUnicodeFontType> {
         override val identifier = minecraft("legacy_unicode")
         private const val UNICODE_PAGES = 0xFF
-        private const val PAGE_SIZE = 0xFF
-        private const val CHAR_ROW = 0x0F
-        private const val CHAR_SIZE = 0x0F
+        private const val PAGE_SIZE = 256
+        private const val CHAR_ROW = 16
+        private const val CHAR_SIZE = 16
         private const val PIXEL = 1.0f / (CHAR_SIZE * CHAR_ROW)
         private const val WIDTH_SCALE = FontProperties.CHAR_BASE_HEIGHT / CHAR_SIZE.toFloat()
 
@@ -93,21 +93,21 @@ class LegacyUnicodeFontType(
 
                 for (x in 0 until CHAR_ROW) {
                     val widthByte = sizes.read()
-                    if (widthByte < 0) throw IllegalStateException("Unexpected end of sizes stream!")
+                    if (widthByte < 0) throw IllegalStateException("Unexpected end of sizes stream (pageId=$pageId, x=$x, y=$y)!")
 
-                    val xStart = ((widthByte shr 4) and 0x0F) - 1
-                    val width = ((widthByte and 0x0F) + 1) - xStart
+                    val xStart = maxOf(0, ((widthByte shr 4) and 0x0F) - 1)
+                    val width = (widthByte and 0x0F) + 1 - xStart
 
 
-                    val xOffset = (CHAR_SIZE * x) + xStart
+                    val xOffset = ((CHAR_SIZE * x) + xStart) * PIXEL
 
                     val uvStart = Vec2(
-                        x = xOffset * PIXEL,
+                        x = xOffset,
                         y = yStart,
                     )
 
                     val uvEnd = Vec2(
-                        x = xOffset + width * PIXEL,
+                        x = xOffset + (width * PIXEL),
                         y = yEnd,
                     )
 
