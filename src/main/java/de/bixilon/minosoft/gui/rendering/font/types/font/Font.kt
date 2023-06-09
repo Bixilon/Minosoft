@@ -42,8 +42,8 @@ class Font(
     }
 
     private fun buildCache() {
-        for (i in cache.indices) {
-            cache[i] = forceGet(i)
+        for (char in cache.indices) {
+            cache[char] = forceGet(char + CACHE_START)
         }
     }
 
@@ -60,8 +60,9 @@ class Font(
     }
 
     override fun get(codePoint: Int): CodePointRenderer? {
-        if (cache.isIndex(codePoint)) {
-            return cache[codePoint]
+        val cacheIndex = codePoint - CACHE_START
+        if (cache.isIndex(cacheIndex)) {
+            return cache[cacheIndex]
         }
         return forceGet(codePoint)
     }
@@ -69,7 +70,8 @@ class Font(
 
     @Deprecated("FontProperties")
     companion object {
-        private const val CACHE_SIZE = 127 // ascii
+        private const val CACHE_START = ' '.code // all control chars (like ESC, CR, ...) are not used anyway (in a normal environment)
+        private const val CACHE_SIZE = (1 shl 7) - CACHE_START  // ascii
 
         const val CHAR_HEIGHT = 8
         const val CHAR_MARGIN = 1 // used for background ToDo: Set to 2, because underline does not match!
