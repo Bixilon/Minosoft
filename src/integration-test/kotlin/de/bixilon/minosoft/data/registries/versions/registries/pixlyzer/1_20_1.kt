@@ -16,4 +16,4 @@ package de.bixilon.minosoft.data.registries.versions.registries.pixlyzer
 import org.testng.annotations.Test
 
 @Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], priority = Int.MAX_VALUE, timeOut = 15000L)
-class `1_20` : PixLyzerLoadingTest("1.20")
+class `1_20_1` : PixLyzerLoadingTest("1.20.1")
