@@ -1,10 +1,11 @@
 # Minosoft
+
 [<img src="https://img.shields.io/matrix/minosoft:matrix.org?style=for-the-badge">](https://matrix.to/#/#minosoft:matrix.org)
 <img src="https://img.shields.io/gitlab/pipeline-status/bixilon/minosoft?branch=master&gitlab_url=https%3A%2F%2Fgitlab.bixilon.de&style=for-the-badge">
 <img src="https://img.shields.io/badge/license-GPLv3-brightgreen?style=for-the-badge">
 
 Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
-(To be clear: This is not clone of minecraft, it is a reimplementation)  
+(This is not a classical clone of minecraft, it completely re implements it!)
 (This software is not affiliated with Mojang AB, the original developer of Minecraft)
 
 <h2>Notice: I am *not* responsible for anti cheat banned accounts, this project is heavily in development!</h2>
@@ -123,7 +124,6 @@ Thanks to @jugendhacker you can get minosoft directly from the arch user reposit
 3. Change directory (`cd minosoft`)
 4. Optional: Checkout a current feature branch (Warning: might be unstable; might not even build) (`git checkout <branch>`)
 5. Build and run Minosoft with `./gradlew run` (or on windows `./gradlew.bat run`). Alternatively just click on `run.cmd`. If any errors occur, feel free to contact me or open an issue
-
 
 ## Code mirrors
 
