@@ -81,7 +81,9 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             if (codePoint == '\n'.code) {
                 val lineIndex = info.lineIndex
                 filled = renderNewline(properties, offset, info, consumer == null)
-                info.lines[lineIndex].push(text, line)
+                if (line.isNotEmpty()) {
+                    info.lines[lineIndex].push(text, line)
+                }
                 skipWhitespaces = true
                 if (filled) break else continue
             }

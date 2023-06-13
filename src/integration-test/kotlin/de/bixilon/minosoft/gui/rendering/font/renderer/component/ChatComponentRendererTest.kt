@@ -10,6 +10,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
+import de.bixilon.minosoft.gui.rendering.font.types.font.EmptyFont
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import org.testng.Assert.assertEquals
@@ -252,5 +253,38 @@ class ChatComponentRendererTest {
         )
     }
 
-    // TODO: shadow, cutoff, underline, strikethrough, using with consumer, formatting (just basic, that is code point renderer's job)
+    fun `newline, no space`() {
+        val info = render(TextComponent("\n"), maxSize = Vec2(0.0f, 0.0f))
+        info.assert(
+            lineIndex = 0,
+            lines = listOf(),
+            size = Vec2(0.0f, 0.0f),
+            cutOff = true,
+        )
+    }
+
+    fun `no font`() {
+        val info = TextRenderInfo(Vec2(Float.MAX_VALUE))
+        ChatComponentRenderer.render(TextOffset(Vec2(10, 10)), FontManager(EmptyFont), TextRenderProperties(), info, null, null, TextComponent("abc\ndef"))
+
+        info.assert(
+            lineIndex = 1,
+            lines = listOf(TextLineInfo()),
+            size = Vec2(0.0f, 11.0f),
+        )
+    }
+
+    fun `no font, no size`() {
+        val info = TextRenderInfo(Vec2(0.0f, 0.0f))
+        ChatComponentRenderer.render(TextOffset(Vec2(10, 10)), FontManager(EmptyFont), TextRenderProperties(), info, null, null, TextComponent("abc\ndef"))
+
+        info.assert(
+            lineIndex = 0,
+            lines = listOf(),
+            size = Vec2(0.0f, 0.0f),
+            cutOff = true,
+        )
+    }
+
+    // TODO: shadow, underline, strikethrough, using with consumer, formatting (just basic, that is code point renderer's job)
 }
