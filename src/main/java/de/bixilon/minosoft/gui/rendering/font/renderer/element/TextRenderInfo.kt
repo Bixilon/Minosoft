@@ -17,11 +17,30 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class TextRenderInfo(
-    val parentSize: Vec2,
+    val maxSize: Vec2,
 ) {
     val lines: MutableList<TextLineInfo> = mutableListOf()
     var lineIndex: Int = 0
 
     var size = Vec2.EMPTY
     var cutOff = false
+
+
+    fun update(offset: TextOffset, properties: TextRenderProperties, width: Float): TextLineInfo {
+        size.x = maxOf(offset.offset.x - offset.initial.x + width, size.x)
+
+        val line: TextLineInfo
+        if (lineIndex == 0 && lines.isEmpty()) {
+            // first char of all lines
+            line = TextLineInfo()
+            lines += line
+            size.y = properties.lineHeight
+        } else {
+            line = lines[lineIndex]
+        }
+
+        line.width += width
+
+        return line
+    }
 }

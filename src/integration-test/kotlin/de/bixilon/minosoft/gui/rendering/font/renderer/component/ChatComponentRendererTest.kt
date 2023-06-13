@@ -60,16 +60,16 @@ class ChatComponentRendererTest {
     fun `3 chars`() {
         val info = render(TextComponent("bcd"))
         assertEquals(info.lineIndex, 0)
-        assertEquals(info.lines, listOf(TextLineInfo(BaseComponent(TextComponent("bcd")), 4.5f)))
-        assertEquals(info.size, Vec2(4.5f, 11.0f)) // b + spacing + c + spacing + d
+        assertEquals(info.lines, listOf(TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f)))
+        assertEquals(info.size, Vec2(5.0f, 11.0f)) // b + spacing + c + spacing + d
         assertFalse(info.cutOff)
     }
 
     fun `max line size`() {
-        val info = render(TextComponent("bcdef"), maxSize = Vec2(5.0f, Float.MAX_VALUE))
+        val info = render(TextComponent("bcdef"), maxSize = Vec2(5.5f, Float.MAX_VALUE))
         assertEquals(info.lineIndex, 1)
-        assertEquals(info.lines, listOf(TextLineInfo(BaseComponent(TextComponent("bcd")), 4.5f), TextLineInfo(BaseComponent(TextComponent("ef")), 5.0f)))
-        assertEquals(info.size, Vec2(5.0f, 22.0f)) // b + spacing + c + spacing + d \n e + spacing + f
+        assertEquals(info.lines, listOf(TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f), TextLineInfo(BaseComponent(TextComponent("ef")), 5.5f)))
+        assertEquals(info.size, Vec2(5.5f, 22.0f)) // b + spacing + c + spacing + d \n e + spacing + f
         assertFalse(info.cutOff)
     }
 }

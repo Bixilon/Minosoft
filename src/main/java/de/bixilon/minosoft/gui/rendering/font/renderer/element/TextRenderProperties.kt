@@ -30,6 +30,11 @@ data class TextRenderProperties(
     val fallbackColor: RGBColor = ChatColors.WHITE,
     val font: FontType? = null,
 ) {
+
+    val lineHeight: Float
+        get() = (charSpacing.top + charBaseHeight + charSpacing.bottom) * scale
+
+
     companion object {
         val DEFAULT = TextRenderProperties()
     }

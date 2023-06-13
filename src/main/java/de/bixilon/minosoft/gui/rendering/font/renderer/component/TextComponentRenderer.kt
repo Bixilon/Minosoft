@@ -16,12 +16,12 @@ package de.bixilon.minosoft.gui.rendering.font.renderer.component
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
-import de.bixilon.minosoft.data.text.formatting.TextFormatting
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
+import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
@@ -45,13 +45,6 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         TODO()
     }
 
-    private fun renderCodePoint(offset: TextOffset, renderer: CodePointRenderer, color: RGBColor, properties: TextRenderProperties, info: TextRenderInfo, formatting: TextFormatting, consumer: GUIVertexConsumer?, options: GUIVertexOptions?) {
-        if (consumer != null) {
-            renderer.render(offset.offset, color, properties.shadow, FormattingCodes.BOLD in formatting, FormattingCodes.ITALIC in formatting, properties.scale, consumer, options)
-        }
-        offset.offset.x += 8
-    }
-
     private fun renderStrikethrough() {
         TODO()
     }
@@ -68,6 +61,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         val formatting = text.formatting
         var skipWhitespaces = false
 
+        val line = StringBuilder()
+
         for (codePoint in text.message.codePoints()) {
             if (codePoint == '\n'.code) {
                 renderNewline(offset, info)
@@ -77,10 +72,31 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             if (skipWhitespaces && Character.isWhitespace(codePoint)) {
                 continue
             }
-            skipWhitespaces = false
 
-            val renderer = getRenderer(codePoint, properties, textFont, fontManager) ?: continue
-            renderCodePoint(offset, renderer, color, properties, info, formatting, consumer, options)
+            val renderer = getRenderer(codePoint, properties, textFont, fontManager)
+            if (renderer != null && renderer.calculateWidth(properties.scale, properties.shadow) <= 0.0f) {
+                continue
+            }
+            skipWhitespaces = false
+            if (renderer == null) {
+                continue
+            }
+
+            val lineIndex = info.lineIndex
+
+            val lineInfo = renderer.render(offset, color, properties, info, formatting, codePoint, consumer, options)
+            if (consumer != null) continue // already know that information
+            if (lineInfo == CodePointAddResult.BREAK) break
+
+            if (lineIndex != info.lineIndex) {
+                // new line started
+                info.lines[lineIndex].push(text, line) // previous line
+            }
+
+            line.appendCodePoint(codePoint)
+        }
+        if (line.isNotEmpty()) {
+            info.lines[info.lineIndex].push(text, line)
         }
     }
 

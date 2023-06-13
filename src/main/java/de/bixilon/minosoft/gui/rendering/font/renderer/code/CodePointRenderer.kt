@@ -14,8 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.data.text.formatting.FormattingCodes
+import de.bixilon.minosoft.data.text.formatting.TextFormatting
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
+import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
@@ -30,5 +36,40 @@ interface CodePointRenderer {
         render(Vec2.EMPTY, color, shadow, bold, italic, scale, consumer, null)
 
         return calculateWidth(scale, shadow)
+    }
+
+    private fun getVerticalSpacing(offset: TextOffset, properties: TextRenderProperties): Float {
+        if (offset.offset.x == offset.initial.x) return 0.0f
+        // not at line start
+        return properties.charSpacing.vertical * properties.scale
+    }
+
+
+    fun render(offset: TextOffset, color: RGBColor, properties: TextRenderProperties, info: TextRenderInfo, formatting: TextFormatting, codePoint: Int, consumer: GUIVertexConsumer?, options: GUIVertexOptions?): CodePointAddResult {
+        val codePointWidth = calculateWidth(properties.scale, properties.shadow)
+        var width = codePointWidth + getVerticalSpacing(offset, properties)
+        val height = offset.getNextLineHeight(properties)
+
+        val canAdd = offset.canAdd(properties, info, width, height)
+        when (canAdd) {
+            CodePointAddResult.FINE -> Unit
+            CodePointAddResult.NEW_LINE -> {
+                width = codePointWidth // new line, remove vertical spacing
+                info.size.y += height
+            }
+
+            CodePointAddResult.BREAK -> return CodePointAddResult.BREAK
+        }
+
+
+        if (consumer != null) {
+            render(offset.offset, color, properties.shadow, FormattingCodes.BOLD in formatting, FormattingCodes.ITALIC in formatting, properties.scale, consumer, options)
+        } else {
+            info.update(offset, properties, width) // info should only be updated when we determinate text properties, we know all that already when actually rendering it
+        }
+
+        offset.offset.x += width
+
+        return canAdd
     }
 }

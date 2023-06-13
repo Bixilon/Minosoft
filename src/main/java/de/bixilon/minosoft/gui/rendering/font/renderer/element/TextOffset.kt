@@ -14,10 +14,61 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer.element
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class TextOffset(
     val initial: Vec2 = Vec2.EMPTY,
 ) {
     var offset = Vec2(initial)
+
+    private fun fits(offset: Float, initial: Float, max: Float, value: Float): Boolean {
+        val size = offset - initial
+        val remaining = max - size
+
+        return remaining >= value
+    }
+
+
+    fun fitsX(info: TextRenderInfo, width: Float): Boolean {
+        return fits(offset.x, initial.x, info.maxSize.x, width)
+    }
+
+    fun fitsY(info: TextRenderInfo, height: Float): Boolean {
+        return fits(offset.y, initial.y, info.maxSize.y, height)
+    }
+
+    fun fitsInLine(properties: TextRenderProperties, info: TextRenderInfo, width: Float): Boolean {
+        return fitsX(info, width) && fitsY(info, properties.lineHeight)
+    }
+
+    fun getNextLineHeight(properties: TextRenderProperties): Float {
+        var height = properties.lineHeight
+        if (offset.y != initial.y) {
+            // previous line present
+            height += properties.lineSpacing * properties.scale
+        }
+
+        return height
+    }
+
+    fun addLine(properties: TextRenderProperties, info: TextRenderInfo, height: Float): Boolean {
+        if (!fitsY(info, height)) return false
+
+        offset.y += height
+        offset.x = initial.x
+        info.lines += TextLineInfo()
+        info.lineIndex++
+
+        return true
+    }
+
+
+    fun canAdd(properties: TextRenderProperties, info: TextRenderInfo, width: Float, height: Float): CodePointAddResult {
+        if (fitsInLine(properties, info, width)) return CodePointAddResult.FINE
+        if (addLine(properties, info, height) && fitsInLine(properties, info, width)) return CodePointAddResult.NEW_LINE
+
+        info.cutOff = true
+        return CodePointAddResult.BREAK
+    }
 }
