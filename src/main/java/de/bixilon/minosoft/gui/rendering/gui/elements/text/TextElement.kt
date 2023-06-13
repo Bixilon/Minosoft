@@ -153,7 +153,7 @@ open class TextElement(
     }
 
     override fun forceSilentApply() {
-        val info = TextRenderInfo(Vec2(size))
+        val info = TextRenderInfo(Vec2(maxSize))
         val properties = TextRenderProperties(
             alignment = fontAlignment,
             charBaseHeight = charHeight.toFloat(),
@@ -165,13 +165,10 @@ open class TextElement(
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, chatComponent)
             info.lineIndex = 0
         }
-        if (info.lines.size > 1 && size.y > Font.CHAR_HEIGHT) {
-            size.y-- // remove char margin from bottom
-        }
         this.info = info
 
         this.cacheUpToDate = false
-        _size = size
+        _size = Vec2i(info.size)
     }
 
     override fun onChildChange(child: Element) = error("A TextElement can not have a child!")
