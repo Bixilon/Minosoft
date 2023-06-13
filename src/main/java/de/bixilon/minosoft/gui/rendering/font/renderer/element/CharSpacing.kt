@@ -23,5 +23,6 @@ data class CharSpacing(
 
     companion object {
         val DEFAULT = CharSpacing()
+        val VERTICAL = CharSpacing(0.0f, 0.0f)
     }
 }

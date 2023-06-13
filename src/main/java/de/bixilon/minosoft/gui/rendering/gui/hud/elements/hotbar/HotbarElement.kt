@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -46,10 +48,10 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
     val offhand = HotbarOffhandElement(guiRenderer)
     private var renderOffhand = false
 
-    val hoverText = FadingTextElement(guiRenderer, text = "", fadeInTime = 300, stayTime = 3000, fadeOutTime = 500, background = false, noBorder = true)
+    val hoverText = FadingTextElement(guiRenderer, text = "", fadeInTime = 300, stayTime = 3000, fadeOutTime = 500, background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
     private var hoverTextShown = false
 
-    private val itemText = FadingTextElement(guiRenderer, text = "", fadeInTime = 300, stayTime = 1500, fadeOutTime = 500, background = false, noBorder = true)
+    private val itemText = FadingTextElement(guiRenderer, text = "", fadeInTime = 300, stayTime = 1500, fadeOutTime = 500, background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
     private var lastItemStackNameShown: ItemStack? = null
     private var lastItemSlot = -1
     private var itemTextShown = true

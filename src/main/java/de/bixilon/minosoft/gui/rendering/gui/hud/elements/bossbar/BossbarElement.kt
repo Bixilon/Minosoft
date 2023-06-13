@@ -37,7 +37,7 @@ class BossbarElement(
     private var color: BossbarColors = bossbar.color
     private var notches: BossbarNotches = bossbar.notches
 
-    private val titleElement = TextElement(guiRenderer, text = bossbar.title, background = false, parent = this)
+    private val titleElement = TextElement(guiRenderer, text = bossbar.title, background = null, parent = this)
     private lateinit var progress: BossbarProgressElement
 
     init {

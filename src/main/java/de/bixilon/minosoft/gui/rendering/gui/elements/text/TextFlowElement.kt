@@ -118,7 +118,7 @@ open class TextFlowElement(
             }
 
             // ToDo: Cache lines
-            val textElement = TextElement(guiRenderer, message.text, background = false, parent = this)
+            val textElement = TextElement(guiRenderer, message.text, background = null, parent = this)
             val lines = textElement.info.lines
 
             val lineIterator = lines.reversed().iterator()
@@ -143,7 +143,7 @@ open class TextFlowElement(
                 if (visibleLines.size >= maxLines) {
                     break
                 }
-                val lineElement = TextElement(guiRenderer, line.text, background = false)
+                val lineElement = TextElement(guiRenderer, line.text, background = null)
                 textSize = textSize.max(lineElement.size)
                 visibleLines += TextFlowLineElement(lineElement, message)
             }

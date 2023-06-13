@@ -37,7 +37,7 @@ open class SwitchElement(
     parent: Element?,
     var onChange: (state: Boolean) -> Unit,
 ) : AbstractCheckboxElement(guiRenderer) {
-    protected val textElement = TextElement(guiRenderer, text, background = false).apply { this.parent = this@SwitchElement }
+    protected val textElement = TextElement(guiRenderer, text, background = null).apply { this.parent = this@SwitchElement }
     private val disabledAtlas = guiRenderer.atlasManager["minosoft:switch_disabled"]
     private val normalAtlas = guiRenderer.atlasManager["minosoft:switch_normal"]
     private val hoveredAtlas = guiRenderer.atlasManager["minosoft:switch_hovered"]

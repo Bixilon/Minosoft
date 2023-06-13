@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
@@ -41,7 +42,7 @@ class ContainerText(
                 return null
             }
             text.setFallbackColor(DEFAULT_TEXT_COLOR)
-            val textElement = TextElement(guiRenderer, text, background = false, shadow = false)
+            val textElement = TextElement(guiRenderer, text, background = null, properties = TextRenderProperties(shadow = false))
             textElement.prefMaxSize = area.size
 
             return ContainerText(textElement, area.start)

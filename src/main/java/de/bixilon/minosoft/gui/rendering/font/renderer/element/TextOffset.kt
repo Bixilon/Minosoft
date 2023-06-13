@@ -58,7 +58,7 @@ class TextOffset(
 
         this.offset.y += height
         this.offset.x = initial.x
-        info.lines += TextLineInfo()
+        info.lines += LineRenderInfo()
         info.lineIndex++
 
         return true

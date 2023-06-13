@@ -26,7 +26,7 @@ open class TextPopper(
     position: Vec2i,
     text: Any,
 ) : MouseTrackedPopper(guiRenderer, position) {
-    protected val textElement = TextElement(guiRenderer, text, background = false, parent = this)
+    protected val textElement = TextElement(guiRenderer, text, background = null, parent = this)
 
     init {
         forceSilentApply()

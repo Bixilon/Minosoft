@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.entities.block.sign.SignSides
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.SignBlock
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -57,10 +58,10 @@ class SignEditorScreen(
     val blockState: BlockState? = guiRenderer.connection.world[blockPosition],
     val blockEntity: SignBlockEntity? = guiRenderer.connection.world.getBlockEntity(blockPosition).nullCast(),
 ) : Screen(guiRenderer), AbstractLayout<Element> {
-    private val headerElement = TextElement(guiRenderer, "Edit sign message", background = false, scale = 3.0f, parent = this)
-    private val positionElement = TextElement(guiRenderer, "at $blockPosition", background = false, parent = this)
+    private val headerElement = TextElement(guiRenderer, "Edit sign message", background = null, properties = TextRenderProperties(scale = 3.0f), parent = this)
+    private val positionElement = TextElement(guiRenderer, "at $blockPosition", background = null, parent = this)
     private val backgroundElement = ImageElement(guiRenderer, getTexture(), uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
-    private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", SIGN_MAX_CHARS, scale = TEXT_SCALE, background = false, cutAtSize = true, parent = this) }
+    private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", SIGN_MAX_CHARS, properties = TextRenderProperties(scale = TEXT_SCALE), background = null, cutAtSize = true, parent = this) }
     private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2i(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
     private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.connection.profiles.gui.sign.limitLength, parent = this) { guiRenderer.connection.profiles.gui.sign.limitLength = it; forceSilentApply() }
     override var activeElement: Element? = null

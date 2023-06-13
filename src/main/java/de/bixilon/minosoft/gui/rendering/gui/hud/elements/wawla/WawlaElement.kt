@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -54,13 +55,13 @@ abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawl
     protected fun createNameElement(translationKey: ResourceLocation?): TextElement {
         val name = wawla.context.connection.language.forceTranslate(translationKey)
         name.setFallbackColor(ChatColors.WHITE)
-        return TextElement(guiRenderer, name, background = false, scale = 1.2f)
+        return TextElement(guiRenderer, name, background = null, properties = TextRenderProperties(scale = 1.2f))
     }
 
     protected fun createIdentifierElement(item: Identified): TextElement? {
         if (!wawla.profile.identifier) {
             return null
         }
-        return TextElement(guiRenderer, item.identifier.format(), background = false, scale = 0.8f)
+        return TextElement(guiRenderer, item.identifier.format(), background = null, properties = TextRenderProperties(scale = 1.2f))
     }
 }

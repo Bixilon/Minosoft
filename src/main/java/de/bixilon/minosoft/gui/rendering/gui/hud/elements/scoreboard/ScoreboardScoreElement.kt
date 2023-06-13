@@ -31,8 +31,8 @@ class ScoreboardScoreElement(
     val score: ScoreboardScore,
     parent: Element?,
 ) : Element(guiRenderer) {
-    private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
-    private val scoreElement = TextElement(guiRenderer, "", background = false, parent = this)
+    private val nameElement = TextElement(guiRenderer, "", background = null, parent = this)
+    private val scoreElement = TextElement(guiRenderer, "", background = null, parent = this)
 
     init {
         nameElement.prefMaxSize = Vec2i(-1, ScoreboardSideElement.SCORE_HEIGHT)

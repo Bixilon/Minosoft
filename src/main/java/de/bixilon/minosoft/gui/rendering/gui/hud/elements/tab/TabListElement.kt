@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -45,8 +46,8 @@ import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
 class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, AsyncDrawable {
-    val header = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
-    val footer = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
+    val header = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER), parent = this)
+    val footer = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER), parent = this)
 
     private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = RGBColor(0, 0, 0, 120))
 

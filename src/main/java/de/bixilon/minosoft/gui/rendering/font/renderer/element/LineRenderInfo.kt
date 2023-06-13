@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font.renderer.element
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 
-data class TextLineInfo(
+data class LineRenderInfo(
     val text: BaseComponent = BaseComponent(),
     var width: Float = 0.0f,
 ) {

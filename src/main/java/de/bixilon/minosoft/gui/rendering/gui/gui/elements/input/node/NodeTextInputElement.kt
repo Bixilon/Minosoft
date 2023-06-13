@@ -24,6 +24,8 @@ import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.mark.TextCursorStyles
@@ -44,12 +46,11 @@ class NodeTextInputElement(
     cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     editable: Boolean = true,
     onChange: () -> Unit = {},
-    background: Boolean = true,
-    shadow: Boolean = true,
-    scale: Float = 1.0f,
+    background: RGBColor? = null,
     cutAtSize: Boolean = false,
     parent: Element? = null,
-) : TextInputElement(guiRenderer, value, maxLength, cursorStyles, editable, onChange, background, shadow, scale, cutAtSize, parent) {
+    properties: TextRenderProperties = TextRenderProperties.DEFAULT,
+) : TextInputElement(guiRenderer, value, maxLength, cursorStyles, editable, onChange, background, properties, cutAtSize, parent) {
     private var showError = false
     private val errorElement = NodeErrorElement(guiRenderer, Vec2i.EMPTY)
     private val suggestions = NodeSuggestionsElement(guiRenderer, Vec2i.EMPTY, this)

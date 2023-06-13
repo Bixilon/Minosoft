@@ -37,7 +37,7 @@ abstract class AbstractButtonElement(
     text: Any,
     disabled: Boolean = false,
 ) : Element(guiRenderer) {
-    protected val textElement = TextElement(guiRenderer, text, background = false, parent = this)
+    protected val textElement = TextElement(guiRenderer, text, background = null, parent = this)
     protected abstract val disabledAtlas: AtlasElement?
     protected abstract val normalAtlas: AtlasElement?
     protected abstract val hoveredAtlas: AtlasElement?

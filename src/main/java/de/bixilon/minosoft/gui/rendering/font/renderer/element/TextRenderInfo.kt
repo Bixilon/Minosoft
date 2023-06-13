@@ -19,20 +19,20 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 class TextRenderInfo(
     val maxSize: Vec2,
 ) {
-    val lines: MutableList<TextLineInfo> = mutableListOf()
+    val lines: MutableList<LineRenderInfo> = mutableListOf()
     var lineIndex: Int = 0
 
     var size = Vec2.EMPTY
     var cutOff = false
 
 
-    fun update(offset: TextOffset, properties: TextRenderProperties, width: Float): TextLineInfo {
+    fun update(offset: TextOffset, properties: TextRenderProperties, width: Float): LineRenderInfo {
         size.x = maxOf(offset.offset.x - offset.initial.x + width, size.x)
 
-        val line: TextLineInfo
+        val line: LineRenderInfo
         if (lineIndex == 0 && lines.isEmpty()) {
             // first char of all lines
-            line = TextLineInfo()
+            line = LineRenderInfo()
             lines += line
             size.y = properties.lineHeight
         } else {
@@ -42,5 +42,9 @@ class TextRenderInfo(
         line.width += width
 
         return line
+    }
+
+    fun rewind() {
+        lineIndex = 0
     }
 }

@@ -22,6 +22,8 @@ import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -42,7 +44,7 @@ class RawItemElement(
     stack: ItemStack?,
     parent: Element?,
 ) : Element(guiRenderer) {
-    private val countText = TextElement(guiRenderer, "", background = false, noBorder = true)
+    private val countText = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
 
     var _stack: ItemStack? = null
         set(value) {

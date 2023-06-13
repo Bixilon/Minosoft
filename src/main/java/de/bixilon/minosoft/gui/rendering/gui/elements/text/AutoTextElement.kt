@@ -13,15 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
+import de.bixilon.minosoft.data.text.EmptyComponent
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 
 class AutoTextElement(
     guiRenderer: GUIRenderer,
     var interval: Int,
-    alignment: HorizontalAlignments = HorizontalAlignments.LEFT,
+    properties: TextRenderProperties = TextRenderProperties.DEFAULT,
     private val updater: () -> Any,
-) : TextElement(guiRenderer, "", alignment) {
+) : TextElement(guiRenderer, EmptyComponent, properties = properties) {
     private var remainingTicks = 0
 
     init {

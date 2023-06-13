@@ -32,7 +32,7 @@ class ItemInfoPopper(
     position: Vec2i,
     val stack: ItemStack,
 ) : MouseTrackedPopper(guiRenderer, position) {
-    private val textElement = TextElement(guiRenderer, "", background = false, parent = this)
+    private val textElement = TextElement(guiRenderer, "", background = null, parent = this)
 
     init {
         forceSilentApply()

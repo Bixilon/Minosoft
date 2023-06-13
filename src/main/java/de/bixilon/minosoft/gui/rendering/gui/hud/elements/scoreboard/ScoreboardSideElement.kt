@@ -45,7 +45,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, AsyncDrawable {
     private val backgroundElement = ColorElement(guiRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
     private val nameBackgroundElement = ColorElement(guiRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
-    private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
+    private val nameElement = TextElement(guiRenderer, "", background = null, parent = this)
     private val scores: LockMap<ScoreboardScore, ScoreboardScoreElement> = lockMapOf()
 
     override val layoutOffset: Vec2i

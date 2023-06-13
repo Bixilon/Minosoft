@@ -5,7 +5,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
-import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextLineInfo
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.LineRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -29,7 +29,7 @@ class ChatComponentRendererTest {
 
     private fun TextRenderInfo.assert(
         lineIndex: Int? = null,
-        lines: List<TextLineInfo>? = null,
+        lines: List<LineRenderInfo>? = null,
         size: Vec2? = null,
         cutOff: Boolean = false,
     ) {
@@ -53,7 +53,7 @@ class ChatComponentRendererTest {
         val info = render(TextComponent("b"))
         info.assert(
             lineIndex = 0,
-            lines = listOf(TextLineInfo(BaseComponent(TextComponent("b")), 0.5f)),
+            lines = listOf(LineRenderInfo(BaseComponent(TextComponent("b")), 0.5f)),
             size = Vec2(0.5f, 11.0f),
         )
     }
@@ -62,7 +62,7 @@ class ChatComponentRendererTest {
         val info = render(TextComponent("bc"))
         info.assert(
             lineIndex = 0,
-            lines = listOf(TextLineInfo(BaseComponent(TextComponent("bc")), 2.5f)),
+            lines = listOf(LineRenderInfo(BaseComponent(TextComponent("bc")), 2.5f)),
             size = Vec2(2.5f, 11.0f), // b + spacing + c
         )
     }
@@ -71,7 +71,7 @@ class ChatComponentRendererTest {
         val info = render(TextComponent("bcd"))
         info.assert(
             lineIndex = 0,
-            lines = listOf(TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f)),
+            lines = listOf(LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f)),
             size = Vec2(5.0f, 11.0f),
         )
     }
@@ -81,8 +81,8 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 1,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
-                TextLineInfo(BaseComponent(TextComponent("ef")), 5.5f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(TextComponent("ef")), 5.5f),
             ),
             size = Vec2(5.5f, 22.0f),
         )
@@ -93,9 +93,9 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 2,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
-                TextLineInfo(BaseComponent(TextComponent("ef")), 5.5f),
-                TextLineInfo(BaseComponent(TextComponent("g")), 3.0f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(TextComponent("ef")), 5.5f),
+                LineRenderInfo(BaseComponent(TextComponent("g")), 3.0f),
             ),
             size = Vec2(5.5f, 33.0f),
         )
@@ -106,7 +106,7 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 0,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
             ),
             size = Vec2(5.0f, 11.0f),
         )
@@ -117,8 +117,8 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 1,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
-                TextLineInfo(BaseComponent(TextComponent("ef")), 5.5f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(TextComponent("ef")), 5.5f),
             ),
             size = Vec2(5.5f, 23.0f),
         )
@@ -129,9 +129,9 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 2,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
-                TextLineInfo(BaseComponent(TextComponent("ef")), 5.5f),
-                TextLineInfo(BaseComponent(TextComponent("g")), 3.0f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(TextComponent("ef")), 5.5f),
+                LineRenderInfo(BaseComponent(TextComponent("g")), 3.0f),
             ),
             size = Vec2(5.5f, 35.0f),
         )
@@ -142,9 +142,9 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 2,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
-                TextLineInfo(BaseComponent(TextComponent("ef")), 5.5f),
-                TextLineInfo(BaseComponent(TextComponent("g")), 3.0f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(TextComponent("ef")), 5.5f),
+                LineRenderInfo(BaseComponent(TextComponent("g")), 3.0f),
             ),
             size = Vec2(5.5f, 73.0f),
         )
@@ -155,7 +155,7 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 1,
             lines = listOf(
-                TextLineInfo(BaseComponent(), 0.0f),
+                LineRenderInfo(BaseComponent(), 0.0f),
             ),
             size = Vec2(0.0f, 11.0f),
         )
@@ -166,8 +166,8 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 1,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("b")), 0.5f),
-                TextLineInfo(BaseComponent(TextComponent("b")), 0.5f),
+                LineRenderInfo(BaseComponent(TextComponent("b")), 0.5f),
+                LineRenderInfo(BaseComponent(TextComponent("b")), 0.5f),
             ),
             size = Vec2(0.5f, 22.0f),
         )
@@ -178,9 +178,9 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 2,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
-                TextLineInfo(BaseComponent(), 0.0f),
-                TextLineInfo(BaseComponent(TextComponent("efgh")), 14.0f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(), 0.0f),
+                LineRenderInfo(BaseComponent(TextComponent("efgh")), 14.0f),
             ),
             size = Vec2(14f, 33.0f),
         )
@@ -221,7 +221,7 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 0,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
             ),
             size = Vec2(5.0f, 11.0f),
             cutOff = true,
@@ -233,7 +233,7 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 0,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
             ),
             size = Vec2(5.0f, 11.0f),
             cutOff = true,
@@ -245,8 +245,8 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 1,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
-                TextLineInfo(BaseComponent(TextComponent("efgh")), 14.0f),
+                LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                LineRenderInfo(BaseComponent(TextComponent("efgh")), 14.0f),
             ),
             size = Vec2(14.0f, 22.0f),
             cutOff = true,
@@ -269,7 +269,7 @@ class ChatComponentRendererTest {
 
         info.assert(
             lineIndex = 1,
-            lines = listOf(TextLineInfo()),
+            lines = listOf(LineRenderInfo()),
             size = Vec2(0.0f, 11.0f),
         )
     }

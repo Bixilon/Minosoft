@@ -53,7 +53,7 @@ class TabListEntryElement(
     private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8), parent = this)
 
     // private val skinElement = ImageElement(guiRenderer, guiRenderer.context.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
-    private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
+    private val nameElement = TextElement(guiRenderer, "", background = null, parent = this)
     private lateinit var pingElement: AtlasImageElement
 
     private var displayName: ChatComponent = item.tabDisplayName

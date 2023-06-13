@@ -16,11 +16,12 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -33,19 +34,16 @@ class FadingTextElement(
     var fadeInTime: Long = 100,
     var stayTime: Long = 1000,
     var fadeOutTime: Long = 100,
-    fontAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
-    background: Boolean = true,
-    backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
-    noBorder: Boolean = false,
+    background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR,
     parent: Element? = null,
-    scale: Float = 1.0f,
-) : TextElement(guiRenderer = guiRenderer, text = text, fontAlignment = fontAlignment, background = background, backgroundColor = backgroundColor, noBorder = noBorder, parent, scale), Pollable {
+    properties: TextRenderProperties,
+) : TextElement(guiRenderer = guiRenderer, text = text, background = background, parent, properties), Pollable {
     override var cacheEnabled: Boolean
         get() {
             if (hidden || !super.cacheEnabled) {
                 return false
             }
-            val time = TimeUtil.millis
+            val time = millis()
             return (time >= fadeInEndTime) && (time < fadeOutStartTime)
         }
         set(value) {
@@ -79,7 +77,7 @@ class FadingTextElement(
     }
 
     fun show() {
-        val time = TimeUtil.millis
+        val time = millis()
         if (time in (fadeInEndTime + 1) until fadeOutStartTime) {
             fadeOutStartTime = time + stayTime
         } else {
@@ -96,7 +94,7 @@ class FadingTextElement(
             return
         }
         // ToDo: Eventually fade out when fading in
-        val time = TimeUtil.millis
+        val time = millis()
         fadeInStartTime = -1L
         fadeInEndTime = -1L
         fadeOutStartTime = time
@@ -111,7 +109,7 @@ class FadingTextElement(
         if (hidden) {
             return false
         }
-        val hidden = TimeUtil.millis > fadeOutEndTime
+        val hidden = millis() > fadeOutEndTime
         if (this.hidden != hidden) {
             this.hidden = hidden
             return true
@@ -123,7 +121,7 @@ class FadingTextElement(
         if (hidden) {
             return
         }
-        val time = TimeUtil.millis
+        val time = millis()
         if (time > fadeOutEndTime) {
             return
         }

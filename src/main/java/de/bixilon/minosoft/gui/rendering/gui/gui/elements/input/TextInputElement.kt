@@ -17,7 +17,9 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.string.StringUtil.codePointAtOrNull
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -41,14 +43,13 @@ open class TextInputElement(
     val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     var editable: Boolean = true,
     var onChangeCallback: () -> Unit = {},
-    val background: Boolean = true,
-    shadow: Boolean = true,
-    scale: Float = 1.0f,
+    val background: RGBColor? = null,
+    properties: TextRenderProperties = TextRenderProperties.DEFAULT,
     val cutAtSize: Boolean = false,
     parent: Element? = null,
 ) : Element(guiRenderer) {
-    protected val cursor = ColorElement(guiRenderer, size = Vec2i(minOf(1.0f, scale), Font.TOTAL_CHAR_HEIGHT * scale))
-    protected val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, scale = scale, shadow = shadow)
+    protected val cursor = ColorElement(guiRenderer, size = Vec2i(minOf(1.0f, properties.scale), properties.lineHeight * properties.scale))
+    protected val textElement = MarkTextElement(guiRenderer, "", background = null, parent = this, properties = properties)
     protected val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     protected var cursorOffset: Vec2i = Vec2i.EMPTY
     val _value = StringBuffer(256)
@@ -74,7 +75,7 @@ open class TextInputElement(
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        if (background) {
+        if (background != null) {
             backgroundElement.render(offset, consumer, options)
         }
         textElement.render(offset, consumer, options)
@@ -142,9 +143,9 @@ open class TextInputElement(
             val preCursorText = if (_pointer == value.length) {
                 textElement
             } else {
-                TextElement(guiRenderer, value.substring(0, _pointer), scale = textElement.scale, parent = this)
+                TextElement(guiRenderer, value.substring(0, _pointer), properties = textElement.properties, parent = this)
             }
-            Vec2i(preCursorText.info.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.info.lines.size - 1, 0) * preCursorText.charHeight)
+            Vec2i(preCursorText.info.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.info.lines.size - 1, 0) * preCursorText.properties.lineHeight)
         }
         cacheUpToDate = false
     }
@@ -332,7 +333,7 @@ open class TextInputElement(
         if (action != MouseActions.PRESS) {
             return true
         }
-        val leftText = TextElement(guiRenderer, value, background = false)
+        val leftText = TextElement(guiRenderer, value, background = null)
         leftText.prefMaxSize = Vec2i(position.x, size.y)
         var pointer = 0
         var heightLeft = position.y

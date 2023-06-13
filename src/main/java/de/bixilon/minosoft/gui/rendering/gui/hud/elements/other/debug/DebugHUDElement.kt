@@ -33,6 +33,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -195,8 +196,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     private fun initRight(): Element {
         val layout = RowLayout(guiRenderer, HorizontalAlignments.RIGHT)
         layout.margin = Vec4i(2)
-        layout += TextElement(guiRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", HorizontalAlignments.RIGHT)
-        layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", properties = Companion.RIGHT)
+        layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", properties = Companion.RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
 
@@ -217,39 +218,39 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", properties = Companion.RIGHT)
         layout += TextElement(guiRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}")
 
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "Display <?>", HorizontalAlignments.RIGHT).apply {
+        layout += TextElement(guiRenderer, "Display <?>", properties = Companion.RIGHT).apply {
             guiRenderer.context.connection.events.listen<ResizeWindowEvent> {
                 text = "Display ${it.size.x.format()}x${it.size.y.format()}"
             }
         }
 
         context.renderSystem.apply {
-            layout += TextElement(guiRenderer, "GPU $gpuType", HorizontalAlignments.RIGHT)
-            layout += TextElement(guiRenderer, "Version $version", HorizontalAlignments.RIGHT)
+            layout += TextElement(guiRenderer, "GPU $gpuType", properties = Companion.RIGHT)
+            layout += TextElement(guiRenderer, "Version $version", properties = Companion.RIGHT)
         }
 
         MinosoftProperties.git?.let {
             layout += LineSpacerElement(guiRenderer)
 
             MinosoftPropertiesLoader.apply {
-                layout += TextElement(guiRenderer, "Git ${it.commitShort}/${it.branch}", HorizontalAlignments.RIGHT)
+                layout += TextElement(guiRenderer, "Git ${it.commitShort}/${it.branch}", properties = Companion.RIGHT)
             }
         }
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "${connection.events.size.format()}x listeners", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "${connection.events.size.format()}x listeners", properties = Companion.RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
 
         context.connection.camera.target.apply {
-            layout += AutoTextElement(guiRenderer, 1, HorizontalAlignments.RIGHT) {
+            layout += AutoTextElement(guiRenderer, 1, properties = Companion.RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"
             }
@@ -331,6 +332,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
             KeyActions.STICKY to setOf(KeyCodes.KEY_F3),
         )
+
+        private val RIGHT = TextRenderProperties(HorizontalAlignments.RIGHT)
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<DebugHUDElement> {
             return LayoutedGUIElement(DebugHUDElement(guiRenderer)).apply { enabled = false }
