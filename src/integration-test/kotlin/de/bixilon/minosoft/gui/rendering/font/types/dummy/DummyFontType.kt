@@ -19,6 +19,8 @@ import de.bixilon.minosoft.gui.rendering.font.types.FontType
 object DummyFontType : FontType {
     private val chars: Array<DummyCodePointRenderer?> = arrayOfNulls(26) // a-z
 
+    // a:0 b:0.5 c:1.0 d:1.5 e:2.0 f:2.5 g:3.0 h:3.5
+
     init {
         build()
     }

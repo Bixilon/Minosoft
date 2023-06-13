@@ -44,15 +44,12 @@ class TextOffset(
 
     fun getNextLineHeight(properties: TextRenderProperties): Float {
         var height = properties.lineHeight
-        if (offset.y != initial.y) {
-            // previous line present
-            height += properties.lineSpacing * properties.scale
-        }
+        height += properties.lineSpacing * properties.scale
 
         return height
     }
 
-    fun addLine(properties: TextRenderProperties, info: TextRenderInfo, height: Float): Boolean {
+    fun addLine(info: TextRenderInfo, height: Float): Boolean {
         if (!fitsY(info, height)) return false
 
         offset.y += height
@@ -66,7 +63,7 @@ class TextOffset(
 
     fun canAdd(properties: TextRenderProperties, info: TextRenderInfo, width: Float, height: Float): CodePointAddResult {
         if (fitsInLine(properties, info, width)) return CodePointAddResult.FINE
-        if (addLine(properties, info, height) && fitsInLine(properties, info, width)) return CodePointAddResult.NEW_LINE
+        if (addLine(info, height) && fitsInLine(properties, info, width)) return CodePointAddResult.NEW_LINE
 
         info.cutOff = true
         return CodePointAddResult.BREAK
