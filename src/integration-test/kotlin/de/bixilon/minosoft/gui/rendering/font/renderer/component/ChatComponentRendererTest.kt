@@ -154,7 +154,7 @@ class ChatComponentRendererTest {
         info.assert(
             lineIndex = 1,
             lines = listOf(
-                TextLineInfo(BaseComponent(TextComponent("")), 0.0f),
+                TextLineInfo(BaseComponent(), 0.0f),
             ),
             size = Vec2(0.0f, 11.0f),
         )
@@ -175,10 +175,10 @@ class ChatComponentRendererTest {
     fun `basic new line 2`() {
         val info = render(TextComponent("bcd\n\nefgh"))
         info.assert(
-            lineIndex = 1,
+            lineIndex = 2,
             lines = listOf(
                 TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
-                TextLineInfo(BaseComponent(TextComponent("")), 0.0f),
+                TextLineInfo(BaseComponent(), 0.0f),
                 TextLineInfo(BaseComponent(TextComponent("efgh")), 14.0f),
             ),
             size = Vec2(14f, 33.0f),

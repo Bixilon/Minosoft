@@ -26,10 +26,12 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
 
-    override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: BaseComponent) {
+    override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: BaseComponent): Boolean {
         for (part in text.parts) {
-            ChatComponentRenderer.render(offset, fontManager, properties, info, consumer, options, part)
+            val filled = ChatComponentRenderer.render(offset, fontManager, properties, info, consumer, options, part)
+            if (filled) return true
         }
+        return false
     }
 
     override fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: BaseComponent, light: Int) {

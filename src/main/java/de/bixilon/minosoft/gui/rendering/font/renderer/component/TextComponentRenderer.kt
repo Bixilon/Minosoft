@@ -41,8 +41,19 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return properties.forcedColor ?: text.color ?: properties.fallbackColor
     }
 
-    private fun renderNewline(offset: TextOffset, info: TextRenderInfo) {
-        TODO()
+    private fun renderNewline(properties: TextRenderProperties, offset: TextOffset, info: TextRenderInfo, updateSize: Boolean): Boolean {
+        val height = offset.getNextLineHeight(properties)
+        if (!offset.addLine(info, height)) {
+            info.cutOff = true
+            return true
+        }
+
+        if (updateSize) {
+            info.size.y += height
+        }
+
+
+        return false
     }
 
     private fun renderStrikethrough() {
@@ -53,8 +64,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         TODO()
     }
 
-    override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: TextComponent) {
-        if (text.message.isEmpty()) return
+    override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: TextComponent): Boolean {
+        if (text.message.isEmpty()) return false
 
         val textFont = fontManager[text.font]
         val color = getColor(properties, text)
@@ -62,12 +73,14 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         var skipWhitespaces = false
 
         val line = StringBuilder()
+        var filled = false
 
         for (codePoint in text.message.codePoints()) {
             if (codePoint == '\n'.code) {
-                renderNewline(offset, info)
+                filled = renderNewline(properties, offset, info, consumer == null)
+                info.lines[info.lineIndex - 1].push(text, line)
                 skipWhitespaces = true
-                continue
+                if (filled) break else continue
             }
             if (skipWhitespaces && Character.isWhitespace(codePoint)) {
                 continue
@@ -86,7 +99,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             val lineInfo = renderer.render(offset, color, properties, info, formatting, codePoint, consumer, options)
             if (consumer != null) continue // already know that information
-            if (lineInfo == CodePointAddResult.BREAK) break
+            if (lineInfo == CodePointAddResult.BREAK) {
+                filled = true
+                break
+            }
 
             if (lineIndex != info.lineIndex) {
                 // new line started
@@ -98,6 +114,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         if (line.isNotEmpty()) {
             info.lines[info.lineIndex].push(text, line)
         }
+
+        return filled
     }
 
     override fun calculatePrimitiveCount(text: TextComponent): Int {

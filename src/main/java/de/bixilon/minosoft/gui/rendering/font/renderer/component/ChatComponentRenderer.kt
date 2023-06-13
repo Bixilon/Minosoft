@@ -37,7 +37,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
     /**
      * Returns true if the text exceeded the maximum size
      */
-    fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: T)
+    fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: T): Boolean
 
     fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: T, light: Int)
 
@@ -46,11 +46,11 @@ interface ChatComponentRenderer<T : ChatComponent> {
     companion object : ChatComponentRenderer<ChatComponent> {
         const val TEXT_BLOCK_RESOLUTION = 128
 
-        override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: ChatComponent) {
-            when (text) {
+        override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: ChatComponent): Boolean {
+            return when (text) {
                 is BaseComponent -> BaseComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
                 is TextComponent -> TextComponentRenderer.render(offset, fontManager, properties, info, consumer, options, text)
-                is EmptyComponent -> return
+                is EmptyComponent -> return false
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }
