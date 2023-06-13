@@ -185,5 +185,72 @@ class ChatComponentRendererTest {
         )
     }
 
+    fun `no space x`() {
+        val info = render(TextComponent("bcd\n\nefgh"), maxSize = Vec2(0.0f, Float.MAX_VALUE))
+        info.assert(
+            lineIndex = 0,
+            lines = listOf(),
+            size = Vec2(0.0f, 0.0f),
+            cutOff = true,
+        )
+    }
+
+    fun `no space y`() {
+        val info = render(TextComponent("bcd\n\nefgh"), maxSize = Vec2(Float.MAX_VALUE, 0.0f))
+        info.assert(
+            lineIndex = 0,
+            lines = listOf(),
+            size = Vec2(0.0f, 0.0f),
+            cutOff = true,
+        )
+    }
+
+    fun `no space`() {
+        val info = render(TextComponent("bcd\n\nefgh"), maxSize = Vec2(0.0f, 0.0f))
+        info.assert(
+            lineIndex = 0,
+            lines = listOf(),
+            size = Vec2(0.0f, 0.0f),
+            cutOff = true,
+        )
+    }
+
+    fun `size limit one line`() {
+        val info = render(TextComponent("bcd\nefgh"), maxSize = Vec2(Float.MAX_VALUE, 11.0f))
+        info.assert(
+            lineIndex = 0,
+            lines = listOf(
+                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+            ),
+            size = Vec2(5.0f, 11.0f),
+            cutOff = true,
+        )
+    }
+
+    fun `size limit one line with overflow`() {
+        val info = render(TextComponent("bcd\nefgh"), maxSize = Vec2(5.0f, 11.0f))
+        info.assert(
+            lineIndex = 0,
+            lines = listOf(
+                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+            ),
+            size = Vec2(5.0f, 11.0f),
+            cutOff = true,
+        )
+    }
+
+    fun `size limit two line`() {
+        val info = render(TextComponent("bcd\nefgh\nabc"), maxSize = Vec2(Float.MAX_VALUE, 22.0f))
+        info.assert(
+            lineIndex = 1,
+            lines = listOf(
+                TextLineInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+                TextLineInfo(BaseComponent(TextComponent("efgh")), 14.0f),
+            ),
+            size = Vec2(14.0f, 22.0f),
+            cutOff = true,
+        )
+    }
+
     // TODO: shadow, cutoff, underline, strikethrough, using with consumer, formatting (just basic, that is code point renderer's job)
 }

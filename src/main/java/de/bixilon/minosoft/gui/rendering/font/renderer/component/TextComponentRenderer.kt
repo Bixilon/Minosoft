@@ -43,7 +43,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
     private fun renderNewline(properties: TextRenderProperties, offset: TextOffset, info: TextRenderInfo, updateSize: Boolean): Boolean {
         val height = offset.getNextLineHeight(properties)
-        if (!offset.addLine(info, height)) {
+        if (!offset.addLine(info, properties.lineHeight, height)) {
             info.cutOff = true
             return true
         }
@@ -75,10 +75,13 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         val line = StringBuilder()
         var filled = false
 
-        for (codePoint in text.message.codePoints()) {
+        val stream = text.message.codePoints().iterator()
+        while (stream.hasNext()) {
+            val codePoint = stream.nextInt()
             if (codePoint == '\n'.code) {
+                val lineIndex = info.lineIndex
                 filled = renderNewline(properties, offset, info, consumer == null)
-                info.lines[info.lineIndex - 1].push(text, line)
+                info.lines[lineIndex].push(text, line)
                 skipWhitespaces = true
                 if (filled) break else continue
             }
@@ -98,11 +101,11 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             val lineIndex = info.lineIndex
 
             val lineInfo = renderer.render(offset, color, properties, info, formatting, codePoint, consumer, options)
-            if (consumer != null) continue // already know that information
             if (lineInfo == CodePointAddResult.BREAK) {
                 filled = true
                 break
             }
+            if (consumer != null) continue // already know that information
 
             if (lineIndex != info.lineIndex) {
                 // new line started

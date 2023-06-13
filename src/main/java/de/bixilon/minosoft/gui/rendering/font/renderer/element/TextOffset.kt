@@ -34,12 +34,16 @@ class TextOffset(
         return fits(offset.x, initial.x, info.maxSize.x, width)
     }
 
-    fun fitsY(info: TextRenderInfo, height: Float): Boolean {
-        return fits(offset.y, initial.y, info.maxSize.y, height)
+    fun fitsY(info: TextRenderInfo, offset: Float, height: Float): Boolean {
+        return fits(this.offset.y + offset, initial.y, info.maxSize.y, height)
+    }
+
+    fun canEverFit(info: TextRenderInfo, width: Float): Boolean {
+        return info.maxSize.x >= width
     }
 
     fun fitsInLine(properties: TextRenderProperties, info: TextRenderInfo, width: Float): Boolean {
-        return fitsX(info, width) && fitsY(info, properties.lineHeight)
+        return fitsX(info, width) && fitsY(info, 0.0f, properties.lineHeight)
     }
 
     fun getNextLineHeight(properties: TextRenderProperties): Float {
@@ -49,11 +53,11 @@ class TextOffset(
         return height
     }
 
-    fun addLine(info: TextRenderInfo, height: Float): Boolean {
-        if (!fitsY(info, height)) return false
+    fun addLine(info: TextRenderInfo, offset: Float, height: Float): Boolean {
+        if (!fitsY(info, offset, height)) return false
 
-        offset.y += height
-        offset.x = initial.x
+        this.offset.y += height
+        this.offset.x = initial.x
         info.lines += TextLineInfo()
         info.lineIndex++
 
@@ -62,8 +66,12 @@ class TextOffset(
 
 
     fun canAdd(properties: TextRenderProperties, info: TextRenderInfo, width: Float, height: Float): CodePointAddResult {
+        if (!canEverFit(info, width)) {
+            info.cutOff = true
+            return CodePointAddResult.BREAK
+        }
         if (fitsInLine(properties, info, width)) return CodePointAddResult.FINE
-        if (addLine(info, height) && fitsInLine(properties, info, width)) return CodePointAddResult.NEW_LINE
+        if (addLine(info, 0.0f, height) && fitsInLine(properties, info, width)) return CodePointAddResult.NEW_LINE
 
         info.cutOff = true
         return CodePointAddResult.BREAK
