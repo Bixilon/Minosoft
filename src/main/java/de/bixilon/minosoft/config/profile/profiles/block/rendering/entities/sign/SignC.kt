@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,19 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.block.rendering
+package de.bixilon.minosoft.config.profile.profiles.block.rendering.entities.sign
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.EnumDelegate
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
-import de.bixilon.minosoft.config.profile.profiles.block.rendering.entities.EntitiesC
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 
-class RenderingC(profile: BlockProfile) {
-
+class SignC(profile: BlockProfile) {
     /**
-     * This option tries to do its best to fix any occurring [Moiré Patterns](https://en.wikipedia.org/wiki/Moir%C3%A9_pattern)
-     * If set position based random block models are disabled
+     * Font alignment of the text on a sign
      */
-    var antiMoirePattern by BooleanDelegate(profile, true, "profile.block.rendering.anti_moire_pattern")
-
-    val entities = EntitiesC(profile)
+    var fontAlignment by EnumDelegate(profile, HorizontalAlignments.LEFT, HorizontalAlignments)
 }

@@ -11,19 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.block.rendering
+package de.bixilon.minosoft.config.profile.profiles.block.rendering.entities
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
-import de.bixilon.minosoft.config.profile.profiles.block.rendering.entities.EntitiesC
+import de.bixilon.minosoft.config.profile.profiles.block.rendering.entities.sign.SignC
 
-class RenderingC(profile: BlockProfile) {
-
-    /**
-     * This option tries to do its best to fix any occurring [Moiré Patterns](https://en.wikipedia.org/wiki/Moir%C3%A9_pattern)
-     * If set position based random block models are disabled
-     */
-    var antiMoirePattern by BooleanDelegate(profile, true, "profile.block.rendering.anti_moire_pattern")
-
-    val entities = EntitiesC(profile)
+class EntitiesC(profile: BlockProfile) {
+    val sign = SignC(profile)
 }

@@ -74,8 +74,12 @@ class SignBlockEntityRenderer(
         }
         textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
 
+        val alignment = context.connection.profiles.block.rendering.entities.sign.fontAlignment
+
+        val properties = if (alignment == TEXT_PROPERTIES.alignment) TEXT_PROPERTIES else TEXT_PROPERTIES.copy(alignment = alignment)
+
         for (line in sign.lines) {
-            ChatComponentRenderer.render3dFlat(context, textPosition, TEXT_PROPERTIES, Vec3(0.0f, -yRotation, 0.0f), MAX_SIZE, mesh, line, light)
+            ChatComponentRenderer.render3dFlat(context, textPosition, properties, Vec3(0.0f, -yRotation, 0.0f), MAX_SIZE, mesh, line, light)
             textPosition.y -= 0.11f
         }
     }

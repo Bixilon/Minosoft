@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class HorizontalAlignments {
     LEFT,
@@ -21,7 +23,10 @@ enum class HorizontalAlignments {
     RIGHT,
     ;
 
-    companion object {
+    companion object : ValuesEnum<HorizontalAlignments> {
+        override val VALUES = values()
+        override val NAME_MAP = EnumUtil.getEnumValues(VALUES)
+
         fun HorizontalAlignments.getOffset(width: Float, childWidth: Float): Float {
             return when (this) {
                 LEFT -> 0.0f
