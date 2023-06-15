@@ -14,18 +14,19 @@ package de.bixilon.minosoft.data.text.formatting
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.minosoft.data.text.formatting.ANSI.formatting
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 enum class FormattingCodes(
     val char: Char,
     val ansi: String,
 ) {
-    OBFUSCATED('k', "\u001b[5m"),
-    BOLD('l', "\u001b[1m"),
-    STRIKETHROUGH('m', "\u001b[9m"),
-    UNDERLINED('n', "\u001b[4m"),
-    ITALIC('o', "\u001b[3m"),
-    RESET('r', "\u001B[0m"),
+    OBFUSCATED('k', formatting(5)),
+    BOLD('l', formatting(1)),
+    STRIKETHROUGH('m', formatting(9)),
+    UNDERLINED('n', formatting(4)),
+    ITALIC('o', formatting(3)),
+    RESET('r', formatting(0)),
     ;
 
     val json: String = name.lowercase()

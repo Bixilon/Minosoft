@@ -17,11 +17,12 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.ANSI
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import org.checkerframework.common.value.qual.IntRange
 
 class RGBColor(val rgba: Int) : TextFormattable {
-    val ansi: String = "\u001b[38;2;$red;$green;${blue}m"
+    val ansi: String = ANSI.rgb(red, green, blue)
 
     @JvmOverloads
     constructor(red: Int, green: Int, blue: Int, alpha: Int = 0xFF) : this(alpha or (blue shl 8) or (green shl 16) or (red shl 24))
