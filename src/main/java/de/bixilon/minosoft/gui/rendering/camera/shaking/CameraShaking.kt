@@ -28,18 +28,25 @@ class CameraShaking(
     private val profile: ShakingC,
 ) {
     private var cameraTransform: Mat4? = Mat4()
+    private var damaged: Boolean = false
     private val speed = FloatAverage(5 * ProtocolDefinition.TICK_TIME * 1_000_000L, 0.0f)
     private val physics = camera.context.connection.camera.entity.physics
 
 
     fun update(): Boolean {
+        if (this.damaged) {
+            if (profile.damage) {
+                this.cameraTransform = updateDamage()
+                this.damaged = false
+                return true
+            }
+        }
         if (profile.walking) {
             this.cameraTransform = updateBobbing()
+            return true
+
         }
-        if (profile.damage) {
-            updateDamage()
-        }
-        return true
+        return false
     }
 
     private fun updateBobbing(): Mat4? {
@@ -65,13 +72,16 @@ class CameraShaking(
         return (sin * speed * intensity) / MINIMUM_SPEED
     }
 
-    private fun updateDamage(): Float {
-        //TODO
-        return 0.0f
+    private fun updateDamage(): Mat4 {
+        val transform = Mat4()
+        val time = millis()
+        val rotation = bobbing(time, 0.5f, DAMAGE_FREQUENCY * profile.speed, DAMAGE_STRENGTH * profile.intensity)
+        transform.rotateAssign(rotation, Vec3(0, 0, 1))
+        return transform
     }
 
     fun onDamage() {
-        //TODO
+        this.damaged = true
     }
 
     fun transform(): Mat4? {
@@ -79,6 +89,8 @@ class CameraShaking(
     }
 
     companion object {
+        private const val DAMAGE_FREQUENCY = 40.0f
+        private const val DAMAGE_STRENGTH = 0.004f
         private const val ROTATION_STRENGTH = 0.002f
         private const val ROTATION_FREQUENCY = 10.0f
         private const val TRANSLATION_STRENGTH = 0.1f
