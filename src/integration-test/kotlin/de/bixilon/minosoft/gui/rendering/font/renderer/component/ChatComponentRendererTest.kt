@@ -12,6 +12,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
 import de.bixilon.minosoft.gui.rendering.font.types.font.EmptyFont
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.mesh.DummyGUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import org.testng.Assert.assertEquals
@@ -203,6 +204,16 @@ class ChatComponentRendererTest {
 
     fun `no space y`() {
         val info = render(TextComponent("bcd\n\nefgh"), maxSize = Vec2(Float.MAX_VALUE, 0.0f))
+        info.assert(
+            lineIndex = 0,
+            lines = listOf(),
+            size = Vec2(0.0f, 0.0f),
+            cutOff = true,
+        )
+    }
+
+    fun `no space y with consumer`() {
+        val info = render(TextComponent("bcd\n\nefgh"), maxSize = Vec2(Float.MAX_VALUE, 10.0f), consumer = DummyGUIVertexConsumer())
         info.assert(
             lineIndex = 0,
             lines = listOf(),

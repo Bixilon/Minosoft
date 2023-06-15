@@ -68,7 +68,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         if (text.message.isEmpty()) return false
 
 
-        if (consumer != null && info.lineIndex == 0 && offset.offset.x == offset.initial.x) {
+        if (consumer != null && info.lineIndex == 0 && info.lines.isNotEmpty() && offset.offset.x == offset.initial.x) {
             // switched to consumer mode but offset was not updated yet
             offset.align(properties.alignment, info.lines.first().width, info.size)
         }

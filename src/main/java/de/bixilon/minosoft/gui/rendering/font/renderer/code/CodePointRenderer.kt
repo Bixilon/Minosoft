@@ -42,7 +42,7 @@ interface CodePointRenderer {
 
     private fun getVerticalSpacing(offset: TextOffset, properties: TextRenderProperties, info: TextRenderInfo, align: Boolean): Float {
         var lineStart = offset.initial.x
-        if (align) {
+        if (align && info.lines.isNotEmpty()) {
             lineStart += properties.alignment.getOffset(info.size.x, info.lines[info.lineIndex].width)
         }
         if (offset.offset.x == lineStart) return 0.0f
