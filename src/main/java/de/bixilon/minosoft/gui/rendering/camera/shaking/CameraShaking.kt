@@ -27,12 +27,10 @@ class CameraShaking(
     private val camera: Camera,
     private val profile: ShakingC,
 ) {
-    private var rotation = 0.0f
     private var cameraTransform: Mat4? = Mat4()
     private val speed = FloatAverage(5 * ProtocolDefinition.TICK_TIME * 1_000_000L, 0.0f)
     private val physics = camera.context.connection.camera.entity.physics
 
-    val isEmpty: Boolean get() = rotation == 0.0f
 
     fun update(): Boolean {
         if (profile.walking) {

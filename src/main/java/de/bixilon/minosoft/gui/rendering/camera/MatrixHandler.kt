@@ -116,7 +116,7 @@ class MatrixHandler(
         context.camera.offset.draw()
         val matrixPosition = Vec3(eyePosition - context.camera.offset.offset)
         val front = view.front
-        if (!shaking && upToDate && matrixPosition == this.matrixPosition && front == this.front && fov == previousFOV && this.shaking.isEmpty) {
+        if (!shaking && upToDate && matrixPosition == this.matrixPosition && front == this.front && fov == previousFOV) {
             return
         }
         this.matrixPosition = matrixPosition
