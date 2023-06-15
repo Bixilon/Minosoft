@@ -35,9 +35,7 @@ class DummyTexture(
     override val transparency: TextureTransparencies get() = TextureTransparencies.OPAQUE
     override var properties: ImageProperties = ImageProperties()
     override var renderData: TextureRenderData = DummyTextureRenderData
-    override var data: ByteBuffer?
-        get() = TODO("Not yet implemented")
-        set(value) {}
+    override var data: ByteBuffer? = null
     override var mipmapData: Array<ByteBuffer>?
         get() = TODO("Not yet implemented")
         set(value) {}

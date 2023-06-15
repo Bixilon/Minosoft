@@ -23,6 +23,7 @@ class BitmapCodeRenderer(
     override var uvStart: Vec2,
     override var uvEnd: Vec2,
     override val width: Float,
+    val ascent1: Int,
 ) : RasterizedCodePointRenderer, AscentedCodePointRenderer {
     override val ascent: Float
         get() = 1.0f

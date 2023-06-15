@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 data class EmptyCodeRenderer(
-    val width: Int,
+    val width: Int = 4,
 ) : CodePointRenderer {
 
     init {

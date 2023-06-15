@@ -17,5 +17,5 @@ import de.bixilon.kutil.latch.AbstractLatch
 
 interface PostInitFontType : FontType {
 
-    fun postInit(latch: AbstractLatch) = Unit
+    fun postInit(latch: AbstractLatch)
 }
