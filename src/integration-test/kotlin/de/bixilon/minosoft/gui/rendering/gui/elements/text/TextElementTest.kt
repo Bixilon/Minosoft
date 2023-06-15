@@ -6,6 +6,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil.assetSize
+import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["font", "gui"])
@@ -64,6 +65,33 @@ class TextElementTest {
         element.assetSize(Vec2(9.0f, 37.0f))
     }
 
+    fun `limited size but not actually limited`() {
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = null, properties = TextRenderProperties(shadow = false))
+        element.prefMaxSize = Vec2(10.0f, 11.0f)
+        element.assetSize(Vec2(5.0f, 11.0f))
+    }
 
-    // TODO: test on mouse (click/hover events), rendering, size limiting
+    fun `limited size`() {
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = null, properties = TextRenderProperties(shadow = false))
+        element.prefMaxSize = Vec2(3.0f, 11.0f)
+        element.assetSize(Vec2(2.5f, 11.0f))
+        assertEquals(element.info.size, Vec2(2.5f, 11.0f))
+    }
+
+    fun `limited size with background`() {
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4(1.0f)), properties = TextRenderProperties(shadow = false))
+        element.prefMaxSize = Vec2(5.0f, 11.0f)
+        element.assetSize(Vec2(0.0f, 0.0f))
+        assertEquals(element.info.size, Vec2(0.0f, 0.0f))
+    }
+
+    fun `limited size with background 2`() {
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4(1.0f)), properties = TextRenderProperties(shadow = false))
+        element.prefMaxSize = Vec2(5.0f, 13.0f)
+        element.assetSize(Vec2(4.5f, 13.0f))
+        assertEquals(element.info.size, Vec2(2.5f, 11.0f))
+    }
+
+
+    // TODO: test on mouse (click/hover events), rendering
 }

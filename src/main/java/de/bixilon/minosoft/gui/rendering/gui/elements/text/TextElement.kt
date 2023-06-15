@@ -121,17 +121,12 @@ open class TextElement(
     }
 
     private fun updateText(text: ChatComponent) {
-        val info = TextRenderInfo(Vec2(maxSize))
+        val info = TextRenderInfo(maxSize.withBackgroundSize(-1.0f))
         if (!empty) {
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
         }
-        val size = Vec2(info.size)
-        val background = this.background
-        if (background != null && size.x > 0.0f && size.y > 0.0f) { // only add background if text is not empty
-            size += background.size.spaceSize
-        }
-        _size = size
+        _size = info.size.withBackgroundSize()
         this.info = info
     }
 
@@ -280,5 +275,15 @@ open class TextElement(
 
     override fun toString(): String {
         return chatComponent.toString()
+    }
+
+    private fun Vec2.withBackgroundSize(sign: Float = 1.0f): Vec2 {
+        val size = Vec2(this)
+        val background = this@TextElement.background
+        if (background != null && size.x > 0.0f && size.y > 0.0f) { // only add background if text is not empty
+            size += background.size.spaceSize * sign
+        }
+
+        return size
     }
 }
