@@ -21,8 +21,6 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.LineRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
@@ -31,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
@@ -39,13 +38,20 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.bottom
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import de.bixilon.minosoft.util.KUtil.charCount
 
+/**
+ * A simple UI element that draws text on the screen
+ * A background color is supported, if set
+ */
 open class TextElement(
     guiRenderer: GUIRenderer,
     text: Any,
-    background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR,
+    background: TextBackground? = TextBackground.DEFAULT,
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : Element(guiRenderer, text.charCount * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
@@ -53,13 +59,13 @@ open class TextElement(
     lateinit var info: TextRenderInfo
         private set
 
-    var background: RGBColor? = background
+    var background: TextBackground? = background
         set(value) {
             if (field == value) {
                 return
             }
             field = value
-            cacheUpToDate = false
+            forceApply()
         }
     var properties: TextRenderProperties = properties
         set(value) {
@@ -132,7 +138,7 @@ open class TextElement(
 
     override fun onChildChange(child: Element) = Broken("A TextElement can not have a child!")
 
-    private fun GUIVertexConsumer.renderBackground(color: RGBColor, properties: TextRenderProperties, info: TextRenderInfo, offset: Vec2, options: GUIVertexOptions?) {
+    private fun GUIVertexConsumer.renderBackground(background: TextBackground, properties: TextRenderProperties, info: TextRenderInfo, offset: Vec2, options: GUIVertexOptions?) {
         val start = Vec2()
         val end = Vec2()
 
@@ -142,10 +148,15 @@ open class TextElement(
             start.x = offset.x + properties.alignment.getOffset(line.width, info.size.x)
             start.y = offset.y + (index * lineHeight) + (maxOf(index - 1, 0) * properties.lineSpacing)
 
-            end.x = start.x + line.width
+            end.x = start.x + line.width + background.size.vertical
             end.y = start.y + lineHeight
 
-            addQuad(start, end, context.textureManager.whiteTexture, color, options)
+            if (index == info.lines.size - 1) {
+                // last line
+                end.y += background.size.bottom
+            }
+
+            addQuad(start, end, context.textureManager.whiteTexture, background.color, options)
         }
     }
 
@@ -154,8 +165,12 @@ open class TextElement(
         val info = this.info
         val properties = this.properties
         val initialOffset = Vec2(offset + margin.offset)
+        val textOffset = Vec2(initialOffset)
 
-        this.background?.let { consumer.renderBackground(it, properties, info, initialOffset, options) }
+        this.background?.let {
+            consumer.renderBackground(it, properties, info, initialOffset, options)
+            textOffset += it.size.offset
+        }
 
         var vertices = ChatComponentRenderer.calculatePrimitiveCount(chatComponent) * consumer.order.size * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX
         if (properties.shadow) {
@@ -163,7 +178,7 @@ open class TextElement(
         }
         consumer.ensureSize(vertices)
 
-        ChatComponentRenderer.render(TextOffset(Vec2(initialOffset)), context.font, properties, info, consumer, options, chatComponent)
+        ChatComponentRenderer.render(TextOffset(textOffset), context.font, properties, info, consumer, options, chatComponent)
         info.rewind()
     }
 
@@ -220,7 +235,7 @@ open class TextElement(
     private fun TextRenderInfo.getLineAt(lineHeight: Float, lineSpacing: Float, offset: Float): Pair<LineRenderInfo, Float>? {
         var offset = offset
 
-        for ((index, line) in info.lines.withIndex()) {
+        for ((index, line) in lines.withIndex()) {
             if (offset in 0.0f..lineHeight) {
                 return Pair(line, offset)
             }

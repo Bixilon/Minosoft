@@ -17,13 +17,12 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -32,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 class MarkTextElement(
     guiRenderer: GUIRenderer,
     text: Any,
-    background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR,
+    background: TextBackground? = TextBackground.DEFAULT,
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : TextElement(guiRenderer, text, background, parent, properties) {

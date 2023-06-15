@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,15 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.atlas
+package de.bixilon.minosoft.gui.rendering.gui.elements.text.background
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.kotlinglm.vec4.Vec4
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 
-class CodeTexturePart(
-    override val texture: AbstractTexture,
-    override val uvStart: Vec2 = Vec2(0.0f),
-    override val uvEnd: Vec2 = Vec2(1.0f),
-    override val size: Vec2i,
-) : TexturePart
+data class TextBackground(
+    val color: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
+    val size: Vec4 = Vec4(1.0f),
+) {
+
+    companion object {
+        val DEFAULT = TextBackground()
+    }
+}

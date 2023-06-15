@@ -15,14 +15,12 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.copy
@@ -34,7 +32,7 @@ class FadingTextElement(
     var fadeInTime: Long = 100,
     var stayTime: Long = 1000,
     var fadeOutTime: Long = 100,
-    background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR,
+    background: TextBackground? = TextBackground.DEFAULT,
     parent: Element? = null,
     properties: TextRenderProperties,
 ) : TextElement(guiRenderer = guiRenderer, text = text, background = background, parent, properties), Pollable {
