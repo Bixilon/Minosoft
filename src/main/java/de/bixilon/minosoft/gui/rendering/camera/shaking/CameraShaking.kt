@@ -28,37 +28,36 @@ class CameraShaking(
     private val profile: ShakingC,
 ) {
     private var rotation = 0.0f
+    private var cameraTransform: Mat4? = Mat4()
     private val speed = FloatAverage(5 * ProtocolDefinition.TICK_TIME * 1_000_000L, 0.0f)
     private val physics = camera.context.connection.camera.entity.physics
 
     val isEmpty: Boolean get() = rotation == 0.0f
 
     fun update(): Boolean {
-        var bobbing = 0.0f
         if (profile.walking) {
-            bobbing = updateBobbing()
+            this.cameraTransform = updateBobbing()
         }
-        var damage = 0.0f
         if (profile.damage) {
-            damage = updateDamage()
+            updateDamage()
         }
-
-        val rotation = bobbing + damage
-
-        if (rotation == this.rotation) return false
-        this.rotation = rotation
         return true
     }
 
-    private fun updateBobbing(): Float {
+    private fun updateBobbing(): Mat4? {
         if (!this.physics.onGround) {
             this.speed += 0.0f
-            return 0.0f
+            return null
         }
+        val transform = Mat4()
         val time = millis()
         this.speed += this.physics.velocity.xz.length2().toFloat() // velocity affects how quick it goes
         val speed = minOf(this.speed.avg, 0.25f)
-        return bobbing(time, speed, FREQUENCY * profile.speed, STRENGTH * profile.intensity)
+        val translation = bobbing(time, speed, TRANSLATION_FREQUENCY * profile.speed, TRANSLATION_STRENGTH * profile.intensity)
+        val rotation = bobbing(time, speed, ROTATION_FREQUENCY * profile.speed, ROTATION_STRENGTH * profile.intensity)
+        transform.translateAssign(Vec3(0, translation, 0))
+        transform.rotateAssign(rotation, Vec3(0, 0, 1))
+        return transform
     }
 
     private fun bobbing(time: Long, speed: Float, frequency: Float, intensity: Float): Float {
@@ -78,15 +77,14 @@ class CameraShaking(
     }
 
     fun transform(): Mat4? {
-        if (this.rotation == 0.0f) return null
-        return Mat4()
-            .rotateAssign(this.rotation, ROTATION)
+        return cameraTransform
     }
 
     companion object {
-        private val ROTATION = Vec3(0, 0, 1)
-        private const val STRENGTH = 0.002f
-        private const val FREQUENCY = 10.0f
+        private const val ROTATION_STRENGTH = 0.002f
+        private const val ROTATION_FREQUENCY = 10.0f
+        private const val TRANSLATION_STRENGTH = 0.1f
+        private const val TRANSLATION_FREQUENCY = 15.0f
         private const val MINIMUM_SPEED = 0.1f
     }
 }
