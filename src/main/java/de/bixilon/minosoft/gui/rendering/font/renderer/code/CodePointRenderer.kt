@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.SHADOW_OFFSET
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
@@ -41,7 +42,12 @@ interface CodePointRenderer {
     private fun getVerticalSpacing(offset: TextOffset, properties: TextRenderProperties): Float {
         if (offset.offset.x == offset.initial.x) return 0.0f
         // not at line start
-        return properties.charSpacing.vertical * properties.scale
+        var spacing = properties.charSpacing.vertical
+        if (properties.shadow) {
+            spacing = maxOf(spacing - SHADOW_OFFSET, 0.0f)
+        }
+
+        return spacing * properties.scale
     }
 
 
