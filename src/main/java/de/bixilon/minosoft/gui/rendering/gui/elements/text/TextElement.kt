@@ -39,6 +39,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.bottom
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
 import de.bixilon.minosoft.util.KUtil.charCount
 
@@ -125,8 +126,13 @@ open class TextElement(
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
         }
+        val size = Vec2(info.size)
+        val background = this.background
+        if (background != null && size.x > 0.0f && size.y > 0.0f) { // only add background if text is not empty
+            size += background.size.spaceSize
+        }
+        _size = size
         this.info = info
-        _size = Vec2(info.size)
     }
 
     override fun forceSilentApply() {

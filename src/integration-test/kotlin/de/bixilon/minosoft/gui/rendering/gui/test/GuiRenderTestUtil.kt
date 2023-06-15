@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui
+package de.bixilon.minosoft.gui.rendering.gui.test
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.CodeTexturePart
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
@@ -54,6 +55,6 @@ object GuiRenderTestUtil {
 
 
     fun Element.assetSize(size: Vec2) {
-        assertEquals(size, this.size)
+        assertEquals(this.size, size)
     }
 }
