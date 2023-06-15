@@ -49,30 +49,7 @@ interface GUIVertexConsumer {
         }
     }
 
-    fun addQuad(start: Vec2i, end: Vec2i, texture: ShaderIdentifiable, uvStart: Vec2 = UV_START, uvEnd: Vec2 = UV_END, tint: RGBColor, options: GUIVertexOptions?) {
-        val positions = arrayOf(
-            Vec2(start),
-            Vec2(end.x, start.y),
-            Vec2(end),
-            Vec2(start.x, end.y),
-        )
-        val texturePositions = arrayOf(
-            Vec2(uvEnd.x, uvStart.y),
-            uvStart,
-            Vec2(uvStart.x, uvEnd.y),
-            uvEnd,
-        )
-
-        for ((vertexIndex, textureIndex) in order) {
-            addVertex(positions[vertexIndex], texture, texturePositions[textureIndex], tint, options)
-        }
-    }
-
     fun addQuad(start: Vec2, end: Vec2, texture: TexturePart, tint: RGBColor, options: GUIVertexOptions?) {
-        addQuad(start, end, texture.texture, texture.uvStart, texture.uvEnd, tint, options)
-    }
-
-    fun addQuad(start: Vec2i, end: Vec2i, texture: TexturePart, tint: RGBColor, options: GUIVertexOptions?) {
         addQuad(start, end, texture.texture, texture.uvStart, texture.uvEnd, tint, options)
     }
 

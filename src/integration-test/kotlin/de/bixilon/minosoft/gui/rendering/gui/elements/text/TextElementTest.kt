@@ -2,6 +2,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec4.Vec4
+import de.bixilon.minosoft.gui.rendering.font.renderer.component.DummyComponentConsumer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil
@@ -90,6 +91,24 @@ class TextElementTest {
         element.prefMaxSize = Vec2(5.0f, 13.0f)
         element.assetSize(Vec2(4.5f, 13.0f))
         assertEquals(element.info.size, Vec2(2.5f, 11.0f))
+    }
+
+    fun `single line background and text`() {
+        val consumer = DummyComponentConsumer()
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd", background = TextBackground(size = Vec4(1.0f)), properties = TextRenderProperties(font = consumer.Font(), shadow = false))
+
+        element.forceRender(Vec2(), consumer, null)
+
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdCodePoint(Vec2(1, 1)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(2.5, 1)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(4.5, 1)),
+        )
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdQuad(Vec2(0, 0), Vec2(7, 13)),
+        )
     }
 
 

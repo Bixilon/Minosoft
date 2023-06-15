@@ -18,6 +18,7 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
+import de.bixilon.minosoft.gui.rendering.gui.atlas.TexturePart
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -26,13 +27,19 @@ import org.testng.Assert.assertEquals
 
 class DummyComponentConsumer : GUIVertexConsumer {
     val chars: MutableList<RendererdCodePoint> = mutableListOf()
+    val quads: MutableList<RendererdQuad> = mutableListOf()
 
-    override val order: Array<Pair<Int, Int>> get() = Broken()
+    override val order: Array<Pair<Int, Int>> get() = emptyArray()
     override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) = Broken()
     override fun ensureSize(size: Int) = Unit
 
+    override fun addQuad(start: Vec2, end: Vec2, texture: TexturePart, tint: RGBColor, options: GUIVertexOptions?) {
+        quads += RendererdQuad(start, end)
+    }
+
     data class RendererdCodePoint(val start: Vec2)
+    data class RendererdQuad(val start: Vec2, val end: Vec2)
 
 
     inner class ConsumerCodePointRenderer(val width: Float) : CodePointRenderer {
@@ -70,6 +77,10 @@ class DummyComponentConsumer : GUIVertexConsumer {
     }
 
     fun assert(vararg chars: RendererdCodePoint) {
+        assertEquals(this.chars, chars.toList())
+    }
+
+    fun assert(vararg chars: RendererdQuad) {
         assertEquals(this.chars, chars.toList())
     }
 }

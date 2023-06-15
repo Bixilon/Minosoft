@@ -144,7 +144,7 @@ open class TextElement(
         val lineHeight = properties.lineHeight
 
         for ((index, line) in info.lines.withIndex()) {
-            start.x = offset.x + properties.alignment.getOffset(line.width, info.size.x)
+            start.x = offset.x + properties.alignment.getOffset(info.size.x, line.width)
             start.y = offset.y + (index * lineHeight) + (maxOf(index - 1, 0) * properties.lineSpacing)
 
             end.x = start.x + line.width + background.size.vertical
