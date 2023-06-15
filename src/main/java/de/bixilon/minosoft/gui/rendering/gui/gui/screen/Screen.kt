@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -21,15 +21,15 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 abstract class Screen(
     guiRenderer: GUIRenderer,
 ) : Element(guiRenderer), LayoutedElement {
     protected val background = AtlasImageElement(guiRenderer, context.textureManager.whiteTexture, size = guiRenderer.scaledSize, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
-    override val layoutOffset: Vec2i = Vec2i(0, 0)
+    override val layoutOffset: Vec2 = Vec2(0, 0)
 
-    override var _size: Vec2i
+    override var _size: Vec2
         get() = guiRenderer.scaledSize
         set(value) {}
 
@@ -38,7 +38,7 @@ abstract class Screen(
         _size = guiRenderer.scaledSize
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        background.render(Vec2i.EMPTY, consumer, options)
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        background.render(Vec2.EMPTY, consumer, options)
     }
 }

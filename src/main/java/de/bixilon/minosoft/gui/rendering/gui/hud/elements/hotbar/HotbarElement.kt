@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
@@ -32,15 +32,14 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.left
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.left
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.right
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
-import java.lang.Integer.max
 
 class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     val core = HotbarCoreElement(guiRenderer)
@@ -57,8 +56,8 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
     private var itemTextShown = true
 
 
-    override val layoutOffset: Vec2i
-        get() = size.let { Vec2i((guiRenderer.scaledSize.x - it.x) / 2, guiRenderer.scaledSize.y - it.y) }
+    override val layoutOffset: Vec2
+        get() = size.let { Vec2((guiRenderer.scaledSize.x - it.x) / 2, guiRenderer.scaledSize.y - it.y) }
 
     private var renderElements = setOf(
         itemText,
@@ -73,22 +72,22 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
 
         if (hoverTextShown) {
-            hoverText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, hoverText.size.x), 0), consumer, options)
+            hoverText.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, hoverText.size.x), 0), consumer, options)
             offset.y += hoverText.size.y + HOVER_TEXT_OFFSET
         }
         if (itemTextShown) {
-            itemText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, itemText.size.x), 0), consumer, options)
+            itemText.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, itemText.size.x), 0), consumer, options)
             offset.y += itemText.size.y + ITEM_NAME_OFFSET
         }
 
-        val coreOffset = offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, core.size.x), 0)
+        val coreOffset = offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, core.size.x), 0)
 
         if (renderOffhand) {
-            val offhandOffset = Vec2i.EMPTY
+            val offhandOffset = Vec2.EMPTY
             if (offhand.offArm == Arms.LEFT) {
                 offhandOffset.x = -offhand.size.x - offhand.margin.right
             } else {
@@ -106,13 +105,13 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             element.silentApply()
         }
 
-        val size = Vec2i(core.size)
+        val size = Vec2(core.size)
 
         renderOffhand = guiRenderer.context.connection.player.items.inventory[EquipmentSlots.OFF_HAND] != null
 
         if (renderOffhand) {
             size.x += offhand.size.x
-            size.y = max(size.y, offhand.size.y)
+            size.y = maxOf(size.y, offhand.size.y)
         }
 
 
@@ -120,7 +119,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             itemTextShown = !itemText.hidden
             if (itemTextShown) {
                 size.y += itemText.size.y + ITEM_NAME_OFFSET
-                size.x = max(size.x, itemText.size.x)
+                size.x = maxOf(size.x, itemText.size.x)
             }
         } else {
             itemTextShown = false
@@ -129,7 +128,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         hoverTextShown = !hoverText.hidden
         if (hoverTextShown) {
             size.y += hoverText.size.y + HOVER_TEXT_OFFSET
-            size.x = max(size.x, hoverText.size.x)
+            size.x = maxOf(size.x, hoverText.size.x)
         }
 
         _size = size
@@ -170,7 +169,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
 
     override fun postInit() {
-        prefMaxSize = Vec2i(-1, -1)
+        prefMaxSize = Vec2(-1, -1)
 
         val connection = context.connection
         val player = connection.player

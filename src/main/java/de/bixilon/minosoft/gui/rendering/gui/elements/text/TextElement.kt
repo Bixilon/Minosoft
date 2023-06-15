@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.Minosoft
@@ -41,7 +40,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.bottom
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import de.bixilon.minosoft.util.KUtil.charCount
 
 /**
@@ -76,7 +74,7 @@ open class TextElement(
             forceApply()
         }
 
-    override var size: Vec2i
+    override var size: Vec2
         get() = super.size
         set(value) {}
 
@@ -118,7 +116,7 @@ open class TextElement(
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
             prefSize = info.size
         }
-        _prefSize = Vec2i(prefSize)
+        _prefSize = Vec2(prefSize)
     }
 
     private fun updateText(text: ChatComponent) {
@@ -128,7 +126,7 @@ open class TextElement(
             info.rewind()
         }
         this.info = info
-        _size = Vec2i(info.size)
+        _size = Vec2(info.size)
     }
 
     override fun forceSilentApply() {
@@ -160,7 +158,7 @@ open class TextElement(
         }
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (empty) return
         val info = this.info
         val properties = this.properties
@@ -182,7 +180,7 @@ open class TextElement(
         info.rewind()
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (action != MouseActions.PRESS || button != MouseButtons.LEFT) {
             return true
         }
@@ -191,7 +189,7 @@ open class TextElement(
         return true
     }
 
-    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+    override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {
         val pair = getTextComponentAt(position) ?: return false
         activeElement = pair.first
         pair.first.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute)
@@ -201,7 +199,7 @@ open class TextElement(
         return true
     }
 
-    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2, absolute: Vec2): Boolean {
         val pair = getTextComponentAt(Vec2(position))
 
         if (activeElement != pair?.first) {
@@ -212,9 +210,9 @@ open class TextElement(
             } else {
                 context.window.cursorShape = CursorShapes.HAND
             }
-            return (activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: false) || (pair?.first?.hoverEvent?.onMouseEnter(guiRenderer, Vec2i(pair.second), absolute) ?: false)
+            return (activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: false) || (pair?.first?.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute) ?: false)
         }
-        return pair?.first?.hoverEvent?.onMouseMove(guiRenderer, Vec2i(pair.second), absolute) ?: false
+        return pair?.first?.hoverEvent?.onMouseMove(guiRenderer, pair.second, absolute) ?: false
     }
 
     override fun onMouseLeave(): Boolean {
@@ -247,9 +245,6 @@ open class TextElement(
 
         return null
     }
-
-    @Deprecated("int")
-    private fun getTextComponentAt(position: Vec2i): Pair<TextComponent, Vec2i>? = getTextComponentAt(Vec2(position))?.let { Pair(it.first, Vec2i(it.second)) }
 
     private fun getTextComponentAt(position: Vec2): Pair<TextComponent, Vec2>? {
         val offset = Vec2(position)

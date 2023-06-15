@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
@@ -31,9 +30,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.DynamicImageElem
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.nullCompare
-import java.lang.Integer.max
 import java.util.*
 
 class TabListEntryElement(
@@ -41,7 +39,7 @@ class TabListEntryElement(
     val tabList: TabListElement,
     uuid: UUID,
     val item: PlayerAdditional,
-    width: Int,
+    width: Float,
 ) : Element(guiRenderer), Pollable, Comparable<TabListEntryElement> {
 
     init {
@@ -50,7 +48,7 @@ class TabListEntryElement(
 
     private val background: ColorElement
 
-    private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8), parent = this)
+    private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2(8, 8), parent = this)
 
     // private val skinElement = ImageElement(guiRenderer, guiRenderer.context.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = null, parent = this)
@@ -62,15 +60,15 @@ class TabListEntryElement(
     private var name: String = item.name
     private var teamName = item.team?.name
 
-    override var prefSize: Vec2i = Vec2i.EMPTY
-    override var prefMaxSize: Vec2i
-        get() = Vec2i(width, HEIGHT)
+    override var prefSize: Vec2 = Vec2.EMPTY
+    override var prefMaxSize: Vec2
+        get() = Vec2(width, HEIGHT)
         set(value) = Unit
-    override var size: Vec2i
+    override var size: Vec2
         get() = maxSize
         set(value) = Unit
 
-    var width: Int = width
+    var width: Float = width
         set(value) {
             if (value == field) {
                 return
@@ -85,11 +83,11 @@ class TabListEntryElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         background.render(offset, consumer, options)
-        skinElement.render(offset + Vec2i(PADDING, PADDING), consumer, options)
-        nameElement.render(offset + Vec2i(skinElement.size.x + PADDING * 3, PADDING), consumer, options)
-        pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), consumer, options)
+        skinElement.render(offset + Vec2(PADDING, PADDING), consumer, options)
+        nameElement.render(offset + Vec2(skinElement.size.x + PADDING * 3, PADDING), consumer, options)
+        pingElement.render(offset + Vec2(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), consumer, options)
     }
 
     override fun forceSilentApply() {
@@ -104,11 +102,11 @@ class TabListEntryElement(
                 else -> 1
             }]
         )
-        nameElement.prefMaxSize = Vec2i(max(0, maxSize.x - pingElement.size.x - skinElement.size.x - INNER_MARGIN), HEIGHT)
+        nameElement.prefMaxSize = Vec2(maxOf(0.0f, maxSize.x - pingElement.size.x - skinElement.size.x - INNER_MARGIN), HEIGHT)
 
         nameElement.text = displayName
 
-        this.prefSize = Vec2i((PADDING * 6) + skinElement.size.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
+        this.prefSize = Vec2((PADDING * 6) + skinElement.size.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
         background.size = size
         cacheUpToDate = false
     }

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -36,7 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -48,7 +47,7 @@ class GUIRenderer(
 ) : AsyncRenderer, InputHandler, OtherDrawable {
     private val profile = connection.profiles.gui
     override val renderSystem = context.renderSystem
-    var scaledSize: Vec2i by observed(context.window.size)
+    var scaledSize: Vec2 by observed(Vec2(context.window.size))
     val gui = GUIManager(this)
     val hud = HUDManager(this)
     val popper = PopperManager(this)
@@ -63,7 +62,7 @@ class GUIRenderer(
     val shader = context.renderSystem.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
     val atlasManager = AtlasManager(context)
 
-    var currentMousePosition: Vec2i by observed(Vec2i.EMPTY)
+    var currentMousePosition: Vec2 by observed(Vec2.EMPTY)
         private set
 
     override fun init(latch: AbstractLatch) {
@@ -78,9 +77,9 @@ class GUIRenderer(
         atlasManager.postInit()
         shader.load()
 
-        connection.events.listen<ResizeWindowEvent> { recalculateMatrices(it.size) }
-        context.window::systemScale.observe(this) { recalculateMatrices(systemScale = it) }
-        profile::scale.observeRendering(this) { recalculateMatrices(scale = it) }
+        connection.events.listen<ResizeWindowEvent> { updateResolution(Vec2(it.size)) }
+        context.window::systemScale.observe(this) { updateResolution(systemScale = it) }
+        profile::scale.observeRendering(this) { updateResolution(scale = it) }
 
         gui.postInit()
         hud.postInit()
@@ -88,15 +87,15 @@ class GUIRenderer(
         dragged.postInit()
     }
 
-    private fun recalculateMatrices(windowSize: Vec2i = context.window.size, scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
-        scaledSize = windowSize.scale(systemScale, scale)
-        halfSize = Vec2(scaledSize / 2.0f)
+    private fun updateResolution(windowSize: Vec2 = Vec2(context.window.size), scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
+        scaledSize = Vec2(windowSize.scale(systemScale, scale))
+        halfSize = scaledSize / 2.0f
         resolutionUpdate = true
 
-        gui.onMatrixChange()
-        hud.onMatrixChange()
-        popper.onMatrixChange()
-        dragged.onMatrixChange()
+        gui.onScreenChange()
+        hud.onScreenChange()
+        popper.onScreenChange()
+        dragged.onScreenChange()
     }
 
     fun setup() {
@@ -111,7 +110,7 @@ class GUIRenderer(
         shader.use()
     }
 
-    override fun onMouseMove(position: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2): Boolean {
         val scaledPosition = position.scale()
         currentMousePosition = scaledPosition
         return popper.onMouseMove(scaledPosition) || dragged.onMouseMove(scaledPosition) || gui.onMouseMove(scaledPosition)
@@ -146,17 +145,9 @@ class GUIRenderer(
         }
     }
 
-    fun Vec2i.scale(systemScale: Vec2 = context.window.systemScale, scale: Float = profile.scale): Vec2i {
-        val output = Vec2i(this)
+    fun Vec2.scale(systemScale: Vec2 = context.window.systemScale, scale: Float = profile.scale): Vec2 {
         val totalScale = systemScale * scale
-        // ToDo: This is just a dirty workaround and does not fix the problem at all
-        while (output.x % totalScale.x.toInt() != 0) {
-            output.x++
-        }
-        while (output.y % totalScale.y.toInt() != 0) {
-            output.y++
-        }
-        return output / totalScale
+        return this / totalScale
     }
 
     fun isKeyDown(vararg keyCodes: KeyCodes): Boolean {

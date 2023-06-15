@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.count
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 
@@ -23,7 +23,7 @@ class MouseClickCounter(
 ) : ClickCounter {
     private val keys: MutableMap<MouseButtons, KeyClickCounter> = mutableMapOf()
 
-    override fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2i, time: Long): Int {
+    override fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2, time: Long): Int {
         return keys.getOrPut(buttons) { KeyClickCounter(maxDelay, minDelayBetween) }.getClicks(buttons, action, position, time)
     }
 }

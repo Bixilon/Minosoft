@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 
 data class AtlasSlot(
-    val start: Vec2i,
-    val end: Vec2i,
+    val start: Vec2,
+    val end: Vec2,
 ) {
     val size = end - start
 }

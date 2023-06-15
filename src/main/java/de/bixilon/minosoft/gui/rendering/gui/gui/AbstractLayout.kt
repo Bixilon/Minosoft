@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -30,15 +30,15 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
     var activeElement: T?
     var activeDragElement: T?
 
-    fun getAt(position: Vec2i): Pair<T, Vec2i>?
+    fun getAt(position: Vec2): Pair<T, Vec2>?
 
-    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+    override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {
         val pair = getAt(position)
         activeElement = pair?.first
         return pair?.first?.onMouseEnter(pair.second, absolute) ?: false
     }
 
-    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2, absolute: Vec2): Boolean {
         val pair = getAt(position)
 
         if (activeElement != pair?.first) {
@@ -59,7 +59,7 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
         return activeElement?.onMouseLeave() ?: false
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         val (element, offset) = getAt(position) ?: return false
         return element.onMouseAction(offset, button, action, count)
     }
@@ -72,18 +72,18 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
         return activeElement?.onCharPress(char) ?: false
     }
 
-    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
+    override fun onScroll(position: Vec2, scrollOffset: Vec2d): Boolean {
         val (element, offset) = getAt(position) ?: return false
         return element.onScroll(offset, scrollOffset)
     }
 
-    override fun onDragEnter(position: Vec2i, absolute: Vec2i, draggable: Dragged): Element? {
+    override fun onDragEnter(position: Vec2, absolute: Vec2, draggable: Dragged): Element? {
         val pair = getAt(position)
         this.activeDragElement = pair?.first
         return pair?.first?.onDragEnter(pair.second, absolute, draggable)
     }
 
-    override fun onDragMove(position: Vec2i, absolute: Vec2i, draggable: Dragged): Element? {
+    override fun onDragMove(position: Vec2, absolute: Vec2, draggable: Dragged): Element? {
         val pair = getAt(position)
 
         if (activeDragElement != pair?.first) {
@@ -104,12 +104,12 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
         return activeDragElement?.onDragLeave(draggable)
     }
 
-    override fun onDragScroll(position: Vec2i, scrollOffset: Vec2d, draggable: Dragged): Element? {
+    override fun onDragScroll(position: Vec2, scrollOffset: Vec2d, draggable: Dragged): Element? {
         val (element, offset) = getAt(position) ?: return null
         return element.onDragScroll(offset, scrollOffset, draggable)
     }
 
-    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? {
+    override fun onDragMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? {
         val (element, offset) = getAt(position) ?: return null
         return element.onDragMouseAction(offset, button, action, count, draggable)
     }
@@ -125,7 +125,7 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
 
     companion object {
 
-        fun Element.getAtCheck(position: Vec2i, element: Element, horizontalAlignments: HorizontalAlignments = HorizontalAlignments.LEFT, modifyY: Boolean = false, size: Vec2i = element.size): Pair<Element, Vec2i>? {
+        fun Element.getAtCheck(position: Vec2, element: Element, horizontalAlignments: HorizontalAlignments = HorizontalAlignments.LEFT, modifyY: Boolean = false, size: Vec2 = element.size): Pair<Element, Vec2>? {
             if (position.x < 0 || position.y < 0) {
                 return null
             }
@@ -143,7 +143,7 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
             if (xPosition >= size.x) {
                 return null
             }
-            return Pair(element, Vec2i(xPosition, position.y))
+            return Pair(element, Vec2(xPosition, position.y))
         }
     }
 }

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec4.Vec4i
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
@@ -30,19 +30,19 @@ class GridCell(
 ) : Element(guiRenderer, 0) {
     override var cacheUpToDate: Boolean by child::cacheUpToDate
     override var cacheEnabled: Boolean by child::cacheEnabled
-    override var prefMaxSize: Vec2i by child::prefMaxSize
-    override var size: Vec2i by child::size
-    override var margin: Vec4i by child::margin
-    override var prefSize: Vec2i by child::prefSize
+    override var prefMaxSize: Vec2 by child::prefMaxSize
+    override var size: Vec2 by child::size
+    override var margin: Vec4 by child::margin
+    override var prefSize: Vec2 by child::prefSize
     override val cache: GUIMeshCache by child::cache
 
     init {
         _parent = parent
     }
 
-    override val maxSize: Vec2i
+    override val maxSize: Vec2
         get() {
-            val maxSize = Vec2i(super.maxSize)
+            val maxSize = Vec2(super.maxSize)
 
             if (columnConstraint.width < maxSize.x) {
                 maxSize.x = columnConstraint.width
@@ -58,11 +58,11 @@ class GridCell(
         child.parent = this
     }
 
-    override fun render(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun render(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         return child.render(offset, consumer, options)
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         return child.forceRender(offset, consumer, options)
     }
 

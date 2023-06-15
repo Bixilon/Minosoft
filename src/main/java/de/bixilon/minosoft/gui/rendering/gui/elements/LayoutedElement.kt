@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 
 interface LayoutedElement {
-    val layoutOffset: Vec2i
+    val layoutOffset: Vec2
 }

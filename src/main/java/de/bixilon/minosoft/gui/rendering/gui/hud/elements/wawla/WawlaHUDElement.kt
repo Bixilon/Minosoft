@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -37,8 +37,8 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
     val profile = guiRenderer.connection.profiles.gui.hud.wawla
 
-    override val layoutOffset: Vec2i
-        get() = Vec2i((guiRenderer.scaledSize.x - ((element?.size?.x ?: 0) + BACKGROUND_SIZE)) / 2, BACKGROUND_SIZE)
+    override val layoutOffset: Vec2
+        get() = Vec2((guiRenderer.scaledSize.x - ((element?.size?.x ?: 0.0f) + BACKGROUND_SIZE)) / 2, BACKGROUND_SIZE)
     override val skipDraw: Boolean
         get() = !profile.enabled
 
@@ -63,7 +63,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val element = this.element ?: return
         val size = element.size
         ColorElement(guiRenderer, size + BACKGROUND_SIZE * 2, 0x3c05aa.asRGBColor()).render(offset, consumer, options)

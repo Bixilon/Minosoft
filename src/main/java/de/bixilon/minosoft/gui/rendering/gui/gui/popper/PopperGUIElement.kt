@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 
 class PopperGUIElement(popper: Popper) : LayoutedGUIElement<Popper>(popper) {
 
-    override fun getOffset(position: Vec2i): Vec2i {
+    override fun getOffset(position: Vec2): Vec2 {
         return position
     }
 }

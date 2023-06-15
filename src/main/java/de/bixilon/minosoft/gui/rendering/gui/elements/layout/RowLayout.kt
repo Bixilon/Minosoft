@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
@@ -22,14 +23,13 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.bottom
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.horizontal
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.left
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.spaceSize
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.top
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.vertical
-import java.lang.Integer.max
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.bottom
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.left
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.top
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
 
 /**
  * A layout, that works from top to bottom, containing other elements, that get wrapped below each other
@@ -37,15 +37,15 @@ import java.lang.Integer.max
 open class RowLayout(
     guiRenderer: GUIRenderer,
     override var childAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
-    spacing: Int = 0,
+    spacing: Float = 0.0f,
 ) : Element(guiRenderer), ChildAlignable {
     private val children: MutableList<Element> = synchronizedListOf()
 
-    override var prefSize: Vec2i
+    override var prefSize: Vec2
         get() = _prefSize
         set(value) = Unit
 
-    var spacing: Int = spacing
+    var spacing: Float = spacing
         set(value) {
             field = value
             if (children.size <= 1) {
@@ -62,15 +62,14 @@ open class RowLayout(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        var childYOffset = 0
-        var maxZ = 0
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        var childYOffset = 0.0f
 
-        fun exceedsY(y: Int): Boolean {
+        fun exceedsY(y: Float): Boolean {
             return childYOffset + y > size.y
         }
 
-        fun addY(y: Int): Boolean {
+        fun addY(y: Float): Boolean {
             if (exceedsY(y)) {
                 return true
             }
@@ -133,13 +132,13 @@ open class RowLayout(
         val lastIndex = children.size - 1
 
         for (child in children) {
-            prefSize.x = max(prefSize.x, xMargin + child.prefSize.x)
+            prefSize.x = maxOf(prefSize.x, xMargin + child.prefSize.x)
             prefSize.y += child.prefSize.y
         }
 
         _prefSize = prefSize
 
-        fun addY(y: Int): Boolean {
+        fun addY(y: Float): Boolean {
             val available = maxSize.y - size.y
 
             if (y > available) {

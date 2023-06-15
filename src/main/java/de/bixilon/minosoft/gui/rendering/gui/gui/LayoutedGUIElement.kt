@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 
 open class LayoutedGUIElement<T : LayoutedElement>(
     val layout: T,
@@ -29,7 +29,7 @@ open class LayoutedGUIElement<T : LayoutedElement>(
         prepareAsync(layout.layoutOffset)
     }
 
-    protected open fun getOffset(position: Vec2i): Vec2i? {
+    protected open fun getOffset(position: Vec2): Vec2? {
         val layoutOffset = layout.layoutOffset
         val size = element.size
         if (position isSmaller layoutOffset) {
@@ -42,7 +42,7 @@ open class LayoutedGUIElement<T : LayoutedElement>(
         return offset
     }
 
-    override fun onMouseMove(position: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2): Boolean {
         val lastPosition = lastPosition
         val offset = getOffset(position)
         if (offset == null) {
@@ -55,7 +55,7 @@ open class LayoutedGUIElement<T : LayoutedElement>(
         }
 
         val previousOutside = lastPosition == null
-        this.lastPosition = Vec2i(offset)
+        this.lastPosition = Vec2(offset)
 
         if (previousOutside) {
             return element.onMouseEnter(offset, position)
@@ -64,7 +64,7 @@ open class LayoutedGUIElement<T : LayoutedElement>(
         return element.onMouseMove(offset, position)
     }
 
-    override fun onDragMove(position: Vec2i, dragged: Dragged): Element? {
+    override fun onDragMove(position: Vec2, dragged: Dragged): Element? {
         val lastDragPosition = lastDragPosition
         val offset = getOffset(position)
         if (offset == null) {
@@ -77,7 +77,7 @@ open class LayoutedGUIElement<T : LayoutedElement>(
         }
 
         val previousOutside = lastDragPosition == null
-        this.lastDragPosition = Vec2i(offset)
+        this.lastDragPosition = Vec2(offset)
 
         if (previousOutside) {
             return element.onDragEnter(offset, position, dragged)

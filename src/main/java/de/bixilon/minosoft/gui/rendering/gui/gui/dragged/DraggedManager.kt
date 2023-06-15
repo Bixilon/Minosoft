@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -40,13 +40,13 @@ class DraggedManager(
             }
             val position = guiRenderer.currentMousePosition
             val previous = field
-            previous?.element?.onDragEnd(position, guiRenderer.gui.onDragMove(Vec2i(-1, -1), previous.element))
+            previous?.element?.onDragEnd(position, guiRenderer.gui.onDragMove(Vec2(-1, -1), previous.element))
 
             field = value
             if (value == null) {
                 guiRenderer.gui.onMouseMove(position)
             } else {
-                guiRenderer.gui.onMouseMove(Vec2i(-1, -1)) // move mouse out
+                guiRenderer.gui.onMouseMove(Vec2(-1, -1)) // move mouse out
                 value.element.onDragStart(position, guiRenderer.gui.onDragMove(position, value.element))
             }
             applyCursor()
@@ -59,7 +59,7 @@ class DraggedManager(
     override fun postInit() {
     }
 
-    fun onMatrixChange() {
+    fun onScreenChange() {
         element?.element?.forceSilentApply()
     }
 
@@ -115,7 +115,7 @@ class DraggedManager(
         return true
     }
 
-    override fun onMouseMove(position: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2): Boolean {
         element?.onMouseMove(position) ?: return false
         return true
     }

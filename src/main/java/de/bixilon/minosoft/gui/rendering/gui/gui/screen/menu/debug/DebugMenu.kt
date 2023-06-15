@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -30,7 +30,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
         add(TextElement(guiRenderer, "Debug options", properties = TextRenderProperties(HorizontalAlignments.CENTER)))
-        add(SpacerElement(guiRenderer, Vec2i(0, 10)))
+        add(SpacerElement(guiRenderer, Vec2(0, 10)))
         add(ButtonElement(guiRenderer, "Switch to next gamemode") { connection.util.typeChat("/gamemode ${connection.player.gamemode.next().name.lowercase()}") })
         add(ButtonElement(guiRenderer, "Hack to next gamemode") {
             val previous = connection.player.additional.gamemode

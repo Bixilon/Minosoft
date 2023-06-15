@@ -53,4 +53,12 @@ object Vec4Util {
         get() = Vec2(left, top)
 
     fun FloatArray.dot(x: Float, y: Float, z: Float) = this[0] * x + this[1] * y + this[2] * z + this[3]
+
+    fun Vec4.copy(top: Float = this.top, right: Float = this.right, bottom: Float = this.bottom, left: Float = this.left): Vec4 {
+        return Vec4(top, right, bottom, left)
+    }
+
+    fun marginOf(top: Float = 0.0f, right: Float = 0.0f, bottom: Float = 0.0f, left: Float = 0.0f): Vec4 {
+        return Vec4(top, right, bottom, left)
+    }
 }

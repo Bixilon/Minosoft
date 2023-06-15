@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper.text
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 open class TextPopper(
     guiRenderer: GUIRenderer,
-    position: Vec2i,
+    position: Vec2,
     text: Any,
 ) : MouseTrackedPopper(guiRenderer, position) {
     protected val textElement = TextElement(guiRenderer, text, background = null, parent = this)
@@ -32,7 +32,7 @@ open class TextPopper(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
         textElement.render(offset, consumer, options)

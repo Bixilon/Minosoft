@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.input
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 
 interface MouseInputElement {
 
-    fun onMouseEnter(position: Vec2i, absolute: Vec2i) = false
-    fun onMouseMove(position: Vec2i, absolute: Vec2i) = false
+    fun onMouseEnter(position: Vec2, absolute: Vec2) = false
+    fun onMouseMove(position: Vec2, absolute: Vec2) = false
     fun onMouseLeave() = false
 }

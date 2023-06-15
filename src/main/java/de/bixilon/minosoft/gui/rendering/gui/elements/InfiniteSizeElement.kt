@@ -13,27 +13,27 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.MAX
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 
 class InfiniteSizeElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     override var parent: Element?
         get() = null
         set(value) = Unit
 
-    override var maxSize: Vec2i
-        get() = Vec2i.MAX
+    override var maxSize: Vec2
+        get() = Vec2.MAX
         set(value) = Unit
 
-    override var prefSize: Vec2i
-        get() = Vec2i.MAX
+    override var prefSize: Vec2
+        get() = Vec2.MAX
         set(value) = Unit
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        error("Can not render InfiniteSizeElement")
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        error("Infinity is hard to display...")
     }
 
     override fun forceSilentApply() = Unit

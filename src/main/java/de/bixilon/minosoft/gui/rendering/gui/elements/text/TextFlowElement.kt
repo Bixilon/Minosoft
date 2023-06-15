@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -27,8 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 open class TextFlowElement(
     guiRenderer: GUIRenderer,
@@ -73,27 +72,27 @@ open class TextFlowElement(
         }
 
 
-    override var prefSize: Vec2i
+    override var prefSize: Vec2
         get() = maxSize
         set(value) = Unit
 
-    private var textSize = Vec2i.EMPTY
+    private var textSize = Vec2.EMPTY
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val visibleLines = visibleLines
         if (visibleLines.isEmpty()) {
             return
         }
         background.render(offset, consumer, options)
 
-        var yOffset = 0
+        var yOffset = 0.0f
         for (message in visibleLines.reversed()) {
-            message.textElement.render(offset + Vec2i(0, yOffset), consumer, options)
+            message.textElement.render(offset + Vec2(0, yOffset), consumer, options)
             yOffset += Font.TOTAL_CHAR_HEIGHT
         }
     }
 
-    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
+    override fun onScroll(position: Vec2, scrollOffset: Vec2d): Boolean {
         this.scrollOffset += scrollOffset.y.toInt()
         return true
     }
@@ -104,7 +103,7 @@ open class TextFlowElement(
         val maxSize = maxSize
         val maxLines = maxSize.y / Font.TOTAL_CHAR_HEIGHT
         val currentTime = millis()
-        var textSize = Vec2i.EMPTY
+        var textSize = Vec2.EMPTY
         val active = this.active
 
 
@@ -151,7 +150,7 @@ open class TextFlowElement(
 
 
         this.textSize = textSize
-        _size = Vec2i(maxSize.x, visibleLines.size * Font.TOTAL_CHAR_HEIGHT)
+        _size = Vec2(maxSize.x, visibleLines.size * Font.TOTAL_CHAR_HEIGHT)
         background.size = size
         this.visibleLines = visibleLines
         cacheUpToDate = false
@@ -182,18 +181,18 @@ open class TextFlowElement(
         }
     }
 
-    override fun getAt(position: Vec2i): Pair<TextElement, Vec2i>? {
+    override fun getAt(position: Vec2): Pair<TextElement, Vec2>? {
         val line = getLineAt(position) ?: return null
         return Pair(line.first.textElement, line.second)
     }
 
-    private fun getLineAt(position: Vec2i): Pair<TextFlowLineElement, Vec2i>? {
+    private fun getLineAt(position: Vec2): Pair<TextFlowLineElement, Vec2>? {
         val reversedY = size.y - position.y
-        val line = visibleLines.getOrNull(reversedY / Font.TOTAL_CHAR_HEIGHT) ?: return null
+        val line = visibleLines.getOrNull((reversedY / Font.TOTAL_CHAR_HEIGHT).toInt()) ?: return null
         if (position.x > line.textElement.size.x) {
             return null
         }
-        val offset = Vec2i(position.x, reversedY % Font.TOTAL_CHAR_HEIGHT)
+        val offset = Vec2(position.x, reversedY % Font.TOTAL_CHAR_HEIGHT)
         return Pair(line, offset)
     }
 

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.input
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 interface DraggableHandler {
 
-    fun onDragMove(position: Vec2i, dragged: Dragged): Element? = null
+    fun onDragMove(position: Vec2, dragged: Dragged): Element? = null
     fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? = null
     fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? = null
     fun onDragChar(char: Int, dragged: Dragged): Element? = null

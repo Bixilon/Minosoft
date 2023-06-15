@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked.item
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
@@ -31,7 +32,7 @@ class BakedItemModel(
     val texture: AbstractTexture?,
 ) : BakedModel {
 
-    private fun renderDurability(guiRenderer: GUIRenderer, offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2i, stack: ItemStack) {
+    private fun renderDurability(guiRenderer: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
         if (stack.item.item !is DurableItem) return
         val durability = stack._durability?._durability
         val maxDurability = stack.item.item.maxDurability
@@ -50,7 +51,7 @@ class BakedItemModel(
         consumer.addQuad(offset + Vec2i(1, size.y - 3), offset + Vec2i(fillWidth - 1, size.y - 2), whiteTexture, tint = color, options = options)
     }
 
-    fun render2d(guiRenderer: GUIRenderer, offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2i, stack: ItemStack) {
+    fun render2d(guiRenderer: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
         val texture = texture ?: return
         val tint = guiRenderer.context.tintManager.getItemTint(stack)
         consumer.addQuad(offset, offset + size, texture, tint = tint?.let { it[0].asRGBColor() } ?: ChatColors.WHITE, options = options) // TODO: multiple tint layers

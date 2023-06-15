@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec4.Vec4i
+import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.concurrent.Reference
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
@@ -49,7 +50,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -64,7 +65,7 @@ import de.bixilon.minosoft.util.SystemInformation
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     private val connection = context.connection
     private val layout = GridLayout(guiRenderer, Vec2i(3, 1)).apply { parent = this@DebugHUDElement }
-    override val layoutOffset: Vec2i = Vec2i.EMPTY
+    override val layoutOffset: Vec2 = Vec2.EMPTY
 
 
     init {
@@ -84,13 +85,13 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout[Vec2i(0, 0)] = initLeft()
         layout[Vec2i(2, 0)] = initRight()
 
-        this.prefMaxSize = Vec2i(-1, Int.MAX_VALUE)
+        this.prefMaxSize = Vec2(-1, Int.MAX_VALUE)
         this.ignoreDisplaySize = true
     }
 
     private fun initLeft(): Element {
         val layout = RowLayout(guiRenderer)
-        layout.margin = Vec4i(2)
+        layout.margin = Vec4(2)
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
         layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}" }
         context.renderer[WorldRenderer]?.apply {
@@ -195,7 +196,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
     private fun initRight(): Element {
         val layout = RowLayout(guiRenderer, HorizontalAlignments.RIGHT)
-        layout.margin = Vec4i(2)
+        layout.margin = Vec4(2)
         layout += TextElement(guiRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", properties = Companion.RIGHT)
         layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", properties = Companion.RIGHT)
 
@@ -308,7 +309,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         }
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         layout.forceRender(offset, consumer, options)
     }
 

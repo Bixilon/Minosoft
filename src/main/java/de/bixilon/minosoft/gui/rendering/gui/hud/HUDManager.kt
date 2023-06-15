@@ -75,7 +75,7 @@ class HUDManager(
         latch.await()
     }
 
-    fun onMatrixChange() {
+    fun onScreenChange() {
         hudElements.lock.acquire()
         for (element in hudElements.values) {
             if (element is LayoutedGUIElement<*>) {

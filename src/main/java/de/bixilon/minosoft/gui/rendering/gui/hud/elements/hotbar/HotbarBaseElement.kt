@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -34,7 +35,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     private var selectedSlot = 0
 
     init {
-        size = HOTBAR_BASE_SIZE + Vec2i(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
+        size = HOTBAR_BASE_SIZE + Vec2(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
         cacheUpToDate = false // ToDo: Check changes
 
         base.parent = this
@@ -42,7 +43,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
         containerElement.parent = this
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         base.render(offset + HORIZONTAL_MARGIN, consumer, options)
 
         baseAtlasElement.slots[selectedSlot + PlayerInventory.HOTBAR_OFFSET]?.let {
@@ -72,9 +73,9 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
         private val BASE = "minecraft:hotbar_base".toResourceLocation()
         private val FRAME = "minecraft:hotbar_frame".toResourceLocation()
 
-        private val HOTBAR_BASE_SIZE = Vec2i(182, 22)
+        private val HOTBAR_BASE_SIZE = Vec2(182, 22)
         private const val FRAME_SIZE = 24
-        const val HORIZONTAL_MARGIN = 1
+        const val HORIZONTAL_MARGIN = 1.0f
         private const val FRAME_OFFSET = -2 // FRAME_SIZE - HOTBAR_BASE_SIZE.y
     }
 }

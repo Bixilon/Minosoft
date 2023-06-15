@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
@@ -110,7 +110,7 @@ class RenderWindowInputHandler(
                     skipMouseMove = false
                     return@listen
                 }
-                inputHandler.onMouseMove(Vec2i(it.position))
+                inputHandler.onMouseMove(Vec2(it.position))
                 return@listen
             }
 

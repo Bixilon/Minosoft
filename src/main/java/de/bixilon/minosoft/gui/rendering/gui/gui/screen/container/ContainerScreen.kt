@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 abstract class ContainerScreen<C : Container>(
@@ -36,7 +36,7 @@ abstract class ContainerScreen<C : Container>(
     override var activeDragElement: Element? = null
     protected open val customRenderer: Boolean = false
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
         if (customRenderer) {
             return
@@ -44,7 +44,7 @@ abstract class ContainerScreen<C : Container>(
         forceRenderContainerScreen(offset, consumer, options)
     }
 
-    protected open fun forceRenderContainerScreen(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    protected open fun forceRenderContainerScreen(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         containerElement.render(offset, consumer, options)
     }
 
@@ -53,7 +53,7 @@ abstract class ContainerScreen<C : Container>(
         containerElement.apply()
     }
 
-    override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+    override fun getAt(position: Vec2): Pair<Element, Vec2>? {
         if (position isGreater containerElement.size) {
             return null
         }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.array.ArrayUtil
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
-class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inputElement: NodeTextInputElement) : Popper(guiRenderer, position) {
-    private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2i(300, Font.TOTAL_CHAR_HEIGHT) } }
+class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2, val inputElement: NodeTextInputElement) : Popper(guiRenderer, position) {
+    private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2(300, Font.TOTAL_CHAR_HEIGHT) } }
     private var textCount = 0
     private var offset = 0
     var suggestions: List<Suggestion>? = null
@@ -66,19 +66,19 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inpu
         }
 
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
         for ((index, suggestion) in suggestionText.withIndex()) {
             if (index >= textCount) {
                 break
             }
 
-            suggestion.render(offset + Vec2i(0, index * Font.TOTAL_CHAR_HEIGHT), consumer, options)
+            suggestion.render(offset + Vec2(0, index * Font.TOTAL_CHAR_HEIGHT), consumer, options)
         }
     }
 
     private fun updateSuggestions(suggestions: List<Suggestion>) {
-        val size = Vec2i()
+        val size = Vec2()
         var textCount = 0
         val offset = offset
 

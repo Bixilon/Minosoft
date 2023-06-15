@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.types.EnchantingContainer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -22,8 +22,8 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIFa
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.LabeledContainerScreen
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import kotlin.reflect.KClass
 
@@ -37,7 +37,7 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
         container::revision.observe(this) { forceApply() }
     }
 
-    override fun forceRenderContainerScreen(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRenderContainerScreen(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRenderContainerScreen(offset, consumer, options)
 
         for ((index, card) in cards.withIndex()) {
@@ -46,7 +46,7 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
         }
     }
 
-    override fun getContainerAt(position: Vec2i): Pair<Element, Vec2i>? {
+    override fun getContainerAt(position: Vec2): Pair<Element, Vec2>? {
         for ((index, area) in cardAreas.withIndex()) {
             if (area == null) {
                 continue

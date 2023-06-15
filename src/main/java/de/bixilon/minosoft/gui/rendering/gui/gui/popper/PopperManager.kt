@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -34,7 +34,7 @@ class PopperManager(
     private var lastTickTime: Long = -1L
 
 
-    fun onMatrixChange() {
+    fun onScreenChange() {
         for (element in poppers) {
             element.layout.forceSilentApply()
         }
@@ -99,7 +99,7 @@ class PopperManager(
         return false
     }
 
-    override fun onMouseMove(position: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2): Boolean {
         for ((index, element) in poppers.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue

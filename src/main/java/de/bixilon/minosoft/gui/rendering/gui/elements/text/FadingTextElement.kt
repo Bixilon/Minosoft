@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackgr
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.copy
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class FadingTextElement(
     guiRenderer: GUIRenderer,
@@ -47,9 +47,9 @@ class FadingTextElement(
         set(value) {
             super.cacheEnabled = value
         }
-    override var size: Vec2i
+    override var size: Vec2
         get() {
-            return hidden.decide({ Vec2i.EMPTY }, { super.size })
+            return hidden.decide({ Vec2.EMPTY }, { super.size })
         }
         set(value) {
             super.size = value
@@ -115,7 +115,7 @@ class FadingTextElement(
         return false
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (hidden) {
             return
         }

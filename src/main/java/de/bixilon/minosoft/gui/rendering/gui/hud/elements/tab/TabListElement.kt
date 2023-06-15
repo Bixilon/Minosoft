@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
@@ -37,7 +38,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.Initializable
@@ -49,9 +50,9 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     val header = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER), parent = this)
     val footer = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER), parent = this)
 
-    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = RGBColor(0, 0, 0, 120))
+    private val background = ColorElement(guiRenderer, Vec2.EMPTY, color = RGBColor(0, 0, 0, 120))
 
-    private var entriesSize = Vec2i.EMPTY
+    private var entriesSize = Vec2.EMPTY
     private val entries: MutableMap<UUID, TabListEntryElement> = synchronizedMapOf()
     private var toRender: List<TabListEntryElement> = emptyList()
     private val lock = ReentrantLock()
@@ -59,8 +60,8 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         private set
     private var columns = 0
 
-    override val layoutOffset: Vec2i
-        get() = Vec2i((guiRenderer.scaledSize.x - super.size.x) / 2, 20)
+    override val layoutOffset: Vec2
+        get() = Vec2((guiRenderer.scaledSize.x - super.size.x) / 2, 20)
 
     private val atlasManager = guiRenderer.atlasManager
     val pingBarsAtlasElements: Array<AtlasElement> = arrayOf(
@@ -73,10 +74,10 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     )
 
     init {
-        super.prefMaxSize = Vec2i(-1, -1)
+        super.prefMaxSize = Vec2(-1, -1)
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         background.render(offset, consumer, options)
 
         offset.y += BACKGROUND_PADDING // No need for x, this is done with the CENTER offset calculation
@@ -84,11 +85,11 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         val size = size
 
         header.size.let {
-            header.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), consumer, options)
+            header.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), consumer, options)
             offset.y += it.y
         }
 
-        val offsetBefore = Vec2i(offset)
+        val offsetBefore = Vec2(offset)
         offset.x += HorizontalAlignments.CENTER.getOffset(size.x, entriesSize.x)
 
         for ((index, entry) in toRender.withIndex()) {
@@ -110,7 +111,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     }
 
     override fun forceSilentApply() {
-        val size = Vec2i.EMPTY
+        val size = Vec2.EMPTY
 
         size.y += header.size.y
 
@@ -137,9 +138,9 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         }
 
         var column = 0
-        val widths = IntArray(columns)
-        var currentMaxPrefWidth = 0
-        var totalEntriesWidth = 0
+        val widths = FloatArray(columns)
+        var currentMaxPrefWidth = 0.0f
+        var totalEntriesWidth = 0.0f
 
 
         // Check width
@@ -150,11 +151,11 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
             if ((index + 1) % ENTRIES_PER_COLUMN == 0) {
                 widths[column] = currentMaxPrefWidth
                 totalEntriesWidth += currentMaxPrefWidth
-                currentMaxPrefWidth = 0
+                currentMaxPrefWidth = 0.0f
                 column++
             }
         }
-        if (currentMaxPrefWidth != 0) {
+        if (currentMaxPrefWidth != 0.0f) {
             widths[column] = currentMaxPrefWidth
             totalEntriesWidth += currentMaxPrefWidth
         }
@@ -168,7 +169,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
             totalEntriesWidth += (columns - 1) * ENTRY_HORIZONTAL_SPACING
         }
 
-        this.entriesSize = Vec2i(totalEntriesWidth, size.y - previousSize.y)
+        this.entriesSize = Vec2(totalEntriesWidth, size.y - previousSize.y)
         size.x = maxOf(size.x, totalEntriesWidth)
 
 
@@ -207,7 +208,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
     fun update(uuid: UUID) {
         val item = guiRenderer.context.connection.tabList.uuid[uuid] ?: return
-        val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, uuid, item, 0) }
+        val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, uuid, item, 0.0f) }
         lock.lock()
         entry.silentApply()
         lock.unlock()

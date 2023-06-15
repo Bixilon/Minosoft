@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -27,13 +27,12 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.events.title.*
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import java.lang.Integer.max
 
 // ToDo: Remove subtitle when hidden
 class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
@@ -68,9 +67,9 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
             super.cacheEnabled = value
         }
 
-    override val layoutOffset: Vec2i
+    override val layoutOffset: Vec2
         get() {
-            val layoutOffset = Vec2i.EMPTY
+            val layoutOffset = Vec2.EMPTY
 
             val scaledSize = guiRenderer.scaledSize
 
@@ -86,20 +85,20 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
         fadeOutTime = DEFAULT_FADE_OUT_TIME
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val time = millis()
         if (time > fadeOutTime) {
             return
         }
         val size = size
-        title.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0), consumer, options)
-        subtitle.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)
+        title.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0), consumer, options)
+        subtitle.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)
     }
 
     override fun forceSilentApply() {
         val size = title.size
 
-        size.x = max(size.x, subtitle.size.x)
+        size.x = maxOf(size.x, subtitle.size.x)
         size.y += subtitle.size.y
 
         this._size = size

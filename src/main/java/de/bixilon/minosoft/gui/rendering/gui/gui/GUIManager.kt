@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
@@ -88,7 +88,7 @@ class GUIManager(
         }
     }
 
-    fun onMatrixChange() {
+    fun onScreenChange() {
         for (element in elementCache.values) {
             // ToDo: Just the current active one
             if (element is LayoutedGUIElement<*>) {
@@ -206,7 +206,7 @@ class GUIManager(
         return runForEach { it.onCharPress(char) }
     }
 
-    override fun onMouseMove(position: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2): Boolean {
         return runForEach { it.onMouseMove(position) }
     }
 
@@ -232,7 +232,7 @@ class GUIManager(
         return null
     }
 
-    override fun onDragMove(position: Vec2i, dragged: Dragged): Element? {
+    override fun onDragMove(position: Vec2, dragged: Dragged): Element? {
         return runForEachDrag { it.onDragMove(position, dragged) }
     }
 

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
 
 enum class HorizontalAlignments {
     LEFT,
@@ -29,18 +28,6 @@ enum class HorizontalAlignments {
                 RIGHT -> width - childWidth
                 CENTER -> (width - childWidth) / 2
             }
-        }
-
-        fun HorizontalAlignments.getOffset(width: Int, childWidth: Int): Int {
-            return when (this) {
-                LEFT -> 0
-                RIGHT -> width - childWidth
-                CENTER -> (width - childWidth) / 2
-            }
-        }
-
-        fun HorizontalAlignments.getOffset(size: Vec2i, childSize: Vec2i): Vec2i {
-            return Vec2i(getOffset(size.x, childSize.x), 0)
         }
 
         fun HorizontalAlignments.getOffset(size: Vec2, childSize: Vec2): Vec2 {

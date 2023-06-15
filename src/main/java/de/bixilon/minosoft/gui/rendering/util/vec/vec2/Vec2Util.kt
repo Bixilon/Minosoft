@@ -63,4 +63,33 @@ object Vec2Util {
         }
         return Vec2(interpolateSine(delta, start.x, end.x), interpolateSine(delta, start.y, end.y))
     }
+
+    infix fun Vec2.isSmaller(other: Vec2): Boolean {
+        return this.x < other.x || this.y < other.y
+    }
+
+    infix fun Vec2.isSmallerEquals(other: Vec2): Boolean {
+        return this.x <= other.x || this.y <= other.y
+    }
+
+    infix fun Vec2.isGreater(other: Vec2): Boolean {
+        return this.x > other.x || this.y > other.y
+    }
+
+    infix fun Vec2.isGreaterEquals(other: Vec2): Boolean {
+        return this.x >= other.x || this.y >= other.y
+    }
+
+    fun Vec2.absAssign(): Vec2 {
+        if (x < 0) {
+            x = -x
+        }
+        if (y < 0) {
+            y = -y
+        }
+        return this
+    }
+
+    val Vec2.abs: Vec2
+        get() = Vec2(x, y).absAssign()
 }

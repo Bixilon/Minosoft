@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text.events.click
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.file
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -36,7 +36,7 @@ class OpenFileClickEvent(
         text.file(file)
     }
 
-    override fun onClick(guiRenderer: GUIRenderer, position: Vec2i, button: MouseButtons, action: MouseActions) {
+    override fun onClick(guiRenderer: GUIRenderer, position: Vec2, button: MouseButtons, action: MouseActions) {
         if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
             return
         }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.checkbox
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -77,11 +78,11 @@ open class SwitchElement(
 
 
     init {
-        size = SIZE + Vec2i(5 + TEXT_MARGIN + textElement.size.x, 0)
+        size = SIZE + Vec2(5 + TEXT_MARGIN + textElement.size.x, 0)
         this.parent = parent
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val texture = when {
             disabled -> disabledAtlas
             hovered -> hoveredAtlas
@@ -109,7 +110,7 @@ open class SwitchElement(
         cacheUpToDate = false
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (disabled) {
             return true
         }
@@ -141,7 +142,7 @@ open class SwitchElement(
         return true
     }
 
-    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+    override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {
         hovered = true
         context.window.cursorShape = CursorShapes.HAND
 
@@ -165,7 +166,7 @@ open class SwitchElement(
     private companion object {
         val CLICK_SOUND = "minecraft:ui.button.click".toResourceLocation()
         const val TEXT_MARGIN = 5
-        val SIZE = Vec2i(30, 20)
-        val SLIDER_SIZE = Vec2i(6, 20)
+        val SIZE = Vec2(30, 20)
+        val SLIDER_SIZE = Vec2(6, 20)
     }
 }

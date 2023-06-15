@@ -56,8 +56,4 @@ object Vec4iUtil {
     fun Vec4i.copy(top: Int = this.top, right: Int = this.right, bottom: Int = this.bottom, left: Int = this.left): Vec4i {
         return Vec4i(top, right, bottom, left)
     }
-
-    fun marginOf(top: Int = 0, right: Int = 0, bottom: Int = 0, left: Int = 0): Vec4i {
-        return Vec4i(top, right, bottom, left)
-    }
 }

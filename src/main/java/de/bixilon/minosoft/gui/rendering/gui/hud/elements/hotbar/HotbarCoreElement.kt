@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -24,10 +25,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Compani
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.copy
-import java.lang.Integer.max
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.copy
 
 class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     val base = HotbarBaseElement(guiRenderer)
@@ -38,8 +37,8 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     val air = HotbarAirElement(guiRenderer)
     val vehicleHealth = HotbarVehicleHealthElement(guiRenderer)
 
-    private val topLeft = RowLayout(guiRenderer, HorizontalAlignments.LEFT, 1) // contains health, protection, etc
-    private val topRight = RowLayout(guiRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
+    private val topLeft = RowLayout(guiRenderer, HorizontalAlignments.LEFT, 1.0f) // contains health, protection, etc
+    private val topRight = RowLayout(guiRenderer, HorizontalAlignments.RIGHT, 1.0f) // contains hunger, air
 
 
     private var gamemode = guiRenderer.context.connection.player.additional.gamemode
@@ -76,11 +75,11 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (gamemode.survival) {
             val topMaxSize = topLeft.size.max(topRight.size)
-            topLeft.render(offset + Vec2i(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), consumer, options)
-            topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
+            topLeft.render(offset + Vec2(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), consumer, options)
+            topRight.render(offset + Vec2(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
             offset.y += topMaxSize.y + VERTICAL_SPACING
 
             experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), consumer, options)
@@ -97,14 +96,14 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             element.silentApply()
         }
 
-        val size = Vec2i.EMPTY
+        val size = Vec2.EMPTY
 
         gamemode = guiRenderer.context.connection.player.additional.gamemode
         if (gamemode != Gamemodes.SPECTATOR) {
             size += base.size
         }
         if (gamemode.survival) {
-            size.y += max(topLeft.size.y, topRight.size.y) + VERTICAL_SPACING
+            size.y += maxOf(topLeft.size.y, topRight.size.y) + VERTICAL_SPACING
 
             size.y += experience.size.y + VERTICAL_SPACING
         }
@@ -135,6 +134,6 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     }
 
     companion object {
-        private const val VERTICAL_SPACING = 1
+        private const val VERTICAL_SPACING = 1.0f
     }
 }

@@ -24,12 +24,12 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 open class AtlasImageElement(
     guiRenderer: GUIRenderer,
     texturePart: TexturePart?,
-    size: Vec2i = texturePart?.size ?: Vec2i.EMPTY,
+    size: Vec2 = texturePart?.size?.let { Vec2(it) } ?: Vec2.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
     var texture: AbstractTexture? = texturePart?.texture
@@ -48,14 +48,14 @@ open class AtlasImageElement(
             cacheUpToDate = false
         }
 
-    override var size: Vec2i
+    override var size: Vec2
         get() = super.size
         set(value) {
             super.size = value
             cacheUpToDate = false
         }
 
-    override var prefSize: Vec2i
+    override var prefSize: Vec2
         get() = size
         set(value) {
             size = value
@@ -85,7 +85,15 @@ open class AtlasImageElement(
     }
 
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    constructor(
+        guiRenderer: GUIRenderer,
+        texturePart: TexturePart?,
+        size: Vec2i,
+        tint: RGBColor = ChatColors.WHITE,
+    ) : this(guiRenderer, texturePart, Vec2(size), tint)
+
+
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val texture = texture ?: return
         val textureLike = texturePart ?: return
         consumer.addQuad(offset, offset + size, texture, uvStart ?: textureLike.uvStart, uvEnd ?: textureLike.uvEnd, tint, options)
