@@ -26,6 +26,10 @@ class Font(
 ) : PostInitFontType {
     private val cache: Array<CodePointRenderer?> = arrayOfNulls(CACHE_SIZE)
 
+    init {
+        buildCache()
+    }
+
 
     private fun postInitFonts(latch: AbstractLatch) {
         val fontLatch = ParentLatch(1, latch)
@@ -49,7 +53,6 @@ class Font(
 
     override fun postInit(latch: AbstractLatch) {
         postInitFonts(latch)
-        buildCache()
     }
 
     fun forceGet(codePoint: Int): CodePointRenderer? {
