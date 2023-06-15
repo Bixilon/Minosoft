@@ -15,12 +15,21 @@ package de.bixilon.minosoft.gui.rendering.font.renderer.element
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class TextOffset(
     val initial: Vec2 = Vec2.EMPTY,
 ) {
     var offset = Vec2(initial)
+
+
+    fun align(alignment: HorizontalAlignments, width: Float, size: Vec2) {
+        this.offset.x = initial.x
+
+        this.offset.x += alignment.getOffset(width, size.x)
+    }
 
     private fun fits(offset: Float, initial: Float, max: Float, value: Float): Boolean {
         val size = offset - initial
@@ -53,11 +62,14 @@ class TextOffset(
         return height
     }
 
-    fun addLine(info: TextRenderInfo, offset: Float, height: Float): Boolean {
+    fun addLine(properties: TextRenderProperties, info: TextRenderInfo, offset: Float, height: Float, align: Boolean): Boolean {
         if (!fitsY(info, offset, height)) return false
 
         this.offset.y += height
         this.offset.x = initial.x
+        if (align) {
+            align(properties.alignment, info.lines[info.lineIndex].width, info.size)
+        }
         info.lines += LineRenderInfo()
         info.lineIndex++
 
@@ -65,13 +77,13 @@ class TextOffset(
     }
 
 
-    fun canAdd(properties: TextRenderProperties, info: TextRenderInfo, width: Float, height: Float): CodePointAddResult {
+    fun canAdd(properties: TextRenderProperties, info: TextRenderInfo, width: Float, height: Float, align: Boolean): CodePointAddResult {
         if (!canEverFit(info, width)) {
             info.cutOff = true
             return CodePointAddResult.BREAK
         }
         if (fitsInLine(properties, info, width)) return CodePointAddResult.FINE
-        if (addLine(info, 0.0f, height) && fitsInLine(properties, info, width)) return CodePointAddResult.NEW_LINE
+        if (addLine(properties, info, 0.0f, height, align) && fitsInLine(properties, info, width)) return CodePointAddResult.NEW_LINE
 
         info.cutOff = true
         return CodePointAddResult.BREAK

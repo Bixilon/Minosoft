@@ -41,9 +41,9 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return properties.forcedColor ?: text.color ?: properties.fallbackColor
     }
 
-    private fun renderNewline(properties: TextRenderProperties, offset: TextOffset, info: TextRenderInfo, updateSize: Boolean): Boolean {
+    private fun renderNewline(properties: TextRenderProperties, offset: TextOffset, info: TextRenderInfo, updateSize: Boolean, align: Boolean): Boolean {
         val height = offset.getNextLineHeight(properties)
-        if (!offset.addLine(info, properties.lineHeight, height)) {
+        if (!offset.addLine(properties, info, properties.lineHeight, height, align)) {
             info.cutOff = true
             return true
         }
@@ -80,7 +80,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             val codePoint = stream.nextInt()
             if (codePoint == '\n'.code) {
                 val lineIndex = info.lineIndex
-                filled = renderNewline(properties, offset, info, consumer == null)
+                filled = renderNewline(properties, offset, info, consumer == null, consumer != null)
                 if (line.isNotEmpty()) {
                     info.lines[lineIndex].push(text, line)
                 }

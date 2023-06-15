@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.SHADOW_OFFSET
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
@@ -39,8 +40,12 @@ interface CodePointRenderer {
         return calculateWidth(scale, shadow)
     }
 
-    private fun getVerticalSpacing(offset: TextOffset, properties: TextRenderProperties): Float {
-        if (offset.offset.x == offset.initial.x) return 0.0f
+    private fun getVerticalSpacing(offset: TextOffset, properties: TextRenderProperties, info: TextRenderInfo, align: Boolean): Float {
+        var lineStart = offset.initial.x
+        if (align) {
+            lineStart += properties.alignment.getOffset(info.lines[info.lineIndex].width, info.size.x)
+        }
+        if (offset.offset.x == lineStart) return 0.0f
         // not at line start
         var spacing = properties.charSpacing.vertical
         if (properties.shadow) {
@@ -52,15 +57,18 @@ interface CodePointRenderer {
 
 
     fun render(offset: TextOffset, color: RGBColor, properties: TextRenderProperties, info: TextRenderInfo, formatting: TextFormatting, codePoint: Int, consumer: GUIVertexConsumer?, options: GUIVertexOptions?): CodePointAddResult {
-        val codePointWidth = calculateWidth(properties.scale, properties.shadow)
-        var width = codePointWidth + getVerticalSpacing(offset, properties)
+        val width = calculateWidth(properties.scale, properties.shadow)
+        var spacing = getVerticalSpacing(offset, properties, info, consumer != null)
         val height = offset.getNextLineHeight(properties)
 
-        val canAdd = offset.canAdd(properties, info, width, height)
+        val canAdd = offset.canAdd(properties, info, width + spacing, height, consumer != null)
         when (canAdd) {
-            CodePointAddResult.FINE -> Unit
+            CodePointAddResult.FINE -> {
+                offset.offset.x += spacing
+            }
+
             CodePointAddResult.NEW_LINE -> {
-                width = codePointWidth // new line, remove vertical spacing
+                spacing = 0.0f
                 info.size.y += height
             }
 
@@ -69,11 +77,14 @@ interface CodePointRenderer {
 
 
         if (consumer != null) {
+            if (info.lineIndex == 0 && offset.offset.x == offset.initial.x) {
+                // switched to consumer mode but offset was not updated yet
+                offset.align(properties.alignment, info.lines.first().width, info.size)
+            }
             render(offset.offset, color, properties.shadow, FormattingCodes.BOLD in formatting, FormattingCodes.ITALIC in formatting, properties.scale, consumer, options)
         } else {
-            info.update(offset, properties, width) // info should only be updated when we determinate text properties, we know all that already when actually rendering it
+            info.update(offset, properties, width, spacing) // info should only be updated when we determinate text properties, we know all that already when actually rendering it        }
         }
-
         offset.offset.x += width
 
         return canAdd

@@ -11,6 +11,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
 import de.bixilon.minosoft.gui.rendering.font.types.font.EmptyFont
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import org.testng.Assert.assertEquals
@@ -22,7 +23,11 @@ class ChatComponentRendererTest {
 
     private fun render(text: ChatComponent, fontManager: FontManager = this.fontManager, properties: TextRenderProperties = TextRenderProperties(shadow = false), maxSize: Vec2 = Vec2.MAX, consumer: GUIVertexConsumer? = null): TextRenderInfo {
         val info = TextRenderInfo(maxSize)
-        ChatComponentRenderer.render(TextOffset(Vec2(10, 10)), fontManager, properties, info, consumer, null, text)
+        ChatComponentRenderer.render(TextOffset(Vec2(10, 10)), fontManager, properties, info, null, null, text)
+        if (consumer != null) {
+            info.rewind()
+            ChatComponentRenderer.render(TextOffset(Vec2(10, 10)), fontManager, properties, info, consumer, null, text)
+        }
 
         return info
     }
@@ -286,5 +291,76 @@ class ChatComponentRendererTest {
         )
     }
 
-    // TODO: shadow, underline, strikethrough, using with consumer, formatting (just basic, that is code point renderer's job)
+    fun `single char rendering`() {
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("b"), fontManager = FontManager(consumer.Font()), consumer = consumer)
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
+        )
+    }
+
+    fun `multiple char rendering`() {
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("bc"), fontManager = FontManager(consumer.Font()), consumer = consumer)
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(11.5, 10)),
+        )
+    }
+
+    fun `newline rendering`() {
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("bc\nde"), fontManager = FontManager(consumer.Font()), consumer = consumer)
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(11.5, 10)),
+
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+        )
+    }
+
+    fun `left alignment`() { // default
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("bc\nde"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.LEFT, shadow = false))
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(11.5, 10)),
+
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+        )
+    }
+
+    fun `center alignment`() {
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("bc\nde"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.CENTER, shadow = false))
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdCodePoint(Vec2(11, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 10)),
+
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+        )
+    }
+
+    fun `right alignment`() {
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("bc\nde"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.RIGHT, shadow = false))
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdCodePoint(Vec2(12, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(13.5, 10)),
+
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+        )
+    }
+
+    // TODO: shadow, underline, strikethrough, formatting (just basic, that is code point renderer's job)
 }
