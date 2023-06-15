@@ -47,7 +47,7 @@ class LegacyUnicodeFontTypeTest {
     }
 
     fun firstChar() {
-        val sizes = byteArrayOf(0x19, 0x12, 0x45)
+        val sizes = byteArrayOf(0x09, 0x12, 0x45)
         val chars = load(sizes)
 
         val char = chars[0]!!
@@ -67,7 +67,7 @@ class LegacyUnicodeFontTypeTest {
     }
 
     fun secondChar() {
-        val sizes = byteArrayOf(0x00, 0x28)
+        val sizes = byteArrayOf(0x00, 0x18)
         val chars = load(sizes)
 
         val char = chars[1]!!
@@ -78,7 +78,7 @@ class LegacyUnicodeFontTypeTest {
 
     fun `19th char`() {
         val sizes = ByteArray(19)
-        sizes[18] = 0x9E.toByte()
+        sizes[18] = 0x8E.toByte()
         val chars = load(sizes)
 
         val char = chars[18]!!

@@ -95,7 +95,7 @@ class LegacyUnicodeFontType(
                     val widthByte = sizes.read()
                     if (widthByte < 0) throw IllegalStateException("Unexpected end of sizes stream (pageId=$pageId, x=$x, y=$y)!")
 
-                    val xStart = maxOf(0, ((widthByte shr 4) and 0x0F) - 1)
+                    val xStart = maxOf(0, ((widthByte shr 4) and 0x0F))
                     val width = (widthByte and 0x0F) + 1 - xStart
 
 
