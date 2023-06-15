@@ -153,7 +153,7 @@ class TabListEntryElement(
     }
 
     companion object {
-        const val HEIGHT = 10
+        const val HEIGHT = 11
         const val INNER_MARGIN = 5
         const val PADDING = 1
     }
