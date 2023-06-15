@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -39,8 +39,6 @@ interface ChatComponentRenderer<T : ChatComponent> {
      */
     fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: T): Boolean
 
-    fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: T, light: Int)
-
     fun calculatePrimitiveCount(text: T): Int
 
     companion object : ChatComponentRenderer<ChatComponent> {
@@ -55,16 +53,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
         }
 
-        override fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: ChatComponent, light: Int) {
-            when (text) {
-                is BaseComponent -> BaseComponentRenderer.render3dFlat(context, offset, scale, maxSize, consumer, text, light)
-                is TextComponent -> TextComponentRenderer.render3dFlat(context, offset, scale, maxSize, consumer, text, light)
-                is EmptyComponent -> return
-                else -> TODO("Don't know how to render ${text::class.java}")
-            }
-        }
-
-        fun render3dFlat(context: RenderContext, position: Vec3, scale: Float, rotation: Vec3, maxSize: Vec2i, mesh: WorldMesh, text: ChatComponent, light: Int) {
+        fun render3dFlat(context: RenderContext, position: Vec3, properties: TextRenderProperties, rotation: Vec3, maxSize: Vec2, mesh: WorldMesh, text: ChatComponent, light: Int): TextRenderInfo {
             val matrix = Mat4()
                 .translateAssign(position)
                 .rotateDegreesAssign(rotation)
@@ -75,7 +64,14 @@ interface ChatComponentRenderer<T : ChatComponent> {
             textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
 
             val consumer = WorldGUIConsumer(textMesh, matrix, light)
-            render3dFlat(context, Vec2i(), scale, maxSize, consumer, text, light)
+
+            val info = TextRenderInfo(maxSize)
+            render(TextOffset(), context.font, properties, info, null, null, text)
+            info.rewind()
+            info.size.x = maxSize.x // this allows font aligning
+            render(TextOffset(), context.font, properties, info, consumer, null, text)
+
+            return info
         }
 
         override fun calculatePrimitiveCount(text: ChatComponent): Int {

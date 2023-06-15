@@ -13,12 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.element
 
-import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
-
 data class CharSpacing(
-    val top: Float = FontProperties.CHAR_SPACING_TOP.toFloat(),
-    val bottom: Float = FontProperties.CHAR_SPACING_BOTTOM.toFloat(),
-    val vertical: Float = FontProperties.CHAR_HORIZONTAL_SPACING.toFloat(),
+    val top: Float = 1.0f,
+    val bottom: Float = 2.0f,
+    val horizontal: Float = 1.0f,
 ) {
 
     companion object {

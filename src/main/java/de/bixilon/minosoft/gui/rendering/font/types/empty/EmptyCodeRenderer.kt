@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font.types.empty
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties.MAX_CHAR_WIDTH
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -30,5 +31,5 @@ data class EmptyCodeRenderer(
     }
 
     override fun calculateWidth(scale: Float, shadow: Boolean): Float = width * scale
-    override fun render(position: Vec2, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) = Unit
+    override fun render(position: Vec2, properties: TextRenderProperties, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) = Unit
 }

@@ -14,18 +14,19 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class LineSpacerElement(
     guiRenderer: GUIRenderer,
     lines: Int = 1,
+    val lineHeight: Float = TextRenderProperties.DEFAULT.lineHeight,
 ) : SpacerElement(guiRenderer, Vec2.EMPTY) {
     var lines: Int = 0
         set(value) {
             field = value
-            size = Vec2(0, lines * Font.TOTAL_CHAR_HEIGHT)
+            size = Vec2(0, lines * lineHeight)
         }
 
     init {

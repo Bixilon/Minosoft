@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.SignBlock
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -60,7 +59,7 @@ class SignEditorScreen(
     private val headerElement = TextElement(guiRenderer, "Edit sign message", background = null, properties = TextRenderProperties(scale = 3.0f), parent = this)
     private val positionElement = TextElement(guiRenderer, "at $blockPosition", background = null, parent = this)
     private val backgroundElement = ImageElement(guiRenderer, getTexture(), uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
-    private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", SIGN_MAX_CHARS, properties = TextRenderProperties(scale = TEXT_SCALE), background = null, cutAtSize = true, parent = this) }
+    private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", SIGN_MAX_CHARS, properties = TEXT_PROPERTIES, background = null, cutAtSize = true, parent = this) }
     private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
     private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.connection.profiles.gui.sign.limitLength, parent = this) { guiRenderer.connection.profiles.gui.sign.limitLength = it; forceSilentApply() }
     override var activeElement: Element? = null
@@ -69,7 +68,7 @@ class SignEditorScreen(
 
     init {
         for (line in lines) {
-            line.prefMaxSize = Vec2(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE)
+            line.prefMaxSize = Vec2(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale, TEXT_PROPERTIES.lineHeight)
             line.hideCursor()
         }
         forceSilentApply()
@@ -102,7 +101,7 @@ class SignEditorScreen(
         offset.y += (1.8f * BACKGROUND_SCALE).toInt()
         for (line in lines) {
             line.render(offset + HorizontalAlignments.CENTER.getOffset(size, line.size), consumer, options)
-            offset.y += (Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE).toInt()
+            offset.y += TEXT_PROPERTIES.lineHeight + TEXT_PROPERTIES.lineSpacing
         }
         offset.y += size.y / 8
 
@@ -127,7 +126,7 @@ class SignEditorScreen(
         super.forceSilentApply()
 
         for (line in lines) {
-            line.prefMaxSize = Vec2(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE else SIGN_MAX_CHARS, line.prefMaxSize.y)
+            line.prefMaxSize = Vec2(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale else SIGN_MAX_CHARS, line.prefMaxSize.y)
         }
     }
 
@@ -154,7 +153,7 @@ class SignEditorScreen(
         position.y -= (1.8f * BACKGROUND_SCALE).toInt()
 
         for (line in lines) {
-            getAtCheck(position, line, HorizontalAlignments.CENTER, true, Vec2(SignBlockEntityRenderer.SIGN_MAX_WIDTH, (Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE).toInt()))?.let { return it }
+            getAtCheck(position, line, HorizontalAlignments.CENTER, true, Vec2(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale, TEXT_PROPERTIES.lineHeight))?.let { return it }
             if (position.y < 0) {
                 return null
             }
@@ -213,9 +212,9 @@ class SignEditorScreen(
     }
 
     companion object {
-        private val SIGN_UV_START = Vec2(0.5 / 16.0f, 1.0f / 32.0f)
-        private val SIGN_UV_END = Vec2(6.5 / 16.0f, 7.0f / 32.0f)
-        private const val TEXT_SCALE = 2.0f
+        private val TEXT_PROPERTIES = TextRenderProperties(scale = 2.0f, allowNewLine = false)
+        private val SIGN_UV_START = Vec2(0.5f / 16.0f, 1.0f / 32.0f)
+        private val SIGN_UV_END = Vec2(6.5f / 16.0f, 7.0f / 32.0f)
         private const val SIGN_MAX_CHARS = 384
 
         private const val BACKGROUND_SCALE = 9

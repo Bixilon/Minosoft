@@ -62,6 +62,7 @@ class TextOffset(
 
     fun addLine(properties: TextRenderProperties, info: TextRenderInfo, offset: Float, height: Float, consuming: Boolean): Boolean {
         if (!fitsY(info, offset, height)) return false
+        if (!properties.allowNewLine) return false
 
         info.lineIndex++
 

@@ -16,9 +16,4 @@ package de.bixilon.minosoft.gui.rendering.font.renderer.properties
 object FontProperties {
     const val MAX_CHAR_WIDTH = 16 // maximum width that a char can have
     const val CHAR_BASE_HEIGHT = 8 // base height of  every char, it is allowed to take up the spacing if needed
-    const val CHAR_SPACING_TOP = 1
-    const val CHAR_SPACING_BOTTOM = 2  // larger to not break underlined text
-    const val CHAR_HORIZONTAL_SPACING = 1
-
-    const val LINE_HEIGHT = CHAR_SPACING_TOP + CHAR_BASE_HEIGHT + CHAR_SPACING_BOTTOM
 }

@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
@@ -45,12 +44,12 @@ open class TextInputElement(
     val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     var editable: Boolean = true,
     var onChangeCallback: () -> Unit = {},
-    val background: RGBColor? = null,
+    val background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
     val cutAtSize: Boolean = false,
     parent: Element? = null,
 ) : Element(guiRenderer) {
-    protected val cursor = ColorElement(guiRenderer, size = Vec2(minOf(1.0f, properties.scale), properties.lineHeight * properties.scale))
+    protected val cursor = ColorElement(guiRenderer, size = Vec2(minOf(1.0f, properties.scale), properties.lineHeight))
     protected val textElement = MarkTextElement(guiRenderer, "", background = null, parent = this, properties = properties)
     protected val backgroundElement = ColorElement(guiRenderer, Vec2.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     protected var cursorOffset: Vec2i = Vec2i.EMPTY
@@ -342,7 +341,7 @@ open class TextInputElement(
         for (line in leftText.info.lines) {
             val message = line.text.message
             pointer += message.length // ToDo: No formatting
-            heightLeft -= Font.TOTAL_CHAR_HEIGHT
+            heightLeft -= TextRenderProperties.DEFAULT.lineHeight
             if (heightLeft > 0) {
                 continue
             }

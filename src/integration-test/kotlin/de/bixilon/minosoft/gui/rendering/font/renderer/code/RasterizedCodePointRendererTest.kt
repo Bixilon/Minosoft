@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyCodePointRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.DummyGUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -41,7 +42,7 @@ class RasterizedCodePointRendererTest {
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
+        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
 
         assertEquals(1, consumer.char)
     }
@@ -55,7 +56,7 @@ class RasterizedCodePointRendererTest {
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), ChatColors.BLUE, true, true, false, 1.0f, consumer, null)
+        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, true, true, false, 1.0f, consumer, null)
 
         assertEquals(4, chars)
     }
@@ -69,7 +70,7 @@ class RasterizedCodePointRendererTest {
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
+        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.0f, consumer, null)
     }
 
     fun scaled() {
@@ -85,7 +86,7 @@ class RasterizedCodePointRendererTest {
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), ChatColors.BLUE, false, false, false, 1.5f, consumer, null)
+        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, false, false, 1.5f, consumer, null)
     }
 
     fun shadow() {
@@ -98,7 +99,7 @@ class RasterizedCodePointRendererTest {
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), ChatColors.BLUE, true, false, false, 1.0f, consumer, null)
+        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, true, false, false, 1.0f, consumer, null)
 
         assertEquals(consumer.char, 2)
     }
@@ -113,7 +114,7 @@ class RasterizedCodePointRendererTest {
         }
         val char = DummyCodePointRenderer()
 
-        char.render(Vec2(10.0f, 12.0f), ChatColors.BLUE, false, true, false, 1.0f, consumer, null)
+        char.render(Vec2(10.0f, 12.0f), TextRenderProperties(), ChatColors.BLUE, false, true, false, 1.0f, consumer, null)
 
         assertEquals(consumer.char, 2)
     }

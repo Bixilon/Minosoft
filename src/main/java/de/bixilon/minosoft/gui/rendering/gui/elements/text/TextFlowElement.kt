@@ -20,7 +20,7 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 open class TextFlowElement(
     guiRenderer: GUIRenderer,
     var messageExpireTime: Long,
+    val properties: TextRenderProperties = TextRenderProperties(),
 ) : Element(guiRenderer), AbstractLayout<TextElement> {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
     private var visibleLines: List<TextFlowLineElement> = emptyList() // all visible lines **from bottom to top**
@@ -88,7 +89,7 @@ open class TextFlowElement(
         var yOffset = 0.0f
         for (message in visibleLines.reversed()) {
             message.textElement.render(offset + Vec2(0, yOffset), consumer, options)
-            yOffset += Font.TOTAL_CHAR_HEIGHT
+            yOffset += properties.lineHeight + properties.lineSpacing
         }
     }
 
@@ -101,7 +102,7 @@ open class TextFlowElement(
     override fun forceSilentApply() {
         val visibleLines: MutableList<TextFlowLineElement> = mutableListOf()
         val maxSize = maxSize
-        val maxLines = maxSize.y / Font.TOTAL_CHAR_HEIGHT
+        val maxLines = maxSize.y / (properties.lineHeight + properties.lineSpacing)
         val currentTime = millis()
         var textSize = Vec2.EMPTY
         val active = this.active
@@ -150,7 +151,7 @@ open class TextFlowElement(
 
 
         this.textSize = textSize
-        _size = Vec2(maxSize.x, visibleLines.size * Font.TOTAL_CHAR_HEIGHT)
+        _size = Vec2(maxSize.x, visibleLines.size * (properties.lineHeight + properties.lineSpacing))
         background.size = size
         this.visibleLines = visibleLines
         cacheUpToDate = false
@@ -188,11 +189,11 @@ open class TextFlowElement(
 
     private fun getLineAt(position: Vec2): Pair<TextFlowLineElement, Vec2>? {
         val reversedY = size.y - position.y
-        val line = visibleLines.getOrNull((reversedY / Font.TOTAL_CHAR_HEIGHT).toInt()) ?: return null
+        val line = visibleLines.getOrNull((reversedY / (properties.lineHeight + properties.lineSpacing)).toInt()) ?: return null
         if (position.x > line.textElement.size.x) {
             return null
         }
-        val offset = Vec2(position.x, reversedY % Font.TOTAL_CHAR_HEIGHT)
+        val offset = Vec2(position.x, reversedY % (properties.lineHeight + properties.lineSpacing))
         return Pair(line, offset)
     }
 

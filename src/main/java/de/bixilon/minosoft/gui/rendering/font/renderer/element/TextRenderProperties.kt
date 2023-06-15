@@ -28,6 +28,7 @@ data class TextRenderProperties(
     val shadow: Boolean = true,
     val forcedColor: RGBColor? = null,
     val fallbackColor: RGBColor = ChatColors.WHITE,
+    val allowNewLine: Boolean = true,
     val font: FontType? = null,
 ) {
 

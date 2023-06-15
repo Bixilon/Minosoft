@@ -79,13 +79,13 @@ class MarkTextElement(
             val mark = TextElement(guiRenderer, message.substring(markStartPosition, markEndPosition), properties = properties, parent = _parent)
             val markOffset = Vec2i(preMark.info.lines.lastOrNull()?.width ?: 0, preMark.size.y)
             if (markOffset.y > 0 && (preMark.info.lines.lastOrNull()?.width ?: 0.0f) <= (info.lines.lastOrNull()?.width ?: 0.0f)) {
-                markOffset.y -= (properties.lineHeight * properties.scale).toInt()
+                markOffset.y -= (properties.lineHeight).toInt()
             }
 
             for (line in mark.info.lines) {
-                ColorElement(guiRenderer, size = Vec2(line.width, (properties.lineHeight * properties.scale).toInt()), color = ChatColors.DARK_BLUE).render(offset + markOffset, consumer, options)
+                ColorElement(guiRenderer, size = Vec2(line.width, (properties.lineHeight).toInt()), color = ChatColors.DARK_BLUE).render(offset + markOffset, consumer, options)
                 markOffset.x = 0
-                markOffset.y += (properties.lineHeight * properties.scale).toInt()
+                markOffset.y += (properties.lineHeight).toInt()
             }
         }
 

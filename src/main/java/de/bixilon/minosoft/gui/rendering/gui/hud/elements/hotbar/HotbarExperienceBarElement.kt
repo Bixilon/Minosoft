@@ -18,7 +18,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -65,7 +64,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
             // level
             val text = TextElement(guiRenderer, TextComponent(level).apply { color = RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR }, properties = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false))
 
-            text.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, text.size.x), -Font.CHAR_HEIGHT + 1), consumer, options)
+            text.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, text.size.x), -TEXT_PROPERTIES.lineHeight + 1), consumer, options)
         }
     }
 
@@ -89,6 +88,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
     }
 
     companion object {
+        private val TEXT_PROPERTIES = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false)
         private val SIZE = Vec2(182, 5)
     }
 }

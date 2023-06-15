@@ -49,11 +49,4 @@ class WorldGUIConsumer(val mesh: SingleWorldMesh, val transform: Mat4, val light
             this[0, 2] * x + this[1, 2] * y + this[2, 2] + this[3, 2],
         )
     }
-
-    fun offset(x: Float) {
-        transform[3, 0] += transform[0, 0] * x
-        transform[3, 1] += transform[0, 1] * x
-        transform[3, 2] += transform[0, 2] * x
-        transform[3, 3] += transform[0, 3] * x
-    }
 }

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.BOLD_OFFSET
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.SHADOW_COLOR
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.SHADOW_OFFSET
@@ -41,31 +41,31 @@ interface RasterizedCodePointRenderer : CodePointRenderer {
         return width * scale
     }
 
-    override fun render(position: Vec2, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun render(position: Vec2, properties: TextRenderProperties, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (shadow) {
-            render(position + (SHADOW_OFFSET * scale), color * SHADOW_COLOR, bold, italic, scale, consumer, options)
+            render(position + (SHADOW_OFFSET * scale), properties, color * SHADOW_COLOR, bold, italic, scale, consumer, options)
         }
-        render(position, color, bold, italic, scale, consumer, options)
+        render(position, properties, color, bold, italic, scale, consumer, options)
     }
 
-    fun calculateStart(base: Vec2, scale: Float): Vec2 {
+    fun calculateStart(properties: TextRenderProperties, base: Vec2, scale: Float): Vec2 {
         val position = Vec2(base)
-        position.y += (FontProperties.CHAR_SPACING_TOP * scale)
+        position.y += properties.charSpacing.top * scale
 
         return position
     }
 
-    fun calculateEnd(start: Vec2, scale: Float): Vec2 {
+    fun calculateEnd(properties: TextRenderProperties, start: Vec2, scale: Float): Vec2 {
         val position = Vec2(start)
-        position.y += (FontProperties.CHAR_BASE_HEIGHT * scale)
+        position.y += (properties.charBaseHeight * scale)
         position.x += width * scale
 
         return position
     }
 
-    private fun render(position: Vec2, color: RGBColor, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val startPosition = calculateStart(position, scale)
-        val endPosition = calculateEnd(startPosition, scale)
+    private fun render(position: Vec2, properties: TextRenderProperties, color: RGBColor, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val startPosition = calculateStart(properties, position, scale)
+        val endPosition = calculateEnd(properties, startPosition, scale)
 
         consumer.addChar(startPosition, endPosition, texture, uvStart, uvEnd, italic, color, options)
 

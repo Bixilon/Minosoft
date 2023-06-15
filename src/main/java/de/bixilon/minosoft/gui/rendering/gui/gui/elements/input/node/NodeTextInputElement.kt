@@ -25,6 +25,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -46,7 +47,7 @@ class NodeTextInputElement(
     cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     editable: Boolean = true,
     onChange: () -> Unit = {},
-    background: RGBColor? = null,
+    background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR,
     cutAtSize: Boolean = false,
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,

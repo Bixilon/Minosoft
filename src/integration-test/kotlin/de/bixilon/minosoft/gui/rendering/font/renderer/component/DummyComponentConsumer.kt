@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TexturePart
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
@@ -47,7 +48,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
             return width * scale
         }
 
-        override fun render(position: Vec2, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        override fun render(position: Vec2, properties: TextRenderProperties, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
             chars += RendererdCodePoint(Vec2(position))
         }
     }

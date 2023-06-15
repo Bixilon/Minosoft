@@ -13,10 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
@@ -32,12 +29,6 @@ object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
             if (filled) return true
         }
         return false
-    }
-
-    override fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: BaseComponent, light: Int) {
-        for (part in text.parts) {
-            ChatComponentRenderer.render3dFlat(context, offset, scale, maxSize, consumer, part, light)
-        }
     }
 
     override fun calculatePrimitiveCount(text: BaseComponent): Int {

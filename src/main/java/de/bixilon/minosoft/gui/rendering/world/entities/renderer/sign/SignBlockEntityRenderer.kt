@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign
 
 import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.exception.Broken
@@ -28,9 +28,10 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
@@ -74,7 +75,7 @@ class SignBlockEntityRenderer(
         textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
 
         for (line in sign.lines) {
-            ChatComponentRenderer.render3dFlat(context, textPosition, TEXT_SCALE, Vec3(0.0f, -yRotation, 0.0f), Vec2i(SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE), mesh, line, light)
+            ChatComponentRenderer.render3dFlat(context, textPosition, TEXT_PROPERTIES, Vec3(0.0f, -yRotation, 0.0f), MAX_SIZE, mesh, line, light)
             textPosition.y -= 0.11f
         }
     }
@@ -108,11 +109,12 @@ class SignBlockEntityRenderer(
     }
 
     companion object {
+        private val TEXT_PROPERTIES = TextRenderProperties(scale = 1.35f, allowNewLine = false, shadow = false, fallbackColor = ChatColors.BLACK)
         private const val PIXEL_SCALE = 1.0f / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION
-        private const val TEXT_SCALE = 1.35f
         private const val Z_OFFSET = 0.01f
         private const val X_OFFSET = PIXEL_SCALE * 6
         private const val Y_OFFSET = 0.04f
         const val SIGN_MAX_WIDTH = 90 // 15x the char W. W has a width of 5sp
+        val MAX_SIZE = Vec2(SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale, TEXT_PROPERTIES.lineHeight)
     }
 }

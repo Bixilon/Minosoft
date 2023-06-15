@@ -35,8 +35,8 @@ class ScoreboardScoreElement(
     private val scoreElement = TextElement(guiRenderer, "", background = null, parent = this)
 
     init {
-        nameElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.SCORE_HEIGHT)
-        scoreElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.SCORE_HEIGHT)
+        nameElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
+        scoreElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
         forceSilentApply()
         _parent = parent
     }
@@ -58,12 +58,12 @@ class ScoreboardScoreElement(
 
         scoreElement.text = TextComponent(score.value).color(ChatColors.RED)
 
-        _prefSize = Vec2(nameElement.size.x + scoreElement.size.x + SCORE_MIN_MARGIN, ScoreboardSideElement.SCORE_HEIGHT)
+        _prefSize = Vec2(nameElement.size.x + scoreElement.size.x + SCORE_MIN_MARGIN, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
         cacheUpToDate = false
     }
 
     fun applySize() {
-        _size = parent?.size?.let { return@let Vec2(it.x, ScoreboardSideElement.SCORE_HEIGHT) } ?: _prefSize
+        _size = parent?.size?.let { return@let Vec2(it.x, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight) } ?: _prefSize
     }
 
     override fun onChildChange(child: Element) = Unit

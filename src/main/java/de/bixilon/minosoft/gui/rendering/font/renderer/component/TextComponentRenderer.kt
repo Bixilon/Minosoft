@@ -13,13 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
@@ -27,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
@@ -85,6 +80,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         while (stream.hasNext()) {
             val codePoint = stream.nextInt()
             if (codePoint == '\n'.code) {
+                if (!properties.allowNewLine) continue
                 val lineIndex = info.lineIndex
                 filled = renderNewline(properties, offset, info, consumer != null)
                 if (line.isNotEmpty()) {
@@ -143,25 +139,5 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
         return count
-    }
-
-    override fun render3dFlat(context: RenderContext, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: TextComponent, light: Int) {
-        val color = text.color ?: ChatColors.BLACK
-
-        val font = context.font[text.font]
-
-
-        // TODO: strike, underlined
-
-        for (char in text.message.codePoints()) {
-            val data = font?.get(char) ?: context.font.default[char] ?: continue
-            val expectedWidth = ((data.calculateWidth(scale, false) + Font.HORIZONTAL_SPACING) * scale).toInt()
-            if (maxSize.x - offset.x < expectedWidth) { // ToDo
-                return
-            }
-            val width = ((data.render3d(color, shadow = false, FormattingCodes.BOLD in text.formatting, FormattingCodes.ITALIC in text.formatting, scale = scale, consumer) + Font.HORIZONTAL_SPACING) * scale).toInt()
-            offset.x += width
-            consumer.offset((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION.toFloat()))
-        }
     }
 }

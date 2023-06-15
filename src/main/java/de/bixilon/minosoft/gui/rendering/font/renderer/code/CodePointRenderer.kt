@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.TextFormatting
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
@@ -26,19 +25,12 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProp
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 interface CodePointRenderer {
 
     fun calculateWidth(scale: Float, shadow: Boolean): Float
 
-    fun render(position: Vec2, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
-
-    fun render3d(color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: WorldGUIConsumer): Float {
-        render(Vec2.EMPTY, color, shadow, bold, italic, scale, consumer, null)
-
-        return calculateWidth(scale, shadow)
-    }
+    fun render(position: Vec2, properties: TextRenderProperties, color: RGBColor, shadow: Boolean, bold: Boolean, italic: Boolean, scale: Float, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
 
     private fun getVerticalSpacing(offset: TextOffset, properties: TextRenderProperties, info: TextRenderInfo, align: Boolean): Float {
         var lineStart = offset.initial.x
@@ -47,7 +39,7 @@ interface CodePointRenderer {
         }
         if (offset.offset.x == lineStart) return 0.0f
         // not at line start
-        var spacing = properties.charSpacing.vertical
+        var spacing = properties.charSpacing.horizontal
         if (properties.shadow) {
             spacing = maxOf(spacing - SHADOW_OFFSET, 0.0f)
         }
@@ -77,7 +69,7 @@ interface CodePointRenderer {
 
 
         if (consumer != null) {
-            render(offset.offset, color, properties.shadow, FormattingCodes.BOLD in formatting, FormattingCodes.ITALIC in formatting, properties.scale, consumer, options)
+            render(offset.offset, properties, color, properties.shadow, FormattingCodes.BOLD in formatting, FormattingCodes.ITALIC in formatting, properties.scale, consumer, options)
         } else {
             info.update(offset, properties, width, spacing) // info should only be updated when we determinate text properties, we know all that already when actually rendering it        }
         }

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -73,7 +73,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         nameBackgroundElement.render(offset, consumer, options)
 
         nameElement.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0), consumer, options)
-        offset.y += Font.TOTAL_CHAR_HEIGHT
+        offset.y += TEXT_PROPERTIES.lineHeight
 
         this.scores.lock.acquire()
         val scores = this.scores.unsafe.entries.sortedWith { a, b -> a.key.compareTo(b.key) }
@@ -82,7 +82,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         var index = 0
         for ((_, score) in scores) {
             score.render(offset, consumer, options)
-            offset.y += Font.TOTAL_CHAR_HEIGHT
+            offset.y += TEXT_PROPERTIES.lineHeight
 
             if (++index >= MAX_SCORES) {
                 break
@@ -117,7 +117,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
             _size = Vec2.EMPTY
             return
         }
-        val size = Vec2(MIN_WIDTH, Font.TOTAL_CHAR_HEIGHT)
+        val size = Vec2(MIN_WIDTH, TEXT_PROPERTIES.lineHeight)
         size.x = maxOf(size.x, nameElement.size.x)
 
         val scores = scores.toSynchronizedMap()
@@ -128,12 +128,12 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
             size.x = maxOf(size.x, element.prefSize.x)
         }
 
-        size.y += SCORE_HEIGHT * minOf(MAX_SCORES, scores.size)
+        size.y += TEXT_PROPERTIES.lineHeight * minOf(MAX_SCORES, scores.size)
 
 
 
         _size = size
-        nameBackgroundElement.size = Vec2(size.x, SCORE_HEIGHT)
+        nameBackgroundElement.size = Vec2(size.x, TEXT_PROPERTIES.lineHeight)
         backgroundElement.size = size
 
 
@@ -214,9 +214,9 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
     companion object : HUDBuilder<LayoutedGUIElement<ScoreboardSideElement>> {
         override val identifier: ResourceLocation = "minosoft:scoreboard".toResourceLocation()
+        val TEXT_PROPERTIES = TextRenderProperties()
         const val MAX_SCORES = 15
         const val MIN_WIDTH = 30
-        const val SCORE_HEIGHT = Font.TOTAL_CHAR_HEIGHT
         const val MAX_SCOREBOARD_WIDTH = 200
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<ScoreboardSideElement> {
