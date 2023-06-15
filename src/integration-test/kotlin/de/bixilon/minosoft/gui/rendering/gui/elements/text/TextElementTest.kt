@@ -93,5 +93,5 @@ class TextElementTest {
     }
 
 
-    // TODO: test on mouse (click/hover events), rendering
+    // TODO: test on mouse (click/hover events), rendering (correct offset, background)
 }

@@ -41,14 +41,14 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return properties.forcedColor ?: text.color ?: properties.fallbackColor
     }
 
-    private fun renderNewline(properties: TextRenderProperties, offset: TextOffset, info: TextRenderInfo, updateSize: Boolean, align: Boolean): Boolean {
+    private fun renderNewline(properties: TextRenderProperties, offset: TextOffset, info: TextRenderInfo, consuming: Boolean): Boolean {
         val height = offset.getNextLineHeight(properties)
-        if (!offset.addLine(properties, info, properties.lineHeight, height, align)) {
+        if (!offset.addLine(properties, info, properties.lineHeight, height, consuming)) {
             info.cutOff = true
             return true
         }
 
-        if (updateSize) {
+        if (!consuming) {
             info.size.y += height
         }
 
@@ -67,6 +67,12 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
     override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: TextComponent): Boolean {
         if (text.message.isEmpty()) return false
 
+
+        if (consumer != null && info.lineIndex == 0 && offset.offset.x == offset.initial.x) {
+            // switched to consumer mode but offset was not updated yet
+            offset.align(properties.alignment, info.lines.first().width, info.size)
+        }
+
         val textFont = fontManager[text.font]
         val color = getColor(properties, text)
         val formatting = text.formatting
@@ -80,7 +86,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             val codePoint = stream.nextInt()
             if (codePoint == '\n'.code) {
                 val lineIndex = info.lineIndex
-                filled = renderNewline(properties, offset, info, consumer == null, consumer != null)
+                filled = renderNewline(properties, offset, info, consumer != null)
                 if (line.isNotEmpty()) {
                     info.lines[lineIndex].push(text, line)
                 }

@@ -26,9 +26,7 @@ class TextOffset(
 
 
     fun align(alignment: HorizontalAlignments, width: Float, size: Vec2) {
-        this.offset.x = initial.x
-
-        this.offset.x += alignment.getOffset(width, size.x)
+        this.offset.x = initial.x + alignment.getOffset(size.x, width)
     }
 
     private fun fits(offset: Float, initial: Float, max: Float, value: Float): Boolean {
@@ -62,28 +60,31 @@ class TextOffset(
         return height
     }
 
-    fun addLine(properties: TextRenderProperties, info: TextRenderInfo, offset: Float, height: Float, align: Boolean): Boolean {
+    fun addLine(properties: TextRenderProperties, info: TextRenderInfo, offset: Float, height: Float, consuming: Boolean): Boolean {
         if (!fitsY(info, offset, height)) return false
 
-        this.offset.y += height
-        this.offset.x = initial.x
-        if (align) {
-            align(properties.alignment, info.lines[info.lineIndex].width, info.size)
-        }
-        info.lines += LineRenderInfo()
         info.lineIndex++
+
+        this.offset.y += height
+        if (consuming) {
+            align(properties.alignment, info.lines[info.lineIndex].width, info.size)
+        } else {
+            info.lines += LineRenderInfo()
+            this.offset.x = this.initial.x
+        }
+
 
         return true
     }
 
 
-    fun canAdd(properties: TextRenderProperties, info: TextRenderInfo, width: Float, height: Float, align: Boolean): CodePointAddResult {
+    fun canAdd(properties: TextRenderProperties, info: TextRenderInfo, width: Float, height: Float, consuming: Boolean): CodePointAddResult {
         if (!canEverFit(info, width)) {
             info.cutOff = true
             return CodePointAddResult.BREAK
         }
         if (fitsInLine(properties, info, width)) return CodePointAddResult.FINE
-        if (addLine(properties, info, 0.0f, height, align) && fitsInLine(properties, info, width)) return CodePointAddResult.NEW_LINE
+        if (addLine(properties, info, 0.0f, height, consuming) && fitsInLine(properties, info, width)) return CodePointAddResult.NEW_LINE
 
         info.cutOff = true
         return CodePointAddResult.BREAK

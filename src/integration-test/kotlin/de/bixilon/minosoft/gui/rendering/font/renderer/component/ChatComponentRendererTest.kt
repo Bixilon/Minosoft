@@ -325,7 +325,7 @@ class ChatComponentRendererTest {
 
     fun `left alignment`() { // default
         val consumer = DummyComponentConsumer()
-        render(TextComponent("bc\nde"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.LEFT, shadow = false))
+        render(TextComponent("bc\nde\nbc"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.LEFT, shadow = false))
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
@@ -333,12 +333,15 @@ class ChatComponentRendererTest {
 
             DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
             DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 32)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(11.5, 32)),
         )
     }
 
     fun `center alignment`() {
         val consumer = DummyComponentConsumer()
-        render(TextComponent("bc\nde"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.CENTER, shadow = false))
+        render(TextComponent("bc\nde\nbc"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.CENTER, shadow = false))
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2(11, 10)),
@@ -346,12 +349,15 @@ class ChatComponentRendererTest {
 
             DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
             DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+
+            DummyComponentConsumer.RendererdCodePoint(Vec2(11, 32)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 32)),
         )
     }
 
     fun `right alignment`() {
         val consumer = DummyComponentConsumer()
-        render(TextComponent("bc\nde"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.RIGHT, shadow = false))
+        render(TextComponent("bc\nde\nbc"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.RIGHT, shadow = false))
 
         consumer.assert(
             DummyComponentConsumer.RendererdCodePoint(Vec2(12, 10)),
@@ -359,6 +365,9 @@ class ChatComponentRendererTest {
 
             DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
             DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+
+            DummyComponentConsumer.RendererdCodePoint(Vec2(12, 32)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(13.5, 32)),
         )
     }
 

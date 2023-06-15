@@ -43,7 +43,7 @@ interface CodePointRenderer {
     private fun getVerticalSpacing(offset: TextOffset, properties: TextRenderProperties, info: TextRenderInfo, align: Boolean): Float {
         var lineStart = offset.initial.x
         if (align) {
-            lineStart += properties.alignment.getOffset(info.lines[info.lineIndex].width, info.size.x)
+            lineStart += properties.alignment.getOffset(info.size.x, info.lines[info.lineIndex].width)
         }
         if (offset.offset.x == lineStart) return 0.0f
         // not at line start
@@ -77,10 +77,6 @@ interface CodePointRenderer {
 
 
         if (consumer != null) {
-            if (info.lineIndex == 0 && offset.offset.x == offset.initial.x) {
-                // switched to consumer mode but offset was not updated yet
-                offset.align(properties.alignment, info.lines.first().width, info.size)
-            }
             render(offset.offset, color, properties.shadow, FormattingCodes.BOLD in formatting, FormattingCodes.ITALIC in formatting, properties.scale, consumer, options)
         } else {
             info.update(offset, properties, width, spacing) // info should only be updated when we determinate text properties, we know all that already when actually rendering it        }

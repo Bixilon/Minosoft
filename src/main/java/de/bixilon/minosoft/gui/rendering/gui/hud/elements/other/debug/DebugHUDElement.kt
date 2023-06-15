@@ -202,7 +202,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += AutoTextElement(guiRenderer, 1) { "Allocation rate ${AllocationRate.allocationRate.formatBytes()}/s}" }
+        layout += AutoTextElement(guiRenderer, 1) { "Allocation rate ${AllocationRate.allocationRate.formatBytes()}/s" }
 
         SystemInformation.RUNTIME.apply {
             layout += AutoTextElement(guiRenderer, 1) {
