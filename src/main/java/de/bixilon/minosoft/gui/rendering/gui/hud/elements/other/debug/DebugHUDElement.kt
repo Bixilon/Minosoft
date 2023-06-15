@@ -197,20 +197,20 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     private fun initRight(): Element {
         val layout = RowLayout(guiRenderer, HorizontalAlignments.RIGHT)
         layout.margin = Vec4(2)
-        layout += TextElement(guiRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", properties = Companion.RIGHT)
-        layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", properties = Companion.RIGHT)
+        layout += TextElement(guiRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", properties = RIGHT)
+        layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", properties = RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += AutoTextElement(guiRenderer, 1) { "Allocation rate ${AllocationRate.allocationRate.formatBytes()}/s" }
+        layout += AutoTextElement(guiRenderer, 1, RIGHT) { "Allocation rate ${AllocationRate.allocationRate.formatBytes()}/s" }
 
         SystemInformation.RUNTIME.apply {
-            layout += AutoTextElement(guiRenderer, 1) {
+            layout += AutoTextElement(guiRenderer, 1, RIGHT) {
                 val total = maxMemory()
                 val used = totalMemory() - freeMemory()
                 "Memory ${(used * 100.0 / total).rounded10}% ${used.formatBytes()} / ${total.formatBytes()}"
             }
-            layout += AutoTextElement(guiRenderer, 1) {
+            layout += AutoTextElement(guiRenderer, 1, RIGHT) {
                 val total = maxMemory()
                 val allocated = totalMemory()
                 "Allocated ${(allocated * 100.0 / total).rounded10}% ${allocated.formatBytes()} / ${total.formatBytes()}"
@@ -219,39 +219,39 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", properties = Companion.RIGHT)
-        layout += TextElement(guiRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}")
+        layout += TextElement(guiRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", properties = RIGHT)
+        layout += TextElement(guiRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}", properties = RIGHT)
 
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "Display <?>", properties = Companion.RIGHT).apply {
+        layout += TextElement(guiRenderer, "Display <?>", properties = RIGHT).apply {
             guiRenderer.context.connection.events.listen<ResizeWindowEvent> {
                 text = "Display ${it.size.x.format()}x${it.size.y.format()}"
             }
         }
 
         context.renderSystem.apply {
-            layout += TextElement(guiRenderer, "GPU $gpuType", properties = Companion.RIGHT)
-            layout += TextElement(guiRenderer, "Version $version", properties = Companion.RIGHT)
+            layout += TextElement(guiRenderer, "GPU $gpuType", properties = RIGHT)
+            layout += TextElement(guiRenderer, "Version $version", properties = RIGHT)
         }
 
         MinosoftProperties.git?.let {
             layout += LineSpacerElement(guiRenderer)
 
             MinosoftPropertiesLoader.apply {
-                layout += TextElement(guiRenderer, "Git ${it.commitShort}/${it.branch}", properties = Companion.RIGHT)
+                layout += TextElement(guiRenderer, "Git ${it.commitShort}/${it.branch}", properties = RIGHT)
             }
         }
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "${connection.events.size.format()}x listeners", properties = Companion.RIGHT)
+        layout += TextElement(guiRenderer, "${connection.events.size.format()}x listeners", properties = RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
 
         context.connection.camera.target.apply {
-            layout += AutoTextElement(guiRenderer, 1, properties = Companion.RIGHT) {
+            layout += AutoTextElement(guiRenderer, 1, properties = RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"
             }
@@ -333,7 +333,6 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
             KeyActions.STICKY to setOf(KeyCodes.KEY_F3),
         )
-
         private val RIGHT = TextRenderProperties(HorizontalAlignments.RIGHT)
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<DebugHUDElement> {

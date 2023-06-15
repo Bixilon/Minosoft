@@ -35,7 +35,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
     override fun ensureSize(size: Int) = Unit
 
     override fun addQuad(start: Vec2, end: Vec2, texture: TexturePart, tint: RGBColor, options: GUIVertexOptions?) {
-        quads += RendererdQuad(start, end)
+        quads += RendererdQuad(Vec2(start), Vec2(end))
     }
 
     data class RendererdCodePoint(val start: Vec2)
@@ -81,6 +81,6 @@ class DummyComponentConsumer : GUIVertexConsumer {
     }
 
     fun assert(vararg chars: RendererdQuad) {
-        assertEquals(this.chars, chars.toList())
+        assertEquals(this.quads, chars.toList())
     }
 }

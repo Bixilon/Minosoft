@@ -37,7 +37,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.bottom
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.vertical
@@ -117,7 +117,7 @@ open class TextElement(
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
             prefSize = info.size
         }
-        _prefSize = Vec2(prefSize)
+        _prefSize = prefSize.withBackgroundSize()
     }
 
     private fun updateText(text: ChatComponent) {
@@ -147,13 +147,9 @@ open class TextElement(
             start.x = offset.x + properties.alignment.getOffset(info.size.x, line.width)
             start.y = offset.y + (index * lineHeight) + (maxOf(index - 1, 0) * properties.lineSpacing)
 
-            end.x = start.x + line.width + background.size.vertical
-            end.y = start.y + lineHeight
+            end.x = start.x + line.width + background.size.horizontal
+            end.y = start.y + lineHeight + background.size.vertical
 
-            if (index == info.lines.size - 1) {
-                // last line
-                end.y += background.size.bottom
-            }
 
             addQuad(start, end, context.textureManager.whiteTexture, background.color, options)
         }

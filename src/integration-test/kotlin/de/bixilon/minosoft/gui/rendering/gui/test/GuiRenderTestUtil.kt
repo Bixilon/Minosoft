@@ -57,4 +57,8 @@ object GuiRenderTestUtil {
     fun Element.assetSize(size: Vec2) {
         assertEquals(this.size, size)
     }
+
+    fun Element.assetPrefSize(size: Vec2) {
+        assertEquals(this.prefSize, size)
+    }
 }

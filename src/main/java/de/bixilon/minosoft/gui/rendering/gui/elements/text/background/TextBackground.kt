@@ -16,10 +16,11 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text.background
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.marginOf
 
 data class TextBackground(
     val color: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
-    val size: Vec4 = Vec4(1.0f),
+    val size: Vec4 = marginOf(left = 1.0f, right = 1.0f),
 ) {
 
     companion object {
