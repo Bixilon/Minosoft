@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.textures.properties
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 data class AnimationFrame(
@@ -21,5 +21,5 @@ data class AnimationFrame(
     val time: Int,
 ) {
     val animationTime = time * ProtocolDefinition.TICK_TIME
-    lateinit var texture: AbstractTexture
+    lateinit var texture: Texture
 }

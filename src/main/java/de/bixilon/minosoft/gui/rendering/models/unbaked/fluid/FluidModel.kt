@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.models.unbaked.fluid
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
 interface FluidModel {
     val tint: TintProvider? get() = null
-    val still: AbstractTexture?
-    val flowing: AbstractTexture?
+    val still: Texture?
+    val flowing: Texture?
 
     fun load(context: RenderContext)
 }

@@ -18,14 +18,14 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 
 abstract class SimpleOverlay(
     protected val context: RenderContext,
 ) : Overlay {
-    protected abstract val texture: AbstractTexture
+    protected abstract val texture: Texture
     protected open val shader = context.shaderManager.genericTexture2dShader
     private var mesh = SimpleTextureMesh(context)
     protected var tintColor: RGBColor? = null

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import java.util.*
 import kotlin.math.abs
@@ -63,7 +63,7 @@ class WeightedBakedModel(
         return getModel(random)?.singleRender(position, offset, mesh, random, blockState, neighbours, light, tints) ?: false
     }
 
-    override fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture? {
+    override fun getParticleTexture(random: Random, blockPosition: Vec3i): Texture? {
         random.setSeed(blockPosition.positionHash)
         return getModel(random)?.getParticleTexture(random, blockPosition)
     }

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.SkinManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -30,7 +30,7 @@ abstract class TextureManager {
     abstract val staticTextures: StaticTextureArray
     abstract val dynamicTextures: DynamicTextureArray
 
-    lateinit var debugTexture: AbstractTexture
+    lateinit var debugTexture: Texture
         private set
     lateinit var whiteTexture: CodeTexturePart
         private set

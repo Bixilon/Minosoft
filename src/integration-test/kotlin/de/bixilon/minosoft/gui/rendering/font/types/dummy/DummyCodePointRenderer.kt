@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.font.types.dummy
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.RasterizedCodePointRenderer
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 
@@ -23,5 +22,5 @@ class DummyCodePointRenderer(
     override val uvEnd: Vec2 = Vec2(0.6f, 0.7f),
     override val width: Float = 5.0f,
 ) : RasterizedCodePointRenderer {
-    override val texture = DummyTexture(minosoft("test"))
+    override val texture = DummyTexture()
 }

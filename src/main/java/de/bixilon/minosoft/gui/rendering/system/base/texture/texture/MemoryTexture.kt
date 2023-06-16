@@ -15,9 +15,8 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
@@ -26,12 +25,11 @@ import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 
 class MemoryTexture(
-    override val resourceLocation: ResourceLocation,
     override val size: Vec2i,
     override var properties: ImageProperties = ImageProperties(),
     override var generateMipMaps: Boolean = true,
     generator: ((x: Int, y: Int) -> RGBColor)? = null,
-) : AbstractTexture {
+) : Texture {
     override lateinit var textureArrayUV: Vec2
     override lateinit var singlePixelSize: Vec2
     override var atlasSize: Int = -1
@@ -72,5 +70,5 @@ class MemoryTexture(
     override val state: TextureStates = TextureStates.LOADED
 
 
-    override fun load(assetsManager: AssetsManager) = Unit
+    override fun load(context: RenderContext) = Unit
 }

@@ -21,10 +21,10 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProp
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties.SHADOW_OFFSET
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 interface RasterizedCodePointRenderer : CodePointRenderer {
-    val texture: AbstractTexture
+    val texture: Texture
 
     val uvStart: Vec2
     val uvEnd: Vec2

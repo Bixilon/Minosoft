@@ -2,9 +2,8 @@ package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -15,9 +14,9 @@ import kotlin.reflect.full.companionObject
 
 @Test(groups = ["font"])
 class BitmapFontTypeTest {
-    private val LOAD = BitmapFontType::class.companionObject!!.java.getDeclaredMethod("load", AbstractTexture::class.java, Int::class.java, Int::class.java, Array<IntStream>::class.java).apply { isAccessible = true }
+    private val LOAD = BitmapFontType::class.companionObject!!.java.getDeclaredMethod("load", Texture::class.java, Int::class.java, Int::class.java, Array<IntStream>::class.java).apply { isAccessible = true }
 
-    private fun createTexture(start: IntArray, end: IntArray, width: Int, height: Int): AbstractTexture {
+    private fun createTexture(start: IntArray, end: IntArray, width: Int, height: Int): Texture {
         check(start.size == end.size)
         val rows = (start.size / 16) + 1
         val size = Vec2i(width * 16, rows * height)
@@ -46,7 +45,7 @@ class BitmapFontTypeTest {
         }
         assertEquals(buffer.position(), buffer.limit())
 
-        val texture = DummyTexture(minosoft("test"))
+        val texture = DummyTexture()
         texture.size = size
         texture.data = buffer
 

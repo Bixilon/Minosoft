@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.TextureParticle
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.FileTexture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : TextureParticle(connection, position, velocity, data) {
@@ -34,7 +36,7 @@ abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d
         }
         // calculate next texture
         val nextTextureResourceLocation = data.type.textures[age / (maxAge / totalTextures + 1)]
-        if (texture?.resourceLocation == nextTextureResourceLocation) {
+        if (texture?.nullCast<FileTexture>()?.resourceLocation == nextTextureResourceLocation) {
             return
         }
         texture = connection.rendering?.context?.textureManager?.staticTextures?.get(nextTextureResourceLocation)

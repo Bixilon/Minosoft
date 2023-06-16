@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.container.block.SectionOcclusion.Companion
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
@@ -33,7 +33,7 @@ import java.util.*
 class BakedBlockStateModel(
     val faces: Array<Array<BakedFace>>,
     val touchingFaceProperties: Array<Array<AbstractFaceProperties>?>,
-    val particleTexture: AbstractTexture?,
+    val particleTexture: Texture?,
 ) : BakedBlockModel {
 
     override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>? {
@@ -82,7 +82,7 @@ class BakedBlockStateModel(
         return rendered
     }
 
-    override fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture? {
+    override fun getParticleTexture(random: Random, blockPosition: Vec3i): Texture? {
         return particleTexture
     }
 }

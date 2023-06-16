@@ -28,8 +28,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.SpriteTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -46,19 +46,19 @@ import java.nio.ByteBuffer
 class OpenGLTextureArray(
     val context: RenderContext,
     private val loadTexturesAsync: Boolean = true,
-    override val textures: MutableMap<ResourceLocation, AbstractTexture> = mutableMapOf(),
+    override val textures: MutableMap<ResourceLocation, Texture> = mutableMapOf(),
 ) : StaticTextureArray {
     override val animator = SpriteAnimator(context.renderSystem)
     private var textureIds = IntArray(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
     override var state: TextureArrayStates = TextureArrayStates.DECLARED
         private set
 
-    private val texturesByResolution = Array<MutableList<AbstractTexture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
+    private val texturesByResolution = Array<MutableList<Texture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
     private val lastTextureId = IntArray(TEXTURE_RESOLUTION_ID_MAP.size)
 
 
     @Synchronized
-    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: () -> AbstractTexture): AbstractTexture {
+    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: () -> Texture): Texture {
         textures[resourceLocation]?.let { return it }
 
         // load .mcmeta
@@ -73,7 +73,7 @@ class OpenGLTextureArray(
         texture.properties = properties
         textures[resourceLocation] = texture
         if (loadTexturesAsync) {
-            DefaultThreadPool += ForcePooledRunnable { texture.load(context.connection.assetsManager) }
+            DefaultThreadPool += ForcePooledRunnable { texture.load(context) }
         }
 
         return texture
@@ -101,7 +101,7 @@ class OpenGLTextureArray(
                 preLoadLatch.dec()
                 continue
             }
-            DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGH) { texture.load(context.connection.assetsManager) }
+            DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGH) { texture.load(context) }
         }
         preLoadLatch.await()
 
@@ -157,7 +157,7 @@ class OpenGLTextureArray(
 
 
     @Synchronized
-    private fun loadSingleArray(resolution: Int, textures: List<AbstractTexture>): Int {
+    private fun loadSingleArray(resolution: Int, textures: List<Texture>): Int {
         val textureId = OpenGLTextureUtil.createTextureArray()
 
         for (level in 0 until OpenGLTextureUtil.MAX_MIPMAP_LEVELS) {

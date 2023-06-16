@@ -15,19 +15,19 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.PNGTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 
 interface StaticTextureArray : TextureArray {
-    val textures: MutableMap<ResourceLocation, AbstractTexture>
+    val textures: MutableMap<ResourceLocation, Texture>
     val animator: SpriteAnimator
     val state: TextureArrayStates
 
-    fun get(resourceLocation: ResourceLocation): AbstractTexture? {
+    fun get(resourceLocation: ResourceLocation): Texture? {
         return textures[resourceLocation]
     }
 
-    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, default: () -> AbstractTexture = { PNGTexture(resourceLocation, generateMipMaps = mipmaps) }): AbstractTexture
+    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, default: () -> Texture = { PNGTexture(resourceLocation, generateMipMaps = mipmaps) }): Texture
 
     fun preLoad(latch: AbstractLatch)
 }

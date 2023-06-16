@@ -1,8 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import org.testng.Assert
 import org.testng.Assert.assertEquals
@@ -13,14 +12,10 @@ import kotlin.reflect.full.companionObject
 
 @Test(groups = ["font"])
 class LegacyUnicodeFontTypeTest {
-    private val LOAD_PAGE = LegacyUnicodeFontType::class.companionObject!!.java.getDeclaredMethod("loadPage", Int::class.java, AbstractTexture::class.java, Array<LegacyUnicodeCodeRenderer>::class.java, InputStream::class.java)
+    private val LOAD_PAGE = LegacyUnicodeFontType::class.companionObject!!.java.getDeclaredMethod("loadPage", Int::class.java, Texture::class.java, Array<LegacyUnicodeCodeRenderer>::class.java, InputStream::class.java)
 
     init {
         LOAD_PAGE.isAccessible = true
-    }
-
-    private fun createTexture(): DummyTexture {
-        return DummyTexture(minosoft("test"))
     }
 
     private fun load(sizes: ByteArray): Array<LegacyUnicodeCodeRenderer?> {
@@ -28,7 +23,7 @@ class LegacyUnicodeFontTypeTest {
         System.arraycopy(sizes, 0, array, 0, sizes.size)
 
         val sizes = ByteArrayInputStream(array)
-        val texture = createTexture()
+        val texture = DummyTexture()
         val chars: Array<LegacyUnicodeCodeRenderer?> = arrayOfNulls(256)
 
 

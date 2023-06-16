@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.models.baked.MultipartBakedModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import java.util.*
 
@@ -33,7 +33,7 @@ class UnbakedMultipartModel(
     override fun bake(context: RenderContext): BakedBlockModel {
         val baked: Array<BakedBlockModel?> = arrayOfNulls(this.models.size)
         val sizes: Array<MutableList<AbstractFaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
-        var particleTexture: AbstractTexture? = null
+        var particleTexture: Texture? = null
 
         for ((index, model) in this.models.withIndex()) {
             val bakedModel = model.bake(context)

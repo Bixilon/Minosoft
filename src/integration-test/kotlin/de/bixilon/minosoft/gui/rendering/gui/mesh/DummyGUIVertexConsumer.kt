@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 open class DummyGUIVertexConsumer : GUIVertexConsumer {
@@ -35,7 +35,7 @@ open class DummyGUIVertexConsumer : GUIVertexConsumer {
         TODO("Not yet implemented")
     }
 
-    override fun addChar(start: Vec2, end: Vec2, texture: AbstractTexture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
         addChar(start, end, this.char++)
     }
 

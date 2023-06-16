@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.RasterizedCodePointRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class LegacyUnicodeCodeRenderer(
-    override val texture: AbstractTexture,
+    override val texture: Texture,
     override var uvStart: Vec2,
     override var uvEnd: Vec2,
     override val width: Float,

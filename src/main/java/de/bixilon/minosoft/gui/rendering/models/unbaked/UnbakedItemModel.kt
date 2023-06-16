@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.GUILights
 import de.bixilon.minosoft.gui.rendering.models.baked.item.BakedItemModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 
 class UnbakedItemModel(
@@ -30,7 +30,7 @@ class UnbakedItemModel(
     override fun bake(context: RenderContext): BakedItemModel {
         val textures = TextureUtil.resolveTextures(context.textureManager.staticTextures, textures)
 
-        var itemTexture: AbstractTexture? = null
+        var itemTexture: Texture? = null
         textures.iterator().let {
             if (it.hasNext()) {
                 itemTexture = it.next().value

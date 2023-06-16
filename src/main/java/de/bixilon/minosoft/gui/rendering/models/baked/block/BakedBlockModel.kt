@@ -18,12 +18,12 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 
 interface BakedBlockModel : BakedModel, SingleBlockRenderable {
 
     fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>?
 
-    fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture?
+    fun getParticleTexture(random: Random, blockPosition: Vec3i): Texture?
 }

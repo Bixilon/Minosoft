@@ -42,7 +42,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
@@ -74,7 +74,7 @@ class SignEditorScreen(
         forceSilentApply()
     }
 
-    private fun getTexture(): AbstractTexture? {
+    private fun getTexture(): Texture? {
         if (blockState?.block !is SignBlock) {
             return guiRenderer.atlasManager["minecraft:sign_front"]?.texture
         }

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
@@ -71,7 +71,7 @@ class BitmapFontType(
         private fun load(file: ResourceLocation, height: Int, ascent: Int, chars: List<String>, context: RenderContext): BitmapFontType? {
             if (chars.isEmpty() || height <= 0) return null
             val texture = context.textureManager.staticTextures.createTexture(file)
-            texture.load(context.connection.assetsManager) // force load it, we need to calculate the width of every char
+            texture.load(context) // force load it, we need to calculate the width of every char
 
             return load(texture, height, ascent, chars.codePoints())
         }
@@ -92,7 +92,7 @@ class BitmapFontType(
             }
         }
 
-        private fun createRenderer(texture: AbstractTexture, row: Int, column: Int, start: Int, end: Int, height: Int, ascent: Int): CodePointRenderer {
+        private fun createRenderer(texture: Texture, row: Int, column: Int, start: Int, end: Int, height: Int, ascent: Int): CodePointRenderer {
             if (end < start) return EmptyCodeRenderer()
 
             val uvStart = Vec2()
@@ -106,7 +106,7 @@ class BitmapFontType(
             return BitmapCodeRenderer(texture, uvStart, uvEnd, width, ascent)
         }
 
-        private fun load(texture: AbstractTexture, height: Int, ascent: Int, chars: Array<IntStream>): BitmapFontType? {
+        private fun load(texture: Texture, height: Int, ascent: Int, chars: Array<IntStream>): BitmapFontType? {
             val rows = chars.size
             val width = texture.size.x / ROW
 

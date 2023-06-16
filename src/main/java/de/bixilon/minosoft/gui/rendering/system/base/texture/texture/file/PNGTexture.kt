@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.logging.Log
@@ -32,7 +33,7 @@ import java.nio.ByteBuffer
 class PNGTexture(
     override val resourceLocation: ResourceLocation,
     override var generateMipMaps: Boolean = true,
-) : AbstractTexture {
+) : FileTexture {
     override lateinit var renderData: TextureRenderData
 
     override lateinit var textureArrayUV: Vec2

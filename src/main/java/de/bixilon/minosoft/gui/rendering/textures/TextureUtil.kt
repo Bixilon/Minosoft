@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -57,14 +57,14 @@ object TextureUtil {
         }!!
     }
 
-    fun resolveTextures(textureArray: StaticTextureArray, textures: Map<String, String>): Map<String, AbstractTexture> {
-        val resolvedTextures: MutableMap<String, AbstractTexture> = mutableMapOf()
+    fun resolveTextures(textureArray: StaticTextureArray, textures: Map<String, String>): Map<String, Texture> {
+        val resolvedTextures: MutableMap<String, Texture> = mutableMapOf()
 
-        fun resolveTexture(key: String, value: String): AbstractTexture {
+        fun resolveTexture(key: String, value: String): Texture {
             resolvedTextures[key]?.let { return it }
 
             val variable = value.removePrefix("#")
-            var texture: AbstractTexture? = null
+            var texture: Texture? = null
             if (variable.length != value.length) {
                 // resolve variable first
                 texture = resolveTexture(variable, textures[variable]!!)

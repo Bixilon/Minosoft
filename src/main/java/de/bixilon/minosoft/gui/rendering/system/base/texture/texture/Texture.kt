@@ -15,8 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -24,9 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import java.nio.ByteBuffer
 
-interface AbstractTexture : ShaderTexture {
-    val resourceLocation: ResourceLocation
-
+interface Texture : ShaderTexture {
     var textureArrayUV: Vec2
     var atlasSize: Int
     var singlePixelSize: Vec2
@@ -42,7 +39,7 @@ interface AbstractTexture : ShaderTexture {
     var generateMipMaps: Boolean
 
 
-    fun load(assetsManager: AssetsManager)
+    fun load(context: RenderContext)
 
     override val shaderId: Int
         get() = renderData.shaderTextureId

@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PumpkinOverlay(context: RenderContext) : FirstPersonOverlay(context) {
     private val config = context.connection.profiles.rendering.overlay
-    override val texture: AbstractTexture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
+    override val texture: Texture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     override val render: Boolean
         get() {
             if (!config.pumpkin) {

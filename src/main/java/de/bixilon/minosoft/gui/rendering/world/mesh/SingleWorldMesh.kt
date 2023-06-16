@@ -17,14 +17,14 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, WorldMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand), Comparable<SingleWorldMesh> {
     var distance: Float = 0.0f // Used for sorting
 
-    fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
+    fun addVertex(position: FloatArray, uv: Vec2, texture: Texture, tintColor: Int, light: Int) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.renderData.transformUV(uv).array
         data.add(position)
@@ -33,7 +33,7 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         data.add((tintColor or (light shl 24)).buffer())
     }
 
-    fun addVertex(x: Float, y: Float, z: Float, uv: Vec2, texture: AbstractTexture, shaderTextureId: Float, tintLight: Float) {
+    fun addVertex(x: Float, y: Float, z: Float, uv: Vec2, texture: Texture, shaderTextureId: Float, tintLight: Float) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.renderData.transformUV(uv.array)
         data.add(x)

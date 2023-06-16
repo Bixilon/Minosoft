@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -42,7 +42,7 @@ class WorldBorderRenderer(
     private val shader = renderSystem.createShader(minosoft("world/border")) { WorldBorderShader(it) }
     private var borderMesh: WorldBorderMesh? = null
     private val border = context.connection.world.border
-    private lateinit var texture: AbstractTexture
+    private lateinit var texture: Texture
     private var offsetReset = millis()
     override val skipAll: Boolean
         get() = border.getDistanceTo(context.connection.player.physics.position) > MAX_DISTANCE

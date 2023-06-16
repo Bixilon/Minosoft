@@ -25,11 +25,11 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.copy
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 @Deprecated("ToDo")
 class BakedItemModel(
-    val texture: AbstractTexture?,
+    val texture: Texture?,
 ) : BakedModel {
 
     private fun renderDurability(guiRenderer: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
@@ -33,7 +33,7 @@ class BakedFace(
     val shade: Float,
     val tintIndex: Int,
     val cullFace: Directions?,
-    val texture: AbstractTexture,
+    val texture: Texture,
     val touching: Boolean,
 ) : AbstractFaceProperties {
     override val transparency: TextureTransparencies

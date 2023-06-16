@@ -36,7 +36,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
@@ -137,7 +137,7 @@ class FluidCullSectionPreparer(
                     if (!skip[Directions.O_UP]) {
                         val velocity = fluid.getVelocity(blockState, position, chunk)
                         val still = velocity.x == 0.0 && velocity.z == 0.0
-                        val texture: AbstractTexture
+                        val texture: Texture
                         val minUV = Vec2.EMPTY
                         val maxUV = Vec2(if (still) 1.0f else 0.5f) // Minecraft just uses half of the sprite
 
@@ -254,7 +254,7 @@ class FluidCullSectionPreparer(
         }
     }
 
-    private inline fun addFluidVertices(meshToUse: SingleWorldMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: AbstractTexture, fluidTint: Int, fluidLight: Int) {
+    private inline fun addFluidVertices(meshToUse: SingleWorldMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: Texture, fluidTint: Int, fluidLight: Int) {
         for ((positionIndex, textureIndex) in meshToUse.order) {
             meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
         }

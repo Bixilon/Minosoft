@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
@@ -38,7 +37,7 @@ object GuiRenderTestUtil {
         context::renderSystem.forceSet(DummyRenderSystem(context))
         context::textureManager.forceSet(DummyTextureManager(context))
 
-        context.textureManager::whiteTexture.forceSet(CodeTexturePart(DummyTexture(minosoft("white")), size = Vec2i(16, 16)))
+        context.textureManager::whiteTexture.forceSet(CodeTexturePart(DummyTexture(), size = Vec2i(16, 16)))
 
         return context
     }

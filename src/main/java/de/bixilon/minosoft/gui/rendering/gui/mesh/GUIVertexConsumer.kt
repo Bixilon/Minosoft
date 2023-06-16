@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 interface GUIVertexConsumer {
     val order: Array<Pair<Int, Int>>
@@ -54,7 +54,7 @@ interface GUIVertexConsumer {
     }
 
 
-    fun addChar(start: Vec2, end: Vec2, texture: AbstractTexture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+    fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
         val topOffset = if (italic) (end.y - start.y) / FontProperties.CHAR_BASE_HEIGHT * FormattingProperties.ITALIC_OFFSET else 0.0f
 
         val positions = arrayOf(

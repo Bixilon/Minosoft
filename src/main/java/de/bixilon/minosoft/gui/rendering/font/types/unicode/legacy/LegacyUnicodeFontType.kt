@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.io.InputStream
@@ -86,7 +86,7 @@ class LegacyUnicodeFontType(
             loadPage(pageId, texture, chars, sizes)
         }
 
-        private fun loadPage(pageId: Int, texture: AbstractTexture, chars: Array<LegacyUnicodeCodeRenderer?>, sizes: InputStream) {
+        private fun loadPage(pageId: Int, texture: Texture, chars: Array<LegacyUnicodeCodeRenderer?>, sizes: InputStream) {
             for (y in 0 until CHAR_ROW) {
                 val yStart = (y * CHAR_SIZE) * PIXEL
                 val yEnd = ((y + 1) * CHAR_SIZE) * PIXEL

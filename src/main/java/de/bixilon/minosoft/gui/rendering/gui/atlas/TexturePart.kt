@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.gui.atlas
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 interface TexturePart {
-    val texture: AbstractTexture
+    val texture: Texture
     val uvStart: Vec2
     val uvEnd: Vec2
     val size: Vec2i

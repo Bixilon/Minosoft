@@ -18,11 +18,11 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.render.RenderParticle
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class TextureParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : RenderParticle(connection, position, velocity, data) {
-    abstract val texture: AbstractTexture?
+    abstract val texture: Texture?
 
 
     override fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time: Long) {

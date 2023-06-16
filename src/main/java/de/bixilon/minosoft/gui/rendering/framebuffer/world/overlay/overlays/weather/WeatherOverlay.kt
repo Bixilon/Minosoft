@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager.Companion.OVERLAY_Z
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
@@ -42,7 +42,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
             BiomePrecipitation.RAIN -> config.rain
             BiomePrecipitation.SNOW -> config.snow
         }
-    private val texture: AbstractTexture?
+    private val texture: Texture?
         get() = when (precipitation) {
             BiomePrecipitation.NONE -> null
             BiomePrecipitation.RAIN -> rain

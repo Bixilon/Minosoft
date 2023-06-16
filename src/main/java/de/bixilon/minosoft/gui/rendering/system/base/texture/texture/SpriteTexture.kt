@@ -15,16 +15,14 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.matthiasmann.twl.utils.PNGDecoder
 import java.nio.ByteBuffer
 
-class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
-    override val resourceLocation: ResourceLocation = original.resourceLocation
+class SpriteTexture(private val original: Texture) : Texture {
     override var textureArrayUV: Vec2 by original::textureArrayUV
     override var atlasSize: Int by original::atlasSize
     override var singlePixelSize: Vec2 by original::singlePixelSize
@@ -44,11 +42,11 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
 
 
     @Synchronized
-    override fun load(assetsManager: AssetsManager) {
+    override fun load(context: RenderContext) {
         if (state == TextureStates.LOADED) {
             return
         }
-        original.load(assetsManager)
+        original.load(context)
 
         val animationProperties = properties.animation!!
         size = Vec2i(animationProperties.width, animationProperties.height)
@@ -57,7 +55,7 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
         val bytesPerTexture = size.x * size.y * PNGDecoder.Format.RGBA.numComponents
 
         for (i in 0 until animationProperties.frameCount) {
-            val splitTexture = MemoryTexture(resourceLocation = ResourceLocation.of(resourceLocation.toString() + "_animated_$i"), size)
+            val splitTexture = MemoryTexture(size)
 
             splitTexture.data!!.let {
                 it.copyFrom(original.data!!, bytesPerTexture * i, 0, bytesPerTexture)

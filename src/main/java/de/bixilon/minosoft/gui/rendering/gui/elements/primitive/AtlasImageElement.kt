@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 open class AtlasImageElement(
@@ -32,7 +32,7 @@ open class AtlasImageElement(
     size: Vec2 = texturePart?.size?.let { Vec2(it) } ?: Vec2.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
-    var texture: AbstractTexture? = texturePart?.texture
+    var texture: Texture? = texturePart?.texture
         set(value) {
             field = value
             cacheUpToDate = false

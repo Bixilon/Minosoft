@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.fluids
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.FluidModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.WaterTintProvider
@@ -24,8 +24,8 @@ import de.bixilon.minosoft.gui.rendering.tint.WaterTintProvider
 class WaterFluidModel : FluidModel {
     override val tint: TintProvider = WaterTintProvider
 
-    override var still: AbstractTexture? = null
-    override var flowing: AbstractTexture? = null
+    override var still: Texture? = null
+    override var flowing: Texture? = null
 
     override fun load(context: RenderContext) {
         still = context.textureManager.staticTextures.createTexture(STILL)

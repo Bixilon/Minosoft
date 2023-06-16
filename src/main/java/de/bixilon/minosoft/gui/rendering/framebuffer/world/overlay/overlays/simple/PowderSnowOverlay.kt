@@ -17,13 +17,13 @@ import de.bixilon.kutil.avg.FloatAverage
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val config = context.connection.profiles.rendering.overlay
-    override val texture: AbstractTexture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
+    override val texture: Texture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     private val strength = FloatAverage(1L * 1000000000L, 0.0f)
     override var render: Boolean = false
         get() = config.powderSnow && field

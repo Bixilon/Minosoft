@@ -15,18 +15,15 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import java.nio.ByteBuffer
 
-class DummyTexture(
-    override val resourceLocation: ResourceLocation,
-) : AbstractTexture {
+class DummyTexture : Texture {
     override var textureArrayUV: Vec2 = Vec2(1.0f)
     override var atlasSize: Int = 1
     override var singlePixelSize: Vec2 = Vec2(1.0f)
@@ -41,5 +38,5 @@ class DummyTexture(
         set(value) {}
     override var generateMipMaps: Boolean = false
 
-    override fun load(assetsManager: AssetsManager) = Unit
+    override fun load(context: RenderContext) = Unit
 }
