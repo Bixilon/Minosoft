@@ -18,10 +18,10 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import de.bixilon.minosoft.gui.rendering.system.base.texture.SpriteAnimator
-import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
+import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class DummyStaticTextureArray(renderSystem: RenderSystem) : StaticTextureArray {
@@ -29,7 +29,7 @@ class DummyStaticTextureArray(renderSystem: RenderSystem) : StaticTextureArray {
     override val animator: SpriteAnimator = SpriteAnimator(renderSystem)
     override val state: TextureArrayStates = TextureArrayStates.DECLARED
 
-    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: () -> Texture): Texture {
+    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: (mipmaps: Boolean) -> Texture): Texture {
         return textures.getOrPut(resourceLocation) { DummyTexture() }
     }
 

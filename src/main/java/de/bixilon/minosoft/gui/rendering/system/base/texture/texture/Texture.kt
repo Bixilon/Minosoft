@@ -16,17 +16,17 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import java.nio.ByteBuffer
 
 interface Texture : ShaderTexture {
-    var textureArrayUV: Vec2
-    var atlasSize: Int
-    var singlePixelSize: Vec2
+    var array: TextureArrayProperties
     val state: TextureStates
     val size: Vec2i
     val transparency: TextureTransparencies
@@ -34,9 +34,8 @@ interface Texture : ShaderTexture {
 
     var renderData: TextureRenderData
 
-    var data: ByteBuffer?
-    var mipmapData: Array<ByteBuffer>?
-    var generateMipMaps: Boolean
+    var data: TextureData
+    val mipmaps: Boolean
 
 
     fun load(context: RenderContext)
@@ -44,14 +43,6 @@ interface Texture : ShaderTexture {
     override val shaderId: Int
         get() = renderData.shaderTextureId
 
-
-    fun generateMipMaps(data: ByteBuffer = this.data!!): Array<ByteBuffer> {
-        if (!generateMipMaps) {
-            return arrayOf(data)
-        }
-
-        return OpenGLTextureUtil.generateMipMaps(data, size)
-    }
 
     override fun transformUV(end: FloatArray?): FloatArray {
         return renderData.transformUV(end)
@@ -61,4 +52,7 @@ interface Texture : ShaderTexture {
         return renderData.transformUV(end)
     }
 
+    fun createData(mipmaps: Boolean = this.mipmaps, size: Vec2i, buffer: ByteBuffer): TextureData {
+        return if (mipmaps) MipmapTextureData(size, buffer) else TextureData(size, buffer)
+    }
 }

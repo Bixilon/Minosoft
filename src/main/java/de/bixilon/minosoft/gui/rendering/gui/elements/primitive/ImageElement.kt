@@ -73,7 +73,7 @@ open class ImageElement(
     }
 
 
-    constructor(guiRenderer: GUIRenderer, texture: Texture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2 = Vec2(texture.size), tint: RGBColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2(uvStart) * texture.singlePixelSize, Vec2(uvEnd) * texture.singlePixelSize, size, tint)
+    constructor(guiRenderer: GUIRenderer, texture: Texture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2 = Vec2(texture.size), tint: RGBColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2(uvStart) * texture.array.pixel, Vec2(uvEnd) * texture.array.pixel, size, tint)
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         consumer.addQuad(offset, offset + size, texture ?: return, uvStart, uvEnd, tint, options)

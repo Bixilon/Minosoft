@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.skeletal
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.AbstractVertexConsumer
 
 interface SkeletalVertexConsumer : AbstractVertexConsumer {

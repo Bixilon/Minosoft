@@ -11,8 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 
-interface ShaderIdentifiable {
-    val shaderId: Int
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
+
+interface TextureArray {
+    fun load(latch: AbstractLatch?)
+
+    fun activate()
+
+    @Deprecated("safe uniforms")
+    fun use(shader: NativeShader, name: String = ShaderUniforms.TEXTURES)
+    fun use(shader: Shader) = use(shader.native)
 }

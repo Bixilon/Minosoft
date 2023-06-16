@@ -11,60 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory
 
-import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
-import de.matthiasmann.twl.utils.PNGDecoder
-import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 
 class MemoryTexture(
     override val size: Vec2i,
     override var properties: ImageProperties = ImageProperties(),
-    override var generateMipMaps: Boolean = true,
-    generator: ((x: Int, y: Int) -> RGBColor)? = null,
+    override var mipmaps: Boolean = true,
+    buffer: ByteBuffer,
 ) : Texture {
-    override lateinit var textureArrayUV: Vec2
-    override lateinit var singlePixelSize: Vec2
-    override var atlasSize: Int = -1
+    override lateinit var array: TextureArrayProperties
     override lateinit var renderData: TextureRenderData
     override var transparency: TextureTransparencies = TextureTransparencies.OPAQUE
         private set
-    override var data: ByteBuffer? = null
-    override var mipmapData: Array<ByteBuffer>? = null
+    override var data: TextureData = createData(mipmaps, size, buffer)
 
     init {
-        val data = BufferUtils.createByteBuffer(size.x * size.y * PNGDecoder.Format.RGBA.numComponents)
-        this.data = data
-
-        generator?.let {
-            var index = 0
-            for (x in 0 until size.x) {
-                for (y in 0 until size.x) {
-                    val pixel = it(x, y)
-
-                    if (pixel.alpha == 0x00 && transparency != TextureTransparencies.TRANSLUCENT) {
-                        transparency = TextureTransparencies.TRANSPARENT
-                    } else if (pixel.alpha < 0xFF) {
-                        transparency = TextureTransparencies.TRANSLUCENT
-                    }
-
-                    data.put(index++, pixel.red.toByte())
-                    data.put(index++, pixel.green.toByte())
-                    data.put(index++, pixel.blue.toByte())
-                    data.put(index++, pixel.alpha.toByte())
-                }
-            }
-            this.mipmapData = generateMipMaps(data)
-        }
-
-        this.data = data
+        if (buffer.limit() != TextureGenerator.getBufferSize(size)) throw IllegalArgumentException("Invalid buffer size: ${buffer.limit()}")
     }
 
     override val state: TextureStates = TextureStates.LOADED

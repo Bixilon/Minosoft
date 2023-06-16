@@ -19,7 +19,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
@@ -90,15 +90,15 @@ class OpenGLDynamicTextureArray(
         texture.state = DynamicTextureState.LOADING
 
         fun load() {
-            val (size, bytes) = data()
+            val data = data()
 
-            if (bytes.limit() > resolution * resolution * 4 || bytes.limit() < resolution * 4) { // allow anything in 1..resolution for y size
+            if (data.buffer.limit() > resolution * resolution * 4 || data.buffer.limit() < resolution * 4) { // allow anything in 1..resolution for y size
                 Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Dynamic texture $texture, has not a size of ${resolution}x${resolution}!" }
             }
 
-            val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, size)
+            val mipmaps = OpenGLTextureUtil.generateMipMaps(data.buffer, data.size)
             texture.data = mipmaps
-            texture.size = size
+            texture.size = data.size
             if (force) {
                 load(texture, index, mipmaps) // thread check already done
             } else {

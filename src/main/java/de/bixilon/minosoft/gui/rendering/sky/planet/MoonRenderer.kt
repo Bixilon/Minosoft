@@ -34,8 +34,8 @@ class MoonRenderer(
 
     private fun updateUV(phases: MoonPhases) {
         val coordinates = PHASE_UV[phases.ordinal]
-        uvStart = Vec2(1.0f / 4 * coordinates.x, 1.0f / 2 * coordinates.y) * texture.textureArrayUV
-        uvEnd = Vec2(1.0f / 4 * (coordinates.x + 1), 1.0f / 2 * (coordinates.y + 1)) * texture.textureArrayUV
+        uvStart = Vec2(1.0f / 4 * coordinates.x, 1.0f / 2 * coordinates.y) * texture.array.uvEnd
+        uvEnd = Vec2(1.0f / 4 * (coordinates.x + 1), 1.0f / 2 * (coordinates.y + 1)) * texture.array.uvEnd
         meshInvalid = true
     }
 

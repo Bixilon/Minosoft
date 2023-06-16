@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureArray
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import java.io.ByteArrayInputStream
 import java.util.*

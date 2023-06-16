@@ -18,25 +18,21 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
-import java.nio.ByteBuffer
 
 class DummyTexture : Texture {
-    override var textureArrayUV: Vec2 = Vec2(1.0f)
-    override var atlasSize: Int = 1
-    override var singlePixelSize: Vec2 = Vec2(1.0f)
+    override var array = TextureArrayProperties(Vec2(), 1, Vec2())
     override var state: TextureStates = TextureStates.DECLARED
     override var size: Vec2i = Vec2i(1, 1)
     override val transparency: TextureTransparencies get() = TextureTransparencies.OPAQUE
     override var properties: ImageProperties = ImageProperties()
     override var renderData: TextureRenderData = DummyTextureRenderData
-    override var data: ByteBuffer? = null
-    override var mipmapData: Array<ByteBuffer>?
-        get() = TODO("Not yet implemented")
-        set(value) {}
-    override var generateMipMaps: Boolean = false
+    override lateinit var data: TextureData
+    override var mipmaps: Boolean = false
 
     override fun load(context: RenderContext) = Unit
 }

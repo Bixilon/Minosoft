@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.meta.SkeletalMeta
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.skeletal.model.resolution.SkeletalResolution
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 data class SkeletalModel(

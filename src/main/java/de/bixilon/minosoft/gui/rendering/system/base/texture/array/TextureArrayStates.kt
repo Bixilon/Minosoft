@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 
 enum class TextureArrayStates {
     DECLARED,

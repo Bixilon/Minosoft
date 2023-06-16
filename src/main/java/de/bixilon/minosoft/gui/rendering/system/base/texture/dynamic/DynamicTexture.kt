@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 

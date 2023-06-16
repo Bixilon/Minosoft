@@ -11,10 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 
@@ -27,7 +28,7 @@ interface StaticTextureArray : TextureArray {
         return textures[resourceLocation]
     }
 
-    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, default: () -> Texture = { PNGTexture(resourceLocation, generateMipMaps = mipmaps) }): Texture
+    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, default: (mipmaps: Boolean) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture
 
     fun preLoad(latch: AbstractLatch)
 }

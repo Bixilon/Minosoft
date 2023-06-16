@@ -105,7 +105,7 @@ class AtlasManager(private val context: RenderContext) {
 
     fun postInit() {
         for (element in elements.values) {
-            val singePixelSize = element.resolution?.let { Vec2(1.0f) / it / (Vec2(element.texture.atlasSize) / it) } ?: ATLAS_SINGLE_DEFAULT_PIXEL_SIZE
+            val singePixelSize = element.resolution?.let { Vec2(1.0f) / it / (Vec2(element.texture.array.size) / it) } ?: ATLAS_SINGLE_DEFAULT_PIXEL_SIZE
             element.uvStart = singePixelSize * element.start
             element.uvEnd = singePixelSize * element.end
         }

@@ -31,7 +31,7 @@ class BitmapCodeRenderer(
         get() = 1.0f
 
     fun updateArray() {
-        uvStart = uvStart * texture.textureArrayUV
-        uvEnd = uvEnd * texture.textureArrayUV
+        uvStart = uvStart * texture.array.uvEnd
+        uvEnd = uvEnd * texture.array.uvEnd
     }
 }
