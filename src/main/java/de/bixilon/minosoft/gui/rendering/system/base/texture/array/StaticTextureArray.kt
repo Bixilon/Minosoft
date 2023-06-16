@@ -20,15 +20,13 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 
 interface StaticTextureArray : TextureArray {
-    val textures: MutableMap<ResourceLocation, Texture>
     val animator: SpriteAnimator
     val state: TextureArrayStates
 
-    fun get(resourceLocation: ResourceLocation): Texture? {
-        return textures[resourceLocation]
-    }
+    fun get(resourceLocation: ResourceLocation): Texture?
 
-    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, default: (mipmaps: Boolean) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture
+    fun pushTexture(texture: Texture)
+    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, properties: Boolean = true, default: (mipmaps: Boolean) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture
 
     fun preLoad(latch: AbstractLatch)
 }

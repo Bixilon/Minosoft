@@ -44,32 +44,45 @@ import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import java.nio.ByteBuffer
+import java.util.concurrent.atomic.AtomicInteger
 
 class OpenGLTextureArray(
     val context: RenderContext,
     private val loadTexturesAsync: Boolean = true,
-    override val textures: MutableMap<ResourceLocation, Texture> = mutableMapOf(),
 ) : StaticTextureArray {
-    override val animator = SpriteAnimator(context.renderSystem)
+    private val namedTextures: MutableMap<ResourceLocation, Texture> = mutableMapOf()
+    private val otherTextures: MutableSet<Texture> = mutableSetOf()
     private var textureIds = IntArray(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
+    override val animator = SpriteAnimator(context.renderSystem)
     override var state: TextureArrayStates = TextureArrayStates.DECLARED
         private set
 
     private val texturesByResolution = Array<MutableList<Texture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
     private val lastTextureId = IntArray(TEXTURE_RESOLUTION_ID_MAP.size)
 
+    override fun get(resourceLocation: ResourceLocation): Texture? {
+        return this.namedTextures[resourceLocation]
+    }
 
     @Synchronized
-    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: (mipmaps: Boolean) -> Texture): Texture {
-        textures[resourceLocation]?.let { return it }
+    override fun pushTexture(texture: Texture) {
+        otherTextures += texture
+        if (texture.state != TextureStates.LOADED && loadTexturesAsync) {
+            DefaultThreadPool += ForcePooledRunnable { texture.load(context) }
+        }
+    }
+
+    @Synchronized
+    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, properties: Boolean, default: (mipmaps: Boolean) -> Texture): Texture {
+        namedTextures[resourceLocation]?.let { return it }
 
         // load .mcmeta
-        val properties = readImageProperties(resourceLocation) ?: ImageProperties() // TODO: That kills performance
+        val properties = if (properties) readImageProperties(resourceLocation) ?: ImageProperties.DEFAULT else ImageProperties.DEFAULT // TODO: That kills performance
 
-        val texture = if (properties.animation == null) default(mipmaps) else SpriteTexture(default(mipmaps))
+        val texture = if (properties.animation == null) default(mipmaps) else SpriteTexture(default(false))
 
         texture.properties = properties
-        textures[resourceLocation] = texture
+        namedTextures[resourceLocation] = texture
         if (loadTexturesAsync) {
             DefaultThreadPool += ForcePooledRunnable { texture.load(context) }
         }
@@ -88,23 +101,18 @@ class OpenGLTextureArray(
     }
 
 
-    @Synchronized
-    override fun preLoad(latch: AbstractLatch) {
-        if (state == TextureArrayStates.LOADED || state == TextureArrayStates.PRE_LOADED) {
-            return
-        }
-        val preLoadLatch = SimpleLatch(textures.size)
-        for (texture in textures.values) {
+    private fun preLoad(latch: AbstractLatch, textures: Collection<Texture>) {
+        for (texture in textures) {
             if (texture.state != TextureStates.DECLARED) {
-                preLoadLatch.dec()
+                latch.dec()
                 continue
             }
             DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGH) { texture.load(context) }
         }
-        preLoadLatch.await()
+    }
 
-        var lastAnimationIndex = 0
-        for (texture in textures.values) {
+    private fun preLoad(animationIndex: AtomicInteger, textures: Collection<Texture>) {
+        for (texture in textures) {
             check(texture.size.x <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.x}" }
             check(texture.size.y <= TEXTURE_MAX_RESOLUTION) { "Texture's height exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.y}" }
 
@@ -130,7 +138,7 @@ class OpenGLTextureArray(
             val array = TextureArrayProperties(uvEnd ?: Vec2(1.0f, 1.0f), arrayResolution, singlePixelSize)
 
             if (texture is SpriteTexture) {
-                val animationIndex = lastAnimationIndex++
+                val animationIndex = animationIndex.getAndIncrement()
                 val animation = TextureAnimation(texture)
                 animator.animations += animation
                 texture.renderData = OpenGLTextureData(-1, -1, uvEnd, animationIndex)
@@ -148,6 +156,21 @@ class OpenGLTextureArray(
                 texture.array = array
             }
         }
+    }
+
+    @Synchronized
+    override fun preLoad(latch: AbstractLatch) {
+        if (state == TextureArrayStates.LOADED || state == TextureArrayStates.PRE_LOADED) {
+            return
+        }
+        val preLoadLatch = SimpleLatch(namedTextures.size + otherTextures.size)
+        preLoad(preLoadLatch, namedTextures.values)
+        preLoad(preLoadLatch, otherTextures)
+        preLoadLatch.await()
+
+        val animationIndex = AtomicInteger()
+        preLoad(animationIndex, namedTextures.values)
+        preLoad(animationIndex, otherTextures)
 
         state = TextureArrayStates.PRE_LOADED
     }
@@ -186,7 +209,7 @@ class OpenGLTextureArray(
             textureIds[index] = loadSingleArray(TEXTURE_RESOLUTION_ID_MAP[index], textures)
             totalLayers += textures.size
         }
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loaded ${textures.size} textures containing ${animator.animations.size} animated ones, split into $totalLayers layers!" }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loaded ${namedTextures.size} textures containing ${animator.animations.size} animated ones, split into $totalLayers layers!" }
 
         animator.init()
         state = TextureArrayStates.LOADED

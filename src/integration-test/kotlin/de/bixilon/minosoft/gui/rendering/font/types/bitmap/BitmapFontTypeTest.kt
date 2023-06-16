@@ -3,6 +3,7 @@ package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import org.testng.Assert.*
@@ -47,7 +48,7 @@ class BitmapFontTypeTest {
 
         val texture = DummyTexture()
         texture.size = size
-        texture.data = buffer
+        texture.data = TextureData(size, buffer)
 
         return texture
     }

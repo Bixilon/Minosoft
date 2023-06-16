@@ -25,11 +25,17 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimat
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class DummyStaticTextureArray(renderSystem: RenderSystem) : StaticTextureArray {
-    override val textures: MutableMap<ResourceLocation, Texture> = synchronizedMapOf()
+    private val textures: MutableMap<ResourceLocation, Texture> = synchronizedMapOf()
     override val animator: SpriteAnimator = SpriteAnimator(renderSystem)
     override val state: TextureArrayStates = TextureArrayStates.DECLARED
 
-    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: (mipmaps: Boolean) -> Texture): Texture {
+    override fun get(resourceLocation: ResourceLocation): Texture? = textures[resourceLocation]
+
+    override fun pushTexture(texture: Texture) {
+        TODO("Not yet implemented")
+    }
+
+    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, properties: Boolean, default: (mipmaps: Boolean) -> Texture): Texture {
         return textures.getOrPut(resourceLocation) { DummyTexture() }
     }
 
