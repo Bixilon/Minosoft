@@ -23,6 +23,7 @@ enum class IndexAssetsType(val type: String) {
     LANGUAGE(FileAssetsTypes.GAME),
     SOUNDS(FileAssetsTypes.SOUNDS),
     TEXTURES(FileAssetsTypes.GAME),
+    OTHER(FileAssetsTypes.GAME),
     ;
 
     companion object : ValuesEnum<IndexAssetsType> {
@@ -31,12 +32,14 @@ enum class IndexAssetsType(val type: String) {
 
 
         fun determinate(identifier: ResourceLocation): IndexAssetsType? {
+            if (identifier.namespace != Namespaces.MINECRAFT) return null
+            val path = identifier.path
             return when {
-                identifier.path == "sounds.json" -> SOUNDS
-                identifier.namespace != Namespaces.MINECRAFT -> null
-                identifier.path.startsWith("sounds/") -> SOUNDS
-                identifier.path.startsWith("lang/") -> LANGUAGE
-                identifier.path.startsWith("textures/") -> TEXTURES
+                path == "sounds.json" -> SOUNDS
+                path.startsWith("sounds/") -> SOUNDS
+                path.startsWith("lang/") -> LANGUAGE
+                path.startsWith("textures/") -> TEXTURES
+                path.startsWith("font/") -> OTHER
                 else -> null
             }
         }
