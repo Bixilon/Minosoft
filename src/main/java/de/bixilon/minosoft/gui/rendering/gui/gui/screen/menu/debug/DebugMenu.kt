@@ -29,7 +29,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     private val connection = guiRenderer.connection
 
     init {
-        add(TextElement(guiRenderer, "Debug options", properties = TextRenderProperties(HorizontalAlignments.CENTER)))
+        add(TextElement(guiRenderer, "Debug options", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER)))
         add(SpacerElement(guiRenderer, Vec2(0, 10)))
         add(ButtonElement(guiRenderer, "Switch to next gamemode") { connection.util.typeChat("/gamemode ${connection.player.gamemode.next().name.lowercase()}") })
         add(ButtonElement(guiRenderer, "Hack to next gamemode") {

@@ -35,7 +35,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
-        add(TextElement(guiRenderer, RunConfiguration.APPLICATION_NAME, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 3.0f)))
+        add(TextElement(guiRenderer, RunConfiguration.APPLICATION_NAME, background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 3.0f)))
         add(SpacerElement(guiRenderer, Vec2(0, 20)))
         add(ButtonElement(guiRenderer, "menu.pause.back_to_game".i18n()) { guiRenderer.gui.pause(false) })
         add(ButtonElement(guiRenderer, "menu.pause.options.debug".i18n()) { guiRenderer.gui.push(DebugMenu) })
