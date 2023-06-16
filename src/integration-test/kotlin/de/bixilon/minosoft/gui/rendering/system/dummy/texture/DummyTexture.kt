@@ -31,7 +31,7 @@ class DummyTexture(
     override var atlasSize: Int = 1
     override var singlePixelSize: Vec2 = Vec2(1.0f)
     override var state: TextureStates = TextureStates.DECLARED
-    override val size: Vec2i = Vec2i(1, 1)
+    override var size: Vec2i = Vec2i(1, 1)
     override val transparency: TextureTransparencies get() = TextureTransparencies.OPAQUE
     override var properties: ImageProperties = ImageProperties()
     override var renderData: TextureRenderData = DummyTextureRenderData

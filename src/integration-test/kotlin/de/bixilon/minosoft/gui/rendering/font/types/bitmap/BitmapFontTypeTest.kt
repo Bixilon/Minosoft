@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -18,29 +19,35 @@ class BitmapFontTypeTest {
 
     private fun createTexture(start: IntArray, end: IntArray, width: Int, height: Int): AbstractTexture {
         check(start.size == end.size)
+        val rows = (start.size / 16) + 1
+        val size = Vec2i(width * 16, rows * height)
 
-        val buffer = ByteBuffer.allocate((start.size / 16 + 1) * 16 * width * height * 4)
+        val buffer = ByteBuffer.allocate(size.x * size.y * 4)
 
-        for (row in 0..start.size / 16) {
-            for (char in 0 until 16) {
-                val start = start.getOrNull((row * 16) + char) ?: 0
-                val end = end.getOrNull((row * 16) + char) ?: width
+        for (row in 0 until rows) {
+            for (height in 0 until height) {
+                for (char in 0 until 16) {
+                    val start = start.getOrNull((row * 16) + char) ?: 0
+                    val end = end.getOrNull((row * 16) + char) ?: width
 
-                for (pixel in 0 until width) {
-                    buffer.put(0xFF.toByte())
-                    buffer.put(0xFF.toByte())
-                    buffer.put(0xFF.toByte())
-
-                    if (pixel in start..end) {
+                    for (pixel in 0 until width) {
                         buffer.put(0xFF.toByte())
-                    } else {
-                        buffer.put(0x00.toByte())
+                        buffer.put(0xFF.toByte())
+                        buffer.put(0xFF.toByte())
+
+                        if (pixel in start..end) {
+                            buffer.put(0xFF.toByte())
+                        } else {
+                            buffer.put(0x00.toByte())
+                        }
                     }
                 }
             }
         }
+        assertEquals(buffer.position(), buffer.limit())
 
         val texture = DummyTexture(minosoft("test"))
+        texture.size = size
         texture.data = buffer
 
         return texture
@@ -56,10 +63,11 @@ class BitmapFontTypeTest {
     }
 
     fun `space size`() {
-        val font = load(intArrayOf(), intArrayOf(), chars = arrayOf(intArrayOf('a'.code)))
+        val font = load(intArrayOf(-1), intArrayOf(-1), chars = arrayOf(intArrayOf('a'.code)))
 
-        val a = font['a'.code]!! as EmptyCodeRenderer
-        assertEquals(a.width, 4)
+        val a = font['a'.code]!!
+        assertTrue(a is EmptyCodeRenderer)
+        assertEquals((a as EmptyCodeRenderer).width, 4)
     }
 
     fun `load basic with default options`() {
