@@ -24,14 +24,16 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
+import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import java.io.IOException
 import java.io.InputStream
 
 class LegacyUnicodeFontType(
-    val chars: Array<LegacyUnicodeCodeRenderer?>,
+    val chars: Array<UnicodeCodeRenderer?>,
 ) : PostInitFontType {
 
     override fun postInit(latch: AbstractLatch) {
@@ -40,7 +42,7 @@ class LegacyUnicodeFontType(
         }
     }
 
-    override fun get(codePoint: Int): LegacyUnicodeCodeRenderer? {
+    override fun get(codePoint: Int): UnicodeCodeRenderer? {
         return chars.getOrNull(codePoint)
     }
 
@@ -66,7 +68,7 @@ class LegacyUnicodeFontType(
         }
 
         fun load(template: String, sizes: InputStream, assets: AssetsManager, textures: StaticTextureArray): LegacyUnicodeFontType {
-            val chars: Array<LegacyUnicodeCodeRenderer?> = arrayOfNulls(1 shl Char.SIZE_BITS)
+            val chars: Array<UnicodeCodeRenderer?> = arrayOfNulls(1 shl Char.SIZE_BITS)
             for (pageId in 0 until UNICODE_PAGES) {
                 val textureFile = template.formatTemplate(pageId)
                 tryLoadPage(pageId, textureFile, chars, sizes, assets, textures)
@@ -75,7 +77,7 @@ class LegacyUnicodeFontType(
             return LegacyUnicodeFontType(chars)
         }
 
-        private fun tryLoadPage(pageId: Int, textureFile: ResourceLocation, chars: Array<LegacyUnicodeCodeRenderer?>, sizes: InputStream, assets: AssetsManager, textures: StaticTextureArray) {
+        private fun tryLoadPage(pageId: Int, textureFile: ResourceLocation, chars: Array<UnicodeCodeRenderer?>, sizes: InputStream, assets: AssetsManager, textures: StaticTextureArray) {
             if (textureFile !in assets) {
                 // file not present, skip entire page
                 sizes.skip(PAGE_SIZE.toLong())
@@ -86,14 +88,14 @@ class LegacyUnicodeFontType(
             loadPage(pageId, texture, chars, sizes)
         }
 
-        private fun loadPage(pageId: Int, texture: Texture, chars: Array<LegacyUnicodeCodeRenderer?>, sizes: InputStream) {
+        private fun loadPage(pageId: Int, texture: Texture, chars: Array<UnicodeCodeRenderer?>, sizes: InputStream) {
             for (y in 0 until CHAR_ROW) {
                 val yStart = (y * CHAR_SIZE) * PIXEL
                 val yEnd = ((y + 1) * CHAR_SIZE) * PIXEL
 
                 for (x in 0 until CHAR_ROW) {
                     val widthByte = sizes.read()
-                    if (widthByte < 0) throw IllegalStateException("Unexpected end of sizes stream (pageId=$pageId, x=$x, y=$y)!")
+                    if (widthByte < 0) throw IOException("Unexpected end of sizes stream (pageId=$pageId, x=$x, y=$y)!")
 
                     val xStart = maxOf(0, ((widthByte shr 4) and 0x0F))
                     val width = (widthByte and 0x0F) + 1 - xStart
@@ -113,7 +115,7 @@ class LegacyUnicodeFontType(
 
                     val scaledWidth = width * WIDTH_SCALE
 
-                    chars[(pageId shl 8) or (y shl 4) or x] = LegacyUnicodeCodeRenderer(texture, uvStart, uvEnd, scaledWidth)
+                    chars[(pageId shl 8) or (y shl 4) or x] = UnicodeCodeRenderer(texture, uvStart, uvEnd, scaledWidth)
                 }
             }
         }

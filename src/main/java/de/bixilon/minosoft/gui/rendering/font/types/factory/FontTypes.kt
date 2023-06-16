@@ -18,13 +18,13 @@ import de.bixilon.minosoft.gui.rendering.font.types.ReferenceFontType
 import de.bixilon.minosoft.gui.rendering.font.types.bitmap.BitmapFontType
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyFontType
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy.LegacyUnicodeFontType
+import de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex.UnihexFontType
 
 object FontTypes : DefaultFactory<FontTypeFactory<*>>(
     BitmapFontType,
     LegacyUnicodeFontType,
     EmptyFontType,
     ReferenceFontType,
-    // TODO
-    //  - ttf
-    // - unihex
+    UnihexFontType,
+    // TODO: ttf (true type font)
 )
