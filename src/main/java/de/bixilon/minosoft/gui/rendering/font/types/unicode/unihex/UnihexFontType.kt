@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import java.io.IOException
 import java.io.InputStream
 import java.util.zip.ZipInputStream
 
@@ -62,7 +61,7 @@ class UnihexFontType(
             return load(context, chars, sizes)
         }
 
-        fun load(context: RenderContext, chars: Int2ObjectOpenHashMap<ByteArray>, sizes: List<SizeOverride>): UnihexFontType? {
+        private fun load(context: RenderContext, chars: Int2ObjectOpenHashMap<ByteArray>, sizes: List<SizeOverride>): UnihexFontType? {
             TODO()
         }
 
@@ -79,7 +78,7 @@ class UnihexFontType(
             var value = 0
             while (true) {
                 val byte = this.read()
-                if (byte < 0) throw IOException("Unexpected end of stream!")
+                if (byte < 0 || byte == '\n'.code) return -1
                 if (byte == ':'.code) break // separator
                 val hex = byte.fromHex()
 
@@ -115,7 +114,9 @@ class UnihexFontType(
         private fun InputStream.readUnihex(chars: Int2ObjectOpenHashMap<ByteArray>) {
             val buffer = ByteArray(64)
             while (this.available() > 0) {
-                chars[readHexInt()] = this.readUnihexData(buffer)
+                val codePoint = readHexInt()
+                if (codePoint == -1) continue
+                chars[codePoint] = this.readUnihexData(buffer)
             }
         }
     }
