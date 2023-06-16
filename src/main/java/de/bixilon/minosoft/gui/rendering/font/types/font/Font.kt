@@ -71,6 +71,15 @@ class Font(
     }
 
 
+    fun trim(): FontType? {
+        return when (providers.size) {
+            0 -> null
+            1 -> providers.first()
+            else -> this
+        }
+    }
+
+
     companion object {
         private const val CACHE_START = ' '.code // all control chars (like ESC, CR, ...) are not used anyway (in a normal environment)
         private const val CACHE_SIZE = (1 shl 7) - CACHE_START  // ascii

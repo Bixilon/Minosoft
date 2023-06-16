@@ -25,6 +25,6 @@ object ReferenceFontType : FontTypeFactory<FontType> {
 
     override fun build(context: RenderContext, data: JsonObject): FontType? {
         val index = data["id"]?.toResourceLocation()?.prefix("font/")?.suffix(".json") ?: throw IllegalArgumentException("id missing!")
-        return FontLoader.load(context, index, null)
+        return FontLoader.load(context, index, null)?.trim()
     }
 }

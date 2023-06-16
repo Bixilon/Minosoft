@@ -49,7 +49,7 @@ class FontManager(
                 Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Font ${DefaultFontIndices.DEFAULT} seems to be empty!" }
             }
 
-            return FontManager(font ?: EmptyFont)
+            return FontManager(font?.trim() ?: EmptyFont)
         }
     }
 }
