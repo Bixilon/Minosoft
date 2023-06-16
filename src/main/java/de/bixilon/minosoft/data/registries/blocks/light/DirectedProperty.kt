@@ -84,7 +84,7 @@ class DirectedProperty(
                         if ((side == Directions.DOWN && aabb.min.y != 0.0) || (side == Directions.UP && aabb.max.y != 1.0)) {
                             continue
                         }
-                        val side = SideQuad(aabb.min.x, aabb.min.z, aabb.max.x, aabb.max.z)
+                        val side = SideQuad(aabb.min.x.toFloat(), aabb.min.z.toFloat(), aabb.max.x.toFloat(), aabb.max.z.toFloat())
                         if (side.surfaceArea() > 0.0f) {
                             sides += side
                         }
@@ -94,7 +94,7 @@ class DirectedProperty(
                         if ((side == Directions.WEST && aabb.min.x != 0.0) || (side == Directions.EAST && aabb.max.x != 1.0)) {
                             continue
                         }
-                        val side = SideQuad(aabb.min.y, aabb.min.z, aabb.max.y, aabb.max.z)
+                        val side = SideQuad(aabb.min.y.toFloat(), aabb.min.z.toFloat(), aabb.max.y.toFloat(), aabb.max.z.toFloat())
                         if (side.surfaceArea() > 0.0f) {
                             sides += side
                         }
@@ -104,7 +104,7 @@ class DirectedProperty(
                         if ((side == Directions.NORTH && aabb.min.z != 0.0) || (side == Directions.SOUTH && aabb.max.z != 1.0)) {
                             continue
                         }
-                        val side = SideQuad(aabb.min.x, aabb.min.y, aabb.max.x, aabb.max.y)
+                        val side = SideQuad(aabb.min.x.toFloat(), aabb.min.y.toFloat(), aabb.max.x.toFloat(), aabb.max.y.toFloat())
                         if (side.surfaceArea() > 0.0f) {
                             sides += side
                         }

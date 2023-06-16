@@ -18,26 +18,27 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import java.lang.reflect.Field
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.javaField
 
 abstract class RegistryItem : Identified {
     open val injectable: Boolean get() = true
-    private val injects: MutableMap<KProperty<RegistryItem?>, List<Any>> = if (injectable) mutableMapOf() else unsafeNull()
+    private val injects: MutableMap<Field, List<Any>> = if (injectable) hashMapOf() else unsafeNull()
 
     fun <T : RegistryItem> KProperty<T?>.inject(vararg keys: Any?): T {
-        if (!injectable) {
-            throw IllegalStateException("Not injectable")
-        }
-        val keyList: MutableList<Any> = mutableListOf()
+        return this.javaField!!.inject(*keys)
+    }
+
+    fun <T : RegistryItem> Field.inject(vararg keys: Any?): T {
+        if (!injectable) throw IllegalStateException("Not injectable")
+        val list: MutableList<Any> = ArrayList(keys.size)
         for (key in keys) {
-            key ?: continue
-            keyList += key
+            if (key == null) continue
+            list += key
         }
-        if (keyList.isEmpty()) {
-            return unsafeNull()
-        }
-        injects[this] = keyList
+        if (list.isEmpty()) return unsafeNull()
+        injects[this] = list
         return unsafeNull()
     }
 
@@ -46,18 +47,17 @@ abstract class RegistryItem : Identified {
             return
         }
         for ((field, keys) in injects) {
-            val javaField = field.javaField ?: continue
             var value: Any? = null
             for (key in keys) {
-                value = registries[javaField.type as Class<out RegistryItem>]?.get(key) ?: continue
+                value = registries[field.type as Class<out RegistryItem>]?.get(key) ?: continue
                 break
             }
             value ?: continue
 
-            javaField.forceSet(this, value)
+            field.forceSet(this, value)
         }
 
-        this::injects.javaField?.forceSet(this, null)
+        INJECTS_FIELD.set(this, null)
     }
 
     open fun postInit(registries: Registries) {}
@@ -76,5 +76,9 @@ abstract class RegistryItem : Identified {
         if (other is Identified) return this.identifier == other.identifier
 
         return false
+    }
+
+    companion object {
+        private val INJECTS_FIELD = RegistryItem::injects.javaField!!.apply { isAccessible = true }
     }
 }

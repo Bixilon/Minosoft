@@ -27,17 +27,18 @@ open class PropertyBlockState(
     val properties: Map<BlockProperties, Any>,
     luminance: Int,
 ) : BlockState(block, luminance) {
+    private val hash = Objects.hashCode(block, properties)
 
     constructor(block: Block, settings: BlockStateSettings) : this(block, settings.properties ?: emptyMap(), settings.luminance)
 
 
     override fun hashCode(): Int {
-        return Objects.hashCode(block, properties)
+        return hash
     }
 
     override fun equals(other: Any?): Boolean {
         if (other is ResourceLocation) return other == block.identifier
-        if (other is PropertyBlockState) return other.block == block && other.luminance == luminance && other.properties == this.properties
+        if (other is PropertyBlockState) return other.hash == hash && other.block == block && other.luminance == luminance && other.properties == this.properties
 
         return false
     }

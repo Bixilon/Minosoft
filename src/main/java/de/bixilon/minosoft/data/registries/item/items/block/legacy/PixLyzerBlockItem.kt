@@ -24,7 +24,9 @@ import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.item.items.block.PlaceableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import kotlin.reflect.jvm.javaField
 
 open class PixLyzerBlockItem(
     resourceLocation: ResourceLocation,
@@ -34,7 +36,7 @@ open class PixLyzerBlockItem(
     val block: Block = unsafeNull()
 
     init {
-        this::block.inject(data["block"])
+        BLOCK_FIELD.inject<RegistryItem>(data["block"])
     }
 
     override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack): BlockState {
@@ -43,6 +45,7 @@ open class PixLyzerBlockItem(
 
     companion object : PixLyzerItemFactory<PixLyzerBlockItem>, MultiClassFactory<PixLyzerBlockItem> {
         override val ALIASES = setOf("BlockItem", "AliasedBlockItem")
+        private val BLOCK_FIELD = PixLyzerBlockItem::block.javaField!!
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PixLyzerBlockItem {
             return PixLyzerBlockItem(resourceLocation, registries, data)

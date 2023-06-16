@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
@@ -32,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
+import kotlin.reflect.jvm.javaField
 
 abstract class Block(
     override val identifier: ResourceLocation,
@@ -77,8 +77,14 @@ abstract class Block(
 
 
     fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperties, Array<Any>>) {
-        this::properties.forceSet(properties)
-        this::states.forceSet(states)
-        this::defaultState.forceSet(default)
+        PROPERTIES.set(this, properties)
+        STATES.set(this, states)
+        DEFAULT_STATE.set(this, default)
+    }
+
+    private companion object {
+        val PROPERTIES = Block::properties.javaField!!.apply { isAccessible = true }
+        val STATES = Block::states.javaField!!.apply { isAccessible = true }
+        val DEFAULT_STATE = Block::defaultState.javaField!!.apply { isAccessible = true }
     }
 }
