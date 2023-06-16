@@ -65,6 +65,7 @@ class EmptyFontType(
             }
 
             if (spaces.isEmpty()) return null
+            spaces.trim()
 
             return spaces
         }

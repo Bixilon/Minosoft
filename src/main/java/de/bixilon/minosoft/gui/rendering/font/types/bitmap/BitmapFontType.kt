@@ -19,8 +19,10 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
@@ -78,7 +80,8 @@ class BitmapFontType(
 
         private fun ByteBuffer.scanLine(y: Int, width: Int, start: IntArray, end: IntArray) {
             for (index in 0 until (width * ROW)) {
-                val alpha = this[(((ROW * width) * y) + index) * 4 + 3].toInt()
+                val pixelIndex = ((ROW * width * y) + index)
+                val alpha = this[pixelIndex * 4 + 3].toInt() // index * rgba + a
                 if (alpha == 0) {
                     // transparent
                     continue
@@ -92,18 +95,24 @@ class BitmapFontType(
             }
         }
 
-        private fun createRenderer(texture: Texture, row: Int, column: Int, start: Int, end: Int, height: Int, ascent: Int): CodePointRenderer {
+        private fun createRenderer(texture: Texture, offset: Vec2, pixel: Vec2, start: Int, end: Int, height: Int, ascent: Int): CodePointRenderer {
             if (end < start) return EmptyCodeRenderer()
 
-            val uvStart = Vec2()
-            val uvEnd = Vec2(0.1f)
+            val width = end - start + 1
 
-            val width = 1.0f
+            val uvStart = Vec2(offset)
+            uvStart.x += start * pixel.x
+            if (uvStart.x > RenderConstants.UV_ADD) {
+                uvStart.x -= RenderConstants.UV_ADD // this workarounds some precision loss
+            }
 
+            val uvEnd = Vec2(offset)
+            uvEnd.x += width * pixel.x
+            uvEnd.y += height * pixel.y
 
-            // TODO
+            val scaledWidth = width / (height.toFloat() / FontProperties.CHAR_BASE_HEIGHT)
 
-            return BitmapCodeRenderer(texture, uvStart, uvEnd, width, ascent)
+            return BitmapCodeRenderer(texture, uvStart, uvEnd, scaledWidth, ascent)
         }
 
         private fun load(texture: Texture, height: Int, ascent: Int, chars: Array<IntStream>): BitmapFontType? {
@@ -115,26 +124,31 @@ class BitmapFontType(
 
             val renderer = Int2ObjectOpenHashMap<CodePointRenderer>()
 
+            val pixel = Vec2(1.0f / texture.size.x, 1.0f / texture.size.y)
+            val offset = Vec2()
             for (row in 0 until rows) {
                 val iterator = chars[row].iterator()
 
-                for (pixel in 0 until height) {
-                    texture.data!!.scanLine(row + pixel, width, start, end)
+                for (y in 0 until height) {
+                    texture.data!!.scanLine((row * height) + y, width, start, end)
                 }
 
                 var column = 0
                 while (iterator.hasNext()) {
                     val codePoint = iterator.nextInt()
-                    renderer[codePoint] = createRenderer(texture, row, column, start[column], end[column], height, ascent)
+                    renderer[codePoint] = createRenderer(texture, offset, pixel, start[column], end[column], height, ascent)
                     column++
+                    offset.x += pixel.x * width
                 }
 
                 start.fill(width); end.fill(0) // fill with maximum values again
+                offset.x = 0.0f; offset.y += height * pixel.y
             }
 
             texture.data!!.rewind()
 
             if (renderer.isEmpty()) return null
+            renderer.trim()
             return BitmapFontType(renderer)
         }
     }
