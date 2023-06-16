@@ -9,7 +9,7 @@ Versions before the minecraft netty rewrite (1.7; 13w41b) are currently not supp
 
 | Name       | State | Comment                                                                                      |
 |------------|-------|----------------------------------------------------------------------------------------------|
-| 1.20.x     | meh   | font rendering broken [#111](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/111)        |
+| 1.20.x     | ✅     | Works great [#111](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/111)                  |
 | 1.19.x     | ✅     | signature not 100% implemented [#83](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/83) |
 | 1.18.x     | ✅     | best version supported                                                                       |
 | 1.17.x     | ✅     |                                                                                              |
