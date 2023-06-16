@@ -14,28 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.font.types
 
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.font.loader.FontLoader
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
-import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypes
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
 object ReferenceFontType : FontTypeFactory<FontType> {
     override val identifier = minecraft("reference")
 
     override fun build(context: RenderContext, data: JsonObject): FontType? {
-        val id = data["id"]?.toResourceLocation()?.prefix("font/") ?: throw IllegalArgumentException("id missing!")
-        val factory = FontTypes[id]
-        if (factory == null) {
-            Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Unknown font type $id" }
-            return null
-        }
-
-        return factory.build(context, context.connection.assetsManager[id].readJsonObject())
+        val index = data["id"]?.toResourceLocation()?.prefix("font/")?.suffix(".json") ?: throw IllegalArgumentException("id missing!")
+        return FontLoader.load(context, index, null)
     }
-
 }

@@ -44,13 +44,14 @@ open class ResourceLocation(
         //    throw IllegalArgumentException("Path '$path' is not allowed!")
     }
 
-    /**
-     * Adds a prefix to the path of this resource location.
-     *
-     * @param prefix The prefix to add
-     */
     fun prefix(prefix: String): ResourceLocation {
+        if (path.startsWith(prefix)) return this
         return ResourceLocation(namespace, prefix + path)
+    }
+
+    fun suffix(suffix: String): ResourceLocation {
+        if (path.endsWith(suffix)) return this
+        return ResourceLocation(namespace, path + suffix)
     }
 
     /**

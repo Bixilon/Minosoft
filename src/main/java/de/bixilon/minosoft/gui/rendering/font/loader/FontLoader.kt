@@ -31,7 +31,7 @@ import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 object FontLoader {
 
 
-    fun load(context: RenderContext, fontIndex: ResourceLocation, latch: AbstractLatch): Font? {
+    fun load(context: RenderContext, fontIndex: ResourceLocation, latch: AbstractLatch?): Font? {
         val fontIndex = context.connection.assetsManager.getOrNull(fontIndex)?.readJsonObject() ?: return null
 
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
