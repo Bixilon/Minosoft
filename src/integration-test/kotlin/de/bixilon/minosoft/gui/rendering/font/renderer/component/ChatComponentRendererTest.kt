@@ -382,5 +382,54 @@ class ChatComponentRendererTest {
         )
     }
 
-    // TODO: shadow, underline, strikethrough, formatting (just basic, that is code point renderer's job)
+
+    fun `single strikethrough rendering`() {
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("bcd").strikethrough(), fontManager = FontManager(consumer.Font()), consumer = consumer)
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 14.0f), Vec2(15.0f, 15.0f)),
+        )
+    }
+
+    fun `multiline strikethrough rendering`() {
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("bcd\ncde").strikethrough(), fontManager = FontManager(consumer.Font()), consumer = consumer)
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 14.0f), Vec2(15.0f, 15.0f)),
+            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 25.0f), Vec2(16.5f, 26.0f)),
+        )
+    }
+
+    fun `single underline rendering`() {
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("bcd").underline(), fontManager = FontManager(consumer.Font()), consumer = consumer)
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 19.0f), Vec2(15.0f, 20.0f)),
+        )
+    }
+
+    fun `multiline underline rendering`() {
+        val consumer = DummyComponentConsumer()
+        render(TextComponent("bcd\ncde").underline(), fontManager = FontManager(consumer.Font()), consumer = consumer)
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 19.0f), Vec2(15.0f, 20.0f)),
+            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 30.0f), Vec2(16.5f, 31.0f)),
+        )
+    }
+
+
+    fun `mixed text strikethrough rendering`() {
+        val consumer = DummyComponentConsumer()
+        render(BaseComponent(TextComponent("bcd").strikethrough(), TextComponent("bcd")), fontManager = FontManager(consumer.Font()), consumer = consumer)
+
+        consumer.assert(
+            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 14.0f), Vec2(15.0f, 15.0f)),
+        )
+    }
+
+    // TODO: shadow, formatting (just basic, that is code point renderer's job)
 }

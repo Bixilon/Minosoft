@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.component
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.LineRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -51,13 +53,39 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return false
     }
 
-    private fun renderStrikethrough() {
-        TODO()
+    private fun renderStrikethrough(offset: Vec2, width: Float, italic: Boolean, color: RGBColor, properties: TextRenderProperties, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val y = offset.y + properties.charSpacing.top + properties.charBaseHeight / 2.0f - 1.0f
+
+        // TODO: italic
+        consumer.addQuad(Vec2(offset.x, y), Vec2(offset.x + width, y + 1.0f), color, options)
     }
 
-    private fun renderUnderline() {
-        TODO()
+    private fun renderUnderline(offset: Vec2, width: Float, italic: Boolean, color: RGBColor, properties: TextRenderProperties, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val y = offset.y + properties.charSpacing.top + properties.charBaseHeight
+
+        // TODO: italic
+        consumer.addQuad(Vec2(offset.x, y), Vec2(offset.x + width, y + 1.0f), color, options)
     }
+
+    private fun renderFormatting(offset: Vec2, text: TextComponent, width: Float, color: RGBColor, properties: TextRenderProperties, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        if (width <= 0.0f) return
+        val italic = FormattingCodes.ITALIC in text.formatting
+        if (FormattingCodes.UNDERLINED in text.formatting) {
+            renderUnderline(offset, width, italic, color, properties, consumer, options)
+        }
+        if (FormattingCodes.STRIKETHROUGH in text.formatting) {
+            renderStrikethrough(offset, width, italic, color, properties, consumer, options)
+        }
+    }
+
+
+    private fun LineRenderInfo.pushAndRender(offset: Vec2, text: TextComponent, line: StringBuilder, width: Float, color: RGBColor, properties: TextRenderProperties, consumer: GUIVertexConsumer?, options: GUIVertexOptions?) {
+        push(text, line)
+        if (consumer != null) {
+            renderFormatting(offset, text, width, color, properties, consumer, options)
+        }
+    }
+
 
     override fun render(offset: TextOffset, fontManager: FontManager, properties: TextRenderProperties, info: TextRenderInfo, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, text: TextComponent): Boolean {
         if (text.message.isEmpty()) return false
@@ -75,6 +103,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         val line = StringBuilder()
         var filled = false
+        val lineStart = Vec2(offset.offset)
+
 
         val stream = text.message.codePoints().iterator()
         while (stream.hasNext()) {
@@ -82,10 +112,12 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             if (codePoint == '\n'.code) {
                 if (!properties.allowNewLine) continue
                 val lineIndex = info.lineIndex
+                val width = offset.offset.x - lineStart.x
                 filled = renderNewline(properties, offset, info, consumer != null)
                 if (line.isNotEmpty()) {
-                    info.lines[lineIndex].push(text, line)
+                    info.lines[lineIndex].pushAndRender(lineStart, text, line, width, color, properties, consumer, options)
                 }
+                lineStart(offset.offset)
                 skipWhitespaces = true
                 if (filled) break else continue
             }
@@ -104,22 +136,31 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             val lineIndex = info.lineIndex
 
+            val width = offset.offset.x - lineStart.x
+
             val lineInfo = renderer.render(offset, color, properties, info, formatting, codePoint, consumer, options)
+            if (lineIndex != info.lineIndex && info.lines.isNotEmpty() && consumer != null) {
+                renderFormatting(lineStart, text, width, color, properties, consumer, options)
+                lineStart(offset.offset)
+            }
             if (lineInfo == CodePointAddResult.BREAK) {
                 filled = true
                 break
             }
-            if (consumer != null) continue // already know that information
 
             if (lineIndex != info.lineIndex) {
                 // new line started
-                info.lines[lineIndex].push(text, line) // previous line
+                if (consumer == null) {
+                    info.lines[lineIndex].push(text, line) // previous line
+                } else {
+                    line.clear()
+                }
             }
-
             line.appendCodePoint(codePoint)
         }
+
         if (line.isNotEmpty()) {
-            info.lines[info.lineIndex].push(text, line)
+            info.lines[info.lineIndex].pushAndRender(lineStart, text, line, offset.offset.x - lineStart.x, color, properties, consumer, options)
         }
 
         return filled

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
-import de.bixilon.minosoft.gui.rendering.gui.atlas.TexturePart
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -35,7 +34,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
     override fun addCache(cache: GUIMeshCache) = Broken()
     override fun ensureSize(size: Int) = Unit
 
-    override fun addQuad(start: Vec2, end: Vec2, texture: TexturePart, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addQuad(start: Vec2, end: Vec2, texture: ShaderIdentifiable?, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         quads += RendererdQuad(Vec2(start), Vec2(end))
     }
 
