@@ -5,6 +5,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.buffer.ByteBufferUtil.toByteArray
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex.UnihexFontType.Companion.fromHex
+import de.bixilon.minosoft.test.IT.OBJENESIS
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -78,12 +79,18 @@ class UnihexFontTypeTest {
     fun `basic rasterizing`() {
         val pixels = byteArrayOf(0x00, 0x00, 0x00, 0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0E, 0x00, 0x0E)
 
+        val rasterizer = OBJENESIS.newInstance(UnifontRasterizer::class.java)
+
         val texture = UnifontTexture(1)
         assertEquals(texture.size, Vec2i(16, 16))
         val remaining = textureRemaining.get(texture) as IntArray
         assertEquals(remaining, intArrayOf(16))
 
-        val code = texture.add(8, pixels)!! as UnicodeCodeRenderer
+        val textures = ArrayList<UnifontTexture>()
+        textures += texture
+        rasterizer::class.java.getDeclaredField("textures").apply { isAccessible = true }.set(rasterizer, textures)
+
+        val code = rasterizer.add(pixels) as UnicodeCodeRenderer
 
         assertEquals(code.width, 1.5f)
         assertEquals(code.uvStart, Vec2(0.0f, 0.0f))

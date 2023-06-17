@@ -19,7 +19,6 @@ import de.bixilon.kutil.bit.BitByte.isBit
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
-import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -49,13 +48,7 @@ class UnifontTexture(
 
     override fun load(context: RenderContext) = Unit
 
-    fun add(dataWidth: Int, data: ByteArray): CodePointRenderer? {
-        val startEnd = getStartEnd(dataWidth, data)
-        val start = startEnd ushr 16
-        val end = startEnd and 0xFFFF
-        if (end < start) return EmptyCodeRenderer()
-        val width = end - start
-
+    fun add(dataWidth: Int, width: Int, start: Int, end: Int, data: ByteArray): CodePointRenderer? {
         for ((index, remaining) in remaining.withIndex()) {
             if (remaining < width) continue
             this.remaining[index] = remaining - width
@@ -70,22 +63,6 @@ class UnifontTexture(
         val index = ((row * UnifontRasterizer.HEIGHT + y) * resolution + offset + x) * 4
 
         buffer.putInt(index, 0xFFFFFFFF.toInt())
-    }
-
-    private fun getStartEnd(width: Int, data: ByteArray): Int {
-        var start = width
-        var end = 0
-        for (y in 0 until UnifontRasterizer.HEIGHT) {
-            for (x in 0 until width) {
-                val index = (y * width) + x
-                if (!data.isPixelSet(index)) continue
-
-                if (x < start) start = x
-                if (x > end) end = x
-            }
-        }
-
-        return (start shl 16) or (end + 1)
     }
 
     private fun rasterize(row: Int, offset: Int, start: Int, end: Int, dataWidth: Int, data: ByteArray): CodePointRenderer {
@@ -104,8 +81,10 @@ class UnifontTexture(
         return UnicodeCodeRenderer(this, uvStart, uvEnd, width)
     }
 
-    private fun ByteArray.isPixelSet(index: Int): Boolean {
-        val byte = this[index / Byte.SIZE_BITS].toInt()
-        return byte.isBit(7 - (index % Byte.SIZE_BITS))
+    companion object {
+        fun ByteArray.isPixelSet(index: Int): Boolean {
+            val byte = this[index / Byte.SIZE_BITS].toInt()
+            return byte.isBit(7 - (index % Byte.SIZE_BITS))
+        }
     }
 }
