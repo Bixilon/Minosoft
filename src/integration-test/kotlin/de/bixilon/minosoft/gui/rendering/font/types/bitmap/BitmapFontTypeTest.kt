@@ -1,3 +1,16 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2023 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
 package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 
 import de.bixilon.kotlinglm.vec2.Vec2
@@ -90,11 +103,11 @@ class BitmapFontTypeTest {
     fun `multiple rows`() {
         val font = load(IntArray(64) { it % 3 }, IntArray(64) { (it + 2) % 4 }, chars = arrayOf(IntArray(16) { 'A'.code + it }, IntArray(16) { 'A'.code + 16 + it }, IntArray(16) { 'A'.code + 32 + it }, IntArray(16) { 'A'.code + 48 + it }))
 
-        font.assert('A', 3.0f, Vec2(0.0f, 0), Vec2(0.0234375f, 0.25f))
-        font.assert('P', 2.0f, Vec2(0.9365f, 0.0), Vec2(0.953125f, 0.25f))
+        font.assert('A', 3.0f, Vec2(0.0f, 0), Vec2(0.0234375f, 0.249f))
+        font.assert('P', 2.0f, Vec2(0.9365f, 0.0), Vec2(0.953125f, 0.249f))
 
-        font.assert('Q', 2.0f, Vec2(0.0068125f, 0.25f), Vec2(0.015625f, 0.5f))
-        font.assert('a', 1.0f, Vec2(0.014625f, 0.5f), Vec2(0.0078125f, 0.75f))
+        font.assert('Q', 2.0f, Vec2(0.0068125f, 0.25f), Vec2(0.015625f, 0.499f))
+        font.assert('a', 1.0f, Vec2(0.014625f, 0.5f), Vec2(0.0078125f, 0.749f))
         font.assert('q', 3.0f, Vec2(0.0f, 0.75f), Vec2(0.0234375f, 1.0f))
     }
 }

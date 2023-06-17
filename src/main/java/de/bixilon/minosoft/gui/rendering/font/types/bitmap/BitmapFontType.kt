@@ -110,6 +110,9 @@ class BitmapFontType(
             val uvEnd = Vec2(offset)
             uvEnd.x += width * pixel.x
             uvEnd.y += height * pixel.y
+            if (uvEnd.y > RenderConstants.UV_ADD && uvEnd.y < 1.0f) {
+                uvEnd.y -= RenderConstants.UV_ADD // this workarounds some precision loss
+            }
 
             val scaledWidth = width / (height.toFloat() / FontProperties.CHAR_BASE_HEIGHT)
 
