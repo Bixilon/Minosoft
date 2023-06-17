@@ -63,7 +63,7 @@ class SpriteTexture(private val original: Texture) : Texture {
             buffer.copyFrom(original, bytesPerTexture * i, 0, bytesPerTexture)
             buffer.flip()
 
-            val splitTexture = MemoryTexture(size, mipmaps = this.original.mipmaps, buffer = buffer)
+            val splitTexture = MemoryTexture(size, mipmaps = true, buffer = buffer)
 
             splitTextures += splitTexture
         }
