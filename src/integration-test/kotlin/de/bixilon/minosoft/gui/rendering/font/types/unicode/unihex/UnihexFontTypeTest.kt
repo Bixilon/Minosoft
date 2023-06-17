@@ -1,9 +1,10 @@
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.buffer.ByteBufferUtil.toByteArray
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex.UnihexFontType.Companion.fromHex
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import org.testng.Assert.assertEquals
-import org.testng.Assert.assertThrows
+import org.testng.Assert.*
 import org.testng.annotations.Test
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -11,6 +12,7 @@ import kotlin.reflect.full.companionObject
 
 @Test(groups = ["font"])
 class UnihexFontTypeTest {
+    private val textureRemaining = UnifontTexture::class.java.getDeclaredField("remaining").apply { isAccessible = true }
     val readUnihex = UnihexFontType::class.companionObject!!.java.getDeclaredMethod("readUnihex", InputStream::class.java, Int2ObjectOpenHashMap::class.java).apply { isAccessible = true }
 
     fun `from hex`() {
@@ -58,4 +60,43 @@ class UnihexFontTypeTest {
         assertEquals(char.size, 16)
         assertEquals(char, byteArrayOf(0x00, 0x00, 0x00, 0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0E, 0x00, 0x0E))
     }
+
+    private fun ByteArray.assertPixel(index: Int, set: Boolean = true) {
+        val offset = index * 4
+
+        val value = this[offset + 0].toInt() or this[offset + 1].toInt() or this[offset + 2].toInt() or this[offset + 3].toInt()
+
+        if (set) {
+            assertTrue(value != 0, "Did expect pixel at $index")
+        } else {
+            assertTrue(value == 0, "Did not expect pixel at $index")
+        }
+    }
+
+    fun `basic rasterizing`() {
+        val pixels = byteArrayOf(0x00, 0x00, 0x00, 0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0E, 0x00, 0x0E)
+
+        val texture = UnifontTexture(1)
+        assertEquals(texture.size, Vec2i(16, 16))
+        val remaining = textureRemaining.get(texture) as IntArray
+        assertEquals(remaining, intArrayOf(16))
+
+        val code = texture.add(8, pixels)!!
+
+        assertEquals(remaining, intArrayOf(8))
+        val data = texture.data.buffer.toByteArray()
+
+
+        for (index in 0 until 52) {
+            data.assertPixel(index, false)
+        }
+
+        data.assertPixel(52)
+        data.assertPixel(53)
+        data.assertPixel(54)
+        data.assertPixel(55, false)
+    }
+
+
+    // TODO: texture creation, rasterization, size override
 }

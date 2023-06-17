@@ -20,7 +20,6 @@ import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kotlinglm.vec4.Vec4t
-import de.bixilon.kutil.bit.BitByte.isBit
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -365,10 +364,5 @@ object KUtil {
     fun AbstractLatch?.child(count: Int): AbstractLatch {
         if (this == null) return SimpleLatch(count)
         return ParentLatch(count, this)
-    }
-
-    fun ByteArray.isBitSet(index: Int): Boolean {
-        val byte = this[index / Byte.SIZE_BITS].toInt()
-        return byte.isBit(index % Byte.SIZE_BITS)
     }
 }

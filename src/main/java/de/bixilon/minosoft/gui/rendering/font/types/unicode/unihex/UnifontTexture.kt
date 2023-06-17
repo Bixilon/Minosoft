@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.bit.BitByte.isBit
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
-import de.bixilon.minosoft.util.KUtil.isBitSet
 
 class UnifontTexture(
     val rows: Int,
@@ -58,7 +58,7 @@ class UnifontTexture(
     }
 
     private fun TextureData.set(row: Int, offset: Int, x: Int, y: Int) {
-        val index = (row * UnifontRasterizer.HEIGHT + y) * size.y + offset + x * 4
+        val index = ((row * UnifontRasterizer.HEIGHT + y) * size.x + offset + x) * 4
 
         buffer.put(index + 0, 0xFF.toByte())
         buffer.put(index + 1, 0xFF.toByte())
@@ -73,7 +73,7 @@ class UnifontTexture(
         for (y in 0 until UnifontRasterizer.HEIGHT) {
             for (x in 0 until width) {
                 val index = (y * width) + x
-                if (!data.isBitSet(index)) continue
+                if (!data.isPixelSet(index)) continue
 
                 start = minOf(start, x)
                 end = maxOf(end, x)
@@ -82,11 +82,17 @@ class UnifontTexture(
             }
         }
         if (end < start) return EmptyCodeRenderer()
+        end += 1
 
         val uvStart = Vec2(pixel * (offset + start), pixel * (row * UnifontRasterizer.HEIGHT))
         val uvEnd = Vec2(pixel * (offset + end), pixel * ((row + 1) * UnifontRasterizer.HEIGHT))
-        val width = (end - start) / FontProperties.CHAR_BASE_HEIGHT.toFloat()
+        val width = (end - start) * (FontProperties.CHAR_BASE_HEIGHT.toFloat() / UnifontRasterizer.HEIGHT)
 
         return UnicodeCodeRenderer(this, uvStart, uvEnd, width)
+    }
+
+    private fun ByteArray.isPixelSet(index: Int): Boolean {
+        val byte = this[index / Byte.SIZE_BITS].toInt()
+        return byte.isBit(7 - (index % Byte.SIZE_BITS))
     }
 }

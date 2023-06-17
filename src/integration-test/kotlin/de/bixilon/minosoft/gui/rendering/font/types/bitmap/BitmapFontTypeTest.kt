@@ -63,7 +63,9 @@ class BitmapFontTypeTest {
     }
 
     private fun BitmapFontType.assert(char: Char, width: Float, uvStart: Vec2, uvEnd: Vec2) {
-        val char = this[char.code]!! as BitmapCodeRenderer
+        val char = this[char.code]
+        assertNotNull(char)
+        char as BitmapCodeRenderer
         assertEquals(char.width, width, "width mismatch")
         assertEquals(char.uvStart, uvStart, "uv start mismatch")
         assertEquals(char.uvEnd, uvEnd, "uv end mismatch")
@@ -72,7 +74,7 @@ class BitmapFontTypeTest {
     fun `space size`() {
         val font = load(intArrayOf(-1), intArrayOf(-1), chars = arrayOf(intArrayOf('a'.code)))
 
-        val a = font['a'.code]!!
+        val a = font['a'.code]
         assertTrue(a is EmptyCodeRenderer)
         assertEquals((a as EmptyCodeRenderer).width, 4)
     }
