@@ -69,7 +69,6 @@ class UnihexFontType(
 
             val rasterized = Int2ObjectOpenHashMap<CodePointRenderer>()
 
-
             for (entry in chars.int2ObjectEntrySet().fastIterator()) {
                 rasterized[entry.intKey] = rasterizer.add(entry.value)
             }

@@ -32,7 +32,8 @@ import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 class UnifontTexture(
     val rows: Int,
 ) : Texture {
-    override val size: Vec2i = Vec2i(rows * UnifontRasterizer.HEIGHT)
+    private val resolution = rows * UnifontRasterizer.HEIGHT
+    override val size: Vec2i = Vec2i(resolution)
     private val pixel = 1.0f / size.x
     override val transparency: TextureTransparencies = TextureTransparencies.TRANSPARENT
     override val mipmaps: Boolean get() = false
@@ -43,48 +44,61 @@ class UnifontTexture(
     override var properties = ImageProperties.DEFAULT
     override val state: TextureStates = TextureStates.LOADED
 
-    private val remaining = IntArray(rows) { size.x }
-    var totalRemaining = size.x * rows
+    val remaining = IntArray(rows) { resolution }
+    var totalRemaining = resolution * rows
 
     override fun load(context: RenderContext) = Unit
 
-    fun add(width: Int, data: ByteArray): CodePointRenderer? {
+    fun add(dataWidth: Int, data: ByteArray): CodePointRenderer? {
+        val startEnd = getStartEnd(dataWidth, data)
+        val start = startEnd ushr 16
+        val end = startEnd and 0xFFFF
+        if (end < start) return EmptyCodeRenderer()
+        val width = end - start
+
         for ((index, remaining) in remaining.withIndex()) {
             if (remaining < width) continue
             this.remaining[index] = remaining - width
             totalRemaining -= width
-            return rasterize(index, size.x - remaining, width, data)
+            return rasterize(index, resolution - remaining, start, end, dataWidth, data)
         }
 
         return null
     }
 
     private fun TextureData.set(row: Int, offset: Int, x: Int, y: Int) {
-        val index = ((row * UnifontRasterizer.HEIGHT + y) * size.x + offset + x) * 4
+        val index = ((row * UnifontRasterizer.HEIGHT + y) * resolution + offset + x) * 4
 
         buffer.putInt(index, 0xFFFFFFFF.toInt())
     }
 
-    private fun rasterize(row: Int, offset: Int, width: Int, data: ByteArray): CodePointRenderer {
+    private fun getStartEnd(width: Int, data: ByteArray): Int {
         var start = width
         var end = 0
-
         for (y in 0 until UnifontRasterizer.HEIGHT) {
             for (x in 0 until width) {
                 val index = (y * width) + x
                 if (!data.isPixelSet(index)) continue
 
-                start = minOf(start, x)
-                end = maxOf(end, x)
-
-                this.data.set(row, offset, x, y)
+                if (x < start) start = x
+                if (x > end) end = x
             }
         }
-        if (end < start) return EmptyCodeRenderer()
-        end += 1
 
-        val uvStart = Vec2(pixel * (offset + start), pixel * (row * UnifontRasterizer.HEIGHT))
-        val uvEnd = Vec2(pixel * (offset + end), pixel * ((row + 1) * UnifontRasterizer.HEIGHT))
+        return (start shl 16) or (end + 1)
+    }
+
+    private fun rasterize(row: Int, offset: Int, start: Int, end: Int, dataWidth: Int, data: ByteArray): CodePointRenderer {
+        for (y in 0 until UnifontRasterizer.HEIGHT) {
+            for (x in start until end) {
+                val index = (y * dataWidth) + x
+                if (!data.isPixelSet(index)) continue
+                this.data.set(row, offset, x - start, y)
+            }
+        }
+
+        val uvStart = Vec2(pixel * (offset), pixel * (row * UnifontRasterizer.HEIGHT))
+        val uvEnd = Vec2(pixel * (offset + (end - start)), pixel * ((row + 1) * UnifontRasterizer.HEIGHT))
         val width = (end - start) * (FontProperties.CHAR_BASE_HEIGHT.toFloat() / UnifontRasterizer.HEIGHT)
 
         return UnicodeCodeRenderer(this, uvStart, uvEnd, width)

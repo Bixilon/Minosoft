@@ -86,21 +86,21 @@ class UnihexFontTypeTest {
         val code = texture.add(8, pixels)!! as UnicodeCodeRenderer
 
         assertEquals(code.width, 1.5f)
-        assertEquals(code.uvStart, Vec2(0.25f, 0.0f))
-        assertEquals(code.uvEnd, Vec2(0.4375, 1.0))
+        assertEquals(code.uvStart, Vec2(0.0f, 0.0f))
+        assertEquals(code.uvEnd, Vec2(0.1875f, 1.0f))
 
-        assertEquals(remaining, intArrayOf(8))
+        assertEquals(remaining, intArrayOf(13))
         val data = texture.data.buffer.toByteArray()
 
 
-        for (index in 0 until 52) {
+        for (index in 0 until 48) {
             data.assertPixel(index, false)
         }
 
-        data.assertPixel(52)
-        data.assertPixel(53)
-        data.assertPixel(54)
-        data.assertPixel(55, false)
+        data.assertPixel(48)
+        data.assertPixel(49)
+        data.assertPixel(50)
+        data.assertPixel(51, false)
     }
 
 

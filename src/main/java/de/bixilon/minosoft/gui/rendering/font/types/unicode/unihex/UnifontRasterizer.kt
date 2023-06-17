@@ -22,28 +22,30 @@ class UnifontRasterizer(
     totalWidth: Int,
 ) {
     private var width = totalWidth
-    private var textures: MutableList<UnifontTexture> = mutableListOf()
+    private var textures: MutableList<UnifontTexture> = ArrayList(2)
 
-    fun add(data: ByteArray): CodePointRenderer = add(data.size / (HEIGHT / Byte.SIZE_BITS), data)
 
-    fun add(width: Int, data: ByteArray): CodePointRenderer {
+    fun add(data: ByteArray): CodePointRenderer {
+        val dataWith = data.size / (HEIGHT / Byte.SIZE_BITS)
         val iterator = textures.iterator()
         for (texture in iterator) {
-            val code = texture.add(width, data) ?: continue
-            if (texture.totalRemaining == 0) iterator.remove()
-            this.width -= width
+            val code = texture.add(dataWith, data) ?: continue
+            if (texture.remaining.last() <= 8) iterator.remove()
+            this.width -= dataWith
             return code
         }
-        val renderer = createTexture().add(width, data)!!
-        this.width -= width
+        val renderer = createTexture().add(dataWith, data)!!
+        this.width -= dataWith
         return renderer
     }
 
     private fun calculateRows(width: Int): Int {
+        var previous = TEXTURE_RESOLUTION_ID_MAP.last()
         for (index in TEXTURE_RESOLUTION_ID_MAP.size - 1 downTo 0) {
             val resolution = TEXTURE_RESOLUTION_ID_MAP[index]
             val size = resolution * resolution / HEIGHT
-            if (width >= size) return resolution / HEIGHT
+            if (width >= size) return previous / HEIGHT
+            previous = resolution
         }
 
         return 1
