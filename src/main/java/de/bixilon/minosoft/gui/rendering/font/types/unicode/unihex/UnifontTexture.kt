@@ -44,6 +44,7 @@ class UnifontTexture(
     override val state: TextureStates = TextureStates.LOADED
 
     private val remaining = IntArray(rows) { size.x }
+    var totalRemaining = size.x * rows
 
     override fun load(context: RenderContext) = Unit
 
@@ -51,6 +52,7 @@ class UnifontTexture(
         for ((index, remaining) in remaining.withIndex()) {
             if (remaining < width) continue
             this.remaining[index] = remaining - width
+            totalRemaining -= width
             return rasterize(index, size.x - remaining, width, data)
         }
 

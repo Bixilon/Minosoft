@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureArray.Companion.TEXTURE_RESOLUTION_ID_MAP
 
 class UnifontRasterizer(
     private val array: StaticTextureArray,
@@ -26,8 +27,12 @@ class UnifontRasterizer(
     fun add(data: ByteArray): CodePointRenderer = add(data.size / (HEIGHT / Byte.SIZE_BITS), data)
 
     fun add(width: Int, data: ByteArray): CodePointRenderer {
-        for (texture in textures) {
-            texture.add(width, data)?.let { return it }
+        val iterator = textures.iterator()
+        for (texture in iterator) {
+            val code = texture.add(width, data) ?: continue
+            if (texture.totalRemaining == 0) iterator.remove()
+            this.width -= width
+            return code
         }
         val renderer = createTexture().add(width, data)!!
         this.width -= width
@@ -35,7 +40,13 @@ class UnifontRasterizer(
     }
 
     private fun calculateRows(width: Int): Int {
-        return 1024 / 16
+        for (index in TEXTURE_RESOLUTION_ID_MAP.size - 1 downTo 0) {
+            val resolution = TEXTURE_RESOLUTION_ID_MAP[index]
+            val size = resolution * resolution / HEIGHT
+            if (width >= size) return resolution / HEIGHT
+        }
+
+        return 1
     }
 
     private fun createTexture(): UnifontTexture {

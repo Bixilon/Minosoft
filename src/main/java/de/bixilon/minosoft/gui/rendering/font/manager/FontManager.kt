@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.font.loader.FontLoader
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.font.EmptyFont
-import de.bixilon.minosoft.gui.rendering.font.types.font.Font
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -30,6 +29,7 @@ class FontManager(
     val default: FontType,
 ) {
 
+
     fun postInit(latch: AbstractLatch) {
         if (default is PostInitFontType) {
             default.postInit(latch)
@@ -37,7 +37,7 @@ class FontManager(
     }
 
 
-    operator fun get(font: ResourceLocation?): Font? = null
+    operator fun get(font: ResourceLocation?): FontType? = null
 
     companion object {
         fun create(context: RenderContext, latch: AbstractLatch): FontManager {
