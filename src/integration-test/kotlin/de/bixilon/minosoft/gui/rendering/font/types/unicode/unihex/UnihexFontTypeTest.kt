@@ -1,7 +1,9 @@
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.buffer.ByteBufferUtil.toByteArray
+import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex.UnihexFontType.Companion.fromHex
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.Assert.*
@@ -81,7 +83,11 @@ class UnihexFontTypeTest {
         val remaining = textureRemaining.get(texture) as IntArray
         assertEquals(remaining, intArrayOf(16))
 
-        val code = texture.add(8, pixels)!!
+        val code = texture.add(8, pixels)!! as UnicodeCodeRenderer
+
+        assertEquals(code.width, 1.5f)
+        assertEquals(code.uvStart, Vec2(0.25f, 0.0f))
+        assertEquals(code.uvEnd, Vec2(0.4375, 1.0))
 
         assertEquals(remaining, intArrayOf(8))
         val data = texture.data.buffer.toByteArray()
