@@ -18,6 +18,9 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 object DefaultFontIndices {
     val DEFAULT = "font/default.json".toResourceLocation()
     val ALT = "font/alt.json".toResourceLocation()
-    val ILLAGERALT = "font/allageralt.json".toResourceLocation()
+    val ILLAGERALT = "font/illageralt.json".toResourceLocation()
     val UNIFORM = "font/uniform.json".toResourceLocation()
+
+
+    val ALL = arrayOf(ALT, ILLAGERALT, UNIFORM)
 }

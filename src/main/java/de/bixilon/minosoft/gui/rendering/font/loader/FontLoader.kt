@@ -19,6 +19,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypes
 import de.bixilon.minosoft.gui.rendering.font.types.font.Font
@@ -31,7 +32,7 @@ import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 object FontLoader {
 
 
-    fun load(context: RenderContext, fontIndex: ResourceLocation, latch: AbstractLatch?): Font? {
+    fun load(context: RenderContext, manager: FontManager, fontIndex: ResourceLocation, latch: AbstractLatch?): Font? {
         val fontIndex = context.connection.assetsManager.getOrNull(fontIndex)?.readJsonObject() ?: return null
 
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
@@ -46,7 +47,7 @@ object FontLoader {
                     Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Unknown font provider: $type" }
                     return@add
                 }
-                providers[index] = factory.build(context, provider)
+                providers[index] = factory.build(context, manager, provider)
             }
         }
         worker.work(latch)

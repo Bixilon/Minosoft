@@ -21,6 +21,7 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
@@ -55,7 +56,7 @@ class LegacyUnicodeFontType(
         private const val PIXEL = 1.0f / (CHAR_SIZE * CHAR_ROW)
         private const val WIDTH_SCALE = FontProperties.CHAR_BASE_HEIGHT / CHAR_SIZE.toFloat()
 
-        override fun build(context: RenderContext, data: Map<String, Any>): LegacyUnicodeFontType? {
+        override fun build(context: RenderContext, manager: FontManager, data: Map<String, Any>): LegacyUnicodeFontType? {
             val assets = context.connection.assetsManager
             val template = data["template"]?.toString() ?: throw IllegalArgumentException("template missing!")
             val sizes = data.loadSizes(assets) ?: return null

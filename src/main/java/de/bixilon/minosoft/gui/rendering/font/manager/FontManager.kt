@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.font.manager
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.loader.DefaultFontIndices
@@ -25,31 +27,59 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class FontManager(
-    val default: FontType,
-) {
+class FontManager(default: FontType? = null) {
+    private val fonts: MutableMap<ResourceLocation, FontType> = mutableMapOf()
+    var default = default ?: unsafeNull()
 
+    init {
+        if (default != null) {
+            fonts[DefaultFontIndices.DEFAULT.fontName()] = default
+        }
+    }
 
     fun postInit(latch: AbstractLatch) {
-        if (default is PostInitFontType) {
-            default.postInit(latch)
+        for (font in fonts.values) {
+            if (font !is PostInitFontType) continue
+            font.postInit(latch)
         }
     }
 
 
-    operator fun get(font: ResourceLocation?): FontType? = null
+    operator fun get(name: ResourceLocation?) = fonts[name?.fontName()]
+
+    fun load(index: ResourceLocation, context: RenderContext, latch: AbstractLatch?): FontType? {
+        val name = index.fontName()
+        fonts[name]?.let { return it }
+
+
+        val font = FontLoader.load(context, this, index, latch)
+        if (font == null) {
+            Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Font $index seems to be empty!" }
+            return null
+        }
+        val type = font.trim() ?: return null
+
+        this.fonts[name] = type
+        return type
+    }
 
     companion object {
+
         fun create(context: RenderContext, latch: AbstractLatch): FontManager {
-            val font = FontLoader.load(context, DefaultFontIndices.DEFAULT, latch)
+            val manager = FontManager()
 
-            // TODO: load multiple fonts
+            val default = manager.load(DefaultFontIndices.DEFAULT, context, latch) ?: EmptyFont
+            manager::default.forceSet(default)
 
-            if (font == null) {
-                Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Font ${DefaultFontIndices.DEFAULT} seems to be empty!" }
+            for (index in DefaultFontIndices.ALL) {
+                manager.load(index, context, latch)
             }
 
-            return FontManager(font?.trim() ?: EmptyFont)
+            return manager
+        }
+
+        private fun ResourceLocation.fontName(): ResourceLocation {
+            return ResourceLocation(namespace, path.removePrefix("font/").removeSuffix(".json"))
         }
     }
 }

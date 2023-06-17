@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
@@ -58,7 +59,7 @@ class BitmapFontType(
         private const val ROW = 16
         override val identifier = minecraft("bitmap")
 
-        override fun build(context: RenderContext, data: JsonObject): BitmapFontType? {
+        override fun build(context: RenderContext, manager: FontManager, data: JsonObject): BitmapFontType? {
             val file = data["file"]?.toString()?.let { it.toResourceLocation().texture() } ?: throw IllegalArgumentException("Missing file!")
             val height = data["height"]?.toInt() ?: 8
             val ascent = data["ascent"]?.toInt() ?: 8

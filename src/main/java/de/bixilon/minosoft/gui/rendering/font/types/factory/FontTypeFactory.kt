@@ -16,10 +16,11 @@ package de.bixilon.minosoft.gui.rendering.font.types.factory
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
 
 
 interface FontTypeFactory<T : FontType> : Identified {
 
-    fun build(context: RenderContext, data: JsonObject): T?
+    fun build(context: RenderContext, manager: FontManager, data: JsonObject): T?
 }

@@ -17,6 +17,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
@@ -40,7 +41,7 @@ class UnihexFontType(
     companion object : FontTypeFactory<UnihexFontType> {
         override val identifier = minecraft("unihex")
 
-        override fun build(context: RenderContext, data: JsonObject): UnihexFontType? {
+        override fun build(context: RenderContext, manager: FontManager, data: JsonObject): UnihexFontType? {
             val hexFile = data["hex_file"]?.toResourceLocation() ?: throw IllegalArgumentException("hex_file missing!")
             val sizes = data["size_override"]?.listCast<JsonObject>()?.let { SizeOverride.deserialize(it) } ?: emptyList()
 
