@@ -20,15 +20,15 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.FontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
-import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.io.InputStream
 import java.util.zip.ZipInputStream
 
+// TODO: support size override
 class UnihexFontType(
-    val chars: Int2ObjectOpenHashMap<UnicodeCodeRenderer>,
+    val chars: Int2ObjectOpenHashMap<CodePointRenderer>,
 ) : FontType {
 
     override fun get(codePoint: Int): CodePointRenderer? {
@@ -50,19 +50,29 @@ class UnihexFontType(
             val stream = ZipInputStream(context.connection.assetsManager[hexFile])
 
             val chars = Int2ObjectOpenHashMap<ByteArray>()
+            var totalWidth = 0
             while (true) {
                 val entry = stream.nextEntry ?: break
                 if (!entry.name.endsWith(".hex")) continue
 
-                stream.readUnihex(chars)
+                totalWidth += stream.readUnihex(chars)
             }
             if (chars.isEmpty()) return null
 
-            return load(context, chars, sizes)
+            return load(context, totalWidth, chars, sizes)
         }
 
-        private fun load(context: RenderContext, chars: Int2ObjectOpenHashMap<ByteArray>, sizes: List<SizeOverride>): UnihexFontType? {
-            TODO()
+        private fun load(context: RenderContext, totalWidth: Int, chars: Int2ObjectOpenHashMap<ByteArray>, sizes: List<SizeOverride>): UnihexFontType {
+            val rasterizer = UnifontRasterizer(context.textureManager.staticTextures, totalWidth)
+
+            val rasterized = Int2ObjectOpenHashMap<CodePointRenderer>()
+
+
+            for (entry in chars.int2ObjectEntrySet().fastIterator()) {
+                rasterized[entry.intKey] = rasterizer.add(entry.value)
+            }
+
+            return UnihexFontType(rasterized)
         }
 
         fun Int.fromHex(): Int {
@@ -111,13 +121,18 @@ class UnihexFontType(
             return array
         }
 
-        private fun InputStream.readUnihex(chars: Int2ObjectOpenHashMap<ByteArray>) {
+        private fun InputStream.readUnihex(chars: Int2ObjectOpenHashMap<ByteArray>): Int {
             val buffer = ByteArray(64)
+            var totalWidth = 0
             while (this.available() > 0) {
                 val codePoint = readHexInt()
                 if (codePoint == -1) continue
-                chars[codePoint] = this.readUnihexData(buffer)
+                val data = this.readUnihexData(buffer)
+                chars[codePoint] = data
+                totalWidth += data.size / (UnifontRasterizer.HEIGHT / Byte.SIZE_BITS)
             }
+
+            return totalWidth
         }
     }
 }
