@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import java.io.BufferedInputStream
 import java.io.InputStream
 import java.util.zip.ZipInputStream
 
@@ -48,6 +49,7 @@ class UnihexFontType(
 
         fun load(context: RenderContext, hexFile: ResourceLocation, sizes: List<SizeOverride>): UnihexFontType? {
             val stream = ZipInputStream(context.connection.assetsManager[hexFile])
+            val buffered = BufferedInputStream(stream)
 
             val chars = Int2ObjectOpenHashMap<ByteArray>()
             var totalWidth = 0
@@ -55,7 +57,7 @@ class UnihexFontType(
                 val entry = stream.nextEntry ?: break
                 if (!entry.name.endsWith(".hex")) continue
 
-                totalWidth += stream.readUnihex(chars)
+                totalWidth += buffered.readUnihex(chars)
             }
             if (chars.isEmpty()) return null
 
@@ -71,6 +73,8 @@ class UnihexFontType(
             for (entry in chars.int2ObjectEntrySet().fastIterator()) {
                 rasterized[entry.intKey] = rasterizer.add(entry.value)
             }
+
+            rasterized.trim()
 
             return UnihexFontType(rasterized)
         }

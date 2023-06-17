@@ -60,10 +60,7 @@ class UnifontTexture(
     private fun TextureData.set(row: Int, offset: Int, x: Int, y: Int) {
         val index = ((row * UnifontRasterizer.HEIGHT + y) * size.x + offset + x) * 4
 
-        buffer.put(index + 0, 0xFF.toByte())
-        buffer.put(index + 1, 0xFF.toByte())
-        buffer.put(index + 2, 0xFF.toByte())
-        buffer.put(index + 3, 0xFF.toByte())
+        buffer.putInt(index, 0xFFFFFFFF.toInt())
     }
 
     private fun rasterize(row: Int, offset: Int, width: Int, data: ByteArray): CodePointRenderer {
