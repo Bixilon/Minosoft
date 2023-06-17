@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util
 import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
+import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3t
@@ -280,6 +281,7 @@ object KUtil {
         DefaultThreadPool += { NettyClient::class.java.forceInit() }
         DefaultThreadPool += { SimpleChannelInboundHandler::class.java.forceInit() }
         DefaultThreadPool += { SSLContext.getDefault() }
+        DefaultThreadPool += { GLM::class.java.forceInit() } // whole glm
     }
 
     fun ByteArray.withLengthPrefix(): ByteArray {
