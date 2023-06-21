@@ -26,7 +26,7 @@ class RecipeRegistry(
     override var parent: AbstractRegistry<Recipe>? = null,
 ) : AbstractRegistry<Recipe> {
     private val idValueMap: Int2ObjectOpenHashMap<Recipe> = Int2ObjectOpenHashMap()
-    private val valueIdMap: Object2IntOpenHashMap<Recipe> = Object2IntOpenHashMap()
+    private val valueIdMap: Object2IntOpenHashMap<Recipe> = Object2IntOpenHashMap<Recipe>().apply { defaultReturnValue(-1) }
     private val resourceLocationRecipeMap: MutableMap<ResourceLocation, Recipe> = mutableMapOf()
     private val recipeResourceLocationMap: MutableMap<Recipe, ResourceLocation> = mutableMapOf()
 
@@ -53,7 +53,9 @@ class RecipeRegistry(
     }
 
     override fun getId(value: Recipe): Int {
-        return valueIdMap[value] ?: parent?.getId(value) ?: throw IllegalArgumentException("No id available for $value")
+        val id = valueIdMap.getInt(value)
+        if (id > 0) return id
+        return parent?.getId(value) ?: throw IllegalArgumentException("No id available for $value")
     }
 
     override fun noParentIterator(): Iterator<Recipe> {
