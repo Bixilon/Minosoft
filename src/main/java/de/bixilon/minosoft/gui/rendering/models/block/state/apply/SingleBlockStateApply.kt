@@ -141,7 +141,7 @@ data class SingleBlockStateApply(
                 }
                 val shade = rotatedDirection.shade
 
-                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, face.cull, texture)
+                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, face.cull, texture, null)
 
                 bakedFaces[rotatedDirection.ordinal] += bakedFace
             }
