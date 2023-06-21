@@ -32,7 +32,7 @@ class SlimeBounceIT : BounceIT() {
 
     @Test(priority = -1)
     fun getSlime() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.SLIME_BLOCK]?.defaultState ?: throw SkipException("Can not find slime!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.SLIME_BLOCK]?.states?.default ?: throw SkipException("Can not find slime!")
     }
 
     fun slimeLanding() {

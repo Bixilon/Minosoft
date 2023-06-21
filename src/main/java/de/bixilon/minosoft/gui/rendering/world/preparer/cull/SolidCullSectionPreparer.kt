@@ -47,8 +47,8 @@ class SolidCullSectionPreparer(
     val context: RenderContext,
 ) : SolidSectionPreparer {
     private val profile = context.connection.profiles.block.rendering
-    private val bedrock = context.connection.registries.block[MinecraftBlocks.BEDROCK]?.defaultState
-    private val someFullBlock = context.connection.registries.block[MinecraftBlocks.COMMAND_BLOCK]?.defaultState
+    private val bedrock = context.connection.registries.block[MinecraftBlocks.BEDROCK]?.states?.default
+    private val someFullBlock = context.connection.registries.block[MinecraftBlocks.COMMAND_BLOCK]?.states?.default
     private val tintColorCalculator = context.tintManager
     private var fastBedrock = false
 

@@ -33,7 +33,7 @@ abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identif
         BLOCK_FIELD.inject<RegistryItem>(_block)
     }
 
-    override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack) = block.defaultState
+    override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack) = block.states.default
 
 
     private companion object {

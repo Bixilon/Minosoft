@@ -31,14 +31,14 @@ import kotlin.math.abs
 abstract class FlowingFluidIT {
     protected val levels by lazy {
         arrayOf(
-            block!!.withProperties(BlockProperties.FLUID_LEVEL to 7),
-            block!!.withProperties(BlockProperties.FLUID_LEVEL to 6),
-            block!!.withProperties(BlockProperties.FLUID_LEVEL to 5),
-            block!!.withProperties(BlockProperties.FLUID_LEVEL to 4),
-            block!!.withProperties(BlockProperties.FLUID_LEVEL to 3),
-            block!!.withProperties(BlockProperties.FLUID_LEVEL to 2),
-            block!!.withProperties(BlockProperties.FLUID_LEVEL to 1),
-            block!!.withProperties(BlockProperties.FLUID_LEVEL to 0),
+            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7),
+            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 6),
+            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 5),
+            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 4),
+            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 3),
+            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 2),
+            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 1),
+            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0),
         )
     }
 
@@ -57,7 +57,7 @@ abstract class FlowingFluidIT {
         fill(
             Vec3i(x - size - 2, y - 1, z - size - 2),
             Vec3i(x + size + 2, y - 1, z + size + 2),
-            StoneTest0.block.defaultState
+            StoneTest0.block.states.default
         )
 
         for (offsetX in -size..size) {

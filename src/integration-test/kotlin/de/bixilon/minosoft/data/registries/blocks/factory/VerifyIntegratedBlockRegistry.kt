@@ -128,7 +128,7 @@ object VerifyIntegratedBlockRegistry {
         compareHardness(pixlyzer, integrated, errors)
         compareItem(pixlyzer, integrated, errors)
         for (state in pixlyzer.states) {
-            val integratedState = if (state is PropertyBlockState) integrated.withProperties(state.properties) else integrated.defaultState
+            val integratedState = if (state is PropertyBlockState) integrated.states.withProperties(state.properties) else integrated.states.default
 
             compareCollisionShape(state, integratedState, errors)
             compareOutlineShape(state, integratedState, errors)

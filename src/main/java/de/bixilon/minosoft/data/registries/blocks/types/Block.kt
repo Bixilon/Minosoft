@@ -22,6 +22,9 @@ import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.manager.BlockStateManager
+import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
+import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.HardnessBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.PushingBlock
@@ -37,9 +40,7 @@ abstract class Block(
     override val identifier: ResourceLocation,
     settings: BlockSettings,
 ) : RegistryItem(), LightedBlock, HardnessBlock, Translatable, PushingBlock {
-    val properties: Map<BlockProperties, Array<Any>> = unsafeNull()
-    val states: Set<BlockState> = unsafeNull()
-    val defaultState: BlockState = unsafeNull()
+    val states: BlockStateManager = unsafeNull()
 
     override val translationKey: ResourceLocation = identifier.translation("block")
 
@@ -53,19 +54,11 @@ abstract class Block(
     }
 
     @Deprecated("Interface")
-    open fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? = defaultState
+    open fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? = states.default
 
     @Deprecated("Interface")
     open fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
         return InteractionResults.IGNORED
-    }
-
-    fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
-        return this.defaultState.withProperties(*properties)
-    }
-
-    fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
-        return this.defaultState.withProperties(properties)
     }
 
 
@@ -77,14 +70,14 @@ abstract class Block(
 
 
     fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperties, Array<Any>>) {
-        PROPERTIES.set(this, properties)
-        STATES.set(this, states)
-        DEFAULT_STATE.set(this, default)
+        val manager = when {
+            states.size == 1 -> SimpleStateManager(default)
+            else -> PropertyStateManager(properties, states, default)
+        }
+        STATES.set(this, manager)
     }
 
     private companion object {
-        val PROPERTIES = Block::properties.javaField!!.apply { isAccessible = true }
         val STATES = Block::states.javaField!!.apply { isAccessible = true }
-        val DEFAULT_STATE = Block::defaultState.javaField!!.apply { isAccessible = true }
     }
 }

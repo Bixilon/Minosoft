@@ -40,7 +40,7 @@ open class PixLyzerBlockItem(
     }
 
     override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack): BlockState {
-        return block.defaultState
+        return block.states.default
     }
 
     companion object : PixLyzerItemFactory<PixLyzerBlockItem>, MultiClassFactory<PixLyzerBlockItem> {

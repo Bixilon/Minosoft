@@ -26,7 +26,7 @@ class SweetBerryBushIT : SlowMovementIT() {
 
     @Test(priority = -1)
     fun getSweetBerryBush() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.SWEET_BERRY_BUSH]?.defaultState ?: throw SkipException("Can not find sweet berry bush!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.SWEET_BERRY_BUSH]?.states?.default ?: throw SkipException("Can not find sweet berry bush!")
     }
 
     fun sweetBerryBushLanding() {

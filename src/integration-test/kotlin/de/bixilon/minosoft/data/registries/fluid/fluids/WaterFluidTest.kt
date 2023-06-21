@@ -36,42 +36,42 @@ class WaterFluidTest {
     }
 
     fun heightLevel0() {
-        val state = block.withProperties(BlockProperties.FLUID_LEVEL to 0)
+        val state = block.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
         assertEquals(this.water.getHeight(state), 0.8888889f)
     }
 
     fun heightLevel2() {
-        val state = block.withProperties(BlockProperties.FLUID_LEVEL to 2)
+        val state = block.states.withProperties(BlockProperties.FLUID_LEVEL to 2)
         assertEquals(this.water.getHeight(state), 0.6666667f)
     }
 
     fun heightLevel8() {
-        val state = block.withProperties(BlockProperties.FLUID_LEVEL to 8)
+        val state = block.states.withProperties(BlockProperties.FLUID_LEVEL to 8)
         assertEquals(this.water.getHeight(state), 0.8888889f)
     }
 
     fun heightLevel12() {
-        val state = block.withProperties(BlockProperties.FLUID_LEVEL to 12)
+        val state = block.states.withProperties(BlockProperties.FLUID_LEVEL to 12)
         assertEquals(this.water.getHeight(state), 0.8888889f)
     }
 
     fun waterlogged() {
-        val state = IT.REGISTRIES.block[MinecraftBlocks.OAK_SLAB]!!.withProperties(BlockProperties.WATERLOGGED to true)
+        val state = IT.REGISTRIES.block[MinecraftBlocks.OAK_SLAB]!!.states.withProperties(BlockProperties.WATERLOGGED to true)
         assertEquals(this.water.getHeight(state), 0.8888889f)
     }
 
     fun kelp() {
-        val state = IT.REGISTRIES.block[MinecraftBlocks.KELP]!!.defaultState
+        val state = IT.REGISTRIES.block[MinecraftBlocks.KELP]!!.states.default
         assertEquals(this.water.getHeight(state), 0.8888889f)
     }
 
     fun bubbleColumn() {
-        val state = IT.REGISTRIES.block[BubbleColumnBlock]!!.defaultState
+        val state = IT.REGISTRIES.block[BubbleColumnBlock]!!.states.default
         assertEquals(this.water.getHeight(state), 0.8888889f)
     }
 
     fun stone() {
-        val state = IT.REGISTRIES.block[RockBlock.Stone]!!.defaultState
+        val state = IT.REGISTRIES.block[RockBlock.Stone]!!.states.default
         assertEquals(this.water.getHeight(state), 0.0f)
     }
 }

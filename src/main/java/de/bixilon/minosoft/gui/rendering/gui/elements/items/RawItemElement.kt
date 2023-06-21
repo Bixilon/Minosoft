@@ -88,7 +88,7 @@ class RawItemElement(
 
             val color = ChatColors.WHITE
             if (item is PixLyzerBlockItem) {
-                val defaultState = item.block.defaultState
+                val defaultState = item.block.states.default
                 defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
                     element = ImageElement(guiRenderer, it, size = textureSize)
                 }

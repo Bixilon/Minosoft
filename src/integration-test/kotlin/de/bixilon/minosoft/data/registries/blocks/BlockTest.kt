@@ -38,7 +38,7 @@ abstract class BlockTest<T : Block> {
         block!!
         assertEquals(block.identifier, name)
         this::block.forceSet(block)
-        this::state.forceSet(block.defaultState)
+        this::state.forceSet(block.states.default)
     }
 
     fun BlockState.testLightProperties(

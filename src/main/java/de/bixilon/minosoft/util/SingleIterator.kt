@@ -11,28 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks
+package de.bixilon.minosoft.util
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.Halves
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import org.testng.annotations.Test
+@Deprecated("Kutil 1.23")
+class SingleIterator<T>(
+    val item: T,
+) : Iterator<T> {
+    private var iterated = false
 
-@Test(groups = ["block"])
-class SlabTest : BlockTest<Block>() {
-    var top: BlockState = unsafeNull()
-        private set
+    override fun hasNext() = !iterated
 
-    init {
-        SlabTest0 = this
-    }
+    override fun next(): T {
+        if (iterated) throw IllegalStateException("Already iterated!")
+        iterated = true
 
-    fun getSlabs() {
-        super.retrieveBlock(MinecraftBlocks.OAK_SLAB)
-        top = block.states.withProperties(BlockProperties.SLAB_TYPE to Halves.UPPER)
+        return this.item
     }
 }
-
-var SlabTest0: SlabTest = unsafeNull()

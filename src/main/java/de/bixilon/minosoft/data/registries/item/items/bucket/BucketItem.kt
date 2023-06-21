@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.registries.item.items.bucket
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -44,9 +43,7 @@ abstract class BucketItem(
     open class PowderSnowBucketItem(resourceLocation: ResourceLocation = this.identifier) : BucketItem(resourceLocation), PlaceableItem {
         protected val block: PowderSnowBlock = this::block.inject(PowderSnowBlock)
 
-        override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack): BlockState {
-            return block.defaultState
-        }
+        override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack) = block.states.default
 
         companion object : ItemFactory<BucketItem> {
             override val identifier = minecraft("powder_snow_bucket")

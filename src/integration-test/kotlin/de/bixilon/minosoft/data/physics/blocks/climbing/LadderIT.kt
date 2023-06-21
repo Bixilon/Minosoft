@@ -26,7 +26,7 @@ class LadderIT : ClimbingIT() {
 
     @Test(priority = -1)
     fun getLadder() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.LADDER]?.defaultState ?: throw SkipException("Can not find ladder!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.LADDER]?.states?.default ?: throw SkipException("Can not find ladder!")
     }
 
     fun ladderFallingInto1() {

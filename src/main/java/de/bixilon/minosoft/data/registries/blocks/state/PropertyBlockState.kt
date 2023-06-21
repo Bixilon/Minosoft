@@ -17,6 +17,7 @@ import com.google.common.base.Objects
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
+import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -80,7 +81,7 @@ open class PropertyBlockState(
 
     override fun cycle(property: BlockProperties): BlockState {
         val value: Any = this[property]
-        return withProperties(property to block.properties[property]!!.next(value))
+        return withProperties(property to block.states.unsafeCast<PropertyStateManager>().properties[property]!!.next(value))
     }
 
     override fun <T> get(property: BlockProperties): T {

@@ -26,7 +26,7 @@ class TwistedVinesIT : ClimbingIT() {
 
     @Test(priority = -1)
     fun getTwistingVines() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.TWISTING_VINES]?.defaultState ?: throw SkipException("Can not find twisting vines!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.TWISTING_VINES]?.states?.default ?: throw SkipException("Can not find twisting vines!")
     }
 
     fun twistedVinesFallingInto1() {

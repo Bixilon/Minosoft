@@ -11,28 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks
+package de.bixilon.minosoft.data.registries.blocks.state.manager
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import org.testng.annotations.Test
+import de.bixilon.minosoft.util.SingleIterator
 
-@Test(groups = ["block"])
-class SlabTest : BlockTest<Block>() {
-    var top: BlockState = unsafeNull()
-        private set
+class SimpleStateManager(
+    override val default: BlockState,
+) : BlockStateManager {
 
-    init {
-        SlabTest0 = this
-    }
-
-    fun getSlabs() {
-        super.retrieveBlock(MinecraftBlocks.OAK_SLAB)
-        top = block.states.withProperties(BlockProperties.SLAB_TYPE to Halves.UPPER)
+    override fun iterator(): Iterator<BlockState> {
+        return SingleIterator(default)
     }
 }
-
-var SlabTest0: SlabTest = unsafeNull()

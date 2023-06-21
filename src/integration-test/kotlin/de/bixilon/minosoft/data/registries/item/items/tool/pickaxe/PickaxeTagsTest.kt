@@ -41,7 +41,7 @@ class PickaxeTagsTest {
 
     protected fun mine(connection: PlayConnection, item: Identified, block: ResourceLocation): Pair<Boolean, Float?> {
         val item: ToolItem = IT.REGISTRIES.item[item]!!.unsafeCast()
-        val block = IT.REGISTRIES.block[block]!!.defaultState
+        val block = IT.REGISTRIES.block[block]!!.states.default
 
         val suitable = item.isSuitableFor(connection, block, ItemStack(item))
         val speed = item.getMiningSpeed(connection, block, ItemStack(item))

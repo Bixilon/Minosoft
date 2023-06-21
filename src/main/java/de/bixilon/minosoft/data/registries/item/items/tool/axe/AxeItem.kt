@@ -41,7 +41,7 @@ abstract class AxeItem(identifier: ResourceLocation, registries: Registries, dat
 
         val properties = target.state.nullCast<PropertyBlockState>()?.properties ?: emptyMap()
 
-        return super.interact(player.connection, target.blockPosition, strippable?.get(target.state.block)?.withProperties(properties))
+        return super.interact(player.connection, target.blockPosition, strippable?.get(target.state.block)?.states?.withProperties(properties))
     }
 
     companion object {

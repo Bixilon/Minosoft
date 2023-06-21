@@ -36,7 +36,7 @@ internal class LightBenchmark {
     @Test
     fun calculateWithSolidBottom() {
         val chunk = createChunkWithNeighbours()
-        chunk.fillBottom(createSolidBlock().defaultState)
+        chunk.fillBottom(createSolidBlock().states.default)
         BenchmarkUtil.benchmark(100000) {
             chunk.light.recalculate()
         }.println()
@@ -46,8 +46,8 @@ internal class LightBenchmark {
     @Test
     fun calculateSimplePlace() {
         val chunk = createChunkWithNeighbours()
-        val solid = createSolidBlock().defaultState
-        val light = createOpaqueLight().defaultState
+        val solid = createSolidBlock().states.default
+        val light = createOpaqueLight().states.default
         val lowest = chunk.getOrPut(0)!!.blocks
         for (index in 0 until 256) {
             lowest.unsafeSet(index, solid)
@@ -70,7 +70,7 @@ internal class LightBenchmark {
     @Test
     fun calculateChangeAtY255() {
         val chunk = createChunkWithNeighbours()
-        val solid = createSolidBlock().defaultState
+        val solid = createSolidBlock().states.default
         val lowest = chunk.getOrPut(0)!!.blocks
         for (index in 0 until 256) {
             lowest.unsafeSet(index, solid)
@@ -94,8 +94,8 @@ internal class LightBenchmark {
     fun placeBottom() {
         val chunk = createChunkWithNeighbours()
 
-        val solid = createSolidBlock().defaultState
-        val light = createOpaqueLight().defaultState
+        val solid = createSolidBlock().states.default
+        val light = createOpaqueLight().states.default
         val highest = chunk.getOrPut(15)!!.blocks
         for (index in 0 until 256) {
             highest.unsafeSet(index or (0x0F shl 8), solid)

@@ -44,9 +44,9 @@ class MixedFluidIT {
     }
 
     private fun World.fill() {
-        this[Vec3i(10, 2, 3)] = lava!!.withProperties(BlockProperties.FLUID_LEVEL to 0)
+        this[Vec3i(10, 2, 3)] = lava!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
         this[Vec3i(10, 1, 3)] = StoneTest0.state
-        this[Vec3i(10, 2, 4)] = water!!.withProperties(BlockProperties.FLUID_LEVEL to 0)
+        this[Vec3i(10, 2, 4)] = water!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
         this[Vec3i(10, 1, 4)] = StoneTest0.state
     }
 
@@ -78,7 +78,7 @@ class MixedFluidIT {
     fun stillLavaAndLava2() {
         val player = createPlayer(createConnection(3))
         player.connection.world.fill()
-        player.connection.world[Vec3i(10, 2, 4)] = lava!!.withProperties(BlockProperties.FLUID_LEVEL to 0)
+        player.connection.world[Vec3i(10, 2, 4)] = lava!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.input = PlayerMovementInput(forward = true)
 
@@ -92,8 +92,8 @@ class MixedFluidIT {
     fun mixedHeight1() {
         val player = createPlayer(createConnection(3))
         player.connection.world[Vec3i(10, 1, 4)] = StoneTest0.state
-        player.connection.world[Vec3i(10, 2, 4)] = lava!!.withProperties(BlockProperties.FLUID_LEVEL to 7)
-        player.connection.world[Vec3i(10, 3, 4)] = water!!.withProperties(BlockProperties.FLUID_LEVEL to 7)
+        player.connection.world[Vec3i(10, 2, 4)] = lava!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7)
+        player.connection.world[Vec3i(10, 3, 4)] = water!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.runTicks(2)
         player.input = PlayerMovementInput(jump = true, forward = true)
@@ -106,8 +106,8 @@ class MixedFluidIT {
     fun mixedHeight2() {
         val player = createPlayer(createConnection(3))
         player.connection.world[Vec3i(10, 1, 4)] = StoneTest0.state
-        player.connection.world[Vec3i(10, 2, 4)] = lava!!.withProperties(BlockProperties.FLUID_LEVEL to 7)
-        player.connection.world[Vec3i(10, 3, 4)] = water!!.withProperties(BlockProperties.FLUID_LEVEL to 7)
+        player.connection.world[Vec3i(10, 2, 4)] = lava!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7)
+        player.connection.world[Vec3i(10, 3, 4)] = water!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.runTicks(2)
         player.input = PlayerMovementInput(jump = true, forward = true)
@@ -120,8 +120,8 @@ class MixedFluidIT {
     fun mixedHeight3() {
         val player = createPlayer(createConnection(3))
         player.connection.world[Vec3i(10, 1, 4)] = StoneTest0.state
-        player.connection.world[Vec3i(10, 2, 4)] = water!!.withProperties(BlockProperties.FLUID_LEVEL to 7)
-        player.connection.world[Vec3i(10, 3, 4)] = lava!!.withProperties(BlockProperties.FLUID_LEVEL to 7)
+        player.connection.world[Vec3i(10, 2, 4)] = water!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7)
+        player.connection.world[Vec3i(10, 3, 4)] = lava!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.runTicks(2)
         player.input = PlayerMovementInput(jump = true, forward = true)
@@ -134,8 +134,8 @@ class MixedFluidIT {
     fun mixedHeight4() {
         val player = createPlayer(createConnection(3))
         player.connection.world[Vec3i(10, 1, 4)] = StoneTest0.state
-        player.connection.world[Vec3i(10, 2, 4)] = water!!.withProperties(BlockProperties.FLUID_LEVEL to 7)
-        player.connection.world[Vec3i(10, 3, 4)] = lava!!.withProperties(BlockProperties.FLUID_LEVEL to 7)
+        player.connection.world[Vec3i(10, 2, 4)] = water!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7)
+        player.connection.world[Vec3i(10, 3, 4)] = lava!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7)
         player.forceTeleport(Vec3d(10.0, 2.0, 3.8))
         player.runTicks(2)
         player.input = PlayerMovementInput(jump = true, forward = true)

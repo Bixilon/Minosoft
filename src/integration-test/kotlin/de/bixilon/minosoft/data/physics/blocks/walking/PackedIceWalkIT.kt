@@ -26,7 +26,7 @@ class PackedIceWalkIT : WalkIT() {
 
     @Test(priority = -1)
     fun getPackedIce() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.PACKED_ICE]?.defaultState ?: throw SkipException("Can not find packed packedIce!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.PACKED_ICE]?.states?.default ?: throw SkipException("Can not find packed packedIce!")
     }
 
     fun packedIceLanding() {
