@@ -20,12 +20,6 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 
 interface AssetsManager {
-
-    /**
-     * All namespaces this assets-manager can provide
-     */
-    val namespaces: Set<String>
-
     /**
      * The icon of the assets-manager (probably the pack.png)
      */

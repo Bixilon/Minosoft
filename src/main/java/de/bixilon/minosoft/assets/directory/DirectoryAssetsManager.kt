@@ -39,7 +39,6 @@ class DirectoryAssetsManager(
     val prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX,
 ) : AssetsManager {
     private val basePath = File(rootPath).slashPath + "/" + prefix
-    override val namespaces: MutableSet<String> = ObjectOpenHashSet()
     private var assets: MutableSet<ResourceLocation> = ObjectOpenHashSet()
     override var loaded: Boolean = false
         private set
@@ -59,7 +58,6 @@ class DirectoryAssetsManager(
             }
             val path = file.slashPath.removePrefix(basePath).removePrefix("/").toAssetName(false, prefix) ?: continue
             assets += path
-            namespaces += path.namespace
         }
     }
 

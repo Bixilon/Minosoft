@@ -18,7 +18,6 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.File
 import java.io.FileInputStream
 import java.util.zip.ZipInputStream
@@ -39,27 +38,24 @@ class ZipAssetsManager(
     override fun load(latch: AbstractLatch?) {
         check(!loaded) { "Already loaded!" }
 
-        val namespaces: MutableSet<String> = ObjectOpenHashSet()
         while (true) {
             val entry = inputStream.nextEntry ?: break
             if (entry.isDirectory) {
                 continue
             }
-            push(entry.name, namespaces, inputStream)
+            push(entry.name, inputStream)
         }
 
         inputStream.close()
-        this.namespaces = namespaces
         loaded = true
     }
 
-    fun push(name: String, namespaces: MutableSet<String>, stream: ZipInputStream) {
+    fun push(name: String, stream: ZipInputStream) {
         when (name) {
             "pack.png" -> image = stream.readAllBytes()
             "pack.mcmeta" -> properties = stream.readJson(false)
             else -> {
                 val resourceLocation = name.toAssetName(prefix = prefix) ?: return
-                namespaces += resourceLocation.namespace
                 assets[resourceLocation] = stream.readAllBytes()
             }
         }

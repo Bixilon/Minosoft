@@ -31,7 +31,6 @@ import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.HashTypes
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
-import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
@@ -53,7 +52,6 @@ class IndexAssetsManager(
 ) : MinecraftAssetsManager {
     private val verify: Boolean = profile.verify
     private val assets: MutableMap<ResourceLocation, AssetsProperty> = synchronizedMapOf()
-    override val namespaces: Set<String> = setOf(Namespaces.MINECRAFT)
     override var loaded: Boolean = false
         private set
 

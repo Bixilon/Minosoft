@@ -57,7 +57,6 @@ class JarAssetsManager(
 ) : MinecraftAssetsManager {
     override var loaded: Boolean = false
         private set
-    override val namespaces = setOf(Namespaces.MINECRAFT)
     private var assets: MutableMap<String, ByteArray> = mutableMapOf()
 
     private fun tryLoadAssets(): Boolean {

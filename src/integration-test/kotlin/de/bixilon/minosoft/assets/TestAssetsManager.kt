@@ -19,7 +19,6 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 
 object TestAssetsManager : AssetsManager {
-    override val namespaces: Set<String> = emptySet()
     override val loaded: Boolean = true
 
     override fun get(path: ResourceLocation): InputStream {
