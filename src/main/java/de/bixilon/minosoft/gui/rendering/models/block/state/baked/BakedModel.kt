@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
@@ -24,9 +25,11 @@ import java.util.*
 
 class BakedModel(
     val faces: Array<Array<BakedFace>>,
-    val sizes: Array<SideSize>,
+    val sizes: Array<SideSize?>,
     val particle: AbstractTexture?,
 ) : BlockRender {
+
+    override fun getSize(direction: Directions) = sizes[direction.ordinal]
 
     override fun getParticleTexture(random: Random?, position: Vec3i) = particle
 
@@ -34,11 +37,12 @@ class BakedModel(
 
         var rendered = false
 
-        for ((direction, faces) in faces.withIndex()) {
-            val neighbour = neighbours[direction]
+        for ((directionIndex, faces) in faces.withIndex()) {
+            val neighbour = neighbours[directionIndex]
+            val direction = Directions.VALUES[directionIndex].inverted
 
             for (face in faces) {
-                if (FaceCulling.canCull(face, neighbour)) {
+                if (FaceCulling.canCull(face, direction, neighbour)) {
                     continue
                 }
                 face.render(offset, mesh, light, tints)

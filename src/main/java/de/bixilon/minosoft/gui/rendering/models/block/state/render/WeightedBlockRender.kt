@@ -15,10 +15,12 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.SideSize
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import java.util.*
@@ -28,7 +30,11 @@ class WeightedBlockRender(
     val models: Array<WeightedEntry>,
     val totalWeight: Int,
 ) : BlockRender {
+    private val size = models.getSize()
 
+    override fun getSize(direction: Directions): SideSize? {
+        return size[direction.ordinal] // TODO: get random block model
+    }
 
     private fun getModel(random: Random?, position: BlockPosition): BlockRender {
         if (random == null) return models.first().model
@@ -59,4 +65,33 @@ class WeightedBlockRender(
         val weight: Int,
         val model: BakedModel,
     )
+
+    private fun Array<WeightedEntry>.getSize(): Array<SideSize?> {
+        val sizes: Array<SideSize?> = arrayOfNulls(Directions.SIZE)
+        val skip = BooleanArray(Directions.SIZE)
+
+        for ((_, model) in this) {
+            for (direction in Directions) {
+                if (skip[direction.ordinal]) continue
+
+                val current = sizes[direction.ordinal]
+                val size = model.getSize(direction)
+                if (current == null) {
+                    sizes[direction.ordinal] = size
+                    continue
+                }
+                if (current != size) {
+                    skip[direction.ordinal] = true
+                    continue
+                }
+            }
+        }
+
+        for ((index, skip) in skip.withIndex()) {
+            if (!skip) continue
+            sizes[index] = null
+        }
+
+        return sizes
+    }
 }

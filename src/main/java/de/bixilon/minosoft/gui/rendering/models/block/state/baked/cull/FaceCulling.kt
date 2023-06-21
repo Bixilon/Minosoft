@@ -13,14 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 
 object FaceCulling {
 
-    fun canCull(face: BakedFace, neighbour: BlockState?): Boolean {
+    fun canCull(face: BakedFace, direction: Directions, neighbour: BlockState?): Boolean {
         if (neighbour == null) return false
         if (!face.touchingSide) return false
+
+        val model = neighbour.model ?: return false
+        val size = model.getSize(direction) ?: return false
 
 
         return true // TODO

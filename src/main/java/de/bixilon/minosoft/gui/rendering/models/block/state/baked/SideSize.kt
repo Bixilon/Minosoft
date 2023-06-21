@@ -19,6 +19,10 @@ class SideSize(
     val sizes: Array<FaceSize>,
 ) {
 
+    init {
+        if (sizes.isEmpty()) throw IllegalCallerException("sizes is empty!")
+    }
+
 
     class FaceSize(
         val start: Vec2,

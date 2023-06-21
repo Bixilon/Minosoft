@@ -37,4 +37,6 @@ class BuiltModel(
 
         return rendered
     }
+
+    // TODO: getSize/culling support
 }
