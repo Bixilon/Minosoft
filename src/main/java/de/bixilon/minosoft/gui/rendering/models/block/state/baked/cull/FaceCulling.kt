@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 
 object FaceCulling {
 
-    fun canCull(face: BakedFace, direction: Directions, neighbour: BlockState?): Boolean {
+    fun canCull(block: BlockState, face: BakedFace, direction: Directions, neighbour: BlockState?): Boolean {
         if (neighbour == null) return false
         if (!face.touchingSide) return false
 

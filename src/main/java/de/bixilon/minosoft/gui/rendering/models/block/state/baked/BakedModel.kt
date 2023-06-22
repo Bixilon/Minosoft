@@ -42,7 +42,7 @@ class BakedModel(
             val direction = Directions.VALUES[directionIndex].inverted
 
             for (face in faces) {
-                if (FaceCulling.canCull(face, direction, neighbour)) {
+                if (FaceCulling.canCull(state, face, direction, neighbour)) {
                     continue
                 }
                 face.render(offset, mesh, light, tints)

@@ -14,19 +14,11 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.leaves
 
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class LeavesBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
-
-    override fun canCull(blockState: BlockState, other: BlockState): Boolean {
-        if (other.block is LeavesBlock) {
-            return false
-        }
-        return true
-    }
 
     companion object : PixLyzerBlockFactory<LeavesBlock> {
 

@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.MemoryTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import org.testng.Assert.assertFalse
+import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["models", "culling"])
@@ -49,24 +50,110 @@ class FaceCullingTest {
         return state
     }
 
+    private fun createState() = createNeighbour()
+
     fun noNeighbour() {
         val face = createFace()
-        assertFalse(FaceCulling.canCull(face, Directions.DOWN, null))
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.DOWN, null))
     }
 
     @Test
     fun selfNotTouching() {
         val face = createFace(null)
         val neighbour = createNeighbour()
-        assertFalse(FaceCulling.canCull(face, Directions.DOWN, neighbour))
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.DOWN, neighbour))
     }
 
     @Test
     fun neighbourNotTouching() {
         val face = createFace()
         val neighbour = createNeighbour(null)
-        assertFalse(FaceCulling.canCull(face, Directions.DOWN, neighbour))
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.DOWN, neighbour))
+    }
+
+    @Test
+    fun fullNeighbour() {
+        val face = createFace()
+        val neighbour = createNeighbour()
+        assertTrue(FaceCulling.canCull(createState(), face, Directions.DOWN, neighbour))
+    }
+
+    @Test
+    fun sizeMatch() {
+        val face = createFace(SideSize.FaceSize(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.5f)))
+        val neighbour = createNeighbour(side(SideSize.FaceSize(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.5f))))
+        assertTrue(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun greaterNeighbour() {
+        val face = createFace(SideSize.FaceSize(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.5f)))
+        val neighbour = createNeighbour(side(SideSize.FaceSize(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.6f))))
+        assertTrue(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun smallerNeighbour() {
+        val face = createFace(SideSize.FaceSize(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.5f)))
+        val neighbour = createNeighbour(side(SideSize.FaceSize(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.4f))))
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun shiftedNeighbour1() {
+        val face = createFace(SideSize.FaceSize(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.5f)))
+        val neighbour = createNeighbour(side(SideSize.FaceSize(Vec2(0.1f, 0.5f), Vec2(1.0f, 0.5f))))
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun shiftedNeighbour2() {
+        val face = createFace(SideSize.FaceSize(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.5f)))
+        val neighbour = createNeighbour(side(SideSize.FaceSize(Vec2(0.1f, 0.5f), Vec2(1.0f, 0.6f))))
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun shiftedNeighbour3() {
+        val face = createFace(SideSize.FaceSize(Vec2(0.1f, 0.8f), Vec2(0.9f, 0.9f)))
+        val neighbour = createNeighbour(side(SideSize.FaceSize(Vec2(0.1f, 0.5f), Vec2(0.95f, 0.95f))))
+        assertTrue(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun opaqueOnTransparent() {
+        val face = createFace(transparency = TextureTransparencies.OPAQUE)
+        val neighbour = createNeighbour(transparency = TextureTransparencies.TRANSPARENT)
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun transparentOnOpaque() {
+        val face = createFace(transparency = TextureTransparencies.TRANSPARENT)
+        val neighbour = createNeighbour(transparency = TextureTransparencies.OPAQUE)
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun opaqueOnTranslucent() {
+        val face = createFace(transparency = TextureTransparencies.OPAQUE)
+        val neighbour = createNeighbour(transparency = TextureTransparencies.TRANSLUCENT)
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun translucentOnOpaque() {
+        val face = createFace(transparency = TextureTransparencies.TRANSLUCENT)
+        val neighbour = createNeighbour(transparency = TextureTransparencies.OPAQUE)
+        assertFalse(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
     }
 
     // TODO: force no cull (e.g. leaves), mix of transparency, mix of side sizes
+
+    // TODO: same transparency when same block
+
+
+    private fun side(vararg size: SideSize.FaceSize): SideSize {
+        return SideSize(arrayOf(*size))
+    }
 }

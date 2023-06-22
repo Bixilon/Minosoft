@@ -75,10 +75,6 @@ abstract class Block(
     @Deprecated("Interface")
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
 
-    @Deprecated("Interface")
-    open fun canCull(blockState: BlockState, other: BlockState): Boolean = true
-
-
     fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperties, Array<Any>>) {
         this::properties.forceSet(properties)
         this::states.forceSet(states)
