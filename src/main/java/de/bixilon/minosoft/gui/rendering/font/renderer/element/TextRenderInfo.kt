@@ -30,11 +30,11 @@ class TextRenderInfo(
         size.x = maxOf(offset.offset.x - offset.initial.x + width, size.x)
 
         val line: LineRenderInfo
-        if (lineIndex == 0 && lines.isEmpty()) {
+        if ((lineIndex == 0 && lines.isEmpty()) || lineIndex >= lines.size) {
             // first char of all lines
             line = LineRenderInfo()
             lines += line
-            size.y = properties.lineHeight
+            size.y += properties.lineHeight
         } else {
             line = lines[lineIndex]
         }

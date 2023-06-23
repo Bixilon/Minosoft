@@ -444,5 +444,25 @@ class ChatComponentRendererTest {
         )
     }
 
+    fun `first line blank`() {
+        val text = TextComponent("\nbcd")
+
+        val info = render(text)
+        info.assert(lineIndex = 1, size = Vec2(5.0f, 22.0f), lines = listOf(
+            LineRenderInfo(BaseComponent(), 0.0f),
+            LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+        ))
+    }
+
+    fun `first component blank`() {
+        val text = BaseComponent(TextComponent("\n"), TextComponent("bcd"))
+
+        val info = render(text)
+        info.assert(lineIndex = 1, size = Vec2(5.0f, 22.0f), lines = listOf(
+            LineRenderInfo(BaseComponent(), 0.0f),
+            LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+        ))
+    }
+
     // TODO: shadow, formatting (just basic, that is code point renderer's job)
 }
