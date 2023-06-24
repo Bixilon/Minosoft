@@ -464,5 +464,16 @@ class ChatComponentRendererTest {
         ))
     }
 
-    // TODO: shadow, formatting (just basic, that is code point renderer's job)
+    fun `first lines blank`() {
+        val text = TextComponent("\n\nbcd")
+
+        val info = render(text)
+        info.assert(lineIndex = 2, size = Vec2(5.0f, 33.0f), lines = listOf(
+            LineRenderInfo(BaseComponent(), 0.0f),
+            LineRenderInfo(BaseComponent(), 0.0f),
+            LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
+        ))
+    }
+
+    // TODO: shadow, formatting (italic; strikethrough; underlined)
 }
