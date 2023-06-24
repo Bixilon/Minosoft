@@ -54,6 +54,8 @@ class ItemEntityPhysics(entity: ItemEntity) : EntityPhysics<ItemEntity>(entity) 
 
     private fun move() {
         // This is not 100% vanilla, but performance optimized
+        if (position.y < entity.connection.world.dimension.minY - 10.0) return // ignore out of world entities
+
         if (onGround && this.velocity.xz.length2() <= 9.999999747378752E-6 && entity.age % 4 != 0) return
 
         move(this.velocity)
