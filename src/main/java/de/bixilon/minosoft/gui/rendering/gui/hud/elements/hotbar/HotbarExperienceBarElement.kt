@@ -62,7 +62,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
 
         if (level > 0) {
             // level
-            val text = TextElement(guiRenderer, TextComponent(level).apply { color = RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR }, properties = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false))
+            val text = TextElement(guiRenderer, TextComponent(level).apply { color = RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR }, background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false))
 
             text.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, text.size.x), -TEXT_PROPERTIES.lineHeight + 1), consumer, options)
         }
