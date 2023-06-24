@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 class VoxelShape(
-    val aabb: Set<AABB>,
+    val aabb: Collection<AABB>,
 ) : AbstractVoxelShape() {
     override val aabbs: Int = aabb.size
 

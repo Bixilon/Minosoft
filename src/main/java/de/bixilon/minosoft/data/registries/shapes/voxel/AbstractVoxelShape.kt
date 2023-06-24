@@ -41,7 +41,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
     }
 
     private inline fun modify(modify: (AABB) -> AABB): AbstractVoxelShape {
-        val result: MutableSet<AABB> = ObjectOpenHashSet()
+        val result: MutableList<AABB> = ArrayList()
         for (aabb in this) {
             result += modify(aabb)
         }

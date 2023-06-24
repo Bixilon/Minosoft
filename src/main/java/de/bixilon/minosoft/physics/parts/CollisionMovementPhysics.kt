@@ -32,13 +32,12 @@ import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.EntityPhysics
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import kotlin.math.abs
 
 object CollisionMovementPhysics {
 
     fun World.collectCollisions(context: CollisionContext, movement: Vec3d, aabb: AABB, chunk: Chunk?, predicate: CollisionPredicate? = null): VoxelShape {
-        val shapes: MutableSet<AABB> = ObjectOpenHashSet()
+        val shapes: ArrayList<AABB> = ArrayList()
         // TODO: add entity collisions (boat, shulker)
         // TODO: add world border collision shape
 
