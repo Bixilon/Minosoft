@@ -47,6 +47,7 @@ class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, dat
 
     override fun tick() {
         if (blockState == null) return // TODO: discard
+        super.tick()
     }
 
     companion object : EntityFactory<FallingBlockEntity> {
