@@ -20,15 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 
 class EntityTicker(val entities: WorldEntities) {
-    private val iterator = QueuedIterator(entities.entities.spliterator(), priority = ThreadPool.HIGH, queueSize = 1000, executor = createTicker())
-
-
-    private fun createTicker(): (Entity) -> Unit = tick@{
-        if (it.attachment.vehicle != null) {
-            return@tick
-        }
-        tickEntity(it)
-    }
+    private val iterator = QueuedIterator(entities.entities.spliterator(), priority = ThreadPool.HIGH, queueSize = 1000)
 
     private fun tickEntity(entity: Entity) {
         if (!entity.tryTick()) {
@@ -58,6 +50,11 @@ class EntityTicker(val entities: WorldEntities) {
 
     fun tick() {
         iterator.reuse(entities.entities.spliterator())
-        iterator.iterate()
+        iterator.iterate {
+            if (it.attachment.vehicle != null) {
+                return@iterate
+            }
+            tickEntity(it)
+        }
     }
 }

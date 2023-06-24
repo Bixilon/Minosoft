@@ -15,11 +15,10 @@ package de.bixilon.minosoft.gui.rendering.entity
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.collections.iterator.async.QueuedIterator
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
-import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -54,6 +53,7 @@ class EntityRenderer(
     private val models: LockMap<Entity, EntityModel<*>> = lockMapOf()
     private lateinit var localModel: LocalPlayerModel
     private var toUnload: MutableList<EntityModel<*>> = synchronizedListOf()
+    private val iterator = QueuedIterator(models.unsafe.values.spliterator(), priority = ThreadPool.HIGHER, queueSize = 1000)
 
     var hitboxes = profile.hitbox.enabled
 
@@ -151,15 +151,10 @@ class EntityRenderer(
     }
 
     private fun runAsync(executor: ((EntityModel<*>) -> Unit)) {
-        val worker = UnconditionalWorker()
         models.lock.acquire()
-        for (model in models.unsafe.values) {
-            worker += UnconditionalTask(ThreadPool.Priorities.HIGH) {
-                executor(model)
-            }
-        }
+        iterator.reuse(models.unsafe.values.spliterator())
+        iterator.iterate(executor)
         models.lock.release()
-        worker.work()
     }
 
 
