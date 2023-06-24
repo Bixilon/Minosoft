@@ -154,7 +154,6 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         if (toggleFly) {
             entity.inputActions = entity.inputActions.copy(toggleFly = false)
         }
-        if (!entity.abilities.allowFly) return
 
         if (entity.gamemode == Gamemodes.SPECTATOR) {
             if (entity.abilities.flying) return
@@ -163,6 +162,8 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
             entity.abilities = entity.abilities.copy(flying = true)
             return
         }
+        if (!entity.abilities.allowFly) return
+
         if (!toggleFly) return
         if (this.isSwimming) return
 
