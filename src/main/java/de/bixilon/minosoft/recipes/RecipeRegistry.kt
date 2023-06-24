@@ -54,7 +54,7 @@ class RecipeRegistry(
 
     override fun getId(value: Recipe): Int {
         val id = valueIdMap.getInt(value)
-        if (id > 0) return id
+        if (id >= 0) return id
         return parent?.getId(value) ?: throw IllegalArgumentException("No id available for $value")
     }
 
