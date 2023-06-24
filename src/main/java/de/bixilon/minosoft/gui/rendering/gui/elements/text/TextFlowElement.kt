@@ -102,7 +102,7 @@ open class TextFlowElement(
     override fun forceSilentApply() {
         val visibleLines: MutableList<TextFlowLineElement> = mutableListOf()
         val maxSize = maxSize
-        val maxLines = maxSize.y / (properties.lineHeight + properties.lineSpacing)
+        val maxLines = (maxSize.y / (properties.lineHeight + properties.lineSpacing)).toInt()
         val currentTime = millis()
         var textSize = Vec2.EMPTY
         val active = this.active
