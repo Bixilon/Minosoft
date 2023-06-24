@@ -173,7 +173,7 @@ class AudioPlayer(
             }
         }
         // no source available
-        if (sources.size > SoundConstants.MAX_SOURCES_AMOUNT) {
+        if (sources.size >= SoundConstants.MAX_SOURCES_AMOUNT) {
             return null
         }
         val source = SoundSource()
