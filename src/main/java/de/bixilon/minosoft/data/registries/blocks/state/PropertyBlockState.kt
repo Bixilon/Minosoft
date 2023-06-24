@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.state
 
 import com.google.common.base.Objects
+import de.bixilon.kutil.array.ArrayUtil.next
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateMan
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.util.KUtil.next
 
 open class PropertyBlockState(
     block: Block,

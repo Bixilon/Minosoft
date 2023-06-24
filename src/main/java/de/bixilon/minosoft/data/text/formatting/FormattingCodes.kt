@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.text.formatting
 
+import de.bixilon.kutil.ansi.ANSI.formatting
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.text.formatting.ANSI.formatting
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 enum class FormattingCodes(

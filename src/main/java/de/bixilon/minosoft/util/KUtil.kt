@@ -28,9 +28,6 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
-import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.kutil.latch.ParentLatch
-import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -336,14 +333,6 @@ object KUtil {
         return value * 0.017453292f
     }
 
-    @Deprecated("Kutil 1.23")
-    fun String.fill(char: Char, length: Int): String {
-        if (this.length >= length) return this
-        val fill = char.toString().repeat(length - this.length)
-
-        return fill + this
-    }
-
     fun <T> table(elements: Collection<T>, vararg headers: AnyString, builder: (T) -> Array<Any?>?): Table {
         val table = Table(headers.unsafeCast())
 
@@ -352,11 +341,5 @@ object KUtil {
         }
 
         return table
-    }
-
-    @Deprecated("Kutil 1.23")
-    fun AbstractLatch?.child(count: Int): AbstractLatch {
-        if (this == null) return SimpleLatch(count)
-        return ParentLatch(count, this)
     }
 }

@@ -15,11 +15,11 @@ package de.bixilon.minosoft.data.entities.entities.player.properties.textures
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kutil.hex.HexUtil.isHexString
+import de.bixilon.kutil.string.StringUtil.fill
 import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.HashTypes
-import de.bixilon.minosoft.util.KUtil.fill
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

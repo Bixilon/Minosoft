@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.state.manager
 
+import de.bixilon.kutil.collections.iterator.SingleIterator
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.util.SingleIterator
 
 class SimpleStateManager(
     override val default: BlockState,

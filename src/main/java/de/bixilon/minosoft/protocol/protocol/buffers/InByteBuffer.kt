@@ -191,25 +191,4 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
         }
         return readNBTTag(type)
     }
-
-
-    @Deprecated("Kutil 1.23")
-    inline fun <reified T> readSet(length: Int = readVarInt(), reader: () -> T): Set<T> {
-        check(length <= size) { "Trying to allocate too much memory!" }
-        val set: MutableSet<T> = LinkedHashSet(length)
-        for (i in 0 until length) {
-            set += reader()
-        }
-        return set
-    }
-
-    @Deprecated("Kutil 1.23")
-    inline fun <reified K, reified V> readMap(length: Int = readVarInt(), key: () -> K, value: () -> V): Map<K, V> {
-        check(length <= size) { "Trying to allocate too much memory!" }
-        val map: MutableMap<K, V> = LinkedHashMap(length)
-        for (i in 0 until length) {
-            map[key()] = value()
-        }
-        return map
-    }
 }

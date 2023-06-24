@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.util.logging
 
+import de.bixilon.kutil.ansi.ANSI
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileSelectEvent
@@ -98,7 +99,7 @@ object Log {
                 SYSTEM_OUT_STREAM
             }
 
-            val prefix = message.ansiColoredMessage.removeSuffix("\u001b[0m") // reset suffix
+            val prefix = message.ansiColoredMessage.removeSuffix(ANSI.formatting(0)) // reset suffix
             for (line in this.message.ansiColoredMessage.lineSequence()) {
                 stream.println(prefix + line)
             }

@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.string.StringUtil.getBetween
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.LANServerType
-import de.bixilon.minosoft.util.KUtil.child
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
