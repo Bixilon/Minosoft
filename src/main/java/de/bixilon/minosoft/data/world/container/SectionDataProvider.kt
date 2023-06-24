@@ -226,6 +226,9 @@ open class SectionDataProvider<T>(
 
     @Suppress("UNCHECKED_CAST")
     override fun iterator(): Iterator<T> {
-        return (data?.iterator() ?: EmptyIterator) as Iterator<T>
+        val data = this.data ?: return EmptyIterator.unsafeCast()
+        if (this.isEmpty) return EmptyIterator.unsafeCast()
+
+        return data.iterator().unsafeCast()
     }
 }
