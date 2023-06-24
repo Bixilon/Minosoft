@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.physics.entities.item
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.entities.item.PrimedTNT
+import de.bixilon.minosoft.data.entities.entities.item.FallingBlockEntity
 import de.bixilon.minosoft.physics.PhysicsConstants
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 
-class PrimedTNTPhysics(entity: PrimedTNT) : EntityPhysics<PrimedTNT>(entity) {
+class FallingBlockPhysics(entity: FallingBlockEntity) : EntityPhysics<FallingBlockEntity>(entity) {
     // TODO: test
 
 
@@ -30,13 +30,6 @@ class PrimedTNTPhysics(entity: PrimedTNT) : EntityPhysics<PrimedTNT>(entity) {
         this.move(this.velocity)
 
         this.velocity = this.velocity * PhysicsConstants.AIR_RESISTANCE
-
-        if (onGround) {
-            this.velocity = this.velocity * ON_GROUND
-        }
-
-        val fuse = entity.fuseTime
-        if (fuse <= 0) return // TODO: discard
     }
 
     override fun tick() {
@@ -47,6 +40,5 @@ class PrimedTNTPhysics(entity: PrimedTNT) : EntityPhysics<PrimedTNT>(entity) {
 
     companion object {
         val GRAVITY = Vec3d(0.0, -0.04, 0.0)
-        val ON_GROUND = Vec3d(0.7, -0.5, 0.7)
     }
 }
