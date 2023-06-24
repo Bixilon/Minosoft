@@ -331,26 +331,17 @@ object KUtil {
         return x.matches(other.x, margin) && y.matches(other.y, margin) && z.matches(other.z, margin)
     }
 
+    @Deprecated("glm, to remove")
     fun toRad(value: Float): Float {
         return value * 0.017453292f
     }
 
+    @Deprecated("Kutil 1.23")
     fun String.fill(char: Char, length: Int): String {
         if (this.length >= length) return this
         val fill = char.toString().repeat(length - this.length)
 
         return fill + this
-    }
-
-
-    fun <T> Array<T>.next(current: T): T {
-        val index = this.indexOf(current)
-        check(index >= 0) { "Array does not contain $current" }
-
-        if (index == this.size - 1) {
-            return this[0]
-        }
-        return this[index + 1]
     }
 
     fun <T> table(elements: Collection<T>, vararg headers: AnyString, builder: (T) -> Array<Any?>?): Table {
@@ -363,6 +354,7 @@ object KUtil {
         return table
     }
 
+    @Deprecated("Kutil 1.23")
     fun AbstractLatch?.child(count: Int): AbstractLatch {
         if (this == null) return SimpleLatch(count)
         return ParentLatch(count, this)
