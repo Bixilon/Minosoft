@@ -30,6 +30,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     init {
         add(TextElement(guiRenderer, "Debug options", HorizontalAlignments.CENTER, false))
         add(SpacerElement(guiRenderer, Vec2i(0, 10)))
+
         add(ButtonElement(guiRenderer, "Switch to next gamemode") { connection.util.typeChat("/gamemode ${connection.player.gamemode.next().name.lowercase()}") })
         add(ButtonElement(guiRenderer, "Hack to next gamemode") {
             val previous = connection.player.additional.gamemode
@@ -42,6 +43,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
             entity.forceTeleport(Vec3d(position.x, 100.0, position.z))
         })
+        add(ButtonElement(guiRenderer, "Toggle allow flight") { connection.player.abilities = connection.player.abilities.copy(allowFly = !connection.player.abilities.allowFly) })
 
         add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })
     }
