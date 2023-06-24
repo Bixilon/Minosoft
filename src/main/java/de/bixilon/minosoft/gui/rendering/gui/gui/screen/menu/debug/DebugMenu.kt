@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,6 +31,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     init {
         add(TextElement(guiRenderer, "Debug options", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER)))
         add(SpacerElement(guiRenderer, Vec2(0, 10)))
+
         add(ButtonElement(guiRenderer, "Switch to next gamemode") { connection.util.typeChat("/gamemode ${connection.player.gamemode.next().name.lowercase()}") })
         add(ButtonElement(guiRenderer, "Hack to next gamemode") {
             val previous = connection.player.additional.gamemode
@@ -43,6 +44,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
             entity.forceTeleport(Vec3d(position.x, 100.0, position.z))
         })
+        add(ButtonElement(guiRenderer, "Toggle allow flight") { connection.player.abilities = connection.player.abilities.copy(allowFly = !connection.player.abilities.allowFly) })
 
         add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })
     }
