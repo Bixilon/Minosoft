@@ -48,43 +48,45 @@ class ItemEntityPhysics(entity: ItemEntity) : EntityPhysics<ItemEntity>(entity) 
         }
 
         if (!entity.hasGravity) return
+        if (onGround && this.velocity.y == GRAVITY) return
 
-        this.velocity = velocity + GRAVITY
+        this.velocity = velocity + GRAVITY_MOVEMENT
     }
 
-    private fun move() {
-        // This is not 100% vanilla, but performance optimized
-        if (position.y < entity.connection.world.dimension.minY - 10.0) return // ignore out of world entities
-
-        if (onGround && this.velocity.xz.length2() <= 9.999999747378752E-6 && entity.age % 4 != 0) return
-
-        move(this.velocity)
-
+    private fun updateFriction() {
         var friction = PhysicsConstants.AIR_RESISTANCEf
         if (onGround) {
             val frictionPosition = (position + FRICTION_OFFSET).blockPosition.inChunkPosition
             friction *= positionInfo.chunk?.get(frictionPosition)?.block?.nullCast<FrictionBlock>()?.friction ?: FrictionBlock.DEFAULT_FRICTION
-            this.velocity = Vec3d(this.velocity.x * friction, 0.0, this.velocity.z * friction)
-        } else {
-            this.velocity = this.velocity * Vec3d(friction, PhysicsConstants.AIR_RESISTANCE, friction)
         }
+        this.velocity = this.velocity * Vec3d(friction, PhysicsConstants.AIR_RESISTANCE, friction)
+    }
 
-        if (onGround) {
-            val velocity = this.velocity
-            if (velocity.y < 0.0) {
-                this.velocity = Vec3d(velocity.x, velocity.y * -0.5, velocity.z)
-            }
+    private fun boost() {
+        if (!onGround) return
+
+        val velocity = this.velocity
+        if (velocity.y < 0.0) {
+            this.velocity = Vec3d(velocity.x, velocity.y * -0.5, velocity.z)
         }
     }
 
     override fun tick() {
-        updateVelocity()
+        // This is not 100% vanilla, but performance optimized
+        if (position.y < entity.connection.world.dimension.minY - 20.0) return // ignore out of world entities
 
-        move()
+        updateVelocity()
+        if (onGround && this.velocity.xz.length2() <= 9.999999747378752E-6 && entity.age % 4 != 0) return
+
+        move(this.velocity)
+
+        updateFriction()
+        boost()
     }
 
     companion object {
-        val GRAVITY = Vec3d(0.0, -0.04, 0.0)
+        const val GRAVITY = -0.04
+        val GRAVITY_MOVEMENT = Vec3d(0.0, GRAVITY, 0.0)
         val FRICTION_OFFSET = Vec3d(0, -1, 0)
 
         val Fluid.friction: Float
