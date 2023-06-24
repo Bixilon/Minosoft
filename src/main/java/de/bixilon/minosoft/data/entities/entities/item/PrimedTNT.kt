@@ -22,8 +22,10 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.physics.entities.item.PrimedTNTPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
@@ -31,8 +33,19 @@ class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: Entity
     val fuseTime: Int
         get() = data.get(FUSE_TIME_DATA, 80)
 
+    override fun tick() {
+        if (fuseTime <= 0) return
+
+        super.tick()
+
+        val position = physics.position
+        connection.world += SmokeParticle(connection, position + SMOKE_OFFSET, Vec3d.EMPTY)
+    }
+
+    override fun createPhysics() = PrimedTNTPhysics(this)
 
     companion object : EntityFactory<PrimedTNT> {
+        private val SMOKE_OFFSET = Vec3d(0.0, 0.5, 0.0)
         override val identifier: ResourceLocation = minecraft("tnt")
         private val FUSE_TIME_DATA = EntityDataField("PRIMED_TNT_FUSE_TIME")
 
