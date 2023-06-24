@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.abilities
 
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 data class ItemCooldown(
@@ -23,5 +23,5 @@ data class ItemCooldown(
     val end: Long = start + (time * ProtocolDefinition.TICK_TIME)
 
     val ended: Boolean
-        get() = TimeUtil.millis >= end
+        get() = millis() >= end
 }

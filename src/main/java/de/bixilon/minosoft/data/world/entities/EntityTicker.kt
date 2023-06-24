@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.data.world.entities
 
-import de.bixilon.kutil.collections.iterator.async.QueuedIterator
+import de.bixilon.kutil.collections.iterator.async.ConcurrentIterator
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 
 class EntityTicker(val entities: WorldEntities) {
-    private val iterator = QueuedIterator(entities.entities.spliterator(), priority = ThreadPool.HIGH, queueSize = 1000)
 
     private fun tickEntity(entity: Entity) {
         if (!entity.tryTick()) {
@@ -49,7 +48,7 @@ class EntityTicker(val entities: WorldEntities) {
 
 
     fun tick() {
-        iterator.reuse(entities.entities.spliterator())
+        val iterator = ConcurrentIterator(entities.entities.spliterator(), priority = ThreadPool.HIGH)
         iterator.iterate {
             if (it.attachment.vehicle != null) {
                 return@iterate
