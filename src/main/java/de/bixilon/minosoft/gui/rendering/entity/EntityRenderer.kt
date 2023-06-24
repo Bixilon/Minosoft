@@ -108,8 +108,9 @@ class EntityRenderer(
     override fun prePrepareDraw() {
         val count = AtomicInteger()
         val reset = reset
+        val millis = millis()
         runAsync {
-            it.entity.draw(millis())
+            it.entity.draw(millis)
             if (reset) {
                 it.reset()
             }
