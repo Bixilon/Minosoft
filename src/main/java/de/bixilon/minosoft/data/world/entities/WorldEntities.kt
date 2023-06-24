@@ -11,17 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world
+package de.bixilon.minosoft.data.world.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
-import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
@@ -37,6 +33,7 @@ class WorldEntities : Iterable<Entity> {
     private val entityUUIDMap: MutableMap<Entity, UUID> = mutableMapOf()
     private val uuidEntityMap: MutableMap<UUID, Entity> = mutableMapOf()
     val entities: MutableSet<Entity> by observedSet(mutableSetOf())
+    private val ticker = EntityTicker(this)
 
     val lock = SimpleLock()
 
@@ -185,40 +182,8 @@ class WorldEntities : Iterable<Entity> {
 
     fun tick() {
         lock.acquire()
-        val worker = UnconditionalWorker()
-        for (entity in entities) {
-            if (entity.attachment.vehicle != null) {
-                continue
-            }
-            worker += UnconditionalTask(priority = ThreadPool.Priorities.HIGH) { tickEntity(entity) }
-        }
+        ticker.tick()
         lock.release()
-        worker.work()
-    }
-
-    private fun tickEntity(entity: Entity) {
-        if (!entity.tryTick()) {
-            // not ticked
-            return
-        }
-
-        for (passenger in entity.attachment.passengers) {
-            tickPassenger(passenger)
-        }
-    }
-
-    private fun tickPassenger(entity: Entity) {
-        if (entity is LivingEntity && entity.health == 0.0) {
-            entity.attachment.vehicle = null
-            return
-        }
-        if (entity !is PlayerEntity) return
-
-        entity.tickRiding()
-
-        for (passenger in entity.attachment.passengers) {
-            tickPassenger(passenger)
-        }
     }
 
     fun clear(connection: PlayConnection, local: Boolean = false) {

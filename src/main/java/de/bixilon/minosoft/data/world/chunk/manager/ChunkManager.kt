@@ -36,7 +36,9 @@ class ChunkManager(val world: World) {
     val chunks: LockMap<Vec2i, Chunk> = LockMap(hashMapOf(), world.lock)
     val prototypes: LockMap<Vec2i, ChunkPrototype> = LockMap(hashMapOf(), world.lock)
     val size = WorldSizeManager(world)
+    val ticker = ChunkTicker(this)
     var revision by observed(0)
+
 
     operator fun get(position: ChunkPosition): Chunk? {
         return chunks[position]
@@ -167,5 +169,9 @@ class ChunkManager(val world: World) {
 
 
         return chunk
+    }
+
+    fun tick(simulationDistance: Int, cameraPosition: Vec2i) {
+        ticker.tick(simulationDistance, cameraPosition)
     }
 }

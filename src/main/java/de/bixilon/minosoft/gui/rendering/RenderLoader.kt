@@ -158,5 +158,4 @@ object RenderLoader {
         }
         Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${time.formatNanos()}" }
     }
-
 }
