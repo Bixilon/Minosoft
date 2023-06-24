@@ -37,7 +37,9 @@ class EntityCollectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.events.fire(CollectItemAnimationEvent(connection, this))) {
+        val entity = connection.world.entities[itemEntityId] ?: return
+        val collector = connection.world.entities[collectorEntityId] ?: return
+        if (connection.events.fire(CollectItemAnimationEvent(connection, entity, collector, count))) {
             return
         }
     }
