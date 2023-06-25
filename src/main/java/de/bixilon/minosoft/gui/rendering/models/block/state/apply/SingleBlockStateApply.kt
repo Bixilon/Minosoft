@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compact
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compactSize
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.positions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.SideSize
@@ -147,7 +148,7 @@ data class SingleBlockStateApply(
             }
         }
 
-        return BakedModel(bakedFaces.compact(), emptyArray(), null) // TODO
+        return BakedModel(bakedFaces.compact(), sizes.compactSize(), null) // TODO
     }
 
     companion object {

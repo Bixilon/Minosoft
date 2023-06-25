@@ -42,6 +42,18 @@ object BakingUtil {
         return array.cast()
     }
 
+    fun Array<MutableList<SideSize.FaceSize>>.compactSize(): Array<SideSize?> {
+        val array: Array<SideSize?> = arrayOfNulls(size)
+
+        for ((index, entries) in this.withIndex()) {
+            val size = entries.toTypedArray()
+            if (size.isEmpty()) continue
+            array[index] = SideSize(size)
+        }
+
+        return array
+    }
+
 
     fun FloatArray.pushRight(components: Int, steps: Int): FloatArray {
         if (this.size % components != 0) throw IllegalArgumentException("Size mismatch!")
