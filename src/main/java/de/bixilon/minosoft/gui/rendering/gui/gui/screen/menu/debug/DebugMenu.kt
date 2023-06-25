@@ -15,6 +15,9 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -45,6 +48,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
             entity.forceTeleport(Vec3d(position.x, 100.0, position.z))
         })
         add(ButtonElement(guiRenderer, "Toggle allow flight") { connection.player.abilities = connection.player.abilities.copy(allowFly = !connection.player.abilities.allowFly) })
+        add(ButtonElement(guiRenderer, TextComponent("☀").color(ChatColors.YELLOW)) { connection.world.weather = WorldWeather.SUNNY })
 
         add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })
     }
