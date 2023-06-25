@@ -110,7 +110,7 @@ object ChunkTestingUtil {
         val block = TestBlock(minosoft(name), BlockSettings())
         val state = AdvancedBlockState(block, properties = emptyMap(), collisionShape = AbstractVoxelShape.EMPTY, outlineShape = AbstractVoxelShape.EMPTY, luminance = luminance, lightProperties = lightProperties, solidRenderer = true)
         block::states.javaField!!.forceSet(block, setOf(state))
-        block::defaultState.javaField!!.forceSet(block, state)
+        block.states::default.javaField!!.forceSet(block, state)
 
         return block
     }
