@@ -56,7 +56,7 @@ class PriorityAssetsManager(
     operator fun plusAssign(manager: AssetsManager) = add(manager)
 
     override fun get(path: ResourceLocation): InputStream {
-        return getOrNull(path) ?: throw FileNotFoundException("Can not find assets-manager for $path")
+        return getOrNull(path) ?: throw FileNotFoundException("Can not find asset $path")
     }
 
     override fun getOrNull(path: ResourceLocation): InputStream? {
