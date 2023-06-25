@@ -32,25 +32,21 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     private val connection = guiRenderer.connection
 
     init {
-        add(TextElement(guiRenderer, "Debug options", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER)))
-        add(SpacerElement(guiRenderer, Vec2(0, 10)))
+        this += TextElement(guiRenderer, "Debug options", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER))
+        this += SpacerElement(guiRenderer, Vec2(0, 10))
 
-        add(ButtonElement(guiRenderer, "Switch to next gamemode") { connection.util.typeChat("/gamemode ${connection.player.gamemode.next().name.lowercase()}") })
-        add(ButtonElement(guiRenderer, "Hack to next gamemode") {
-            val previous = connection.player.additional.gamemode
-            val next = previous.next()
-            connection.player.additional.gamemode = next
-        })
-        add(ButtonElement(guiRenderer, "Fake y=100") {
+        this += ButtonElement(guiRenderer, "Switch to next gamemode") { connection.util.typeChat("/gamemode ${connection.player.gamemode.next().name.lowercase()}") }
+        this += ButtonElement(guiRenderer, "Hack to next gamemode") { connection.player.additional.apply { gamemode = gamemode.next() } }
+        this += ButtonElement(guiRenderer, "Fake y=100") {
             val entity = connection.player
             val position = entity.physics.position
 
             entity.forceTeleport(Vec3d(position.x, 100.0, position.z))
-        })
-        add(ButtonElement(guiRenderer, "Toggle allow flight") { connection.player.abilities = connection.player.abilities.copy(allowFly = !connection.player.abilities.allowFly) })
-        add(ButtonElement(guiRenderer, TextComponent("☀").color(ChatColors.YELLOW)) { connection.world.weather = WorldWeather.SUNNY })
+        }
+        this += ButtonElement(guiRenderer, "Toggle allow flight") { connection.player.apply { abilities = abilities.copy(allowFly = !abilities.allowFly) } }
+        this += ButtonElement(guiRenderer, TextComponent("☀").color(ChatColors.YELLOW)) { connection.world.weather = WorldWeather.SUNNY }
 
-        add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })
+        this += ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() }
     }
 
     companion object : GUIBuilder<LayoutedGUIElement<DebugMenu>> {
