@@ -59,11 +59,9 @@ object AccountUtil {
     }
 
     fun fetchPrivateKey(token: MinecraftTokens): MinecraftPrivateKey {
-        val response = emptyMap<String, Any>().postJson(
-            CERTIFICATE_URL, mapOf(
-                "Authorization" to "Bearer ${token.accessToken}",
-            )
-        )
+        val response = emptyMap<String, Any>().postJson(CERTIFICATE_URL, mapOf(
+            "Authorization" to "Bearer ${token.accessToken}",
+        ))
 
         if (response.statusCode != 200) {
             throw MinecraftAPIException(response)
