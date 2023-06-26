@@ -55,7 +55,7 @@ class MicrosoftAccount(
     @Synchronized
     override fun join(serverId: String) {
         tryCheck(null, "null")
-        AccountUtil.joinMojangServer(username, minecraft.accessToken, uuid, serverId)
+        AccountUtil.joinMojangServer(minecraft.accessToken, uuid, serverId)
     }
 
     override fun logout(clientToken: String) = Unit

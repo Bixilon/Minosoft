@@ -48,7 +48,7 @@ class MojangAccount(
     override val type: ResourceLocation get() = identifier
 
     override fun join(serverId: String) {
-        AccountUtil.joinMojangServer(username, accessToken, uuid, serverId)
+        AccountUtil.joinMojangServer(accessToken, uuid, serverId)
     }
 
     override fun logout(clientToken: String) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -43,10 +43,10 @@ object AccountUtil {
         return Jackson.MAPPER.convertValue(response.body, MinecraftProfile::class.java)
     }
 
-    fun joinMojangServer(username: String, accessToken: String, selectedProfile: UUID, serverId: String) {
+    fun joinMojangServer(accessToken: String, profile: UUID, serverId: String) {
         val response = mutableMapOf(
             "accessToken" to accessToken,
-            "selectedProfile" to selectedProfile.trim(),
+            "selectedProfile" to profile.trim(),
             "serverId" to serverId,
         ).postJson(MOJANG_URL_JOIN)
 
@@ -55,7 +55,7 @@ object AccountUtil {
             throw MinecraftAPIException(response)
         }
 
-        Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang server join successful (username=$username, serverId=$serverId)" }
+        Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang server join successful (profile=$profile, serverId=$serverId)" }
     }
 
     fun fetchPrivateKey(token: MinecraftTokens): MinecraftPrivateKey {
