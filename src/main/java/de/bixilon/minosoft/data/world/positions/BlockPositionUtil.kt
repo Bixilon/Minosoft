@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.world.positions
 object BlockPositionUtil {
 
     fun generatePositionHash(x: Int, y: Int, z: Int): Long {
-        var hash = (x * 3129871L) xor z.toLong() * 116129781L xor y.toLong()
+        var hash = (x * 3129871L) xor (z * 116129781L) xor y.toLong()
         hash = hash * hash * 42317861L + hash * 11L
         return hash shr 16
     }
