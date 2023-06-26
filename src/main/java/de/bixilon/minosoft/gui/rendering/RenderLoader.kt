@@ -51,6 +51,7 @@ object RenderLoader {
     }
 
     fun RenderContext.load(latch: AbstractLatch) {
+        val renderLatch = ParentLatch(1, latch)
         setThread()
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Creating window..." }
         val stopwatch = Stopwatch()
@@ -73,7 +74,7 @@ object RenderLoader {
         renderSystem.reset()
 
         // Init stage
-        val initLatch = ParentLatch(1, latch)
+        val initLatch = ParentLatch(1, renderLatch)
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (after ${stopwatch.labTime()})..." }
         textureManager.dynamicTextures.load(initLatch)
         textureManager.initializeSkins(connection)
@@ -95,16 +96,16 @@ object RenderLoader {
 
         // Post init stage
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading textures (after ${stopwatch.labTime()})..." }
-        textureManager.staticTextures.preLoad(latch)
+        textureManager.staticTextures.preLoad(renderLatch)
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
-        textureManager.staticTextures.load(latch)
-        font.postInit(latch)
+        textureManager.staticTextures.load(renderLatch)
+        font.postInit(renderLatch)
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }
         shaderManager.postInit()
         skeletalManager.postInit()
-        renderer.postInit(latch)
+        renderer.postInit(renderLatch)
         framebufferManager.postInit()
 
 
@@ -134,8 +135,8 @@ object RenderLoader {
         textureManager.staticTextures.activate()
 
 
-        latch.dec() // initial count from rendering
-        latch.await()
+        renderLatch.dec() // initial count from rendering
+        renderLatch.await()
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
     }

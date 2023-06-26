@@ -20,6 +20,7 @@ import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
+import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -67,6 +68,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.startInit
+import de.bixilon.minosoft.util.KUtil.waitIfLess
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -177,7 +179,6 @@ class PlayConnection(
 
 
     fun connect(latch: AbstractLatch? = null) {
-        val count = latch?.count ?: 0
         check(!wasConnected) { "Connection was already connected!" }
         try {
             state = PlayConnectionStates.WAITING_MODS
@@ -219,17 +220,12 @@ class PlayConnection(
 
             camera.init()
 
-            if (!RunConfiguration.DISABLE_RENDERING) {
-                val rendering = Rendering(this)
-                this.rendering = rendering
-                val renderLatch = latch.child(0)
-                rendering.start(renderLatch)
-                renderLatch.awaitWithChange()
+
+            if (RunConfiguration.DISABLE_RENDERING) {
+                establish(latch)
+            } else {
+                establishRendering(latch)
             }
-            latch?.dec() // remove initial value
-            Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
-            network.connect(address, profiles.other.nativeNetwork)
-            state = PlayConnectionStates.ESTABLISHING
         } catch (exception: Throwable) {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
             if (this::assetsManager.isInitialized) {
@@ -238,7 +234,25 @@ class PlayConnection(
             error = exception
             retry = false
         }
-        latch?.count = count
+    }
+
+    private fun establish(latch: AbstractLatch?) {
+        latch?.dec() // remove initial value
+        Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
+        network.connect(address, profiles.other.nativeNetwork)
+        state = PlayConnectionStates.ESTABLISHING
+    }
+
+    private fun establishRendering(latch: AbstractLatch?) {
+        val rendering = Rendering(this)
+        this.rendering = rendering
+        val renderLatch = CallbackLatch(1, latch)
+        rendering.start(renderLatch)
+        renderLatch.waitIfLess(2)
+        renderLatch += latch@{
+            if (renderLatch.count > 0) return@latch
+            establish(latch)
+        }
     }
 
     override fun disconnect() {

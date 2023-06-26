@@ -28,6 +28,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -341,5 +342,12 @@ object KUtil {
         }
 
         return table
+    }
+
+    @Deprecated("kutil 1.24")
+    fun AbstractLatch.waitIfLess(value: Int, timeout: Long = 0L) = synchronized(notify) {
+        while (this.count < value) {
+            waitForChange(timeout)
+        }
     }
 }

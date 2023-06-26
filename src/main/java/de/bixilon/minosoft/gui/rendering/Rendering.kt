@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,9 +32,10 @@ class Rendering(private val connection: PlayConnection) {
 
     fun start(latch: AbstractLatch, render: Boolean = true, audio: Boolean = true) {
         Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
-        latch.inc()
-        if (audio) startAudioPlayerThread(latch)
-        if (render) startRenderWindowThread(latch)
+        val loading = ParentLatch(2, latch)
+        if (audio) startAudioPlayerThread(loading)
+        if (render) startRenderWindowThread(loading)
+        latch.dec()
     }
 
     private fun startAudioPlayerThread(latch: AbstractLatch) {
@@ -46,6 +47,7 @@ class Rendering(private val connection: PlayConnection) {
             try {
                 Thread.currentThread().priority = Thread.MAX_PRIORITY
                 audioPlayer.init(audioLatch)
+                latch.dec() // initial count
                 audioPlayer.startLoop()
                 audioPlayer.exit()
             } catch (exception: Throwable) {
@@ -70,6 +72,7 @@ class Rendering(private val connection: PlayConnection) {
             Thread.currentThread().priority = Thread.MAX_PRIORITY
             CONTEXT_MAP[Thread.currentThread()] = context
             context.load(latch)
+            latch.dec()
             val loop = RenderLoop(context)
             context.awaitPlaying()
             loop.startLoop()
