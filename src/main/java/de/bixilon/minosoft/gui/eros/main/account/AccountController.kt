@@ -53,17 +53,12 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 class AccountController : EmbeddedJavaFXController<Pane>() {
-    @FXML
-    private lateinit var accountTypeListViewFX: ListView<ErosAccountType<*>>
+    @FXML private lateinit var accountTypeListViewFX: ListView<ErosAccountType<*>>
 
-    @FXML
-    private lateinit var accountListViewFX: ListView<Account>
+    @FXML private lateinit var accountListViewFX: ListView<Account>
+    @FXML private lateinit var accountInfoFX: AnchorPane
 
-    @FXML
-    private lateinit var accountInfoFX: AnchorPane
-
-    @FXML
-    private lateinit var addButtonFX: Button
+    @FXML private lateinit var addButtonFX: Button
 
 
     override fun init() {
