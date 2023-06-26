@@ -11,19 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.leaves
+package de.bixilon.minosoft.data.registries.blocks.types.wood
 
-import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
+import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class LeavesBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
+interface Oak {
 
-    companion object : PixLyzerBlockFactory<LeavesBlock> {
+    class Leaves(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : LeavesBlock(identifier, settings), Oak {
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): LeavesBlock {
-            return LeavesBlock(resourceLocation, registries, data)
+        companion object : BlockFactory<Leaves> {
+            override val identifier = Namespaces.minecraft("oak_leaves")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Leaves(settings = settings)
         }
     }
 }

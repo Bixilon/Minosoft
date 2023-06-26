@@ -36,7 +36,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.redstone
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.redstone.SculkSensorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.leaves.LeavesBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant.CropBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant.PlantBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant.SweetBerryBushBlock
@@ -68,7 +67,6 @@ object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     SeagrassBlock,
     StoneButtonBlock,
     WoodenButtonBlock,
-    LeavesBlock,
     PlantBlock,
     CropBlock,
     CraftingTableBlock,
