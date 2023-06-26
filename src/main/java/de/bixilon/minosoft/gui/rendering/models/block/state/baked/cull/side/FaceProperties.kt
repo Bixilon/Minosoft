@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
-class FaceProperties(
+data class FaceProperties(
     val start: Vec2,
     val end: Vec2,
     val transparency: TextureTransparencies,

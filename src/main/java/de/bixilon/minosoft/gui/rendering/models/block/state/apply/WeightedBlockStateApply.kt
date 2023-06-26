@@ -48,7 +48,7 @@ data class WeightedBlockStateApply(
 
         fun deserialize(loader: BlockLoader, data: List<JsonObject>): WeightedBlockStateApply? {
             if (data.isEmpty()) return null
-            val models: MutableList<WeightedApply> = mutableListOf()
+            val models: MutableList<WeightedApply> = ArrayList(data.size)
 
             for (entry in data) {
                 var weight = entry["weight"]?.toInt() ?: 1

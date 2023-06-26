@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateAppl
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compact
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compactProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
@@ -53,7 +54,7 @@ class BuilderApply(
 
     private fun List<BakedModel>.combine(): BakedModel {
         val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
-        val sizes: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
+        val properties: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
         var particle: AbstractTexture? = null
 
         for (model in this) {
@@ -63,11 +64,11 @@ class BuilderApply(
 
             for (direction in Directions) {
                 faces[direction.ordinal] += model.faces[direction.ordinal]
-                // TODO sizes[direction.ordinal] += model.sizes[direction.ordinal].sizes
+                properties[direction.ordinal] += model.properties[direction.ordinal]?.faces ?: continue
             }
         }
 
         // TODO: sizes
-        return BakedModel(faces.compact(), emptyArray(), particle)
+        return BakedModel(faces.compact(), properties.compactProperties(), particle)
     }
 }

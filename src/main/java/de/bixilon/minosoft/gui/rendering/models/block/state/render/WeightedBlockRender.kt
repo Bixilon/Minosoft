@@ -30,10 +30,10 @@ class WeightedBlockRender(
     val models: Array<WeightedEntry>,
     val totalWeight: Int,
 ) : BlockRender {
-    private val size = models.getSize()
+    private val properties = models.getProperties()
 
     override fun getProperties(direction: Directions): SideProperties? {
-        return size[direction.ordinal] // TODO: get random block model
+        return properties[direction.ordinal] // TODO: get random block model
     }
 
     private fun getModel(random: Random?, position: BlockPosition): BlockRender {
@@ -66,7 +66,7 @@ class WeightedBlockRender(
         val model: BakedModel,
     )
 
-    private fun Array<WeightedEntry>.getSize(): Array<SideProperties?> {
+    private fun Array<WeightedEntry>.getProperties(): Array<SideProperties?> {
         val sizes: Array<SideProperties?> = arrayOfNulls(Directions.SIZE)
         val skip = BooleanArray(Directions.SIZE)
 

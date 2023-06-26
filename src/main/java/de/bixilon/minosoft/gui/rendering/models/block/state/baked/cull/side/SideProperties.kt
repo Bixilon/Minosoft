@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side
 
+import com.google.common.base.Objects
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
 class SideProperties(
@@ -21,5 +22,14 @@ class SideProperties(
 ) {
     init {
         if (faces.isEmpty()) throw IllegalCallerException("properties is empty!")
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is SideProperties) return false
+        return faces.contentEquals(other.faces) && transparency == other.transparency
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hashCode(faces.contentHashCode(), transparency)
     }
 }

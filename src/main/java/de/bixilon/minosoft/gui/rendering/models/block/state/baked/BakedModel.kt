@@ -26,11 +26,16 @@ import java.util.*
 
 class BakedModel(
     val faces: Array<Array<BakedFace>>,
-    val sizes: Array<SideProperties?>,
+    val properties: Array<SideProperties?>,
     val particle: AbstractTexture?,
 ) : BlockRender {
 
-    override fun getProperties(direction: Directions) = sizes[direction.ordinal]
+    init {
+        if (faces.size != Directions.SIZE) throw IllegalArgumentException()
+        if (properties.size != Directions.SIZE) throw IllegalArgumentException()
+    }
+
+    override fun getProperties(direction: Directions) = properties[direction.ordinal]
 
     override fun getParticleTexture(random: Random?, position: Vec3i) = particle
 

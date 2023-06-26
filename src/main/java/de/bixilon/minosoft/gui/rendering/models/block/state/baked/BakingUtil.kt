@@ -45,7 +45,7 @@ object BakingUtil {
         return array.cast()
     }
 
-    fun Array<MutableList<FaceProperties>>.compactSize(): Array<SideProperties?> {
+    fun Array<MutableList<FaceProperties>>.compactProperties(): Array<SideProperties?> {
         val array: Array<SideProperties?> = arrayOfNulls(size)
 
         for ((index, entries) in this.withIndex()) {

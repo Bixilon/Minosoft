@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -24,12 +26,13 @@ import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compact
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compactSize
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compactProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.positions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 data class SingleBlockStateApply(
@@ -112,7 +115,7 @@ data class SingleBlockStateApply(
         if (model.elements == null) return null
 
         val bakedFaces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
-        val sizes: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() } // TODO
+        val properties: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
 
         for (element in model.elements) {
             for ((direction, face) in element.faces) {
@@ -142,13 +145,38 @@ data class SingleBlockStateApply(
                 }
                 val shade = rotatedDirection.shade
 
-                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, face.cull, texture, null)
+                val a = positions.properties(rotatedDirection)
+                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, face.cull, texture, a)
 
                 bakedFaces[rotatedDirection.ordinal] += bakedFace
+                properties[rotatedDirection.ordinal] += a ?: continue
             }
         }
 
-        return BakedModel(bakedFaces.compact(), sizes.compactSize(), null) // TODO
+        return BakedModel(bakedFaces.compact(), properties.compactProperties(), null) // TODO
+    }
+
+    fun FloatArray.properties(direction: Directions): FaceProperties? {
+        // TODO: Bad code?
+
+        val a = direction.axis.ordinal
+        val b = this[a]
+        if ((direction.negative && b != 0.0f) || (!direction.negative && b != 1.0f)) return null
+
+        return FaceProperties(
+            start = magic(0, a),
+            end = magic(6, a),
+            transparency = TextureTransparencies.OPAQUE,
+        )
+    }
+
+    private fun FloatArray.magic(offset: Int, index: Int): Vec2 {
+        return when (index) {
+            0 -> Vec2(this[offset + 1], this[offset + 2])
+            1 -> Vec2(this[offset + 0], this[offset + 2])
+            2 -> Vec2(this[offset + 0], this[offset + 1])
+            else -> Broken()
+        }
     }
 
     companion object {

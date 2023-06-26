@@ -25,14 +25,14 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWit
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.transparency.TransparentBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.block.BlockItem
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsRequirement
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.CustomBlockCulling
 
-abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, TransparentBlock, BlockStateBuilder, ShearsRequirement, WaterloggableBlock, BlockWithItem<BlockItem<LeavesBlock>> {
+abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, TransparentBlock, BlockStateBuilder, ShearsRequirement, WaterloggableBlock, BlockWithItem<Item> {
     override val hardness get() = 0.2f
-    override val item: BlockItem<LeavesBlock> = this::item.inject(identifier)
+    override val item: Item = this::item.inject(identifier)
 
     override fun buildState(settings: BlockStateSettings): BlockState {
         return PropertyBlockState(this, settings)
