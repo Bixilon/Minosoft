@@ -53,7 +53,7 @@ class BlockStateApplyTest {
         val models = BlockModelTest.FILES.extend<String, String>(
             "block/red_wool" to """{"parent":"minecraft:block/cube_all","textures":{"all":"minecraft:block/red_wool"}}""",
         )
-        val model = loadModel(WoolBlock.RedWool(settings = BlockSettings()), state, files = models)
+        val model = loadModel(WoolBlock.Red(settings = BlockSettings()), state, files = models)
         val texture = minecraft("block/red_wool").texture()
 
         assertEquals(model.unsafeCast<SingleVariantBlockModel>().apply, SingleBlockStateApply(

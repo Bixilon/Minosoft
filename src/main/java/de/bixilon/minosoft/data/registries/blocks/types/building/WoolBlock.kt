@@ -47,163 +47,163 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return 1.0f
     }
 
-    open class WhiteWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class White(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.WHITE
 
-        companion object : BlockFactory<WhiteWool> {
+        companion object : BlockFactory<White> {
             override val identifier = minecraft("white_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = WhiteWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = White(settings = settings)
         }
     }
 
-    open class OrangeWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Orange(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.ORANGE
 
-        companion object : BlockFactory<OrangeWool> {
+        companion object : BlockFactory<Orange> {
             override val identifier = minecraft("orange_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = OrangeWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Orange(settings = settings)
         }
     }
 
-    open class MagentaWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Magenta(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.MAGENTA
 
-        companion object : BlockFactory<MagentaWool> {
+        companion object : BlockFactory<Magenta> {
             override val identifier = minecraft("magenta_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = MagentaWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Magenta(settings = settings)
         }
     }
 
-    open class LightBlueWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class LightBlue(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.LIGHT_BLUE
 
-        companion object : BlockFactory<LightBlueWool> {
+        companion object : BlockFactory<LightBlue> {
             override val identifier = minecraft("light_blue_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = LightBlueWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = LightBlue(settings = settings)
         }
     }
 
-    open class YellowWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Yellow(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.YELLOW
 
-        companion object : BlockFactory<YellowWool> {
+        companion object : BlockFactory<Yellow> {
             override val identifier = minecraft("yellow_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = YellowWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Yellow(settings = settings)
         }
     }
 
-    open class LimeWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Lime(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.LIME
 
-        companion object : BlockFactory<LimeWool> {
+        companion object : BlockFactory<Lime> {
             override val identifier = minecraft("lime_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = LimeWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Lime(settings = settings)
         }
     }
 
-    open class PinkWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Pink(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.PINK
 
-        companion object : BlockFactory<PinkWool> {
+        companion object : BlockFactory<Pink> {
             override val identifier = minecraft("pink_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = PinkWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Pink(settings = settings)
         }
     }
 
-    open class GrayWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Gray(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.GRAY
 
-        companion object : BlockFactory<GrayWool> {
+        companion object : BlockFactory<Gray> {
             override val identifier = minecraft("gray_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = GrayWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Gray(settings = settings)
         }
     }
 
-    open class LightGrayWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class LightGray(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.LIGHT_GRAY
 
-        companion object : BlockFactory<LightGrayWool> {
+        companion object : BlockFactory<LightGray> {
             override val identifier = minecraft("light_gray_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = LightGrayWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = LightGray(settings = settings)
         }
     }
 
-    open class CyanWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Cyan(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.CYAN
 
-        companion object : BlockFactory<CyanWool> {
+        companion object : BlockFactory<Cyan> {
             override val identifier = minecraft("cyan_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = CyanWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Cyan(settings = settings)
         }
     }
 
-    open class PurpleWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Purple(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.PURPLE
 
-        companion object : BlockFactory<PurpleWool> {
+        companion object : BlockFactory<Purple> {
             override val identifier = minecraft("purple_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = PurpleWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Purple(settings = settings)
         }
     }
 
-    open class BlueWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Blue(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.BLUE
 
-        companion object : BlockFactory<BlueWool> {
+        companion object : BlockFactory<Blue> {
             override val identifier = minecraft("blue_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = BlueWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Blue(settings = settings)
         }
     }
 
-    open class BrownWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Brown(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.BROWN
 
-        companion object : BlockFactory<BrownWool> {
+        companion object : BlockFactory<Brown> {
             override val identifier = minecraft("brown_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = BrownWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Brown(settings = settings)
         }
     }
 
-    open class GreenWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Green(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.GREEN
 
-        companion object : BlockFactory<GreenWool> {
+        companion object : BlockFactory<Green> {
             override val identifier = minecraft("green_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = GreenWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Green(settings = settings)
         }
     }
 
-    open class RedWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Red(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.RED
 
-        companion object : BlockFactory<RedWool> {
+        companion object : BlockFactory<Red> {
             override val identifier = minecraft("red_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = RedWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Red(settings = settings)
         }
     }
 
-    open class BlackWool(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Black(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.BLACK
 
-        companion object : BlockFactory<BlackWool> {
+        companion object : BlockFactory<Black> {
             override val identifier = minecraft("black_wool")
 
-            override fun build(registries: Registries, settings: BlockSettings) = BlackWool(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = Black(settings = settings)
         }
     }
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.kutil.cast.CastUtil
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.leaves.LeavesBlock
+import de.bixilon.minosoft.data.registries.blocks.types.wood.LeavesBlock
 import org.testng.annotations.Test
 
 @Test(groups = ["block"])

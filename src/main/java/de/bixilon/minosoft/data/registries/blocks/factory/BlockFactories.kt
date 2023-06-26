@@ -47,7 +47,7 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
 
     CobwebBlock,
 
-    WoolBlock.WhiteWool, WoolBlock.OrangeWool, WoolBlock.MagentaWool, WoolBlock.LightBlueWool, WoolBlock.YellowWool, WoolBlock.LimeWool, WoolBlock.PinkWool, WoolBlock.GrayWool, WoolBlock.LightGrayWool, WoolBlock.CyanWool, WoolBlock.PurpleWool, WoolBlock.BlueWool, WoolBlock.BrownWool, WoolBlock.GreenWool, WoolBlock.GreenWool, WoolBlock.RedWool, WoolBlock.BlackWool,
+    WoolBlock.White, WoolBlock.Orange, WoolBlock.Magenta, WoolBlock.LightBlue, WoolBlock.Yellow, WoolBlock.Lime, WoolBlock.Pink, WoolBlock.Gray, WoolBlock.LightGray, WoolBlock.Cyan, WoolBlock.Purple, WoolBlock.Blue, WoolBlock.Brown, WoolBlock.Green, WoolBlock.Green, WoolBlock.Red, WoolBlock.Black,
 
     ScaffoldingBlock,
 
