@@ -20,6 +20,7 @@ import de.bixilon.minosoft.camera.target.targets.GenericTarget
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
+import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
 import de.bixilon.minosoft.data.registries.item.handler.ItemInteractBlockHandler
 import de.bixilon.minosoft.data.registries.item.handler.item.ItemUseHandler
 import de.bixilon.minosoft.input.interaction.InteractionResults
@@ -49,9 +50,9 @@ class ShortUseHandler(
             return InteractionResults.SUCCESS
         }
 
-        var result = target.state.block.onUse(connection, target, hand, stack)
-        if (result != InteractionResults.IGNORED) {
-            return result
+        if (target.state.block is InteractBlockHandler) {
+            val result = target.state.block.interact(connection, target, hand, stack)
+            if (result != InteractionResults.IGNORED) return result
         }
 
         if (stack == null) {
@@ -62,8 +63,7 @@ class ShortUseHandler(
         }
         val item = stack.item.item
         if (item is ItemInteractBlockHandler) {
-            result = item.interactBlock(connection.player, target, hand, stack)
-            return result
+            return item.interactBlock(connection.player, target, hand, stack)
         }
 
         return InteractionResults.IGNORED

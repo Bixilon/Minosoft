@@ -19,14 +19,15 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isPowered
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class AbstractButtonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
+abstract class AbstractButtonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), InteractBlockHandler {
 
-    override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
+    override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
         if (target.state.isPowered()) {
             return InteractionResults.FAILED
         }

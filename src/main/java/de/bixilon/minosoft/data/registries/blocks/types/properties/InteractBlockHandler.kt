@@ -11,26 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
+package de.bixilon.minosoft.data.registries.blocks.types.properties
 
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class CraftingTableBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), InteractBlockHandler {
+interface InteractBlockHandler {
 
-    override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?) = InteractionResults.SUCCESS
-
-    companion object : PixLyzerBlockFactory<CraftingTableBlock> {
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CraftingTableBlock {
-            return CraftingTableBlock(resourceLocation, registries, data)
-        }
-    }
+    fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults
 }
