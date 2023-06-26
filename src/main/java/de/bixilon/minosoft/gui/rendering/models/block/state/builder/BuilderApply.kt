@@ -68,7 +68,6 @@ class BuilderApply(
             }
         }
 
-        // TODO: sizes
-        return BakedModel(faces.compact(), properties.compactProperties(), particle)
+            return BakedModel(faces.compact(), properties.compactProperties(), particle)
     }
 }
