@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.com
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compactSize
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.positions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.SideSize
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -112,7 +112,7 @@ data class SingleBlockStateApply(
         if (model.elements == null) return null
 
         val bakedFaces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
-        val sizes: Array<MutableList<SideSize.FaceSize>> = Array(Directions.SIZE) { mutableListOf() } // TODO
+        val sizes: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() } // TODO
 
         for (element in model.elements) {
             for ((direction, face) in element.faces) {

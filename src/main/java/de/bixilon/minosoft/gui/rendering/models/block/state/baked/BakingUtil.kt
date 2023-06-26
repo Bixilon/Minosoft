@@ -16,6 +16,9 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
 object BakingUtil {
 
@@ -42,13 +45,30 @@ object BakingUtil {
         return array.cast()
     }
 
-    fun Array<MutableList<SideSize.FaceSize>>.compactSize(): Array<SideSize?> {
-        val array: Array<SideSize?> = arrayOfNulls(size)
+    fun Array<MutableList<FaceProperties>>.compactSize(): Array<SideProperties?> {
+        val array: Array<SideProperties?> = arrayOfNulls(size)
 
         for ((index, entries) in this.withIndex()) {
             val size = entries.toTypedArray()
             if (size.isEmpty()) continue
-            array[index] = SideSize(size)
+
+
+            var transparency: TextureTransparencies? = null
+            var set = false
+
+            for (entry in size) {
+                if (!set) {
+                    transparency = entry.transparency
+                    set = true
+                    continue
+                }
+                if (transparency != entry.transparency) {
+                    transparency = null
+                    break
+                }
+            }
+
+            array[index] = SideProperties(size, transparency)
         }
 
         return array

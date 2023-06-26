@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -31,7 +32,7 @@ class BakedFace(
     val tintIndex: Int,
     val cull: Directions?,
     val texture: AbstractTexture,
-    val size: SideSize.FaceSize? = null,
+    val properties: FaceProperties? = null,
 ) {
     private var cullIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
 

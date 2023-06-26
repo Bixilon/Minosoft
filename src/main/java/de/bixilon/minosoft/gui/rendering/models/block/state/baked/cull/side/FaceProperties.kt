@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull
+package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side
 
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
-interface CustomBlockCulling {
-
-    fun shouldCull(state: BlockState, face: BakedFace, directions: Directions, neighbour: BlockState): Boolean
-}
+class FaceProperties(
+    val start: Vec2,
+    val end: Vec2,
+    val transparency: TextureTransparencies,
+)

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.SideSize
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import java.util.*
@@ -32,7 +32,7 @@ class WeightedBlockRender(
 ) : BlockRender {
     private val size = models.getSize()
 
-    override fun getSize(direction: Directions): SideSize? {
+    override fun getProperties(direction: Directions): SideProperties? {
         return size[direction.ordinal] // TODO: get random block model
     }
 
@@ -66,8 +66,8 @@ class WeightedBlockRender(
         val model: BakedModel,
     )
 
-    private fun Array<WeightedEntry>.getSize(): Array<SideSize?> {
-        val sizes: Array<SideSize?> = arrayOfNulls(Directions.SIZE)
+    private fun Array<WeightedEntry>.getSize(): Array<SideProperties?> {
+        val sizes: Array<SideProperties?> = arrayOfNulls(Directions.SIZE)
         val skip = BooleanArray(Directions.SIZE)
 
         for ((_, model) in this) {
@@ -75,7 +75,7 @@ class WeightedBlockRender(
                 if (skip[direction.ordinal]) continue
 
                 val current = sizes[direction.ordinal]
-                val size = model.getSize(direction)
+                val size = model.getProperties(direction)
                 if (current == null) {
                     sizes[direction.ordinal] = size
                     continue

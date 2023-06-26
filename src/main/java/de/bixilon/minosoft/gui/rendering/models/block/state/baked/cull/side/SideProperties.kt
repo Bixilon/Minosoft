@@ -11,21 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.block.state.baked
+package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side
 
-import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
-class SideSize(
-    val sizes: Array<FaceSize>,
+class SideProperties(
+    val sizes: Array<FaceProperties>,
+    val transparency: TextureTransparencies?,
 ) {
-
     init {
         if (sizes.isEmpty()) throw IllegalCallerException("sizes is empty!")
     }
-
-
-    class FaceSize(
-        val start: Vec2,
-        val end: Vec2,
-    )
 }

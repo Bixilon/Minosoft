@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
@@ -25,11 +26,11 @@ import java.util.*
 
 class BakedModel(
     val faces: Array<Array<BakedFace>>,
-    val sizes: Array<SideSize?>,
+    val sizes: Array<SideProperties?>,
     val particle: AbstractTexture?,
 ) : BlockRender {
 
-    override fun getSize(direction: Directions) = sizes[direction.ordinal]
+    override fun getProperties(direction: Directions) = sizes[direction.ordinal]
 
     override fun getParticleTexture(random: Random?, position: Vec3i) = particle
 
