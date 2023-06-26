@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
 object FaceCulling {
@@ -29,7 +31,7 @@ object FaceCulling {
 
         val properties = face.properties ?: return false
 
-        // if not covered return false
+        if (!properties.isCoveredBy(neighbourProperties)) return false
 
         if (neighbourProperties.transparency == TextureTransparencies.OPAQUE) {
             // impossible to see that face
@@ -50,4 +52,25 @@ object FaceCulling {
 
 
     private inline val BakedFace.touchingSide: Boolean get() = properties != null
+
+
+    // TODO: merge with DirectedProperty
+    private fun SideProperties.getSideArea(target: FaceProperties): Float {
+        // overlapping is broken, see https://stackoverflow.com/questions/7342935/algorithm-to-compute-total-area-covered-by-a-set-of-overlapping-segments
+        var area = 0.0f
+
+        for (quad in this.sizes) {
+            val width = minOf(target.end.x, quad.end.x) - maxOf(quad.start.x, target.start.x)
+            val height = minOf(target.end.y, quad.end.y) - maxOf(quad.start.y, target.start.y)
+
+            area += width * height
+        }
+
+        return area
+    }
+
+    fun FaceProperties.isCoveredBy(properties: SideProperties): Boolean {
+        val area = properties.getSideArea(this)
+        return surface <= area
+    }
 }

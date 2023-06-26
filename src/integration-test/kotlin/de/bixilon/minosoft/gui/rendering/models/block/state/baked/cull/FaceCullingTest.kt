@@ -105,16 +105,23 @@ class FaceCullingTest {
     }
 
     @Test
-    fun shiftedNeighbour1() {
+    fun noSize() {
         val face = createFace(properties = FaceProperties(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE))
         val neighbour = createNeighbour(properties = side(FaceProperties(Vec2(0.1f, 0.5f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
+        assertTrue(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
+    }
+
+    @Test
+    fun shiftedNeighbour1() {
+        val face = createFace(properties = FaceProperties(Vec2(0.0f, 0.4f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE))
+        val neighbour = createNeighbour(properties = side(FaceProperties(Vec2(0.1f, 0.4f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE)))
         assertFalse(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
     }
 
     @Test
     fun shiftedNeighbour2() {
-        val face = createFace(properties = FaceProperties(Vec2(0.0f, 0.5f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE))
-        val neighbour = createNeighbour(properties = side(FaceProperties(Vec2(0.1f, 0.5f), Vec2(1.0f, 0.6f), TextureTransparencies.OPAQUE)))
+        val face = createFace(properties = FaceProperties(Vec2(0.0f, 0.4f), Vec2(1.0f, 0.5f), TextureTransparencies.OPAQUE))
+        val neighbour = createNeighbour(properties = side(FaceProperties(Vec2(0.1f, 0.4f), Vec2(1.0f, 0.6f), TextureTransparencies.OPAQUE)))
         assertFalse(FaceCulling.canCull(createState(), face, Directions.EAST, neighbour))
     }
 

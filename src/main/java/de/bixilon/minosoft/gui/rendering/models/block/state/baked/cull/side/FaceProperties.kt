@@ -20,4 +20,6 @@ class FaceProperties(
     val start: Vec2,
     val end: Vec2,
     val transparency: TextureTransparencies,
-)
+) {
+    val surface = (end.x - start.x) * (end.y - start.y)
+}
