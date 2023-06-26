@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
 class SideProperties(
-    val sizes: Array<FaceProperties>,
+    val faces: Array<FaceProperties>,
     val transparency: TextureTransparencies?,
 ) {
     init {
-        if (sizes.isEmpty()) throw IllegalCallerException("sizes is empty!")
+        if (faces.isEmpty()) throw IllegalCallerException("properties is empty!")
     }
 }

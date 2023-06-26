@@ -59,7 +59,7 @@ object FaceCulling {
         // overlapping is broken, see https://stackoverflow.com/questions/7342935/algorithm-to-compute-total-area-covered-by-a-set-of-overlapping-segments
         var area = 0.0f
 
-        for (quad in this.sizes) {
+        for (quad in this.faces) {
             val width = minOf(target.end.x, quad.end.x) - maxOf(quad.start.x, target.start.x)
             val height = minOf(target.end.y, quad.end.y) - maxOf(quad.start.y, target.start.y)
 
