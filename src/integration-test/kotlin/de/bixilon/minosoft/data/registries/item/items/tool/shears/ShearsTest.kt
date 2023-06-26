@@ -64,7 +64,6 @@ class ShearsTest : ToolTest() {
     }
 
     fun leaves() {
-        todo()
         val (suitable, speed) = mine(ShearsItem, MinecraftBlocks.OAK_LEAVES)
         assertTrue(suitable)
         assertEquals(speed, 15.0f)

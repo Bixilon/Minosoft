@@ -80,7 +80,6 @@ class SwordTest : ToolTest() {
     }
 
     fun leaves() {
-        todo()
         val (suitable, speed) = mine(WoodenTool.WoodenSword, MinecraftBlocks.OAK_LEAVES)
         assertTrue(suitable)
         assertEquals(speed, 1.5f)
