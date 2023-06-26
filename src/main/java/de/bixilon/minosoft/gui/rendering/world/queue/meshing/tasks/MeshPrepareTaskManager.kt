@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 
 class MeshPrepareTaskManager(
     private val renderer: WorldRenderer,
-    val max: Int = minOf(maxOf(Runtime.getRuntime().availableProcessors() - 1, 1), DefaultThreadPool.threadCount - 1),
+    val max: Int = maxOf(minOf(Runtime.getRuntime().availableProcessors() - 1, DefaultThreadPool.threadCount - 1), 1)
 ) {
     private val tasks: MutableSet<MeshPrepareTask> = mutableSetOf() // current running section preparing tasks
     private val lock = SimpleLock()
