@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,9 +27,6 @@ object SystemInformation {
 
     val PROCESSOR_TEXT = "${RUNTIME.availableProcessors()}x ${HARDWARE_SYSTEM_INFO.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
 
-    val MAX_MEMORY_TEXT: String = getFormattedMaxMemory()
-    val PROCESSOR_SPEED = HARDWARE_SYSTEM_INFO.processor.maxFreq
-
 
     private fun getMaxMemory(): Long {
         return RUNTIME.maxMemory()
@@ -38,5 +35,4 @@ object SystemInformation {
     private fun getFormattedMaxMemory(): String {
         return getMaxMemory().formatBytes()
     }
-
 }
