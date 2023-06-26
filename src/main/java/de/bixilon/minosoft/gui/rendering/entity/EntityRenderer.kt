@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entity
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
-import de.bixilon.kutil.collections.iterator.async.QueuedIterator
+import de.bixilon.kutil.collections.iterator.async.ConcurrentIterator
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
@@ -53,7 +53,6 @@ class EntityRenderer(
     private val models: LockMap<Entity, EntityModel<*>> = lockMapOf()
     private lateinit var localModel: LocalPlayerModel
     private var toUnload: MutableList<EntityModel<*>> = synchronizedListOf()
-    private val iterator = QueuedIterator(models.unsafe.values.spliterator(), priority = ThreadPool.HIGHER, queueSize = 1000)
 
     var hitboxes = profile.hitbox.enabled
 
@@ -153,8 +152,7 @@ class EntityRenderer(
 
     private fun runAsync(executor: ((EntityModel<*>) -> Unit)) {
         models.lock.acquire()
-        iterator.reuse(models.unsafe.values.spliterator())
-        iterator.iterate(executor)
+        ConcurrentIterator(models.unsafe.values.spliterator(), priority = ThreadPool.HIGHER).iterate(executor)
         models.lock.release()
     }
 
