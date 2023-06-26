@@ -29,16 +29,18 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.VelocityBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), VelocityBlock, EntityCollisionHandler, FluidFilled, LightedBlock {
+class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), VelocityBlock, EntityCollisionHandler, FluidFilled, LightedBlock, RandomDisplayTickable {
     override val hardness: Float get() = Broken("Fluid!")
     override val fluid: WaterFluid = unsafeNull()
     override val velocity: Float get() = 1.0f
@@ -73,8 +75,8 @@ class BubbleColumnBlock(identifier: ResourceLocation = Companion.identifier, set
 
     override fun getLightProperties(blockState: BlockState) = FluidBlock.LIGHT_PROPERTIES
 
-    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        fluid.randomTick(connection, blockState, blockPosition, random)
+    override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
+        fluid.randomTick(connection, state, position, random)
     }
 
     companion object : BlockFactory<BubbleColumnBlock> {

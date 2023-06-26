@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
@@ -165,7 +166,7 @@ class World(
         border.tick()
     }
 
-    fun randomTick() {
+    fun randomDisplayTick() {
         val origin = connection.player.physics.positionInfo.blockPosition
         val chunk = this.chunks[origin.chunkPosition] ?: return
 
@@ -173,12 +174,12 @@ class World(
         val chunkDelta = Vec2i.EMPTY
 
         for (i in 0 until 667) {
-            randomTick(16, origin, position, chunkDelta, chunk)
-            randomTick(32, origin, position, chunkDelta, chunk)
+            randomDisplayTick(16, origin, position, chunkDelta, chunk)
+            randomDisplayTick(32, origin, position, chunkDelta, chunk)
         }
     }
 
-    private fun randomTick(radius: Int, origin: BlockPosition, position: BlockPosition, chunkDelta: Vec2i, chunk: Chunk) {
+    private fun randomDisplayTick(radius: Int, origin: BlockPosition, position: BlockPosition, chunkDelta: Vec2i, chunk: Chunk) {
         position.x = origin.x + random.nextInt(-radius, radius)
         position.y = origin.x + random.nextInt(-radius, radius)
         position.z = origin.x + random.nextInt(-radius, radius)
@@ -187,8 +188,9 @@ class World(
         chunkDelta.y = (origin.z - position.z) shr 4
 
         val state = chunk.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
+        if (state.block !is RandomDisplayTickable) return
 
-        state.block.randomTick(connection, state, position, random)
+        state.block.randomDisplayTick(connection, state, position, random)
     }
 
     operator fun get(aabb: AABB): WorldIterator {

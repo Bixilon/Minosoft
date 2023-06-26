@@ -14,27 +14,28 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.storage
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.container.storage.EnderChestBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.PortalParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-open class EnderChestBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : StorageBlock<EnderChestBlockEntity>(resourceLocation, registries, data) {
+open class EnderChestBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : StorageBlock<EnderChestBlockEntity>(resourceLocation, registries, data), RandomDisplayTickable {
     private val portalParticle = registries.particleType[PortalParticle]
 
 
-    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+    override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
         portalParticle ?: return
         for (i in 0 until 3) {
             val xFactor = random.nextInt(2) * 2 - 1
             val zFactor = random.nextInt(2) * 2 - 1
-            val position = blockPosition.toVec3d + Vec3d(
+            val position = position.toVec3d + Vec3d(
                 0.5 + 0.25 * xFactor,
                 random.nextDouble(),
                 0.5 + 0.25 * zFactor,

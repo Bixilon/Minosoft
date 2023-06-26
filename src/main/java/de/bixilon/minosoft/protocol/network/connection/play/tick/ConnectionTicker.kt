@@ -60,7 +60,7 @@ class ConnectionTicker(private val connection: PlayConnection) {
             connection.world.tick()
         }
         tasks += RepeatedTask(INTERVAL, maxDelay = MAX_DELAY) {
-            connection.world.randomTick()
+            connection.world.randomDisplayTick()
         }
 
         if (DebugOptions.LIGHT_DEBUG_MODE || DebugOptions.INFINITE_TORCHES) {
