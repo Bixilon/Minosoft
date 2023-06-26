@@ -13,29 +13,17 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.plant
 
-import de.bixilon.minosoft.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class PlantBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
 
     open fun canPlaceOn(blockState: BlockState): Boolean {
         return blockState.block.identifier == MinecraftBlocks.DIRT || blockState.block.identifier == MinecraftBlocks.FARMLAND
-    }
-
-    override fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? {
-        val below = connection.world[target.blockPosition + target.direction + Directions.DOWN] ?: return null
-        if (!canPlaceOn(below)) {
-            return null
-        }
-        return super.getPlacementState(connection, target)
     }
 
     companion object : PixLyzerBlockFactory<PlantBlock> {

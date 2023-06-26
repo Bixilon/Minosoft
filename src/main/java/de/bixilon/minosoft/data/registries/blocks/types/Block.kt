@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -49,9 +48,6 @@ abstract class Block(
     override fun toString(): String {
         return identifier.toString()
     }
-
-    @Deprecated("Interface")
-    open fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? = states.default
 
     @Deprecated("Interface")
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit

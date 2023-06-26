@@ -57,10 +57,6 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
         }
     }
 
-    override fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? {
-        TODO()
-    }
-
     override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
         val nextState = target.state.cycle(BlockProperties.POWERED)
         connection.world[target.blockPosition] = nextState
