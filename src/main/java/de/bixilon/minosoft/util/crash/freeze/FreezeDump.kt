@@ -11,21 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.util.crash.freeze
 
-import de.bixilon.minosoft.terminal.commands.connection.SayCommand
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
-
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
-        ConnectionManageCommand,
-        AccountManageCommand,
-        ReloadCommand,
-
-        PingCommand, ConnectCommand,
-
-        CrashCommand, DumpCommand,
-    )
-}
+class FreezeDump(
+    val dump: String,
+    val path: String?,
+)

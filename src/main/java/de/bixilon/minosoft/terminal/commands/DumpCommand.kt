@@ -13,19 +13,20 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-import de.bixilon.minosoft.terminal.commands.connection.SayCommand
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
+import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.util.crash.freeze.FreezeDumpUtil
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
-        ConnectionManageCommand,
-        AccountManageCommand,
-        ReloadCommand,
-
-        PingCommand, ConnectCommand,
-
-        CrashCommand, DumpCommand,
+object DumpCommand : Command {
+    override var node = LiteralNode("dump").addChild(
+        LiteralNode("freeze", executor = { stack ->
+            FreezeDumpUtil.catchAsync {
+                if (it.path == null) {
+                    stack.print.print("§4Failed to create freeze dump!")
+                    stack.print.print(it.dump)
+                } else {
+                    stack.print.print("§4Freeze dump created and saved at §e${it.path}!")
+                }
+            }
+        }),
     )
 }

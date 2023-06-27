@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer.Companion.checkFreezeDump
 import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
@@ -100,6 +101,7 @@ object JavaFXUtil {
         val fxmlLoader = FXMLLoader()
         controller?.let { fxmlLoader.setController(it) }
         val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
+        parent.checkFreezeDump()
         return loadController(title, fxmlLoader, parent, modality)
     }
 
@@ -109,6 +111,7 @@ object JavaFXUtil {
             val fxmlLoader = FXMLLoader()
             controller?.let { fxmlLoader.setController(it) }
             val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
+            parent.checkFreezeDump()
 
             if (callback == null) {
                 return@add
