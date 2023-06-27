@@ -22,17 +22,12 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.crash.freeze.FreezeDumpUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import javafx.application.Application
 import javafx.application.Platform
-import javafx.scene.Node
-import javafx.scene.control.Alert
 import javafx.scene.image.Image
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import javafx.stage.Stage
 
 
@@ -82,19 +77,6 @@ class JavaFXInitializer internal constructor() : Application() {
 
         fun await() {
             LATCH.await()
-        }
-
-        fun Node.checkFreezeDump() {
-            addEventFilter(KeyEvent.KEY_PRESSED) {
-                if (it.isAltDown && it.code == KeyCode.F6) FreezeDumpUtil.catchAsync { freeze ->
-                    JavaFXUtil.runLater {
-                        val alert = Alert(Alert.AlertType.WARNING)
-                        alert.headerText = "Freeze dump created"
-                        alert.contentText = "A freeze dump was created and stored at ${freeze.path}"
-                        alert.show()
-                    }
-                }
-            }
         }
     }
 }

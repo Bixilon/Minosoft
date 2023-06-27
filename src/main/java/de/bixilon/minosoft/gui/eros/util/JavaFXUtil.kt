@@ -23,19 +23,22 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
-import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer.Companion.checkFreezeDump
 import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.crash.freeze.FreezeDumpUtil
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.application.HostServices
 import javafx.application.Platform
 import javafx.css.StyleableProperty
 import javafx.fxml.FXMLLoader
 import javafx.scene.*
+import javafx.scene.control.Alert
 import javafx.scene.control.Labeled
 import javafx.scene.control.TableColumnBase
 import javafx.scene.control.TextField
 import javafx.scene.image.Image
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Pane
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
@@ -101,7 +104,7 @@ object JavaFXUtil {
         val fxmlLoader = FXMLLoader()
         controller?.let { fxmlLoader.setController(it) }
         val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
-        parent.checkFreezeDump()
+        parent.registerFreezeDumpKey()
         return loadController(title, fxmlLoader, parent, modality)
     }
 
@@ -111,7 +114,7 @@ object JavaFXUtil {
             val fxmlLoader = FXMLLoader()
             controller?.let { fxmlLoader.setController(it) }
             val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
-            parent.checkFreezeDump()
+            parent.registerFreezeDumpKey()
 
             if (callback == null) {
                 return@add
@@ -207,5 +210,20 @@ object JavaFXUtil {
         }
 
         return "resource:$path"
+    }
+
+
+    private fun Node.registerFreezeDumpKey() {
+        addEventFilter(KeyEvent.KEY_PRESSED) {
+            if (!it.isAltDown || it.code != KeyCode.F6) return@addEventFilter
+            FreezeDumpUtil.catchAsync { freeze ->
+                runLater {
+                    val alert = Alert(Alert.AlertType.WARNING)
+                    alert.headerText = "Freeze dump created"
+                    alert.contentText = "A freeze dump was created and stored at ${freeze.path}"
+                    alert.show()
+                }
+            }
+        }
     }
 }
