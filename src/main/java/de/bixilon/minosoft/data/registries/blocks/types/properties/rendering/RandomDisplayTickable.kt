@@ -20,5 +20,6 @@ import java.util.*
 
 interface RandomDisplayTickable {
 
+    fun hasRandomTicks(connection: PlayConnection, state: BlockState, position: BlockPosition) = true
     fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random)
 }

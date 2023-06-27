@@ -189,6 +189,7 @@ class World(
 
         val state = chunk.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
         if (state.block !is RandomDisplayTickable) return
+        if (!state.block.hasRandomTicks(connection, state, position)) return
 
         state.block.randomDisplayTick(connection, state, position, random)
     }
