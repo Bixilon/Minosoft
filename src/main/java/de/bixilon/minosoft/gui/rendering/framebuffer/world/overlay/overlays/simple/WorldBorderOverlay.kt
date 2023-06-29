@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldBorderOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val config = context.connection.profiles.rendering.overlay
-    override val texture: Texture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
+    override val texture: Texture = context.textures.staticTextures.createTexture(OVERLAY_TEXTURE)
     override val render: Boolean
         get() = config.worldBorder && context.connection.world.border.isOutside(context.connection.player.physics.position)
 

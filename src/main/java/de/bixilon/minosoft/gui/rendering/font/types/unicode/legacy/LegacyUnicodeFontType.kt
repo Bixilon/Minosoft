@@ -61,7 +61,7 @@ class LegacyUnicodeFontType(
             val template = data["template"]?.toString() ?: throw IllegalArgumentException("template missing!")
             val sizes = data.loadSizes(assets) ?: return null
 
-            return load(template, sizes, assets, context.textureManager.staticTextures)
+            return load(template, sizes, assets, context.textures.staticTextures)
         }
 
         private fun String.formatTemplate(page: Int): ResourceLocation {

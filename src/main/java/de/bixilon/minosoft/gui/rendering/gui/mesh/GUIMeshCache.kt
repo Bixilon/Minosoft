@@ -28,7 +28,7 @@ class GUIMeshCache(
     initialCacheSize: Int = 1000,
     var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
 ) : GUIVertexConsumer {
-    private val whiteTexture = context.textureManager.whiteTexture
+    private val whiteTexture = context.textures.whiteTexture
 
     var revision: Long = 0
     var offset: Vec2 = Vec2.EMPTY

@@ -46,7 +46,7 @@ class SingleChestRenderer(
         val SINGLE_MODEL = "minecraft:block/entities/single_chest".toResourceLocation().bbModel()
 
         fun register(context: RenderContext, modelLoader: ModelLoader, textureName: ResourceLocation, model: ResourceLocation) {
-            val texture = context.textureManager.staticTextures.createTexture(textureName)
+            val texture = context.textures.staticTextures.createTexture(textureName)
             modelLoader.entities.loadModel(model, SINGLE_MODEL, mutableMapOf(0 to texture))
         }
     }

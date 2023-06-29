@@ -33,8 +33,8 @@ import java.util.*
 class WeatherOverlay(private val context: RenderContext) : Overlay {
     private val world = context.connection.world
     private val config = context.connection.profiles.rendering.overlay.weather
-    private val rain = context.textureManager.staticTextures.createTexture(RAIN)
-    private val snow = context.textureManager.staticTextures.createTexture(SNOW)
+    private val rain = context.textures.staticTextures.createTexture(RAIN)
+    private val snow = context.textures.staticTextures.createTexture(SNOW)
     private val precipitation get() = context.connection.player.physics.positionInfo.biome?.precipitation ?: BiomePrecipitation.NONE
     override val render: Boolean
         get() = world.dimension.effects.weather && world.weather.raining && when (precipitation) { // ToDo: Check if exposed to the sky
@@ -49,7 +49,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
             BiomePrecipitation.SNOW -> snow
         }
 
-    private val shader = context.renderSystem.createShader(minosoft("weather/overlay")) { WeatherOverlayShader(it) }
+    private val shader = context.system.createShader(minosoft("weather/overlay")) { WeatherOverlayShader(it) }
     private var mesh = WeatherOverlayMesh(context)
     private var windowSize = Vec2.EMPTY
 
@@ -92,7 +92,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
 
     override fun postInit() {
         shader.use()
-        context.textureManager.staticTextures.use(shader)
+        context.textures.staticTextures.use(shader)
     }
 
     private fun updateShader() {

@@ -36,7 +36,7 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 
 class ArmOverlay(private val context: RenderContext) : Overlay {
     private val config = context.connection.profiles.rendering.overlay
-    private val shader = context.renderSystem.createShader(minosoft("arm")) { ArmOverlayShader(it) }
+    private val shader = context.system.createShader(minosoft("arm")) { ArmOverlayShader(it) }
     override val render: Boolean
         get() = context.camera.view.view.renderArm && config.arm.render
     private var arm = context.connection.player.mainArm // TODO: camera player entity
@@ -120,12 +120,12 @@ class ArmOverlay(private val context: RenderContext) : Overlay {
 
     override fun draw() {
         val skin = this.skin ?: return
-        context.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
+        context.system.clear(IntegratedBufferTypes.DEPTH_BUFFER)
 
-        context.renderSystem.disable(RenderingCapabilities.FACE_CULLING)
-        context.renderSystem.enable(RenderingCapabilities.DEPTH_TEST)
-        context.renderSystem.enable(RenderingCapabilities.BLENDING)
-        context.renderSystem.depthMask = true
+        context.system.disable(RenderingCapabilities.FACE_CULLING)
+        context.system.enable(RenderingCapabilities.DEPTH_TEST)
+        context.system.enable(RenderingCapabilities.BLENDING)
+        context.system.depthMask = true
 
         shader.use()
         shader.textureIndexLayer = skin.texture.shaderId
@@ -135,7 +135,7 @@ class ArmOverlay(private val context: RenderContext) : Overlay {
         }
 
         mesh.draw()
-        context.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
+        context.system.clear(IntegratedBufferTypes.DEPTH_BUFFER)
     }
 
 

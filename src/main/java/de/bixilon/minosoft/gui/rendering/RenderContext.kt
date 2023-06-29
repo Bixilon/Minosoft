@@ -43,24 +43,24 @@ class RenderContext(
     val preferQuads = profile.advanced.preferQuads
 
     val window = BaseWindowFactory.create(this)
-    val renderSystem = RenderSystemFactory.create(this)
+    val system = RenderSystemFactory.create(this)
     val camera = Camera(this)
 
-    val inputManager = InputManager(this)
+    val input = InputManager(this)
     val screenshotTaker = ScreenshotTaker(this)
-    val tintManager = TintManager(connection)
-    val textureManager = renderSystem.createTextureManager()
+    val tints = TintManager(connection)
+    val textures = system.createTextureManager()
 
     val queue = Queue()
 
-    val shaderManager = ShaderManager(this)
-    val framebufferManager = FramebufferManager(this)
+    val shaders = ShaderManager(this)
+    val framebuffer = FramebufferManager(this)
     val renderer = RendererManager(this)
-    val modelLoader = ModelLoader(this)
+    val models = ModelLoader(this)
 
     val light = RenderLight(this)
 
-    val skeletalManager = SkeletalManager(this)
+    val skeletal = SkeletalManager(this)
 
     lateinit var renderStats: AbstractRenderStats
         private set

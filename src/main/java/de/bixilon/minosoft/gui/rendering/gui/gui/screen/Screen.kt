@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 abstract class Screen(
     guiRenderer: GUIRenderer,
 ) : Element(guiRenderer), LayoutedElement {
-    protected val background = AtlasImageElement(guiRenderer, context.textureManager.whiteTexture, size = guiRenderer.scaledSize, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
+    protected val background = AtlasImageElement(guiRenderer, context.textures.whiteTexture, size = guiRenderer.scaledSize, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
     override val layoutOffset: Vec2 = Vec2(0, 0)
 
     override var _size: Vec2

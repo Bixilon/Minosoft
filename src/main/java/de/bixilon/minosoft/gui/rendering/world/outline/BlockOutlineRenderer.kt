@@ -44,7 +44,7 @@ class BlockOutlineRenderer(
     override val context: RenderContext,
 ) : AsyncRenderer, OtherDrawable, MeshSwapper {
     private val profile = connection.profiles.block.outline
-    override val renderSystem: RenderSystem = context.renderSystem
+    override val renderSystem: RenderSystem = context.system
 
     private var position: Vec3i? = null
     private var state: BlockState? = null
@@ -76,15 +76,15 @@ class BlockOutlineRenderer(
     }
 
     override fun setupOther() {
-        context.renderSystem.reset(
+        context.system.reset(
             polygonOffset = true,
             polygonOffsetFactor = -3.0f,
             polygonOffsetUnit = -3.0f,
         )
         if (profile.showThroughWalls) {
-            context.renderSystem.depth = DepthFunctions.ALWAYS
+            context.system.depth = DepthFunctions.ALWAYS
         }
-        context.shaderManager.genericColorShader.use()
+        context.shaders.genericColorShader.use()
     }
 
     override fun postPrepareDraw() {

@@ -59,7 +59,7 @@ class AtlasManager(private val context: RenderContext) {
             }
             val versionData = versions[versionToUse.toString()].asJsonObject()
 
-            val texture = context.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation().texture(), mipmaps = false)
+            val texture = context.textures.staticTextures.createTexture(versionData["texture"].toResourceLocation().texture(), mipmaps = false)
             val start = versionData["start"].toVec2i()
             val end = versionData["end"].toVec2i()
             val slots: Int2ObjectOpenHashMap<AtlasSlot> = Int2ObjectOpenHashMap()

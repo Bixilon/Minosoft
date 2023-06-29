@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-open class WeatherOverlayMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.renderSystem.preferredPrimitiveType) : Mesh(context, WeatherOverlayMeshStruct, primitiveType, initialCacheSize = 2 * 3 * WeatherOverlayMeshStruct.FLOATS_PER_VERTEX) {
+open class WeatherOverlayMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.preferredPrimitiveType) : Mesh(context, WeatherOverlayMeshStruct, primitiveType, initialCacheSize = 2 * 3 * WeatherOverlayMeshStruct.FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3, uv: Vec2, offset: Float, offsetMultiplicator: Float, alphaMultiplicator: Float) {
         data.add(position.array)

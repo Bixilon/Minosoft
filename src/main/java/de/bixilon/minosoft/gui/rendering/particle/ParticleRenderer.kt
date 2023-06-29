@@ -44,7 +44,7 @@ class ParticleRenderer(
     private val connection: PlayConnection,
     override val context: RenderContext,
 ) : AsyncRenderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
-    override val renderSystem: RenderSystem = context.renderSystem
+    override val renderSystem: RenderSystem = context.system
     private val profile = connection.profiles.particle
     private val transparentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, true) }
     private val translucentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, false) }
@@ -111,7 +111,7 @@ class ParticleRenderer(
         translucentMesh.load()
         for (particle in connection.registries.particleType) {
             for (resourceLocation in particle.textures) {
-                context.textureManager.staticTextures.createTexture(resourceLocation)
+                context.textures.staticTextures.createTexture(resourceLocation)
             }
         }
 

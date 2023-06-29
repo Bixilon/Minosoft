@@ -71,7 +71,7 @@ class GUIManager(
     }
 
     override fun postInit() {
-        context.inputManager.registerKeyCallback(
+        context.input.registerKeyCallback(
             "minosoft:back".toResourceLocation(),
             KeyBinding(
                 KeyActions.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
@@ -266,7 +266,7 @@ class GUIManager(
 
     private fun _push(element: GUIElement) {
         if (elementOrder.isEmpty()) {
-            context.inputManager.inputHandler = guiRenderer
+            context.input.inputHandler = guiRenderer
         }
         orderLock.acquire()
         val copy = elementOrder.toList()
@@ -313,7 +313,7 @@ class GUIManager(
 
         orderLock.acquire()
         if (elementOrder.isEmpty()) {
-            context.inputManager.inputHandler = null
+            context.input.inputHandler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
         }
@@ -337,7 +337,7 @@ class GUIManager(
         toPop.onClose()
         orderLock.acquire()
         if (elementOrder.isEmpty()) {
-            context.inputManager.inputHandler = null
+            context.input.inputHandler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
             orderLock.release()
@@ -365,7 +365,7 @@ class GUIManager(
         orderLock.unlock()
         guiRenderer.popper.clear()
         guiRenderer.dragged.element = null
-        context.inputManager.inputHandler = null
+        context.input.inputHandler = null
     }
 
     operator fun <T : GUIElement> get(builder: GUIBuilder<T>): T {

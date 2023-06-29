@@ -98,7 +98,7 @@ class OpenGLNativeShader(
         }
         loaded = true
 
-        context.renderSystem.nativeShaders += this
+        context.system.nativeShaders += this
     }
 
     override fun unload() {
@@ -106,7 +106,7 @@ class OpenGLNativeShader(
         glDeleteProgram(this.shader)
         loaded = false
         this.shader = -1
-        context.renderSystem.nativeShaders -= this
+        context.system.nativeShaders -= this
     }
 
     override fun reload() {

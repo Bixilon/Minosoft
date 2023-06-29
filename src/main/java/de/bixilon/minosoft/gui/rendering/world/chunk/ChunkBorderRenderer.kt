@@ -45,7 +45,7 @@ class ChunkBorderRenderer(
     override val context: RenderContext,
 ) : AsyncRenderer, OpaqueDrawable, MeshSwapper {
     private val profile = connection.profiles.rendering
-    override val renderSystem: RenderSystem = context.renderSystem
+    override val renderSystem: RenderSystem = context.system
     private var offset = Vec3i.EMPTY
     private var chunkPosition: Vec2i? = null
     private var sectionHeight: Int = Int.MIN_VALUE
@@ -59,7 +59,7 @@ class ChunkBorderRenderer(
         get() = mesh == null || !profile.chunkBorder.enabled
 
     override fun init(latch: AbstractLatch) {
-        context.inputManager.registerKeyCallback(
+        context.input.registerKeyCallback(
             CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
@@ -190,12 +190,12 @@ class ChunkBorderRenderer(
     }
 
     override fun setupOpaque() {
-        context.renderSystem.reset(
+        context.system.reset(
             polygonOffset = true,
             polygonOffsetFactor = -1.0f,
             polygonOffsetUnit = -2.0f,
         )
-        context.shaderManager.genericColorShader.use()
+        context.shaders.genericColorShader.use()
     }
 
     override fun drawOpaque() {

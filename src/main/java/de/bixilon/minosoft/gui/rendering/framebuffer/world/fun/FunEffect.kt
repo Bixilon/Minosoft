@@ -29,7 +29,7 @@ interface FunEffect : Identified {
 
 
     fun <T : FramebufferShader> createShader(vertex: ResourceLocation = "minosoft:framebuffer/world.vsh".toResourceLocation(), fragment: ResourceLocation = "minosoft:framebuffer/world.fsh".toResourceLocation(), creator: (NativeShader) -> T): T {
-        val native = context.renderSystem.createNativeShader(vertex = vertex, fragment = fragment)
+        val native = context.system.createNativeShader(vertex = vertex, fragment = fragment)
         val shader = creator(native)
         shader.load()
         shader.use()

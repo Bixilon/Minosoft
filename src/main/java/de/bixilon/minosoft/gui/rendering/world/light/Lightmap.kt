@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.world.light.updater.normal.NormalLightm
 
 class Lightmap(private val light: RenderLight) {
     private val profile = light.context.connection.profiles.rendering
-    val buffer = LightmapBuffer(light.context.renderSystem)
+    val buffer = LightmapBuffer(light.context.system)
     private var updater: LightmapUpdater = FullbrightLightUpdater
         set(value) {
             field = value

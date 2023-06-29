@@ -46,7 +46,7 @@ class CloudRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
 ) : Renderer, OpaqueDrawable, AsyncRenderer {
-    override val renderSystem: RenderSystem = context.renderSystem
+    override val renderSystem: RenderSystem = context.system
     val shader = renderSystem.createShader(minosoft("sky/clouds")) { CloudShader(it) }
     val matrix = CloudMatrix()
     private val layers: MutableList<CloudLayer> = mutableListOf()

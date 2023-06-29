@@ -55,7 +55,7 @@ class FluidCullSectionPreparer(
     val context: RenderContext,
 ) : FluidSectionPreparer {
     private val water = context.connection.registries.fluid[WaterFluid]
-    private val tintManager = context.tintManager
+    private val tintManager = context.tints
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)

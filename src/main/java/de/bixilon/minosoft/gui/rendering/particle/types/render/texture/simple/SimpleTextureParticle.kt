@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.FileTe
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : TextureParticle(connection, position, velocity, data) {
-    override var texture = this.data.type.textures.getOrNull(0)?.let { connection.rendering?.context?.textureManager?.staticTextures?.get(it) }
+    override var texture = this.data.type.textures.getOrNull(0)?.let { connection.rendering?.context?.textures?.staticTextures?.get(it) }
     var spriteDisabled = false
 
 
@@ -39,11 +39,11 @@ abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d
         if (texture?.nullCast<FileTexture>()?.resourceLocation == nextTextureResourceLocation) {
             return
         }
-        texture = connection.rendering?.context?.textureManager?.staticTextures?.get(nextTextureResourceLocation)
+        texture = connection.rendering?.context?.textures?.staticTextures?.get(nextTextureResourceLocation)
     }
 
     fun setRandomSprite() {
-        texture = connection.rendering?.context?.textureManager?.staticTextures?.get(data.type.textures.random())
+        texture = connection.rendering?.context?.textures?.staticTextures?.get(data.type.textures.random())
     }
 
     override fun tick() {

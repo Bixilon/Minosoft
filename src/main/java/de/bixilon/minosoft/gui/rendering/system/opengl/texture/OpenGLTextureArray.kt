@@ -53,7 +53,7 @@ class OpenGLTextureArray(
     private val namedTextures: MutableMap<ResourceLocation, Texture> = mutableMapOf()
     private val otherTextures: MutableSet<Texture> = mutableSetOf()
     private var textureIds = IntArray(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
-    override val animator = SpriteAnimator(context.renderSystem)
+    override val animator = SpriteAnimator(context.system)
     override var state: TextureArrayStates = TextureArrayStates.DECLARED
         private set
 

@@ -25,7 +25,7 @@ object DefaultKeyBindings {
     val FULLSCREEN = minosoft("toggle_fullscreen")
 
     fun register(context: RenderContext) {
-        val inputHandler = context.inputManager
+        val inputHandler = context.input
         val window = context.window
         val connection = context.connection
 

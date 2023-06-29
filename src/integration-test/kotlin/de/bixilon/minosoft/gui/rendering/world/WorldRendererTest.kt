@@ -44,7 +44,7 @@ class WorldRendererTest {
     @Test(priority = -1)
     fun loadModels() {
         val latch = SimpleLatch(1)
-        RenderTestUtil.context.modelLoader.load(latch)
+        RenderTestUtil.context.models.load(latch)
         latch.dec()
         latch.await()
     }

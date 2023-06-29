@@ -46,8 +46,8 @@ class DoubleChestRenderer(
         val DOUBLE_MODEL = "minecraft:block/entities/double_chest".toResourceLocation().bbModel()
 
         fun register(context: RenderContext, modelLoader: ModelLoader, textureName1: ResourceLocation, textureName2: ResourceLocation, model: ResourceLocation) {
-            val texture1 = context.textureManager.staticTextures.createTexture(textureName1)
-            val texture2 = context.textureManager.staticTextures.createTexture(textureName2)
+            val texture1 = context.textures.staticTextures.createTexture(textureName1)
+            val texture2 = context.textures.staticTextures.createTexture(textureName2)
             modelLoader.entities.loadModel(model, DOUBLE_MODEL, mutableMapOf(0 to texture1, 1 to texture2))
         }
     }

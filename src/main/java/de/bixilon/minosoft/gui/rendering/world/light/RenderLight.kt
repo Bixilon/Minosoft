@@ -34,7 +34,7 @@ class RenderLight(val context: RenderContext) {
     fun init() {
         map.init()
 
-        context.inputManager.registerKeyCallback(
+        context.input.registerKeyCallback(
             "minosoft:recalculate_light".toResourceLocation(),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
@@ -46,7 +46,7 @@ class RenderLight(val context: RenderContext) {
                 connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
             }
         }
-        context.inputManager.registerKeyCallback(
+        context.input.registerKeyCallback(
             "minosoft:toggle_fullbright".toResourceLocation(),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),

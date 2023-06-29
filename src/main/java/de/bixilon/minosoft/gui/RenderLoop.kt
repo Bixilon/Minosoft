@@ -68,9 +68,9 @@ class RenderLoop(
             }
 
             context.renderStats.startFrame()
-            context.framebufferManager.clear()
-            context.renderSystem.framebuffer = null
-            context.renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+            context.framebuffer.clear()
+            context.system.framebuffer = null
+            context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
             context.light.updateAsync() // ToDo: do async
             context.light.update()
@@ -87,11 +87,11 @@ class RenderLoop(
             lastFrame = currentFrame
 
 
-            context.textureManager.staticTextures.animator.draw()
+            context.textures.staticTextures.animator.draw()
 
             context.renderer.render()
 
-            context.renderSystem.reset() // Reset to enable depth mask, etc again
+            context.system.reset() // Reset to enable depth mask, etc again
 
             context.renderStats.endDraw()
 
@@ -99,7 +99,7 @@ class RenderLoop(
             context.window.pollEvents()
             context.window.swapBuffers()
 
-            context.inputManager.draw(deltaFrameTime)
+            context.input.draw(deltaFrameTime)
             context.camera.draw()
 
             // handle opengl context tasks, but limit it per frame
@@ -113,7 +113,7 @@ class RenderLoop(
                 Thread.sleep(100L)
             }
 
-            for (error in context.renderSystem.getErrors()) {
+            for (error in context.system.getErrors()) {
                 context.connection.util.sendDebugMessage(error.printMessage)
             }
 
@@ -125,7 +125,7 @@ class RenderLoop(
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
         context.state = RenderingStates.STOPPED
-        context.renderSystem.destroy()
+        context.system.destroy()
         context.window.destroy()
         Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
         // disconnect

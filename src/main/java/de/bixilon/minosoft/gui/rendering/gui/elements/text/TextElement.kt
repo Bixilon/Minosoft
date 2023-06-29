@@ -151,7 +151,7 @@ open class TextElement(
             end.y = start.y + lineHeight + background.size.vertical
 
 
-            addQuad(start, end, context.textureManager.whiteTexture, background.color, options)
+            addQuad(start, end, context.textures.whiteTexture, background.color, options)
         }
     }
 

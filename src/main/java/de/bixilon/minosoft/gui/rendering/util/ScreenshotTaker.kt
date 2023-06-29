@@ -44,7 +44,7 @@ class ScreenshotTaker(
         try {
             val width = context.window.size.x
             val height = context.window.size.y
-            val buffer = context.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
+            val buffer = context.system.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
 
             val path = RunConfiguration.HOME_DIRECTORY.resolve("screenshots").resolve(context.connection.address.hostname)
 

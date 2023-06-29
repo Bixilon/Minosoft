@@ -58,7 +58,7 @@ class ItemElement(
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (raw.stack == null) {
             if (hovered) {
-                ImageElement(guiRenderer, context.textureManager.whiteTexture.texture, size = this.size, tint = HOVERED_COLOR).forceRender(offset, consumer, options)
+                ImageElement(guiRenderer, context.textures.whiteTexture.texture, size = this.size, tint = HOVERED_COLOR).forceRender(offset, consumer, options)
             }
         }
         var options = options

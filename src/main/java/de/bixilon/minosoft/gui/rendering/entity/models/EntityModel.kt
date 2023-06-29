@@ -85,12 +85,12 @@ abstract class EntityModel<E : Entity>(
             return
         }
         if (renderer.profile.hitbox.showThroughWalls) {
-            context.renderSystem.reset(faceCulling = false, depth = DepthFunctions.ALWAYS)
+            context.system.reset(faceCulling = false, depth = DepthFunctions.ALWAYS)
         } else {
-            context.renderSystem.reset(faceCulling = false)
+            context.system.reset(faceCulling = false)
         }
 
-        context.shaderManager.genericColorShader.use()
+        context.shaders.genericColorShader.use()
 
         hitbox.draw()
     }

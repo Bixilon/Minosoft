@@ -27,7 +27,7 @@ class GUIMesh(
         val halfSize: Vec2,
         data: AbstractFloatList,
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
-    private val whiteTexture = context.textureManager.whiteTexture
+    private val whiteTexture = context.textures.whiteTexture
 
     override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         addVertex(data, halfSize, position, texture ?: whiteTexture.texture, uv, tint, options)

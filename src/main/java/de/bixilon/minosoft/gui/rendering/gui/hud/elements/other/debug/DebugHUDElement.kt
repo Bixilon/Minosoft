@@ -189,7 +189,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             }
         }
 
-        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + context.framebufferManager.world.`fun`.effect?.identifier.format() }
+        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + context.framebuffer.world.`fun`.effect?.identifier.format() }
 
         return layout
     }
@@ -231,7 +231,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             }
         }
 
-        context.renderSystem.apply {
+        context.system.apply {
             layout += TextElement(guiRenderer, "GPU $gpuType", properties = RIGHT)
             layout += TextElement(guiRenderer, "Version $version", properties = RIGHT)
         }

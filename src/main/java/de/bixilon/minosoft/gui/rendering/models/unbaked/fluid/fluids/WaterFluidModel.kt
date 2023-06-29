@@ -28,8 +28,8 @@ class WaterFluidModel : FluidModel {
     override var flowing: Texture? = null
 
     override fun load(context: RenderContext) {
-        still = context.textureManager.staticTextures.createTexture(STILL)
-        flowing = context.textureManager.staticTextures.createTexture(FLOWING)
+        still = context.textures.staticTextures.createTexture(STILL)
+        flowing = context.textures.staticTextures.createTexture(FLOWING)
     }
 
     companion object {

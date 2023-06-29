@@ -29,7 +29,7 @@ import java.util.*
 class MoonRenderer(
     sky: SkyRenderer,
 ) : PlanetRenderer(sky) {
-    override val texture = sky.context.textureManager.staticTextures.createTexture(MOON_PHASES)
+    override val texture = sky.context.textures.staticTextures.createTexture(MOON_PHASES)
     private var phase = MoonPhases.FULL_MOON
 
     private fun updateUV(phases: MoonPhases) {

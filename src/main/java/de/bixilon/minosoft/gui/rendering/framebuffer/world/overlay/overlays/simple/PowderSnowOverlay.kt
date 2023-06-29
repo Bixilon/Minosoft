@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PowderSnowOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val config = context.connection.profiles.rendering.overlay
-    override val texture: Texture = context.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
+    override val texture: Texture = context.textures.staticTextures.createTexture(OVERLAY_TEXTURE)
     private val strength = FloatAverage(1L * 1000000000L, 0.0f)
     override var render: Boolean = false
         get() = config.powderSnow && field

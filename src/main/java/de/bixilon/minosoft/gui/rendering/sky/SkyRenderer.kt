@@ -39,7 +39,7 @@ class SkyRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
 ) : Renderer, PreDrawable, AsyncRenderer {
-    override val renderSystem: RenderSystem = context.renderSystem
+    override val renderSystem: RenderSystem = context.system
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
@@ -97,7 +97,7 @@ class SkyRenderer(
     }
 
     override fun drawPre() {
-        context.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL, depthMask = false)
+        context.system.reset(depth = DepthFunctions.LESS_OR_EQUAL, depthMask = false)
         for (renderer in renderer) {
             renderer.draw()
         }

@@ -38,7 +38,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class WorldBorderRenderer(
     override val context: RenderContext,
 ) : Renderer, AsyncRenderer, TranslucentDrawable, SkipAll {
-    override val renderSystem: RenderSystem = context.renderSystem
+    override val renderSystem: RenderSystem = context.system
     private val shader = renderSystem.createShader(minosoft("world/border")) { WorldBorderShader(it) }
     private var borderMesh: WorldBorderMesh? = null
     private val border = context.connection.world.border
@@ -52,12 +52,12 @@ class WorldBorderRenderer(
         shader.native.defines["MAX_DISTANCE"] = MAX_DISTANCE
         shader.load()
 
-        texture = context.textureManager.staticTextures.createTexture(TEXTURE)
+        texture = context.textures.staticTextures.createTexture(TEXTURE)
         context.camera.offset::offset.observe(this) { reload = true }
     }
 
     override fun postInit(latch: AbstractLatch) {
-        context.textureManager.staticTextures.use(shader)
+        context.textures.staticTextures.use(shader)
         shader.textureIndexLayer = texture.renderData.shaderTextureId
     }
 

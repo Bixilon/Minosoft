@@ -47,7 +47,7 @@ class EntityRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
 ) : Renderer, OpaqueDrawable {
-    override val renderSystem: RenderSystem = context.renderSystem
+    override val renderSystem: RenderSystem = context.system
     val profile = connection.profiles.entity
     val visibilityGraph = context.camera.visibilityGraph
     private val models: LockMap<Entity, EntityModel<*>> = lockMapOf()
@@ -78,7 +78,7 @@ class EntityRenderer(
         profile.hitbox::enabled.observe(this) { this.hitboxes = it }
         context.camera.offset::offset.observe(this) { reset = true }
 
-        context.inputManager.registerKeyCallback(
+        context.input.registerKeyCallback(
             HITBOX_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
@@ -135,7 +135,7 @@ class EntityRenderer(
     }
 
     override fun setupOpaque() {
-        context.renderSystem.reset(faceCulling = false)
+        context.system.reset(faceCulling = false)
     }
 
     override fun drawOpaque() {

@@ -33,7 +33,7 @@ class FunEffectManager(
 
 
     init {
-        context.inputManager.registerKeyCallback(
+        context.input.registerKeyCallback(
             "minosoft:switch_fun_settings".toResourceLocation(),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),

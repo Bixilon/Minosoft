@@ -63,32 +63,32 @@ object RenderLoader {
 
         camera.init()
 
-        tintManager.init(connection.assetsManager)
+        tints.init(connection.assetsManager)
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.labTime()})..." }
 
-        renderSystem.init()
+        system.init()
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Enabling all open gl features (after ${stopwatch.labTime()})..." }
 
-        renderSystem.reset()
+        system.reset()
 
         // Init stage
         val initLatch = ParentLatch(1, renderLatch)
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (after ${stopwatch.labTime()})..." }
-        textureManager.dynamicTextures.load(initLatch)
-        textureManager.initializeSkins(connection)
-        textureManager.loadDefaultTextures()
+        textures.dynamicTextures.load(initLatch)
+        textures.initializeSkins(connection)
+        textures.loadDefaultTextures()
         font = FontManager.create(this, initLatch)
 
 
-        framebufferManager.init()
+        framebuffer.init()
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (after ${stopwatch.labTime()})..." }
         light.init()
-        skeletalManager.init()
+        skeletal.init()
         renderer.init(initLatch)
 
         // Wait for init stage to complete
@@ -97,31 +97,31 @@ object RenderLoader {
 
         // Post init stage
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading textures (after ${stopwatch.labTime()})..." }
-        textureManager.staticTextures.preLoad(renderLatch)
+        textures.staticTextures.preLoad(renderLatch)
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
-        textureManager.staticTextures.load(renderLatch)
+        textures.staticTextures.load(renderLatch)
         font.postInit(renderLatch)
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }
-        shaderManager.postInit()
-        skeletalManager.postInit()
+        shaders.postInit()
+        skeletal.postInit()
         renderer.postInit(renderLatch)
-        framebufferManager.postInit()
+        framebuffer.postInit()
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading skeletal meshes (after ${stopwatch.labTime()})" }
-        modelLoader.entities.loadSkeletal()
+        models.entities.loadSkeletal()
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (after ${stopwatch.labTime()})..." }
 
         window::focused.observeRendering(this) { state = it.decide(RenderingStates.RUNNING, RenderingStates.SLOW) }
 
         window::iconified.observeRendering(this) { state = it.decide(RenderingStates.PAUSED, RenderingStates.RUNNING) }
-        profile.animations::sprites.observe(this, true) { textureManager.staticTextures.animator.enabled = it }
+        profile.animations::sprites.observe(this, true) { textures.staticTextures.animator.enabled = it }
 
 
-        inputManager.init()
+        input.init()
         DefaultKeyBindings.register(this)
         DebugKeyBindings.register(this)
 
@@ -134,8 +134,8 @@ object RenderLoader {
 
         connection.events.fire(ResizeWindowEvent(this, previousSize = Vec2i(0, 0), size = window.size))
 
-        textureManager.dynamicTextures.activate()
-        textureManager.staticTextures.activate()
+        textures.dynamicTextures.activate()
+        textures.staticTextures.activate()
 
 
         renderLatch.dec() // initial count from rendering

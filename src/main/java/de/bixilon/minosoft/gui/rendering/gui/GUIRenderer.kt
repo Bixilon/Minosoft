@@ -46,7 +46,7 @@ class GUIRenderer(
     override val context: RenderContext,
 ) : AsyncRenderer, InputHandler, OtherDrawable {
     private val profile = connection.profiles.gui
-    override val renderSystem = context.renderSystem
+    override val renderSystem = context.system
     var scaledSize: Vec2 by observed(Vec2(context.window.size))
     val gui = GUIManager(this)
     val hud = HUDManager(this)
@@ -56,10 +56,10 @@ class GUIRenderer(
         private set
     var resolutionUpdate = true
     override val framebuffer: Framebuffer
-        get() = context.framebufferManager.gui.framebuffer
+        get() = context.framebuffer.gui.framebuffer
     override val polygonMode: PolygonModes
-        get() = context.framebufferManager.gui.polygonMode
-    val shader = context.renderSystem.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
+        get() = context.framebuffer.gui.polygonMode
+    val shader = context.system.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
     val atlasManager = AtlasManager(context)
 
     var currentMousePosition: Vec2 by observed(Vec2.EMPTY)
@@ -151,11 +151,11 @@ class GUIRenderer(
     }
 
     fun isKeyDown(vararg keyCodes: KeyCodes): Boolean {
-        return context.inputManager.isKeyDown(*keyCodes)
+        return context.input.isKeyDown(*keyCodes)
     }
 
     fun isKeyDown(modifier: ModifierKeys): Boolean {
-        return context.inputManager.isKeyDown(modifier)
+        return context.input.isKeyDown(modifier)
     }
 
     companion object : RendererBuilder<GUIRenderer> {

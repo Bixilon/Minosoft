@@ -30,8 +30,8 @@ class FireOverlay(
 ) : Overlay {
     private val config = context.connection.profiles.rendering.overlay.fire
     private val player = context.connection.player
-    private val shader = context.shaderManager.genericTexture2dShader
-    private var texture: Texture = context.textureManager.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
+    private val shader = context.shaders.genericTexture2dShader
+    private var texture: Texture = context.textures.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
     private val lava = context.connection.registries.fluid[LavaFluid]
     override val render: Boolean
         get() {
@@ -76,7 +76,7 @@ class FireOverlay(
     override fun draw() {
         mesh.unload()
         postInit()
-        context.renderSystem.reset(blending = true, depthTest = false)
+        context.system.reset(blending = true, depthTest = false)
         shader.use()
         mesh.draw()
     }

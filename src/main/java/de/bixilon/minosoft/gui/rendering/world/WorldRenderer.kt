@@ -57,7 +57,7 @@ class WorldRenderer(
     override val context: RenderContext,
 ) : Renderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
     private val profile = connection.profiles.block
-    override val renderSystem: RenderSystem = context.renderSystem
+    override val renderSystem: RenderSystem = context.system
     val visibilityGraph = context.camera.visibilityGraph
     private val shader = renderSystem.createShader(minosoft("world")) { WorldShader(it, false) }
     private val transparentShader = renderSystem.createShader(minosoft("world")) { WorldShader(it, true) }
@@ -90,7 +90,7 @@ class WorldRenderer(
 
 
     override fun init(latch: AbstractLatch) {
-        context.modelLoader.load(latch)
+        context.models.load(latch)
     }
 
     override fun postInit(latch: AbstractLatch) {
@@ -115,7 +115,7 @@ class WorldRenderer(
         }
         context.camera.offset::offset.observe(this) { silentlyClearChunkCache() }
 
-        context.inputManager.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
+        context.input.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
             KeyActions.PRESS to setOf(KeyCodes.KEY_A),
         )) { clearChunkCache() }
@@ -228,7 +228,7 @@ class WorldRenderer(
             mesh.draw()
         }
 
-        context.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
+        context.system.depth = DepthFunctions.LESS_OR_EQUAL
         for (blockEntity in visible.blockEntities) {
             blockEntity.draw(context)
         }
@@ -255,9 +255,9 @@ class WorldRenderer(
             mesh.draw()
         }
 
-        context.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
-        context.renderSystem[RenderingCapabilities.POLYGON_OFFSET] = true
-        context.renderSystem.polygonOffset(-2.5f, -2.5f)
+        context.system.depth = DepthFunctions.LESS_OR_EQUAL
+        context.system[RenderingCapabilities.POLYGON_OFFSET] = true
+        context.system.polygonOffset(-2.5f, -2.5f)
         textShader.use()
         for (mesh in visible.text) {
             mesh.draw()

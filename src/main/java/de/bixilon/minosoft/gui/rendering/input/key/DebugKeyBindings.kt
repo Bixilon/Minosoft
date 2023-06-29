@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.key
 
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -21,15 +22,18 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
+import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.util.KUtil.format
 
 object DebugKeyBindings {
     val DEBUG_POLYGON = minosoft("debug_polygon")
+    val CURSOR_MODE = minosoft("cursor_mode")
+
     val PAUSE_INCOMING = minosoft("network_pause_incoming")
     val PAUSE_OUTGOING = minosoft("network_pause_outgoing")
 
     fun register(context: RenderContext) {
-        val manager = context.inputManager
+        val manager = context.input
 
         manager.registerNetwork()
         manager.registerRendering()
@@ -61,8 +65,23 @@ object DebugKeyBindings {
             KeyActions.STICKY to setOf(KeyCodes.KEY_P),
         )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
-            context.framebufferManager.world.polygonMode = nextMode
+            context.framebuffer.world.polygonMode = nextMode
             connection.util.sendDebugMessage("Polygon mode: ${nextMode.format()}")
+        }
+
+
+        registerKeyCallback(CURSOR_MODE, KeyBinding(
+            KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+            KeyActions.PRESS to setOf(KeyCodes.KEY_M),
+            ignoreConsumer = true,
+        ), defaultPressed = StaticConfiguration.DEBUG_MODE) {
+            val next = when (context.window.cursorMode) {
+                CursorModes.DISABLED -> CursorModes.NORMAL
+                CursorModes.NORMAL -> CursorModes.DISABLED
+                CursorModes.HIDDEN -> CursorModes.NORMAL
+            }
+            context.window.cursorMode = next
+            connection.util.sendDebugMessage("Cursor mode: ${next.format()}")
         }
     }
 }

@@ -94,13 +94,13 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             messages += it.message.text
         }
 
-        context.inputManager.registerKeyCallback(
+        context.input.registerKeyCallback(
             "minosoft:open_chat".toResourceLocation(), KeyBinding(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_T),
             )
         ) { guiRenderer.gui.open(ChatElement) }
 
-        context.inputManager.registerKeyCallback(
+        context.input.registerKeyCallback(
             minosoft("open_command_chat"),
             KeyBinding(KeyActions.PRESS to setOf(KeyCodes.KEY_SLASH))
         ) {

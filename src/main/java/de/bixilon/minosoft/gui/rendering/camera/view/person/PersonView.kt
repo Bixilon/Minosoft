@@ -51,7 +51,7 @@ interface PersonView : CameraView {
         if (entity !is LocalPlayerEntity) {
             return null
         }
-        val rotation = camera.context.inputManager.cameraInput.calculateRotation(delta, entity.physics.rotation)
+        val rotation = camera.context.input.cameraInput.calculateRotation(delta, entity.physics.rotation)
         entity.physics.forceSetRotation(rotation)
         return rotation
     }

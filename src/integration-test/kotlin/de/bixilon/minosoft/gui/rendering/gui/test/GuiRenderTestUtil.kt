@@ -34,10 +34,10 @@ object GuiRenderTestUtil {
     private fun createContext(): RenderContext {
         val context = OBJENESIS.newInstance(RenderContext::class.java)
         context.font = FontManager(DummyFontType)
-        context::renderSystem.forceSet(DummyRenderSystem(context))
-        context::textureManager.forceSet(DummyTextureManager(context))
+        context::system.forceSet(DummyRenderSystem(context))
+        context::textures.forceSet(DummyTextureManager(context))
 
-        context.textureManager::whiteTexture.forceSet(CodeTexturePart(DummyTexture(), size = Vec2i(16, 16)))
+        context.textures::whiteTexture.forceSet(CodeTexturePart(DummyTexture(), size = Vec2i(16, 16)))
 
         return context
     }

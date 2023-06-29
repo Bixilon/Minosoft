@@ -21,8 +21,8 @@ import org.lwjgl.system.MemoryUtil.memAllocFloat
 class SkeletalManager(
     val context: RenderContext,
 ) {
-    private val uniformBuffer = context.renderSystem.createFloatUniformBuffer(memAllocFloat(TRANSFORMS * MAT4_SIZE))
-    val shader = context.renderSystem.createShader(minosoft("skeletal")) { SkeletalShader(it, uniformBuffer) }
+    private val uniformBuffer = context.system.createFloatUniformBuffer(memAllocFloat(TRANSFORMS * MAT4_SIZE))
+    val shader = context.system.createShader(minosoft("skeletal")) { SkeletalShader(it, uniformBuffer) }
 
     fun init() {
         uniformBuffer.init()
@@ -35,11 +35,11 @@ class SkeletalManager(
     }
 
     private fun prepareDraw() {
-        if (context.renderSystem.shader == shader.native) {
+        if (context.system.shader == shader.native) {
             // probably already prepared
             return
         }
-        context.renderSystem.reset()
+        context.system.reset()
         shader.use()
     }
 

@@ -37,8 +37,8 @@ class RendererManager(
 ) {
     private val renderers: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
     private val connection = context.connection
-    private val renderSystem = context.renderSystem
-    private val framebufferManager = context.framebufferManager
+    private val renderSystem = context.system
+    private val framebufferManager = context.framebuffer
 
 
     fun <T : Renderer> register(builder: RendererBuilder<T>): T? {
