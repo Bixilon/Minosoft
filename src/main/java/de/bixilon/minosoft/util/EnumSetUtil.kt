@@ -15,11 +15,14 @@ package de.bixilon.minosoft.util
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.unsafe.UnsafeUtil
+import org.objenesis.ObjenesisStd
 import java.util.*
 
 
 @Deprecated("kutil 1.24")
 object EnumSetUtil {
+    private val OBJENSESIS = ObjenesisStd()
+
     private val ENUM_SET = EnumSet::class.java
     private val ENUM_SET_TYPE = UnsafeUtil.UNSAFE.objectFieldOffset(ENUM_SET.getDeclaredField("elementType"))
     private val ENUM_SET_UNIVERSE = UnsafeUtil.UNSAFE.objectFieldOffset(ENUM_SET.getDeclaredField("universe"))
@@ -45,7 +48,7 @@ object EnumSetUtil {
 
     fun <T : Enum<T>> createJumbo(clazz: Class<T>, universe: Array<T>): EnumSet<T> {
         // return JumboEnumSet(clazz, universe)
-        val set = UnsafeUtil.UNSAFE.allocateInstance(REGULAR_ENUM_SET).unsafeCast<EnumSet<T>>()
+        val set = OBJENSESIS.newInstance(REGULAR_ENUM_SET).unsafeCast<EnumSet<T>>()
         UnsafeUtil.UNSAFE.putObject(this, this@EnumSetUtil.JUMBO_ENUM_SET_ELEMENTS, LongArray(universe.size + 63 ushr 6))
 
         set.update(clazz, universe)
@@ -55,6 +58,7 @@ object EnumSetUtil {
     }
 
     fun <T : Enum<T>> create(clazz: Class<T>, universe: Array<T>): EnumSet<T> {
+        return EnumSet.noneOf(clazz) // TODO: optimize and use universe
         return if (universe.size <= Long.SIZE_BITS) createRegular(clazz, universe) else createJumbo(clazz, universe)
     }
 }
