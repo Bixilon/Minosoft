@@ -28,10 +28,10 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
+import de.bixilon.minosoft.gui.rendering.events.input.CharInputEvent
+import de.bixilon.minosoft.gui.rendering.events.input.KeyInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
-import de.bixilon.minosoft.gui.rendering.events.input.RawCharInputEvent
-import de.bixilon.minosoft.gui.rendering.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MAXIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
@@ -374,14 +374,14 @@ class GLFWWindow(
             }
         }
 
-        fireGLFWEvent(RawKeyInputEvent(context, keyCode = keyCode, keyChangeType = keyAction))
+        fireGLFWEvent(KeyInputEvent(context, code = keyCode, change = keyAction))
     }
 
     private fun charInput(windowId: Long, char: Int) {
         if (windowId != window) {
             return
         }
-        fireGLFWEvent(RawCharInputEvent(context, char = char))
+        fireGLFWEvent(CharInputEvent(context, char = char))
     }
 
     private fun mouseMove(windowId: Long, x: Double, y: Double) {

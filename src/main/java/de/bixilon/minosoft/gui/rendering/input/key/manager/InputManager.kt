@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.key
+package de.bixilon.minosoft.gui.rendering.input.key.manager
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
@@ -26,14 +26,15 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.events.input.CharInputEvent
+import de.bixilon.minosoft.gui.rendering.events.input.KeyInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
-import de.bixilon.minosoft.gui.rendering.events.input.RawCharInputEvent
-import de.bixilon.minosoft.gui.rendering.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.input.CameraInput
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManagerKeys
+import de.bixilon.minosoft.gui.rendering.input.key.KeyBindingRegister
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
@@ -98,8 +99,8 @@ class InputManager(
     fun init() {
         interactionKeys.register()
 
-        connection.events.listen<RawCharInputEvent> { charInput(it.char) }
-        connection.events.listen<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) }
+        connection.events.listen<CharInputEvent> { charInput(it.char) }
+        connection.events.listen<KeyInputEvent> { keyInput(it.code, it.change) }
         connection.events.listen<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset, it) }
 
         connection.events.listen<MouseMoveEvent> {
