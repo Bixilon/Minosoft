@@ -11,18 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.input
+package de.bixilon.minosoft.gui.rendering.input.key.manager.binding
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.config.key.KeyBinding
 
-interface DraggableHandler {
-
-    fun onDragMove(position: Vec2, dragged: Dragged): Element? = null
-    fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? = null
-    fun onDragScroll(scrollOffset: Vec2, dragged: Dragged): Element? = null
-    fun onDragChar(char: Int, dragged: Dragged): Element? = null
+data class KeyBindingState(
+    var binding: KeyBinding,
+    val default: KeyBinding = binding,
+    val pressed: Boolean = false,
+    val callback: MutableSet<KeyBindingCallback> = mutableSetOf(),
+) {
+    var lastChange = 0L
 }

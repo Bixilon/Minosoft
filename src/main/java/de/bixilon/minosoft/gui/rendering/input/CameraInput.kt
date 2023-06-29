@@ -37,7 +37,7 @@ class CameraInput(
     private var changeFly = false
 
     private fun registerKeyBindings() {
-        context.input.registerCheckCallback(
+        context.input.bindings.registerCheck(
             MOVE_SPRINT_KEYBINDING to KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_CONTROL),
             ),
@@ -74,7 +74,7 @@ class CameraInput(
         )
 
 
-        context.input.registerKeyCallback(
+        context.input.bindings.register(
             ZOOM_KEYBINDING, KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_C),
             )
@@ -87,19 +87,19 @@ class CameraInput(
 
     fun updateInput(delta: Double) {
         val input = PlayerMovementInput(
-            forward = context.input.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
-            backward = context.input.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
-            left = context.input.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
-            right = context.input.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
-            jump = context.input.isKeyBindingDown(JUMP_KEYBINDING),
-            sneak = context.input.isKeyBindingDown(SNEAK_KEYBINDING),
-            sprint = context.input.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
-            flyDown = context.input.isKeyBindingDown(FLY_DOWN_KEYBINDING),
-            flyUp = context.input.isKeyBindingDown(FLY_UP_KEYBINDING),
+            forward = MOVE_FORWARDS_KEYBINDING in context.input.bindings,
+            backward = MOVE_BACKWARDS_KEYBINDING in context.input.bindings,
+            left = MOVE_LEFT_KEYBINDING in context.input.bindings,
+            right = MOVE_RIGHT_KEYBINDING in context.input.bindings,
+            jump = JUMP_KEYBINDING in context.input.bindings,
+            sneak = SNEAK_KEYBINDING in context.input.bindings,
+            sprint = MOVE_SPRINT_KEYBINDING in context.input.bindings,
+            flyDown = FLY_DOWN_KEYBINDING in context.input.bindings,
+            flyUp = FLY_UP_KEYBINDING in context.input.bindings,
         )
 
-        val changeFly = context.input.isKeyBindingDown(CHANGE_FLY_KEYBINDING)
-        val startElytraFly = context.input.isKeyBindingDown(START_ELYTRA_FLY_KEYBINDING)
+        val changeFly = CHANGE_FLY_KEYBINDING in context.input.bindings
+        val startElytraFly = START_ELYTRA_FLY_KEYBINDING in context.input.bindings
         val inputActions = MovementInputActions(
             toggleFly = changeFly != this.changeFly,
             startElytraFly = startElytraFly,

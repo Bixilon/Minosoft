@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -72,7 +71,7 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
         return activeElement?.onCharPress(char) ?: false
     }
 
-    override fun onScroll(position: Vec2, scrollOffset: Vec2d): Boolean {
+    override fun onScroll(position: Vec2, scrollOffset: Vec2): Boolean {
         val (element, offset) = getAt(position) ?: return false
         return element.onScroll(offset, scrollOffset)
     }
@@ -104,7 +103,7 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
         return activeDragElement?.onDragLeave(draggable)
     }
 
-    override fun onDragScroll(position: Vec2, scrollOffset: Vec2d, draggable: Dragged): Element? {
+    override fun onDragScroll(position: Vec2, scrollOffset: Vec2, draggable: Dragged): Element? {
         val (element, offset) = getAt(position) ?: return null
         return element.onDragScroll(offset, scrollOffset, draggable)
     }

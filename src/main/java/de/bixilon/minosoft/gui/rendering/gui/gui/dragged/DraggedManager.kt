@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -120,22 +119,22 @@ class DraggedManager(
         return true
     }
 
-    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
+    override fun onKey(code: KeyCodes, change: KeyChangeTypes): Boolean {
         val element = element ?: return false
-        val target = guiRenderer.gui.onDragKey(type, key, element.element)
-        val mouseButton = MouseButtons[key]
+        val target = guiRenderer.gui.onDragKey(change, code, element.element)
+        val mouseButton = MouseButtons[code]
         if (mouseButton == null) {
-            element.element.onDragKey(key, type, target)
+            element.element.onDragKey(code, change, target)
             return true
         }
 
-        val mouseAction = MouseActions[type] ?: return false
+        val mouseAction = MouseActions[change] ?: return false
 
         element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, guiRenderer.currentMousePosition, millis()), target)
         return true
     }
 
-    override fun onScroll(scrollOffset: Vec2d): Boolean {
+    override fun onScroll(scrollOffset: Vec2): Boolean {
         val element = element ?: return false
         val target = guiRenderer.gui.onDragScroll(scrollOffset, element.element)
         element.element.onDragScroll(guiRenderer.currentMousePosition, scrollOffset, target)

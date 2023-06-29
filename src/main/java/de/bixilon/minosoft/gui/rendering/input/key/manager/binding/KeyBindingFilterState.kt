@@ -11,15 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.key
+package de.bixilon.minosoft.gui.rendering.input.key.manager.binding
 
-import de.bixilon.minosoft.config.key.KeyBinding
-
-data class KeyBindingRegister(
-    var keyBinding: KeyBinding,
-    val default: KeyBinding,
-    val defaultPressed: Boolean = false,
-    val callback: MutableSet<(keyDown: Boolean) -> Unit> = mutableSetOf(),
-) {
-    var lastChange = 0L
-}
+data class KeyBindingFilterState(
+    var result: Boolean,
+    var satisfied: Boolean = true,
+    var skip: Boolean = false,
+    var forceNotify: Boolean = false,
+)

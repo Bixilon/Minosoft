@@ -59,12 +59,12 @@ class ChunkBorderRenderer(
         get() = mesh == null || !profile.chunkBorder.enabled
 
     override fun init(latch: AbstractLatch) {
-        context.input.registerKeyCallback(
+        context.input.bindings.register(
             CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
                 KeyActions.STICKY to setOf(KeyCodes.KEY_G),
-            ), defaultPressed = profile.chunkBorder.enabled
+            ), pressed = profile.chunkBorder.enabled
         ) {
             profile.chunkBorder.enabled = it
             connection.util.sendDebugMessage("Chunk borders: ${it.format()}")

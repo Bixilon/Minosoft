@@ -25,17 +25,17 @@ object DefaultKeyBindings {
     val FULLSCREEN = minosoft("toggle_fullscreen")
 
     fun register(context: RenderContext) {
-        val inputHandler = context.input
+        val bindings = context.input.bindings
         val window = context.window
         val connection = context.connection
 
-        inputHandler.registerKeyCallback(SCREENSHOT, KeyBinding(
+        bindings.register(SCREENSHOT, KeyBinding(
             KeyActions.PRESS to setOf(KeyCodes.KEY_F2),
             ignoreConsumer = true,
         )) { context.screenshotTaker.takeScreenshot() }
 
 
-        inputHandler.registerKeyCallback(FULLSCREEN, KeyBinding(
+        bindings.register(FULLSCREEN, KeyBinding(
             KeyActions.PRESS to setOf(KeyCodes.KEY_F11),
             ignoreConsumer = true,
         )) {

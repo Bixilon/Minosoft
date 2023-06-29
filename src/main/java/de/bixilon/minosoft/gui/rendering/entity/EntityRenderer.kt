@@ -78,12 +78,12 @@ class EntityRenderer(
         profile.hitbox::enabled.observe(this) { this.hitboxes = it }
         context.camera.offset::offset.observe(this) { reset = true }
 
-        context.input.registerKeyCallback(
+        context.input.bindings.register(
             HITBOX_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
                 KeyActions.STICKY to setOf(KeyCodes.KEY_B),
-            ), defaultPressed = profile.hitbox.enabled
+            ), pressed = profile.hitbox.enabled
         ) {
             profile.hitbox.enabled = it
             connection.util.sendDebugMessage("Entity hit boxes: ${it.format()}")

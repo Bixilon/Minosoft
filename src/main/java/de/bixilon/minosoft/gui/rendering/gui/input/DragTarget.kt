@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.input
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -29,7 +28,7 @@ interface DragTarget {
     fun onDragMove(position: Vec2, absolute: Vec2, draggable: Dragged): Element? = this.nullCast()
     fun onDragLeave(draggable: Dragged): Element? = this.nullCast()
 
-    fun onDragScroll(position: Vec2, scrollOffset: Vec2d, draggable: Dragged): Element? = this.nullCast()
+    fun onDragScroll(position: Vec2, scrollOffset: Vec2, draggable: Dragged): Element? = this.nullCast()
 
     fun onDragMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? = this.nullCast()
     fun onDragKey(key: KeyCodes, type: KeyChangeTypes, draggable: Dragged): Element? = this.nullCast()

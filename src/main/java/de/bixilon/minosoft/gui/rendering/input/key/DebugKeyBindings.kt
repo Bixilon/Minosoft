@@ -20,9 +20,10 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
+import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.BindingsManager
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 
 object DebugKeyBindings {
@@ -33,14 +34,14 @@ object DebugKeyBindings {
     val PAUSE_OUTGOING = minosoft("network_pause_outgoing")
 
     fun register(context: RenderContext) {
-        val manager = context.input
+        val bindings = context.input.bindings
 
-        manager.registerNetwork()
-        manager.registerRendering()
+        bindings.registerNetwork(context.connection)
+        bindings.registerRendering(context)
     }
 
-    private fun InputManager.registerNetwork() {
-        registerKeyCallback(PAUSE_INCOMING, KeyBinding(
+    private fun BindingsManager.registerNetwork(connection: PlayConnection) {
+        register(PAUSE_INCOMING, KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
             KeyActions.STICKY to setOf(KeyCodes.KEY_I),
             ignoreConsumer = true,
@@ -49,7 +50,7 @@ object DebugKeyBindings {
             connection.network.pauseReceiving(it)
         }
 
-        registerKeyCallback(PAUSE_OUTGOING, KeyBinding(
+        register(PAUSE_OUTGOING, KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
             KeyActions.STICKY to setOf(KeyCodes.KEY_O),
             ignoreConsumer = true,
@@ -59,8 +60,10 @@ object DebugKeyBindings {
         }
     }
 
-    private fun InputManager.registerRendering() {
-        registerKeyCallback(DEBUG_POLYGON, KeyBinding(
+    private fun BindingsManager.registerRendering(context: RenderContext) {
+        val connection = context.connection
+
+        register(DEBUG_POLYGON, KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
             KeyActions.STICKY to setOf(KeyCodes.KEY_P),
         )) {
@@ -70,11 +73,11 @@ object DebugKeyBindings {
         }
 
 
-        registerKeyCallback(CURSOR_MODE, KeyBinding(
+        register(CURSOR_MODE, KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
             KeyActions.PRESS to setOf(KeyCodes.KEY_M),
             ignoreConsumer = true,
-        ), defaultPressed = StaticConfiguration.DEBUG_MODE) {
+        ), pressed = StaticConfiguration.DEBUG_MODE) {
             val next = when (context.window.cursorMode) {
                 CursorModes.DISABLED -> CursorModes.NORMAL
                 CursorModes.NORMAL -> CursorModes.DISABLED

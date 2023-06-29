@@ -61,7 +61,7 @@ class HUDManager(
         val toggleKeyBinding = hudBuilder.ENABLE_KEY_BINDING ?: return
         val toggleKeyBindingName = hudBuilder.ENABLE_KEY_BINDING_NAME ?: return
 
-        context.input.registerKeyCallback(toggleKeyBindingName, toggleKeyBinding, defaultPressed = hudBuilder.DEFAULT_ENABLED) { hudElement.enabled = it }
+        context.input.bindings.register(toggleKeyBindingName, toggleKeyBinding, pressed = hudBuilder.DEFAULT_ENABLED) { hudElement.enabled = it }
     }
 
     private fun registerDefaultElements() {
@@ -93,10 +93,10 @@ class HUDManager(
             element.init()
         }
 
-        context.input.registerKeyCallback(
+        context.input.bindings.register(
             "minosoft:enable_hud".toResourceLocation(), KeyBinding(
                 KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
-            ), defaultPressed = enabled
+            ), pressed = enabled
         ) { enabled = it }
     }
 

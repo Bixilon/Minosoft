@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -147,16 +146,16 @@ open class GUIMeshElement<T : Element>(
         return element.onMouseMove(position, position)
     }
 
-    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        val mouseButton = MouseButtons[key] ?: return element.onKey(key, type)
+    override fun onKey(code: KeyCodes, change: KeyChangeTypes): Boolean {
+        val mouseButton = MouseButtons[code] ?: return element.onKey(code, change)
         val position = Vec2(lastPosition ?: return false)
 
-        val mouseAction = MouseActions[type] ?: return false
+        val mouseAction = MouseActions[change] ?: return false
 
         return element.onMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, millis()))
     }
 
-    override fun onScroll(scrollOffset: Vec2d): Boolean {
+    override fun onScroll(scrollOffset: Vec2): Boolean {
         val position = Vec2(lastPosition ?: return false)
         return element.onScroll(position, scrollOffset)
     }
@@ -179,7 +178,7 @@ open class GUIMeshElement<T : Element>(
         return element.onDragMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, millis()), dragged)
     }
 
-    override fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? {
+    override fun onDragScroll(scrollOffset: Vec2, dragged: Dragged): Element? {
         return element.onDragScroll(Vec2(lastDragPosition ?: return null), scrollOffset, dragged)
     }
 

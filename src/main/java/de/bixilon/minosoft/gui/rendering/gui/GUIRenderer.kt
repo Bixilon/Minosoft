@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -120,11 +119,11 @@ class GUIRenderer(
         return popper.onCharPress(char) || dragged.onCharPress(char) || gui.onCharPress(char)
     }
 
-    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        return popper.onKey(type, key) || dragged.onKey(type, key) || gui.onKey(type, key)
+    override fun onKey(code: KeyCodes, change: KeyChangeTypes): Boolean {
+        return popper.onKey(code, change) || dragged.onKey(code, change) || gui.onKey(code, change)
     }
 
-    override fun onScroll(scrollOffset: Vec2d): Boolean {
+    override fun onScroll(scrollOffset: Vec2): Boolean {
         return popper.onScroll(scrollOffset) || dragged.onScroll(scrollOffset) || gui.onScroll(scrollOffset)
     }
 

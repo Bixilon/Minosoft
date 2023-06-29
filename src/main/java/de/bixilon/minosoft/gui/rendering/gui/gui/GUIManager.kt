@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
@@ -71,7 +70,7 @@ class GUIManager(
     }
 
     override fun postInit() {
-        context.input.registerKeyCallback(
+        context.input.bindings.register(
             "minosoft:back".toResourceLocation(),
             KeyBinding(
                 KeyActions.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
@@ -210,11 +209,11 @@ class GUIManager(
         return runForEach { it.onMouseMove(position) }
     }
 
-    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        return runForEach { it.onKey(type, key) }
+    override fun onKey(code: KeyCodes, change: KeyChangeTypes): Boolean {
+        return runForEach { it.onKey(code, change) }
     }
 
-    override fun onScroll(scrollOffset: Vec2d): Boolean {
+    override fun onScroll(scrollOffset: Vec2): Boolean {
         return runForEach { it.onScroll(scrollOffset) }
     }
 
@@ -240,7 +239,7 @@ class GUIManager(
         return runForEachDrag { it.onDragKey(type, key, dragged) }
     }
 
-    override fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? {
+    override fun onDragScroll(scrollOffset: Vec2, dragged: Dragged): Element? {
         return runForEachDrag { it.onDragScroll(scrollOffset, dragged) }
     }
 
@@ -266,7 +265,7 @@ class GUIManager(
 
     private fun _push(element: GUIElement) {
         if (elementOrder.isEmpty()) {
-            context.input.inputHandler = guiRenderer
+            context.input.handler.handler = guiRenderer
         }
         orderLock.acquire()
         val copy = elementOrder.toList()
@@ -313,7 +312,7 @@ class GUIManager(
 
         orderLock.acquire()
         if (elementOrder.isEmpty()) {
-            context.input.inputHandler = null
+            context.input.handler.handler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
         }
@@ -337,7 +336,7 @@ class GUIManager(
         toPop.onClose()
         orderLock.acquire()
         if (elementOrder.isEmpty()) {
-            context.input.inputHandler = null
+            context.input.handler.handler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
             orderLock.release()
@@ -365,7 +364,7 @@ class GUIManager(
         orderLock.unlock()
         guiRenderer.popper.clear()
         guiRenderer.dragged.element = null
-        context.input.inputHandler = null
+        context.input.handler.handler = null
     }
 
     operator fun <T : GUIElement> get(builder: GUIBuilder<T>): T {

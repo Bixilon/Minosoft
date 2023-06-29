@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -191,7 +190,7 @@ abstract class Menu(
         return true
     }
 
-    override fun onScroll(position: Vec2, scrollOffset: Vec2d): Boolean {
+    override fun onScroll(position: Vec2, scrollOffset: Vec2): Boolean {
         val (element, delta) = getAt(position) ?: return true
         element.onScroll(delta, scrollOffset)
         return true

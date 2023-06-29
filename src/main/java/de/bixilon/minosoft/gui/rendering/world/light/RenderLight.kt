@@ -18,12 +18,12 @@ import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.world.light.debug.LightmapDebugWindow
 import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 
 class RenderLight(val context: RenderContext) {
@@ -34,25 +34,23 @@ class RenderLight(val context: RenderContext) {
     fun init() {
         map.init()
 
-        context.input.registerKeyCallback(
-            "minosoft:recalculate_light".toResourceLocation(),
-            KeyBinding(
-                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                KeyActions.PRESS to setOf(KeyCodes.KEY_A),
-            )
+        context.input.bindings.register(RECALCULATE, KeyBinding(
+            KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+            KeyActions.PRESS to setOf(KeyCodes.KEY_A),
+        )
         ) {
             DefaultThreadPool += {
                 connection.world.recalculateLight()
                 connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
             }
         }
-        context.input.registerKeyCallback(
-            "minosoft:toggle_fullbright".toResourceLocation(),
+        context.input.bindings.register(
+            FULLBRIGHT,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
                 KeyActions.STICKY to setOf(KeyCodes.KEY_C),
             ),
-            defaultPressed = connection.profiles.rendering.light.fullbright,
+            pressed = connection.profiles.rendering.light.fullbright,
         ) {
             connection.profiles.rendering.light.fullbright = it
             connection.util.sendDebugMessage("Fullbright: ${it.format()}")
@@ -75,5 +73,10 @@ class RenderLight(val context: RenderContext) {
     fun update() {
         map.update()
         debugWindow?.update()
+    }
+
+    private companion object {
+        val RECALCULATE = minosoft("recalculate")
+        val FULLBRIGHT = minosoft("fullbright")
     }
 }

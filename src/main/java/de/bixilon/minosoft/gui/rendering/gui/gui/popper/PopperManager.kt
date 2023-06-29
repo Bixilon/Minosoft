@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -111,19 +110,19 @@ class PopperManager(
         return false
     }
 
-    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
+    override fun onKey(code: KeyCodes, change: KeyChangeTypes): Boolean {
         for ((index, element) in poppers.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
             }
-            if (element.onKey(type, key)) {
+            if (element.onKey(code, change)) {
                 return true
             }
         }
         return false
     }
 
-    override fun onScroll(scrollOffset: Vec2d): Boolean {
+    override fun onScroll(scrollOffset: Vec2): Boolean {
         for ((index, element) in poppers.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
