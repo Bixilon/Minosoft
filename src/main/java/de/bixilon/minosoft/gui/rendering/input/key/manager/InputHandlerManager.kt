@@ -80,7 +80,7 @@ class InputHandlerManager(
 
     private fun enable() {
         context.window.cursorMode = CursorModes.NORMAL
-        // todo: disable all key combinations
+        input.clear()
     }
 
     private fun disable() {

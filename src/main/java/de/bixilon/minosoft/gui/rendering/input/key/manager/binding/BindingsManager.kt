@@ -46,7 +46,7 @@ class BindingsManager(
         }
     }
 
-    private fun deactivateAll() {
+    fun clear() {
         for ((name, pair) in bindings) {
             val down = name in pressed
             if (!down || pair.pressed) {

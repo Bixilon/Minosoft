@@ -41,19 +41,18 @@ class InputManager(
     val cameraInput = CameraInput(context, context.camera.matrixHandler)
     val bindings = BindingsManager(this)
     val handler = InputHandlerManager(this)
+    val interaction = InteractionManagerKeys(this, connection.camera.interactions)
+
 
     private val pressed: MutableSet<KeyCodes> = mutableSetOf()
     private val times: Object2LongMap<KeyCodes> = Object2LongOpenHashMap<KeyCodes>().apply { defaultReturnValue(-1L) }
 
-
     var mousePosition: Vec2d = Vec2d.EMPTY
         private set
 
-    val interactionKeys = InteractionManagerKeys(this, connection.camera.interactions)
-
 
     fun init() {
-        interactionKeys.register()
+        interaction.register()
 
         connection.events.listen<CharInputEvent> { onChar(it.char) }
         connection.events.listen<KeyInputEvent> { onKey(it.code, it.change) }
@@ -63,11 +62,10 @@ class InputManager(
         cameraInput.init()
     }
 
-    private fun deactivateAll() {
+    fun clear() {
         pressed.clear()
         times.clear()
-
-        // TODO: disable key bindings
+        bindings.clear()
     }
 
     private fun onMouse(delta: Vec2d, position: Vec2d) {
@@ -143,7 +141,7 @@ class InputManager(
 
     fun draw(delta: Double) {
         cameraInput.updateInput(delta)
-        interactionKeys.draw()
+        interaction.draw()
     }
 
     fun getLastPressed(key: KeyCodes): Long {
