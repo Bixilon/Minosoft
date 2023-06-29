@@ -25,7 +25,8 @@ import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
-import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
+import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
+import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.Stopwatch
@@ -121,7 +122,9 @@ object RenderLoader {
 
 
         inputManager.init()
-        DefaultKeyCombinations.registerAll(this)
+        DefaultKeyBindings.register(this)
+        DebugKeyBindings.register(this)
+
         this::state.observe(this) {
             if (it == RenderingStates.PAUSED || it == RenderingStates.SLOW || it == RenderingStates.STOPPED) {
                 pause(true)
