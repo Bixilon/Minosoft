@@ -61,7 +61,7 @@ class StructureBlockC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Structure block (position=$position, action=$action, mode=$mode, name=\"$name\", offsetX=$offsetX, offsetY=$offsetY, offsetZ=$offsetZ, sizeX=$sizeX, sizeY=$sizeY, sizeZ=$sizeZ, mirror=$mirror, rotation=$rotation, metaData=$metaData, integrity=$integrity, seed=$seed, flags=$flags)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Structure block (position=$position, action=$action, mode=$mode, name=\"$name\", offsetX=$offsetX, offsetY=$offsetY, offsetZ=$offsetZ, sizeX=$sizeX, sizeY=$sizeY, sizeZ=$sizeZ, mirror=$mirror, rotation=$rotation, metaData=$metaData, integrity=$integrity, seed=$seed, flags=$flags)" }
     }
 
     enum class StructureBlockActions {

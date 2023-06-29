@@ -24,6 +24,6 @@ class BlockBreakS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val sequence = buffer.readVarInt()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block break (sequence=$sequence)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Block break (sequence=$sequence)" }
     }
 }

@@ -26,6 +26,6 @@ class MessageHeaderS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val bodyDigest = buffer.readByteArray()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Message header (header=$header, signature=$signature, bodyDigest=$bodyDigest)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Message header (header=$header, signature=$signature, bodyDigest=$bodyDigest)" }
     }
 }

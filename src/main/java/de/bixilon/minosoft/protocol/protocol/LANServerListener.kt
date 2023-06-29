@@ -75,14 +75,14 @@ object LANServerListener {
                 val inetAddress = InetAddress.getByName(BROADCAST_ADDRESS)
                 socket.joinGroup(InetSocketAddress(inetAddress, BROADCAST_PORT), NetworkInterface.getByInetAddress(inetAddress))
                 val buffer = ByteArray(256) // this should be enough, if the packet is longer, it is probably invalid
-                Log.log(LogMessageType.NETWORK_STATUS, LogLevels.VERBOSE) { "Listening for LAN servers..." }
+                Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Listening for LAN servers..." }
                 latch?.dec()
                 while (true) {
                     try {
                         val packet = DatagramPacket(buffer, buffer.size)
                         socket.receive(packet)
                         val broadcast = String(buffer, 0, packet.length, StandardCharsets.UTF_8)
-                        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "LAN servers broadcast (${packet.address.hostAddress}:${packet.port}): $broadcast" }
+                        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "LAN servers broadcast (${packet.address.hostAddress}:${packet.port}): $broadcast" }
                         val sender = packet.address
                         if (SERVERS.containsKey(sender)) {
                             // This guy sent us already a server, maybe just the regular 1.5 second interval, a duplicate or a DOS attack...We don't care
@@ -95,7 +95,7 @@ object LANServerListener {
                         if (SERVERS.size > MAXIMUM_SERVERS) {
                             continue
                         }
-                        Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Discovered LAN servers: ${server.address}" }
+                        Log.log(LogMessageType.NETWORK, LogLevels.INFO) { "Discovered LAN servers: ${server.address}" }
                         SERVERS[sender] = server
                         LANServerType.servers += server
                     } catch (ignored: Throwable) {
@@ -110,7 +110,7 @@ object LANServerListener {
             } finally {
                 this.listeningThread = null
                 SERVERS.clear()
-                Log.log(LogMessageType.NETWORK_STATUS, LogLevels.VERBOSE) { "Stop listening for LAN servers..." }
+                Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Stop listening for LAN servers..." }
             }
         }, "LAN Server Listener")
         thread.start()

@@ -30,6 +30,6 @@ class SubtitleS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Subtitle (test=$text)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Subtitle (test=$text)" }
     }
 }

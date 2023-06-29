@@ -50,6 +50,6 @@ class CommandC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Command (message=$command, time=$time, signature=$signature)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Command (message=$command, time=$time, signature=$signature)" }
     }
 }

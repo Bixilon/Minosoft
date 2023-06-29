@@ -26,6 +26,6 @@ class NbtResponseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val nbt: Map<String, Any> = buffer.readNBT().asJsonObject()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Nbt response (transactionId=$transactionId nbt=$nbt)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Nbt response (transactionId=$transactionId nbt=$nbt)" }
     }
 }

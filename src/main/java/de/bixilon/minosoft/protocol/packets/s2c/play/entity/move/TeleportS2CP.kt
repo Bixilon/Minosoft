@@ -51,6 +51,6 @@ class TeleportS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity teleport (entityId=$entityId, position=$position, rotation=$rotation, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Entity teleport (entityId=$entityId, position=$position, rotation=$rotation, onGround=$onGround)" }
     }
 }

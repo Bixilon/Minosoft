@@ -37,6 +37,6 @@ class FlagsBossbarS2CP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar flags set (uuid=$uuid, flags=$flags)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Bossbar flags set (uuid=$uuid, flags=$flags)" }
     }
 }

@@ -25,6 +25,6 @@ class ChatPreviewS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val preview = buffer.readOptional { buffer.readChatComponent() }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chat preview (id=$id, preview=\"${preview}§r\")" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Chat preview (id=$id, preview=\"${preview}§r\")" }
     }
 }

@@ -30,6 +30,6 @@ class DataLegacyMapS2CP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Data legacy map (start=$start, colors=$colors)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Data legacy map (start=$start, colors=$colors)" }
     }
 }

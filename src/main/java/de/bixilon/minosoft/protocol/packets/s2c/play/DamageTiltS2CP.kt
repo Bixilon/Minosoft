@@ -36,6 +36,6 @@ class DamageTiltS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Damage tilt (entityId=$entityId, yaw=$yaw)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Damage tilt (entityId=$entityId, yaw=$yaw)" }
     }
 }

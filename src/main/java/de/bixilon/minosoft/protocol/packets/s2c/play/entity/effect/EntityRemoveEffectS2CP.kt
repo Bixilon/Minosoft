@@ -35,6 +35,6 @@ class EntityRemoveEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Entity effect remove (entityId=$entityId, effect=$effect)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Entity effect remove (entityId=$entityId, effect=$effect)" }
     }
 }

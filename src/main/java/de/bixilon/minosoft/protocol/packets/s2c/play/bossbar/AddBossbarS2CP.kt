@@ -56,6 +56,6 @@ class AddBossbarS2CP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar add (uuid=$uuid, title=\"$title\", health=$value, color=$color, notches=$notches, flags=$flags)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Bossbar add (uuid=$uuid, title=\"$title\", health=$value, color=$color, notches=$notches, flags=$flags)" }
     }
 }

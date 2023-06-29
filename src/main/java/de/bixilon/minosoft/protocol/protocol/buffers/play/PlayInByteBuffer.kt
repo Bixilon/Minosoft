@@ -228,7 +228,7 @@ class PlayInByteBuffer : InByteBuffer {
                 PlayerProperties.TEXTURE_PROPERTIES -> {
                     check(textures == null) { "Textures duplicated" }
                     if (signature == null) {
-                        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Server tried to send unsigned texture data, ignoring." }
+                        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Server tried to send unsigned texture data, ignoring." }
                         continue
                     }
                     textures = PlayerTextures.of(value, signature)

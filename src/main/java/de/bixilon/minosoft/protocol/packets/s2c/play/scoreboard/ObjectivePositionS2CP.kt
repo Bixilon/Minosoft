@@ -41,6 +41,6 @@ class ObjectivePositionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Objective position (position=$position, objective=$name)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Objective position (position=$position, objective=$name)" }
     }
 }

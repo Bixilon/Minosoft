@@ -23,6 +23,6 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class EnterCombatEventS2CP(buffer: PlayInByteBuffer) : CombatEventS2CP {
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Combat event enter" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Combat event enter" }
     }
 }

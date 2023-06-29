@@ -81,6 +81,6 @@ class ChunksS2CP : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunks (positions=${chunks.keys})" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Chunks (positions=${chunks.keys})" }
     }
 }

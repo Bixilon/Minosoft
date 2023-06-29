@@ -33,6 +33,6 @@ class EntitySpectateC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity spectate (uuid=$uuid)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Entity spectate (uuid=$uuid)" }
     }
 }

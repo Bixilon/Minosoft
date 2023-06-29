@@ -41,6 +41,6 @@ class ToggleFlyC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Toggle fly (flying=${abilities.flying})" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Toggle fly (flying=${abilities.flying})" }
     }
 }

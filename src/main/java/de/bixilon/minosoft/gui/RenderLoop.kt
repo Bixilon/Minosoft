@@ -51,7 +51,7 @@ class RenderLoop(
 
 
     fun startLoop() {
-        Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
+        Log.log(LogMessageType.RENDERING) { "Starting loop" }
         context.connection.events.listen<WindowCloseEvent> { context.state = RenderingStates.QUITTING }
         while (true) {
             if (context.state == RenderingStates.PAUSED) {
@@ -123,11 +123,11 @@ class RenderLoop(
             context.renderStats.endFrame()
         }
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
+        Log.log(LogMessageType.RENDERING) { "Destroying render window..." }
         context.state = RenderingStates.STOPPED
         context.system.destroy()
         context.window.destroy()
-        Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
+        Log.log(LogMessageType.RENDERING) { "Render window destroyed!" }
         // disconnect
         context.connection.network.disconnect()
     }

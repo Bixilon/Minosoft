@@ -53,6 +53,6 @@ class EntityInteractPositionC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity interaction (entityId=$entityId, position=$position, hand=$hand, sneaking=$sneaking)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Entity interaction (entityId=$entityId, position=$position, hand=$hand, sneaking=$sneaking)" }
     }
 }

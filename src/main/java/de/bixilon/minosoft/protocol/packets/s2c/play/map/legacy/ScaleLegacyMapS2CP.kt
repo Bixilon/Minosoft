@@ -28,6 +28,6 @@ class ScaleLegacyMapS2CP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Scale legacy map (scale=$scale)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Scale legacy map (scale=$scale)" }
     }
 }

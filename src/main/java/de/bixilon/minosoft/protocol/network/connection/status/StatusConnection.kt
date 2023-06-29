@@ -91,7 +91,7 @@ class StatusConnection(
         val nextIndex = ++addressIndex
         if (addresses.size > nextIndex) {
             val nextAddress = addresses[nextIndex]
-            Log.log(LogMessageType.NETWORK_RESOLVING) { "Could not connect to $address, trying next hostname: $nextAddress" }
+            Log.log(LogMessageType.NETWORK) { "Could not connect to $address, trying next hostname: $nextAddress" }
             realAddress = nextAddress
             ping(nextAddress)
         }
@@ -128,7 +128,7 @@ class StatusConnection(
             error("Already connecting!")
         }
         timeout.register()
-        Log.log(LogMessageType.NETWORK_RESOLVING) { "Pinging $address (from ${this.address})" }
+        Log.log(LogMessageType.NETWORK) { "Pinging $address (from ${this.address})" }
 
         state = StatusConnectionStates.ESTABLISHING
         network.connect(address, false)
@@ -144,7 +144,7 @@ class StatusConnection(
         try {
             addresses = resolve()
         } catch (exception: Exception) {
-            Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve ${this.address}" }
+            Log.log(LogMessageType.NETWORK) { "Can not resolve ${this.address}" }
             return
         }
         ping(addresses.first())

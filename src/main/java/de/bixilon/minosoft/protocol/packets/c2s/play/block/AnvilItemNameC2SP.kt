@@ -29,6 +29,6 @@ class AnvilItemNameC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Anvil item name (name=$name)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Anvil item name (name=$name)" }
     }
 }

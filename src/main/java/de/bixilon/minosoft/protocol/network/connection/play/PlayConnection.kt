@@ -238,7 +238,7 @@ class PlayConnection(
 
     private fun establish(latch: AbstractLatch?) {
         latch?.dec() // remove initial value
-        Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
+        Log.log(LogMessageType.NETWORK, level = LogLevels.INFO) { "Connecting to server: $address" }
         network.connect(address, profiles.other.nativeNetwork)
         state = PlayConnectionStates.ESTABLISHING
     }

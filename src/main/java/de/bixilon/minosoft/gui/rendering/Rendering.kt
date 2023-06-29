@@ -31,7 +31,7 @@ class Rendering(private val connection: PlayConnection) {
     val audioPlayer: AudioPlayer = AudioPlayer(connection, this)
 
     fun start(latch: AbstractLatch, render: Boolean = true, audio: Boolean = true) {
-        Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
+        Log.log(LogMessageType.RENDERING, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
         val loading = ParentLatch(2, latch)
         if (audio) startAudioPlayerThread(loading)
         if (render) startRenderWindowThread(loading)

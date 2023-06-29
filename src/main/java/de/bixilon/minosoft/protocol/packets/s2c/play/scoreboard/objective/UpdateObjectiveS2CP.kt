@@ -54,7 +54,7 @@ class UpdateObjectiveS2CP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Update scoreboard objective (objective=$objective, displayName=$displayName, unit=$unit)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Update scoreboard objective (objective=$objective, displayName=$displayName, unit=$unit)" }
     }
 
     override fun handle(connection: PlayConnection) {

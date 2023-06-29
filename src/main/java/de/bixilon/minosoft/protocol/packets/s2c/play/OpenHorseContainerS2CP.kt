@@ -30,10 +30,10 @@ class OpenHorseContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val entity = connection.world.entities[entityId] ?: return
 
         // TODO
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Can not open entity container: $entity" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { "Can not open entity container: $entity" }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Open horse container (containerId=$containerId, slotCount=$slotCount, entityId=$entityId)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Open horse container (containerId=$containerId, slotCount=$slotCount, entityId=$entityId)" }
     }
 }

@@ -26,6 +26,6 @@ class HideMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val signature = if (buffer.versionId < ProtocolVersions.V_22W42A || id >= 0) buffer.readSignatureData() else null
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hide message (id=$id, signature=$signature)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Hide message (id=$id, signature=$signature)" }
     }
 }

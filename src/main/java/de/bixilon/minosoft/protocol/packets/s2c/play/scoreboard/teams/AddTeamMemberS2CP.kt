@@ -50,6 +50,6 @@ class AddTeamMemberS2CP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Team member add (name=$name, members=$members)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Team member add (name=$name, members=$members)" }
     }
 }

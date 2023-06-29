@@ -369,7 +369,7 @@ class GLFWWindow(
             GLFW_RELEASE -> KeyChangeTypes.RELEASE
             GLFW_REPEAT -> KeyChangeTypes.REPEAT
             else -> {
-                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Unknown glfw action $action" }
+                Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Unknown glfw action $action" }
                 return
             }
         }

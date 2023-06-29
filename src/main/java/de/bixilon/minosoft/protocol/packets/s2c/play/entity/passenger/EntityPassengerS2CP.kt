@@ -41,6 +41,6 @@ class EntityPassengerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity passenger (vehicle=$vehicle, passengers=$passengers)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Entity passenger (vehicle=$vehicle, passengers=$passengers)" }
     }
 }

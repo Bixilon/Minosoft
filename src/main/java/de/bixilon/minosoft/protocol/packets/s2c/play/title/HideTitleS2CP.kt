@@ -29,6 +29,6 @@ class HideTitleS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hide title" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Hide title" }
     }
 }

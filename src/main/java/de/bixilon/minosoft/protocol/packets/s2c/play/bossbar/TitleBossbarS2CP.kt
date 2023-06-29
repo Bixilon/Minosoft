@@ -43,6 +43,6 @@ class TitleBossbarS2CP(
             // servers have sometimes "animated" bossbars
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar name set (uuid=$uuid, title=\"$title\")" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Bossbar name set (uuid=$uuid, title=\"$title\")" }
     }
 }

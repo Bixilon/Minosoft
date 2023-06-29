@@ -29,6 +29,6 @@ class ItemPickC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Pick item (slot=$slot)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Pick item (slot=$slot)" }
     }
 }

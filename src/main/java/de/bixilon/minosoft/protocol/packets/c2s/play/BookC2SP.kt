@@ -41,6 +41,6 @@ class BookC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Book (hand=$hand, pages=$pages, title=$title)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Book (hand=$hand, pages=$pages, title=$title)" }
     }
 }

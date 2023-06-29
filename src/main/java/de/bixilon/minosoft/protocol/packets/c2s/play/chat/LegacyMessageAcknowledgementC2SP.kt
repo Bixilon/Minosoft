@@ -30,6 +30,6 @@ class LegacyMessageAcknowledgementC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Message acknowledgement (acknowledgement=$acknowledgement)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Message acknowledgement (acknowledgement=$acknowledgement)" }
     }
 }

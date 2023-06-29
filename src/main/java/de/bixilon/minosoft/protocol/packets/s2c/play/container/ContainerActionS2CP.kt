@@ -36,6 +36,6 @@ class ContainerActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container action status (containerId=$containerId, actionId=$actionId, accepted=$accepted)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Container action status (containerId=$containerId, actionId=$actionId, accepted=$accepted)" }
     }
 }

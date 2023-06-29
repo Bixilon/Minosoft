@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,23 +32,21 @@ enum class LogMessageType(
 
     AUTHENTICATION(ChatColors.BLACK),
 
-    NETWORK_RESOLVING(ChatColors.DARK_GREEN),
-    NETWORK_STATUS(ChatColors.DARK_GREEN),
-    NETWORK_PACKETS_IN(
+    NETWORK(ChatColors.DARK_GREEN),
+    NETWORK_IN(
         ChatColors.BLUE, mapOf(
             LogLevels.FATAL to ChatColors.DARK_RED,
             LogLevels.WARN to ChatColors.RED,
         ), defaultLevel = LogLevels.WARN
     ),
-    NETWORK_PACKETS_OUT(
+    NETWORK_OUT(
         ChatColors.DARK_AQUA, mapOf(
             LogLevels.FATAL to ChatColors.DARK_RED,
             LogLevels.WARN to ChatColors.RED,
         ), defaultLevel = LogLevels.WARN
     ),
 
-    RENDERING_GENERAL(ChatColors.GREEN),
-    RENDERING_LOADING(ChatColors.GREEN),
+    RENDERING(ChatColors.GREEN),
     AUDIO(ChatColors.DARK_PURPLE),
 
     CHAT_IN(ChatColors.LIGHT_PURPLE),

@@ -24,6 +24,6 @@ class CompressionS2CP(buffer: PlayInByteBuffer) : CompressionS2CP {
     override val threshold: Int = buffer.readVarInt()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Compression set (threshold=$threshold)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Compression set (threshold=$threshold)" }
     }
 }

@@ -38,6 +38,6 @@ class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, vehicle=$vehicle, leash=$leash)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, vehicle=$vehicle, leash=$leash)" }
     }
 }

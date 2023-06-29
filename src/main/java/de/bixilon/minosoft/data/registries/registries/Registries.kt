@@ -264,7 +264,7 @@ class Registries(
                 registry.update(values, this)
             } catch (error: Throwable) {
                 error.printStackTrace()
-                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Can not update $fixedKey registry: $error" }
+                Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { "Can not update $fixedKey registry: $error" }
             }
         }
     }

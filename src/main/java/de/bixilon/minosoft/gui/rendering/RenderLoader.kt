@@ -54,7 +54,7 @@ object RenderLoader {
     fun RenderContext.load(latch: AbstractLatch) {
         val renderLatch = ParentLatch(1, latch)
         setThread()
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Creating window..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating window..." }
         val stopwatch = Stopwatch()
         registerRenderer()
 
@@ -66,17 +66,17 @@ object RenderLoader {
         tints.init(connection.assetsManager)
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.labTime()})..." }
 
         system.init()
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Enabling all open gl features (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Enabling all open gl features (after ${stopwatch.labTime()})..." }
 
         system.reset()
 
         // Init stage
         val initLatch = ParentLatch(1, renderLatch)
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font and gathering textures (after ${stopwatch.labTime()})..." }
         textures.dynamicTextures.load(initLatch)
         textures.initializeSkins(connection)
         textures.loadDefaultTextures()
@@ -86,7 +86,7 @@ object RenderLoader {
         framebuffer.init()
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Initializing renderer (after ${stopwatch.labTime()})..." }
         light.init()
         skeletal.init()
         renderer.init(initLatch)
@@ -96,24 +96,24 @@ object RenderLoader {
         initLatch.await()
 
         // Post init stage
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading textures (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Preloading textures (after ${stopwatch.labTime()})..." }
         textures.staticTextures.preLoad(renderLatch)
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
         textures.staticTextures.load(renderLatch)
         font.postInit(renderLatch)
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }
         shaders.postInit()
         skeletal.postInit()
         renderer.postInit(renderLatch)
         framebuffer.postInit()
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading skeletal meshes (after ${stopwatch.labTime()})" }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading skeletal meshes (after ${stopwatch.labTime()})" }
         models.entities.loadSkeletal()
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Registering callbacks (after ${stopwatch.labTime()})..." }
 
         window::focused.observeRendering(this) { state = it.decide(RenderingStates.RUNNING, RenderingStates.SLOW) }
 
@@ -141,7 +141,7 @@ object RenderLoader {
         renderLatch.dec() // initial count from rendering
         renderLatch.await()
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
+        Log.log(LogMessageType.RENDERING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
     }
 
     fun RenderContext.awaitPlaying() {
@@ -160,6 +160,6 @@ object RenderLoader {
             state = RenderingStates.RUNNING
             window.visible = true
         }
-        Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${time.formatNanos()}" }
+        Log.log(LogMessageType.RENDERING) { "Showing window after ${time.formatNanos()}" }
     }
 }

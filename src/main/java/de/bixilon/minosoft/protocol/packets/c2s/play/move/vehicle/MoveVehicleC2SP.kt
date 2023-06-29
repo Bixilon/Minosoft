@@ -34,6 +34,6 @@ class MoveVehicleC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Move vehicle (position=$position, rotation=$rotation)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Move vehicle (position=$position, rotation=$rotation)" }
     }
 }

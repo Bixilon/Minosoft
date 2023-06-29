@@ -66,6 +66,6 @@ class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Entity equipment (entityId=$entityId, equipment=$equipment)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Entity equipment (entityId=$entityId, equipment=$equipment)" }
     }
 }

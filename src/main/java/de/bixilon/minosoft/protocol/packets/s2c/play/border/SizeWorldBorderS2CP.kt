@@ -30,6 +30,6 @@ class SizeWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Size set world border (radius=$radius)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Size set world border (radius=$radius)" }
     }
 }

@@ -41,6 +41,6 @@ class WorldEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "World event packet (position=$position, event=${event ?: eventId}, data=$data, isGlobal=$isGlobal)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "World event packet (position=$position, event=${event ?: eventId}, data=$data, isGlobal=$isGlobal)" }
     }
 }

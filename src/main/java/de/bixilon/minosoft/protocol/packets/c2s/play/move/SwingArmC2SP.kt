@@ -36,6 +36,6 @@ class SwingArmC2SP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Swing arm (arm=$arm)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Swing arm (arm=$arm)" }
     }
 }

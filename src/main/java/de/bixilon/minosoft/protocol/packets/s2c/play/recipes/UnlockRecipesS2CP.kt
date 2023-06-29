@@ -64,7 +64,7 @@ class UnlockRecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Recipes (action=$action, crafting=$crafting, smelting=$smelting, blasting=$blasting, smoking=$smoking, listed=$listed, tagged=$tagged)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Recipes (action=$action, crafting=$crafting, smelting=$smelting, blasting=$blasting, smoking=$smoking, listed=$listed, tagged=$tagged)" }
     }
 
     enum class Actions {

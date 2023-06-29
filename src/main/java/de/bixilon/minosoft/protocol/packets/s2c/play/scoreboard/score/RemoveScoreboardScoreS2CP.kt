@@ -43,6 +43,6 @@ class RemoveScoreboardScoreS2CP(
 
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Remove scoreboard score (entity=$entity§r, objective=$objective§r)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Remove scoreboard score (entity=$entity§r, objective=$objective§r)" }
     }
 }

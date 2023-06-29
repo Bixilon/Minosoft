@@ -28,7 +28,7 @@ class HotbarTextS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
     val text = buffer.readChatComponent()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hotbar text (text=$text)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Hotbar text (text=$text)" }
     }
 
     override fun handle(connection: PlayConnection) {

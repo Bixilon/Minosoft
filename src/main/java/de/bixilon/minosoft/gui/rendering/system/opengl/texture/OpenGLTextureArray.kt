@@ -209,7 +209,7 @@ class OpenGLTextureArray(
             textureIds[index] = loadSingleArray(TEXTURE_RESOLUTION_ID_MAP[index], textures)
             totalLayers += textures.size
         }
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loaded ${namedTextures.size} textures containing ${animator.animations.size} animated ones, split into $totalLayers layers!" }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${namedTextures.size} textures containing ${animator.animations.size} animated ones, split into $totalLayers layers!" }
 
         animator.init()
         state = TextureArrayStates.LOADED

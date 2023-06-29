@@ -49,7 +49,7 @@ class RendererManager(
         val renderer = builder.build(connection, context) ?: return null
         val previous = renderers.put(resourceLocation, renderer)
         if (previous != null) {
-            Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Renderer $previous(${builder.identifier}) got replaced by $renderer!" }
+            Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Renderer $previous(${builder.identifier}) got replaced by $renderer!" }
         }
         return renderer
     }

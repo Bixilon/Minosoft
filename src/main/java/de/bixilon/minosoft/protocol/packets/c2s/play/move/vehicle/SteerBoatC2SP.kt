@@ -31,6 +31,6 @@ class SteerBoatC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Steer boat (leftPaddle=$leftPaddle, rightPaddle=$rightPaddle)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Steer boat (leftPaddle=$leftPaddle, rightPaddle=$rightPaddle)" }
     }
 }

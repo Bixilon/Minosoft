@@ -39,6 +39,6 @@ class InitializeWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Initialize world border (center=$center, oldRadius=$oldRadius, newRadius=$newRadius, speed=$millis, portalBound=$portalBound, warningTime=$warningTime, warningBlocks=$warningBlocks)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Initialize world border (center=$center, oldRadius=$oldRadius, newRadius=$newRadius, speed=$millis, portalBound=$portalBound, warningTime=$warningTime, warningBlocks=$warningBlocks)" }
     }
 }

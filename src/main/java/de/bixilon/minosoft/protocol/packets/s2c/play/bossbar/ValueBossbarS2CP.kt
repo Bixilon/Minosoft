@@ -43,6 +43,6 @@ class ValueBossbarS2CP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar value set (uuid=$uuid, value=$value)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Bossbar value set (uuid=$uuid, value=$value)" }
     }
 }

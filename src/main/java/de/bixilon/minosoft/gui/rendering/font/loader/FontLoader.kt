@@ -44,7 +44,7 @@ object FontLoader {
             worker += add@{
                 val factory = FontTypes[type]
                 if (factory == null) {
-                    Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Unknown font provider: $type" }
+                    Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Unknown font provider: $type" }
                     return@add
                 }
                 providers[index] = factory.build(context, manager, provider)

@@ -60,9 +60,9 @@ class PNGTexture(
             assetsManager[resourceLocation].readTexture()
         } catch (error: Throwable) {
             state = TextureStates.ERRORED
-            Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Can not load texture $resourceLocation: $error" }
+            Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Can not load texture $resourceLocation: $error" }
             if (error !is FileNotFoundException) {
-                Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { error }
+                Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { error }
             }
             assetsManager[RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION].readTexture()
         }
