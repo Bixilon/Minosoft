@@ -107,7 +107,7 @@ class OpenGLTextureArray(
                 latch.dec()
                 continue
             }
-            DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGH) { texture.load(context) }
+            DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGH) { texture.load(context); latch.dec() }
         }
     }
 
