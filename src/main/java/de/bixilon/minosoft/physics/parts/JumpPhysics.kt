@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.physics.parts
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.JumpBlock
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
-import de.bixilon.minosoft.util.KUtil
 
 object JumpPhysics {
     const val POTION_MODIFIER = 0.1f
@@ -53,7 +53,7 @@ object JumpPhysics {
     fun LivingEntityPhysics<*>.applySprintJump(velocity: Vec3d) {
         if (!entity.isSprinting) return
 
-        val yaw = KUtil.toRad(rotation.yaw)
+        val yaw = rotation.yaw.rad
         velocity.x += -Trigonometry.sin(yaw) * SPRINT_BOOST
         velocity.z += Trigonometry.cos(yaw) * SPRINT_BOOST
     }

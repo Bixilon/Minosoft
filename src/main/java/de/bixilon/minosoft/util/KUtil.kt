@@ -330,11 +330,6 @@ object KUtil {
         return x.matches(other.x, margin) && y.matches(other.y, margin) && z.matches(other.z, margin)
     }
 
-    @Deprecated("glm, to remove")
-    fun toRad(value: Float): Float {
-        return value * 0.017453292f
-    }
-
     fun <T> table(elements: Collection<T>, vararg headers: AnyString, builder: (T) -> Array<Any?>?): Table {
         val table = Table(headers.unsafeCast())
 

@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.physics.input
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.math.Trigonometry
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.PhysicsConstants
-import de.bixilon.minosoft.util.KUtil
 import kotlin.math.sqrt
 
 data class MovementInput(
@@ -63,7 +63,7 @@ data class MovementInput(
 
 
     private fun Vec3d.rotate(yaw: Float): Vec3d {
-        val rad = KUtil.toRad(yaw)
+        val rad = yaw.rad
         val sin = Trigonometry.sin(rad)
         val cos = Trigonometry.cos(rad)
 
