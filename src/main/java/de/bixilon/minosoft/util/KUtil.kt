@@ -28,6 +28,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
@@ -349,5 +350,14 @@ object KUtil {
         while (this.count < value) {
             waitForChange(timeout)
         }
+    }
+
+    val REGULAR_ENUM_SET = Class.forName("java.util.RegularEnumSet").declaredConstructors.first().apply { isAccessible = true }
+    val JUMBO_ENUM_SET = Class.forName("java.util.RegularEnumSet").declaredConstructors.first().apply { isAccessible = true }
+
+    @Deprecated("kutil 1.24")
+    inline fun <reified T : Enum<T>> ValuesEnum<T>.set(): EnumSet<T> {
+        val clazz = if (VALUES.size <= 64) REGULAR_ENUM_SET else JUMBO_ENUM_SET
+        return clazz.newInstance(T::class.java, VALUES).unsafeCast()
     }
 }

@@ -25,8 +25,8 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.bindi
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.keysPressed
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.util.KUtil.set
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
-import java.util.*
 
 object InputTestUtil {
     private val profile = BindingsManager::class.java.getDeclaredField("profile").apply { isAccessible = true }
@@ -50,7 +50,7 @@ object InputTestUtil {
         manager::bindings.forceSet(bindings)
         manager::handler.forceSet(handler)
         this.times.forceSet(manager, Object2LongOpenHashMap<KeyCodes>().apply { defaultReturnValue(-1L) })
-        keysPressed[manager] = EnumSet.noneOf(KeyCodes::class.java)
+        keysPressed[manager] = KeyCodes.set()
 
         return manager
     }

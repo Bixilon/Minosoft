@@ -25,10 +25,10 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.BindingsManag
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingFilterState
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingState
 import de.bixilon.minosoft.test.IT.OBJENESIS
+import de.bixilon.minosoft.util.KUtil.set
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
-import java.util.*
 
 
 val keysPressed = InputManager::class.java.getDeclaredField("pressed").apply { isAccessible = true }
@@ -41,7 +41,7 @@ fun input(): InputManager {
     bindingsPressed[bindings] = mutableSetOf<ResourceLocation>()
     manager::bindings.forceSet(bindings)
 
-    keysPressed[manager] = EnumSet.noneOf(KeyCodes::class.java)
+    keysPressed[manager] = KeyCodes.set()
 
     return manager
 }

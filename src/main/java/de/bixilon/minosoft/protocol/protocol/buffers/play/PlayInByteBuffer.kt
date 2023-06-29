@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.protocol.buffers.play
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.minosoft.config.DebugOptions
@@ -48,6 +49,7 @@ import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.set
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -298,15 +300,33 @@ class PlayInByteBuffer : InByteBuffer {
         return MessageHeader(readOptional { readByteArray() }, readUUID())
     }
 
-    inline fun <reified T : Enum<T>> readEnumSet(values: Array<T>): EnumSet<T> {
-        val bitset = readBitSet(values.size)
-        val set = EnumSet.noneOf(T::class.java)
-        for (index in values.indices) {
+    inline fun <reified T : Enum<T>> readEnumSet(enum: ValuesEnum<T>): Set<T> {
+        val bitset = readBitSet(enum.VALUES.size)
+        if (bitset.isEmpty) {
+            return emptySet()
+        }
+        val set = enum.set()
+        readEnumSet(bitset, set, enum.VALUES)
+        return set
+    }
+
+    fun <T : Enum<T>> readEnumSet(bitset: BitSet, set: MutableSet<T>, values: Array<T>) {
+        for (index in 0 until minOf(bitset.length(), values.size)) {
             if (!bitset.get(index)) {
                 continue
             }
             set += values[index]
         }
+    }
+
+    @Deprecated("use values enum")
+    inline fun <reified T : Enum<T>> readEnumSet(values: Array<T>): Set<T> {
+        val bitset = readBitSet(values.size)
+        if (bitset.isEmpty) {
+            return emptySet()
+        }
+        val set = EnumSet.noneOf(T::class.java)
+        readEnumSet(bitset, set, values)
         return set
     }
 
