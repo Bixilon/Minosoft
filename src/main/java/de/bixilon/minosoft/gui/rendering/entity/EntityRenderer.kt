@@ -78,7 +78,7 @@ class EntityRenderer(
         profile.hitbox::enabled.observe(this) { this.hitboxes = it }
         context.camera.offset::offset.observe(this) { reset = true }
 
-        context.inputHandler.registerKeyCallback(
+        context.inputManager.registerKeyCallback(
             HITBOX_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),

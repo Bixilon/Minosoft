@@ -43,14 +43,14 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class RenderWindowInputHandler(
+class InputManager(
     val context: RenderContext,
 ) {
     val connection: PlayConnection = context.connection
     val cameraInput = CameraInput(context, context.camera.matrixHandler)
     private val profile = connection.profiles.controls
 
-    private val keyBindingCallbacks: SynchronizedMap<ResourceLocation, KeyBindingCallbackPair> = synchronizedMapOf()
+    private val keyBindingCallbacks: SynchronizedMap<ResourceLocation, KeyBindingRegister> = synchronizedMapOf()
     private val keysDown: MutableList<KeyCodes> = mutableListOf()
     private val keyBindingsDown: MutableList<ResourceLocation> = mutableListOf()
     private val keysLastDownTime: MutableMap<KeyCodes, Long> = mutableMapOf()
@@ -311,7 +311,7 @@ class RenderWindowInputHandler(
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, defaultPressed: Boolean = false, callback: ((keyDown: Boolean) -> Unit)) {
         val keyBinding = profile.keyBindings.getOrPut(resourceLocation) { defaultKeyBinding }
-        val callbackPair = keyBindingCallbacks.synchronizedGetOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding, defaultKeyBinding, defaultPressed) }
+        val callbackPair = keyBindingCallbacks.synchronizedGetOrPut(resourceLocation) { KeyBindingRegister(keyBinding, defaultKeyBinding, defaultPressed) }
         callbackPair.callback += callback
 
         if (keyBinding.action.containsKey(KeyActions.STICKY) && defaultPressed) {
@@ -321,7 +321,7 @@ class RenderWindowInputHandler(
 
     fun registerCheckCallback(vararg checks: Pair<ResourceLocation, KeyBinding>) {
         for ((resourceLocation, defaultKeyBinding) in checks) {
-            keyBindingCallbacks.synchronizedGetOrPut(resourceLocation) { KeyBindingCallbackPair(profile.keyBindings.getOrPut(resourceLocation) { defaultKeyBinding }, defaultKeyBinding) }
+            keyBindingCallbacks.synchronizedGetOrPut(resourceLocation) { KeyBindingRegister(profile.keyBindings.getOrPut(resourceLocation) { defaultKeyBinding }, defaultKeyBinding) }
         }
     }
 
@@ -343,7 +343,7 @@ class RenderWindowInputHandler(
     }
 
     fun isKeyDown(modifier: ModifierKeys): Boolean {
-        return context.inputHandler.isKeyDown(*when (modifier) {
+        return context.inputManager.isKeyDown(*when (modifier) {
             ModifierKeys.CONTROL -> arrayOf(KeyCodes.KEY_LEFT_CONTROL, KeyCodes.KEY_RIGHT_CONTROL)
             ModifierKeys.ALT -> arrayOf(KeyCodes.KEY_LEFT_ALT, KeyCodes.KEY_RIGHT_ALT)
             ModifierKeys.SHIFT -> arrayOf(KeyCodes.KEY_LEFT_SHIFT, KeyCodes.KEY_RIGHT_SHIFT)

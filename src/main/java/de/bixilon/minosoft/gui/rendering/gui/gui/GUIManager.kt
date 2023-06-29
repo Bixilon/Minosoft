@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -71,7 +71,7 @@ class GUIManager(
     }
 
     override fun postInit() {
-        context.inputHandler.registerKeyCallback(
+        context.inputManager.registerKeyCallback(
             "minosoft:back".toResourceLocation(),
             KeyBinding(
                 KeyActions.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
@@ -266,7 +266,7 @@ class GUIManager(
 
     private fun _push(element: GUIElement) {
         if (elementOrder.isEmpty()) {
-            context.inputHandler.inputHandler = guiRenderer
+            context.inputManager.inputHandler = guiRenderer
         }
         orderLock.acquire()
         val copy = elementOrder.toList()
@@ -313,7 +313,7 @@ class GUIManager(
 
         orderLock.acquire()
         if (elementOrder.isEmpty()) {
-            context.inputHandler.inputHandler = null
+            context.inputManager.inputHandler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
         }
@@ -337,7 +337,7 @@ class GUIManager(
         toPop.onClose()
         orderLock.acquire()
         if (elementOrder.isEmpty()) {
-            context.inputHandler.inputHandler = null
+            context.inputManager.inputHandler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
             orderLock.release()
@@ -365,7 +365,7 @@ class GUIManager(
         orderLock.unlock()
         guiRenderer.popper.clear()
         guiRenderer.dragged.element = null
-        context.inputHandler.inputHandler = null
+        context.inputManager.inputHandler = null
     }
 
     operator fun <T : GUIElement> get(builder: GUIBuilder<T>): T {

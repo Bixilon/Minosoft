@@ -59,7 +59,7 @@ class ChunkBorderRenderer(
         get() = mesh == null || !profile.chunkBorder.enabled
 
     override fun init(latch: AbstractLatch) {
-        context.inputHandler.registerKeyCallback(
+        context.inputManager.registerKeyCallback(
             CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),

@@ -115,7 +115,7 @@ class WorldRenderer(
         }
         context.camera.offset::offset.observe(this) { silentlyClearChunkCache() }
 
-        context.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
+        context.inputManager.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
             KeyActions.PRESS to setOf(KeyCodes.KEY_A),
         )) { clearChunkCache() }

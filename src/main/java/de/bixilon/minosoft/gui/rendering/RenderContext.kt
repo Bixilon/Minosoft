@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
-import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
+import de.bixilon.minosoft.gui.rendering.input.key.InputManager
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
 import de.bixilon.minosoft.gui.rendering.shader.ShaderManager
@@ -46,7 +46,7 @@ class RenderContext(
     val renderSystem = RenderSystemFactory.create(this)
     val camera = Camera(this)
 
-    val inputHandler = RenderWindowInputHandler(this)
+    val inputManager = InputManager(this)
     val screenshotTaker = ScreenshotTaker(this)
     val tintManager = TintManager(connection)
     val textureManager = renderSystem.createTextureManager()

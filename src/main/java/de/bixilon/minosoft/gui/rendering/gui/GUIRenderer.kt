@@ -151,11 +151,11 @@ class GUIRenderer(
     }
 
     fun isKeyDown(vararg keyCodes: KeyCodes): Boolean {
-        return context.inputHandler.isKeyDown(*keyCodes)
+        return context.inputManager.isKeyDown(*keyCodes)
     }
 
     fun isKeyDown(modifier: ModifierKeys): Boolean {
-        return context.inputHandler.isKeyDown(modifier)
+        return context.inputManager.isKeyDown(modifier)
     }
 
     companion object : RendererBuilder<GUIRenderer> {

@@ -120,7 +120,7 @@ object RenderLoader {
         profile.animations::sprites.observe(this, true) { textureManager.staticTextures.animator.enabled = it }
 
 
-        inputHandler.init()
+        inputManager.init()
         DefaultKeyCombinations.registerAll(this)
         this::state.observe(this) {
             if (it == RenderingStates.PAUSED || it == RenderingStates.SLOW || it == RenderingStates.STOPPED) {

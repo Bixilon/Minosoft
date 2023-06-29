@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 object DefaultKeyCombinations {
 
     fun registerAll(context: RenderContext) {
-        val inputHandler = context.inputHandler
+        val inputHandler = context.inputManager
         val window = context.window
         val connection = context.connection
 

@@ -18,13 +18,13 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
-import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
+import de.bixilon.minosoft.gui.rendering.input.key.InputManager
 import de.bixilon.minosoft.input.interaction.InteractionManager
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class InteractionManagerKeys(
-    private val input: RenderWindowInputHandler,
+    private val input: InputManager,
     private val interactions: InteractionManager,
 ) {
 
