@@ -75,7 +75,7 @@ class ConnectionUtil(
         try {
             val key = keyManagement.key
             if (key == null) {
-                connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.EPOCH, salt = 0, signature = null, false, Acknowledgement.EMPTY))
+                connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.now(), salt = 0, signature = null, false, Acknowledgement.EMPTY))
                 return
             }
             sendSignedMessage(key, trimmed)
@@ -107,12 +107,12 @@ class ConnectionUtil(
         }
         val trimmed = ChatUtil.trimChatMessage(command).removePrefix("/")
         ChatUtil.validateChatMessage(connection, trimmed)
+        val time = Instant.now()
         if (stack.size == 0) {
-            connection.sendPacket(CommandC2SP(trimmed, Instant.EPOCH, 0L, emptyMap(), false, Acknowledgement.EMPTY)) // TODO: remove
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Command $trimmed failed to pars!" }
+            connection.sendPacket(CommandC2SP(trimmed, time, 0L, emptyMap(), false, Acknowledgement.EMPTY)) // TODO: remove
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Command $trimmed failed to parse!" }
             throw IllegalArgumentException("Empty command stack! Did the command fail to parse?")
         }
-        val time = Instant.now()
         val salt = SecureRandom().nextLong()
         val acknowledgement = Acknowledgement.EMPTY
 
