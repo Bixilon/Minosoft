@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.input.key.manager.binding
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.gui.rendering.input.InputHandler
+import de.bixilon.minosoft.gui.rendering.input.key.manager.InputTestUtil
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputTestUtil.create
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputTestUtil.dummy
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputTestUtil.simulate
@@ -93,5 +95,97 @@ class BindingManagerTest {
         assertTrue(input.bindings.isDown(dummy))
     }
 
-    // TODO: input handler test
+    fun `ignore if consumer is set`() {
+        val input = create()
+
+        var invoked = 0
+        input.bindings.register(dummy, KeyBinding(mapOf(KeyActions.PRESS to setOf(KeyCodes.KEY_1)))) { invoked++ }
+        input.handler.handler = InputTestUtil.Handler
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        assertEquals(invoked, 0)
+    }
+
+    fun `consumer set and ignore that`() {
+        val input = create()
+
+        var invoked = 0
+        input.bindings.register(dummy, KeyBinding(mapOf(KeyActions.PRESS to setOf(KeyCodes.KEY_1)), ignoreConsumer = true)) { invoked++ }
+        input.handler.handler = InputTestUtil.Handler
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        assertEquals(invoked, 1)
+    }
+
+
+    fun `skip next char if opened via keybinding`() {
+        val input = create()
+
+        var pressed: Int? = null
+        val handler = object : InputHandler {
+            override fun onCharPress(char: Int): Boolean {
+                pressed = char
+                return true
+            }
+        }
+        input.bindings.register(dummy, KeyBinding(mapOf(KeyActions.PRESS to setOf(KeyCodes.KEY_1)))) { input.handler.handler = handler }
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        assertNull(pressed)
+        input.simulate(10)
+        assertNull(pressed)
+        input.simulate(12)
+        assertEquals(pressed, 12)
+    }
+
+    fun `don't skip unprintable skip next char if opened via keybinding`() {
+        val input = create()
+
+        var pressed: Int? = null
+        val handler = object : InputHandler {
+            override fun onCharPress(char: Int): Boolean {
+                pressed = char
+                return true
+            }
+        }
+        input.bindings.register(dummy, KeyBinding(mapOf(KeyActions.PRESS to setOf(KeyCodes.KEY_ESCAPE)))) { input.handler.handler = handler }
+        input.simulate(KeyCodes.KEY_ESCAPE, KeyChangeTypes.PRESS)
+        assertNull(pressed)
+        input.simulate(10)
+        assertEquals(pressed, 10)
+    }
+
+    fun `unpress key combination if handler was set`() {
+        val input = create()
+
+        var state = false
+        input.bindings.register(dummy, KeyBinding(mapOf(KeyActions.CHANGE to setOf(KeyCodes.KEY_1)))) { state = it }
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        assertTrue(state)
+        input.handler.handler = InputTestUtil.Handler
+        assertFalse(state)
+    }
+
+    fun `press key before modifier`() {
+        val input = create()
+
+        var pressed = 0
+        input.bindings.register(dummy, KeyBinding(mapOf(KeyActions.PRESS to setOf(KeyCodes.KEY_1), KeyActions.MODIFIER to setOf(KeyCodes.KEY_2)))) { pressed++ }
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        assertEquals(pressed, 0)
+        input.simulate(KeyCodes.KEY_2, KeyChangeTypes.PRESS)
+        assertEquals(pressed, 0)
+        input.simulate(KeyCodes.KEY_2, KeyChangeTypes.RELEASE)
+        assertEquals(pressed, 0)
+    }
+
+    fun `press modifier before key`() {
+        val input = create()
+
+        var pressed = 0
+        input.bindings.register(dummy, KeyBinding(mapOf(KeyActions.PRESS to setOf(KeyCodes.KEY_1), KeyActions.MODIFIER to setOf(KeyCodes.KEY_2)))) { pressed++ }
+        input.simulate(KeyCodes.KEY_2, KeyChangeTypes.PRESS)
+        assertEquals(pressed, 0)
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        assertEquals(pressed, 1)
+        input.simulate(KeyCodes.KEY_2, KeyChangeTypes.RELEASE)
+        assertEquals(pressed, 1)
+    }
 }

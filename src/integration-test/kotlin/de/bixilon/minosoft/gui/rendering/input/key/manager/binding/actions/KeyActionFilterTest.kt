@@ -261,7 +261,7 @@ class Modifier {
         assertFalse(state.satisfied)
     }
 
-    fun `multiple keys, not all pressed`() {
+    fun `multiple keys, one pressed`() {
         val state = KeyBindingFilterState(true)
         KeyActionFilter.Modifier.check(
             state, setOf(KeyCodes.KEY_0, KeyCodes.KEY_1, KeyCodes.KEY_2), input(), name,
@@ -271,7 +271,7 @@ class Modifier {
             0L,
         )
 
-        assertFalse(state.satisfied)
+        assertTrue(state.satisfied)
     }
 
     fun `multiple keys, all pressed`() {

@@ -19,11 +19,13 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfile
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.BindingsManager
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.bindingsPressed
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.keysPressed
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.util.KUtil.set
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
@@ -32,11 +34,15 @@ object InputTestUtil {
     private val profile = BindingsManager::class.java.getDeclaredField("profile").apply { isAccessible = true }
     private val bindings = BindingsManager::class.java.getDeclaredField("bindings").apply { isAccessible = true }
     private val onKey = InputManager::class.java.getDeclaredMethod("onKey", KeyCodes::class.java, KeyChangeTypes::class.java).apply { isAccessible = true }
+    private val onChar = InputManager::class.java.getDeclaredMethod("onChar", Int::class.java).apply { isAccessible = true }
     private val times = InputManager::class.java.getDeclaredField("times").apply { isAccessible = true }
 
 
     fun create(): InputManager {
         val manager = IT.OBJENESIS.newInstance(InputManager::class.java)
+        val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
+        context::window.forceSet(DummyWindow())
+        manager::context.forceSet(context)
 
         val bindings = IT.OBJENESIS.newInstance(BindingsManager::class.java)
         bindings::input.forceSet(manager)
@@ -58,6 +64,10 @@ object InputTestUtil {
 
     fun InputManager.simulate(code: KeyCodes, change: KeyChangeTypes) {
         onKey.invoke(this, code, change)
+    }
+
+    fun InputManager.simulate(char: Int) {
+        onChar.invoke(this, char)
     }
 
     object Handler : InputHandler

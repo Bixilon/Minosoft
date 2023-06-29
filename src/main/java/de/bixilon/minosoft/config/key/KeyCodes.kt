@@ -175,5 +175,9 @@ enum class KeyCodes {
 
             KEY_CODE_MAP = keyCodeMap
         }
+
+        fun KeyCodes.isPrintable(): Boolean {
+            return this.ordinal in KEY_SPACE.ordinal..KEY_WORLD_2.ordinal
+        }
     }
 }

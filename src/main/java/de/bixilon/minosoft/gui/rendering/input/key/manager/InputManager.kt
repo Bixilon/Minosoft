@@ -94,11 +94,14 @@ class InputManager(
             this.pressed -= code
         }
 
+        val handler = this.handler.handler
         bindings.onKey(code, pressed, millis)
 
         if (pressed) {
             times[code] = millis
         }
+
+        this.handler.checkSkip(code, pressed, handler)
     }
 
     private fun onChar(char: Int) {

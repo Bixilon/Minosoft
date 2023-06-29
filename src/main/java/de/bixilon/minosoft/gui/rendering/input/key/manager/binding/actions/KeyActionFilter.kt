@@ -59,15 +59,11 @@ interface KeyActionFilter {
     object Modifier : KeyActionFilter {
 
         override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
-            if (code !in codes) {
+            if (!pressed) {
                 filter.satisfied = false
                 return
             }
-            if (codes.size == 1) { // optimize if (as most) key has just one modifier key
-                if (pressed) return
-                filter.satisfied = false
-                return
-            }
+            if (code in codes) return
             if (input.areKeysDown(codes)) return
 
             filter.satisfied = false

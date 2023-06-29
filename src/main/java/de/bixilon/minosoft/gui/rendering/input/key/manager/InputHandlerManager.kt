@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.key.manager
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.config.key.KeyCodes.Companion.isPrintable
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -28,7 +29,12 @@ class InputHandlerManager(
             if (field == value) {
                 return
             }
+            val previous = field
             field = value
+            if ((previous == null) == (value == null)) return
+            if (previous == null) {
+                skipMouse = true
+            }
 
             if (value == null) {
                 disable()
@@ -85,5 +91,17 @@ class InputHandlerManager(
 
     private fun disable() {
         context.window.cursorMode = CursorModes.DISABLED
+    }
+
+    fun checkSkip(code: KeyCodes, pressed: Boolean, previous: InputHandler?) {
+        val next = handler
+        if (next == null || previous == next) return
+
+        if (pressed) {
+            this.skipKey = true
+        }
+        if (code.isPrintable()) {
+            this.skipChar = true
+        }
     }
 }
