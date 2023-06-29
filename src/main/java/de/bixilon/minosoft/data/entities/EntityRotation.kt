@@ -24,11 +24,17 @@ data class EntityRotation(
     val pitch: Float,
 ) {
     val front: Vec3
-        get() = Vec3(
-            (-yaw).rad.sin * pitch.rad.cos,
-            (-pitch).rad.sin,
-            (-yaw).rad.cos * pitch.rad.cos
-        ).normalize()
+        get() {
+            val pitchRad = pitch.rad
+            val pitchCos = pitchRad.cos
+            val yawRad = -yaw.rad
+
+            return Vec3(
+                yawRad.sin * pitchCos,
+                -pitchRad.sin,
+                yawRad.cos * pitchCos
+            ).normalize()
+        }
 
     override fun toString(): String {
         return "(yaw=$yaw, pitch=$pitch)"
