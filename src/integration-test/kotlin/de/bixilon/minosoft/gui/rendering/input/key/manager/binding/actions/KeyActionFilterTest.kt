@@ -173,7 +173,6 @@ class Change {
         )
 
         assertTrue(state.satisfied)
-        assertTrue(state.forceNotify)
     }
 
     fun `simple release`() {
@@ -187,7 +186,6 @@ class Change {
         )
 
         assertTrue(state.satisfied)
-        assertTrue(state.forceNotify)
     }
 
     fun `wrong key`() {
@@ -201,7 +199,6 @@ class Change {
         )
 
         assertFalse(state.satisfied)
-        assertFalse(state.forceNotify)
     }
 
     fun `multiple keys`() {
@@ -215,7 +212,6 @@ class Change {
         )
 
         assertTrue(state.satisfied)
-        assertTrue(state.forceNotify)
     }
 }
 

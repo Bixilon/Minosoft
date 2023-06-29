@@ -83,21 +83,21 @@ class BindingsManager(
         if (!filterState.satisfied) return
 
         val previous = name in this
-        if (previous == filterState.result && !filterState.forceNotify) return
+        if (previous == filterState.result) return
 
         for (callback in state.callback) {
             callback(filterState.result)
         }
-        if (previous == filterState.result) return
 
         state.lastChange = millis
+
+        if (!filterState.store) return
 
         if (filterState.result) {
             this.pressed += name
         } else {
             this.pressed -= name
         }
-        // skipCharPress = true
     }
 
     fun onKey(code: KeyCodes, pressed: Boolean, millis: Long) {

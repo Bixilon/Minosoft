@@ -29,30 +29,34 @@ interface KeyActionFilter {
     object Press : KeyActionFilter {
 
         override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
-            if (code in codes) return
+            if (!pressed || code !in codes) {
+                filter.satisfied = false
+                return
+            }
 
-            filter.satisfied = false
+            filter.store = false
         }
     }
 
     object Release : KeyActionFilter {
 
         override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
-            if (code in codes) return
+            if (pressed || code !in codes) {
+                filter.satisfied = false
+                return
+            }
 
-            filter.satisfied = false
+            filter.result = true
+            filter.store = false
         }
     }
 
     object Change : KeyActionFilter {
 
         override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
-            if (code !in codes) {
-                filter.satisfied = false
-                return
-            }
+            if (code in codes) return
 
-            filter.forceNotify = true
+            filter.satisfied = false
         }
     }
 

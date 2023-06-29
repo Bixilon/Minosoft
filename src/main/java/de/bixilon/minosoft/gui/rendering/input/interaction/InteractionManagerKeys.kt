@@ -31,13 +31,13 @@ class InteractionManagerKeys(
 
     private fun registerAttack() {
         input.bindings.register(ATTACK, KeyBinding(
-            KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
+            KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
         )) { interactions.tryAttack(it) }
     }
 
     private fun registerInteraction() {
         input.bindings.register(USE_ITEM, KeyBinding(
-            KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_RIGHT),
+            KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_RIGHT),
         )) { interactions.use.change(it) }
     }
 

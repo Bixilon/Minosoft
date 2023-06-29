@@ -86,14 +86,24 @@ class BindingManagerTest {
         assertEquals(b, 1)
     }
 
-    fun `check binding`() {
+    fun `check press binding`() {
         val input = create()
 
         input.bindings.registerCheck(dummy to KeyBinding(mapOf(KeyActions.PRESS to setOf(KeyCodes.KEY_1))))
         assertFalse(input.bindings.isDown(dummy))
         input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        assertFalse(input.bindings.isDown(dummy))
+    }
+
+    fun `check change binding`() {
+        val input = create()
+
+        input.bindings.registerCheck(dummy to KeyBinding(mapOf(KeyActions.CHANGE to setOf(KeyCodes.KEY_1))))
+        assertFalse(input.bindings.isDown(dummy))
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
         assertTrue(input.bindings.isDown(dummy))
     }
+
 
     fun `ignore if consumer is set`() {
         val input = create()
