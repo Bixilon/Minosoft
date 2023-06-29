@@ -33,6 +33,7 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import it.unimi.dsi.fastutil.objects.Object2LongMap
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
+import java.util.*
 
 class InputManager(
     val context: RenderContext,
@@ -44,7 +45,7 @@ class InputManager(
     val interaction = InteractionManagerKeys(this, connection.camera.interactions)
 
 
-    private val pressed: MutableSet<KeyCodes> = mutableSetOf()
+    private val pressed: EnumSet<KeyCodes> = EnumSet.noneOf(KeyCodes::class.java)
     private val times: Object2LongMap<KeyCodes> = Object2LongOpenHashMap<KeyCodes>().apply { defaultReturnValue(-1L) }
 
     var mousePosition: Vec2d = Vec2d.EMPTY

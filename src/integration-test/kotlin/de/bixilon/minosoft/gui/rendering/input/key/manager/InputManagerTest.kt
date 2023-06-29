@@ -13,64 +13,67 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key.manager
 
-import de.bixilon.kutil.collections.map.SynchronizedMap
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.config.key.KeyActions
-import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfile
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.input.InputHandler
-import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.BindingsManager
-import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.bindingsPressed
-import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.keysPressed
+import de.bixilon.minosoft.gui.rendering.input.key.manager.InputTestUtil.create
+import de.bixilon.minosoft.gui.rendering.input.key.manager.InputTestUtil.simulate
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.test.IT.OBJENESIS
+import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["input"])
 class InputManagerTest {
-    private val profile = BindingsManager::class.java.getDeclaredField("profile").apply { isAccessible = true }
-    private val bindings = BindingsManager::class.java.getDeclaredField("bindings").apply { isAccessible = true }
-    private val onKey = InputManager::class.java.getDeclaredMethod("onKey", KeyCodes::class.java, KeyChangeTypes::class.java).apply { isAccessible = true }
 
-    private fun create(): InputManager {
-        val manager = OBJENESIS.newInstance(InputManager::class.java)
-
-        val bindings = OBJENESIS.newInstance(BindingsManager::class.java)
-        bindingsPressed[bindings] = mutableSetOf<ResourceLocation>()
-        profile[bindings] = ControlsProfile()
-        this.bindings[bindings] = SynchronizedMap<Any, Any>()
-
-
-        manager::bindings.forceSet(bindings)
-        keysPressed[manager] = mutableSetOf<KeyCodes>()
-
-        return manager
-    }
-
-    fun `just register key binding`() {
+    fun `press key`() {
         val input = create()
-        input.bindings.register(dummy, KeyBinding(mapOf(KeyActions.PRESS to setOf(KeyCodes.KEY_1)))) {}
-    }
-
-    fun `simple pressing`() {
-        val input = create()
-        var invoked = false
-        input.bindings.register(dummy, KeyBinding(mapOf(KeyActions.PRESS to setOf(KeyCodes.KEY_1)))) { invoked = true }
-
+        assertFalse(input.isKeyDown(KeyCodes.KEY_1))
         input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
-        assertTrue(invoked)
+        assertTrue(input.isKeyDown(KeyCodes.KEY_1))
     }
 
-
-    private fun InputManager.simulate(code: KeyCodes, change: KeyChangeTypes) {
-        onKey.invoke(this, code, change)
+    fun `release key again`() {
+        val input = create()
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.RELEASE)
+        assertFalse(input.isKeyDown(KeyCodes.KEY_1))
     }
 
-    private object Handler : InputHandler
+    fun `press multiple keys`() {
+        val input = create()
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        input.simulate(KeyCodes.KEY_2, KeyChangeTypes.PRESS)
+        assertTrue(input.isKeyDown(KeyCodes.KEY_1))
+        assertTrue(input.isKeyDown(KeyCodes.KEY_2))
+    }
 
-    private val dummy = minosoft("dummy")
+    fun `areKeysDown but none pressed`() {
+        val input = create()
+        assertFalse(input.areKeysDown(KeyCodes.KEY_1, KeyCodes.KEY_2))
+    }
+
+    fun `areKeysDown but only partly pressed`() {
+        val input = create()
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        assertFalse(input.areKeysDown(KeyCodes.KEY_1, KeyCodes.KEY_2))
+    }
+
+    fun `areKeysDown and all pressed`() {
+        val input = create()
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        input.simulate(KeyCodes.KEY_2, KeyChangeTypes.PRESS)
+        assertTrue(input.areKeysDown(KeyCodes.KEY_1, KeyCodes.KEY_2))
+    }
+
+    fun `getLastPressed but not pressed at all`() {
+        val input = create()
+        assertTrue(input.getLastPressed(KeyCodes.KEY_1) < 0)
+    }
+
+    fun `getLastPressed just now`() {
+        val input = create()
+        val time = millis()
+        input.simulate(KeyCodes.KEY_1, KeyChangeTypes.PRESS)
+        assertTrue(input.getLastPressed(KeyCodes.KEY_1) - time < 10)
+    }
 }
