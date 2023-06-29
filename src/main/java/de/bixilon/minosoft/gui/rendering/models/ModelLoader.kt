@@ -105,7 +105,7 @@ class ModelLoader(
     private fun loadBlockModels(latch: AbstractLatch) {
         val blockLatch = ParentLatch(1, latch)
         // ToDo: Optimize performance
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading block models..." }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading block models..." }
 
         for (block in registry.block) {
             blockLatch.inc()
@@ -116,7 +116,7 @@ class ModelLoader(
     }
 
     private fun loadFluidModels() {
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading fluid models..." }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading fluid models..." }
 
         for (fluid in registry.fluid) {
             loadFluid(fluid)
@@ -124,7 +124,7 @@ class ModelLoader(
     }
 
     private fun loadItemModels(latch: AbstractLatch) {
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading item models..." }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading item models..." }
         val itemLatch = ParentLatch(1, latch)
 
 
@@ -137,7 +137,7 @@ class ModelLoader(
     }
 
     private fun loadEntityModels(latch: AbstractLatch) {
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading entity models..." }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading entity models..." }
         val innerLatch = ParentLatch(DefaultEntityModels.MODELS.size, latch)
 
         for (register in DefaultEntityModels.MODELS) {
@@ -152,7 +152,7 @@ class ModelLoader(
         loadItemModels(latch)
         loadEntityModels(latch)
 
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading models!" }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Done loading models!" }
 
         cleanup()
     }

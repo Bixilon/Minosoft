@@ -34,6 +34,7 @@ object OtherProfileMigration {
             it.remove("NETWORK_PACKETS_IN")?.let { level -> it["NETWORK_IN"] = level }
             it.remove("NETWORK_PACKETS_OUT")?.let { level -> it["NETWORK_OUT"] = level }
             it.remove("RENDERING_GENERAL")?.let { level -> it["RENDERING"] = level }
+            it.remove("VERSION_LOADING")?.let { level -> it["LOADING"] = level }
             it -= "RENDERING_LOADING"
         }
     }

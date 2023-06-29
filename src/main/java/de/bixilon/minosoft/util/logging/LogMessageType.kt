@@ -27,7 +27,7 @@ enum class LogMessageType(
     MOD_LOADING(ChatColors.GOLD),
     JAVAFX(ChatColors.DARK_GRAY),
 
-    VERSION_LOADING(ChatColors.YELLOW),
+    LOADING(ChatColors.YELLOW),
     ASSETS(ChatColors.BLACK),
 
     AUTHENTICATION(ChatColors.BLACK),

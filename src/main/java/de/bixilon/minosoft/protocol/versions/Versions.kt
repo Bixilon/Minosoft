@@ -124,7 +124,7 @@ object Versions : Iterable<Version> {
         val map: MutableBiMap<T, Int> = mutableBiMapOf()
         for (name in list) {
             val packetType = typeGetter(name)
-            map.put(packetType, map.size)?.let { Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Packet $name registered twice (version=$versionId)" } }
+            map.put(packetType, map.size)?.let { Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Packet $name registered twice (version=$versionId)" } }
         }
         return map
     }
@@ -132,7 +132,7 @@ object Versions : Iterable<Version> {
     private fun readS2PPacketMapping(versionId: Int, state: ProtocolStates, list: List<String>): AbstractBiMap<S2CPacketType, Int> {
         return readPacketMapping(versionId, list) {
             PacketTypeRegistry.getS2C(state, it)?.let { type -> return@readPacketMapping type }
-            Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=SERVER_TO_CLIENT)!" }
+            Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=SERVER_TO_CLIENT)!" }
             return@readPacketMapping S2CPacketType.EMPTY()
         }
     }
@@ -140,7 +140,7 @@ object Versions : Iterable<Version> {
     private fun readC2SPacketMapping(versionId: Int, state: ProtocolStates, list: List<String>): AbstractBiMap<C2SPacketType, Int> {
         return readPacketMapping(versionId, list) {
             PacketTypeRegistry.getC2S(state, it)?.let { type -> return@readPacketMapping type }
-            Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=CLIENT_TO_SERVER)!" }
+            Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=CLIENT_TO_SERVER)!" }
             return@readPacketMapping C2SPacketType.EMPTY()
         }
     }

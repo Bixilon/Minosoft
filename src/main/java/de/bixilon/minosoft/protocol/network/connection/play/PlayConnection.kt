@@ -227,7 +227,7 @@ class PlayConnection(
                 establishRendering(latch)
             }
         } catch (exception: Throwable) {
-            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
+            Log.log(LogMessageType.LOADING, level = LogLevels.FATAL) { exception }
             if (this::assetsManager.isInitialized) {
                 assetsManager.unload()
             }

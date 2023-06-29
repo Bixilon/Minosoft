@@ -229,7 +229,7 @@ class Registries(
             shape.cleanup()
         }
         fluid.updateWaterLava()
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
+        Log.log(LogMessageType.LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
     }
 
     operator fun <T : RegistryItem> get(type: Class<T>): Registry<T>? {
@@ -251,7 +251,7 @@ class Registries(
             val fixedKey = key.toResourceLocation().fix()
             val registry = this[fixedKey]
             if (registry == null) {
-                Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Can not find registry: $fixedKey" }
+                Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find registry: $fixedKey" }
                 continue
             }
             val values: List<JsonObject> = if (value is List<*>) {

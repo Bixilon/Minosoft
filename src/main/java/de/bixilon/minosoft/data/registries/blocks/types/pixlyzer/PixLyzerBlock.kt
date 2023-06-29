@@ -113,7 +113,7 @@ open class PixLyzerBlock(
             val className = data["class"].toString()
             var factory = PixLyzerBlockFactories[className]
             if (factory == null) {
-                Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Block for class $className not found, defaulting..." }
+                Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Block for class $className not found, defaulting..." }
                 factory = PixLyzerBlock
             }
 
