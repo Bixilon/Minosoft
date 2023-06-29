@@ -352,12 +352,9 @@ object KUtil {
         }
     }
 
-    val REGULAR_ENUM_SET = Class.forName("java.util.RegularEnumSet").declaredConstructors.first().apply { isAccessible = true }
-    val JUMBO_ENUM_SET = Class.forName("java.util.RegularEnumSet").declaredConstructors.first().apply { isAccessible = true }
-
     @Deprecated("kutil 1.24")
+    @JvmStatic
     inline fun <reified T : Enum<T>> ValuesEnum<T>.set(): EnumSet<T> {
-        val clazz = if (VALUES.size <= 64) REGULAR_ENUM_SET else JUMBO_ENUM_SET
-        return clazz.newInstance(T::class.java, VALUES).unsafeCast()
+        return EnumSetUtil.create(T::class.java, VALUES)
     }
 }
