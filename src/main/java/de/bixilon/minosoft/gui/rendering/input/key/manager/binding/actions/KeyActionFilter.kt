@@ -60,7 +60,7 @@ interface KeyActionFilter {
 
         override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
             if (code !in codes) {
-                filter.skip = true
+                filter.satisfied = false
                 return
             }
             if (codes.size == 1) { // optimize if (as most) key has just one modifier key
@@ -79,11 +79,11 @@ interface KeyActionFilter {
         override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
             if (!pressed) {
                 // sticky keys are invoked on press and not on release
-                filter.skip = true
+                filter.satisfied = false
                 return
             }
             if (code !in codes) {
-                filter.skip = true
+                filter.satisfied = false
                 return
             }
             val wasPressed = name in input.bindings
@@ -97,25 +97,25 @@ interface KeyActionFilter {
 
         override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
             if (!pressed) {
-                filter.skip = true
+                filter.satisfied = false
                 return
             }
             if (code !in codes) {
-                filter.skip = true
+                filter.satisfied = false
                 return
             }
             val previous = input.getLastPressed(code)
             if (previous < 0L) {
-                filter.skip = true
+                filter.satisfied = false
                 return
             }
 
             if (millis - previous > RenderConstants.DOUBLE_PRESS_KEY_PRESS_MAX_DELAY) {
-                filter.skip = true
+                filter.satisfied = false
                 return
             }
             if (millis - state.lastChange <= RenderConstants.DOUBLE_PRESS_DELAY_BETWEEN_PRESSED) {
-                filter.skip = false
+                filter.satisfied = false
                 return
             }
             filter.result = input.bindings.isDown(name)

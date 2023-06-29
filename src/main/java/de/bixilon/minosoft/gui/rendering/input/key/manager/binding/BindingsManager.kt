@@ -80,20 +80,19 @@ class BindingsManager(
             val filter = action.filter()
             filter.check(filterState, keys, input, name, state, code, pressed, millis)
         }
-        if (filterState.skip) return
+        if (!filterState.satisfied) return
 
-        val result = if (filterState.satisfied) filterState.result else false
         val previous = name in this
-        if (previous == result && !filterState.forceNotify) return
+        if (previous == filterState.result && !filterState.forceNotify) return
 
         for (callback in state.callback) {
-            callback(result)
+            callback(filterState.result)
         }
-        if (previous == result) return
+        if (previous == filterState.result) return
 
         state.lastChange = millis
 
-        if (result) {
+        if (filterState.result) {
             this.pressed += name
         } else {
             this.pressed -= name

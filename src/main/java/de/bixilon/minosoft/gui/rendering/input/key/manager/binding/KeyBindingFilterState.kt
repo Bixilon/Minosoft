@@ -16,6 +16,5 @@ package de.bixilon.minosoft.gui.rendering.input.key.manager.binding
 data class KeyBindingFilterState(
     var result: Boolean,
     var satisfied: Boolean = true,
-    var skip: Boolean = false,
     var forceNotify: Boolean = false,
 )

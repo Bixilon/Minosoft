@@ -232,7 +232,6 @@ class Modifier {
             0L,
         )
 
-        assertFalse(state.skip)
         assertTrue(state.satisfied)
     }
 
@@ -246,7 +245,6 @@ class Modifier {
             0L,
         )
 
-        assertFalse(state.skip)
         assertFalse(state.satisfied)
     }
 
@@ -260,7 +258,7 @@ class Modifier {
             0L,
         )
 
-        assertTrue(state.skip)
+        assertFalse(state.satisfied)
     }
 
     fun `multiple keys, not all pressed`() {
@@ -293,7 +291,6 @@ class Modifier {
         )
 
         assertTrue(state.satisfied)
-        assertFalse(state.skip)
     }
 }
 
@@ -311,7 +308,6 @@ class Sticky {
         )
 
         assertTrue(state.result)
-        assertFalse(state.skip)
         assertTrue(state.satisfied)
     }
 
@@ -325,7 +321,7 @@ class Sticky {
             0L,
         )
 
-        assertTrue(state.skip)
+        assertFalse(state.satisfied)
     }
 
     fun `wrong key`() {
@@ -338,7 +334,7 @@ class Sticky {
             0L,
         )
 
-        assertTrue(state.skip)
+        assertFalse(state.satisfied)
     }
 
     fun `unpress`() {
@@ -358,6 +354,6 @@ class Sticky {
         )
 
         assertFalse(state.result)
-        assertFalse(state.skip)
+        assertTrue(state.satisfied)
     }
 }
