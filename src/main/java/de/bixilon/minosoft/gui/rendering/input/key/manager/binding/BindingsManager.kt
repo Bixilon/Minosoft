@@ -34,7 +34,7 @@ class BindingsManager(
 
 
     init {
-        profile::keyBindings.observeMap(this) {
+        profile::bindings.observeMap(this) {
             for ((key, value) in it.adds) {
                 val binding = bindings[key] ?: continue
                 binding.binding = value
@@ -112,7 +112,7 @@ class BindingsManager(
     }
 
     fun register(name: ResourceLocation, default: KeyBinding, pressed: Boolean = false, callback: KeyBindingCallback) {
-        val keyBinding = profile.keyBindings.getOrPut(name) { default }
+        val keyBinding = profile.bindings.getOrPut(name) { default }
         val callbackPair = bindings.synchronizedGetOrPut(name) { KeyBindingState(keyBinding, default, pressed) }
         callbackPair.callback += callback
 
@@ -123,7 +123,7 @@ class BindingsManager(
 
     fun registerCheck(vararg checks: Pair<ResourceLocation, KeyBinding>) {
         for ((name, binding) in checks) {
-            bindings.synchronizedGetOrPut(name) { KeyBindingState(profile.keyBindings.getOrPut(name) { binding }, binding) }
+            bindings.synchronizedGetOrPut(name) { KeyBindingState(profile.bindings.getOrPut(name) { binding }, binding) }
         }
     }
 
