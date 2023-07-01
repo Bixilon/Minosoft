@@ -33,18 +33,14 @@ enum class LogMessageType(
     AUTHENTICATION(ChatColors.BLACK),
 
     NETWORK(ChatColors.DARK_GREEN),
-    NETWORK_IN(
-        ChatColors.BLUE, mapOf(
-            LogLevels.FATAL to ChatColors.DARK_RED,
-            LogLevels.WARN to ChatColors.RED,
-        ), defaultLevel = LogLevels.WARN
-    ),
-    NETWORK_OUT(
-        ChatColors.DARK_AQUA, mapOf(
-            LogLevels.FATAL to ChatColors.DARK_RED,
-            LogLevels.WARN to ChatColors.RED,
-        ), defaultLevel = LogLevels.WARN
-    ),
+    NETWORK_IN(ChatColors.BLUE, defaultLevel = LogLevels.WARN, colorMap = mapOf(
+        LogLevels.FATAL to ChatColors.DARK_RED,
+        LogLevels.WARN to ChatColors.RED,
+    )),
+    NETWORK_OUT(ChatColors.DARK_AQUA, defaultLevel = LogLevels.WARN, colorMap = mapOf(
+        LogLevels.FATAL to ChatColors.DARK_RED,
+        LogLevels.WARN to ChatColors.RED,
+    )),
 
     RENDERING(ChatColors.GREEN),
     AUDIO(ChatColors.DARK_PURPLE),
@@ -52,23 +48,19 @@ enum class LogMessageType(
     CHAT_IN(ChatColors.LIGHT_PURPLE),
     CHAT_OUT(ChatColors.LIGHT_PURPLE),
 
-    OTHER(
-        ChatColors.WHITE, mapOf(
-            LogLevels.FATAL to ChatColors.DARK_RED,
-            LogLevels.WARN to ChatColors.RED,
-            LogLevels.VERBOSE to ChatColors.YELLOW,
-        )
-    ),
+    OTHER(ChatColors.WHITE, mapOf(
+        LogLevels.FATAL to ChatColors.DARK_RED,
+        LogLevels.WARN to ChatColors.RED,
+        LogLevels.VERBOSE to ChatColors.YELLOW,
+    )),
 
     PROFILES(ChatColors.AQUA),
 
-    MODS(
-        ChatColors.WHITE, mapOf(
-            LogLevels.FATAL to ChatColors.DARK_RED,
-            LogLevels.WARN to ChatColors.RED,
-            LogLevels.VERBOSE to ChatColors.YELLOW,
-        )
-    )
+    MODS(ChatColors.WHITE, mapOf(
+        LogLevels.FATAL to ChatColors.DARK_RED,
+        LogLevels.WARN to ChatColors.RED,
+        LogLevels.VERBOSE to ChatColors.YELLOW,
+    )),
     ;
 
     companion object : ValuesEnum<LogMessageType> {
