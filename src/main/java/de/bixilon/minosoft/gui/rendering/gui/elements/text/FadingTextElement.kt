@@ -93,6 +93,7 @@ class FadingTextElement(
         }
         // ToDo: Eventually fade out when fading in
         val time = millis()
+        if (fadeOutStartTime <= time) return // already fading out
         fadeInStartTime = -1L
         fadeInEndTime = -1L
         fadeOutStartTime = time
