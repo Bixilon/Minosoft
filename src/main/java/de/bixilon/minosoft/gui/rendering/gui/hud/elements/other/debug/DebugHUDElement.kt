@@ -22,6 +22,7 @@ import de.bixilon.kutil.math.simple.FloatMath.rounded10
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.string.StringUtil.truncate
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -93,7 +94,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         val layout = RowLayout(guiRenderer)
         layout.margin = Vec4(2)
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
-        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}" }
+        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}§r; t=§d${context.renderStats.avgFrameTime.avg.formatNanos()}" }
         context.renderer[WorldRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, l=${loaded.size.format()}, cQ=${culledQueue.size.format()}, q=${meshingQueue.size.format()}, pT=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lQ=${loadingQueue.size.format()}/${meshingQueue.maxMeshesToLoad.format()}, w=${connection.world.chunks.chunks.size.format()}" }
         }
