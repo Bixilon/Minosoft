@@ -20,12 +20,18 @@ class GUIVertexOptions(
     val alpha: Float = 1.0f,
 ) {
     companion object {
-        fun GUIVertexOptions?.copy(tintColor: RGBColor? = null, alpha: Float = 1.0f): GUIVertexOptions {
-            var outColor = this?.tintColor
+
+        fun GUIVertexOptions?.copy(tintColor: RGBColor? = null, alpha: Float = 1.0f): GUIVertexOptions? {
+            if (this == null) return GUIVertexOptions(tintColor, alpha)
+            var outColor = this.tintColor
             if (tintColor != null) {
                 outColor = outColor?.mix(tintColor) ?: tintColor
             }
-            return GUIVertexOptions(outColor, alpha = (this?.alpha ?: 1.0f) * alpha)
+            val outAlpha = this.alpha * alpha
+            if (outColor == null && outAlpha == 1.0f) return null
+
+
+            return GUIVertexOptions(outColor, alpha = outAlpha)
         }
     }
 }

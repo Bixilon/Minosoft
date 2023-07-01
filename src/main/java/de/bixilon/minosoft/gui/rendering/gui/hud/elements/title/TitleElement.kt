@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -22,7 +21,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTextElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTimes
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -38,23 +38,12 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     val title = FadingTextElement(guiRenderer, "", background = null, properties = TextRenderProperties(scale = 4.0f), parent = this)
     val subtitle = FadingTextElement(guiRenderer, "", background = null, properties = TextRenderProperties(scale = 2.0f), parent = this)
-    var fadeInTime = 0L
+    var times: FadingTimes = FadingTimes.EMPTY
         set(value) {
-            title.fadeInTime = value
-            subtitle.fadeInTime = value
+            if (field == value) return
             field = value
-        }
-    var stayTime = 0L
-        set(value) {
-            title.stayTime = value
-            subtitle.stayTime = value
-            field = value
-        }
-    var fadeOutTime = 0L
-        set(value) {
-            title.fadeOutTime = value
-            subtitle.fadeOutTime = value
-            field = value
+            title.times = value
+            subtitle.times = value
         }
     override var cacheEnabled: Boolean
         get() = super.cacheEnabled && title.cacheEnabled && subtitle.cacheEnabled
@@ -80,16 +69,10 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
         }
 
     init {
-        fadeInTime = DEFAULT_FADE_IN_TIME
-        stayTime = DEFAULT_STAY_TIME
-        fadeOutTime = DEFAULT_FADE_OUT_TIME
+        times = DEFAULT_TIMES
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val time = millis()
-        if (time > fadeOutTime) {
-            return
-        }
         val size = size
         title.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0), consumer, options)
         subtitle.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)
@@ -115,14 +98,12 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     }
 
     fun reset() {
-        title.forceHide()
-        subtitle.forceHide()
+        title.hide(true)
+        subtitle.hide(true)
         title.text = ""
         subtitle.text = ""
 
-        fadeInTime = DEFAULT_FADE_IN_TIME
-        stayTime = DEFAULT_STAY_TIME
-        fadeOutTime = DEFAULT_FADE_OUT_TIME
+        times = DEFAULT_TIMES
     }
 
     override fun init() {
@@ -143,18 +124,18 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
             this.show()
         }
         connection.events.listen<TitleTimesSetEvent> {
-            this.fadeInTime = it.fadeInTime * ProtocolDefinition.TICK_TIME.toLong()
-            this.stayTime = it.stayTime * ProtocolDefinition.TICK_TIME.toLong()
-            this.fadeOutTime = it.fadeOutTime * ProtocolDefinition.TICK_TIME.toLong()
+            this.times = FadingTimes(it.fadeInTime * ProtocolDefinition.TICK_TIME, it.stayTime * ProtocolDefinition.TICK_TIME, it.fadeOutTime * ProtocolDefinition.TICK_TIME)
         }
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<TitleElement>> {
         override val identifier: ResourceLocation = "minosoft:title".toResourceLocation()
         const val SUBTITLE_VERTICAL_OFFSET = 10
-        const val DEFAULT_FADE_IN_TIME = 20L * ProtocolDefinition.TICK_TIME
-        const val DEFAULT_STAY_TIME = 60L * ProtocolDefinition.TICK_TIME
-        const val DEFAULT_FADE_OUT_TIME = 20L * ProtocolDefinition.TICK_TIME
+        private val DEFAULT_TIMES = FadingTimes(
+            20 * ProtocolDefinition.TICK_TIME,
+            60 * ProtocolDefinition.TICK_TIME,
+            20 * ProtocolDefinition.TICK_TIME,
+        )
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<TitleElement> {
             return LayoutedGUIElement(TitleElement(guiRenderer))

@@ -273,7 +273,7 @@ open class TextElement(
         return chatComponent.toString()
     }
 
-    private fun Vec2.withBackgroundSize(sign: Float = 1.0f): Vec2 {
+    protected fun Vec2.withBackgroundSize(sign: Float = 1.0f): Vec2 {
         val size = Vec2(this)
         val background = this@TextElement.background
         if (background != null && size.x > 0.0f && size.y > 0.0f) { // only add background if text is not empty
