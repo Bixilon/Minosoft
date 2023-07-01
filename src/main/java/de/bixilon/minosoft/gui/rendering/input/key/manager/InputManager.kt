@@ -109,7 +109,7 @@ class InputManager(
     }
 
     private fun scroll(scrollOffset: Vec2d, event: MouseScrollEvent) {
-        if (handler.onScroll(Vec2(scrollOffset))) return
+        if (!handler.onScroll(Vec2(scrollOffset))) return
         event.cancelled = true
     }
 
