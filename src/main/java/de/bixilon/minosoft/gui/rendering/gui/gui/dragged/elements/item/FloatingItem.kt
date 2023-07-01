@@ -55,6 +55,7 @@ class FloatingItem(
         }
         if (target == null) {
             container?.actions?.invoke(SimpleContainerAction(null, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART))
+            guiRenderer.dragged.element = null
             return
         }
     }
