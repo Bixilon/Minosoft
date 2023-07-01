@@ -42,7 +42,6 @@ import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
-import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
@@ -66,7 +65,6 @@ open class PixLyzerBlock(
 
     override val jumpBoost = data["jump_velocity_multiplier"]?.toFloat() ?: 1.0f
 
-    private val material: Material?
     override var hardness: Float = 0.0f
     val requiresTool: Boolean
     val replaceable: Boolean
@@ -75,9 +73,9 @@ open class PixLyzerBlock(
     init {
         val state = data["states"]?.asAnyMap()!!.iterator().next().value.asJsonObject()
         hardness = data["hardness"]?.toFloat() ?: state["hardness"].toFloat()
-        material = registries.material[data["material"] ?: state["material"]]
+        val material = registries.material[data["material"] ?: state["material"]]
         requiresTool = data["requires_tool"]?.toBoolean() ?: state["requires_tool"]?.toBoolean() ?: material?.let { !it.soft } ?: false
-        replaceable = data["replaceable"]?.toBoolean() ?: false
+        replaceable = data["replaceable"]?.toBoolean() ?: material?.replaceable ?: false
 
         ITEM_FIELD.inject<RegistryItem>(data["item"])
     }
