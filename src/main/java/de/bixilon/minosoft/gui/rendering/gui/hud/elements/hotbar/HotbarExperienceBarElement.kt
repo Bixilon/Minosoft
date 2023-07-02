@@ -68,9 +68,6 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
         }
     }
 
-    override fun forceSilentApply() {
-        cache.invalidate()
-    }
 
     override fun poll(): Boolean {
         val jumping = false // ToDo

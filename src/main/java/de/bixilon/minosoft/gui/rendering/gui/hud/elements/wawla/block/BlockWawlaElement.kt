@@ -36,7 +36,7 @@ class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : Wawla
 
     init {
         parent = wawla
-        forceSilentApply()
+        update()
     }
 
     private fun createName(): TextElement {

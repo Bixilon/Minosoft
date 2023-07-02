@@ -28,7 +28,7 @@ class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRen
 
     init {
         parent = block
-        forceSilentApply()
+        update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -50,7 +50,7 @@ class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRen
         ColorElement(guiRenderer, Vec2(width, size.y), color).render(offset, consumer, options)
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
         this.size = if (status == null) Vec2.EMPTY else Vec2(-1, 3)
     }
 }

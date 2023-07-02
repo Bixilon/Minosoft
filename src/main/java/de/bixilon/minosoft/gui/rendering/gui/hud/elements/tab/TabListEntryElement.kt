@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditi
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -50,7 +51,6 @@ class TabListEntryElement(
 
     private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2(8, 8), parent = this)
 
-    // private val skinElement = ImageElement(guiRenderer, guiRenderer.context.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = null, parent = this)
     private lateinit var pingElement: AtlasImageElement
 
@@ -68,19 +68,12 @@ class TabListEntryElement(
         get() = maxSize
         set(value) = Unit
 
-    var width: Float = width
-        set(value) {
-            if (value == field) {
-                return
-            }
-            field = value
-            forceApply()
-        }
+    var width by GuiDelegate(width)
 
     init {
         background = ColorElement(guiRenderer, size, RGBColor(120, 120, 120, 130))
         DefaultThreadPool += { skinElement.texture = context.textures.skins.getSkin(uuid, item.properties, fetch = guiRenderer.connection.network.encrypted)?.texture }
-        forceSilentApply()
+        update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -90,7 +83,7 @@ class TabListEntryElement(
         pingElement.render(offset + Vec2(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), consumer, options)
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
         // ToDo (Performance): If something changed, should we just prepare the changed
         pingElement = AtlasImageElement(
             guiRenderer, tabList.pingBarsAtlasElements[when {

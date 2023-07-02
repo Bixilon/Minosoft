@@ -29,7 +29,7 @@ class FlagsBossbarS2CP(
     val flags = BossbarFlags(buffer.readUnsignedByte())
 
     override fun handle(connection: PlayConnection) {
-        val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
+        val bossbar = connection.bossbars.bossbars[uuid] ?: return
 
         bossbar.flags = flags
 

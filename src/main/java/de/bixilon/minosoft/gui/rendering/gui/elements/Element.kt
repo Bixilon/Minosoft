@@ -31,8 +31,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
 import org.jetbrains.annotations.Contract
@@ -62,7 +60,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             if (_parent == value) return
             _parent = value
             value.unsafeCast<ChildedElement>().children += this
-            silentApply()
+            invalidate()
         }
 
     override val cache = GUIMeshCache(this, guiRenderer.screen, context.system.primitiveMeshOrder, context, initialCacheSize)
@@ -81,7 +79,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         get() = _prefSize
         set(value) {
             _prefSize = value
-            apply()
+            invalidate()
         }
 
     protected open var _prefMaxSize: Vec2 = Vec2(-1, -1)
@@ -89,7 +87,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         get() = _prefMaxSize
         set(value) {
             _prefMaxSize = value
-            apply()
+            invalidate()
         }
 
     open val maxSize: Vec2
@@ -122,24 +120,11 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         }
         set(value) {
             _size = value
-            apply()
+            invalidate()
         }
 
-    protected open var _margin: Vec4 = Vec4.EMPTY
-    protected open var _padding: Vec4 = Vec4.EMPTY
-
-    open var margin: Vec4
-        get() = _margin
-        set(value) {
-            _margin = value
-            apply()
-        }
-    open var padding: Vec4
-        get() = _padding
-        set(value) {
-            _padding = value
-            apply()
-        }
+    var margin by GuiDelegate(Vec4.EMPTY)
+    var padding by GuiDelegate(Vec4.EMPTY)
 
     open fun render(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Boolean {
         val offset = Vec2(offset)
@@ -163,51 +148,6 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
 
     abstract fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
 
-    @Deprecated("queued update")
-    protected fun forceSilentApply(poll: Boolean) {
-        if (poll && this is Pollable) {
-            poll()
-        }
-        forceSilentApply()
-    }
-
-    @Deprecated("queued update")
-    open fun forceSilentApply() = Unit
-
-    @Deprecated("queued update")
-    open fun forceApply() {
-        if (this is Pollable) {
-            poll()
-        }
-        forceSilentApply()
-        parent()?.update(this)
-    }
-
-    @Deprecated("queued update")
-    open fun apply() {
-        if (!silentApply()) {
-            return
-        }
-        parent()?.update(this)
-    }
-
-    @Deprecated("queued update")
-    open fun silentApply(): Boolean {
-        val maxSize = maxSize
-        if (this is Pollable && this.poll() || (previousMaxSize != maxSize && (maxSize isSmaller _size || maxSize isSmaller _prefMaxSize || (maxSize isGreater previousMaxSize && _size isSmaller _prefSize)))) {
-            forceSilentApply(false)
-            previousMaxSize = maxSize
-            return true
-        }
-        previousMaxSize = maxSize
-        return false
-    }
-
-
-    /**
-     * Called every tick to execute time based actions
-     */
-    @Deprecated("pollable")
     override fun tick() {
         if (this is ChildedElement) {
             for (child in children) {
@@ -216,11 +156,11 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         }
 
         if (this is Pollable && poll()) {
-            forceSilentApply()
-            parent()?.update(this)
+            invalidate()
         }
     }
 
+    // TODO: interface
     open fun onOpen() = Unit
     open fun onHide() = Unit
     open fun onClose() = Unit

@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBAColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
@@ -30,9 +32,11 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.entity.EntityWaw
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
+import de.bixilon.minosoft.input.interaction.AttackHandler
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable {
+class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable, ChildedElement {
+    override val children = SimpleChildrenManager(this)
     private var element: WawlaElement? = null
 
     val profile = guiRenderer.connection.profiles.gui.hud.wawla
@@ -48,7 +52,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         if (target == null) {
             this.element = null
-            forceSilentApply()
+            invalidate()
             return
         }
         val distance = target.distance
@@ -56,11 +60,11 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         val element: WawlaElement? = when {
             target is BlockTarget && profile.block.enabled && (!profile.limitReach || distance <= context.connection.player.reachDistance) -> BlockWawlaElement(this, target)
-            target is EntityTarget && profile.entity.enabled && (!profile.limitReach || distance <= 3.0) -> EntityWawlaElement(this, target) // TODO: use constant for distance
+            target is EntityTarget && profile.entity.enabled && (!profile.limitReach || distance <= AttackHandler.ATTACK_DISTANCE) -> EntityWawlaElement(this, target) // TODO: use constant for distance
             else -> null
         }
         this.element = element
-        forceSilentApply()
+        invalidate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -71,13 +75,8 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         element.forceRender(offset + BACKGROUND_SIZE, consumer, options)
     }
 
-    override fun onChildChange(child: Element) {
-        forceSilentApply()
-        super.onChildChange(this)
-    }
-
-    override fun forceSilentApply() {
-        cache.invalidate()
+    override fun update(child: Element) {
+        invalidate()
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<WawlaHUDElement>> {

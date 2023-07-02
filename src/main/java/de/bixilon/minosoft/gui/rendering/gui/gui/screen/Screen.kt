@@ -36,7 +36,8 @@ abstract class Screen(
         get() = guiRenderer.screen.scaled
         set(value) {}
 
-    override fun forceSilentApply() {
+    override fun update() {
+        super<Element>.update()
         background.size = guiRenderer.screen.scaled
         _size = guiRenderer.screen.scaled
     }

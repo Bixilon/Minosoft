@@ -61,7 +61,7 @@ class SignEditorScreen(
     private val backgroundElement = ImageElement(guiRenderer, getTexture(), uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
     private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", SIGN_MAX_CHARS, properties = TEXT_PROPERTIES, background = null, cutAtSize = true, parent = this) }
     private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
-    private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.connection.profiles.gui.sign.limitLength, parent = this) { guiRenderer.connection.profiles.gui.sign.limitLength = it; forceSilentApply() }
+    private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.connection.profiles.gui.sign.limitLength, parent = this) { guiRenderer.connection.profiles.gui.sign.limitLength = it; invalidate() }
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
     private var activeLine = 0
@@ -71,7 +71,7 @@ class SignEditorScreen(
             line.prefMaxSize = Vec2(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale, TEXT_PROPERTIES.lineHeight)
             line.hideCursor()
         }
-        forceSilentApply()
+        update()
     }
 
     private fun getTexture(): Texture? {
@@ -122,8 +122,8 @@ class SignEditorScreen(
         guiRenderer.connection.sendPacket(SignTextC2SP(blockPosition, this.side, text))
     }
 
-    override fun forceSilentApply() {
-        super.forceSilentApply()
+    override fun update() {
+        super<Screen>.update()
 
         for (line in lines) {
             line.prefMaxSize = Vec2(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale else SIGN_MAX_CHARS, line.prefMaxSize.y)

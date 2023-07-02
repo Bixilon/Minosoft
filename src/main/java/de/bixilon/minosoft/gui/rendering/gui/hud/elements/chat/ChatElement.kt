@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
@@ -40,6 +41,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), LayoutedElement {
+    override val children = SimpleChildrenManager(this)
     private val chatProfile = profile.chat
     private val input = NodeTextInputElement(guiRenderer, ChatNode("", allowCLI = true), maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }
     private val internal = InternalChatElement(guiRenderer).apply { parent = this@ChatElement }
@@ -51,7 +53,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             messages._active = value
             messages.forceSilentApply()
             historyIndex = history.size + 1
-            forceApply()
+            invalidate()
         }
     override var skipDraw: Boolean
         // skips hud draw and draws it in gui stage
@@ -70,7 +72,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         messages.prefMaxSize = Vec2(chatProfile.width, chatProfile.height)
         chatProfile::width.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(it, messages.prefMaxSize.y) }
         chatProfile::height.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(messages.prefMaxSize.x, it) }
-        forceSilentApply()
+        update()
         input.onChangeCallback = {
             while (input._value.startsWith(' ')) {
                 input._value.deleteCharAt(0)
@@ -133,8 +135,8 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         }
     }
 
-    override fun forceSilentApply() {
-        messages.silentApply()
+    override fun update() {
+        super.update()
         _size = Vec2(guiRenderer.screen.scaled.x, maxOf(messages.size.y, internal.size.y) + (LINES * TEXT_PROPERTIES.lineHeight) + CHAT_INPUT_MARGIN * 2)
         if (active) {
             input.prefMaxSize = Vec2(size.x - CHAT_INPUT_MARGIN * 2, (LINES * TEXT_PROPERTIES.lineHeight))
@@ -265,11 +267,6 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             return Pair(input, offset)
         }
         return null
-    }
-
-    override fun onChildChange(child: Element) {
-        forceSilentApply()
-        super.onChildChange(child)
     }
 
     override fun tick() {

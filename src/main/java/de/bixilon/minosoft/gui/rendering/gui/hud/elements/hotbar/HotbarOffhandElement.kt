@@ -66,7 +66,4 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         return false
     }
 
-    override fun forceSilentApply() {
-        cache.invalidate()
-    }
 }

@@ -28,7 +28,7 @@ class ValueBossbarS2CP(
     val value = buffer.readFloat()
 
     override fun handle(connection: PlayConnection) {
-        val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
+        val bossbar = connection.bossbars.bossbars[uuid] ?: return
 
         if (bossbar.progress == value) {
             return

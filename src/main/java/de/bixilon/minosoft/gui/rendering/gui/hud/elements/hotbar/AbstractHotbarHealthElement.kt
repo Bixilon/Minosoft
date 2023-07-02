@@ -19,6 +19,8 @@ import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -26,7 +28,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
-abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
+abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ChildedElement {
+    override val children = SimpleChildrenManager(this)
     abstract val totalHealth: Float
     abstract val totalMaxHealth: Float
     var totalMaxHearts = 0
@@ -35,7 +38,8 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
     private var textElement = TextElement(guiRenderer, "", parent = this)
 
 
-    override fun forceSilentApply() {
+    override fun update() {
+        super<Element>.update()
         totalMaxHearts = (totalMaxHealth / 2).ceil
 
         text = totalMaxHearts > HP_TEXT_LIMIT
@@ -51,8 +55,6 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
 
             _size = Vec2(HEARTS_PER_ROW, rows) * HEART_SIZE + Vec2(1, 0) // 1 pixel is overlapping, so we have one more for the heart
         }
-
-        cache.invalidate()
     }
 
     protected fun drawCanisters(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, atlasElement: AtlasElement) {

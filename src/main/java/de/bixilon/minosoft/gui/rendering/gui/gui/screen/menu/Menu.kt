@@ -41,7 +41,7 @@ abstract class Menu(
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
 
-    override fun forceSilentApply() {
+    override fun update() {
         val elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0.0f)
         var maxElementWidth = elementWidth
 
@@ -56,14 +56,13 @@ abstract class Menu(
         this.maxElementWidth = maxElementWidth
         totalHeight += maxOf(0.0f, (elements.size - 1) * BUTTON_Y_MARGIN)
         this.totalHeight = totalHeight
-        super.forceSilentApply()
-        cache.invalidate()
+        super<Screen>.update()
     }
 
     fun add(element: Element) {
         element.parent = this
         elements += element
-        forceSilentApply()
+        invalidate()
     }
 
     operator fun plusAssign(element: Element) = add(element)
@@ -101,7 +100,7 @@ abstract class Menu(
     }
 
     override fun update(child: Element) {
-        forceSilentApply()
+        invalidate()
     }
 
     override fun getAt(position: Vec2): Pair<Element, Vec2>? {

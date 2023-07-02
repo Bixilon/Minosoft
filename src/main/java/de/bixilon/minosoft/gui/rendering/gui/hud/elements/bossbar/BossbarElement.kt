@@ -16,15 +16,14 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.bossbar.Bossbar
-import de.bixilon.minosoft.data.bossbar.BossbarColors
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -33,16 +32,14 @@ class BossbarElement(
     guiRenderer: GUIRenderer,
     val bossbar: Bossbar,
     val atlas: Array<Array<Array<AtlasElement?>>>,
-) : Element(guiRenderer), Pollable {
-    private var color: BossbarColors = bossbar.color
-    private var notches: BossbarNotches = bossbar.notches
-
+) : Element(guiRenderer) {
     private val titleElement = TextElement(guiRenderer, text = bossbar.title, background = null, parent = this)
     private lateinit var progress: BossbarProgressElement
 
     init {
-        forceSilentApply()
-        setStyle()
+        update()
+        updateStyle()
+        observe()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -52,62 +49,29 @@ class BossbarElement(
         progress.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, progress.size.x), titleSize.y), consumer, options)
     }
 
-    override fun poll(): Boolean {
-        var changes = 0
-
-        val title = bossbar.title
-        if (titleElement.chatComponent != title) {
-            titleElement.text = title
-            changes++
-        }
-
-        val changesBeforeStyle = changes
-        val color = bossbar.color
-        if (this.color != color) {
-            this.color = color
-            changes++
-        }
-
-        val notches = bossbar.notches
-        if (this.notches != notches) {
-            this.notches = notches
-            changes++
-        }
-
-        if (changes < changesBeforeStyle) {
-            setStyle()
-        }
-
-        val value = bossbar.progress
-        if (progress.progress != value) {
-            progress.progress = value
-            changes++
-        }
-
-        return changes > 0
+    private fun observe() {
+        bossbar::color.observe(this) { invalidate() }
+        bossbar::notches.observe(this) { invalidate() }
+        bossbar::title.observe(this) { this.titleElement.text = it }
+        bossbar::progress.observe(this) { invalidate() }
+        bossbar::flags.observe(this) { invalidate() }
     }
 
-    private fun setStyle() {
-        // ToDo: Cache progress
-        val notches = if (notches == BossbarNotches.NO_NOTCHES) {
+    private fun updateStyle() {
+        val notches = if (bossbar.notches == BossbarNotches.NO_NOTCHES) {
             null
         } else {
-            atlas[1][notches.ordinal - 1]
+            atlas[1][bossbar.notches.ordinal - 1]
         }
-        progress = BossbarProgressElement(guiRenderer, atlas[0][color.ordinal].unsafeCast(), notches.unsafeCast(), 0.0f)
+        progress = BossbarProgressElement(guiRenderer, atlas[0][bossbar.color.ordinal].unsafeCast(), notches.unsafeCast(), bossbar.progress)
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
         val size = Vec2(BAR_SIZE)
         size.x = maxOf(size.x, titleElement.size.x)
         size.y += titleElement.size.y
         _size = size
-
-        cache.invalidate()
     }
-
-    override fun onChildChange(child: Element) = Unit
-
 
     companion object {
         private val BAR_SIZE = Vec2i(182, 5)

@@ -17,9 +17,13 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SingleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonStyle
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
@@ -37,41 +41,22 @@ open class SwitchElement(
     disabled: Boolean = false,
     parent: Element?,
     var onChange: (state: Boolean) -> Unit,
-) : AbstractCheckboxElement(guiRenderer) {
+) : AbstractCheckboxElement(guiRenderer), ChildedElement {
+    override val children = SingleChildrenManager()
     protected val textElement = TextElement(guiRenderer, text, background = null).apply { this.parent = this@SwitchElement }
-    private val disabledAtlas = guiRenderer.atlasManager["minosoft:switch_disabled"]
-    private val normalAtlas = guiRenderer.atlasManager["minosoft:switch_normal"]
-    private val hoveredAtlas = guiRenderer.atlasManager["minosoft:switch_hovered"]
+    private val style = ButtonStyle(
+        guiRenderer.atlasManager["minosoft:switch_disabled"],
+        guiRenderer.atlasManager["minosoft:switch_normal"],
+        guiRenderer.atlasManager["minosoft:switch_hovered"],
+    )
 
     private val onStateAtlas = guiRenderer.atlasManager["minosoft:switch_state_on"]
     private val offStateAtlas = guiRenderer.atlasManager["minosoft:switch_state_off"]
 
-    var state: Boolean = state
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            onChange(state)
-            forceApply()
-        }
-    var disabled: Boolean = disabled
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            forceApply()
-        }
+    var state by GuiDelegate(state)
+    var disabled by GuiDelegate(disabled)
 
-    var hovered: Boolean = false
-        private set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            forceApply()
-        }
+    private var hovered: Boolean = false
 
     override val canFocus: Boolean
         get() = !disabled
@@ -82,15 +67,15 @@ open class SwitchElement(
         this.parent = parent
     }
 
-    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val texture = when {
-            disabled -> disabledAtlas
-            hovered -> hoveredAtlas
-            else -> normalAtlas
-        } ?: guiRenderer.context.textures.whiteTexture
+    private fun getTexture() = when {
+        disabled -> style.disabled
+        hovered -> style.hovered
+        else -> style.normal
+    } ?: guiRenderer.context.textures.whiteTexture
 
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
-        val background = AtlasImageElement(guiRenderer, texture)
+        val background = AtlasImageElement(guiRenderer, getTexture())
         background.size = SIZE
 
         background.render(offset, consumer, options)
@@ -105,10 +90,6 @@ open class SwitchElement(
         textElement.render(offset + Vec2i(SIZE.x + TEXT_MARGIN, VerticalAlignments.CENTER.getOffset(size.y, textElement.size.y)), consumer, options)
     }
 
-    override fun forceSilentApply() {
-        textElement.silentApply()
-        cache.invalidate()
-    }
 
     override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (disabled) {

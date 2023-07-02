@@ -87,7 +87,7 @@ class PlayConnection(
     val world = World(this)
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager(this)
-    val bossbarManager = BossbarManager()
+    val bossbars = BossbarManager()
     val util = ConnectionUtil(this)
     val ticker = ConnectionTicker(this)
     val channels = ConnectionChannelHandler(this)

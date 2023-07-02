@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
@@ -33,23 +34,14 @@ class ContainerItemsElement(
     val container: Container,
     val slots: Int2ObjectOpenHashMap<AtlasSlot>, // ToDo: Use an array?
 ) : Element(guiRenderer), AbstractLayout<ItemElement> {
+    override val children = SimpleChildrenManager(this)
     private val itemElements: Int2ObjectOpenHashMap<ItemElementData> = Int2ObjectOpenHashMap()
     private var floatingItem: FloatingItem? = null
     override var activeElement: ItemElement? = null
     override var activeDragElement: ItemElement? = null
-    private var update = true
-        set(value) {
-            if (value) {
-                cache.invalidate()
-            }
-            if (field == value) {
-                return
-            }
-            field = value
-        }
 
     init {
-        silentApply()
+        update()
 
         val size = Vec2.EMPTY
         for ((slotId, binding) in slots) {
@@ -69,7 +61,7 @@ class ContainerItemsElement(
         }
         this._size = size
 
-        container::revision.observe(this) { update = true; }
+        container::revision.observe(this) { invalidate(); }
         container::floatingItem.observe(this) {
             this.floatingItem?.close()
             this.floatingItem = null
@@ -78,16 +70,14 @@ class ContainerItemsElement(
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        if (update) {
-            forceSilentApply()
-        }
         for (data in itemElements.values) {
             data.element.render(offset + data.offset, consumer, options)
         }
     }
 
 
-    override fun forceSilentApply() {
+    override fun update() {
+        super<Element>.update()
         container.lock.acquire()
         var changes = 0
         for ((slotId, data) in itemElements) {

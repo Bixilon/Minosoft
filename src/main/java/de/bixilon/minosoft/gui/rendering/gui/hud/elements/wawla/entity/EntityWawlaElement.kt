@@ -42,7 +42,7 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
     )
 
     init {
-        forceSilentApply()
+        update()
     }
 
 

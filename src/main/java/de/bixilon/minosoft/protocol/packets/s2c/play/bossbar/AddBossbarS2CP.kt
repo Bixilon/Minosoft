@@ -50,7 +50,7 @@ class AddBossbarS2CP(
         )
 
         // ToDo: Check if bossbar is already present
-        connection.bossbarManager.bossbars[uuid] = bossbar
+        connection.bossbars.bossbars[uuid] = bossbar
 
         connection.events.fire(BossbarAddEvent(connection, uuid, bossbar))
     }

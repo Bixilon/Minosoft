@@ -31,7 +31,7 @@ class StyleBossbarS2CP(
     val notches = BossbarNotches[buffer.readVarInt()]
 
     override fun handle(connection: PlayConnection) {
-        val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
+        val bossbar = connection.bossbars.bossbars[uuid] ?: return
 
         var changes = 0
 

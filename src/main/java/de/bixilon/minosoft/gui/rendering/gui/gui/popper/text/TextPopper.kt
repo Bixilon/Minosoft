@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.popper.text
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SingleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.MouseTrackedPopper
@@ -25,29 +27,25 @@ open class TextPopper(
     guiRenderer: GUIRenderer,
     position: Vec2,
     text: Any,
-) : MouseTrackedPopper(guiRenderer, position) {
+) : MouseTrackedPopper(guiRenderer, position), ChildedElement { // TODO: Labeled
+    override val children = SingleChildrenManager()
     protected val textElement = TextElement(guiRenderer, text, background = null, parent = this)
 
     init {
-        forceSilentApply()
+        update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
-        textElement.render(offset, consumer, options)
+        textElement.render(offset + Vec2(5, 5), consumer, options)
     }
 
-    override fun forceSilentApply() {
-        recalculateSize()
-        super.forceSilentApply()
-    }
-
-    override fun onChildChange(child: Element) {
+    override fun update(child: Element) {
         recalculateSize()
     }
 
     private fun recalculateSize() {
-        size = textElement.size
+        size = textElement.size + Vec2(10, 10)
     }
 }

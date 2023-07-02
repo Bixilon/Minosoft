@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -23,8 +24,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.modding.event.events.bossbar.*
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -92,26 +91,17 @@ class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, Horizonta
     )
 
     override fun postInit() {
-        connection.events.listen<BossbarAddEvent> {
-            val element = BossbarElement(guiRenderer, it.bossbar, atlas)
-            this += element
-            val previous = bossbars.put(it.bossbar, element) ?: return@listen
-            this -= previous
-        }
-
-        connection.events.listen<BossbarRemoveEvent> {
-            val element = bossbars.remove(it.bossbar) ?: return@listen
-            this -= element
-        }
-
-        connection.events.listen<BossbarValueSetEvent> {
-            bossbars[it.bossbar]?.apply()
-        }
-        connection.events.listen<BossbarTitleSetEvent> {
-            bossbars[it.bossbar]?.apply()
-        }
-        connection.events.listen<BossbarStyleSetEvent> {
-            bossbars[it.bossbar]?.apply()
+        connection.bossbars::bossbars.observeMap(this) {
+            for ((_, bossbar) in it.adds) {
+                val element = BossbarElement(guiRenderer, bossbar, atlas)
+                this += element
+                val previous = bossbars.put(bossbar, element) ?: continue
+                this -= previous
+            }
+            for ((_, bossbar) in it.removes) {
+                val element = bossbars.remove(bossbar) ?: continue
+                this -= element
+            }
         }
     }
 

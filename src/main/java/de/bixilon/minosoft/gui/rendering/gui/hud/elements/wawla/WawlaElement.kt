@@ -38,7 +38,8 @@ abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawl
         }
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
+        super.update()
         val size = Vec2.EMPTY
 
         for (element in elements) {

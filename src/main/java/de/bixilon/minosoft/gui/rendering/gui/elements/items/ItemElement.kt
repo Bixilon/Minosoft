@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.container.actions.types.*
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SingleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
@@ -40,7 +42,8 @@ class ItemElement(
     item: ItemStack?,
     val slotId: Int = 0,
     val itemsElement: ContainerItemsElement,
-) : Element(guiRenderer) {
+) : Element(guiRenderer), ChildedElement {
+    override val children = SingleChildrenManager()
     private val raw = RawItemElement(guiRenderer, size, item, this)
     private var popper: ItemInfoPopper? = null
     private var hovered = false
@@ -52,7 +55,7 @@ class ItemElement(
     init {
         this._parent = itemsElement
         _size = size
-        forceApply()
+        update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -66,10 +69,6 @@ class ItemElement(
             options = options.copy(alpha = 0.7f)
         }
         raw.render(offset, consumer, options)
-    }
-
-    override fun forceSilentApply() {
-        raw.silentApply()
     }
 
     override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {

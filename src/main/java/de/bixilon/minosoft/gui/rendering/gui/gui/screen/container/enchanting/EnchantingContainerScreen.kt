@@ -33,8 +33,8 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
 
 
     init {
-        container::propertiesRevision.observe(this) { forceApply() }
-        container::revision.observe(this) { forceApply() }
+        container::propertiesRevision.observe(this) { invalidate() }
+        container::revision.observe(this) { invalidate() }
     }
 
     override fun forceRenderContainerScreen(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

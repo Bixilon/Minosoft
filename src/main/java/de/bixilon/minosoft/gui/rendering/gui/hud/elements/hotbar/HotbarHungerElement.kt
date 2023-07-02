@@ -129,9 +129,6 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
         }
     }
 
-    override fun forceSilentApply() {
-        cache.invalidate()
-    }
 
     override fun tick() {
         val healthCondition = guiRenderer.context.connection.player.healthCondition

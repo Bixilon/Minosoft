@@ -17,6 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -35,7 +37,8 @@ import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // ToDo: Remove subtitle when hidden
-class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
+class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, ChildedElement {
+    override val children = SimpleChildrenManager(this)
     val title = FadingTextElement(guiRenderer, "", background = null, properties = TextRenderProperties(scale = 4.0f), parent = this)
     val subtitle = FadingTextElement(guiRenderer, "", background = null, properties = TextRenderProperties(scale = 2.0f), parent = this)
     var times: FadingTimes = FadingTimes.EMPTY
@@ -68,7 +71,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
         subtitle.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
         val size = title.size
 
         size.x = maxOf(size.x, subtitle.size.x)

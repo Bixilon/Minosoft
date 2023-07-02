@@ -25,7 +25,7 @@ class RemoveBossbarS2CP(
 ) : BossbarS2CP {
 
     override fun handle(connection: PlayConnection) {
-        val bossbar = connection.bossbarManager.bossbars.remove(uuid) ?: return
+        val bossbar = connection.bossbars.bossbars.remove(uuid) ?: return
         connection.events.fire(BossbarRemoveEvent(connection, uuid, bossbar))
     }
 

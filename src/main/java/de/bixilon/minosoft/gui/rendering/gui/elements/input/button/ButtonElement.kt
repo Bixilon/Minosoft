@@ -60,7 +60,7 @@ open class ButtonElement(
     protected var hovered: Boolean = false
 
     init {
-        _padding = Vec4(4.0f)
+        padding = Vec4(4.0f)
         updateSize()
     }
 

@@ -79,7 +79,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             alignment = HorizontalAlignments.RIGHT
         }
 
-        apply()
+        update()
     }
 
 
@@ -312,15 +312,6 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         layout.forceRender(offset, consumer, options)
-    }
-
-    override fun forceSilentApply() {
-        cache.invalidate()
-    }
-
-    override fun onChildChange(child: Element) {
-        super.onChildChange(child)
-        forceSilentApply()
     }
 
     override fun tick() {

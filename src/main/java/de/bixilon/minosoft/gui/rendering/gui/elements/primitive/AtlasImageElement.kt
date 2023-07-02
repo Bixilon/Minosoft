@@ -18,12 +18,12 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TexturePart
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 open class AtlasImageElement(
@@ -32,39 +32,15 @@ open class AtlasImageElement(
     size: Vec2 = texturePart?.size?.let { Vec2(it) } ?: Vec2.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
-    var texture: Texture? = texturePart?.texture
-        set(value) {
-            field = value
-            cache.invalidate()
-        }
-    var uvStart: Vec2? = null
-        set(value) {
-            field = value
-            cache.invalidate()
-        }
-    var uvEnd: Vec2? = null
-        set(value) {
-            field = value
-            cache.invalidate()
-        }
-
-    override var size: Vec2
-        get() = super.size
-        set(value) {
-            super.size = value
-            cache.invalidate()
-        }
+    var texture by GuiDelegate(texturePart?.texture)
+    var uvStart: Vec2? by GuiDelegate(null)
+    var uvEnd: Vec2? by GuiDelegate(null)
+    var tint by GuiDelegate(tint)
 
     override var prefSize: Vec2
         get() = size
         set(value) {
             size = value
-        }
-
-    var tint: RGBColor = tint
-        set(value) {
-            field = value
-            cache.invalidate()
         }
 
     var texturePart: TexturePart? = texturePart
@@ -77,7 +53,7 @@ open class AtlasImageElement(
             uvStart = null
             uvEnd = null
 
-            cache.invalidate()
+            invalidate()
         }
 
     init {
@@ -98,7 +74,4 @@ open class AtlasImageElement(
         val textureLike = texturePart ?: return
         consumer.addQuad(offset, offset + size, texture, uvStart ?: textureLike.uvStart, uvEnd ?: textureLike.uvEnd, tint, options)
     }
-
-    override fun forceSilentApply() = Unit
-    override fun silentApply(): Boolean = false
 }

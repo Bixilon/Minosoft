@@ -26,6 +26,8 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SingleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -44,8 +46,9 @@ class RawItemElement(
     size: Vec2 = DEFAULT_SIZE,
     stack: ItemStack?,
     parent: Element?,
-) : Element(guiRenderer) {
-    private val countText = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
+) : Element(guiRenderer), ChildedElement {
+    override val children = SingleChildrenManager()
+    private val countText = TextElement(guiRenderer, "", background = null, parent = this, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
 
     var _stack: ItemStack? = null
         set(value) {
@@ -53,10 +56,10 @@ class RawItemElement(
                 return
             }
             if (value != null) {
-                value::revision.observe(this) { if (value === field) forceSilentApply() } // ToDo: check if watcher is still up-to-date
+                value::revision.observe(this) { if (value === field) invalidate() } // ToDo: check if watcher is still up-to-date
             }
             field = value
-            forceSilentApply()
+            invalidate()
         }
     var stack: ItemStack?
         get() = _stack
@@ -65,14 +68,14 @@ class RawItemElement(
                 return
             }
             _stack = value
-            parent?.onChildChange(this)
+            invalidate()
         }
 
     init {
         this._parent = parent
         _size = size
         this._stack = stack
-        forceApply()
+        update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -103,7 +106,7 @@ class RawItemElement(
         countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), consumer, options)
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
         val item = _stack?.item
         val count = item?.count
         countText.text = when {
@@ -115,8 +118,6 @@ class RawItemElement(
             count > if (item.item is StackableItem) item.item.maxStackSize else 1 -> TextComponent(count, color = ChatColors.RED)
             else -> TextComponent(count)
         }
-
-        cache.invalidate()
     }
 
     override fun toString(): String {

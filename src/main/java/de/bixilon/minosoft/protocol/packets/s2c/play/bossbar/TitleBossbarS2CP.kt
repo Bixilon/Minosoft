@@ -28,7 +28,7 @@ class TitleBossbarS2CP(
     val title = buffer.readChatComponent()
 
     override fun handle(connection: PlayConnection) {
-        val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
+        val bossbar = connection.bossbars.bossbars[uuid] ?: return
 
         if (bossbar.title == title) {
             return
