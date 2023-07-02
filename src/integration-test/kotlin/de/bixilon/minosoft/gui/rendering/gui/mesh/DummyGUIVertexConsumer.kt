@@ -21,10 +21,11 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 open class DummyGUIVertexConsumer : GUIVertexConsumer {
     override val order: Array<Pair<Int, Int>> get() = Mesh.QUAD_TO_QUAD_ORDER
+    var caches = 0
     var char = 0
 
     override fun addCache(cache: GUIMeshCache) {
-        TODO("Not yet implemented")
+        caches++
     }
 
     override fun ensureSize(size: Int) {
