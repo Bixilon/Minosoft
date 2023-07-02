@@ -174,7 +174,7 @@ open class RowLayout(
         }
 
         _size = size
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun onChildChange(child: Element) {

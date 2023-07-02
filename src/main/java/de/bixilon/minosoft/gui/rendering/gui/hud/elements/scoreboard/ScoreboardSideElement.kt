@@ -49,7 +49,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     private val scores: LockMap<ScoreboardScore, ScoreboardScoreElement> = lockMapOf()
 
     override val layoutOffset: Vec2
-        get() = super.size.let { return@let Vec2(guiRenderer.scaledSize.x - it.x, (guiRenderer.scaledSize.y - it.y) / 2) }
+        get() = super.size.let { return@let Vec2(guiRenderer.screen.scaled.x - it.x, (guiRenderer.screen.scaled.y - it.y) / 2) }
     override val skipDraw: Boolean
         get() = objective == null
 
@@ -67,6 +67,8 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         _prefMaxSize = Vec2(MAX_SCOREBOARD_WIDTH, -1)
         forceSilentApply()
     }
+
+    private var recalculate = true
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         backgroundElement.render(offset, consumer, options)
@@ -112,6 +114,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     }
 
     fun recalculateSize() {
+        recalculate = false
         val objective = objective
         if (objective == null) {
             _size = Vec2.EMPTY
@@ -143,7 +146,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     }
 
     private fun queueSizeRecalculation() {
-        cacheUpToDate = false
+        recalculate = true
     }
 
     fun removeScore(score: ScoreboardScore) {
@@ -207,7 +210,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
     override fun drawAsync() {
         // check if content was changed, and we need to re-prepare before drawing
-        if (!cacheUpToDate) {
+        if (recalculate) {
             recalculateSize()
         }
     }

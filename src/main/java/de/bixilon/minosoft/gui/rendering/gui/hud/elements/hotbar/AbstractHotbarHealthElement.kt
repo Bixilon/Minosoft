@@ -52,7 +52,7 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
             _size = Vec2(HEARTS_PER_ROW, rows) * HEART_SIZE + Vec2(1, 0) // 1 pixel is overlapping, so we have one more for the heart
         }
 
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     protected fun drawCanisters(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, atlasElement: AtlasElement) {

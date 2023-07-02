@@ -36,7 +36,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
 
     init {
         size = HOTBAR_BASE_SIZE + Vec2(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
-        cacheUpToDate = false // ToDo: Check changes
+        cache.invalidate() // ToDo: Check changes
 
         base.parent = this
         frame.parent = this
@@ -66,7 +66,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
 
     override fun forceSilentApply() {
         containerElement.silentApply()
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     companion object {

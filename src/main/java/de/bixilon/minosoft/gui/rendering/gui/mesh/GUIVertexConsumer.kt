@@ -80,6 +80,7 @@ interface GUIVertexConsumer {
     }
 
     fun addCache(cache: GUIMeshCache)
+    operator fun plusAssign(cache: GUIMeshCache) = addCache(cache)
 
     fun ensureSize(size: Int)
 

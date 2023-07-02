@@ -108,7 +108,7 @@ class TabListEntryElement(
 
         this.prefSize = Vec2((PADDING * 6) + skinElement.size.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
         background.size = size
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun poll(): Boolean {

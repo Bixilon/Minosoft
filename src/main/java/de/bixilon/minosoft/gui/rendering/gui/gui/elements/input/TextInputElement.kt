@@ -88,12 +88,12 @@ open class TextInputElement(
 
     fun hideCursor() {
         cursorTick = 20
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     fun showCursor() {
         cursorTick = 19
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     fun unmark() {
@@ -148,15 +148,15 @@ open class TextInputElement(
             }
             Vec2i(preCursorText.info.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.info.lines.size - 1, 0) * preCursorText.properties.lineHeight)
         }
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun tick() {
         if (cursorTick-- <= 0) {
             cursorTick = 40
-            cacheUpToDate = false
+            cache.invalidate()
         } else if (cursorTick == 20 - 1) {
-            cacheUpToDate = false
+            cache.invalidate()
         }
     }
 

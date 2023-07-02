@@ -28,8 +28,6 @@ class GridCell(
     private val child: Element,
     parent: Element?,
 ) : Element(guiRenderer, 0) {
-    override var cacheUpToDate: Boolean by child::cacheUpToDate
-    override var cacheEnabled: Boolean by child::cacheEnabled
     override var prefMaxSize: Vec2 by child::prefMaxSize
     override var size: Vec2 by child::size
     override var margin: Vec4 by child::margin
@@ -58,7 +56,7 @@ class GridCell(
         child.parent = this
     }
 
-    override fun render(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun render(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Boolean {
         return child.render(offset, consumer, options)
     }
 

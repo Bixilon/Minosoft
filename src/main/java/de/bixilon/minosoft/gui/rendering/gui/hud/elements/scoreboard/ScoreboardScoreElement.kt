@@ -59,7 +59,7 @@ class ScoreboardScoreElement(
         scoreElement.text = TextComponent(score.value).color(ChatColors.RED)
 
         _prefSize = Vec2(nameElement.size.x + scoreElement.size.x + SCORE_MIN_MARGIN, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     fun applySize() {

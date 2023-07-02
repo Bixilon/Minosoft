@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.CodeTexturePart
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.properties.GUIScreen
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
@@ -44,8 +45,7 @@ object GuiRenderTestUtil {
 
     fun create(size: Vec2 = Vec2(1920.0f, 1080.0f)): GUIRenderer {
         val renderer = OBJENESIS.newInstance(GUIRenderer::class.java)
-        renderer::scaledSize.forceSet(DataObserver(size))
-        renderer::halfSize.forceSet(size / 2.0f)
+        renderer::screen.forceSet(DataObserver(GUIScreen(Vec2i(size), size)))
 
         renderer::context.forceSet(createContext())
 

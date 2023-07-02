@@ -40,7 +40,7 @@ class ContainerItemsElement(
     private var update = true
         set(value) {
             if (value) {
-                cacheUpToDate = false
+                cache.invalidate()
             }
             if (field == value) {
                 return
@@ -101,7 +101,7 @@ class ContainerItemsElement(
         container.lock.release()
 
         if (changes > 0) {
-            cacheUpToDate = false
+            cache.invalidate()
         }
         update = false
     }

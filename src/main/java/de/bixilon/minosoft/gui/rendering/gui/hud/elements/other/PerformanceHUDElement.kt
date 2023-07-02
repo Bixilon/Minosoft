@@ -65,7 +65,7 @@ class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     override fun forceSilentApply() {
         text._chatComponent = if (hide) ChatComponent.EMPTY else ChatComponent.of("§aFPS $fps")
         text.forceSilentApply()
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<PerformanceHUDElement>> {

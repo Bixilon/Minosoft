@@ -35,24 +35,24 @@ open class AtlasImageElement(
     var texture: Texture? = texturePart?.texture
         set(value) {
             field = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
     var uvStart: Vec2? = null
         set(value) {
             field = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
     var uvEnd: Vec2? = null
         set(value) {
             field = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
 
     override var size: Vec2
         get() = super.size
         set(value) {
             super.size = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
 
     override var prefSize: Vec2
@@ -64,7 +64,7 @@ open class AtlasImageElement(
     var tint: RGBColor = tint
         set(value) {
             field = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
 
     var texturePart: TexturePart? = texturePart
@@ -77,7 +77,7 @@ open class AtlasImageElement(
             uvStart = null
             uvEnd = null
 
-            cacheUpToDate = false
+            cache.invalidate()
         }
 
     init {

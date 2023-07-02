@@ -95,7 +95,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
         } else {
             Vec2(BUBBLE_SIZE.x * (bubbles + poppingCount), BUBBLE_SIZE.y)
         }
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun tick() {

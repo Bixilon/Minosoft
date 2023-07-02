@@ -107,7 +107,7 @@ open class SwitchElement(
 
     override fun forceSilentApply() {
         textElement.silentApply()
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {

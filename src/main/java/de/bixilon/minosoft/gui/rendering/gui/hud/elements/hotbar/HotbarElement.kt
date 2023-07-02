@@ -58,7 +58,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
 
     override val layoutOffset: Vec2
-        get() = size.let { Vec2((guiRenderer.scaledSize.x - it.x) / 2, guiRenderer.scaledSize.y - it.y) }
+        get() = size.let { Vec2((guiRenderer.screen.scaled.x - it.x) / 2, guiRenderer.screen.scaled.y - it.y) }
 
     private var renderElements = setOf(
         itemText,
@@ -137,7 +137,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         }
 
         _size = size
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun silentApply(): Boolean {

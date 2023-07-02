@@ -33,7 +33,7 @@ class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, Horizonta
     private val bossbars: MutableMap<Bossbar, BossbarElement> = synchronizedMapOf()
 
     override val layoutOffset: Vec2
-        get() = Vec2((guiRenderer.scaledSize.x - super.size.x) / 2, 2)
+        get() = Vec2((guiRenderer.screen.scaled.x - super.size.x) / 2, 2)
 
     val atlasManager = guiRenderer.atlasManager
 

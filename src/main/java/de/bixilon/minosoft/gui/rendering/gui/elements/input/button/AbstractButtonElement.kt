@@ -120,7 +120,7 @@ abstract class AbstractButtonElement(
 
     override fun forceSilentApply() {
         textElement.silentApply()
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
@@ -183,7 +183,7 @@ abstract class AbstractButtonElement(
             if (dynamicSized) {
                 size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
             }
-            cacheUpToDate = false
+            cache.invalidate()
         }
         parent?.onChildChange(this)
     }

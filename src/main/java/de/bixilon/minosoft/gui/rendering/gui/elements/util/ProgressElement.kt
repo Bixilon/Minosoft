@@ -60,6 +60,6 @@ open class ProgressElement(
         val fullAtlasElement = fullAtlasElement ?: return
         progressImage = ImageElement(guiRenderer, fullAtlasElement.texture, uvStart = fullAtlasElement.uvStart, uvEnd = Vec2(interpolateLinear(progress, fullAtlasElement.uvStart.x, fullAtlasElement.uvEnd.x), fullAtlasElement.uvEnd.y), size = Vec2((fullAtlasElement.size.x * progress), emptyAtlasElement.size.y))
 
-        cacheUpToDate = false
+        cache.invalidate()
     }
 }

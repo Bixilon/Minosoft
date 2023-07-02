@@ -42,10 +42,9 @@ open class GUIMeshElement<T : Element>(
     override val context: RenderContext = guiRenderer.context
     private val clickCounter = MouseClickCounter()
     private var _mesh: GUIMesh? = null
-    var mesh: GUIMesh = GUIMesh(context, guiRenderer.halfSize, FloatListUtil.direct(1000))
+    var mesh: GUIMesh = GUIMesh(context, guiRenderer.screen, FloatListUtil.direct(1000))
     override val skipDraw: Boolean
         get() = if (element is BaseDrawable) element.skipDraw else false
-    protected var lastRevision = 0L
     protected var lastPosition: Vec2? = null
     protected var lastDragPosition: Vec2? = null
     protected var dragged = false
@@ -90,18 +89,16 @@ open class GUIMeshElement<T : Element>(
     protected fun createNewMesh() {
         if (this._mesh != null) throw MemoryLeakException("Mesh to unload is already set!")
         this._mesh = this.mesh
-        this.mesh = GUIMesh(context, guiRenderer.halfSize, mesh.data)
+        this.mesh = GUIMesh(context, guiRenderer.screen, mesh.data)
         this.mesh.finish()
     }
 
     fun prepare() = Unit
 
     fun prepareAsync(offset: Vec2) {
-        element.render(offset, mesh, null)
-        val revision = element.cache.revision
-        if (revision != lastRevision) {
+        val update = element.render(offset, mesh, null)
+        if (update) {
             createNewMesh()
-            this.lastRevision = revision
         }
     }
 

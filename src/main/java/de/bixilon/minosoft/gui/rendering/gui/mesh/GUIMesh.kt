@@ -17,20 +17,21 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.gui.properties.GUIScreen
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 class GUIMesh(
-        context: RenderContext,
-        val halfSize: Vec2,
-        data: AbstractFloatList,
+    context: RenderContext,
+    val screen: GUIScreen,
+    data: AbstractFloatList,
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
 
     override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        addVertex(data, halfSize, position, texture ?: whiteTexture.texture, uv, tint, options)
+        addVertex(data, screen.half, position, texture ?: whiteTexture.texture, uv, tint, options)
     }
 
     override fun addCache(cache: GUIMeshCache) {

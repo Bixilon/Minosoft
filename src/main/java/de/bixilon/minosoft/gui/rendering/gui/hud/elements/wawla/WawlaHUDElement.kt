@@ -38,7 +38,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     val profile = guiRenderer.connection.profiles.gui.hud.wawla
 
     override val layoutOffset: Vec2
-        get() = Vec2((guiRenderer.scaledSize.x - ((element?.size?.x ?: 0.0f) + BACKGROUND_SIZE)) / 2, BACKGROUND_SIZE)
+        get() = Vec2((guiRenderer.screen.scaled.x - ((element?.size?.x ?: 0.0f) + BACKGROUND_SIZE)) / 2, BACKGROUND_SIZE)
     override val skipDraw: Boolean
         get() = !profile.enabled
 
@@ -77,7 +77,7 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     }
 
     override fun forceSilentApply() {
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<WawlaHUDElement>> {

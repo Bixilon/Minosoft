@@ -55,7 +55,7 @@ abstract class Menu(
         totalHeight += maxOf(0.0f, (elements.size - 1) * BUTTON_Y_MARGIN)
         this.totalHeight = totalHeight
         super.forceSilentApply()
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     fun add(element: Element) {

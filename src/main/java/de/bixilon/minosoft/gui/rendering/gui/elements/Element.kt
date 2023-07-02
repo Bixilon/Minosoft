@@ -15,8 +15,12 @@ package de.bixilon.minosoft.gui.rendering.gui.elements
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec4.Vec4
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.CachedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ParentedElement
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
 import de.bixilon.minosoft.gui.rendering.gui.input.InputElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
@@ -28,44 +32,27 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
-import de.bixilon.minosoft.util.collections.DirectList
 
-abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
+abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget, CachedElement, ParentedElement {
     var ignoreDisplaySize = false
     val context = guiRenderer.context
     open val activeWhenHidden = false
     open var canPop: Boolean = true
 
     protected open var _parent: Element? = null
-    open var parent: Element?
+    override var parent: Element?
         get() = _parent
         set(value) {
-            check(value !== this) { "Can not self as parent!" }
+            if (_parent == value) return
+            check(value !== this) { "Can not set self as parent!" }
+            if (value !is ChildedElement) throw IllegalArgumentException("Can not set non childed element as parent!")
+            _parent?.unsafeCast<ChildedElement>()?.children?.remove(this)
             _parent = value
+            value.children += this
             silentApply()
         }
 
-    open var cacheEnabled: Boolean = true
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            parent?.cacheEnabled = value
-        }
-    open var cacheUpToDate: Boolean = false
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            if (!value) {
-                parent?.cacheUpToDate = false
-            }
-        }
-
-    @Deprecated("Warning: Should not be directly accessed!")
-    open val cache = GUIMeshCache(guiRenderer.halfSize, context.system.primitiveMeshOrder, context, initialCacheSize)
+    override val cache = GUIMeshCache(this, guiRenderer.screen, context.system.primitiveMeshOrder, context, initialCacheSize)
 
     private var previousMaxSize = Vec2.EMPTY
 
@@ -97,14 +84,14 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
 
             var parentMaxSize = parent?.maxSize
             if (parentMaxSize == null && !ignoreDisplaySize) {
-                parentMaxSize = guiRenderer.scaledSize
+                parentMaxSize = guiRenderer.screen.scaled
             }
 
             if (maxSize.x < 0) {
-                maxSize.x = parentMaxSize?.x ?: guiRenderer.scaledSize.x
+                maxSize.x = parentMaxSize?.x ?: guiRenderer.screen.scaled.x
             }
             if (maxSize.y < 0) {
-                maxSize.y = parentMaxSize?.y ?: guiRenderer.scaledSize.y
+                maxSize.y = parentMaxSize?.y ?: guiRenderer.screen.scaled.y
             }
 
             parentMaxSize?.let {
@@ -139,49 +126,26 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             apply()
         }
 
-    /**
-     * Renders the element (eventually from a cache) to a vertex consumer
-     *
-     * @return The number of z layers used
-     */
-    open fun render(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    open fun render(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Boolean {
         val offset = Vec2(offset)
-        var directRendering = false
-        if (consumer is GUIMesh && consumer.data == cache.data) {
-            directRendering = true
-        }
-        if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled) {
-            if (directRendering) {
-                cache.clear()
-            }
+        val direct = consumer is GUIMesh && consumer.data == cache.data
+        if (RenderConstants.DISABLE_GUI_CACHE || direct || !cache.enabled()) {
             forceRender(offset, consumer, options)
-            if (directRendering) {
-                cache.revision++
-            }
-            return
+            return true
         }
-        if (!cacheUpToDate || cache.offset != offset || guiRenderer.resolutionUpdate || cache.options != options || cache.halfSize !== guiRenderer.halfSize) {
-            this.cache.clear()
-            cache.halfSize = guiRenderer.halfSize
-            cache.offset = Vec2(offset)
-            cache.options = options
-            forceRender(offset, cache, options)
-            if (cache.data !is DirectList) {
-                // not raw mesh data
-                cache.data.finish()
-            }
-            cacheUpToDate = true
+        val screen = guiRenderer.screen
+        var update = false
+        if (!cache.isValid(screen, offset, options)) {
+            cache.start(screen, Vec2(offset), options)
+            forceRender(offset, consumer, options)
+            cache.end()
+            update = true
         }
-        if (!directRendering) {
-            consumer.addCache(cache)
-        }
+        consumer += cache
+
+        return update
     }
 
-    /**
-     * Force renders the element to the cache/vertex consumer
-     *
-     * @return The number of z layers used
-     */
     abstract fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
 
     /**
@@ -247,9 +211,11 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         parent?.onChildChange(this)
     }
 
+
     /**
      * Called every tick to execute time based actions
      */
+    @Deprecated("pollable")
     open fun tick() {
         if (this is Pollable && poll()) {
             forceSilentApply()

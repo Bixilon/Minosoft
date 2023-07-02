@@ -40,7 +40,7 @@ class ZLayout(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             size = size.max(child.size)
         }
         this.size = size + margin.spaceSize
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     fun append(child: Element) {

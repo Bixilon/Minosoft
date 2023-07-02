@@ -26,16 +26,16 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 abstract class Screen(
     guiRenderer: GUIRenderer,
 ) : Element(guiRenderer), LayoutedElement {
-    protected val background = AtlasImageElement(guiRenderer, context.textures.whiteTexture, size = guiRenderer.scaledSize, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
+    protected val background = AtlasImageElement(guiRenderer, context.textures.whiteTexture, size = guiRenderer.screen.scaled, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
     override val layoutOffset: Vec2 = Vec2(0, 0)
 
     override var _size: Vec2
-        get() = guiRenderer.scaledSize
+        get() = guiRenderer.screen.scaled
         set(value) {}
 
     override fun forceSilentApply() {
-        background.size = guiRenderer.scaledSize
-        _size = guiRenderer.scaledSize
+        background.size = guiRenderer.screen.scaled
+        _size = guiRenderer.screen.scaled
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

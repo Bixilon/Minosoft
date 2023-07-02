@@ -76,7 +76,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
         } else {
             SIZE
         }
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun tick() {

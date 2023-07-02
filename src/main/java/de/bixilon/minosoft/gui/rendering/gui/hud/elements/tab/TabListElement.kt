@@ -61,7 +61,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     private var columns = 0
 
     override val layoutOffset: Vec2
-        get() = Vec2((guiRenderer.scaledSize.x - super.size.x) / 2, 20)
+        get() = Vec2((guiRenderer.screen.scaled.x - super.size.x) / 2, 20)
 
     private val atlasManager = guiRenderer.atlasManager
     val pingBarsAtlasElements: Array<AtlasElement> = arrayOf(
@@ -194,7 +194,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         this.size = size
         background.size = size
 
-        cacheUpToDate = false
+        cache.invalidate()
         needsApply = false
     }
 

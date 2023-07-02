@@ -107,7 +107,7 @@ class NodeTextInputElement(
     private fun updateError(error: Throwable?) {
         errorElement.error = error
         showError = error != null
-        cacheUpToDate = false
+        cache.invalidate()
         if (error != null) {
             suggestions.suggestions = null
         }

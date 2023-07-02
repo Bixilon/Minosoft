@@ -62,7 +62,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     private var hungerEffect = false
     private var animate = true
         set(value) {
-            super.cacheEnabled = !value
+            if (value) cache.disable() else cache.enable()
             field = value
         }
 
@@ -72,7 +72,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
 
     init {
         _size = Vec2(HUNGER_CONTAINERS, 1) * HUNGER_SIZE + Vec2(1, 0) // 1 pixel is overlapping per hunger, so one more
-        hungerProfile::saturationBar.observe(this) { cacheUpToDate = false }
+        hungerProfile::saturationBar.observe(this) { cache.invalidate() }
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -130,7 +130,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     }
 
     override fun forceSilentApply() {
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun tick() {

@@ -59,7 +59,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
     override fun forceSilentApply() {
         messages.silentApply()
         _size = Vec2(messages.prefMaxSize.x, messages.size.y + ChatElement.CHAT_INPUT_MARGIN * 2)
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun onOpen() {

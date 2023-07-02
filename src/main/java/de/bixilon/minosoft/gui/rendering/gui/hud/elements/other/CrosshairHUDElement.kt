@@ -91,8 +91,8 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         mesh?.unload()
         this.mesh = null
 
-        val mesh = GUIMesh(context, guiRenderer.halfSize, BufferedArrayFloatList(42))
-        val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
+        val mesh = GUIMesh(context, guiRenderer.screen, BufferedArrayFloatList(42))
+        val start = (guiRenderer.screen.scaled - CROSSHAIR_SIZE) / 2
         mesh.addQuad(start, start + CROSSHAIR_SIZE, crosshairAtlasElement, crosshairProfile.color, null)
 
 

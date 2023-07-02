@@ -36,17 +36,6 @@ class FadingTextElement(
 ) : TextElement(guiRenderer = guiRenderer, text = text, background = background, parent, properties) {
     private var phase: FadePhase? = null
 
-    override var cacheEnabled: Boolean
-        get() {
-            if (!super.cacheEnabled) return false
-            if (this.phase == null) return true
-            updatePhase(millis())
-            return phase != null
-        }
-        set(value) {
-            super.cacheEnabled = value
-        }
-
     var times: FadingTimes = times
         set(value) {
             if (field == value) return
@@ -93,6 +82,6 @@ class FadingTextElement(
         val next = phase.next(millis)
         this.phase = next
         updateSize(next)
-        super.cacheEnabled = cacheEnabled
+        if (next != null) cache.disable() else cache.enable()
     }
 }

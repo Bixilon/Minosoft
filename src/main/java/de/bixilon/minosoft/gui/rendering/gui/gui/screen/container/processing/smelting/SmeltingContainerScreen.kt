@@ -68,6 +68,6 @@ abstract class SmeltingContainerScreen<C : SmeltingContainer>(
     }
 
     override fun forceSilentApply() {
-        cacheUpToDate = false
+        cache.invalidate()
     }
 }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.DraggedManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.PopperManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
+import de.bixilon.minosoft.gui.rendering.gui.properties.GUIScreen
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -46,14 +48,11 @@ class GUIRenderer(
 ) : AsyncRenderer, InputHandler, OtherDrawable {
     private val profile = connection.profiles.gui
     override val renderSystem = context.system
-    var scaledSize: Vec2 by observed(Vec2(context.window.size))
+    var screen by observed(GUIScreen.EMPTY)
     val gui = GUIManager(this)
     val hud = HUDManager(this)
     val popper = PopperManager(this)
     val dragged = DraggedManager(this)
-    var halfSize: Vec2 = Vec2()
-        private set
-    var resolutionUpdate = true
     override val framebuffer: Framebuffer
         get() = context.framebuffer.gui.framebuffer
     override val polygonMode: PolygonModes
@@ -76,9 +75,9 @@ class GUIRenderer(
         atlasManager.postInit()
         shader.load()
 
-        connection.events.listen<ResizeWindowEvent> { updateResolution(Vec2(it.size)) }
-        context.window::systemScale.observe(this) { updateResolution(systemScale = it) }
-        profile::scale.observeRendering(this) { updateResolution(scale = it) }
+        connection.events.listen<ResizeWindowEvent> { updateScreen(Vec2i(it.size)) }
+        context.window::systemScale.observe(this) { updateScreen(systemScale = it) }
+        profile::scale.observeRendering(this) { updateScreen(scale = it) }
 
         gui.postInit()
         hud.postInit()
@@ -86,10 +85,9 @@ class GUIRenderer(
         dragged.postInit()
     }
 
-    private fun updateResolution(windowSize: Vec2 = Vec2(context.window.size), scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
-        scaledSize = Vec2(windowSize.scale(systemScale, scale))
-        halfSize = scaledSize / 2.0f
-        resolutionUpdate = true
+    private fun updateScreen(windowSize: Vec2i = Vec2i(context.window.size), scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
+        val scaled = Vec2(windowSize).scale(systemScale, scale)
+        screen = GUIScreen(windowSize, scaled)
 
         gui.onScreenChange()
         hud.onScreenChange()
@@ -139,9 +137,6 @@ class GUIRenderer(
         gui.draw()
         popper.draw()
         dragged.draw()
-        if (this.resolutionUpdate) {
-            this.resolutionUpdate = false
-        }
     }
 
     fun Vec2.scale(systemScale: Vec2 = context.window.systemScale, scale: Float = profile.scale): Vec2 {

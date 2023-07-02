@@ -46,7 +46,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
 
     init {
         size = SIZE
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     private var jumping = false
@@ -69,7 +69,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
     }
 
     override fun forceSilentApply() {
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun poll(): Boolean {

@@ -132,7 +132,7 @@ open class TextElement(
 
     override fun forceSilentApply() {
         updateText(this._chatComponent)
-        this.cacheUpToDate = false
+        this.cache.invalidate()
     }
 
     override fun onChildChange(child: Element) = Broken("A TextElement can not have a child!")

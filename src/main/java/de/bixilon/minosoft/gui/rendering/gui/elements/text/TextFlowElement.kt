@@ -153,7 +153,7 @@ open class TextFlowElement(
         _size = Vec2(maxSize.x, visibleLines.size * (properties.lineHeight + properties.lineSpacing))
         background.size = size
         this.visibleLines = visibleLines
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     @Synchronized

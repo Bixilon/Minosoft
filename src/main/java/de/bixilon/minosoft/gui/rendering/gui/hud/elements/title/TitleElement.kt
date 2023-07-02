@@ -45,22 +45,12 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
             title.times = value
             subtitle.times = value
         }
-    override var cacheEnabled: Boolean
-        get() = super.cacheEnabled && title.cacheEnabled && subtitle.cacheEnabled
-        set(value) {
-            super.cacheEnabled = value
-        }
-    override var cacheUpToDate: Boolean
-        get() = super.cacheUpToDate && title.cacheUpToDate && subtitle.cacheUpToDate
-        set(value) {
-            super.cacheEnabled = value
-        }
 
     override val layoutOffset: Vec2
         get() {
             val layoutOffset = Vec2.EMPTY
 
-            val scaledSize = guiRenderer.scaledSize
+            val scaledSize = guiRenderer.screen.scaled
 
             layoutOffset.x = (scaledSize.x - super.size.x / 2) / 2
             layoutOffset.y = (scaledSize.y / 2 - title.size.y)

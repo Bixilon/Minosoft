@@ -51,12 +51,12 @@ abstract class Popper(
     override fun forceSilentApply() {
         calculateLayoutOffset()
         backgroundElement.size = size
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
 
     private fun calculateLayoutOffset() {
-        val windowSize = guiRenderer.scaledSize
+        val windowSize = guiRenderer.screen.scaled
         val position = position
         val size = size
 

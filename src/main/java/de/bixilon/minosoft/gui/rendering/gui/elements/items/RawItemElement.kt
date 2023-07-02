@@ -116,7 +116,7 @@ class RawItemElement(
             else -> TextComponent(count)
         }
 
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun toString(): String {

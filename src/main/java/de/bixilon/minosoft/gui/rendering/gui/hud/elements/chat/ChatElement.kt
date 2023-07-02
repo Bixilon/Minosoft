@@ -63,7 +63,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         get() = true
 
     override val layoutOffset: Vec2
-        get() = Vec2(0, guiRenderer.scaledSize.y - maxOf(messages.size.y, internal.size.y) - (LINES * TEXT_PROPERTIES.lineHeight) - CHAT_INPUT_MARGIN * 2)
+        get() = Vec2(0, guiRenderer.screen.scaled.y - maxOf(messages.size.y, internal.size.y) - (LINES * TEXT_PROPERTIES.lineHeight) - CHAT_INPUT_MARGIN * 2)
 
 
     init {
@@ -135,13 +135,13 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     override fun forceSilentApply() {
         messages.silentApply()
-        _size = Vec2(guiRenderer.scaledSize.x, maxOf(messages.size.y, internal.size.y) + (LINES * TEXT_PROPERTIES.lineHeight) + CHAT_INPUT_MARGIN * 2)
+        _size = Vec2(guiRenderer.screen.scaled.x, maxOf(messages.size.y, internal.size.y) + (LINES * TEXT_PROPERTIES.lineHeight) + CHAT_INPUT_MARGIN * 2)
         if (active) {
             input.prefMaxSize = Vec2(size.x - CHAT_INPUT_MARGIN * 2, (LINES * TEXT_PROPERTIES.lineHeight))
             input.forceSilentApply()
         }
         internal.forceSilentApply()
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun onOpen() {

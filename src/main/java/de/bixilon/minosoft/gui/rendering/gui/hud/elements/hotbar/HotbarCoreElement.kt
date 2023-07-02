@@ -109,7 +109,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         }
 
         _size = size
-        cacheUpToDate = false
+        cache.invalidate()
     }
 
     override fun silentApply(): Boolean {

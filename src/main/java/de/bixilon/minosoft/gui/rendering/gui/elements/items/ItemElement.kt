@@ -79,7 +79,7 @@ class ItemElement(
             popper = ItemInfoPopper(guiRenderer, absolute, stack).apply { show() }
         }
         hovered = true
-        cacheUpToDate = false
+        cache.invalidate()
         return true
     }
 
@@ -88,7 +88,7 @@ class ItemElement(
         popper?.hide()
         popper = null
         hovered = false
-        cacheUpToDate = false
+        cache.invalidate()
         return true
     }
 
@@ -171,7 +171,7 @@ class ItemElement(
             return this
         }
         hovered = true
-        cacheUpToDate = false
+        cache.invalidate()
 
         return this
     }
@@ -181,7 +181,7 @@ class ItemElement(
             return this
         }
         hovered = false
-        cacheUpToDate = false
+        cache.invalidate()
 
         return this
     }

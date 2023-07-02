@@ -44,24 +44,24 @@ open class DynamicImageElement(
             value?.usages?.incrementAndGet()
             value?.addListener(this)
             field = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
     var uvStart: Vec2 = uvStart
         set(value) {
             field = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
     var uvEnd: Vec2 = uvEnd
         set(value) {
             field = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
 
     override var size: Vec2
         get() = super.size
         set(value) {
             super.size = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
 
     override var prefSize: Vec2
@@ -73,7 +73,7 @@ open class DynamicImageElement(
     var tint: RGBColor = tint
         set(value) {
             field = value
-            cacheUpToDate = false
+            cache.invalidate()
         }
 
     init {
