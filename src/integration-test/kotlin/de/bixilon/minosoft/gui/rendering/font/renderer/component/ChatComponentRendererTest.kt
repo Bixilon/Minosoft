@@ -25,8 +25,9 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
 import de.bixilon.minosoft.gui.rendering.font.types.font.EmptyFont
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
-import de.bixilon.minosoft.gui.rendering.gui.mesh.DummyGUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.TestCountGUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.test.GuiTestConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -226,7 +227,7 @@ class ChatComponentRendererTest {
     }
 
     fun `no space y with consumer`() {
-        val info = render(TextComponent("bcd\n\nefgh"), maxSize = Vec2(Float.MAX_VALUE, 10.0f), consumer = DummyGUIVertexConsumer())
+        val info = render(TextComponent("bcd\n\nefgh"), maxSize = Vec2(Float.MAX_VALUE, 10.0f), consumer = TestCountGUIVertexConsumer())
         info.assert(
             lineIndex = 0,
             lines = listOf(),
@@ -316,131 +317,131 @@ class ChatComponentRendererTest {
     }
 
     fun `single char rendering`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("b"), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(10, 10)),
         )
     }
 
     fun `multiple char rendering`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("bc"), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(11.5, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(10, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(11.5, 10)),
         )
     }
 
     fun `newline rendering`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("bc\nde"), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(11.5, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(10, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(11.5, 10)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(10.0, 21)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(12.5, 21)),
         )
     }
 
     fun `left alignment`() { // default
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("bc\nde\nbc"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.LEFT, shadow = false))
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(11.5, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(10, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(11.5, 10)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(10.0, 21)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(12.5, 21)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 32)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(11.5, 32)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(10, 32)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(11.5, 32)),
         )
     }
 
     fun `center alignment`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("bc\nde\nbc"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.CENTER, shadow = false))
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2(11, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(11, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(12.5, 10)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(10.0, 21)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(12.5, 21)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2(11, 32)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 32)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(11, 32)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(12.5, 32)),
         )
     }
 
     fun `right alignment`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("bc\nde\nbc"), fontManager = FontManager(consumer.Font()), consumer = consumer, properties = TextRenderProperties(alignment = HorizontalAlignments.RIGHT, shadow = false))
 
         consumer.assert(
-            DummyComponentConsumer.RendererdCodePoint(Vec2(12, 10)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(13.5, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(12, 10)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(13.5, 10)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2(10.0, 21)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(12.5, 21)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(10.0, 21)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(12.5, 21)),
 
-            DummyComponentConsumer.RendererdCodePoint(Vec2(12, 32)),
-            DummyComponentConsumer.RendererdCodePoint(Vec2(13.5, 32)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(12, 32)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(13.5, 32)),
         )
     }
 
 
     fun `single strikethrough rendering`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("bcd").strikethrough(), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 14.0f), Vec2(15.0f, 15.0f)),
+            GuiTestConsumer.RendererdQuad(Vec2(10.0f, 14.0f), Vec2(15.0f, 15.0f)),
         )
     }
 
     fun `multiline strikethrough rendering`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("bcd\ncde").strikethrough(), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 14.0f), Vec2(15.0f, 15.0f)),
-            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 25.0f), Vec2(16.5f, 26.0f)),
+            GuiTestConsumer.RendererdQuad(Vec2(10.0f, 14.0f), Vec2(15.0f, 15.0f)),
+            GuiTestConsumer.RendererdQuad(Vec2(10.0f, 25.0f), Vec2(16.5f, 26.0f)),
         )
     }
 
     fun `single underline rendering`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("bcd").underline(), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 19.0f), Vec2(15.0f, 20.0f)),
+            GuiTestConsumer.RendererdQuad(Vec2(10.0f, 19.0f), Vec2(15.0f, 20.0f)),
         )
     }
 
     fun `multiline underline rendering`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(TextComponent("bcd\ncde").underline(), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 19.0f), Vec2(15.0f, 20.0f)),
-            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 30.0f), Vec2(16.5f, 31.0f)),
+            GuiTestConsumer.RendererdQuad(Vec2(10.0f, 19.0f), Vec2(15.0f, 20.0f)),
+            GuiTestConsumer.RendererdQuad(Vec2(10.0f, 30.0f), Vec2(16.5f, 31.0f)),
         )
     }
 
 
     fun `mixed text strikethrough rendering`() {
-        val consumer = DummyComponentConsumer()
+        val consumer = GuiTestConsumer()
         render(BaseComponent(TextComponent("bcd").strikethrough(), TextComponent("bcd")), fontManager = FontManager(consumer.Font()), consumer = consumer)
 
         consumer.assert(
-            DummyComponentConsumer.RendererdQuad(Vec2(10.0f, 14.0f), Vec2(15.0f, 15.0f)),
+            GuiTestConsumer.RendererdQuad(Vec2(10.0f, 14.0f), Vec2(15.0f, 15.0f)),
         )
     }
 

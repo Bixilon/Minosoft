@@ -11,10 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.abstractions
+package de.bixilon.minosoft.gui.rendering.gui
 
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import kotlin.reflect.KProperty
 
-interface CachedElement : AbstractElement {
-    val cache: GUIMeshCache
+class GuiDelegate<T>(
+    var value: T,
+) {
+    var rendering = value
+
+    inline operator fun getValue(element: Element, property: KProperty<*>): T = value
+
+    operator fun setValue(element: Element, property: KProperty<*>, value: T) {
+        if (this.value == value) return
+
+        this.value = value
+        element.invalidate()
+    }
+
+    fun acknowledge(): T {
+        val value = this.value
+        this.rendering = value
+
+        return value
+    }
+
+
+    inline fun rendering(): T = rendering
 }

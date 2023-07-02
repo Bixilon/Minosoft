@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.renderer.component
+package de.bixilon.minosoft.gui.rendering.gui.test
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.exception.Broken
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import org.testng.Assert.assertEquals
 
-class DummyComponentConsumer : GUIVertexConsumer {
+class GuiTestConsumer : GUIVertexConsumer {
     val chars: MutableList<RendererdCodePoint> = mutableListOf()
     val quads: MutableList<RendererdQuad> = mutableListOf()
 

@@ -13,8 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.abstractions.children
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 
 interface ParentedElement {
     val parent: Element?
+
+
+    fun parent(): ChildedElement? = parent?.unsafeCast()
 }

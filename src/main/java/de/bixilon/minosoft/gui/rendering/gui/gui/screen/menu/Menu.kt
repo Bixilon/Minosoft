@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
@@ -31,6 +32,7 @@ abstract class Menu(
     guiRenderer: GUIRenderer,
     val preferredElementWidth: Float = 150.0f,
 ) : Screen(guiRenderer), AbstractLayout<Element> {
+    override val children = SimpleChildrenManager(this)
     private val elements: MutableList<Element> = mutableListOf()
 
     private var maxElementWidth = -1.0f
@@ -98,7 +100,7 @@ abstract class Menu(
         return true
     }
 
-    override fun onChildChange(child: Element) {
+    override fun update(child: Element) {
         forceSilentApply()
     }
 

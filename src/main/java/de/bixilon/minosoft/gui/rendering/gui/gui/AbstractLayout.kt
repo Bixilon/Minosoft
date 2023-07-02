@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -25,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
-interface AbstractLayout<T : Element> : InputElement, DragTarget {
+interface AbstractLayout<T : Element> : InputElement, DragTarget, ChildedElement {
     var activeElement: T?
     var activeDragElement: T?
 

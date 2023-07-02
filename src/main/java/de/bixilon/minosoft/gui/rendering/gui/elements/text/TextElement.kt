@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.LineRenderInfo
@@ -26,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
@@ -51,63 +50,34 @@ open class TextElement(
     guiRenderer: GUIRenderer,
     text: Any,
     background: TextBackground? = TextBackground.DEFAULT,
-    parent: Element? = null,
+    override var parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : Element(guiRenderer, text.charCount * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
     private var activeElement: TextComponent? = null
     lateinit var info: TextRenderInfo
         private set
 
-    var background: TextBackground? = background
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            forceApply()
-        }
-    var properties: TextRenderProperties = properties
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            forceApply()
-        }
+    var background: TextBackground? by GuiDelegate(background)
+    override var textProperties: TextRenderProperties by GuiDelegate(properties)
+    var properties: TextRenderProperties by this::textProperties
+
 
     override var size: Vec2
         get() = super.size
         set(value) {}
 
-    override var text: Any = text
+    override var text: Any
+        get() = Broken("Can only set text, not get it!")
         set(value) {
             chatComponent = ChatComponent.of(value, translator = Minosoft.LANGUAGE_MANAGER /*guiRenderer.connection.language*/) // Should the server be allowed to send minosoft namespaced translation keys?
-            field = value
         }
 
     private var empty: Boolean = true
 
-    var _chatComponent: ChatComponent = unsafeNull()
-        set(value) {
-            if (value == field) {
-                return
-            }
-            field = value
-            empty = value is EmptyComponent || value.message.isEmpty()
-            updatePrefSize(value)
-        }
-
-    override var chatComponent: ChatComponent
-        get() = _chatComponent
-        protected set(value) {
-            _chatComponent = value
-            forceApply()
-        }
+    override var chatComponent by GuiDelegate(ChatComponent.of(text, translator = Minosoft.LANGUAGE_MANAGER /*guiRenderer.connection.language*/))
 
     init {
-        this._parent = parent
-        this._chatComponent = ChatComponent.of(text)
-        forceSilentApply()
+        update()
     }
 
     private fun updatePrefSize(text: ChatComponent) {
@@ -130,12 +100,14 @@ open class TextElement(
         this.info = info
     }
 
-    override fun forceSilentApply() {
-        updateText(this._chatComponent)
-        this.cache.invalidate()
+    override fun update() {
+        val text = this::chatComponent.acknowledge()
+        empty = text.message.isEmpty()
+        updatePrefSize(text)
+        updateText(text)
+        super.update()
     }
 
-    override fun onChildChange(child: Element) = Broken("A TextElement can not have a child!")
 
     private fun GUIVertexConsumer.renderBackground(background: TextBackground, properties: TextRenderProperties, info: TextRenderInfo, offset: Vec2, options: GUIVertexOptions?) {
         val start = Vec2()
@@ -158,22 +130,23 @@ open class TextElement(
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (empty) return
         val info = this.info
-        val properties = this.properties
-        val initialOffset = Vec2(offset + margin.offset)
+        val properties = this::properties.rendering()
+        val initialOffset = Vec2(offset + this::margin.rendering().offset)
         val textOffset = Vec2(initialOffset)
 
-        this.background?.let {
+        this::background.rendering()?.let {
             consumer.renderBackground(it, properties, info, initialOffset, options)
             textOffset += it.size.offset
         }
+        val text = this::chatComponent.rendering()
 
-        var vertices = ChatComponentRenderer.calculatePrimitiveCount(chatComponent) * consumer.order.size * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX
+        var vertices = ChatComponentRenderer.calculatePrimitiveCount(text) * consumer.order.size * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX
         if (properties.shadow) {
             vertices *= 2
         }
         consumer.ensureSize(vertices)
 
-        ChatComponentRenderer.render(TextOffset(textOffset), context.font, properties, info, consumer, options, chatComponent)
+        ChatComponentRenderer.render(TextOffset(textOffset), context.font, properties, info, consumer, options, text)
         info.rewind()
     }
 

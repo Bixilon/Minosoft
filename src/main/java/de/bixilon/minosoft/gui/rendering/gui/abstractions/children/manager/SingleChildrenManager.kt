@@ -11,20 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.abstractions.children
+package de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.gui.rendering.gui.abstractions.AbstractElement
-import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.ChildrenManager
-import de.bixilon.minosoft.gui.rendering.gui.abstractions.update.UpdatableElement
+import de.bixilon.kutil.collections.iterator.SingleIterator
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import java.util.Collections.emptyIterator
 
-interface ChildedElement : AbstractElement, ParentedElement, UpdatableElement {
-    val children: ChildrenManager
 
-    fun update(child: Element) {
-        val parent = parent
-        if (parent !is ChildedElement) return
-        parent.update(this.unsafeCast())
+class SingleChildrenManager(private var element: Element? = null) : ChildrenManager {
+
+    override fun remove(element: Element) = Broken("I must have children!")
+
+    override fun add(element: Element) {
+        if (this.element == null) {
+            this.element = element
+            return
+        }
+        throw IllegalArgumentException("Not my child!")
+    }
+
+    override fun contains(element: Element) = element === this.element
+
+    override fun iterator(): Iterator<Element> {
+        val element = this.element ?: return emptyIterator()
+        return SingleIterator(element)
     }
 }

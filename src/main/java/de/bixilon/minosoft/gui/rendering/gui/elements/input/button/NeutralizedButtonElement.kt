@@ -14,44 +14,43 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.properties.ButtonProperties
 
 open class NeutralizedButtonElement(
     guiRenderer: GUIRenderer,
-    val neutralizedText: Any,
-    val confirmText: Any = "§cAre you sure?",
-    disabled: Boolean = false,
+    val normal: Any,
+    val confirmation: Any = "§cAre you sure?",
+    val ticks: Int = 20,
+    properties: ButtonProperties = ButtonProperties.DEFAULT,
     onSubmit: () -> Unit,
-) : ButtonElement(guiRenderer, neutralizedText, disabled, onSubmit) {
-    private var neutrealized = true
-    private var autoNeutralizeTicks = 0
+) : ButtonElement(guiRenderer, normal, properties, null, onSubmit) {
+    private var neutralized = true
+    private var left = 0
 
     override fun submit() {
-        if (neutrealized) {
-            neutrealized = false
-            autoNeutralizeTicks = 20
-            textElement.text = confirmText
-        } else {
+        if (!neutralized) {
             super.submit()
-            neutralize()
+            return neutralize()
         }
+        neutralized = false
+        left = ticks
+        text = confirmation
     }
 
     private fun neutralize() {
-        neutrealized = true
-        textElement.text = neutralizedText
+        neutralized = true
+        text = normal
     }
 
     override fun tick() {
-        if (!neutrealized && autoNeutralizeTicks-- < 0) {
+        if (!neutralized && left-- < 0) {
             neutralize()
         }
         super.tick()
     }
 
     override fun onClose() {
-        if (neutrealized) {
-            return
-        }
+        if (neutralized) return
         neutralize()
     }
 }

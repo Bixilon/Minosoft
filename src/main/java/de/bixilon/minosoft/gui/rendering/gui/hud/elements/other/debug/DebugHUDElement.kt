@@ -67,6 +67,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     private val connection = context.connection
     private val layout = GridLayout(guiRenderer, Vec2i(3, 1)).apply { parent = this@DebugHUDElement }
     override val layoutOffset: Vec2 = Vec2.EMPTY
+    override val ignoreDisplaySize: Boolean get() = true
 
 
     init {
@@ -87,7 +88,6 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout[Vec2i(2, 0)] = initRight()
 
         this.prefMaxSize = Vec2(-1, Int.MAX_VALUE)
-        this.ignoreDisplaySize = true
     }
 
     private fun initLeft(): Element {

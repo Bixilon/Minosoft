@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 
 interface Labeled {
     var text: Any
     val chatComponent: ChatComponent
+    var textProperties: TextRenderProperties
 }

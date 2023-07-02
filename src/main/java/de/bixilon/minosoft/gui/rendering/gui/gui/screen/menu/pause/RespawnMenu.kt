@@ -30,6 +30,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 
 class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
+    override var canPop = false
 
     init {
         background.tint = RGBColor(0xFF, 0x00, 0x00, 0x7F)

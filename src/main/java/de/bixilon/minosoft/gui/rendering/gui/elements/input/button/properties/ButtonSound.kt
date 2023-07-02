@@ -11,10 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.abstractions
+package de.bixilon.minosoft.gui.rendering.gui.elements.input.button.properties
 
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
-interface CachedElement : AbstractElement {
-    val cache: GUIMeshCache
+class ButtonSound(
+    val click: ResourceLocation? = CLICK,
+) {
+
+    companion object {
+        val DEFAULT = ButtonSound()
+        val SILENT = ButtonSound(null)
+
+        val CLICK = minecraft("ui.button.click")
+    }
 }

@@ -16,11 +16,14 @@ package de.bixilon.minosoft.gui.rendering.gui.elements
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.CachedElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ParentedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.update.UpdatableElement
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
 import de.bixilon.minosoft.gui.rendering.gui.input.InputElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
@@ -32,28 +35,39 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
+import org.jetbrains.annotations.Contract
+import kotlin.reflect.KProperty0
 
-abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget, CachedElement, ParentedElement {
-    var ignoreDisplaySize = false
-    val context = guiRenderer.context
-    open val activeWhenHidden = false
-    open var canPop: Boolean = true
+abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget, CachedElement, ParentedElement, UpdatableElement, Tickable {
+    override val context = guiRenderer.context
 
-    protected open var _parent: Element? = null
+    open val ignoreDisplaySize get() = false
+    open val activeWhenHidden get() = false
+    open val canPop: Boolean get() = true
+
+    override var update = true
+
+    protected var _parent: Element? = null
+        @Contract
+        set(value) {
+            if (value === this) throw IllegalArgumentException("Can not set self as parent!")
+            if (value != null && value !is ChildedElement) {
+                throw IllegalArgumentException("Can not set non childed element as parent!")
+            }
+            field = value
+        }
     override var parent: Element?
         get() = _parent
         set(value) {
             if (_parent == value) return
-            check(value !== this) { "Can not set self as parent!" }
-            if (value !is ChildedElement) throw IllegalArgumentException("Can not set non childed element as parent!")
-            _parent?.unsafeCast<ChildedElement>()?.children?.remove(this)
             _parent = value
-            value.children += this
+            value.unsafeCast<ChildedElement>().children += this
             silentApply()
         }
 
     override val cache = GUIMeshCache(this, guiRenderer.screen, context.system.primitiveMeshOrder, context, initialCacheSize)
 
+    @Deprecated("queued update")
     private var previousMaxSize = Vec2.EMPTY
 
     protected open var _prefSize: Vec2 = Vec2.EMPTY
@@ -82,7 +96,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         get() {
             var maxSize = Vec2(prefMaxSize)
 
-            var parentMaxSize = parent?.maxSize
+            var parentMaxSize = _parent?.maxSize
             if (parentMaxSize == null && !ignoreDisplaySize) {
                 parentMaxSize = guiRenderer.screen.scaled
             }
@@ -112,17 +126,18 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         }
 
     protected open var _margin: Vec4 = Vec4.EMPTY
+    protected open var _padding: Vec4 = Vec4.EMPTY
 
-    /**
-     * Margin for the element
-     *
-     * The max size already includes the margin, the size not. To get the actual size of an element, add the margin to the element.
-     * For rendering: Every element adds its padding itself
-     */
     open var margin: Vec4
         get() = _margin
         set(value) {
             _margin = value
+            apply()
+        }
+    open var padding: Vec4
+        get() = _padding
+        set(value) {
+            _padding = value
             apply()
         }
 
@@ -148,10 +163,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
 
     abstract fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
 
-    /**
-     * Force applies all changes made to any property, but does not notify the parent about the change
-     */
-    @Deprecated("Generally a bad idea to call")
+    @Deprecated("queued update")
     protected fun forceSilentApply(poll: Boolean) {
         if (poll && this is Pollable) {
             poll()
@@ -159,40 +171,27 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         forceSilentApply()
     }
 
-    /**
-     * Force applies all changes made to any property, but does not notify the parent about the change
-     */
-    abstract fun forceSilentApply()
+    @Deprecated("queued update")
+    open fun forceSilentApply() = Unit
 
-    /**
-     * Force applied all changes made to any property and calls `parent?.onChildChange(this)`
-     */
+    @Deprecated("queued update")
     open fun forceApply() {
         if (this is Pollable) {
             poll()
         }
         forceSilentApply()
-        parent?.onChildChange(this)
+        parent()?.update(this)
     }
 
-    /**
-     * Applied all changes made to any property and calls `parent?.onChildChange(this)`
-     */
+    @Deprecated("queued update")
     open fun apply() {
         if (!silentApply()) {
             return
         }
-        parent?.onChildChange(this)
+        parent()?.update(this)
     }
 
-    /**
-     * Calls when the client needs to check if it needs to apply (maybe the parent changed?) changes
-     * Otherwise, force silent applies.
-     * Can be used to improve the performance
-     *
-     * @return true, if force applied
-     */
-    @Suppress("DEPRECATION")
+    @Deprecated("queued update")
     open fun silentApply(): Boolean {
         val maxSize = maxSize
         if (this is Pollable && this.poll() || (previousMaxSize != maxSize && (maxSize isSmaller _size || maxSize isSmaller _prefMaxSize || (maxSize isGreater previousMaxSize && _size isSmaller _prefSize)))) {
@@ -204,26 +203,30 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         return false
     }
 
-    /**
-     * Called by the child of an element (probably a layout), because the child changed a relevant property (probably size)
-     */
-    open fun onChildChange(child: Element) {
-        parent?.onChildChange(this)
-    }
-
 
     /**
      * Called every tick to execute time based actions
      */
     @Deprecated("pollable")
-    open fun tick() {
+    override fun tick() {
+        if (this is ChildedElement) {
+            for (child in children) {
+                child.tick()
+            }
+        }
+
         if (this is Pollable && poll()) {
             forceSilentApply()
-            parent?.onChildChange(this)
+            parent()?.update(this)
         }
     }
 
     open fun onOpen() = Unit
     open fun onHide() = Unit
     open fun onClose() = Unit
+
+
+    protected inline fun <T> KProperty0<T>.delegate(): GuiDelegate<T> = this.getDelegate().unsafeCast()
+    protected inline fun <T> KProperty0<T>.acknowledge(): T = delegate().acknowledge()
+    protected inline fun <T> KProperty0<T>.rendering(): T = delegate().rendering()
 }

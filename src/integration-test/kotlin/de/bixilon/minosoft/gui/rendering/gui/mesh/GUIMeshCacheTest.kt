@@ -17,7 +17,7 @@ class GUIMeshCacheTest {
     fun `first render call`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         val rendered = element.render(Vec2.EMPTY, consumer, null)
         assertTrue(rendered)
 
@@ -28,7 +28,7 @@ class GUIMeshCacheTest {
     fun `basic cache`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         element.render(Vec2.EMPTY, consumer, null)
         assertFalse(element.render(Vec2.EMPTY, consumer, null))
 
@@ -39,7 +39,7 @@ class GUIMeshCacheTest {
     fun `indirect invalidation, offset changed`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         element.render(Vec2.EMPTY, consumer, null)
         assertTrue(element.render(Vec2(1.0f, 1.0f), consumer, null))
 
@@ -50,7 +50,7 @@ class GUIMeshCacheTest {
     fun `indirect invalidation, options changed`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         element.render(Vec2.EMPTY, consumer, GUIVertexOptions(alpha = 0.9f))
         assertTrue(element.render(Vec2.EMPTY, consumer, GUIVertexOptions(alpha = 0.8f)))
 
@@ -61,7 +61,7 @@ class GUIMeshCacheTest {
     fun `indirect invalidation, screen changed`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         element.render(Vec2.EMPTY, consumer, null)
         element.guiRenderer.screen = GUIScreen(Vec2i(100, 100), Vec2(100, 100))
         assertTrue(element.render(Vec2.EMPTY, consumer, null))
@@ -73,7 +73,7 @@ class GUIMeshCacheTest {
     fun `don't render again after indirect invalidation`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         element.render(Vec2.EMPTY, consumer, null)
         element.render(Vec2(1.0f), consumer, null)
         assertFalse(element.render(Vec2(1.0f), consumer, null))
@@ -85,7 +85,7 @@ class GUIMeshCacheTest {
     fun `manual cache invalidation`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         element.render(Vec2.EMPTY, consumer, null)
         element.cache.invalidate()
         assertTrue(element.render(Vec2.EMPTY, consumer, null))
@@ -97,7 +97,7 @@ class GUIMeshCacheTest {
     fun `initial disabled cache`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         element.cache.disable()
         assertTrue(element.render(Vec2.EMPTY, consumer, null))
         assertTrue(element.render(Vec2.EMPTY, consumer, null))
@@ -109,7 +109,7 @@ class GUIMeshCacheTest {
     fun `post disabled cache`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         assertTrue(element.render(Vec2.EMPTY, consumer, null))
         element.cache.disable()
         assertTrue(element.render(Vec2.EMPTY, consumer, null))
@@ -121,7 +121,7 @@ class GUIMeshCacheTest {
     fun `initial disabled cache and enabled initial`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         element.cache.disable()
         assertFalse(element.cache.enabled())
         element.cache.enable()
@@ -137,7 +137,7 @@ class GUIMeshCacheTest {
     fun `initial disabled cache and post enabled`() {
         var called = 0
         val element = child { called++ }
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
         element.cache.disable()
         assertTrue(element.render(Vec2.EMPTY, consumer, null))
         element.cache.enable()
@@ -154,7 +154,7 @@ class GUIMeshCacheTest {
         val parentE = parent { parent++ }
         childE.parent = parentE
 
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
 
         assertTrue(parentE.render(Vec2.EMPTY, consumer, null))
         assertEquals(parent, 1)
@@ -174,7 +174,7 @@ class GUIMeshCacheTest {
         val parentE = parent { parent++ }
         childE.parent = parentE
 
-        val consumer = DummyGUIVertexConsumer()
+        val consumer = TestCountGUIVertexConsumer()
 
         assertTrue(parentE.render(Vec2.EMPTY, consumer, null))
         assertEquals(parent, 1)

@@ -11,10 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.abstractions
+package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 
-interface CachedElement : AbstractElement {
-    val cache: GUIMeshCache
-}
+data class ButtonStyle(
+    val disabled: AtlasElement?,
+    val normal: AtlasElement?,
+    val hovered: AtlasElement?,
+)

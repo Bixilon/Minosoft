@@ -17,18 +17,24 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.AbstractButtonElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonStyle
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.properties.ButtonProperties
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
@@ -38,40 +44,42 @@ class EnchantmentButtonElement(
     val levelAtlas: AtlasElement?,
     val disabledLevelAtlas: AtlasElement?,
     val index: Int,
-) : AbstractButtonElement(guiRenderer, "", true) {
-    override val disabledAtlas = guiRenderer.atlasManager["enchanting_table_card_disabled"]
-    override val normalAtlas = guiRenderer.atlasManager["enchanting_table_card_normal"]
-    override val hoveredAtlas = guiRenderer.atlasManager["enchanting_table_card_hovered"]
-    private val levelText = TextElement(guiRenderer, ChatComponent.EMPTY, background = null)
+) : Element(guiRenderer), AbstractLayout<Element> {
+    override val children = SimpleChildrenManager(this)
+    private val button = ButtonElement(guiRenderer, EmptyComponent, properties = ButtonProperties(false), style = ButtonStyle(
+        guiRenderer.atlasManager["enchanting_table_card_disabled"],
+        guiRenderer.atlasManager["enchanting_table_card_normal"],
+        guiRenderer.atlasManager["enchanting_table_card_hovered"],
+    )) { container.container.selectEnchantment(index) }
+    private val level = TextElement(guiRenderer, ChatComponent.EMPTY, background = null)
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        super.forceRender(offset, consumer, options)
+        button.forceRender(offset, consumer, options)
+        val properties = button::properties.rendering()
 
-        val level = AtlasImageElement(guiRenderer, if (disabled) disabledLevelAtlas else levelAtlas)
+        val level = AtlasImageElement(guiRenderer, if (properties.disabled) disabledLevelAtlas else levelAtlas)
         val size = size
         level.render(offset + Vec2i(5, VerticalAlignments.CENTER.getOffset(size.y, level.size.y)), consumer, options)
 
-        if (!_disabled) {
-            levelText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, levelText.size.x) - 3, VerticalAlignments.BOTTOM.getOffset(size.y, levelText.size.y) - 2), consumer, options)
+        if (!properties.disabled) {
+            this.level.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, this.level.size.x) - 3, VerticalAlignments.BOTTOM.getOffset(size.y, this.level.size.y) - 2), consumer, options)
         }
     }
 
     init {
+        button.parent = this
         _parent = container
-        dynamicSized = false
-        _size = normalAtlas?.size?.let { Vec2(it) } ?: Vec2(108, 19)
-    }
-
-    override fun submit() {
-        container.container.selectEnchantment(index)
+        _size = button.style.normal?.size?.let { Vec2(it) } ?: Vec2(108, 19)
     }
 
     fun update(disabled: Boolean, cost: Int, enchantment: Enchantment?, level: Int) {
-        _disabled = disabled || cost <= 0
-        levelText.text = TextComponent(cost).color(RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR)
-        textElement._chatComponent = if (enchantment == null) ChatComponent.EMPTY else TextComponent(enchantment.identifier.toMinifiedString() + " $level").color(ChatColors.BLUE)
-        textElement.forceSilentApply()
-
-        forceSilentApply()
+        button.properties = button.properties.copy(disabled = disabled || cost <= 0)
+        this.level.text = TextComponent(cost).color(RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR)
+        button.text = if (enchantment == null) ChatComponent.EMPTY else TextComponent(enchantment.identifier.toMinifiedString() + " $level").color(ChatColors.BLUE)
+        invalidate()
     }
+
+    override var activeElement: Element? = null
+    override var activeDragElement: Element? = null
+    override fun getAt(position: Vec2) = Pair(button, position)
 }

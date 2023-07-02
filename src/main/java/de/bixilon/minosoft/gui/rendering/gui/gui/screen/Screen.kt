@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -25,7 +27,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 abstract class Screen(
     guiRenderer: GUIRenderer,
-) : Element(guiRenderer), LayoutedElement {
+) : Element(guiRenderer), LayoutedElement, ChildedElement {
+    override val children = SimpleChildrenManager(this)
     protected val background = AtlasImageElement(guiRenderer, context.textures.whiteTexture, size = guiRenderer.screen.scaled, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
     override val layoutOffset: Vec2 = Vec2(0, 0)
 

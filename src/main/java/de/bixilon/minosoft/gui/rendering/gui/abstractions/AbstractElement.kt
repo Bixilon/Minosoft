@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.abstractions
 
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
+import de.bixilon.minosoft.gui.rendering.RenderContext
 
-interface CachedElement : AbstractElement {
-    val cache: GUIMeshCache
+interface AbstractElement {
+    val context: RenderContext
 }

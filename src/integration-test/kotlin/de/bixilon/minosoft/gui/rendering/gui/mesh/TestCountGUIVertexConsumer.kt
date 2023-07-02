@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdenti
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
-open class DummyGUIVertexConsumer : GUIVertexConsumer {
+open class TestCountGUIVertexConsumer : GUIVertexConsumer {
     override val order: Array<Pair<Int, Int>> get() = Mesh.QUAD_TO_QUAD_ORDER
     var caches = 0
     var char = 0

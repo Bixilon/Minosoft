@@ -11,10 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.abstractions
+package de.bixilon.minosoft.gui.rendering.gui.elements.input.button.properties
 
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
+data class ButtonProperties(
+    val dynamic: Boolean = true,
+    val disabled: Boolean = false,
+    val hand: Boolean = true,
+    val sound: ButtonSound = ButtonSound.DEFAULT,
+) {
 
-interface CachedElement : AbstractElement {
-    val cache: GUIMeshCache
+    companion object {
+        val DEFAULT = ButtonProperties()
+    }
 }
