@@ -137,7 +137,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         var update = false
         if (!cache.isValid(screen, offset, options)) {
             cache.start(screen, Vec2(offset), options)
-            forceRender(offset, consumer, options)
+            forceRender(offset, cache, options)
             cache.end()
             update = true
         }
