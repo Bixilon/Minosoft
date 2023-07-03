@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -33,21 +34,11 @@ open class ImageElement(
     size: Vec2 = texture?.size?.let { Vec2(it) } ?: Vec2.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
-    var texture: Texture? = texture
-        set(value) {
-            field = value
-            cache.invalidate()
-        }
-    var uvStart: Vec2 = uvStart
-        set(value) {
-            field = value
-            cache.invalidate()
-        }
-    var uvEnd: Vec2 = uvEnd
-        set(value) {
-            field = value
-            cache.invalidate()
-        }
+
+    var texture by GuiDelegate(texture)
+    var uvStart by GuiDelegate(uvStart)
+    var uvEnd by GuiDelegate(uvEnd)
+    var tint by GuiDelegate(tint)
 
     override var size: Vec2
         get() = super.size
@@ -62,12 +53,6 @@ open class ImageElement(
             size = value
         }
 
-    var tint: RGBColor = tint
-        set(value) {
-            field = value
-            cache.invalidate()
-        }
-
     init {
         this.size = size
     }
@@ -78,7 +63,4 @@ open class ImageElement(
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         consumer.addQuad(offset, offset + size, texture ?: return, uvStart, uvEnd, tint, options)
     }
-
-    override fun forceSilentApply() = Unit
-    override fun silentApply(): Boolean = false
 }

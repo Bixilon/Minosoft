@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
 import de.bixilon.minosoft.data.bossbar.BossbarColors
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
-import de.bixilon.minosoft.modding.event.events.bossbar.BossbarStyleSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -33,21 +32,8 @@ class StyleBossbarS2CP(
     override fun handle(connection: PlayConnection) {
         val bossbar = connection.bossbars.bossbars[uuid] ?: return
 
-        var changes = 0
-
-        if (bossbar.color != color) {
-            bossbar.color = color
-            changes++
-        }
-        if (bossbar.notches != notches) {
-            bossbar.notches = notches
-            changes++
-        }
-        if (changes == 0) {
-            return
-        }
-
-        connection.events.fire(BossbarStyleSetEvent(connection, uuid, bossbar))
+        bossbar.color = color
+        bossbar.notches = notches
     }
 
     override fun log(reducedLog: Boolean) {

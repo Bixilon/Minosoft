@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,10 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.ListChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -38,28 +39,21 @@ open class RowLayout(
     guiRenderer: GUIRenderer,
     override var childAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
     spacing: Float = 0.0f,
-) : Element(guiRenderer), ChildAlignable {
-    private val children: MutableList<Element> = synchronizedListOf()
+) : Element(guiRenderer), ChildAlignable, ChildedElement {
+    override val children = ListChildrenManager(this)
 
     override var prefSize: Vec2
         get() = _prefSize
         set(value) = Unit
 
-    var spacing: Float = spacing
-        set(value) {
-            field = value
-            if (children.size <= 1) {
-                return
-            }
-            forceApply()
-        }
+    var spacing by GuiDelegate(spacing)
 
     fun clear() {
         if (children.size == 0) {
             return
         }
         children.clear()
-        forceApply()
+        invalidate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -81,7 +75,9 @@ open class RowLayout(
             return
         }
 
-        for (child in children.toSynchronizedList()) {
+        val spacing = this::spacing.rendering()
+
+        for (child in children) { // TODO: copy children
             val childSize = child.size
             if (exceedsY(childSize.y)) {
                 break
@@ -100,35 +96,28 @@ open class RowLayout(
     fun add(element: Element) {
         element.parent = this
         children += element
-
-        forceApply() // ToDo: Optimize: Keep current layout, just add the element without redoing stuff
+        invalidate()
     }
 
     operator fun minusAssign(element: Element) = remove(element)
 
     fun remove(element: Element) {
-        val index = children.indexOf(element)
-        if (index < 0) {
-            return
-        }
+        children -= element
         element.parent = null
-        children.removeAt(index)
 
-        forceApply() // ToDo: Optimize: Keep current layout, just add the element without redoing stuff
+        invalidate()
     }
 
     @Synchronized
-    override fun forceSilentApply() {
-        for (child in children) {
-            child.silentApply()
-        }
+    override fun update() {
+        super<Element>.update()
 
         val maxSize = maxSize
         val size = margin.offset
         val prefSize = margin.spaceSize
         val xMargin = margin.horizontal
 
-        val children = children.toSynchronizedList()
+        val children = children // TOCO: copy
         val lastIndex = children.size - 1
 
         for (child in children) {
@@ -177,15 +166,11 @@ open class RowLayout(
         cache.invalidate()
     }
 
-    override fun onChildChange(child: Element) {
-        forceApply() // ToDo (Performance): Check if the size, prefSize or whatever changed
-    }
-
     override fun tick() {
         super.tick()
 
         // ToDo: Just tick visible elements?
-        for (child in children.toSynchronizedList()) {
+        for (child in children) { // TODO: copy
             child.tick()
         }
     }

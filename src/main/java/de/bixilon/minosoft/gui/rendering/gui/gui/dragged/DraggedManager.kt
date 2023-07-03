@@ -59,7 +59,7 @@ class DraggedManager(
     }
 
     fun onScreenChange() {
-        element?.element?.forceSilentApply()
+        element?.element?.invalidate()
     }
 
     private fun applyCursor() {

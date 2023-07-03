@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
@@ -33,14 +34,7 @@ abstract class Popper(
     open var dead = false
     override var layoutOffset: Vec2 = EMPTY
         protected set
-    var position = position
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            forceApply()
-        }
+    var position by GuiDelegate(position)
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (background) {
@@ -48,10 +42,10 @@ abstract class Popper(
         }
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
+        super.update()
         calculateLayoutOffset()
         backgroundElement.size = size
-        cache.invalidate()
     }
 
 

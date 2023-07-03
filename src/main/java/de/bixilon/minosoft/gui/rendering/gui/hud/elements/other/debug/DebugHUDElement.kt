@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.concurrent.Reference
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
@@ -41,8 +40,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
-import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridGrow
-import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridLayout
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
@@ -65,28 +62,18 @@ import de.bixilon.minosoft.util.SystemInformation
 
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     private val connection = context.connection
-    private val layout = GridLayout(guiRenderer, Vec2i(3, 1)).apply { parent = this@DebugHUDElement }
+    private val left = initLeft()
+    private val right = initRight()
     override val layoutOffset: Vec2 = Vec2.EMPTY
     override val ignoreDisplaySize: Boolean get() = true
 
 
     init {
-        layout.columnConstraints[0].apply {
-            grow = GridGrow.NEVER
-        }
-        layout.columnConstraints[2].apply {
-            grow = GridGrow.NEVER
-            alignment = HorizontalAlignments.RIGHT
-        }
-
         update()
     }
 
 
     override fun init() {
-        layout[Vec2i(0, 0)] = initLeft()
-        layout[Vec2i(2, 0)] = initRight()
-
         this.prefMaxSize = Vec2(-1, Int.MAX_VALUE)
     }
 
@@ -311,11 +298,13 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        layout.forceRender(offset, consumer, options)
+        left.forceRender(offset, consumer, options)
+        right.forceRender(offset + Vec2(size.x - right.size.x, 0), consumer, options)
     }
 
     override fun tick() {
-        layout.tick()
+        left.tick()
+        right.tick()
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<DebugHUDElement>> {

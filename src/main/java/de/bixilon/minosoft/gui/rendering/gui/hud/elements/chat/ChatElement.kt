@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
@@ -41,7 +40,6 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), LayoutedElement {
-    override val children = SimpleChildrenManager(this)
     private val chatProfile = profile.chat
     private val input = NodeTextInputElement(guiRenderer, ChatNode("", allowCLI = true), maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }
     private val internal = InternalChatElement(guiRenderer).apply { parent = this@ChatElement }
@@ -50,8 +48,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
     private var active = false
         set(value) {
             field = value
-            messages._active = value
-            messages.forceSilentApply()
+            messages.active = value
             historyIndex = history.size + 1
             invalidate()
         }
@@ -140,10 +137,8 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         _size = Vec2(guiRenderer.screen.scaled.x, maxOf(messages.size.y, internal.size.y) + (LINES * TEXT_PROPERTIES.lineHeight) + CHAT_INPUT_MARGIN * 2)
         if (active) {
             input.prefMaxSize = Vec2(size.x - CHAT_INPUT_MARGIN * 2, (LINES * TEXT_PROPERTIES.lineHeight))
-            input.forceSilentApply()
+            input.invalidate()
         }
-        internal.forceSilentApply()
-        cache.invalidate()
     }
 
     override fun onOpen() {

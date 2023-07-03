@@ -27,9 +27,8 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
     private var active = false
         set(value) {
             field = value
-            messages._active = value
-            messages.forceSilentApply()
-            forceApply()
+            messages.active = value
+            invalidate()
         }
     override var skipDraw: Boolean // skips hud draw and draws it in gui stage
         get() = chatProfile.hidden || active
@@ -43,7 +42,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         messages.prefMaxSize = Vec2(chatProfile.width, chatProfile.height)
         chatProfile::width.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(it, messages.prefMaxSize.y) }
         chatProfile::height.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(messages.prefMaxSize.x, it) }
-        forceSilentApply()
+        update()
     }
 
 
@@ -56,10 +55,9 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         }
     }
 
-    override fun forceSilentApply() {
-        messages.silentApply()
+    override fun update() {
+        super.update()
         _size = Vec2(messages.prefMaxSize.x, messages.size.y + ChatElement.CHAT_INPUT_MARGIN * 2)
-        cache.invalidate()
     }
 
     override fun onOpen() {
@@ -88,10 +86,5 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         }
         offset.y -= messagesSize.y
         return null
-    }
-
-    override fun onChildChange(child: Element) {
-        forceSilentApply()
-        super.onChildChange(child)
     }
 }

@@ -31,7 +31,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
     private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]
 
     init {
-        forceSilentApply()
+        update()
     }
 
     private var previousBubbles = 0
@@ -89,17 +89,12 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
         return false
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
         _size = if (bubbles + poppingCount <= 0) {
             Vec2.EMPTY
         } else {
             Vec2(BUBBLE_SIZE.x * (bubbles + poppingCount), BUBBLE_SIZE.y)
         }
-        cache.invalidate()
-    }
-
-    override fun tick() {
-        apply()
     }
 
     companion object {

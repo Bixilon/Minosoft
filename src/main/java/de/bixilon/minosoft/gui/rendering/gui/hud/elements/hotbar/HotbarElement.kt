@@ -70,7 +70,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         itemText.parent = this
         hoverText.parent = this
         offhand.parent = this
-        forceSilentApply()
+        update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -103,10 +103,8 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         core.render(coreOffset, consumer, options)
     }
 
-    override fun forceSilentApply() {
-        for (element in renderElements) {
-            element.silentApply()
-        }
+    override fun update() {
+        super.update()
 
         val size = Vec2(core.size)
 
@@ -140,32 +138,8 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         cache.invalidate()
     }
 
-    override fun silentApply(): Boolean {
-        val items = guiRenderer.context.connection.player.items
-        val itemSlot = items.hotbar
-        val currentItem = items.inventory.getHotbarSlot(itemSlot)
-        if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
-            lastItemStackNameShown = currentItem
-            lastItemSlot = itemSlot
-            currentItem?.displayName?.let { itemText._chatComponent = it;itemText.forceSilentApply() }
-            if (currentItem == null) {
-                itemText.hide()
-            } else {
-                itemText.show()
-            }
-        }
-
-        forceSilentApply() // ToDo: Check stuff
-        return true
-    }
-
-    override fun onChildChange(child: Element) {
-        silentApply() // ToDo: Check
-        parent?.onChildChange(this)
-    }
-
     override fun tick() {
-        silentApply()
+        invalidate()
         hoverText.tick()
         itemText.tick()
         core.tick()
@@ -179,11 +153,11 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         val connection = context.connection
         val player = connection.player
 
-        player::experienceCondition.observeRendering(this) { core.experience.apply() }
+        player::experienceCondition.observeRendering(this) { core.experience.invalidate() }
 
-        player.additional::gamemode.observeRendering(this) { forceApply() }
+        player.additional::gamemode.observeRendering(this) { invalidate() }
 
-        player.items::hotbar.observeRendering(this) { core.base.apply() }
+        player.items::hotbar.observeRendering(this) { core.base.invalidate() }
 
         connection.events.listen<ChatMessageEvent> {
             if (it.message.type.position != ChatTextPositions.HOTBAR) {

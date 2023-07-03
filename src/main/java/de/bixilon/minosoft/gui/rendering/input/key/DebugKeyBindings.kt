@@ -82,6 +82,7 @@ object DebugKeyBindings {
                 CursorModes.DISABLED -> CursorModes.NORMAL
                 CursorModes.NORMAL -> CursorModes.DISABLED
                 CursorModes.HIDDEN -> CursorModes.NORMAL
+                CursorModes.CAPTURED -> CursorModes.NORMAL
             }
             context.window.cursorMode = next
             connection.util.sendDebugMessage("Cursor mode: ${next.format()}")

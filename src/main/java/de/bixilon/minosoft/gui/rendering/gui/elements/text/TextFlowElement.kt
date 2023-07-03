@@ -21,6 +21,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.ListChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
@@ -33,6 +35,7 @@ open class TextFlowElement(
     var messageExpireTime: Long,
     val properties: TextRenderProperties = TextRenderProperties(),
 ) : Element(guiRenderer), AbstractLayout<TextElement> {
+    override val children = ListChildrenManager(this)
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
     private var visibleLines: List<TextFlowLineElement> = emptyList() // all visible lines **from bottom to top**
     override var activeElement: TextElement? = null
@@ -41,35 +44,8 @@ open class TextFlowElement(
     private val background = ColorElement(guiRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
 
     // Used for scrolling in GUI (not hud)
-    var _active = false
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            _scrollOffset = 0
-        }
-    var active: Boolean // if always all lines should be displayed when possible
-        get() = _active
-        set(value) {
-            if (_active == value) {
-                return
-            }
-            _active = value
-            forceApply()
-        }
-
-    var _scrollOffset = 0
-    var scrollOffset: Int
-        get() = _scrollOffset
-        set(value) {
-            val realValue = maxOf(0, value)
-            if (_scrollOffset == realValue) {
-                return
-            }
-            _scrollOffset = realValue
-            forceApply()
-        }
+    var active by GuiDelegate(false)
+    var scrollOffset by GuiDelegate(0)
 
 
     override var prefSize: Vec2
@@ -97,8 +73,7 @@ open class TextFlowElement(
         return true
     }
 
-    @Synchronized
-    override fun forceSilentApply() {
+    override fun update() {
         val visibleLines: MutableList<TextFlowLineElement> = mutableListOf()
         val maxSize = maxSize
         val maxLines = (maxSize.y / (properties.lineHeight + properties.lineSpacing)).toInt()
@@ -162,7 +137,7 @@ open class TextFlowElement(
             messages.removeLast()
         }
         messages.add(0, TextFlowTextElement(message))
-        forceApply()
+        invalidate()
     }
 
     operator fun plusAssign(message: ChatComponent) = addMessage(message)
@@ -175,7 +150,7 @@ open class TextFlowElement(
 
         for (line in visibleLines) {
             if (currentTime - line.text.addTime > messageExpireTime) {
-                forceApply()
+                invalidate()
                 return
             }
         }
@@ -200,7 +175,6 @@ open class TextFlowElement(
         checkExpiredLines()
     }
 
-    override fun onChildChange(child: Element) = Unit
 
     private data class TextFlowTextElement(
         val text: ChatComponent,

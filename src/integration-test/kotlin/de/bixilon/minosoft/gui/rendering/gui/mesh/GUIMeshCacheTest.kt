@@ -1,9 +1,22 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2023 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
-import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.properties.GUIScreen
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil
@@ -301,31 +314,18 @@ class GUIMeshCacheTest {
             override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
                 callback()
             }
-
-            override fun forceSilentApply() {
-                TODO("Not yet implemented")
-            }
-
         }
     }
 
     private fun parent(callback: () -> Unit): Element {
         return object : Element(GuiRenderTestUtil.create()), ChildedElement {
-            override val children = SimpleChildrenManager(this)
+            override val children = SetChildrenManager(this)
 
             override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
                 callback()
                 for (child in children) {
                     child.render(offset, consumer, options)
                 }
-            }
-
-            override fun forceSilentApply() {
-                TODO("Not yet implemented")
-            }
-
-            override fun update(child: Element) {
-                TODO("Not yet implemented")
             }
         }
     }

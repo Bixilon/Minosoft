@@ -50,6 +50,7 @@ class FadingTextElement(
 
     private fun updateSize(phase: FadePhase?) {
         this._size = if (phase == null) Vec2.EMPTY else info.size.withBackgroundSize()
+        invalidate()
     }
 
     fun show() {
@@ -57,24 +58,27 @@ class FadingTextElement(
         val phase = times.createPhase(time)
         this.phase = phase
         updateSize(phase)
-
-        parent?.onChildChange(this)
+        invalidate()
     }
 
     fun hide(force: Boolean = false) {
         this.phase = if (force) null else this.phase?.stop(millis())
-        parent?.onChildChange(this)
+        invalidate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        if (phase == null) return
+        update() // TODO: remove this
+        val phase = this::phase.rendering() ?: return
         val millis = millis()
-        this.updatePhase(millis)
-        val phase = this.phase ?: return
         val alpha = phase.getAlpha(millis)
 
         super.forceRender(offset, consumer, options.copy(alpha = alpha))
     }
+
+    override fun update() {
+        updatePhase(millis())
+    }
+
 
     private fun updatePhase(millis: Long) {
         val phase = this.phase ?: return

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -45,7 +45,7 @@ class EnchantmentButtonElement(
     val disabledLevelAtlas: AtlasElement?,
     val index: Int,
 ) : Element(guiRenderer), AbstractLayout<Element> {
-    override val children = SimpleChildrenManager(this)
+    override val children = SetChildrenManager(this)
     private val button = ButtonElement(guiRenderer, EmptyComponent, properties = ButtonProperties(false), style = ButtonStyle(
         guiRenderer.atlasManager["enchanting_table_card_disabled"],
         guiRenderer.atlasManager["enchanting_table_card_normal"],

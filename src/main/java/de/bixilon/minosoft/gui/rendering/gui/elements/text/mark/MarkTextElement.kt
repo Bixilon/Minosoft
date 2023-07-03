@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -60,7 +60,7 @@ class MarkTextElement(
     fun mark(start: Int, end: Int) {
         markStartPosition = minOf(start, end)
         markEndPosition = maxOf(start, end)
-        forceSilentApply()
+        invalidate()
     }
 
     fun unmark() {
@@ -69,7 +69,7 @@ class MarkTextElement(
         }
         markStartPosition = -1
         markEndPosition = -1
-        forceSilentApply()
+        invalidate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

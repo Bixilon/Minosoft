@@ -126,7 +126,7 @@ class NodeTextInputElement(
         if (slash) {
             value = "/$value" // TODO: dirty hack
         }
-        _set(value)
-        forceApply()
+        set(value)
+        invalidate()
     }
 }

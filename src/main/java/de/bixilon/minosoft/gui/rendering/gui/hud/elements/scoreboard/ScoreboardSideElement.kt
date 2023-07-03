@@ -60,12 +60,12 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
             }
             field = value
             scores.clear()
-            forceSilentApply()
+            update()
         }
 
     init {
         _prefMaxSize = Vec2(MAX_SCOREBOARD_WIDTH, -1)
-        forceSilentApply()
+        update()
     }
 
     private var recalculate = true
@@ -92,7 +92,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         }
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
         val objective = objective
         if (objective == null) {
             _size = Vec2.EMPTY
@@ -127,7 +127,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
 
         for ((_, element) in scores) {
-            element.forceSilentApply()
+            element.update()
             size.x = maxOf(size.x, element.prefSize.x)
         }
 

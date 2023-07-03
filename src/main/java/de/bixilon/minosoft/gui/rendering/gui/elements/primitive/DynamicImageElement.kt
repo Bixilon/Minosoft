@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -46,16 +47,9 @@ open class DynamicImageElement(
             field = value
             cache.invalidate()
         }
-    var uvStart: Vec2 = uvStart
-        set(value) {
-            field = value
-            cache.invalidate()
-        }
-    var uvEnd: Vec2 = uvEnd
-        set(value) {
-            field = value
-            cache.invalidate()
-        }
+    var uvStart by GuiDelegate(uvStart)
+    var uvEnd by GuiDelegate(uvEnd)
+    var tint by GuiDelegate(tint)
 
     override var size: Vec2
         get() = super.size
@@ -68,12 +62,6 @@ open class DynamicImageElement(
         get() = size
         set(value) {
             size = value
-        }
-
-    var tint: RGBColor = tint
-        set(value) {
-            field = value
-            cache.invalidate()
         }
 
     init {
@@ -94,16 +82,13 @@ open class DynamicImageElement(
         consumer.addQuad(offset, offset + size, getAvailableTexture(), uvStart, uvEnd, tint, options)
     }
 
-    override fun forceSilentApply() = Unit
-    override fun silentApply(): Boolean = false
-
     protected fun finalize() {
         texture?.usages?.decrementAndGet()
     }
 
     override fun onStateChange(texture: DynamicTexture, state: DynamicTextureState) {
         if (texture === this.texture) {
-            forceApply()
+            invalidate()
         }
     }
 }

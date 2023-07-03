@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
-import de.bixilon.minosoft.modding.event.events.bossbar.BossbarValueSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -34,8 +33,6 @@ class ValueBossbarS2CP(
             return
         }
         bossbar.progress = value
-
-        connection.events.fire(BossbarValueSetEvent(connection, uuid, bossbar))
     }
 
     override fun check(connection: PlayConnection) {

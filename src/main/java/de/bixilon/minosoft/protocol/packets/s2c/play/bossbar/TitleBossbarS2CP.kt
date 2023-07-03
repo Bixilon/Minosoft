@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
-import de.bixilon.minosoft.modding.event.events.bossbar.BossbarTitleSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -34,8 +33,6 @@ class TitleBossbarS2CP(
             return
         }
         bossbar.title = title
-
-        connection.events.fire(BossbarTitleSetEvent(connection, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {

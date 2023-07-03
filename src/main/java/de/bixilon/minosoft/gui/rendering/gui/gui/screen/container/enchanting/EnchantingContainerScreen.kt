@@ -63,8 +63,8 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
         return super.getContainerAt(position)
     }
 
-    override fun forceSilentApply() {
-        super.forceSilentApply()
+    override fun update() {
+        super.update()
 
         for (index in 0 until EnchantingContainer.ENCHANTING_OPTIONS) {
             val card = cards[index]

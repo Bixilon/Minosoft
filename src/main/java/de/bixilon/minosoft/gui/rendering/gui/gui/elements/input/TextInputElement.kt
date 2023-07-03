@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,6 +22,8 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SingleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
@@ -48,7 +50,8 @@ open class TextInputElement(
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
     val cutAtSize: Boolean = false,
     parent: Element? = null,
-) : Element(guiRenderer) {
+) : Element(guiRenderer), ChildedElement {
+    override val children = SingleChildrenManager()
     protected val cursor = ColorElement(guiRenderer, size = Vec2(minOf(1.0f, properties.scale), properties.lineHeight))
     protected val textElement = MarkTextElement(guiRenderer, "", background = null, parent = this, properties = properties)
     protected val backgroundElement = ColorElement(guiRenderer, Vec2.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
@@ -61,10 +64,8 @@ open class TextInputElement(
             if (_value.equals(value)) {
                 return
             }
-            _set(value)
-            forceApply()
+            set(value)
         }
-    private var textUpToDate = false
     var _pointer = 0
     private var cursorTick = 0
 
@@ -72,7 +73,7 @@ open class TextInputElement(
         this.parent = parent
         this._value.append(if (value.length > maxLength) value.substring(0, maxLength) else value)
         _pointer = this._value.length
-        forceSilentApply()
+        update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -100,14 +101,14 @@ open class TextInputElement(
         textElement.unmark()
     }
 
-    protected fun _set(value: String) {
+    protected fun set(value: String) {
         val previous = _value.toString()
         val next = _value.replace(0, _value.length, value)
         _pointer = value.length
         if (previous != next.toString()) {
             onChange()
         }
-        textUpToDate = false
+        invalidate()
     }
 
     private fun cutOffText() {
@@ -120,21 +121,17 @@ open class TextInputElement(
             newValue.append(line.text.message)
         }
         if (newValue.length != this._value.length) {
-            _set(newValue.toString())
+            set(newValue.toString())
         }
         if (_pointer > newValue.length) {
             _pointer = newValue.length
         }
     }
 
-    override fun forceSilentApply() {
-        if (!textUpToDate) {
-            textElement._chatComponent = TextComponent(_value)
-            textElement.unmark()
-            textElement.forceSilentApply()
-            textUpToDate = true
-            cutOffText()
-        }
+    override fun update() {
+        textElement.text = TextComponent(_value)
+        textElement.unmark()
+        cutOffText()
         _size = Vec2(textElement.size)
         backgroundElement.size = prefMaxSize
 
@@ -148,7 +145,6 @@ open class TextInputElement(
             }
             Vec2i(preCursorText.info.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.info.lines.size - 1, 0) * preCursorText.properties.lineHeight)
         }
-        cache.invalidate()
     }
 
     override fun tick() {
@@ -174,7 +170,6 @@ open class TextInputElement(
         val appendLength = minOf(insert.length, maxLength - _value.length)
         _value.insert(_pointer, insert.substring(0, appendLength))
         _pointer += appendLength
-        textUpToDate = false
         onChange()
     }
 
@@ -184,7 +179,6 @@ open class TextInputElement(
         }
         cursorTick = CURSOR_TICK_ON_ACTION
         insert(char.toChar().toString())
-        forceApply()
         return true
     }
 
@@ -257,7 +251,6 @@ open class TextInputElement(
                     val delete = if (controlDown) calculateWordPointer(false) else -1
                     _value.delete(_pointer + delete, _pointer)
                     _pointer += delete
-                    textUpToDate = false
                     onChange()
                 }
             }
@@ -272,7 +265,6 @@ open class TextInputElement(
                 } else {
                     val delete = if (controlDown) calculateWordPointer(true) else 1
                     _value.delete(_pointer, _pointer + delete)
-                    textUpToDate = false
                     onChange()
                 }
             }
@@ -315,7 +307,6 @@ open class TextInputElement(
             }
             else -> return textElement.onKey(key, type)
         }
-        forceApply()
 
         return true
     }
@@ -353,12 +344,8 @@ open class TextInputElement(
             break
         }
         this._pointer = pointer
-        forceSilentApply()
+        invalidate()
         return true
-    }
-
-    override fun onChildChange(child: Element) {
-        forceSilentApply()
     }
 
     private fun calculateWordPointer(right: Boolean): Int {
@@ -384,6 +371,7 @@ open class TextInputElement(
 
     open fun onChange() {
         onChangeCallback()
+        invalidate()
     }
 
     companion object {

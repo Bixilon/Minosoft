@@ -91,14 +91,14 @@ class GUIManager(
         for (element in elementCache.values) {
             // ToDo: Just the current active one
             if (element is LayoutedGUIElement<*>) {
-                element.element.forceSilentApply()
+                element.element.invalidate()
             }
             element.apply()
         }
         orderLock.acquire()
         for (element in elementOrder) {
             if (element is LayoutedGUIElement<*>) {
-                element.element.forceSilentApply()
+                element.element.invalidate()
             }
             element.apply()
         }

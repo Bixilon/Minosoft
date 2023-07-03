@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
@@ -34,7 +34,7 @@ class ContainerItemsElement(
     val container: Container,
     val slots: Int2ObjectOpenHashMap<AtlasSlot>, // ToDo: Use an array?
 ) : Element(guiRenderer), AbstractLayout<ItemElement> {
-    override val children = SimpleChildrenManager(this)
+    override val children = SetChildrenManager(this)
     private val itemElements: Int2ObjectOpenHashMap<ItemElementData> = Int2ObjectOpenHashMap()
     private var floatingItem: FloatingItem? = null
     override var activeElement: ItemElement? = null

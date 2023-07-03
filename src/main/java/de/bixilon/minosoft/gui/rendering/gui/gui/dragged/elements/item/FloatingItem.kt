@@ -35,15 +35,11 @@ class FloatingItem(
     private val itemElement = RawItemElement(guiRenderer, size, stack, this)
 
     init {
-        forceSilentApply()
         _size = size
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         itemElement.render(offset, consumer, options)
-    }
-
-    override fun forceSilentApply() {
     }
 
     override fun onDragMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int, target: Element?) {

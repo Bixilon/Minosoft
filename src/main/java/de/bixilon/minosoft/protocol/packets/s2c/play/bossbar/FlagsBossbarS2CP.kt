@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.data.bossbar.BossbarFlags
-import de.bixilon.minosoft.modding.event.events.bossbar.BossbarFlagsSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -26,17 +26,31 @@ class FlagsBossbarS2CP(
     val uuid: UUID,
     buffer: InByteBuffer,
 ) : BossbarS2CP {
-    val flags = BossbarFlags(buffer.readUnsignedByte())
+    val flags = buffer.readBossbarFlags()
 
     override fun handle(connection: PlayConnection) {
         val bossbar = connection.bossbars.bossbars[uuid] ?: return
 
         bossbar.flags = flags
-
-        connection.events.fire(BossbarFlagsSetEvent(connection, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Bossbar flags set (uuid=$uuid, flags=$flags)" }
+    }
+
+    companion object {
+        const val DARK_SKY_MASK = 0x01
+        const val DRAGON_BAR_MASK = 0x02
+        const val FOG_MASK = 0x04
+
+
+        fun InByteBuffer.readBossbarFlags(): BossbarFlags {
+            val flags = readUnsignedByte()
+            return BossbarFlags(
+                darkSky = flags.isBitMask(DARK_SKY_MASK),
+                dragonBar = flags.isBitMask(DRAGON_BAR_MASK),
+                fog = flags.isBitMask(FOG_MASK),
+            )
+        }
     }
 }

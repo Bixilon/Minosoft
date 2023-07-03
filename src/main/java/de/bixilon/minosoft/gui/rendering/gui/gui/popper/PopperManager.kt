@@ -35,7 +35,7 @@ class PopperManager(
 
     fun onScreenChange() {
         for (element in poppers) {
-            element.layout.forceSilentApply()
+            element.layout.invalidate()
         }
     }
 

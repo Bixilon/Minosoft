@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,27 +15,31 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.item.items.armor.DefendingArmorItem.Companion.getProtection
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
-class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
+class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val emptyProtection = guiRenderer.atlasManager["minecraft:empty_protection"]
     private val halfProtection = guiRenderer.atlasManager["minecraft:half_protection"]
     private val fullProtection = guiRenderer.atlasManager["minecraft:full_protection"]
 
+    private var protection by GuiDelegate(0.0f)
+
     init {
-        forceSilentApply()
+        update()
+        context.connection.player.equipment::equipment.observe(this) { protection = guiRenderer.context.connection.player.equipment.getProtection() }
     }
 
-    private var protection = 0.0f
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val protection = this::protection.rendering()
         if (protection <= 0.0f) {
             return
         }
@@ -57,31 +61,12 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
         }
     }
 
-    override fun poll(): Boolean {
-        val protection = guiRenderer.context.connection.player.equipment.getProtection() // ToDo: Check for equipment change
+    override fun update() {
+        val protection = this::protection.acknowledge()
 
-
-        if (this.protection == protection) {
-            return false
-        }
-
-        this.protection = protection
-
-        return true
+        _size = if (protection <= 0.0f) Vec2.EMPTY else SIZE
     }
 
-    override fun forceSilentApply() {
-        _size = if (protection <= 0.0f) {
-            Vec2.EMPTY
-        } else {
-            SIZE
-        }
-        cache.invalidate()
-    }
-
-    override fun tick() {
-        apply()
-    }
 
     companion object {
         private val ARMOR_SIZE = Vec2i(8, 9)

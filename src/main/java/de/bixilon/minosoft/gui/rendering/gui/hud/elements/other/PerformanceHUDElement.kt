@@ -18,9 +18,11 @@ import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SingleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
@@ -29,11 +31,12 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Pollable {
+class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, ChildedElement {
+    override val children = SingleChildrenManager()
     private val text = TextElement(guiRenderer, "", parent = this)
     override val layoutOffset: Vec2 = Vec2(2, 2)
-    private var fps = -1.0
-    private var hide: Boolean = false
+    private var fps by GuiDelegate(0.0)
+    private var hide by GuiDelegate(false)
 
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -44,28 +47,15 @@ class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     }
 
     override fun tick() {
-        if (!poll()) {
-            return
-        }
-        forceApply()
-    }
-
-    override fun poll(): Boolean {
         val debugHUDElement = guiRenderer.hud[DebugHUDElement]
         val hide = debugHUDElement?.enabled == true
         val fps = guiRenderer.context.renderStats.smoothAvgFPS.rounded10
-        if (this.hide == hide && this.fps == fps) {
-            return false
-        }
         this.hide = hide
         this.fps = fps
-        return true
     }
 
-    override fun forceSilentApply() {
-        text._chatComponent = if (hide) ChatComponent.EMPTY else ChatComponent.of("§aFPS $fps")
-        text.forceSilentApply()
-        cache.invalidate()
+    override fun update() {
+        text.chatComponent = if (hide) ChatComponent.EMPTY else ChatComponent.of("§aFPS $fps")
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<PerformanceHUDElement>> {

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBAC
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
-import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
@@ -36,7 +36,7 @@ import de.bixilon.minosoft.input.interaction.AttackHandler
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable, ChildedElement {
-    override val children = SimpleChildrenManager(this)
+    override val children = SetChildrenManager(this)
     private var element: WawlaElement? = null
 
     val profile = guiRenderer.connection.profiles.gui.hud.wawla

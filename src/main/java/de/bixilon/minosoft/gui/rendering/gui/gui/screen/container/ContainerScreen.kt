@@ -48,9 +48,9 @@ abstract class ContainerScreen<C : Container>(
         containerElement.render(offset, consumer, options)
     }
 
-    override fun forceSilentApply() {
-        super.forceSilentApply()
-        containerElement.apply()
+    override fun update() {
+        super<Screen>.update()
+        containerElement.update()
     }
 
     override fun getAt(position: Vec2): Pair<Element, Vec2>? {

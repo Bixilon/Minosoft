@@ -56,6 +56,8 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     private val entries: MutableMap<UUID, TabListEntryElement> = synchronizedMapOf()
     private var toRender: List<TabListEntryElement> = emptyList()
     private val lock = ReentrantLock()
+
+    @Deprecated("invalidate")
     var needsApply = false
         private set
     private var columns = 0
@@ -110,7 +112,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         }
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
         val size = Vec2.EMPTY
 
         size.y += header.size.y
@@ -198,19 +200,11 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         needsApply = false
     }
 
-    override fun silentApply(): Boolean {
-        // ToDo: Check for changes
-        for (element in toRender) {
-            element.silentApply()
-        }
-        return true
-    }
-
     fun update(uuid: UUID) {
         val item = guiRenderer.context.connection.tabList.uuid[uuid] ?: return
         val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, uuid, item, 0.0f) }
         lock.lock()
-        entry.silentApply()
+        entry.update()
         lock.unlock()
         needsApply = true
     }
@@ -220,7 +214,8 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         needsApply = true
     }
 
-    override fun onChildChange(child: Element) {
+    override fun invalidate() {
+        super.invalidate()
         needsApply = true
     }
 
@@ -246,7 +241,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     override fun drawAsync() {
         // check if content was changed, and we need to re-prepare before drawing
         if (needsApply) {
-            forceApply()
+            update()
         }
     }
 

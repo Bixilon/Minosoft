@@ -11,13 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager
+package de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection
 
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.CachedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.ChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 
-class SimpleChildrenManager(val element: CachedElement) : ChildrenManager {
-    private val children: MutableSet<Element> = mutableSetOf()
+interface CollectionChildrenManager : ChildrenManager {
+    val element: CachedElement
+    val children: MutableCollection<Element>
 
     override fun iterator() = children.iterator()
 
@@ -25,15 +27,18 @@ class SimpleChildrenManager(val element: CachedElement) : ChildrenManager {
         if (!children.add(element)) {
             throw IllegalStateException("$element was already a child!")
         }
-        element.cache.onChildrenChange()
+        this.element.cache.onChildrenChange()
     }
 
     override fun remove(element: Element) {
         if (!children.remove(element)) {
             throw IllegalStateException("$element was not a child!")
         }
-        element.cache.onChildrenChange()
+        this.element.cache.onChildrenChange()
     }
 
     override fun contains(element: Element) = element in children
+
+    fun clear() = this.children.clear()
+    val size: Int get() = children.size
 }

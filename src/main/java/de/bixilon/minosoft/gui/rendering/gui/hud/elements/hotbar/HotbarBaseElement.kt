@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,24 +15,25 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
+class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val baseAtlasElement = guiRenderer.atlasManager[BASE]!!
     private val base = AtlasImageElement(guiRenderer, baseAtlasElement)
     private val frame = AtlasImageElement(guiRenderer, guiRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
 
     private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, baseAtlasElement.slots)
 
-    private var selectedSlot = 0
+    private var selectedSlot by GuiDelegate(0)
 
     init {
         size = HOTBAR_BASE_SIZE + Vec2(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
@@ -41,6 +42,8 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
         base.parent = this
         frame.parent = this
         containerElement.parent = this
+
+        guiRenderer.context.connection.player.items::hotbar.observe(this) { selectedSlot = it }
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -51,22 +54,6 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
         }
 
         containerElement.render(offset + HORIZONTAL_MARGIN, consumer, options)
-    }
-
-    override fun poll(): Boolean {
-        val selectedSlot = guiRenderer.context.connection.player.items.hotbar
-
-        if (this.selectedSlot != selectedSlot || containerElement.silentApply()) {
-            this.selectedSlot = selectedSlot
-            return true
-        }
-
-        return false
-    }
-
-    override fun forceSilentApply() {
-        containerElement.silentApply()
-        cache.invalidate()
     }
 
     companion object {

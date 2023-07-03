@@ -15,10 +15,9 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.bossbar.BossbarColors
-import de.bixilon.minosoft.data.bossbar.BossbarFlags
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
-import de.bixilon.minosoft.modding.event.events.bossbar.BossbarAddEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.bossbar.FlagsBossbarS2CP.Companion.readBossbarFlags
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -33,7 +32,7 @@ class AddBossbarS2CP(
     val value = buffer.readFloat()
     val color = BossbarColors[buffer.readVarInt()]
     val notches = BossbarNotches[buffer.readVarInt()]
-    val flags = BossbarFlags(buffer.readUnsignedByte())
+    val flags = buffer.readBossbarFlags()
 
 
     override fun check(connection: PlayConnection) {
@@ -49,10 +48,7 @@ class AddBossbarS2CP(
             flags = flags,
         )
 
-        // ToDo: Check if bossbar is already present
         connection.bossbars.bossbars[uuid] = bossbar
-
-        connection.events.fire(BossbarAddEvent(connection, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {

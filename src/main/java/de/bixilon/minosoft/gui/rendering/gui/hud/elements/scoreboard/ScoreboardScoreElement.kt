@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,7 +37,7 @@ class ScoreboardScoreElement(
     init {
         nameElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
         scoreElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
-        forceSilentApply()
+        update()
         _parent = parent
     }
 
@@ -47,26 +47,19 @@ class ScoreboardScoreElement(
         scoreElement.render(offset + Vec2(HorizontalAlignments.RIGHT.getOffset(size.x, scoreElement.size.x), 0), consumer, options)
     }
 
-    override fun silentApply(): Boolean {
-        forceSilentApply()
-        return true
-    }
 
-    override fun forceSilentApply() {
+    override fun update() {
         val entityName = ChatComponent.of(score.entity)
         nameElement.text = score.team?.decorateName(entityName) ?: entityName
 
         scoreElement.text = TextComponent(score.value).color(ChatColors.RED)
 
         _prefSize = Vec2(nameElement.size.x + scoreElement.size.x + SCORE_MIN_MARGIN, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
-        cache.invalidate()
     }
 
     fun applySize() {
         _size = parent?.size?.let { return@let Vec2(it.x, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight) } ?: _prefSize
     }
-
-    override fun onChildChange(child: Element) = Unit
 
 
     companion object {

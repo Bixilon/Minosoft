@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -28,7 +30,8 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.copy
 
-class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
+class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ChildedElement {
+    override val children = SetChildrenManager(this)
     val base = HotbarBaseElement(guiRenderer)
     val experience = HotbarExperienceBarElement(guiRenderer)
     val health = HotbarHealthElement(guiRenderer)
@@ -72,7 +75,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
 
         base.parent = this
         experience.parent = this
-        forceSilentApply()
+        update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -91,10 +94,8 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         }
     }
 
-    override fun forceSilentApply() {
-        for (element in renderElements) {
-            element.silentApply()
-        }
+    override fun update() {
+        super<Element>.update()
 
         val size = Vec2.EMPTY
 
@@ -112,18 +113,8 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         cache.invalidate()
     }
 
-    override fun silentApply(): Boolean {
-        forceSilentApply() // ToDo: Check stuff
-        return true
-    }
-
-    override fun onChildChange(child: Element) {
-        silentApply() // ToDo: Check
-        parent?.onChildChange(this)
-    }
-
     override fun tick() {
-        silentApply()
+        invalidate()
 
         if (gamemode.survival) {
             topLeft.tick()

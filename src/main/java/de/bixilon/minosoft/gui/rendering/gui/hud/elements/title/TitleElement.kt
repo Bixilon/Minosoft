@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
-import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SimpleChildrenManager
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -38,7 +38,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // ToDo: Remove subtitle when hidden
 class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, ChildedElement {
-    override val children = SimpleChildrenManager(this)
+    override val children = SetChildrenManager(this)
     val title = FadingTextElement(guiRenderer, "", background = null, properties = TextRenderProperties(scale = 4.0f), parent = this)
     val subtitle = FadingTextElement(guiRenderer, "", background = null, properties = TextRenderProperties(scale = 2.0f), parent = this)
     var times: FadingTimes = FadingTimes.EMPTY

@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.MouseTrackedPopper
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -35,7 +34,7 @@ class ItemInfoPopper(
     private val textElement = TextElement(guiRenderer, "", background = null, parent = this)
 
     init {
-        forceSilentApply()
+        update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -44,7 +43,7 @@ class ItemInfoPopper(
         textElement.render(offset, consumer, options)
     }
 
-    override fun forceSilentApply() {
+    override fun update() {
         val text = BaseComponent(
             stack.displayName,
         )
@@ -81,14 +80,10 @@ class ItemInfoPopper(
         }
         text += "\n\n"
         text += TextComponent(stack.item.item.identifier, color = ChatColors.DARK_GRAY)
-        textElement._chatComponent = text
-        textElement.forceSilentApply()
+        textElement.chatComponent = text
+        textElement.update()
         recalculateSize()
-        super.forceSilentApply()
-    }
-
-    override fun onChildChange(child: Element) {
-        recalculateSize()
+        super.update()
     }
 
     private fun recalculateSize() {
