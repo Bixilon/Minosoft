@@ -38,7 +38,7 @@ class ScoreboardScoreElement(
         nameElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
         scoreElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
         update()
-        _parent = parent
+        this.parent = parent
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

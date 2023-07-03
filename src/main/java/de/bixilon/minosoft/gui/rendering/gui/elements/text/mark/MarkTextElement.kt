@@ -75,8 +75,8 @@ class MarkTextElement(
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (markStartPosition >= 0) {
             val message = chatComponent.message // ToDo: This does not include formatting
-            val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), properties = properties, parent = _parent)
-            val mark = TextElement(guiRenderer, message.substring(markStartPosition, markEndPosition), properties = properties, parent = _parent)
+            val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), properties = properties, parent = parent)
+            val mark = TextElement(guiRenderer, message.substring(markStartPosition, markEndPosition), properties = properties, parent = parent)
             val markOffset = Vec2i(preMark.info.lines.lastOrNull()?.width ?: 0, preMark.size.y)
             if (markOffset.y > 0 && (preMark.info.lines.lastOrNull()?.width ?: 0.0f) <= (info.lines.lastOrNull()?.width ?: 0.0f)) {
                 markOffset.y -= (properties.lineHeight).toInt()

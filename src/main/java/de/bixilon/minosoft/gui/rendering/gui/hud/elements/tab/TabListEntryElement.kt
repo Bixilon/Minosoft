@@ -44,7 +44,7 @@ class TabListEntryElement(
 ) : Element(guiRenderer), Pollable, Comparable<TabListEntryElement> {
 
     init {
-        _parent = tabList
+        parent = tabList
     }
 
     private val background: ColorElement

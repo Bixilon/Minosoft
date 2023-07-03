@@ -33,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
-import org.jetbrains.annotations.Contract
 import kotlin.reflect.KProperty0
 import kotlin.reflect.jvm.isAccessible
 
@@ -46,20 +45,14 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
 
     override var update = true
 
-    protected var _parent: Element? = null
-        @Contract
+    override var parent: Element? = null
         set(value) {
+            if (value === field) return
             if (value === this) throw IllegalArgumentException("Can not set self as parent!")
             if (value != null && value !is ChildedElement) {
                 throw IllegalArgumentException("Can not set non childed element as parent!")
             }
             field = value
-        }
-    override var parent: Element?
-        get() = _parent
-        set(value) {
-            if (_parent == value) return
-            _parent = value
             value.unsafeCast<ChildedElement>().children += this
             invalidate()
         }
@@ -95,7 +88,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         get() {
             var maxSize = Vec2(prefMaxSize)
 
-            var parentMaxSize = _parent?.maxSize
+            var parentMaxSize = parent?.maxSize
             if (parentMaxSize == null && !ignoreDisplaySize) {
                 parentMaxSize = guiRenderer.screen.scaled
             }

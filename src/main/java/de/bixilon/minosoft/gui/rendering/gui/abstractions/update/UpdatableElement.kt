@@ -35,10 +35,10 @@ interface UpdatableElement : CachedElement {
     }
 
     fun update() {
+        update = false
         if (this !is ChildedElement) return
         for (child in children) {
             child.update()
         }
-        update = false
     }
 }

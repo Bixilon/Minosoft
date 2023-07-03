@@ -53,7 +53,7 @@ class ItemElement(
     // override var cacheUpToDate: Boolean by raw::cacheUpToDate
 
     init {
-        this._parent = itemsElement
+        this.parent = itemsElement
         _size = size
         update()
     }

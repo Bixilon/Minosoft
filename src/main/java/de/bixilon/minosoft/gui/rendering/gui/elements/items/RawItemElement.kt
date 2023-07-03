@@ -72,7 +72,7 @@ class RawItemElement(
         }
 
     init {
-        this._parent = parent
+        this.parent = parent
         _size = size
         this._stack = stack
         update()

@@ -309,23 +309,19 @@ class GUIMeshCacheTest {
         assertTrue(parent.cache.enabled())
     }
 
-    private fun child(callback: () -> Unit): Element {
-        return object : Element(GuiRenderTestUtil.create()) {
-            override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-                callback()
-            }
+    private fun child(callback: () -> Unit) = object : Element(GuiRenderTestUtil.create()) {
+        override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+            callback()
         }
     }
 
-    private fun parent(callback: () -> Unit): Element {
-        return object : Element(GuiRenderTestUtil.create()), ChildedElement {
-            override val children = SetChildrenManager(this)
+    private fun parent(callback: () -> Unit) = object : Element(GuiRenderTestUtil.create()), ChildedElement {
+        override val children = SetChildrenManager(this)
 
-            override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-                callback()
-                for (child in children) {
-                    child.render(offset, consumer, options)
-                }
+        override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+            callback()
+            for (child in children) {
+                child.render(offset, consumer, options)
             }
         }
     }

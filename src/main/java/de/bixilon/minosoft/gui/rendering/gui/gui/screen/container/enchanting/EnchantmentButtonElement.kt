@@ -68,7 +68,7 @@ class EnchantmentButtonElement(
 
     init {
         button.parent = this
-        _parent = container
+        parent = container
         _size = button.style.normal?.size?.let { Vec2(it) } ?: Vec2(108, 19)
     }
 
