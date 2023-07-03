@@ -13,17 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.abstractions.children
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.AbstractElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.ChildrenManager
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 
 interface ChildedElement : AbstractElement, ParentedElement {
     val children: ChildrenManager
-
-    fun update(child: Element) {
-        val parent = parent
-        if (parent !is ChildedElement) return
-        parent.update(this.unsafeCast())
-    }
 }
