@@ -73,9 +73,9 @@ class RawItemElement(
 
     init {
         this.parent = parent
-        _size = size
+        this.size = size
         this._stack = stack
-        update()
+        tryUpdate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

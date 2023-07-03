@@ -60,12 +60,12 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
             }
             field = value
             scores.clear()
-            update()
+            tryUpdate()
         }
 
     init {
         _prefMaxSize = Vec2(MAX_SCOREBOARD_WIDTH, -1)
-        update()
+        tryUpdate()
     }
 
     private var recalculate = true
@@ -127,7 +127,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
 
         for ((_, element) in scores) {
-            element.update()
+            element.tryUpdate()
             size.x = maxOf(size.x, element.prefSize.x)
         }
 

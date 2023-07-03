@@ -56,7 +56,7 @@ abstract class Menu(
         this.maxElementWidth = maxElementWidth
         totalHeight += maxOf(0.0f, (elements.size - 1) * BUTTON_Y_MARGIN)
         this.totalHeight = totalHeight
-        super<Screen>.update()
+        super.update()
     }
 
     fun add(element: Element) {

@@ -33,7 +33,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private var protection by GuiDelegate(0.0f)
 
     init {
-        update()
+        tryUpdate()
         context.connection.player.equipment::equipment.observe(this) { protection = guiRenderer.context.connection.player.equipment.getProtection() }
     }
 

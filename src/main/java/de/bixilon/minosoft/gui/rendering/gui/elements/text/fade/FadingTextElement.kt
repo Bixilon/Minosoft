@@ -67,7 +67,7 @@ class FadingTextElement(
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        update() // TODO: remove this
+        tryUpdate() // TODO: remove this
         val phase = this::phase.rendering() ?: return
         val millis = millis()
         val alpha = phase.getAlpha(millis)

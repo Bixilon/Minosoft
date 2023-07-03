@@ -42,10 +42,6 @@ open class RowLayout(
 ) : Element(guiRenderer), ChildAlignable, ChildedElement {
     override val children = ListChildrenManager(this)
 
-    override var prefSize: Vec2
-        get() = _prefSize
-        set(value) = Unit
-
     var spacing by GuiDelegate(spacing)
 
     fun clear() {
@@ -108,9 +104,8 @@ open class RowLayout(
         invalidate()
     }
 
-    @Synchronized
     override fun update() {
-        super<Element>.update()
+        super.update()
 
         val maxSize = maxSize
         val size = margin.offset

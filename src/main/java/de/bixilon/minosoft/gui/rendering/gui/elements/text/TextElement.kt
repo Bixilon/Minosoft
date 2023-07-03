@@ -44,7 +44,6 @@ import de.bixilon.minosoft.util.KUtil.charCount
 
 /**
  * A simple UI element that draws text on the screen
- * A background color is supported, if set
  */
 open class TextElement(
     guiRenderer: GUIRenderer,
@@ -61,10 +60,7 @@ open class TextElement(
     override var textProperties: TextRenderProperties by GuiDelegate(properties)
     var properties: TextRenderProperties by this::textProperties
 
-
-    override var size: Vec2
-        get() = super.size
-        set(value) {}
+    override var wishedSize = Vec2.EMPTY
 
     override var text: Any
         get() = Broken("Can only set text, not get it!")
@@ -77,17 +73,17 @@ open class TextElement(
     override var chatComponent by GuiDelegate(ChatComponent.of(text, translator = Minosoft.LANGUAGE_MANAGER /*guiRenderer.connection.language*/))
 
     init {
-        update()
+        tryUpdate()
     }
 
-    private fun updatePrefSize(text: ChatComponent) {
-        var prefSize = Vec2.EMPTY
+    private fun updateWishSize(text: ChatComponent) {
+        var wished = Vec2.EMPTY
         if (!empty) {
             val info = TextRenderInfo(Vec2.MAX)
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
-            prefSize = info.size
+            wished = info.size
         }
-        _prefSize = prefSize.withBackgroundSize()
+        wishedSize = wished.withBackgroundSize()
     }
 
     private fun updateText(text: ChatComponent) {
@@ -96,14 +92,14 @@ open class TextElement(
             ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
         }
-        _size = info.size.withBackgroundSize()
+        size = info.size.withBackgroundSize()
         this.info = info
     }
 
     override fun update() {
         val text = this::chatComponent.acknowledge()
         empty = text.message.isEmpty()
-        updatePrefSize(text)
+        updateWishSize(text)
         updateText(text)
         super.update()
     }
@@ -247,7 +243,7 @@ open class TextElement(
     }
 
     protected fun Vec2.withBackgroundSize(sign: Float = 1.0f): Vec2 {
-        val size = Vec2(this)
+        val size = Vec2(this) + padding.spaceSize
         val background = this@TextElement.background
         if (background != null && size.x > 0.0f && size.y > 0.0f) { // only add background if text is not empty
             size += background.size.spaceSize * sign

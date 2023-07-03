@@ -39,7 +39,7 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
 
 
     override fun update() {
-        super<Element>.update()
+        super.update()
         totalMaxHearts = (totalMaxHealth / 2).ceil
 
         text = totalMaxHearts > HP_TEXT_LIMIT

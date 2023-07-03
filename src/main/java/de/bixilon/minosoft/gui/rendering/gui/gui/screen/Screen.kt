@@ -37,7 +37,7 @@ abstract class Screen(
         set(value) {}
 
     override fun update() {
-        super<Element>.update()
+        super.update()
         background.size = guiRenderer.screen.scaled
         _size = guiRenderer.screen.scaled
     }

@@ -104,7 +104,7 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2, val input
         }
         this.textCount = textCount
         this._size = size
-        update()
+        tryUpdate()
     }
 
     fun modifyOffset(modify: Int) {

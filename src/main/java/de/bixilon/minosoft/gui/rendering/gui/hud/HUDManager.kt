@@ -79,7 +79,7 @@ class HUDManager(
         hudElements.lock.acquire()
         for (element in hudElements.values) {
             if (element is LayoutedGUIElement<*>) {
-                element.element.update()
+                element.element.tryUpdate()
             }
             element.apply()
         }

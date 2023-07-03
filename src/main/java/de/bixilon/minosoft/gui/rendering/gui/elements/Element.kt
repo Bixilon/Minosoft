@@ -31,15 +31,16 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.MAX
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
 import kotlin.reflect.KProperty0
 import kotlin.reflect.jvm.isAccessible
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget, CachedElement, ParentedElement, UpdatableElement, Tickable {
     override val context = guiRenderer.context
 
-    open val ignoreDisplaySize get() = false
+    open val ignoreScreenDimensions get() = false
     open val activeWhenHidden get() = false
     open val canPop: Boolean get() = true
 
@@ -59,63 +60,39 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
 
     override val cache = GUIMeshCache(this, guiRenderer.screen, context.system.primitiveMeshOrder, context, initialCacheSize)
 
-    @Deprecated("queued update")
-    private var previousMaxSize = Vec2.EMPTY
-
-    protected open var _prefSize: Vec2 = Vec2.EMPTY
-
     open val canFocus: Boolean get() = false
 
-    /**
-     * If maxSize was infinity, what size would the element have? (Excluded margin!)
-     */
-    open var prefSize: Vec2
-        get() = _prefSize
-        set(value) {
-            _prefSize = value
+
+    var preferredSize: Vec2? by GuiDelegate(null) // how large do I want it to be, element must not exceed it
+    open val wishedSize get() = size // if there was not space limit, how large could the element be
+    open var maxSize: Vec2 = calculateMaxSize() // how much space the element has if it wants to exceed it. Determinant by the parent, if not available by the screen size or infinity
+        protected set
+    open var size = Vec2.EMPTY // current rendered size of element (including padding)
+        protected set
+
+    protected fun calculateMaxSize(): Vec2 {
+        val parent = this.parent
+        var size = parent?.maxSize ?: if (ignoreScreenDimensions) Vec2.MAX else guiRenderer.screen.scaled
+
+        val preferred = preferredSize ?: return size
+        size = Vec2(size)
+        if (preferred.x >= 0 && preferred.x < size.x) {
+            size.x = preferred.x
+        }
+        if (preferred.y >= 0 && preferred.y < size.y) {
+            size.y = preferred.y
+        }
+
+        return size
+    }
+
+    fun updateMaxSize() {
+        val maxSize = calculateMaxSize()
+        if (maxSize isSmaller size) { // now it affects this element and maybe children
             invalidate()
         }
-
-    protected open var _prefMaxSize: Vec2 = Vec2(-1, -1)
-    open var prefMaxSize: Vec2
-        get() = _prefMaxSize
-        set(value) {
-            _prefMaxSize = value
-            invalidate()
-        }
-
-    open val maxSize: Vec2
-        get() {
-            var maxSize = Vec2(prefMaxSize)
-
-            var parentMaxSize = parent?.maxSize
-            if (parentMaxSize == null && !ignoreDisplaySize) {
-                parentMaxSize = guiRenderer.screen.scaled
-            }
-
-            if (maxSize.x < 0) {
-                maxSize.x = parentMaxSize?.x ?: guiRenderer.screen.scaled.x
-            }
-            if (maxSize.y < 0) {
-                maxSize.y = parentMaxSize?.y ?: guiRenderer.screen.scaled.y
-            }
-
-            parentMaxSize?.let {
-                maxSize = maxSize.min(it)
-            }
-
-            return Vec2.EMPTY.max(maxSize - margin.spaceSize)
-        }
-
-    protected open var _size: Vec2 = Vec2.EMPTY
-    open var size: Vec2
-        get() {
-            return _size.min(maxSize)
-        }
-        set(value) {
-            _size = value
-            invalidate()
-        }
+        this.maxSize = maxSize
+    }
 
     var margin by GuiDelegate(Vec4.EMPTY)
     var padding by GuiDelegate(Vec4.EMPTY)

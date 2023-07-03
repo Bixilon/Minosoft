@@ -70,7 +70,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         itemText.parent = this
         hoverText.parent = this
         offhand.parent = this
-        update()
+        tryUpdate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

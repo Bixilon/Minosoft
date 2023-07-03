@@ -49,8 +49,8 @@ abstract class ContainerScreen<C : Container>(
     }
 
     override fun update() {
-        super<Screen>.update()
-        containerElement.update()
+        super.update()
+        containerElement.tryUpdate()
     }
 
     override fun getAt(position: Vec2): Pair<Element, Vec2>? {

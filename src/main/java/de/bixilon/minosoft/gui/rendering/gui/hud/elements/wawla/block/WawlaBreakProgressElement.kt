@@ -28,7 +28,7 @@ class WawlaBreakProgressElement(block: BlockWawlaElement) : Element(block.guiRen
 
     init {
         parent = block
-        update()
+        tryUpdate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

@@ -42,7 +42,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         messages.prefMaxSize = Vec2(chatProfile.width, chatProfile.height)
         chatProfile::width.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(it, messages.prefMaxSize.y) }
         chatProfile::height.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(messages.prefMaxSize.x, it) }
-        update()
+        tryUpdate()
     }
 
 

@@ -65,11 +65,11 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     private val left = initLeft()
     private val right = initRight()
     override val layoutOffset: Vec2 = Vec2.EMPTY
-    override val ignoreDisplaySize: Boolean get() = true
+    override val ignoreScreenDimensions: Boolean get() = true
 
 
     init {
-        update()
+        tryUpdate()
     }
 
 

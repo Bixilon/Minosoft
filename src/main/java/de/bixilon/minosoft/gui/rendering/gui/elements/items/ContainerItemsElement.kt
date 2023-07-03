@@ -41,7 +41,7 @@ class ContainerItemsElement(
     override var activeDragElement: ItemElement? = null
 
     init {
-        update()
+        tryUpdate()
 
         val size = Vec2.EMPTY
         for ((slotId, binding) in slots) {
@@ -59,7 +59,7 @@ class ContainerItemsElement(
             size.x = maxOf(binding.end.x, size.x)
             size.y = maxOf(binding.end.y, size.y)
         }
-        this._size = size
+        this.size = size
 
         container::revision.observe(this) { invalidate(); }
         container::floatingItem.observe(this) {
@@ -77,7 +77,7 @@ class ContainerItemsElement(
 
 
     override fun update() {
-        super<Element>.update()
+        super.update()
         container.lock.acquire()
         var changes = 0
         for ((slotId, data) in itemElements) {

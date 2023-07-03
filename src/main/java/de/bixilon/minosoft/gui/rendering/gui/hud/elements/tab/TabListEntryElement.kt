@@ -73,7 +73,7 @@ class TabListEntryElement(
     init {
         background = ColorElement(guiRenderer, size, RGBColor(120, 120, 120, 130))
         DefaultThreadPool += { skinElement.texture = context.textures.skins.getSkin(uuid, item.properties, fetch = guiRenderer.connection.network.encrypted)?.texture }
-        update()
+        tryUpdate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

@@ -71,7 +71,7 @@ class SignEditorScreen(
             line.prefMaxSize = Vec2(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale, TEXT_PROPERTIES.lineHeight)
             line.hideCursor()
         }
-        update()
+        tryUpdate()
     }
 
     private fun getTexture(): Texture? {
@@ -123,7 +123,7 @@ class SignEditorScreen(
     }
 
     override fun update() {
-        super<Screen>.update()
+        super.update()
 
         for (line in lines) {
             line.prefMaxSize = Vec2(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale else SIGN_MAX_CHARS, line.prefMaxSize.y)

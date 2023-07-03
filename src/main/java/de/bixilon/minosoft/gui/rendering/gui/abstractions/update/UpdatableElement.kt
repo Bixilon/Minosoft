@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.abstractions.update
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.CachedElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ParentedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 
 interface UpdatableElement : CachedElement {
     var update: Boolean
@@ -34,11 +35,27 @@ interface UpdatableElement : CachedElement {
         parent.invalidate()
     }
 
+    fun preUpdate() {
+        if (this is Element) {
+            this.updateMaxSize()
+        }
+    }
+
     fun update() {
-        update = false
         if (this !is ChildedElement) return
         for (child in children) {
-            child.update()
+            child.tryUpdate()
         }
+    }
+
+    fun postUpdate() = Unit
+
+
+    fun tryUpdate() {
+        if (!update) return
+        preUpdate()
+        update()
+        postUpdate()
+        update = false
     }
 }

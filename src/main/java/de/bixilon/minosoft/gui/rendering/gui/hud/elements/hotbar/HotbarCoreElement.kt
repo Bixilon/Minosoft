@@ -75,7 +75,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Childe
 
         base.parent = this
         experience.parent = this
-        update()
+        tryUpdate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -95,7 +95,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Childe
     }
 
     override fun update() {
-        super<Element>.update()
+        super.update()
 
         val size = Vec2.EMPTY
 

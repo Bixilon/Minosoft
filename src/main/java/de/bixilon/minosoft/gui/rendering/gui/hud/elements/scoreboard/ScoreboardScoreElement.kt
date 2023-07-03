@@ -37,7 +37,7 @@ class ScoreboardScoreElement(
     init {
         nameElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
         scoreElement.prefMaxSize = Vec2(-1, ScoreboardSideElement.TEXT_PROPERTIES.lineHeight)
-        update()
+        tryUpdate()
         this.parent = parent
     }
 

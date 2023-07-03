@@ -34,7 +34,7 @@ class ItemInfoPopper(
     private val textElement = TextElement(guiRenderer, "", background = null, parent = this)
 
     init {
-        update()
+        tryUpdate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -81,7 +81,7 @@ class ItemInfoPopper(
         text += "\n\n"
         text += TextComponent(stack.item.item.identifier, color = ChatColors.DARK_GRAY)
         textElement.chatComponent = text
-        textElement.update()
+        textElement.tryUpdate()
         recalculateSize()
         super.update()
     }

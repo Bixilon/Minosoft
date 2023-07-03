@@ -31,7 +31,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
     private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]
 
     init {
-        update()
+        tryUpdate()
     }
 
     private var previousBubbles = 0

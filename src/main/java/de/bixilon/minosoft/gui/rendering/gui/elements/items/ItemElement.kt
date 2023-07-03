@@ -54,8 +54,8 @@ class ItemElement(
 
     init {
         this.parent = itemsElement
-        _size = size
-        update()
+        this.size = size
+        tryUpdate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

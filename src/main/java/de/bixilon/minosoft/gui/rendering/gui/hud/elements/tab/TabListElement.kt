@@ -204,7 +204,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         val item = guiRenderer.context.connection.tabList.uuid[uuid] ?: return
         val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, uuid, item, 0.0f) }
         lock.lock()
-        entry.update()
+        entry.tryUpdate()
         lock.unlock()
         needsApply = true
     }
@@ -241,7 +241,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     override fun drawAsync() {
         // check if content was changed, and we need to re-prepare before drawing
         if (needsApply) {
-            update()
+            tryUpdate()
         }
     }
 

@@ -41,7 +41,7 @@ open class ProgressElement(
 
     init {
         _size = emptyAtlasElement?.size?.let { Vec2(it) } ?: Vec2.EMPTY
-        update()
+        tryUpdate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

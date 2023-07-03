@@ -73,7 +73,7 @@ open class TextInputElement(
         this.parent = parent
         this._value.append(if (value.length > maxLength) value.substring(0, maxLength) else value)
         _pointer = this._value.length
-        update()
+        tryUpdate()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
