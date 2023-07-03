@@ -66,12 +66,14 @@ class TextElementTest {
     fun `size if text changed`() {
         val element = TextElement(GuiRenderTestUtil.create(), "bc\nbc", background = TextBackground(size = Vec4(1)), properties = TextRenderProperties(shadow = false))
         element.text = "bcd\nbcd\nbcd"
+        element.update()
         element.assetSize(Vec2(7.0f, 35.0f))
     }
 
     fun `size if background cleared`() {
         val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4(1)), properties = TextRenderProperties(shadow = false))
         element.background = null
+        element.update()
         element.assetSize(Vec2(5.0f, 33.0f))
     }
 

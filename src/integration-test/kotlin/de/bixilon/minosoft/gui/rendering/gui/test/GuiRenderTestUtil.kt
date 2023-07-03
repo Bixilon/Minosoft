@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.atlas.CodeTexturePart
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.properties.GUIScreen
@@ -48,6 +49,8 @@ object GuiRenderTestUtil {
         renderer::screen.forceSet(DataObserver(GUIScreen(Vec2i(size), size)))
 
         renderer::context.forceSet(createContext())
+        renderer::atlasManager.forceSet(AtlasManager(renderer.context))
+        renderer.atlasManager::class.java.getDeclaredField("elements").apply { isAccessible = true }.set(renderer.atlasManager, mutableMapOf<Any, Any>())
 
         return renderer
     }

@@ -130,7 +130,7 @@ open class TextElement(
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (empty) return
         val info = this.info
-        val properties = this::properties.rendering()
+        val properties = this::textProperties.rendering()
         val initialOffset = Vec2(offset + this::margin.rendering().offset)
         val textOffset = Vec2(initialOffset)
 

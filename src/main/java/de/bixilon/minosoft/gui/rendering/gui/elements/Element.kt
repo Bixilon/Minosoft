@@ -35,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
 import org.jetbrains.annotations.Contract
 import kotlin.reflect.KProperty0
+import kotlin.reflect.jvm.isAccessible
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget, CachedElement, ParentedElement, UpdatableElement, Tickable {
     override val context = guiRenderer.context
@@ -166,7 +167,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
     open fun onClose() = Unit
 
 
-    protected inline fun <T> KProperty0<T>.delegate(): GuiDelegate<T> = this.getDelegate().unsafeCast()
+    protected inline fun <T> KProperty0<T>.delegate(): GuiDelegate<T> = this.apply { isAccessible = true }.getDelegate().unsafeCast()
     protected inline fun <T> KProperty0<T>.acknowledge(): T = delegate().acknowledge()
     protected inline fun <T> KProperty0<T>.rendering(): T = delegate().rendering()
 }
