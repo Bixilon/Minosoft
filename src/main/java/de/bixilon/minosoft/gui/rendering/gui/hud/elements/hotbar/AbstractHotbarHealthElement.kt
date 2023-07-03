@@ -46,14 +46,14 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
         if (text) {
             textElement.text = createText()
 
-            _size = textElement.size
+            this.size = textElement.size
         } else {
             rows = totalMaxHearts / HEARTS_PER_ROW
             if (totalMaxHearts % HEARTS_PER_ROW != 0) {
                 rows++
             }
 
-            _size = Vec2(HEARTS_PER_ROW, rows) * HEART_SIZE + Vec2(1, 0) // 1 pixel is overlapping, so we have one more for the heart
+            this.size = Vec2(HEARTS_PER_ROW, rows) * HEART_SIZE + Vec2(1, 0) // 1 pixel is overlapping, so we have one more for the heart
         }
     }
 

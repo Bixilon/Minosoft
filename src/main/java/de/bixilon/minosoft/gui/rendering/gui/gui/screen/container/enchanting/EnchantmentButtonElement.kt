@@ -69,7 +69,7 @@ class EnchantmentButtonElement(
     init {
         button.parent = this
         parent = container
-        _size = button.style.normal?.size?.let { Vec2(it) } ?: Vec2(108, 19)
+        this.size = button.style.normal?.size?.let { Vec2(it) } ?: Vec2(108, 19)
     }
 
     fun update(disabled: Boolean, cost: Int, enchantment: Enchantment?, level: Int) {

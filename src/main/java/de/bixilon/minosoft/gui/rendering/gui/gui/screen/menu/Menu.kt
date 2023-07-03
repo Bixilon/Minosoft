@@ -49,7 +49,7 @@ abstract class Menu(
         for (element in elements) {
             val currentElementSize = element.size
             val elementSize = Vec2(elementWidth, currentElementSize.y)
-            element.size = elementSize
+            element.preferredSize = elementSize
             maxElementWidth = maxOf(maxElementWidth, element.size.x) // width may not be changeable
             totalHeight += currentElementSize.y
         }
@@ -97,10 +97,6 @@ abstract class Menu(
         val (element, delta) = getAt(position) ?: return true
         element.onMouseAction(delta, button, action, count)
         return true
-    }
-
-    override fun update(child: Element) {
-        invalidate()
     }
 
     override fun getAt(position: Vec2): Pair<Element, Vec2>? {

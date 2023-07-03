@@ -74,7 +74,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
 
     override fun init() {
-        this.prefMaxSize = Vec2(-1, Int.MAX_VALUE)
+        this.preferredSize = Vec2(-1, Int.MAX_VALUE)
     }
 
     private fun initLeft(): Element {

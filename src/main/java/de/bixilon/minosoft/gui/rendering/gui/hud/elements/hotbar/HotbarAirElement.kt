@@ -90,7 +90,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
     }
 
     override fun update() {
-        _size = if (bubbles + poppingCount <= 0) {
+        this.size = if (bubbles + poppingCount <= 0) {
             Vec2.EMPTY
         } else {
             Vec2(BUBBLE_SIZE.x * (bubbles + poppingCount), BUBBLE_SIZE.y)

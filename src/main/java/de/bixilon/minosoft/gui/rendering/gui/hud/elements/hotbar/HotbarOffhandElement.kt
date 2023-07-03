@@ -37,7 +37,7 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, frame.slots)
 
     init {
-        _size = Vec2(frame.size)
+        this.size = Vec2(frame.size)
         val margin = if (offArm == Arms.LEFT) {
             marginOf(right = 5.0f)
         } else {

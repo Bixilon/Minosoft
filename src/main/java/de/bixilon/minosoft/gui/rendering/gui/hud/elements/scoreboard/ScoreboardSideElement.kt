@@ -64,7 +64,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         }
 
     init {
-        _prefMaxSize = Vec2(MAX_SCOREBOARD_WIDTH, -1)
+        preferredSize = Vec2(MAX_SCOREBOARD_WIDTH, -1)
         tryUpdate()
     }
 
@@ -95,7 +95,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     override fun update() {
         val objective = objective
         if (objective == null) {
-            _size = Vec2.EMPTY
+            size = Vec2.EMPTY
             return
         }
 
@@ -117,7 +117,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         recalculate = false
         val objective = objective
         if (objective == null) {
-            _size = Vec2.EMPTY
+            size = Vec2.EMPTY
             return
         }
         val size = Vec2(MIN_WIDTH, TEXT_PROPERTIES.lineHeight)
@@ -128,16 +128,16 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
         for ((_, element) in scores) {
             element.tryUpdate()
-            size.x = maxOf(size.x, element.prefSize.x)
+            size.x = maxOf(size.x, element.wishedSize.x)
         }
 
         size.y += TEXT_PROPERTIES.lineHeight * minOf(MAX_SCORES, scores.size)
 
 
 
-        _size = size
-        nameBackgroundElement.size = Vec2(size.x, TEXT_PROPERTIES.lineHeight)
-        backgroundElement.size = size
+        this.size = size
+        nameBackgroundElement.preferredSize = Vec2(size.x, TEXT_PROPERTIES.lineHeight)
+        backgroundElement.preferredSize = size
 
 
         for ((_, element) in scores) {

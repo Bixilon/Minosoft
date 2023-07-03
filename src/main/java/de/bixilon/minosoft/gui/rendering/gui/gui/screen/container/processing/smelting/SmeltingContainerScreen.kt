@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -43,14 +43,14 @@ abstract class SmeltingContainerScreen<C : SmeltingContainer>(
         if (fuelArea != null) {
             val fuelImage = AtlasImageElement(guiRenderer, fuelAtlasElement, size = fuelArea.size)
             val fuel = fuel
-            fuelImage.prefMaxSize.y = (fuelImage.size.y * fuel)
+            fuelImage.preferredSize = Vec2(-1, fuelImage.size.y * fuel)
             fuelImage.uvStart = Vec2(fuelAtlasElement?.uvStart?.x ?: 0.0f, interpolateLinear(1.0f - fuel, fuelAtlasElement?.uvStart?.y ?: 0.0f, fuelAtlasElement?.uvEnd?.y ?: 0.0f))
             fuelImage.render(offset + fuelArea.start + Vec2i(0, fuelArea.size.y - fuelImage.size.y), consumer, options)
         }
         if (processArea != null) {
             val process = process
             val processImage = AtlasImageElement(guiRenderer, processAtlasElement, size = processArea.size)
-            processImage.prefMaxSize.x = (processImage.size.x * process)
+            processImage.preferredSize = Vec2(processImage.size.x * process, -1)
             processImage.uvEnd = Vec2(interpolateLinear(process, processAtlasElement?.uvStart?.x ?: 0.0f, processAtlasElement?.uvEnd?.x ?: 0.0f), processAtlasElement?.uvEnd?.y ?: 0.0f)
             processImage.render(offset + processArea.start, consumer, options)
         }

@@ -32,14 +32,11 @@ abstract class Screen(
     protected val background = AtlasImageElement(guiRenderer, context.textures.whiteTexture, size = guiRenderer.screen.scaled, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
     override val layoutOffset: Vec2 = Vec2(0, 0)
 
-    override var _size: Vec2
-        get() = guiRenderer.screen.scaled
-        set(value) {}
 
     override fun update() {
         super.update()
-        background.size = guiRenderer.screen.scaled
-        _size = guiRenderer.screen.scaled
+        background.preferredSize = guiRenderer.screen.scaled
+        size = guiRenderer.screen.scaled
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

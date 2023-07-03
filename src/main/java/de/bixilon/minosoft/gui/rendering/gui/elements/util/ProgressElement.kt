@@ -40,7 +40,7 @@ open class ProgressElement(
     constructor(guiRenderer: GUIRenderer, atlasElements: Array<AtlasElement?>, progress: Float = 0.0f) : this(guiRenderer, atlasElements.getOrNull(0), atlasElements.getOrNull(1), progress)
 
     init {
-        _size = emptyAtlasElement?.size?.let { Vec2(it) } ?: Vec2.EMPTY
+        size = emptyAtlasElement?.size?.let { Vec2(it) } ?: Vec2.EMPTY
         tryUpdate()
     }
 

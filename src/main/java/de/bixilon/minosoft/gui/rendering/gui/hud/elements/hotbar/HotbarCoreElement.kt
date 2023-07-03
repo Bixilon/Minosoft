@@ -109,8 +109,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Childe
             size.y += experience.size.y + VERTICAL_SPACING
         }
 
-        _size = size
-        cache.invalidate()
+        this.size = size
     }
 
     override fun tick() {

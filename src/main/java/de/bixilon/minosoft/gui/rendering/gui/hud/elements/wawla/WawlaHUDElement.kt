@@ -75,10 +75,6 @@ class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         element.forceRender(offset + BACKGROUND_SIZE, consumer, options)
     }
 
-    override fun update(child: Element) {
-        invalidate()
-    }
-
     companion object : HUDBuilder<LayoutedGUIElement<WawlaHUDElement>> {
         private const val BACKGROUND_SIZE = 5
         override val identifier: ResourceLocation = "minosoft:wawla".toResourceLocation()

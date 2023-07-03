@@ -69,7 +69,7 @@ open class ButtonElement(
 
         val text = this.textElement.size
         val size = text + padding.spaceSize
-        _size = size
+        this.size = size
         invalidate()
     }
 

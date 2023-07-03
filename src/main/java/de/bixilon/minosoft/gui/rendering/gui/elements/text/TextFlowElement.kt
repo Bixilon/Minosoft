@@ -47,10 +47,7 @@ open class TextFlowElement(
     var active by GuiDelegate(false)
     var scrollOffset by GuiDelegate(0)
 
-
-    override var prefSize: Vec2
-        get() = maxSize
-        set(value) = Unit
+    override val wishedSize: Vec2 get() = maxSize
 
     private var textSize = Vec2.EMPTY
 
@@ -125,8 +122,8 @@ open class TextFlowElement(
 
 
         this.textSize = textSize
-        _size = Vec2(maxSize.x, visibleLines.size * (properties.lineHeight + properties.lineSpacing))
-        background.size = size
+        this.size = Vec2(maxSize.x, visibleLines.size * (properties.lineHeight + properties.lineSpacing))
+        background.preferredSize = size
         this.visibleLines = visibleLines
         cache.invalidate()
     }

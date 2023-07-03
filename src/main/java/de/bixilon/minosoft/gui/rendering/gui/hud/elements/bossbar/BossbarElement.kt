@@ -70,7 +70,7 @@ class BossbarElement(
         val size = Vec2(BAR_SIZE)
         size.x = maxOf(size.x, titleElement.size.x)
         size.y += titleElement.size.y
-        _size = size
+        this.size = size
     }
 
     companion object {

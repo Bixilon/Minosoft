@@ -51,19 +51,6 @@ open class DynamicImageElement(
     var uvEnd by GuiDelegate(uvEnd)
     var tint by GuiDelegate(tint)
 
-    override var size: Vec2
-        get() = super.size
-        set(value) {
-            super.size = value
-            cache.invalidate()
-        }
-
-    override var prefSize: Vec2
-        get() = size
-        set(value) {
-            size = value
-        }
-
     init {
         this.size = size
         this.texture = texture
@@ -90,5 +77,10 @@ open class DynamicImageElement(
         if (texture === this.texture) {
             invalidate()
         }
+    }
+
+    override fun update() {
+        super.update()
+        size = preferredSize?.min(maxSize) ?: Vec2.EMPTY
     }
 }

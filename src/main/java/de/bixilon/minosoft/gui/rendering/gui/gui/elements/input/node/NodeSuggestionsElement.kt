@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2, val inputElement: NodeTextInputElement) : Popper(guiRenderer, position) {
-    private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2(300, TextRenderProperties.DEFAULT.lineHeight) } }
+    private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { preferredSize = Vec2(300, TextRenderProperties.DEFAULT.lineHeight) } }
     private var textCount = 0
     private var offset = 0
     var suggestions: List<Suggestion>? = null
@@ -103,7 +103,7 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2, val input
             textCount++
         }
         this.textCount = textCount
-        this._size = size
+        this.size = size
         tryUpdate()
     }
 

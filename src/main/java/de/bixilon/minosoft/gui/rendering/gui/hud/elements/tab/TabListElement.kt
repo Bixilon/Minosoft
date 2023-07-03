@@ -76,7 +76,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     )
 
     init {
-        super.prefMaxSize = Vec2(-1, -1)
+        super.preferredSize = null
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -147,7 +147,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
         // Check width
         for ((index, entry) in toRender.withIndex()) {
-            val prefWidth = entry.prefSize
+            val prefWidth = entry.wishedSize
 
             currentMaxPrefWidth = maxOf(currentMaxPrefWidth, prefWidth.x)
             if ((index + 1) % ENTRIES_PER_COLUMN == 0) {
@@ -194,7 +194,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         this.columns = columns
         size += (BACKGROUND_PADDING * 2)
         this.size = size
-        background.size = size
+        background.preferredSize = size
 
         cache.invalidate()
         needsApply = false

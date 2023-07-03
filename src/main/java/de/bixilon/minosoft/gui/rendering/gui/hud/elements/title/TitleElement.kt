@@ -77,7 +77,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
         size.x = maxOf(size.x, subtitle.size.x)
         size.y += subtitle.size.y
 
-        this._size = size
+        this.size = size
     }
 
     fun show() {

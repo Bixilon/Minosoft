@@ -76,7 +76,7 @@ open class SwitchElement(
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
         val background = AtlasImageElement(guiRenderer, getTexture())
-        background.size = SIZE
+        background.preferredSize = SIZE
 
         background.render(offset, consumer, options)
 

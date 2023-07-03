@@ -134,7 +134,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             this.hoverTextSize = null
         }
 
-        _size = size
+        this.size = size
         cache.invalidate()
     }
 
@@ -148,7 +148,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
 
     override fun postInit() {
-        prefMaxSize = Vec2(-1, -1)
+        preferredSize = null
 
         val connection = context.connection
         val player = connection.player

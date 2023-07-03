@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SingleChildrenManager
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.MouseTrackedPopper
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -41,7 +40,7 @@ open class TextPopper(
         textElement.render(offset + Vec2(5, 5), consumer, options)
     }
 
-    override fun update(child: Element) {
+    override fun update() {
         recalculateSize()
     }
 

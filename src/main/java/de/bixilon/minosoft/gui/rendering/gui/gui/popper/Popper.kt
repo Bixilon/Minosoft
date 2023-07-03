@@ -45,7 +45,7 @@ abstract class Popper(
     override fun update() {
         super.update()
         calculateLayoutOffset()
-        backgroundElement.size = size
+        backgroundElement.preferredSize = size
     }
 
 

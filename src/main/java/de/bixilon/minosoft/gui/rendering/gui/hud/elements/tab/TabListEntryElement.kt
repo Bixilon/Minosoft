@@ -31,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.DynamicImageElem
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.nullCompare
 import java.util.*
 
@@ -60,14 +59,6 @@ class TabListEntryElement(
     private var name: String = item.name
     private var teamName = item.team?.name
 
-    override var prefSize: Vec2 = Vec2.EMPTY
-    override var prefMaxSize: Vec2
-        get() = Vec2(width, HEIGHT)
-        set(value) = Unit
-    override var size: Vec2
-        get() = maxSize
-        set(value) = Unit
-
     var width by GuiDelegate(width)
 
     init {
@@ -95,12 +86,13 @@ class TabListEntryElement(
                 else -> 1
             }]
         )
-        nameElement.prefMaxSize = Vec2(maxOf(0.0f, maxSize.x - pingElement.size.x - skinElement.size.x - INNER_MARGIN), HEIGHT)
+        nameElement.preferredSize = Vec2(maxOf(0.0f, maxSize.x - pingElement.size.x - skinElement.size.x - INNER_MARGIN), HEIGHT)
 
         nameElement.text = displayName
 
-        this.prefSize = Vec2((PADDING * 6) + skinElement.size.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
-        background.size = size
+        this.preferredSize = Vec2((PADDING * 6) + skinElement.size.x + nameElement.wishedSize.x + INNER_MARGIN + pingElement.wishedSize.x, HEIGHT)
+        background.preferredSize = size
+        this.size = Vec2(width, HEIGHT)
         cache.invalidate()
     }
 

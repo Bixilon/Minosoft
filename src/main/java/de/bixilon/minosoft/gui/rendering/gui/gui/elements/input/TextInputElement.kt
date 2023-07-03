@@ -132,8 +132,8 @@ open class TextInputElement(
         textElement.text = TextComponent(_value)
         textElement.unmark()
         cutOffText()
-        _size = Vec2(textElement.size)
-        backgroundElement.size = prefMaxSize
+        size = Vec2(textElement.size)
+        backgroundElement.preferredSize = this.size
 
         cursorOffset = if (_pointer == 0) {
             Vec2i.EMPTY
@@ -326,7 +326,7 @@ open class TextInputElement(
             return true
         }
         val leftText = TextElement(guiRenderer, value, background = null)
-        leftText.prefMaxSize = Vec2(position.x, size.y)
+        leftText.preferredSize = Vec2(position.x, size.y)
         var pointer = 0
         var heightLeft = position.y
         for (line in leftText.info.lines) {

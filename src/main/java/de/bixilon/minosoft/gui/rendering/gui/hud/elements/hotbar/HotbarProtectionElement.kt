@@ -64,7 +64,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     override fun update() {
         val protection = this::protection.acknowledge()
 
-        _size = if (protection <= 0.0f) Vec2.EMPTY else SIZE
+        size = if (protection <= 0.0f) Vec2.EMPTY else SIZE
     }
 
 

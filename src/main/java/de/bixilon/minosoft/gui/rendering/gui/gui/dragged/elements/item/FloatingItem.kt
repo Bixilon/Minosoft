@@ -35,7 +35,7 @@ class FloatingItem(
     private val itemElement = RawItemElement(guiRenderer, size, stack, this)
 
     init {
-        _size = size
+        this.size = size
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

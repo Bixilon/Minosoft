@@ -66,9 +66,9 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
 
     init {
-        messages.prefMaxSize = Vec2(chatProfile.width, chatProfile.height)
-        chatProfile::width.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(it, messages.prefMaxSize.y) }
-        chatProfile::height.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(messages.prefMaxSize.x, it) }
+        messages.preferredSize = Vec2(chatProfile.width, chatProfile.height)
+        chatProfile::width.observeRendering(this, context = context) { messages.preferredSize = Vec2(it, messages.wishedSize.y) }
+        chatProfile::height.observeRendering(this, context = context) { messages.preferredSize = Vec2(messages.wishedSize.x, it) }
         tryUpdate()
         input.onChangeCallback = {
             while (input._value.startsWith(' ')) {
@@ -134,9 +134,9 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     override fun update() {
         super.update()
-        _size = Vec2(guiRenderer.screen.scaled.x, maxOf(messages.size.y, internal.size.y) + (LINES * TEXT_PROPERTIES.lineHeight) + CHAT_INPUT_MARGIN * 2)
+        size = Vec2(guiRenderer.screen.scaled.x, maxOf(messages.size.y, internal.size.y) + (LINES * TEXT_PROPERTIES.lineHeight) + CHAT_INPUT_MARGIN * 2)
         if (active) {
-            input.prefMaxSize = Vec2(size.x - CHAT_INPUT_MARGIN * 2, (LINES * TEXT_PROPERTIES.lineHeight))
+            input.preferredSize = Vec2(size.x - CHAT_INPUT_MARGIN * 2, (LINES * TEXT_PROPERTIES.lineHeight))
             input.invalidate()
         }
     }

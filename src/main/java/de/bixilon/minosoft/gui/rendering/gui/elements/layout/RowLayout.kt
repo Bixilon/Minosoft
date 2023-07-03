@@ -41,6 +41,7 @@ open class RowLayout(
     spacing: Float = 0.0f,
 ) : Element(guiRenderer), ChildAlignable, ChildedElement {
     override val children = ListChildrenManager(this)
+    override var wishedSize: Vec2 = size
 
     var spacing by GuiDelegate(spacing)
 
@@ -116,11 +117,11 @@ open class RowLayout(
         val lastIndex = children.size - 1
 
         for (child in children) {
-            prefSize.x = maxOf(prefSize.x, xMargin + child.prefSize.x)
-            prefSize.y += child.prefSize.y
+            prefSize.x = maxOf(prefSize.x, xMargin + wishedSize.x)
+            prefSize.y += child.wishedSize.y
         }
 
-        _prefSize = prefSize
+        this.wishedSize = prefSize
 
         fun addY(y: Float): Boolean {
             val available = maxSize.y - size.y
@@ -157,8 +158,7 @@ open class RowLayout(
             }
         }
 
-        _size = size
-        cache.invalidate()
+        this.size = size
     }
 
     override fun tick() {

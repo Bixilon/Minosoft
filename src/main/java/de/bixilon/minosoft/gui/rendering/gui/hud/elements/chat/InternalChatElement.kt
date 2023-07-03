@@ -39,9 +39,9 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         get() = true
 
     init {
-        messages.prefMaxSize = Vec2(chatProfile.width, chatProfile.height)
-        chatProfile::width.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(it, messages.prefMaxSize.y) }
-        chatProfile::height.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(messages.prefMaxSize.x, it) }
+        messages.preferredSize = Vec2(chatProfile.width, chatProfile.height)
+        chatProfile::width.observeRendering(this, context = context) { messages.preferredSize = Vec2(it, messages.wishedSize.y) }
+        chatProfile::height.observeRendering(this, context = context) { messages.preferredSize = Vec2(messages.wishedSize.x, it) }
         tryUpdate()
     }
 
@@ -57,7 +57,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
     override fun update() {
         super.update()
-        _size = Vec2(messages.prefMaxSize.x, messages.size.y + ChatElement.CHAT_INPUT_MARGIN * 2)
+        this.size = Vec2(messages.wishedSize.x, messages.size.y + ChatElement.CHAT_INPUT_MARGIN * 2)
     }
 
     override fun onOpen() {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,11 +37,6 @@ open class AtlasImageElement(
     var uvEnd: Vec2? by GuiDelegate(null)
     var tint by GuiDelegate(tint)
 
-    override var prefSize: Vec2
-        get() = size
-        set(value) {
-            size = value
-        }
 
     var texturePart: TexturePart? = texturePart
         set(value) {
@@ -57,6 +52,7 @@ open class AtlasImageElement(
         }
 
     init {
+        this.preferredSize = size
         this.size = size
     }
 
@@ -73,5 +69,10 @@ open class AtlasImageElement(
         val texture = texture ?: return
         val textureLike = texturePart ?: return
         consumer.addQuad(offset, offset + size, texture, uvStart ?: textureLike.uvStart, uvEnd ?: textureLike.uvEnd, tint, options)
+    }
+
+    override fun update() {
+        super.update()
+        size = preferredSize?.min(maxSize) ?: Vec2.EMPTY
     }
 }
