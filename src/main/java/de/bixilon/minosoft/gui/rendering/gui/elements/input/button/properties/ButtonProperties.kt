@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button.properties
 
 data class ButtonProperties(
-    val dynamic: Boolean = true,
     val disabled: Boolean = false,
     val hand: Boolean = true,
     val sound: ButtonSound = ButtonSound.DEFAULT,

@@ -23,19 +23,25 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import org.testng.Assert.assertEquals
 
 class GuiTestConsumer : GUIVertexConsumer {
     val chars: MutableList<RendererdCodePoint> = mutableListOf()
     val quads: MutableList<RendererdQuad> = mutableListOf()
 
-    override val order: Array<Pair<Int, Int>> get() = emptyArray()
+    override val order: Array<Pair<Int, Int>> get() = arrayOf(0 to 0, 1 to 1, 2 to 2, 3 to 3)
     override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) = Broken()
+
     override fun ensureSize(size: Int) = Unit
 
     override fun addQuad(start: Vec2, end: Vec2, texture: ShaderIdentifiable?, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         quads += RendererdQuad(Vec2(start), Vec2(end))
+    }
+
+    override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+        chars += RendererdCodePoint(Vec2(start))
     }
 
     data class RendererdCodePoint(val start: Vec2)

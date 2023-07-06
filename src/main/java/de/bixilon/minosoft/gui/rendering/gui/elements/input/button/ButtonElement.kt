@@ -35,7 +35,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
 
 open class ButtonElement(
@@ -65,12 +64,19 @@ open class ButtonElement(
     }
 
     protected fun updateSize() {
-        if (!properties.dynamic) return
+        val preferred = this::preferredSize.acknowledge()
+        if (preferred != null) {
+            this.size = preferred
+        } else {
+            val text = this.textElement.size
+            val size = text + padding.spaceSize
+            this.size = size
+        }
+    }
 
-        val text = this.textElement.size
-        val size = text + padding.spaceSize
-        this.size = size
-        invalidate()
+    override fun update() {
+        super.update()
+        updateSize()
     }
 
     private fun getTexture() = when {
@@ -83,7 +89,6 @@ open class ButtonElement(
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
         AtlasImageElement(guiRenderer, getTexture(), size).render(offset, consumer, options)
-        offset += padding.offset
 
         val textSize = textElement.size
         textElement.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, options)

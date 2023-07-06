@@ -25,29 +25,32 @@ class ButtonElementTest {
     fun `basic verification`() {
         var invoked = 0
         val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { invoked++ }
-        assertEquals(button.size, Vec2(10.5, 19))
+        assertEquals(button.size, Vec2(11.5, 19))
     }
 
     fun `fixed size verification`() {
         var invoked = 0
         val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { invoked++ }
         button.preferredSize = Vec2(123, 123)
+        button.tryUpdate()
         assertEquals(button.size, Vec2(123, 123))
     }
 
     fun `basic rendering`() {
         var invoked = 0
         val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { invoked++ }
+        button.textProperties = button.textProperties.copy(shadow = false)
+        button.tryUpdate()
         val consumer = GuiTestConsumer()
 
         button.forceRender(Vec2(3, 3), consumer, null)
 
         consumer.assert(
-            GuiTestConsumer.RendererdQuad(Vec2(3, 3), Vec2(13.5, 22.5)),
+            GuiTestConsumer.RendererdQuad(Vec2(3, 3), Vec2(13.5, 22)),
         )
         consumer.assert(
-            GuiTestConsumer.RendererdCodePoint(Vec2(7, 7)),
-            GuiTestConsumer.RendererdCodePoint(Vec2(8.5, 7)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(7, 8)),
+            GuiTestConsumer.RendererdCodePoint(Vec2(8.5, 8)),
         )
     }
 }

@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
-import de.bixilon.minosoft.util.KUtil
 
 object RenderConstants {
     val EXPERIENCE_BAR_LEVEL_COLOR = "#80ff20".asColor()
@@ -47,7 +46,7 @@ object RenderConstants {
 
     const val UV_ADD = 0.001f
 
-    const val DISABLE_GUI_CACHE = false
+    var DISABLE_GUI_CACHE = false
 
     const val OPENGL_DEBUG_MODE = false
     const val DIRTY_BUFFER_UNBIND = true

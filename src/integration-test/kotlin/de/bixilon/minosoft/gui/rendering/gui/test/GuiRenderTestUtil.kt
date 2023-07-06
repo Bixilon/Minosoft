@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.gui.rendering.RenderConstants.DISABLE_GUI_CACHE
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.types.dummy.DummyFontType
@@ -32,6 +33,9 @@ import de.bixilon.minosoft.test.IT.OBJENESIS
 import org.testng.Assert.assertEquals
 
 object GuiRenderTestUtil {
+    init {
+        DISABLE_GUI_CACHE = true
+    }
 
     private fun createContext(): RenderContext {
         val context = OBJENESIS.newInstance(RenderContext::class.java)

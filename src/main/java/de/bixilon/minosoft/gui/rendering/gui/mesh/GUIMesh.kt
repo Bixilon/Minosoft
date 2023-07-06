@@ -42,7 +42,7 @@ class GUIMesh(
         val position: Vec2,
         val uv: Vec2,
         val indexLayerAnimation: Int,
-            val tintColor: RGBColor,
+        val tintColor: RGBColor,
     ) {
         companion object : MeshStruct(GUIMeshStruct::class)
     }

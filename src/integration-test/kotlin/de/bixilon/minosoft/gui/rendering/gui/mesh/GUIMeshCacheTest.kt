@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -24,8 +25,19 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
-@Test(groups = ["gui"])
+@Test(groups = ["gui_cache"], dependsOnGroups = ["gui"])
 class GUIMeshCacheTest {
+
+    @Test(groups = ["gui_cache"], dependsOnGroups = ["gui"], priority = -1)
+    fun enableCache() {
+        RenderConstants.DISABLE_GUI_CACHE = false
+    }
+
+    @Test(groups = ["gui_cache"], dependsOnGroups = ["gui"], priority = Int.MAX_VALUE)
+    fun disableCacheAgain() {
+        RenderConstants.DISABLE_GUI_CACHE = true
+    }
+
 
     fun `first render call`() {
         var called = 0

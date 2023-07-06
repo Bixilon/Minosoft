@@ -35,21 +35,21 @@ class ElementUpdateTest {
 
     fun update() {
         val element = child()
-        element.update()
+        element.tryUpdate()
         assertFalse(element.update)
         assertEquals(element.updateCalls, 1)
     }
 
     fun `set property to same value`() {
         val element = child()
-        element.update()
+        element.tryUpdate()
         element.property = "abc"
         assertFalse(element.update)
     }
 
     fun `set property to different value`() {
         val element = child()
-        element.update()
+        element.tryUpdate()
         element.property = "bcd"
         assertTrue(element.update)
     }
@@ -60,7 +60,7 @@ class ElementUpdateTest {
         child.parent = parent
 
         assertTrue(child.update)
-        parent.update()
+        parent.tryUpdate()
         assertFalse(child.update)
 
         child.property = "bcd"
@@ -98,7 +98,7 @@ class ElementUpdateTest {
         }
 
         override fun update() {
-            super<Element>.update()
+            super.update()
             updateCalls++
         }
     }

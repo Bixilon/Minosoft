@@ -49,7 +49,7 @@ open class TextElement(
     guiRenderer: GUIRenderer,
     text: Any,
     background: TextBackground? = TextBackground.DEFAULT,
-    override var parent: Element? = null,
+    parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : Element(guiRenderer, text.charCount * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
     private var activeElement: TextComponent? = null
@@ -73,6 +73,7 @@ open class TextElement(
     override var chatComponent by GuiDelegate(ChatComponent.of(text, translator = Minosoft.LANGUAGE_MANAGER /*guiRenderer.connection.language*/))
 
     init {
+        this.parent = parent
         tryUpdate()
     }
 
@@ -80,7 +81,7 @@ open class TextElement(
         var wished = Vec2.EMPTY
         if (!empty) {
             val info = TextRenderInfo(Vec2.MAX)
-            ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
+            ChatComponentRenderer.render(TextOffset(), context.font, this::textProperties.rendering(), info, null, null, text)
             wished = info.size
         }
         wishedSize = wished.withBackgroundSize()
@@ -89,7 +90,7 @@ open class TextElement(
     private fun updateText(text: ChatComponent) {
         val info = TextRenderInfo(maxSize.withBackgroundSize(-1.0f))
         if (!empty) {
-            ChatComponentRenderer.render(TextOffset(), context.font, properties, info, null, null, text)
+            ChatComponentRenderer.render(TextOffset(), context.font, this::textProperties.rendering(), info, null, null, text)
             info.rewind()
         }
         size = info.size.withBackgroundSize()
@@ -97,6 +98,8 @@ open class TextElement(
     }
 
     override fun update() {
+        this::textProperties.acknowledge()
+        this::background.acknowledge()
         val text = this::chatComponent.acknowledge()
         empty = text.message.isEmpty()
         updateWishSize(text)
@@ -142,7 +145,7 @@ open class TextElement(
         }
         consumer.ensureSize(vertices)
 
-        ChatComponentRenderer.render(TextOffset(textOffset), context.font, properties, info, consumer, options, text)
+        ChatComponentRenderer.render(TextOffset(textOffset), context.font, this::textProperties.rendering(), info, consumer, options, text)
         info.rewind()
     }
 
