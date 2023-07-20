@@ -15,8 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.minosoft.data.registries.item.items.armor.DefendingArmorItem.Companion.getProtection
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -34,7 +32,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
 
     init {
         tryUpdate()
-        context.connection.player.equipment::equipment.observe(this) { protection = guiRenderer.context.connection.player.equipment.getProtection() }
+        //TODO: context.connection.player.equipment::equipment.observeMap(this) { protection = guiRenderer.context.connection.player.equipment.getProtection() }
     }
 
 

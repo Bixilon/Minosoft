@@ -17,6 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.Arms.Companion.opposite
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SingleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -24,7 +26,8 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.marginOf
 
-class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
+class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ChildedElement {
+    override val children = SingleChildrenManager()
     private val frames = arrayOf(
         guiRenderer.atlasManager["minecraft:offhand_right_arm_frame"],
         guiRenderer.atlasManager["minecraft:offhand_left_arm_frame"],
