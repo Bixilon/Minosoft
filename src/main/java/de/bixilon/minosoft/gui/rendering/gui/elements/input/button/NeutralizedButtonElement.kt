@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.properties.ButtonProperties
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 
 open class NeutralizedButtonElement(
     guiRenderer: GUIRenderer,
@@ -43,10 +46,18 @@ open class NeutralizedButtonElement(
     }
 
     override fun tick() {
-        if (!neutralized && left-- < 0) {
+        if (!neutralized && left-- <= 0) {
             neutralize()
         }
         super.tick()
+    }
+
+    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+        for (click in 0 until count) {
+            super.onMouseAction(position, button, action, count)
+        }
+
+        return true
     }
 
     override fun onClose() {

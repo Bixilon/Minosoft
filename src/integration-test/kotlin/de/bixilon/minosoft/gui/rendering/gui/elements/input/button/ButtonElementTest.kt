@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiTestConsumer
 import org.testng.Assert.assertEquals
@@ -23,22 +25,19 @@ import org.testng.annotations.Test
 class ButtonElementTest {
 
     fun `basic verification`() {
-        var invoked = 0
-        val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { invoked++ }
+        val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { }
         assertEquals(button.size, Vec2(11.5, 19))
     }
 
     fun `fixed size verification`() {
-        var invoked = 0
-        val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { invoked++ }
+        val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { }
         button.preferredSize = Vec2(123, 123)
         button.tryUpdate()
         assertEquals(button.size, Vec2(123, 123))
     }
 
     fun `basic rendering`() {
-        var invoked = 0
-        val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { invoked++ }
+        val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { }
         button.textProperties = button.textProperties.copy(shadow = false)
         button.tryUpdate()
         val consumer = GuiTestConsumer()
@@ -52,5 +51,12 @@ class ButtonElementTest {
             GuiTestConsumer.RendererdCodePoint(Vec2(7, 8)),
             GuiTestConsumer.RendererdCodePoint(Vec2(8.5, 8)),
         )
+    }
+
+    fun `basic invocation`() {
+        var invoked = 0
+        val button = ButtonElement(GuiRenderTestUtil.create(), "bc") { invoked++ }
+        button.onMouseAction(Vec2(0, 0), MouseButtons.LEFT, MouseActions.PRESS, 1)
+        assertEquals(invoked, 1)
     }
 }

@@ -84,6 +84,20 @@ class TextElementTest {
         element.assetSize(Vec2(9.0f, 37.0f))
     }
 
+    fun `size if padding set`() {
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = null, properties = TextRenderProperties(shadow = false))
+        element.padding = Vec4(11.0f)
+        element.tryUpdate()
+        element.assetSize(Vec2(27.0f, 55.0f))
+    }
+
+    fun `size if padding and background`() {
+        val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = TextBackground(size = Vec4(2.0f)), properties = TextRenderProperties(shadow = false))
+        element.padding = Vec4(11.0f)
+        element.tryUpdate()
+        element.assetSize(Vec2(31.0f, 59.0f))
+    }
+
     fun `limited size but not actually limited`() {
         val element = TextElement(GuiRenderTestUtil.create(), "bcd\nbcd\nbcd", background = null, properties = TextRenderProperties(shadow = false))
         element.preferredSize = Vec2(10.0f, 11.0f)
