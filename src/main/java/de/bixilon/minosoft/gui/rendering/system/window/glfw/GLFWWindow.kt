@@ -239,6 +239,10 @@ class GLFWWindow(
             OSTypes.LINUX -> {
                 glfwWindowHintString(GLFW_X11_CLASS_NAME, "de.bixilon.minosoft")
                 glfwWindowHintString(GLFW_X11_INSTANCE_NAME, "Minosoft")
+
+                if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) {
+                    glfwWindowHintString(GLFW_WAYLAND_APP_ID, "de.bixilon.minosoft")
+                }
             }
 
             else -> {}
