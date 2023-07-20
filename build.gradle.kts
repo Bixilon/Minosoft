@@ -398,12 +398,20 @@ tasks.test {
     useJUnitPlatform()
 }
 
-lateinit var git: Grgit
-lateinit var commit: Commit
+var git: Grgit? = null
+var commit: Commit? = null
 
 fun loadGit() {
-    git = Grgit.open(mapOf("currentDir" to project.rootDir))
-    commit = git.log { LogOp(git.repository).apply { maxCommits = 1 } }.first()
+    val git: Grgit
+    try {
+        git = Grgit.open(mapOf("currentDir" to project.rootDir))
+    } catch (error: Throwable) {
+        logger.warn("Can not open git folder: $error")
+        return
+    }
+    this.git = git
+    val commit = git.log { LogOp(git.repository).apply { maxCommits = 1 } }.first()
+    this.commit = commit
     val tag = git.tag.list().find { it.commit == commit }
     var nextVersion = if (tag != null) {
         stable = true
@@ -426,7 +434,7 @@ val versionJsonTask = tasks.register("versionJson") {
     outputs.upToDateWhen { false }
 
     doFirst {
-        fun generateGit(): Map<String, Any> {
+        fun generateGit(git: Grgit, commit: Commit): Map<String, Any> {
             return mapOf(
                 "branch" to git.branch.current().name,
                 "commit" to commit.id,
@@ -442,7 +450,11 @@ val versionJsonTask = tasks.register("versionJson") {
             )
         )
         try {
-            versionInfo["git"] = generateGit()
+            val git = git
+            val commit = commit
+            if (git != null && commit != null) {
+                versionInfo["git"] = generateGit(git, commit)
+            }
         } catch (exception: Throwable) {
             exception.printStackTrace()
         }
