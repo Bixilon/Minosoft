@@ -32,7 +32,7 @@ class FadingTextElement(
     times: FadingTimes = FadingTimes.DEFAULT,
     background: TextBackground? = TextBackground.DEFAULT,
     parent: Element? = null,
-    properties: TextRenderProperties,
+    properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : TextElement(guiRenderer = guiRenderer, text = text, background = background, parent, properties) {
     private var phase: FadePhase? = null
 
