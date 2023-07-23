@@ -115,7 +115,7 @@ data class EntityType(
                 for ((name, value) in it) {
                     val type = MinecraftAttributes[name.toResourceLocation().fix()]
                     if (type == null) {
-                        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not get entity attribute type: $name" }
+                        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not get entity attribute type: $name ($type)" }
                         continue
                     }
                     attributes[type] = value.unsafeCast()
