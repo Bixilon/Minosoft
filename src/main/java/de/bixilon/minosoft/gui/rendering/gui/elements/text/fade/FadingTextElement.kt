@@ -35,6 +35,7 @@ class FadingTextElement(
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : TextElement(guiRenderer = guiRenderer, text = text, background = background, parent, properties) {
+    override val updateOnInitialize: Boolean get() = false
     private var phase: FadePhase? by GuiDelegate(null)
 
     var times: FadingTimes = times
