@@ -21,6 +21,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.ListChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -40,7 +42,8 @@ class TabListEntryElement(
     uuid: UUID,
     val item: PlayerAdditional,
     width: Float,
-) : Element(guiRenderer), Pollable, Comparable<TabListEntryElement> {
+) : Element(guiRenderer), Pollable, Comparable<TabListEntryElement>, ChildedElement {
+    override val children = ListChildrenManager(this)
 
     init {
         parent = tabList

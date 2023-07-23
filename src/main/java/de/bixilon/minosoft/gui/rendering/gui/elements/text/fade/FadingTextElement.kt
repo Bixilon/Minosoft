@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.background.TextBackground
@@ -34,7 +35,7 @@ class FadingTextElement(
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : TextElement(guiRenderer = guiRenderer, text = text, background = background, parent, properties) {
-    private var phase: FadePhase? = null
+    private var phase: FadePhase? by GuiDelegate(null)
 
     var times: FadingTimes = times
         set(value) {
@@ -46,6 +47,7 @@ class FadingTextElement(
 
     init {
         show()
+        tryUpdate()
     }
 
     private fun updateSize() {
@@ -76,6 +78,7 @@ class FadingTextElement(
 
     override fun update() {
         updatePhase(millis())
+        super.update()
         updateSize()
     }
 

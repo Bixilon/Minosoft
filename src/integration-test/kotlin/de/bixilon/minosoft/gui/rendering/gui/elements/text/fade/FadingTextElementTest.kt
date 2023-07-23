@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil
 import de.bixilon.minosoft.gui.rendering.gui.test.GuiRenderTestUtil.assetSize
 import org.testng.Assert.assertFalse
+import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["font", "gui"])
@@ -36,5 +37,14 @@ class FadingTextElementTest {
     fun `size of single char`() {
         val element = FadingTextElement(GuiRenderTestUtil.create(), "b", background = null, properties = TextRenderProperties(shadow = false))
         element.assetSize(Vec2(0.5f, 11.0f))
+    }
+
+    fun `update call`() {
+        val element = FadingTextElement(GuiRenderTestUtil.create(), "b", background = null, properties = TextRenderProperties(shadow = false))
+        element.text = "bcd"
+        assertTrue(element.update)
+        element.tryUpdate()
+        assertFalse(element.update)
+        element.assetSize(Vec2(5.0f, 11.0f))
     }
 }
