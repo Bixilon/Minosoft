@@ -33,10 +33,15 @@ abstract class Screen(
     override val screenOffset: Vec2 = Vec2(0, 0)
 
 
+    init {
+        construct()
+        background.parent = this
+    }
+
     override fun update() {
-        super.update()
         background.preferredSize = guiRenderer.screen.scaled
         size = guiRenderer.screen.scaled
+        super.update()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
