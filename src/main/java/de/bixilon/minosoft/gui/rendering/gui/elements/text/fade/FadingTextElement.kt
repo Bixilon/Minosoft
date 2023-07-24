@@ -35,7 +35,6 @@ class FadingTextElement(
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : TextElement(guiRenderer = guiRenderer, text = text, background = background, parent, properties) {
-    override val updateOnInitialize: Boolean get() = false
     private var phase: FadePhase? by GuiDelegate(null)
 
     var times: FadingTimes = times
@@ -48,8 +47,10 @@ class FadingTextElement(
 
     init {
         show()
-        tryUpdate()
+        super.construct()
     }
+
+    override fun construct() = Unit // don't get called by TextElement before phase delegate is initialized
 
     private fun updateSize() {
         this.size = if (phase == null) Vec2.EMPTY else info.size.withBackgroundSize()

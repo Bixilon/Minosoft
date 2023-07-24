@@ -52,7 +52,6 @@ open class TextElement(
     parent: Element? = null,
     properties: TextRenderProperties = TextRenderProperties.DEFAULT,
 ) : Element(guiRenderer, text.charCount * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
-    protected open val updateOnInitialize: Boolean get() = true
     private var activeElement: TextComponent? = null
     lateinit var info: TextRenderInfo
         private set
@@ -75,9 +74,7 @@ open class TextElement(
 
     init {
         this.parent = parent
-        if (updateOnInitialize) {
-            update()
-        }
+        construct()
     }
 
     private fun updateWishSize(text: ChatComponent) {

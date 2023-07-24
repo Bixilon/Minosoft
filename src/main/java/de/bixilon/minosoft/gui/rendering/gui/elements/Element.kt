@@ -140,4 +140,9 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
     protected inline fun <T> KProperty0<T>.delegate(): GuiDelegate<T> = this.apply { isAccessible = true }.getDelegate().unsafeCast()
     protected inline fun <T> KProperty0<T>.acknowledge(): T = delegate().acknowledge()
     protected inline fun <T> KProperty0<T>.rendering(): T = delegate().rendering()
+
+
+    protected open fun construct() {
+        tryUpdate()
+    }
 }

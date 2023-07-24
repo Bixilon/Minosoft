@@ -47,4 +47,6 @@ class FadingTextElementTest {
         assertFalse(element.update)
         element.assetSize(Vec2(5.0f, 11.0f))
     }
+
+    // TODO: rendering (alpha), show, force hide, empty again
 }
