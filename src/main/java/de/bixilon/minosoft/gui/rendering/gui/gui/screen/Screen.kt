@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -27,10 +27,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 abstract class Screen(
     guiRenderer: GUIRenderer,
-) : Element(guiRenderer), LayoutedElement, ChildedElement {
+) : Element(guiRenderer), ScreenPositionedElement, ChildedElement {
     override val children = SetChildrenManager(this)
     protected val background = AtlasImageElement(guiRenderer, context.textures.whiteTexture, size = guiRenderer.screen.scaled, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
-    override val layoutOffset: Vec2 = Vec2(0, 0)
+    override val screenOffset: Vec2 = Vec2(0, 0)
 
 
     override fun update() {

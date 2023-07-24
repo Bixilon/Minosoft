@@ -20,18 +20,18 @@ import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, HorizontalAlignments.CENTER, 2.0f), LayoutedElement, Initializable {
+class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, HorizontalAlignments.CENTER, 2.0f), ScreenPositionedElement, Initializable {
     private val connection = context.connection
     private val bossbars: MutableMap<Bossbar, BossbarElement> = synchronizedMapOf()
 
-    override val layoutOffset: Vec2
+    override val screenOffset: Vec2
         get() = Vec2((guiRenderer.screen.scaled.x - super.size.x) / 2, 2)
 
     val atlasManager = guiRenderer.atlasManager

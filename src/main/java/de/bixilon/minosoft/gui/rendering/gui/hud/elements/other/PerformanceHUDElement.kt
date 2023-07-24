@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.SingleChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
@@ -31,10 +31,10 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, ChildedElement {
+class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ScreenPositionedElement, ChildedElement {
     override val children = SingleChildrenManager()
     private val text = TextElement(guiRenderer, "", parent = this)
-    override val layoutOffset: Vec2 = Vec2(2, 2)
+    override val screenOffset: Vec2 = Vec2(2, 2)
     private var fps by GuiDelegate(0.0)
     private var hide by GuiDelegate(false)
 

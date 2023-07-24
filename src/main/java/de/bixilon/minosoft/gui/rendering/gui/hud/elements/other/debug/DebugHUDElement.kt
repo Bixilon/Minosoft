@@ -38,7 +38,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
@@ -60,11 +60,11 @@ import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.SystemInformation
 
-class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
+class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ScreenPositionedElement, Initializable {
     private val connection = context.connection
     private val left = initLeft()
     private val right = initRight()
-    override val layoutOffset: Vec2 = Vec2.EMPTY
+    override val screenOffset: Vec2 = Vec2.EMPTY
     override val ignoreScreenDimensions: Boolean get() = true
 
 

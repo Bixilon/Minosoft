@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,21 +16,21 @@ package de.bixilon.minosoft.gui.rendering.gui.gui
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 
-open class LayoutedGUIElement<T : LayoutedElement>(
+open class LayoutedGUIElement<T : ScreenPositionedElement>(
     val layout: T,
 ) : GUIMeshElement<Element>(layout.unsafeCast()) {
 
     override fun prepareAsync() {
-        prepareAsync(layout.layoutOffset)
+        prepareAsync(layout.screenOffset)
     }
 
     protected open fun getOffset(position: Vec2): Vec2? {
-        val layoutOffset = layout.layoutOffset
+        val layoutOffset = layout.screenOffset
         val size = element.size
         if (position isSmaller layoutOffset) {
             return null

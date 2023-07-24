@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -48,7 +48,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
-class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, AsyncDrawable, ChildedElement {
+class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ScreenPositionedElement, Initializable, AsyncDrawable, ChildedElement {
     override val children = ListChildrenManager(this)
     val header = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER), parent = this)
     val footer = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER), parent = this)
@@ -65,7 +65,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         private set
     private var columns = 0
 
-    override val layoutOffset: Vec2
+    override val screenOffset: Vec2
         get() = Vec2((guiRenderer.screen.scaled.x - super.size.x) / 2, 20)
 
     private val atlasManager = guiRenderer.atlasManager

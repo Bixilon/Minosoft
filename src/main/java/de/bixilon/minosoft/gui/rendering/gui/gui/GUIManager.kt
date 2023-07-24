@@ -25,8 +25,8 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIElement
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.CreditsScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.SignEditorScreen
@@ -283,7 +283,7 @@ class GUIManager(
         onMouseMove(guiRenderer.currentMousePosition)
     }
 
-    fun push(element: LayoutedElement) {
+    fun push(element: ScreenPositionedElement) {
         val layouted = LayoutedGUIElement(element)
         layouted.init()
         layouted.postInit()

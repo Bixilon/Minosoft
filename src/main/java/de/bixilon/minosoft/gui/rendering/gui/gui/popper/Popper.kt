@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GuiDelegate
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -29,10 +29,10 @@ abstract class Popper(
     guiRenderer: GUIRenderer,
     position: Vec2,
     val background: Boolean = true,
-) : Element(guiRenderer), LayoutedElement {
+) : Element(guiRenderer), ScreenPositionedElement {
     private val backgroundElement = ColorElement(guiRenderer, Vec2.EMPTY, color = RGBColor(10, 10, 20, 230))
     open var dead = false
-    override var layoutOffset: Vec2 = EMPTY
+    override var screenOffset: Vec2 = EMPTY
         protected set
     var position by GuiDelegate(position)
 
@@ -65,12 +65,12 @@ abstract class Popper(
         layoutOffset = position - Vec2(0, size.y + POSITION_OFFSET)
         if (!(layoutOffset isSmaller EMPTY)) {
             layoutOffset.x = minOf(maxOf(layoutOffset.x - size.x / 2 - POSITION_OFFSET, 0.0f), windowSize.x - size.x) // try to center element, but clamp on edges (try not to make the popper go out of the window)
-            this.layoutOffset = layoutOffset
+            this.screenOffset = layoutOffset
             return
         }
 
         // failover
-        this.layoutOffset = EMPTY
+        this.screenOffset = EMPTY
     }
 
     fun show() {

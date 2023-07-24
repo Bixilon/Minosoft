@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.colle
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTimes
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -37,7 +37,7 @@ import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // ToDo: Remove subtitle when hidden
-class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, ChildedElement {
+class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ScreenPositionedElement, Initializable, ChildedElement {
     override val children = SetChildrenManager(this)
     val title = FadingTextElement(guiRenderer, "", background = null, properties = TextRenderProperties(scale = 4.0f), parent = this)
     val subtitle = FadingTextElement(guiRenderer, "", background = null, properties = TextRenderProperties(scale = 2.0f), parent = this)
@@ -49,7 +49,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
             subtitle.times = value
         }
 
-    override val layoutOffset: Vec2
+    override val screenOffset: Vec2
         get() {
             val layoutOffset = Vec2.EMPTY
 

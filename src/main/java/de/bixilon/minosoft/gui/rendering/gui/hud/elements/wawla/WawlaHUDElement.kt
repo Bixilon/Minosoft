@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
@@ -35,13 +35,13 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.input.interaction.AttackHandler
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable, ChildedElement {
+class WawlaHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ScreenPositionedElement, AsyncDrawable, ChildedElement {
     override val children = SetChildrenManager(this)
     private var element: WawlaElement? = null
 
     val profile = guiRenderer.connection.profiles.gui.hud.wawla
 
-    override val layoutOffset: Vec2
+    override val screenOffset: Vec2
         get() = Vec2((guiRenderer.screen.scaled.x - ((element?.size?.x ?: 0.0f) + BACKGROUND_SIZE)) / 2, BACKGROUND_SIZE)
     override val skipDraw: Boolean
         get() = !profile.enabled

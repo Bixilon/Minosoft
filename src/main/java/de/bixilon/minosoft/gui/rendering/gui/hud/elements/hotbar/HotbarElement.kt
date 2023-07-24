@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.colle
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTimes
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -44,7 +44,7 @@ import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
-class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, ChildedElement {
+class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ScreenPositionedElement, Initializable, ChildedElement {
     override val children = ListChildrenManager(this)
     val core = HotbarCoreElement(guiRenderer)
 
@@ -60,7 +60,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
     private var itemTextSize: Vec2? = null
 
 
-    override val layoutOffset: Vec2
+    override val screenOffset: Vec2
         get() = size.let { Vec2((guiRenderer.screen.scaled.x - it.x) / 2, guiRenderer.screen.scaled.y - it.y) }
 
     private var renderElements = setOf(

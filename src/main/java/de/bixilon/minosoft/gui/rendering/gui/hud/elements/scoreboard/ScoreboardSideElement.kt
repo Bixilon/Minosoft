@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.Singl
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -44,14 +44,14 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, AsyncDrawable, ChildedElement {
+class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), ScreenPositionedElement, Initializable, AsyncDrawable, ChildedElement {
     override val children = SingleChildrenManager()
     private val backgroundElement = ColorElement(guiRenderer, size = Vec2.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
     private val nameBackgroundElement = ColorElement(guiRenderer, size = Vec2.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
     private val nameElement = TextElement(guiRenderer, "", background = null, parent = this)
     private val scores: LockMap<ScoreboardScore, ScoreboardScoreElement> = lockMapOf()
 
-    override val layoutOffset: Vec2
+    override val screenOffset: Vec2
         get() = super.size.let { return@let Vec2(guiRenderer.screen.scaled.x - it.x, (guiRenderer.screen.scaled.y - it.y) / 2) }
     override val skipDraw: Boolean
         get() = objective == null
