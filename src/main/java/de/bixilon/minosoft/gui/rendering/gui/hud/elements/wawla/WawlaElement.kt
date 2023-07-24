@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.ListChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -25,7 +27,8 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.format
 
-abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawla.guiRenderer) {
+abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawla.guiRenderer), ChildedElement {
+    override val children = ListChildrenManager(this)
     abstract val elements: List<Element?>
 
 
