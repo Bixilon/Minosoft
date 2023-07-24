@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.ChildedElement
+import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.ChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.abstractions.children.manager.collection.SetChildrenManager
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ScreenPositionedElement
@@ -28,14 +29,18 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 abstract class Screen(
     guiRenderer: GUIRenderer,
 ) : Element(guiRenderer), ScreenPositionedElement, ChildedElement {
-    override val children = SetChildrenManager(this)
+    override val children: ChildrenManager = SetChildrenManager(this)
     protected val background = AtlasImageElement(guiRenderer, context.textures.whiteTexture, size = guiRenderer.screen.scaled, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
     override val screenOffset: Vec2 = Vec2(0, 0)
 
 
     init {
         construct()
+    }
+
+    override fun construct() {
         background.parent = this
+        super.construct()
     }
 
     override fun update() {
