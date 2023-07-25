@@ -51,6 +51,7 @@ class FramebufferManager(
 
 
     override fun draw() {
+        context.system.framebuffer = null
         context.system.polygonMode = PolygonModes.FILL
         world.draw()
         gui.draw()
