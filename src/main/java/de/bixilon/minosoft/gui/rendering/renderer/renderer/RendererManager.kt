@@ -22,6 +22,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
@@ -99,8 +100,9 @@ class RendererManager(
                 if (phase.invokeSkip(renderer)) {
                     continue
                 }
-                renderSystem.framebuffer = renderer.framebuffer
-                renderSystem.polygonMode = renderer.polygonMode
+                val framebuffer = renderer.framebuffer
+                renderSystem.framebuffer = framebuffer?.framebuffer
+                renderSystem.polygonMode = framebuffer?.polygonMode ?: PolygonModes.DEFAULT
                 phase.invokeSetup(renderer)
                 phase.invokeDraw(renderer)
             }
@@ -150,7 +152,7 @@ class RendererManager(
             if (renderer.skipPre) {
                 continue
             }
-            renderSystem.polygonMode = renderer.polygonMode
+            renderSystem.polygonMode = renderer.framebuffer?.polygonMode ?: PolygonModes.DEFAULT
             renderer.drawPre()
         }
     }
@@ -166,7 +168,7 @@ class RendererManager(
             if (renderer.skipPost) {
                 continue
             }
-            renderSystem.polygonMode = renderer.polygonMode
+            renderSystem.polygonMode = renderer.framebuffer?.polygonMode ?: PolygonModes.DEFAULT
             renderer.drawPost()
         }
     }

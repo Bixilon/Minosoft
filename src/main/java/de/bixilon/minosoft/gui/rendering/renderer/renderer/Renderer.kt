@@ -15,17 +15,13 @@ package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
+import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 
 interface Renderer {
     val context: RenderContext
     val renderSystem: RenderSystem
-    val framebuffer: Framebuffer?
-        get() = context.framebuffer.world.framebuffer
-    val polygonMode: PolygonModes
-        get() = context.framebuffer.world.polygonMode
+    val framebuffer: IntegratedFramebuffer? get() = context.framebuffer.world
 
     fun preAsyncInit(latch: AbstractLatch) = Unit
     fun init(latch: AbstractLatch) = Unit

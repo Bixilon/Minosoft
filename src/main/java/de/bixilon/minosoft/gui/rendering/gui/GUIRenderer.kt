@@ -20,6 +20,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.DraggedManager
@@ -30,8 +31,6 @@ import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
@@ -54,10 +53,7 @@ class GUIRenderer(
     var halfSize: Vec2 = Vec2()
         private set
     var resolutionUpdate = true
-    override val framebuffer: Framebuffer
-        get() = context.framebuffer.gui.framebuffer
-    override val polygonMode: PolygonModes
-        get() = context.framebuffer.gui.polygonMode
+    override val framebuffer: IntegratedFramebuffer get() = context.framebuffer.gui
     val shader = context.system.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
     val atlasManager = AtlasManager(context)
 

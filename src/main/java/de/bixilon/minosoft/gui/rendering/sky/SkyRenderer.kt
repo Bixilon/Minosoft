@@ -19,6 +19,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
+import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -27,9 +28,7 @@ import de.bixilon.minosoft.gui.rendering.sky.planet.MoonRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.scatter.SunScatterRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -39,8 +38,7 @@ class SkyRenderer(
     override val context: RenderContext,
 ) : Renderer, PreDrawable, AsyncRenderer {
     override val renderSystem: RenderSystem = context.system
-    override val framebuffer: Framebuffer? = null
-    override val polygonMode: PolygonModes = PolygonModes.DEFAULT
+    override val framebuffer: IntegratedFramebuffer? = null
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
     var effects by observed(connection.world.dimension.effects)
     var matrix by observed(Mat4())
