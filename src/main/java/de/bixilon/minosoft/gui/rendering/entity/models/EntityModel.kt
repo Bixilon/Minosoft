@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.entity.models
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.gui.rendering.chunk.view.WorldVisibilityGraph
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.ModelUpdater
 import de.bixilon.minosoft.gui.rendering.entity.hitbox.EntityHitbox
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
 
 abstract class EntityModel<E : Entity>(
     val renderer: EntityRenderer,

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.types
 
+import de.bixilon.minosoft.gui.rendering.chunk.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
-import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 
 interface LightShader : AbstractShader {
     val lightmap: LightmapBuffer

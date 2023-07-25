@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import java.util.*
 
 class MultipartBakedModel(

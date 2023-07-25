@@ -26,13 +26,13 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.chunk.entities.DefaultEntityModels
+import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityModels
 import de.bixilon.minosoft.gui.rendering.models.builtin.BuiltinModels
 import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedItemModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.block.RootModel
-import de.bixilon.minosoft.gui.rendering.world.entities.DefaultEntityModels
-import de.bixilon.minosoft.gui.rendering.world.entities.EntityModels
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

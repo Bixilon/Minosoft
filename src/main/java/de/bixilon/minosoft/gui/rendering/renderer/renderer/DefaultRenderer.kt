@@ -13,21 +13,21 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.border.WorldBorderRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.chunk.ChunkBorderRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.clouds.CloudRenderer
-import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.world.border.WorldBorderRenderer
-import de.bixilon.minosoft.gui.rendering.world.chunk.ChunkBorderRenderer
-import de.bixilon.minosoft.gui.rendering.world.outline.BlockOutlineRenderer
 
 object DefaultRenderer {
     val list = mutableListOf(
         // order dependent (from back to front)
         SkyRenderer,
-        WorldRenderer,
+        ChunkRenderer,
         BlockOutlineRenderer,
         ParticleRenderer,
 

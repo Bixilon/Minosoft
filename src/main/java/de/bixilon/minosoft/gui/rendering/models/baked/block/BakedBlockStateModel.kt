@@ -20,14 +20,14 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.world.container.block.SectionOcclusion.Companion.isFullyOpaque
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.chunk.preparer.cull.SolidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import java.util.*
 
 class BakedBlockStateModel(
