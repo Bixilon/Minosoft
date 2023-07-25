@@ -15,13 +15,21 @@ package de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.world
 
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 
 class WorldRendererPipeline(val renderer: RendererManager) : Drawable {
+    private val framebuffer = renderer.context.framebuffer.world
     private var elements: Array<PipelineElement> = emptyArray()
 
 
     private fun build(): Array<PipelineElement> {
-        TODO()
+        val list: MutableList<PipelineElement> = mutableListOf()
+        for (renderer in renderer) {
+            if (renderer !is WorldRenderer) continue
+            list += renderer.layers.elements
+        }
+
+        return list.sorted().toTypedArray()
     }
 
     fun rebuild() {
@@ -30,8 +38,11 @@ class WorldRendererPipeline(val renderer: RendererManager) : Drawable {
 
 
     override fun draw() {
+        renderer.context.system.framebuffer = framebuffer.framebuffer
+        renderer.context.system.polygonMode = framebuffer.polygonMode
+
         for (element in elements) {
-            element.draw()
+            element.draw(renderer.context)
         }
     }
 }

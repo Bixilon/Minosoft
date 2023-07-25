@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer.world
 
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.world.PipelineElement
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 
 class LayerSettings {
+    val elements: MutableList<PipelineElement> = mutableListOf()
 
     fun register(layer: RenderLayer, shader: Shader?, renderer: () -> Unit, skip: (() -> Boolean)? = null) {
-        TODO()
+        elements += PipelineElement(layer, shader, renderer, skip)
     }
 }

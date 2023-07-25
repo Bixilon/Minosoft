@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.world.WorldRendererPipeline
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
@@ -24,9 +25,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 
 class RendererPipeline(private val renderer: RendererManager) : Drawable {
-    private val world = WorldRendererPipeline(renderer)
+    val world = WorldRendererPipeline(renderer)
 
-    private val rest: MutableList<Renderer> = mutableListOf()
+    private val rest: MutableList<Drawable> = mutableListOf()
 
     private val pre: MutableList<PreDrawable> = mutableListOf()
     private val post: MutableList<PostDrawable> = mutableListOf()
@@ -43,7 +44,6 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
 
     private fun drawRest() {
         for (renderer in rest) {
-            if (renderer !is Drawable) continue
             if (renderer.skipDraw) continue
             if (renderer is SkipAll && renderer.skipAll) continue
 
@@ -79,4 +79,15 @@ class RendererPipeline(private val renderer: RendererManager) : Drawable {
         drawPost()
     }
 
+    operator fun plusAssign(renderer: Renderer) {
+        if (renderer is WorldRenderer) {
+            return world.rebuild()
+        }
+        if (renderer is Drawable) {
+            rest += renderer
+            // TODO: sort for framebuffer
+        }
+        if (renderer is PreDrawable) pre += renderer
+        if (renderer is PostDrawable) post += renderer
+    }
 }

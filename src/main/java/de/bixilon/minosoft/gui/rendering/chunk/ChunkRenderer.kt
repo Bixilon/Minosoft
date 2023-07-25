@@ -43,6 +43,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
+import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TransparentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -93,7 +94,7 @@ class ChunkRenderer(
     override fun registerLayers() {
         layers.register(OpaqueLayer, shader, this::drawBlocksOpaque) { visible.opaque.isEmpty() }
         layers.register(TransparentLayer, transparentShader, this::drawBlocksTransparent) { visible.transparent.isEmpty() }
-        layers.register(TransparentLayer, transparentShader, this::drawBlocksTranslucent) { visible.translucent.isEmpty() }
+        layers.register(TranslucentLayer, shader, this::drawBlocksTranslucent) { visible.translucent.isEmpty() }
         layers.register(TextLayer, textShader, this::drawText) { visible.text.isEmpty() }
         layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visible.blockEntities.isEmpty() }
     }

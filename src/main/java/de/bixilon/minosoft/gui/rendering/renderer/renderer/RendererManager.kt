@@ -23,13 +23,14 @@ import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.RendererPipeline
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class RendererManager(
     val context: RenderContext,
-) : Drawable {
+) : Drawable, Iterable<Renderer> {
     private val renderers: MutableMap<RendererBuilder<*>, Renderer> = linkedMapOf()
     private val pipeline = RendererPipeline(this)
     private val connection = context.connection
@@ -41,6 +42,7 @@ class RendererManager(
         if (previous != null) {
             Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Renderer $previous ($builder) got replaced by $renderer!" }
         }
+        pipeline += renderer
         return renderer
     }
 
@@ -63,6 +65,12 @@ class RendererManager(
     }
 
     fun init(latch: AbstractLatch) {
+        for (renderer in renderers.values) {
+            if (renderer !is WorldRenderer) continue
+            renderer.registerLayers()
+        }
+        pipeline.world.rebuild()
+
         runAsync(latch, Renderer::preAsyncInit)
 
         for (renderer in renderers.values) {
@@ -100,5 +108,9 @@ class RendererManager(
     override fun draw() {
         prepare()
         pipeline.draw()
+    }
+
+    override fun iterator(): Iterator<Renderer> {
+        return renderers.values.iterator()
     }
 }

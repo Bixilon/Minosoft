@@ -13,6 +13,26 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.world
 
-import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 
-class PipelineElement : Comparable<PipelineElement>, Drawable
+class PipelineElement(
+    val layer: RenderLayer,
+    val shader: Shader?,
+    val renderer: () -> Unit,
+    val skip: (() -> Boolean)?
+) : Comparable<PipelineElement> {
+
+    fun draw(context: RenderContext) {
+        if (skip != null && skip.invoke()) return
+
+        context.system.set(layer.settings)
+        shader?.use()
+        renderer.invoke()
+    }
+
+    override fun compareTo(other: PipelineElement): Int {
+        return layer.priority.compareTo(other.layer.priority)
+    }
+}

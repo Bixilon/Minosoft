@@ -89,7 +89,7 @@ class RenderLoop(
 
             context.textures.staticTextures.animator.draw()
 
-            context.renderer.render()
+            context.renderer.draw()
 
             context.system.reset() // Reset to enable depth mask, etc again
 
