@@ -32,8 +32,8 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class EntityRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : Renderer, OpaqueDrawable {
+) : WorldRenderer, OpaqueDrawable {
     override val renderSystem: RenderSystem = context.system
     val profile = connection.profiles.entity
     val visibilityGraph = context.camera.visibilityGraph

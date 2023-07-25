@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
@@ -42,7 +43,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ChunkBorderRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : AsyncRenderer, OpaqueDrawable, MeshSwapper {
+) : WorldRenderer, AsyncRenderer, OpaqueDrawable, MeshSwapper {
     private val profile = connection.profiles.rendering
     override val renderSystem: RenderSystem = context.system
     private var offset = Vec3i.EMPTY

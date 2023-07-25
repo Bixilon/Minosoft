@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.world.border.WorldBorderState
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
@@ -37,7 +37,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldBorderRenderer(
     override val context: RenderContext,
-) : Renderer, AsyncRenderer, TranslucentDrawable, SkipAll {
+) : WorldRenderer, AsyncRenderer, TranslucentDrawable, SkipAll {
     override val renderSystem: RenderSystem = context.system
     private val shader = renderSystem.createShader(minosoft("world/border")) { WorldBorderShader(it) }
     private var borderMesh: WorldBorderMesh? = null

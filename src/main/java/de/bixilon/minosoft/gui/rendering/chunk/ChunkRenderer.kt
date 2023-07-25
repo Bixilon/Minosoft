@@ -36,8 +36,8 @@ import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkShader
 import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkTextShader
 import de.bixilon.minosoft.gui.rendering.chunk.util.WorldRendererChangeListener
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
@@ -55,7 +55,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ChunkRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : Renderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
+) : WorldRenderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
     private val profile = connection.profiles.block
     override val renderSystem: RenderSystem = context.system
     val visibilityGraph = context.camera.visibilityGraph

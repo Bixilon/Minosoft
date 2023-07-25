@@ -13,22 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
-import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
-import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 
-interface Renderer {
-    val context: RenderContext
-    val renderSystem: RenderSystem
-    val framebuffer: IntegratedFramebuffer?
-
-    fun preAsyncInit(latch: AbstractLatch) = Unit
-    fun init(latch: AbstractLatch) = Unit
-    fun asyncInit(latch: AbstractLatch) = Unit
-    fun postInit(latch: AbstractLatch) = Unit
-    fun postAsyncInit(latch: AbstractLatch) = Unit
-
-    fun prePrepareDraw() = Unit
-    fun postPrepareDraw() = Unit
+/**
+ * A renderer that renders in world space (world framebuffer)
+ */
+interface WorldRenderer : Renderer {
+    override val framebuffer: IntegratedFramebuffer? get() = context.framebuffer.world
 }

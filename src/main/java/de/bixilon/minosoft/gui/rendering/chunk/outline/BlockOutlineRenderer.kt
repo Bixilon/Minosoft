@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
@@ -41,7 +42,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class BlockOutlineRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : AsyncRenderer, OtherDrawable, MeshSwapper {
+) : WorldRenderer, AsyncRenderer, OtherDrawable, MeshSwapper {
     private val profile = connection.profiles.block.outline
     override val renderSystem: RenderSystem = context.system
 

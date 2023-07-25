@@ -26,8 +26,8 @@ import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
@@ -45,7 +45,7 @@ class CloudRenderer(
     private val sky: SkyRenderer,
     val connection: PlayConnection,
     override val context: RenderContext,
-) : Renderer, OpaqueDrawable, AsyncRenderer {
+) : WorldRenderer, OpaqueDrawable, AsyncRenderer {
     override val renderSystem: RenderSystem = context.system
     val shader = renderSystem.createShader(minosoft("sky/clouds")) { CloudShader(it) }
     val matrix = CloudMatrix()
