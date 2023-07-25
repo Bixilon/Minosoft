@@ -27,11 +27,12 @@ import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
+import de.bixilon.minosoft.gui.rendering.system.base.layer.TransparentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
-import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -44,7 +45,8 @@ import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
 class ParticleRenderer(
     private val connection: PlayConnection,
     override val context: RenderContext,
-) : WorldRenderer, AsyncRenderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
+) : WorldRenderer, AsyncRenderer, SkipAll, AbstractParticleRenderer {
+    override val layers = LayerSettings()
     override val renderSystem: RenderSystem = context.system
     private val profile = connection.profiles.particle
     private val transparentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, true) }
@@ -99,6 +101,11 @@ class ParticleRenderer(
 
     val size: Int
         get() = particles.size
+
+    override fun registerLayers() {
+        layers.register(TransparentLayer, transparentShader, this::drawTransparent)
+        layers.register(TranslucentLayer, translucentShader, this::drawTranslucent)
+    }
 
     override fun init(latch: AbstractLatch) {
         profile::maxAmount.observe(this, true) { maxAmount = minOf(it, MAXIMUM_AMOUNT) }
@@ -242,21 +249,11 @@ class ParticleRenderer(
         translucentMesh.load()
     }
 
-    override fun setupTransparent() {
-        super.setupTransparent()
-        transparentShader.use()
-    }
-
-    override fun drawTransparent() {
+    private fun drawTransparent() {
         transparentMesh.draw()
     }
 
-    override fun setupTranslucent() {
-        super.setupTranslucent()
-        translucentShader.use()
-    }
-
-    override fun drawTranslucent() {
+    private fun drawTranslucent() {
         translucentMesh.draw()
     }
 

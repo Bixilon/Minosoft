@@ -33,9 +33,11 @@ import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
+import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -46,7 +48,8 @@ import java.util.concurrent.atomic.AtomicInteger
 class EntityRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : WorldRenderer, OpaqueDrawable {
+) : WorldRenderer {
+    override val layers = LayerSettings()
     override val renderSystem: RenderSystem = context.system
     val profile = connection.profiles.entity
     val visibilityGraph = context.camera.visibilityGraph
@@ -61,6 +64,10 @@ class EntityRenderer(
         private set
 
     private var reset = false
+
+    override fun registerLayers() {
+        layers.register(EntityLayer, null, this::draw) { visibleCount <= 0 }
+    }
 
     override fun init(latch: AbstractLatch) {
         connection.events.listen<EntitySpawnEvent> { event ->
@@ -134,11 +141,7 @@ class EntityRenderer(
         models.lock.release()
     }
 
-    override fun setupOpaque() {
-        context.system.reset(faceCulling = false)
-    }
-
-    override fun drawOpaque() {
+    private fun draw() {
         // ToDo: Probably more transparent
         models.lock.acquire()
         for (model in models.unsafe.values) {
@@ -156,6 +159,10 @@ class EntityRenderer(
         models.lock.release()
     }
 
+    private object EntityLayer : RenderLayer {
+        override val settings = RenderSettings(faceCulling = false)
+        override val priority: Int get() = 1000
+    }
 
     companion object : RendererBuilder<EntityRenderer> {
         private val HITBOX_TOGGLE_KEY_COMBINATION = minosoft("toggle_hitboxes")

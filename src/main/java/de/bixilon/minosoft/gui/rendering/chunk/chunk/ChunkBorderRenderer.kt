@@ -27,9 +27,11 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
+import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
@@ -43,7 +45,8 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ChunkBorderRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : WorldRenderer, AsyncRenderer, OpaqueDrawable, MeshSwapper {
+) : WorldRenderer, AsyncRenderer, MeshSwapper {
+    override val layers = LayerSettings()
     private val profile = connection.profiles.rendering
     override val renderSystem: RenderSystem = context.system
     private var offset = Vec3i.EMPTY
@@ -55,8 +58,9 @@ class ChunkBorderRenderer(
     override var nextMesh: LineMesh? = null
     override var unload = false
 
-    override val skipOpaque: Boolean
-        get() = mesh == null || !profile.chunkBorder.enabled
+    override fun registerLayers() {
+        layers.register(ChunkBorderLayer, context.shaders.genericColorShader, this::draw) { mesh == null || !profile.chunkBorder.enabled }
+    }
 
     override fun init(latch: AbstractLatch) {
         context.input.bindings.register(
@@ -189,17 +193,17 @@ class ChunkBorderRenderer(
         }
     }
 
-    override fun setupOpaque() {
-        context.system.reset(
+    private fun draw() {
+        mesh?.draw()
+    }
+
+    private object ChunkBorderLayer : RenderLayer {
+        override val settings = RenderSettings(
             polygonOffset = true,
             polygonOffsetFactor = -1.0f,
             polygonOffsetUnit = -2.0f,
         )
-        context.shaders.genericColorShader.use()
-    }
-
-    override fun drawOpaque() {
-        mesh?.draw()
+        override val priority get() = 1500
     }
 
 

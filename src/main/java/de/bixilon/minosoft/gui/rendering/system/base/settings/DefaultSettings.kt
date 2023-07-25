@@ -11,13 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.renderer.renderer
+package de.bixilon.minosoft.gui.rendering.system.base.settings
 
-import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
+import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 
-/**
- * A renderer that renders in world space (world framebuffer)
- */
-interface WorldRenderer : Renderer {
-    override val framebuffer: IntegratedFramebuffer? get() = context.framebuffer.world
+object DefaultSettings {
+    val OPAQUE = RenderSettings()
+    val TRANSPARENT = RenderSettings(blending = true)
+    val TRANSLUCENT = RenderSettings(
+        blending = true,
+        sourceRGB = BlendingFunctions.SOURCE_ALPHA,
+        destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
+        sourceAlpha = BlendingFunctions.SOURCE_ALPHA,
+        destinationAlpha = BlendingFunctions.DESTINATION_ALPHA,
+    )
 }

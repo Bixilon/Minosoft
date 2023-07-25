@@ -28,10 +28,10 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.popper.PopperManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -42,7 +42,7 @@ import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 class GUIRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : AsyncRenderer, InputHandler, OtherDrawable {
+) : AsyncRenderer, InputHandler, Drawable {
     private val profile = connection.profiles.gui
     override val renderSystem = context.system
     var scaledSize: Vec2 by observed(Vec2(context.window.size))
@@ -130,7 +130,7 @@ class GUIRenderer(
         dragged.drawAsync()
     }
 
-    override fun drawOther() {
+    override fun draw() {
         hud.draw()
         gui.draw()
         popper.draw()

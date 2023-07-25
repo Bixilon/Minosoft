@@ -37,13 +37,14 @@ import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkTextShader
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererChangeListener
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
-import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
+import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
+import de.bixilon.minosoft.gui.rendering.system.base.layer.TransparentLayer
+import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
@@ -55,7 +56,8 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ChunkRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : WorldRenderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
+) : WorldRenderer {
+    override val layers = LayerSettings()
     private val profile = connection.profiles.block
     override val renderSystem: RenderSystem = context.system
     val visibilityGraph = context.camera.visibilityGraph
@@ -88,6 +90,13 @@ class ChunkRenderer(
     var cameraChunkPosition = Vec2i.EMPTY
     var cameraSectionHeight = 0
 
+    override fun registerLayers() {
+        layers.register(OpaqueLayer, shader, this::drawBlocksOpaque) { visible.opaque.isEmpty() }
+        layers.register(TransparentLayer, transparentShader, this::drawBlocksTransparent) { visible.transparent.isEmpty() }
+        layers.register(TransparentLayer, transparentShader, this::drawBlocksTranslucent) { visible.translucent.isEmpty() }
+        layers.register(TextLayer, textShader, this::drawText) { visible.text.isEmpty() }
+        layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visible.blockEntities.isEmpty() }
+    }
 
     override fun init(latch: AbstractLatch) {
         context.models.load(latch)
@@ -218,49 +227,33 @@ class ChunkRenderer(
         loadingQueue.work()
     }
 
-    override fun setupOpaque() {
-        super.setupOpaque()
-        shader.use()
-    }
-
-    override fun drawOpaque() {
+    private fun drawBlocksOpaque() {
         for (mesh in visible.opaque) {
             mesh.draw()
         }
+    }
 
-        context.system.depth = DepthFunctions.LESS_OR_EQUAL
-        for (blockEntity in visible.blockEntities) {
-            blockEntity.draw(context)
+    private fun drawBlocksTransparent() {
+        for (mesh in visible.transparent) {
+            mesh.draw()
         }
     }
 
-    override fun setupTranslucent() {
-        super.setupTranslucent()
-        shader.use()
-    }
-
-    override fun drawTranslucent() {
+    private fun drawBlocksTranslucent() {
         for (mesh in visible.translucent) {
             mesh.draw()
         }
     }
 
-    override fun setupTransparent() {
-        super.setupTransparent()
-        transparentShader.use()
-    }
-
-    override fun drawTransparent() {
-        for (mesh in visible.transparent) {
-            mesh.draw()
-        }
-
-        context.system.depth = DepthFunctions.LESS_OR_EQUAL
-        context.system[RenderingCapabilities.POLYGON_OFFSET] = true
-        context.system.polygonOffset(-2.5f, -2.5f)
-        textShader.use()
+    private fun drawText() {
         for (mesh in visible.text) {
             mesh.draw()
+        }
+    }
+
+    private fun drawBlockEntities() {
+        for (blockEntity in visible.blockEntities) {
+            blockEntity.draw(context)
         }
     }
 
@@ -306,6 +299,16 @@ class ChunkRenderer(
         this.visible = visible
     }
 
+
+    private object TextLayer : RenderLayer {
+        override val settings = RenderSettings(blending = true, depth = DepthFunctions.LESS_OR_EQUAL, polygonOffset = true, polygonOffsetFactor = -2.5f, polygonOffsetUnit = -2.5f)
+        override val priority: Int get() = 1500
+    }
+
+    private object BlockEntitiesLayer : RenderLayer {
+        override val settings = RenderSettings(depth = DepthFunctions.LESS_OR_EQUAL)
+        override val priority: Int get() = 500
+    }
 
     companion object : RendererBuilder<ChunkRenderer> {
 

@@ -24,11 +24,13 @@ import de.bixilon.minosoft.data.world.border.WorldBorderState
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
-import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -37,7 +39,8 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldBorderRenderer(
     override val context: RenderContext,
-) : WorldRenderer, AsyncRenderer, TranslucentDrawable, SkipAll {
+) : WorldRenderer, AsyncRenderer, SkipAll {
+    override val layers = LayerSettings()
     override val renderSystem: RenderSystem = context.system
     private val shader = renderSystem.createShader(minosoft("world/border")) { WorldBorderShader(it) }
     private var borderMesh: WorldBorderMesh? = null
@@ -47,6 +50,10 @@ class WorldBorderRenderer(
     override val skipAll: Boolean
         get() = border.getDistanceTo(context.connection.player.physics.position) > MAX_DISTANCE
     private var reload = false
+
+    override fun registerLayers() {
+        layers.register(WorldBorderLayer, shader, this::draw) { this.borderMesh == null }
+    }
 
     override fun init(latch: AbstractLatch) {
         shader.native.defines["MAX_DISTANCE"] = MAX_DISTANCE
@@ -106,9 +113,18 @@ class WorldBorderRenderer(
         this.reload = false
     }
 
-    override fun setupTranslucent() {
+    private fun draw() {
         val mesh = this.borderMesh ?: return
-        renderSystem.reset(
+        update()
+
+        if (mesh.state == Mesh.MeshStates.PREPARING) {
+            mesh.load()
+        }
+        mesh.draw()
+    }
+
+    private object WorldBorderLayer : RenderLayer {
+        override val settings = RenderSettings(
             blending = true,
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,
             destinationRGB = BlendingFunctions.ONE,
@@ -119,16 +135,7 @@ class WorldBorderRenderer(
             polygonOffsetFactor = -3.0f,
             polygonOffsetUnit = -3.0f,
         )
-        shader.use()
-        update()
-
-        if (mesh.state == Mesh.MeshStates.PREPARING) {
-            mesh.load()
-        }
-    }
-
-    override fun drawTranslucent() {
-        borderMesh?.draw()
+        override val priority get() = 3000
     }
 
     companion object : RendererBuilder<WorldBorderRenderer> {

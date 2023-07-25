@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniform
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
+import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -59,16 +60,21 @@ interface RenderSystem {
         polygonOffsetFactor: Float = 0.0f,
         polygonOffsetUnit: Float = 0.0f,
     ) {
-        setBlendFunction(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha)
-        this[RenderingCapabilities.DEPTH_TEST] = depthTest
-        this[RenderingCapabilities.BLENDING] = blending
-        this[RenderingCapabilities.FACE_CULLING] = faceCulling
-        this[RenderingCapabilities.POLYGON_OFFSET] = polygonOffset
-        this.depth = depth
-        this.depthMask = depthMask
-        this.clearColor = clearColor
+        val settings = RenderSettings(depthTest, blending, faceCulling, polygonOffset, depthMask, sourceRGB, destinationRGB, sourceAlpha, destinationAlpha, depth, clearColor, polygonOffsetFactor, polygonOffsetUnit)
+        this.set(settings)
+    }
+
+    fun set(settings: RenderSettings) {
+        setBlendFunction(settings.sourceRGB, settings.destinationRGB, settings.sourceAlpha, settings.destinationAlpha)
+        this[RenderingCapabilities.DEPTH_TEST] = settings.depthTest
+        this[RenderingCapabilities.BLENDING] = settings.blending
+        this[RenderingCapabilities.FACE_CULLING] = settings.faceCulling
+        this[RenderingCapabilities.POLYGON_OFFSET] = settings.polygonOffset
+        this.depth = settings.depth
+        this.depthMask = settings.depthMask
+        this.clearColor = settings.clearColor
         shader = null
-        polygonOffset(polygonOffsetFactor, polygonOffsetUnit)
+        polygonOffset(settings.polygonOffsetFactor, settings.polygonOffsetUnit)
     }
 
     fun enable(capability: RenderingCapabilities)

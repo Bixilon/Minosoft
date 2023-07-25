@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,24 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.phases
+package de.bixilon.minosoft.gui.rendering.renderer.renderer.world
 
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
-import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
+import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 
-interface TranslucentDrawable : Renderer {
-    val skipTranslucent: Boolean
-        get() = false
+class LayerSettings {
 
-    fun setupTranslucent() {
-        renderSystem.reset(
-            blending = true,
-            sourceRGB = BlendingFunctions.SOURCE_ALPHA,
-            destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
-            sourceAlpha = BlendingFunctions.SOURCE_ALPHA,
-            destinationAlpha = BlendingFunctions.DESTINATION_ALPHA,
-        )
+    fun register(layer: RenderLayer, shader: Shader?, renderer: () -> Unit, skip: (() -> Boolean)? = null) {
+        TODO()
     }
-
-    fun drawTranslucent()
 }

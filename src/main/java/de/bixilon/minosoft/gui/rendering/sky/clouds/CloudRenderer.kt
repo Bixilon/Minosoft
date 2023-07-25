@@ -27,11 +27,12 @@ import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
-import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
+import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -45,11 +46,12 @@ class CloudRenderer(
     private val sky: SkyRenderer,
     val connection: PlayConnection,
     override val context: RenderContext,
-) : WorldRenderer, OpaqueDrawable, AsyncRenderer {
+) : WorldRenderer, AsyncRenderer {
+    override val layers = LayerSettings()
     override val renderSystem: RenderSystem = context.system
     val shader = renderSystem.createShader(minosoft("sky/clouds")) { CloudShader(it) }
     val matrix = CloudMatrix()
-    private val layers: MutableList<CloudLayer> = mutableListOf()
+    private val cloudLayers: MutableList<CloudLayer> = mutableListOf()
     private var position = Vec2i(Int.MIN_VALUE)
     private var color: Vec3 = Vec3.EMPTY
     private var maxDistance = 0.0f
@@ -65,9 +67,10 @@ class CloudRenderer(
 
     private var reset = false
 
-    override val skipOpaque: Boolean
-        get() = !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || layers.isEmpty()
 
+    override fun registerLayers() {
+        layers.register(CloudRenderLayer, shader, this::draw) { !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || cloudLayers.isEmpty() }
+    }
 
     override fun asyncInit(latch: AbstractLatch) {
         matrix.load(connection.assetsManager)
@@ -86,7 +89,7 @@ class CloudRenderer(
     override fun postInit(latch: AbstractLatch) {
         shader.load()
         sky.profile.clouds::movement.observe(this, instant = true) {
-            for (layer in layers) {
+            for (layer in cloudLayers) {
                 layer.movement = it
             }
         }
@@ -98,7 +101,7 @@ class CloudRenderer(
                 }
                 // reset clouds
                 position = Vec2i(Int.MIN_VALUE)
-                for ((index, layer) in this.layers.withIndex()) {
+                for ((index, layer) in this.cloudLayers.withIndex()) {
                     layer.height = getCloudHeight(index)
                 }
             }
@@ -112,12 +115,12 @@ class CloudRenderer(
     }
 
     private fun updateLayers(layers: Int) {
-        while (layers < this.layers.size) {
-            toUnload += this.layers.removeLast()
+        while (layers < this.cloudLayers.size) {
+            toUnload += this.cloudLayers.removeLast()
         }
-        for (index in this.layers.size until layers) {
+        for (index in this.cloudLayers.size until layers) {
             val layer = CloudLayer(sky, this, index, getCloudHeight(index))
-            this.layers += layer
+            this.cloudLayers += layer
         }
     }
 
@@ -130,7 +133,7 @@ class CloudRenderer(
             updateLayers(nextLayers)
             reset = false
         }
-        if (layers.size != nextLayers) {
+        if (cloudLayers.size != nextLayers) {
             updateLayers(nextLayers)
         }
 
@@ -139,7 +142,7 @@ class CloudRenderer(
         this.delta = delta / 1000.0f
         this.time = time
 
-        for (layer in layers) {
+        for (layer in cloudLayers) {
             layer.prepareAsync()
         }
     }
@@ -151,14 +154,9 @@ class CloudRenderer(
         if (!sky.effects.clouds) {
             return
         }
-        for (layer in layers) {
+        for (layer in cloudLayers) {
             layer.prepare()
         }
-    }
-
-    override fun setupOpaque() {
-        super.setupOpaque()
-        renderSystem.disable(RenderingCapabilities.FACE_CULLING)
     }
 
     private fun calculateDay(progress: Float): Vec3 {
@@ -239,8 +237,7 @@ class CloudRenderer(
         shader.yOffset = yOffset
     }
 
-    override fun drawOpaque() {
-        shader.use()
+    private fun draw() {
         val color = calculateCloudsColor()
         if (color != this.color) {
             shader.cloudsColor = Vec4(color, 1.0f)
@@ -249,9 +246,14 @@ class CloudRenderer(
         setYOffset()
 
 
-        for (layer in layers) {
+        for (layer in cloudLayers) {
             layer.draw()
         }
+    }
+
+    private object CloudRenderLayer : RenderLayer {
+        override val settings = RenderSettings(faceCulling = false)
+        override val priority get() = 3000
     }
 
     companion object : RendererBuilder<CloudRenderer> {

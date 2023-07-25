@@ -30,10 +30,12 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
+import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
@@ -42,7 +44,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class BlockOutlineRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : WorldRenderer, AsyncRenderer, OtherDrawable, MeshSwapper {
+) : WorldRenderer, AsyncRenderer, MeshSwapper {
+    override val layers = LayerSettings()
     private val profile = connection.profiles.block.outline
     override val renderSystem: RenderSystem = context.system
 
@@ -50,8 +53,6 @@ class BlockOutlineRenderer(
     private var state: BlockState? = null
 
     override var mesh: LineMesh? = null
-    override val skipOther: Boolean
-        get() = mesh == null
 
     /**
      * Unloads the current mesh and creates a new one
@@ -62,6 +63,10 @@ class BlockOutlineRenderer(
     override var nextMesh: LineMesh? = null
     override var unload: Boolean = false
 
+    override fun registerLayers() {
+        layers.register(BlockOutlineLayer, context.shaders.genericColorShader, this::draw) { this.mesh == null }
+    }
+
     override fun init(latch: AbstractLatch) {
         this.profile::enabled.observe(this) { reload = true }
         this.profile::collisions.observe(this) { reload = true }
@@ -69,22 +74,12 @@ class BlockOutlineRenderer(
         this.profile::collisionColor.observe(this) { reload = true }
     }
 
-
-    override fun drawOther() {
+    private fun draw() {
         val mesh = mesh ?: return
-        mesh.draw()
-    }
-
-    override fun setupOther() {
-        context.system.reset(
-            polygonOffset = true,
-            polygonOffsetFactor = -3.0f,
-            polygonOffsetUnit = -3.0f,
-        )
         if (profile.showThroughWalls) {
             context.system.depth = DepthFunctions.ALWAYS
         }
-        context.shaders.genericColorShader.use()
+        mesh.draw()
     }
 
     override fun postPrepareDraw() {
@@ -149,6 +144,14 @@ class BlockOutlineRenderer(
         this.reload = false
     }
 
+    private object BlockOutlineLayer : RenderLayer {
+        override val settings = RenderSettings(
+            polygonOffset = true,
+            polygonOffsetFactor = -3.0f,
+            polygonOffsetUnit = -3.0f,
+        )
+        override val priority get() = 1500
+    }
 
     companion object : RendererBuilder<BlockOutlineRenderer> {
 
