@@ -54,7 +54,7 @@ class RendererManager(
     }
 
     operator fun <T : Renderer> get(builder: RendererBuilder<T>): T? {
-        return this[builder].unsafeCast()
+        return renderers[builder].unsafeCast()
     }
 
     fun init(latch: AbstractLatch) {
