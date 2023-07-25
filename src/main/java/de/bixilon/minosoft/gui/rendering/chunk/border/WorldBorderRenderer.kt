@@ -132,7 +132,6 @@ class WorldBorderRenderer(
     }
 
     companion object : RendererBuilder<WorldBorderRenderer> {
-        override val identifier = minosoft("world_border")
         val GROWING_COLOR = "#40FF80".asColor()
         val SHRINKING_COLOR = "#FF3030".asColor()
         val STATIC_COLOR = "#20A0FF".asColor()

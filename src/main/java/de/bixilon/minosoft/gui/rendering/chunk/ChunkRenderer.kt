@@ -308,7 +308,6 @@ class ChunkRenderer(
 
 
     companion object : RendererBuilder<ChunkRenderer> {
-        override val identifier = minosoft("chunk")
 
         override fun build(connection: PlayConnection, context: RenderContext): ChunkRenderer {
             return ChunkRenderer(connection, context)

@@ -21,13 +21,11 @@ import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.kutil.latch.SimpleLatch
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -35,21 +33,17 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class RendererManager(
     private val context: RenderContext,
 ) {
-    private val renderers: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
+    private val renderers: MutableMap<RendererBuilder<*>, Renderer> = synchronizedMapOf()
     private val connection = context.connection
     private val renderSystem = context.system
     private val framebufferManager = context.framebuffer
 
 
     fun <T : Renderer> register(builder: RendererBuilder<T>): T? {
-        val resourceLocation = builder.identifier
-        if (resourceLocation in RunConfiguration.SKIP_RENDERERS) {
-            return null
-        }
         val renderer = builder.build(connection, context) ?: return null
-        val previous = renderers.put(resourceLocation, renderer)
+        val previous = renderers.put(builder, renderer)
         if (previous != null) {
-            Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Renderer $previous(${builder.identifier}) got replaced by $renderer!" }
+            Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Renderer $previous ($builder) got replaced by $renderer!" }
         }
         return renderer
     }
@@ -58,12 +52,8 @@ class RendererManager(
         register(builder)
     }
 
-    operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
-        return this[renderer.identifier].unsafeCast()
-    }
-
-    operator fun get(resourceLocation: ResourceLocation): Renderer? {
-        return renderers[resourceLocation]
+    operator fun <T : Renderer> get(builder: RendererBuilder<T>): T? {
+        return this[builder].unsafeCast()
     }
 
     fun init(latch: AbstractLatch) {

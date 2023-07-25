@@ -270,7 +270,6 @@ class ParticleRenderer(
 
 
     companion object : RendererBuilder<ParticleRenderer> {
-        override val identifier = minosoft("particle")
         const val MAXIMUM_AMOUNT = 50000
         const val MAX_FRAME_TIME = 5
 

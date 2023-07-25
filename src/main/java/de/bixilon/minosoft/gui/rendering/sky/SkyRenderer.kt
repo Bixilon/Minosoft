@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
@@ -109,7 +108,6 @@ class SkyRenderer(
     }
 
     companion object : RendererBuilder<SkyRenderer> {
-        override val identifier = minosoft("sky")
 
         override fun build(connection: PlayConnection, context: RenderContext): SkyRenderer {
             return SkyRenderer(connection, context)

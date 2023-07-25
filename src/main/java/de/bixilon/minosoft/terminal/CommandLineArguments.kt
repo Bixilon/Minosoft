@@ -16,10 +16,8 @@ package de.bixilon.minosoft.terminal
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.assets.util.AssetsOptions
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.loader.parameters.ModParameters
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import net.sourceforge.argparse4j.ArgumentParsers
@@ -64,11 +62,6 @@ object CommandLineArguments {
             addArgument("--headless")
                 .action(Arguments.storeTrue())
                 .help("Disables the server list and rendering")
-
-            addArgument("--skip_renderer")
-                .setDefault(null)
-                .action(Arguments.store())
-                .help("Skips specific renderers")
 
             addArgument("--connect")
                 .setDefault(null)
@@ -130,16 +123,6 @@ object CommandLineArguments {
         if (namespace.getBoolean("headless")) {
             RunConfiguration.DISABLE_EROS = true
             RunConfiguration.DISABLE_RENDERING = true
-        }
-
-        namespace.getString("skip_renderer")?.split("  ", ",", ";")?.let {
-            val skip: MutableList<ResourceLocation> = mutableListOf()
-
-            for (string in it) {
-                skip += string.toResourceLocation()
-            }
-
-            RunConfiguration.SKIP_RENDERERS = skip
         }
 
         RunConfiguration.AUTO_CONNECT_TO = namespace.getString("connect")

@@ -158,7 +158,6 @@ class GUIRenderer(
     }
 
     companion object : RendererBuilder<GUIRenderer> {
-        override val identifier = "minosoft:gui".toResourceLocation()
 
         override fun build(connection: PlayConnection, context: RenderContext): GUIRenderer {
             return GUIRenderer(connection, context)

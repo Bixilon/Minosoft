@@ -158,7 +158,6 @@ class EntityRenderer(
 
 
     companion object : RendererBuilder<EntityRenderer> {
-        override val identifier = minosoft("entity")
         private val HITBOX_TOGGLE_KEY_COMBINATION = minosoft("toggle_hitboxes")
 
 

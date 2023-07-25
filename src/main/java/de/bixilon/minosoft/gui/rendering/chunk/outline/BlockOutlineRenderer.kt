@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWit
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
@@ -151,7 +150,6 @@ class BlockOutlineRenderer(
 
 
     companion object : RendererBuilder<BlockOutlineRenderer> {
-        override val identifier = minosoft("block_outline")
 
         override fun build(connection: PlayConnection, context: RenderContext): BlockOutlineRenderer {
             return BlockOutlineRenderer(connection, context)
