@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import java.util.*
 
 interface SingleBlockRenderable {
 
-    fun singleRender(position: Vec3i, offset: FloatArray, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean
+    fun singleRender(position: Vec3i, offset: FloatArray, mesh: ChunkMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean
 }

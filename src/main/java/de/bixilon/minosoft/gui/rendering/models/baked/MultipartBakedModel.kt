@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -32,7 +32,7 @@ class MultipartBakedModel(
         return sizes[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, offset: FloatArray, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun singleRender(position: Vec3i, offset: FloatArray, mesh: ChunkMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         var rendered = false
         for (model in models) {
             if (model.singleRender(position, offset, mesh, random, blockState, neighbours, light, tints) && !rendered) {

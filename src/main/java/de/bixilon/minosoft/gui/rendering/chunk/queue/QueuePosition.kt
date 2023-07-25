@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue
 
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import java.util.*
 
 class QueuePosition(
@@ -23,7 +23,7 @@ class QueuePosition(
     val sectionHeight: Int,
 ) {
 
-    constructor(mesh: WorldMesh) : this(mesh.chunkPosition, mesh.sectionHeight)
+    constructor(mesh: ChunkMesh) : this(mesh.chunkPosition, mesh.sectionHeight)
 
 
     override fun equals(other: Any?): Boolean {

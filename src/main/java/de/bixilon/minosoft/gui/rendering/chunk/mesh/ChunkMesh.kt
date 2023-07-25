@@ -21,17 +21,17 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
-class WorldMesh(
+class ChunkMesh(
     context: RenderContext,
     val chunkPosition: Vec2i,
     val sectionHeight: Int,
     smallMesh: Boolean = false,
 ) {
     val center: Vec3 = Vec3(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)))
-    var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(context, if (smallMesh) 3000 else 100000)
-    var translucentMesh: SingleWorldMesh? = SingleWorldMesh(context, if (smallMesh) 3000 else 10000, onDemand = true)
-    var transparentMesh: SingleWorldMesh? = SingleWorldMesh(context, if (smallMesh) 3000 else 20000, onDemand = true)
-    var textMesh: SingleWorldMesh? = SingleWorldMesh(context, if (smallMesh) 5000 else 50000, onDemand = true)
+    var opaqueMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 3000 else 100000)
+    var translucentMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 3000 else 10000, onDemand = true)
+    var transparentMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 3000 else 20000, onDemand = true)
+    var textMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 5000 else 50000, onDemand = true)
     var blockEntities: Set<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling
@@ -63,7 +63,7 @@ class WorldMesh(
     fun clearEmpty(): Int {
         var meshes = 0
 
-        fun processMesh(mesh: SingleWorldMesh?): Boolean {
+        fun processMesh(mesh: SingleChunkMesh?): Boolean {
             if (mesh == null) {
                 return false
             }

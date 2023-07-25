@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.isEmpty
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-object WorldRendererUtil {
+object ChunkRendererUtil {
     const val STILL_LOADING_TIME = 50L
     const val MOVING_LOADING_TIME = 20L
 

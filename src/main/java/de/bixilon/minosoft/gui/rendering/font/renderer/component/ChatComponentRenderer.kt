@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleWorldMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
@@ -53,7 +53,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
         }
 
-        fun render3dFlat(context: RenderContext, position: Vec3, properties: TextRenderProperties, rotation: Vec3, maxSize: Vec2, mesh: WorldMesh, text: ChatComponent, light: Int): TextRenderInfo {
+        fun render3dFlat(context: RenderContext, position: Vec3, properties: TextRenderProperties, rotation: Vec3, maxSize: Vec2, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
             val matrix = Mat4()
                 .translateAssign(position)
                 .rotateDegreesAssign(rotation)
@@ -61,7 +61,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
 
             val textMesh = mesh.textMesh!!
             val primitives = calculatePrimitiveCount(text)
-            textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
+            textMesh.data.ensureSize(primitives * textMesh.order.size * SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
 
             val consumer = WorldGUIConsumer(textMesh, matrix, light)
 

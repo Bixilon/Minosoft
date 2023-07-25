@@ -38,7 +38,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-object WorldRendererChangeListener {
+object ChunkRendererChangeListener {
 
     private fun ChunkRenderer.handle(update: SingleBlockUpdate) {
         val neighbours = update.chunk.neighbours.get() ?: return

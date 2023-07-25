@@ -34,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.queue.ChunkQueueMaster
 import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkShader
 import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkTextShader
-import de.bixilon.minosoft.gui.rendering.chunk.util.WorldRendererChangeListener
+import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererChangeListener
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.WorldRenderer
@@ -101,7 +101,7 @@ class ChunkRenderer(
 
         connection.events.listen<VisibilityGraphChangeEvent> { onFrustumChange() }
 
-        WorldRendererChangeListener.register(this)
+        ChunkRendererChangeListener.register(this)
 
         var paused = false
         context::state.observe(this) {

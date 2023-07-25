@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import java.util.*
 
@@ -30,7 +30,7 @@ class WorldQueueItem(
     val center: Vec3,
 ) {
     val sectionPosition = Vec3i(chunkPosition.x, sectionHeight, chunkPosition.y)
-    var mesh: WorldMesh? = null
+    var mesh: ChunkMesh? = null
 
     override fun equals(other: Any?): Boolean {
         if (other is WorldQueueItem) {

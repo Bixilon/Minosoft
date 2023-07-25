@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -39,7 +39,7 @@ class BakedFace(
     override val transparency: TextureTransparencies
         get() = texture.transparency // ToDo
 
-    fun singleRender(position: FloatArray, mesh: WorldMesh, light: Int, tint: Int) {
+    fun singleRender(position: FloatArray, mesh: ChunkMesh, light: Int, tint: Int) {
         val meshToUse = transparency.getMesh(mesh)
         // ToDo: Ambient light
         val color = Vec3(shade)

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, WorldMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand), Comparable<SingleWorldMesh> {
+class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, WorldMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand), Comparable<SingleChunkMesh> {
     var distance: Float = 0.0f // Used for sorting
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: Texture, tintColor: Int, light: Int) {
@@ -44,7 +44,7 @@ class SingleWorldMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         data.add(tintLight)
     }
 
-    override fun compareTo(other: SingleWorldMesh): Int {
+    override fun compareTo(other: SingleChunkMesh): Int {
         if (distance < other.distance) return -1
         if (distance > other.distance) return 1
         return 0
