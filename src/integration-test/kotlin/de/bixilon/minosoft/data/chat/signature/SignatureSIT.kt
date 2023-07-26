@@ -16,19 +16,15 @@ package de.bixilon.minosoft.data.chat.signature
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 import de.bixilon.minosoft.util.json.Jackson
-import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import org.testng.Assert
 import org.testng.SkipException
 import org.testng.annotations.Test
 import java.time.Instant
 
-@Test(groups = ["private_key"])
+@Test(groups = ["private_key"], dependsOnGroups = ["yggdrasil"])
 class SignatureSIT {
     // The private key is a private environment variable in gitlab. Yes, that makes it hard to run tests outside my devices, but you have to understand that I am not publishing my private key, no matter if it is already expired
 
-    fun loadYggdrasil() {
-        YggdrasilUtil.load()
-    }
 
     fun loadPrivateKey() {
         val string = System.getenv("CHAT_SIGNATURE_PRIVATE_KEY") ?: throw SkipException("Can not find private key! Skipping chat signature tests")
