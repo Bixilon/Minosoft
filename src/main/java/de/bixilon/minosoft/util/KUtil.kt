@@ -53,6 +53,8 @@ import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
@@ -60,6 +62,7 @@ import de.bixilon.minosoft.util.url.ResourceURLHandler
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
+import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
@@ -351,5 +354,18 @@ object KUtil {
     @JvmStatic
     inline fun <reified T : Enum<T>> ValuesEnum<T>.set(): EnumSet<T> {
         return EnumSetUtil.create(T::class.java, VALUES)
+    }
+
+    fun PlayInByteBuffer.dump(name: String) {
+        val pointer = pointer
+        this.pointer = 0
+        val data = readRest()
+        this.pointer = pointer
+
+        val path = "/home/moritz/${name}_${Versions.getById(this.versionId)?.name?.replace(".", "_")}.bin"
+        val stream = FileOutputStream(path)
+        stream.write(data)
+        stream.close()
+        println("Packet dumped to $path")
     }
 }
