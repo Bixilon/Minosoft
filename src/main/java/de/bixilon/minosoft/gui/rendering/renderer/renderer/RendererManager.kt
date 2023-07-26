@@ -31,10 +31,17 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class RendererManager(
     val context: RenderContext,
 ) : Drawable, Iterable<Renderer> {
+    private val list: MutableList<Renderer> = mutableListOf()
     private val renderers: MutableMap<RendererBuilder<*>, Renderer> = linkedMapOf()
     private val pipeline = RendererPipeline(this)
     private val connection = context.connection
 
+
+    fun <T : Renderer> register(renderer: T): T {
+        this.list += renderer
+
+        return renderer
+    }
 
     fun <T : Renderer> register(builder: RendererBuilder<T>): T? {
         val renderer = builder.build(connection, context) ?: return null
@@ -42,6 +49,7 @@ class RendererManager(
         if (previous != null) {
             Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Renderer $previous ($builder) got replaced by $renderer!" }
         }
+        list += renderer
         pipeline += renderer
         return renderer
     }
@@ -58,14 +66,14 @@ class RendererManager(
         val inner = if (latch == null) SimpleLatch(0) else ParentLatch(0, latch)
 
         val worker = UnconditionalWorker()
-        for (renderer in renderers.values) {
+        for (renderer in list) {
             worker += { runnable.invoke(renderer, inner) }
         }
         worker.work(inner)
     }
 
     fun init(latch: AbstractLatch) {
-        for (renderer in renderers.values) {
+        for (renderer in list) {
             if (renderer !is WorldRenderer) continue
             renderer.registerLayers()
         }
@@ -73,14 +81,14 @@ class RendererManager(
 
         runAsync(latch, Renderer::preAsyncInit)
 
-        for (renderer in renderers.values) {
+        for (renderer in list) {
             renderer.init(latch)
         }
         runAsync(latch, Renderer::asyncInit)
     }
 
     fun postInit(latch: AbstractLatch) {
-        for (renderer in renderers.values) {
+        for (renderer in list) {
             renderer.postInit(latch)
         }
 
@@ -88,19 +96,19 @@ class RendererManager(
     }
 
     private fun prepare() {
-        for (renderer in renderers.values) {
+        for (renderer in list) {
             renderer.prePrepareDraw()
         }
 
         val latch = SimpleLatch(0)
         val worker = UnconditionalWorker()
-        for (renderer in renderers.values) {
+        for (renderer in list) {
             if (renderer !is AsyncRenderer) continue
             worker += UnconditionalTask(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync() }
         }
         worker.work(latch)
 
-        for (renderer in renderers.values) {
+        for (renderer in list) {
             renderer.postPrepareDraw()
         }
     }
@@ -111,6 +119,6 @@ class RendererManager(
     }
 
     override fun iterator(): Iterator<Renderer> {
-        return renderers.values.iterator()
+        return list.iterator()
     }
 }
