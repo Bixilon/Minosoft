@@ -20,6 +20,7 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.toVec2
@@ -106,7 +107,7 @@ class AtlasManager(private val context: RenderContext) {
     fun postInit() {
         for (element in elements.values) {
             val singePixelSize = element.resolution?.let { Vec2(1.0f) / it / (Vec2(element.texture.array.size) / it) } ?: ATLAS_SINGLE_DEFAULT_PIXEL_SIZE
-            element.uvStart = singePixelSize * element.start
+            element.uvStart = singePixelSize * element.start + RenderConstants.UV_ADD
             element.uvEnd = singePixelSize * element.end
         }
     }
