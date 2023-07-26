@@ -51,7 +51,7 @@ class DoubleParser(
         override fun read(buffer: PlayInByteBuffer): DoubleParser {
             val flags = buffer.readUnsignedByte()
             val min = if (flags.isBitMask(0x01)) buffer.readDouble() else -Double.MAX_VALUE
-            val max = if (flags.isBitMask(0x03)) buffer.readDouble() else Double.MAX_VALUE
+            val max = if (flags.isBitMask(0x02)) buffer.readDouble() else Double.MAX_VALUE
             return DoubleParser(min = min, max = max)
         }
 

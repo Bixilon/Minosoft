@@ -52,7 +52,7 @@ class LongParser(
         override fun read(buffer: PlayInByteBuffer): LongParser {
             val flags = buffer.readUnsignedByte()
             val min = if (flags.isBitMask(0x01)) buffer.readLong() else Long.MIN_VALUE
-            val max = if (flags.isBitMask(0x03)) buffer.readLong() else Long.MAX_VALUE
+            val max = if (flags.isBitMask(0x02)) buffer.readLong() else Long.MAX_VALUE
             return LongParser(min = min, max = max)
         }
 
