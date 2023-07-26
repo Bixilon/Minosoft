@@ -69,7 +69,7 @@ class CloudRenderer(
 
 
     override fun registerLayers() {
-        layers.register(CloudRenderLayer, shader, this::draw) { !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || cloudLayers.isEmpty() }
+        layers.register(CloudRenderLayer, shader, this::draw) { !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || cloudLayers.isEmpty() || (connection.camera.entity.physics.position.y + 200) < connection.world.dimension.minY }
     }
 
     override fun asyncInit(latch: AbstractLatch) {
