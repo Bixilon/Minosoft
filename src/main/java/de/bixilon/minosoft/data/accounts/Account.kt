@@ -51,7 +51,7 @@ abstract class Account(
     @get:JsonIgnore open val supportsSkins: Boolean get() = true
 
     @Transient
-    @JsonIgnore
+    @get:JsonIgnore
     val connections: MutableMap<AbstractServer, PlayConnection> = synchronizedMapOf()
 
     abstract fun join(serverId: String)
