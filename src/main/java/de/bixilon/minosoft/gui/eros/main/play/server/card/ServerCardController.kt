@@ -113,6 +113,7 @@ class ServerCardController : AbstractCardController<ServerCard>() {
 
             motdFX.text = ChatComponent.of(Minosoft.LANGUAGE_MANAGER.translate(it))
             serverList?.onPingUpdate(item)
+            resetPing()
         }
 
         ping::error.observeFX(ping, instant = true) {
