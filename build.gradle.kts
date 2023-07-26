@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets
 
 
 plugins {
-    kotlin("jvm") version "1.9.0-Beta"
+    kotlin("jvm") version "1.9.0"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.2.0"
@@ -146,7 +146,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:1.9.0-Beta")
+                implementation("org.jetbrains.kotlin:kotlin-test:1.9.0")
             }
 
             targets {
@@ -326,13 +326,13 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 
 dependencies {
     implementation("org.slf4j", "slf4j-api", "2.0.7")
-    implementation("com.google.guava", "guava", "32.0.1-jre")
+    implementation("com.google.guava", "guava", "32.1.1-jre")
     implementation("dnsjava", "dnsjava", "3.5.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.23.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.4.3")
-    implementation("com.github.luben", "zstd-jni", "1.5.5-4", classifier = zstdNatives)
+    implementation("com.github.oshi", "oshi-core", "6.4.4")
+    implementation("com.github.luben", "zstd-jni", "1.5.5-5", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
@@ -372,7 +372,7 @@ dependencies {
     lwjgl("stb")
 
     // kotlin
-    implementation(kotlin("reflect", "1.9.0-Beta"))
+    implementation(kotlin("reflect", "1.9.0"))
 
 
     // platform specific
