@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.system.base
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
@@ -46,19 +45,19 @@ interface RenderSystem {
     fun destroy()
 
     fun reset(
-        depthTest: Boolean = true,
-        blending: Boolean = false,
-        faceCulling: Boolean = true,
-        polygonOffset: Boolean = false,
-        depthMask: Boolean = true,
-        sourceRGB: BlendingFunctions = BlendingFunctions.ONE,
-        destinationRGB: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
-        sourceAlpha: BlendingFunctions = BlendingFunctions.ONE,
-        destinationAlpha: BlendingFunctions = BlendingFunctions.ZERO,
-        depth: DepthFunctions = DepthFunctions.LESS,
-        clearColor: RGBColor = Colors.TRANSPARENT,
-        polygonOffsetFactor: Float = 0.0f,
-        polygonOffsetUnit: Float = 0.0f,
+        depthTest: Boolean = RenderSettings.DEFAULT.depthTest,
+        blending: Boolean = RenderSettings.DEFAULT.blending,
+        faceCulling: Boolean = RenderSettings.DEFAULT.faceCulling,
+        polygonOffset: Boolean = RenderSettings.DEFAULT.polygonOffset,
+        depthMask: Boolean = RenderSettings.DEFAULT.depthMask,
+        sourceRGB: BlendingFunctions = RenderSettings.DEFAULT.sourceRGB,
+        destinationRGB: BlendingFunctions = RenderSettings.DEFAULT.destinationRGB,
+        sourceAlpha: BlendingFunctions = RenderSettings.DEFAULT.sourceAlpha,
+        destinationAlpha: BlendingFunctions = RenderSettings.DEFAULT.destinationAlpha,
+        depth: DepthFunctions = RenderSettings.DEFAULT.depth,
+        clearColor: RGBColor = RenderSettings.DEFAULT.clearColor,
+        polygonOffsetFactor: Float = RenderSettings.DEFAULT.polygonOffsetFactor,
+        polygonOffsetUnit: Float = RenderSettings.DEFAULT.polygonOffsetUnit,
     ) {
         val settings = RenderSettings(depthTest, blending, faceCulling, polygonOffset, depthMask, sourceRGB, destinationRGB, sourceAlpha, destinationAlpha, depth, clearColor, polygonOffsetFactor, polygonOffsetUnit)
         this.set(settings)

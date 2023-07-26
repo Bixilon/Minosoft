@@ -32,4 +32,9 @@ data class RenderSettings(
     val clearColor: RGBColor = Colors.TRANSPARENT,
     val polygonOffsetFactor: Float = 0.0f,
     val polygonOffsetUnit: Float = 0.0f,
-)
+) {
+
+    companion object {
+        val DEFAULT = RenderSettings()
+    }
+}

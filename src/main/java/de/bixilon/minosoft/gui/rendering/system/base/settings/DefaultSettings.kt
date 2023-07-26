@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.settings
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 
 object DefaultSettings {
-    val OPAQUE = RenderSettings()
+    val OPAQUE = RenderSettings.DEFAULT
     val TRANSPARENT = RenderSettings(blending = true)
     val TRANSLUCENT = RenderSettings(
         blending = true,
