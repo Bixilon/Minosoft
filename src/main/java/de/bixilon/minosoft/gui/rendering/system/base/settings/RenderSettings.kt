@@ -28,7 +28,7 @@ data class RenderSettings(
     val destinationRGB: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
     val sourceAlpha: BlendingFunctions = BlendingFunctions.ONE,
     val destinationAlpha: BlendingFunctions = BlendingFunctions.ZERO,
-    val depth: DepthFunctions = DepthFunctions.LESS,
+    val depth: DepthFunctions = DepthFunctions.LESS_OR_EQUAL,
     val clearColor: RGBColor = Colors.TRANSPARENT,
     val polygonOffsetFactor: Float = 0.0f,
     val polygonOffsetUnit: Float = 0.0f,
