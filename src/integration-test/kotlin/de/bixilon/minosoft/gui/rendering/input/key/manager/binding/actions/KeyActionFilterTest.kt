@@ -26,20 +26,27 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingFil
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingState
 import de.bixilon.minosoft.test.IT.OBJENESIS
 import de.bixilon.minosoft.util.KUtil.set
+import it.unimi.dsi.fastutil.objects.Object2LongMap
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 
+val times = InputManager::class.java.getDeclaredField("times").apply { isAccessible = true }
 val keysPressed = InputManager::class.java.getDeclaredField("pressed").apply { isAccessible = true }
 val bindingsPressed = BindingsManager::class.java.getDeclaredField("pressed").apply { isAccessible = true }
 val name = minosoft("dummy")
+
+val InputManager.times: Object2LongMap<KeyCodes> get() = de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.times.get(this).unsafeCast()
+
 
 fun input(): InputManager {
     val manager = OBJENESIS.newInstance(InputManager::class.java)
     val bindings = OBJENESIS.newInstance(BindingsManager::class.java)
     bindingsPressed[bindings] = mutableSetOf<ResourceLocation>()
     manager::bindings.forceSet(bindings)
+    times[manager] = Object2LongOpenHashMap<KeyCodes>()
 
     keysPressed[manager] = KeyCodes.set()
 
@@ -351,5 +358,95 @@ class Sticky {
 
         assertFalse(state.result)
         assertTrue(state.satisfied)
+    }
+}
+
+
+@Test(groups = ["input"])
+class DoublePress {
+
+    fun `press single`() {
+        val state = KeyBindingFilterState(false)
+        KeyActionFilter.DoublePress.check(
+            state, setOf(KeyCodes.KEY_0), input(), name,
+            KeyBindingState(KeyBinding(mapOf(KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_0)))),
+            KeyCodes.KEY_0,
+            pressed = true,
+            0L,
+        )
+
+        assertFalse(state.satisfied)
+    }
+
+    fun `double press`() {
+        val state = KeyBindingFilterState(false)
+        val input = input()
+        input.times.put(KeyCodes.KEY_0, 1000L)
+
+        KeyActionFilter.DoublePress.check(
+            state, setOf(KeyCodes.KEY_0), input, name,
+            KeyBindingState(KeyBinding(mapOf(KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_0)))),
+            KeyCodes.KEY_0,
+            pressed = true,
+            1100L,
+        )
+
+        assertTrue(state.satisfied)
+        assertTrue(state.result)
+        assertTrue(state.store)
+    }
+
+    fun `double press second time`() {
+        val state = KeyBindingFilterState(false)
+        val input = input()
+
+        val pressed = bindingsPressed[input.bindings].unsafeCast<MutableSet<ResourceLocation>>()
+        pressed += name
+
+        input.times.put(KeyCodes.KEY_0, 1000L)
+
+        KeyActionFilter.DoublePress.check(
+            state, setOf(KeyCodes.KEY_0), input, name,
+            KeyBindingState(KeyBinding(mapOf(KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_0)))),
+            KeyCodes.KEY_0,
+            pressed = true,
+            1100L,
+        )
+
+        assertTrue(state.satisfied)
+        assertFalse(state.result)
+        assertTrue(state.store)
+    }
+
+    fun `too long ago press`() {
+        val state = KeyBindingFilterState(false)
+        val input = input()
+        input.times.put(KeyCodes.KEY_0, 1000L)
+
+        KeyActionFilter.DoublePress.check(
+            state, setOf(KeyCodes.KEY_0), input, name,
+            KeyBindingState(KeyBinding(mapOf(KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_0)))),
+            KeyCodes.KEY_0,
+            pressed = true,
+            10000L,
+        )
+
+        assertFalse(state.satisfied)
+    }
+
+    fun `delay between`() {
+        val state = KeyBindingFilterState(false)
+        val input = input()
+        input.times.put(KeyCodes.KEY_0, 10L)
+
+        KeyActionFilter.DoublePress.check(
+            state, setOf(KeyCodes.KEY_0), input, name,
+            KeyBindingState(KeyBinding(mapOf(KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_0)))),
+            KeyCodes.KEY_0,
+            pressed = true,
+            100L,
+        )
+
+        assertFalse(state.satisfied)
     }
 }
