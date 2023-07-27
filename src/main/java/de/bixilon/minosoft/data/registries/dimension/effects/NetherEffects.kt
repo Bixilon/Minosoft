@@ -21,7 +21,7 @@ object NetherEffects : DimensionEffects {
     override val identifier = minecraft("the_nether")
 
     override val daylightCycle: Boolean get() = false
-    override val skylight: Boolean get() = false
+    override val skyLight: Boolean get() = false
 
     override val weather: Boolean get() = false
     override val sun: Boolean get() = false

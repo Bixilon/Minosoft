@@ -21,7 +21,7 @@ object OverworldEffects : DimensionEffects {
     override val identifier = minecraft("overworld")
 
     override val daylightCycle: Boolean get() = true
-    override val skylight: Boolean get() = true
+    override val skyLight: Boolean get() = true
 
     override val weather: Boolean get() = true
     override val sun: Boolean get() = true

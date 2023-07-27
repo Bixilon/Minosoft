@@ -33,7 +33,7 @@ class GeneralHeightmapTest {
         chunk[Vec3i(3, 11, 2)] = StoneTest0.state
         chunk[Vec3i(3, 12, 4)] = StoneTest0.state
         chunk[Vec3i(4, 13, 3)] = StoneTest0.state
-        assertEquals(chunk.light.getNeighbourMinHeight(chunk.neighbours.get()!!, 3, 3), 11)
+        assertEquals(chunk.light.sky.getNeighbourMinHeight(chunk.neighbours.get()!!, 3, 3), 11)
     }
 
     fun testMinHeightNeighbourEast() {
@@ -43,7 +43,7 @@ class GeneralHeightmapTest {
         chunk[Vec3i(15, 12, 2)] = StoneTest0.state
         chunk[Vec3i(15, 13, 4)] = StoneTest0.state
         neighbours[ChunkNeighbours.EAST][Vec3i(0, 10, 3)] = StoneTest0.state
-        assertEquals(chunk.light.getNeighbourMinHeight(neighbours, 15, 3), 11)
+        assertEquals(chunk.light.sky.getNeighbourMinHeight(neighbours, 15, 3), 11)
     }
     // TODO: Test other directions
 

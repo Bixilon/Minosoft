@@ -32,7 +32,7 @@ import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.light.ChunkLight.Companion.canSkylight
+import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
 import de.bixilon.minosoft.data.world.difficulty.WorldDifficulty
@@ -214,7 +214,7 @@ class World(
     fun getBrightness(position: BlockPosition): Float {
         val light = getLight(position)
         var level = light and SectionLight.BLOCK_LIGHT_MASK
-        if (dimension.canSkylight()) {
+        if (dimension.hasSkyLight()) {
             level = maxOf(level, light and SectionLight.SKY_LIGHT_MASK shr 4)
         }
         return dimension.ambientLight[level]
