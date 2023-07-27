@@ -76,7 +76,7 @@ class RenderLight(val context: RenderContext) {
     }
 
     private companion object {
-        val RECALCULATE = minosoft("recalculate")
+        val RECALCULATE = minosoft("recalculate_light")
         val FULLBRIGHT = minosoft("fullbright")
     }
 }
