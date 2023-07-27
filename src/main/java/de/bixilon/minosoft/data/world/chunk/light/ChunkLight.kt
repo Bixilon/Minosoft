@@ -248,7 +248,7 @@ class ChunkLight(private val chunk: Chunk) {
         )
     }
 
-    private fun startSkylightFloodFill(x: Int, z: Int) {
+    fun startSkylightFloodFill(x: Int, z: Int) {
         val neighbours = chunk.neighbours.get() ?: return
         val heightmapIndex = (z shl 4) or x
         val maxHeight = heightmap[heightmapIndex]

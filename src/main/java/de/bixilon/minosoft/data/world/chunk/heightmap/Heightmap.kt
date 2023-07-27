@@ -55,13 +55,18 @@ abstract class Heightmap(protected val chunk: Chunk) : AbstractHeightmap {
             val section = sections[sectionIndex] ?: continue
             if (section.blocks.isEmpty) continue
 
+            val min = section.blocks.minPosition
+            val max = section.blocks.maxPosition
+
+            if (x < min.x || x > max.x || z < min.z || z > max.z) continue // out of section
+
             section.acquire()
-            for (sectionY in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
+            for (sectionY in max.y downTo min.y) {
                 val state = section.blocks[x, sectionY, z] ?: continue
                 val pass = passes(state)
                 if (pass == HeightmapPass.PASSES) continue
 
-                y = (sectionIndex + chunk.minSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY + 1
+                y = (sectionIndex + chunk.minSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
                 if (pass == HeightmapPass.ABOVE) y++
 
                 section.release()

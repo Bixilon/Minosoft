@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
-import de.bixilon.minosoft.data.registries.blocks.LeavesTest0
+import de.bixilon.minosoft.data.registries.blocks.StairsTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createChunkWithNeighbours
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -55,7 +55,7 @@ class GeneralHeightmapTest {
 
     fun `top of the world and entering`() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(2, 255, 3)] = LeavesTest0.state
+        chunk[Vec3i(2, 255, 3)] = StairsTest0.state
         assertEquals(chunk.light.heightmap[2, 3], 255)
     }
 

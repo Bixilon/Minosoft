@@ -222,7 +222,7 @@ testing {
                         options {
                             val options = this as TestNGOptions
                             options.preserveOrder = true
-                            // options.excludeGroups("input", "font", "command", "registry", "biome", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "block", "physics", "light", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "world_renderer", "rendering")
+                            options.excludeGroups("input", "font", "command", "registry", "biome", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "physics", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "world_renderer", "rendering")
                         }
                     }
                 }

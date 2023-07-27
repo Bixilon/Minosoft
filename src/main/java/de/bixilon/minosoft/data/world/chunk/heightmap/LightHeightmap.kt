@@ -53,11 +53,10 @@ class LightHeightmap(chunk: Chunk) : Heightmap(chunk) {
         val light = state.block.getLightProperties(state)
         if (!light.skylightEnters) return HeightmapPass.ABOVE
 
-        if (!light.filtersSkylight && light.propagatesLight(Directions.DOWN)) {
-            // can go through block
-            return HeightmapPass.PASSES
-        }
+        if (light.filtersSkylight) return HeightmapPass.IN
+        if (!light.propagatesLight(Directions.DOWN)) return HeightmapPass.IN
 
-        return HeightmapPass.IN
+
+        return HeightmapPass.PASSES
     }
 }
