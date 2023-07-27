@@ -17,11 +17,12 @@ import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import java.io.FileNotFoundException
 
 object PacketReadingTestUtil {
 
     fun <T : S2CPacket> read(name: String, version: String, connection: PlayConnection = ConnectionTestUtil.createConnection(version = version), constructor: (PlayInByteBuffer) -> T): T {
-        val data = PacketReadingTestUtil::class.java.getResourceAsStream("/packets/$name.bin")!!.readAllBytes()
+        val data = PacketReadingTestUtil::class.java.getResourceAsStream("/packets/$name.bin")?.readAllBytes() ?: throw FileNotFoundException("Can not find packet blob $name")
 
         val buffer = PlayInByteBuffer(data, connection)
 
