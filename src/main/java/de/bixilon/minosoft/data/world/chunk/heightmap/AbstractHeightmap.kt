@@ -22,5 +22,5 @@ interface AbstractHeightmap {
     operator fun get(x: Int, z: Int): Int
     operator fun get(index: Int): Int
 
-    fun onBlockChange(x: Int, y: Int, z: Int, next: BlockState?)
+    fun onBlockChange(x: Int, y: Int, z: Int, state: BlockState?)
 }

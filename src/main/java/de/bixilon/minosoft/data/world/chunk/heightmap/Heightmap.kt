@@ -41,7 +41,6 @@ abstract class Heightmap(protected val chunk: Chunk) : AbstractHeightmap {
         chunk.lock.unlock()
     }
 
-
     private fun trace(x: Int, startY: Int, z: Int, notify: Boolean) {
         val sections = chunk.sections
 
@@ -87,30 +86,35 @@ abstract class Heightmap(protected val chunk: Chunk) : AbstractHeightmap {
     }
 
 
-    override fun onBlockChange(x: Int, y: Int, z: Int, next: BlockState?) {
+    override fun onBlockChange(x: Int, y: Int, z: Int, state: BlockState?) {
         chunk.lock.lock()
         val index = (z shl 4) or x
 
-        val current = heightmap[index]
+        val previous = heightmap[index]
 
-        if (current > y + 1) {
+        if (previous > y + 1) {
             // our block is/was not the highest, ignore everything
             chunk.lock.unlock()
             return
         }
-        if (next == null) {
+        if (state == null) {
             trace(x, y, z, true)
             chunk.lock.unlock()
             return
         }
 
-        when (passes(next)) {
-            HeightmapPass.ABOVE -> heightmap[index] = y + 1
-            HeightmapPass.IN -> heightmap[index] = y
-            HeightmapPass.PASSES -> Unit
+        val next = when (passes(state)) {
+            HeightmapPass.ABOVE -> y + 1
+            HeightmapPass.IN -> y
+            HeightmapPass.PASSES -> previous
         }
 
         chunk.lock.unlock()
+
+        if (previous != next) {
+            heightmap[index] = next
+            onHeightmapUpdate(x, z, previous, next)
+        }
     }
 
     protected enum class HeightmapPass {

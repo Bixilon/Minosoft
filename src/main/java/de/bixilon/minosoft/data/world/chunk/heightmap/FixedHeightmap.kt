@@ -22,7 +22,7 @@ class FixedHeightmap(val value: Int) : AbstractHeightmap {
     override fun get(x: Int, z: Int) = value
     override fun get(index: Int) = value
 
-    override fun onBlockChange(x: Int, y: Int, z: Int, next: BlockState?) = Unit
+    override fun onBlockChange(x: Int, y: Int, z: Int, state: BlockState?) = Unit
 
     companion object {
         val MAX_VALUE = FixedHeightmap(Int.MAX_VALUE)
