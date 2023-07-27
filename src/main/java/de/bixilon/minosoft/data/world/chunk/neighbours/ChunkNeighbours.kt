@@ -14,12 +14,16 @@
 package de.bixilon.minosoft.data.world.chunk.neighbours
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 
 class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
@@ -98,6 +102,68 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
 
     override fun iterator(): Iterator<Chunk?> {
         return neighbours.iterator()
+    }
+
+
+    fun update(neighbours: Array<Chunk>, sectionHeight: Int) {
+        for (nextSectionHeight in sectionHeight - 1..sectionHeight + 1) {
+            if (nextSectionHeight < chunk.minSection || nextSectionHeight > chunk.maxSection) {
+                continue
+            }
+
+            val section = chunk[nextSectionHeight] ?: continue
+            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, nextSectionHeight)
+            section.neighbours = sectionNeighbours
+        }
+    }
+
+    fun trace(offset: Vec2i): Chunk? {
+        if (offset.x == 0 && offset.y == 0) {
+            return chunk
+        }
+
+        val chunk = when {
+            offset.x > 0 -> {
+                offset.x--
+                this[6]
+            }
+
+            offset.x < 0 -> {
+                offset.x++
+                this[1]
+            }
+
+            offset.y < 0 -> {
+                offset.y--
+                this[4]
+            }
+
+            offset.y > 0 -> {
+                offset.y++
+                this[3]
+            }
+
+            else -> Broken("Can not get chunk from offset: $offset")
+        }
+        return chunk?.neighbours?.trace(offset)
+    }
+
+    fun traceBlock(offset: Vec3i, origin: Vec3i, blockPosition: Vec3i = origin + offset): BlockState? {
+        val chunkDelta = (origin - blockPosition).chunkPosition
+
+        return traceBlock(blockPosition.x and 0x0F, blockPosition.y, blockPosition.z and 0x0F, chunkDelta)
+    }
+
+    fun traceBlock(offset: Vec3i): BlockState? {
+        return traceBlock(offset.inChunkPosition, offset.chunkPosition)
+    }
+
+    private fun traceBlock(inChunkPosition: Vec3i, chunkOffset: Vec2i): BlockState? {
+        return trace(chunkOffset)?.get(inChunkPosition)
+    }
+
+    fun traceBlock(x: Int, y: Int, z: Int, chunkOffset: Vec2i): BlockState? {
+        return trace(chunkOffset)?.get(x, y, z)
     }
 
     companion object {

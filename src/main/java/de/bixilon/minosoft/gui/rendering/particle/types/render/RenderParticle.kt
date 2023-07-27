@@ -55,7 +55,7 @@ abstract class RenderParticle(connection: PlayConnection, position: Vec3d, veloc
             inChunk.y = position.y
             inChunk.z = position.z and 0x0F
 
-            val light = chunk.traceChunk(offset)?.light?.get(inChunk) ?: SectionLight.SKY_LIGHT_MASK
+            val light = chunk.neighbours.trace(offset)?.light?.get(inChunk) ?: SectionLight.SKY_LIGHT_MASK
             if (light and SectionLight.BLOCK_LIGHT_MASK > maxBlockLight) {
                 maxBlockLight = light and SectionLight.BLOCK_LIGHT_MASK
             }

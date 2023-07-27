@@ -63,7 +63,7 @@ class EntityPositionInfo(
             val chunks = physics.entity.connection.world.chunks
             val revision = chunks.revision
 
-            var chunk = if (previous.revision == revision) previous.chunk?.traceChunk(chunkPosition - previous.chunkPosition) else null
+            var chunk = if (previous.revision == revision) previous.chunk?.neighbours?.trace(chunkPosition - previous.chunkPosition) else null
 
             if (chunk == null) {
                 chunk = chunks[chunkPosition]

@@ -187,7 +187,7 @@ class World(
         chunkDelta.x = (origin.x - position.x) shr 4
         chunkDelta.y = (origin.z - position.z) shr 4
 
-        val state = chunk.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
+        val state = chunk.neighbours.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
         if (state.block !is RandomDisplayTickable) return
         if (!state.block.hasRandomTicks(connection, state, position)) return
 

@@ -232,7 +232,7 @@ class SkyboxRenderer(
                     val x = offset.x + xOffset
                     val y = offset.y + yOffset
                     val z = offset.z + zOffset
-                    val neighbour = chunk.traceChunk(Vec2i(x shr 4, z shr 4)) ?: continue
+                    val neighbour = chunk.neighbours.trace(Vec2i(x shr 4, z shr 4)) ?: continue
                     val biome = neighbour.getBiome(x and 0x0F, y, z and 0x0F) ?: continue
 
                     count++

@@ -73,7 +73,7 @@ object WorldTestUtil {
                 if (chunk == null) {
                     chunk = this.chunks[chunkPosition] ?: continue
                 } else if (chunk.chunkPosition != chunkPosition) {
-                    chunk = chunk.traceChunk(chunkPosition - chunk.chunkPosition) ?: continue
+                    chunk = chunk.neighbours.trace(chunkPosition - chunk.chunkPosition) ?: continue
                 }
                 for (y in start.y..end.y) {
                     val section = chunk.getOrPut(y.sectionHeight) ?: continue
@@ -96,7 +96,7 @@ object WorldTestUtil {
                 for (z in (start.z shr 4)..(end.z shr 4)) {
                     val chunkPosition = Vec2i(x, z)
                     chunk = if (chunk != null) {
-                        chunk.traceChunk(chunkPosition - chunk.chunkPosition) ?: continue
+                        chunk.neighbours.trace(chunkPosition - chunk.chunkPosition) ?: continue
                     } else {
                         this.chunks[chunkPosition] ?: continue
                     }

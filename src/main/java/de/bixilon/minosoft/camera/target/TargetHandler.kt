@@ -124,7 +124,7 @@ class TargetHandler(
             if (chunk == null) {
                 chunk = camera.connection.world.chunks[chunkPosition] ?: break
             } else if (chunk.chunkPosition != chunkPosition) {
-                chunk = chunk.traceChunk(chunkPosition - chunk.chunkPosition) ?: break
+                chunk = chunk.neighbours.trace(chunkPosition - chunk.chunkPosition) ?: break
             }
             val state = chunk[blockPosition.inChunkPosition] ?: continue
             if (state.block is FluidBlock) {

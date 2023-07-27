@@ -72,7 +72,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             } else if (chunk.chunkPosition != chunkPosition) {
                 chunkOffset.x = chunkPosition.x - chunk.chunkPosition.x
                 chunkOffset.y = chunkPosition.y - chunk.chunkPosition.y
-                chunk = chunk.traceChunk(chunkOffset) ?: continue
+                chunk = chunk.neighbours.trace(chunkOffset) ?: continue
             }
 
             val inChunkPosition = total.inChunkPosition
