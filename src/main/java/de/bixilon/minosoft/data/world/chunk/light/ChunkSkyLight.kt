@@ -17,17 +17,113 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ChunkSkyLight(val light: ChunkLight) {
     private val chunk = light.chunk
 
+
     fun calculate() {
         if (!chunk.world.dimension.hasSkyLight() || !chunk.neighbours.complete) {
             // no need to calculate it
             return
         }
+        floodFill()
+    }
+
+    private fun trace(x: Int, topY: Int, bottomY: Int, z: Int, source: Directions) {
+        if (topY == Int.MIN_VALUE && bottomY == Int.MIN_VALUE) return // no blocks are set in that column, no need to trace. all levels are MAX
+        if (bottomY > topY) return // started position is higher than at this, no need to trace
+
+
+        // trace section after section
+        val topSection = topY.sectionHeight
+        val bottomSection = bottomY.sectionHeight
+
+
+
+
+        for (sectionHeight in topSection downTo maxOf(chunk.minSection, bottomSection + 1)) {
+            val section = chunk[sectionHeight] ?: continue
+            val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
+
+            for (y in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
+                section.light.traceSkyLightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, source, baseY + y, false)
+            }
+            section.light.update = true
+        }
+
+        // trace lowest section just from heightmap start
+
+        if (bottomSection < chunk.minSection) {
+            chunk.light.bottom.traceSkyIncrease(x, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I)
+        } else {
+            val section = chunk[bottomSection]
+            if (section != null) {
+                val baseY = bottomSection * ProtocolDefinition.SECTION_HEIGHT_Y
+                val start = if (topSection == bottomSection) topY.inSectionHeight else ProtocolDefinition.SECTION_MAX_Y
+                for (y in start downTo bottomY.inSectionHeight) {
+                    section.light.traceSkyLightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, source, baseY + y, false)
+                }
+                section.light.update = true
+            }
+        }
+    }
+
+    private fun traceDown(x: Int, y: Int, z: Int) {
+        val sectionHeight = y.sectionHeight
+        if (sectionHeight == chunk.minSection - 1) {
+            chunk.light.bottom.traceSkyIncrease(x, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I)
+            return
+        }
+        val section = chunk[y.sectionHeight] ?: return
+        section.light.traceSkyLightIncrease(x, y.inSectionHeight, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, null, y, true)
+    }
+
+    private fun floodFill(neighbours: Array<Chunk>, x: Int, z: Int) {
+        val heightmapIndex = (z shl 4) or x
+        val maxHeight = light.heightmap[heightmapIndex]
+
+
+        traceDown(x, maxHeight, z)
+
+        if (x > 0) {
+            trace(x - 1, light.heightmap[heightmapIndex - 1], maxHeight, z, Directions.EAST)
+        } else {
+            val neighbour = neighbours[ChunkNeighbours.WEST].light
+            neighbour.sky.trace(ProtocolDefinition.SECTION_MAX_X, neighbour.heightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X], maxHeight, z, Directions.EAST)
+        }
+
+        if (x < ProtocolDefinition.SECTION_MAX_X) {
+            trace(x + 1, light.heightmap[heightmapIndex + 1], maxHeight, z, Directions.WEST)
+        } else {
+            val neighbour = neighbours[ChunkNeighbours.EAST].light
+            neighbour.sky.trace(0, neighbour.heightmap[(z shl 4) or 0], maxHeight, z, Directions.WEST)
+        }
+
+        if (z > 0) {
+            trace(x, light.heightmap[((z - 1) shl 4) or x], maxHeight, z - 1, Directions.SOUTH)
+        } else {
+            val neighbour = neighbours[ChunkNeighbours.NORTH].light
+            neighbour.sky.trace(x, neighbour.heightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x], maxHeight, ProtocolDefinition.SECTION_MAX_Z, Directions.SOUTH)
+        }
+
+        if (z < ProtocolDefinition.SECTION_MAX_Z) {
+            trace(x, light.heightmap[((z + 1) shl 4) or x], maxHeight, z + 1, Directions.NORTH)
+        } else {
+            val neighbour = neighbours[ChunkNeighbours.SOUTH].light
+            neighbour.sky.trace(x, neighbour.heightmap[(0 shl 4) or x], maxHeight, 0, Directions.NORTH)
+        }
+    }
+
+    fun floodFill(x: Int, z: Int) {
+        val neighbours = chunk.neighbours.get() ?: return
+        floodFill(neighbours, x, z)
+    }
+
+    private fun floodFill() {
         val neighbours = this.chunk.neighbours.get() ?: return
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
@@ -36,33 +132,12 @@ class ChunkSkyLight(val light: ChunkLight) {
         }
     }
 
-    @Deprecated("unused")
-    private fun getNeighbourMaxHeight(neighbours: Array<Chunk>, x: Int, z: Int, heightmapIndex: Int = (z shl 4) or x): IntArray {
-        return intArrayOf(
-            if (x > 0) {
-                light.heightmap[heightmapIndex - 1]
-            } else {
-                neighbours[ChunkNeighbours.WEST].light.heightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X]
-            },
+    fun recalculate(sectionHeight: Int) {
+        val minY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
 
-            if (x < ProtocolDefinition.SECTION_MAX_X) {
-                light.heightmap[heightmapIndex + 1]
-            } else {
-                neighbours[ChunkNeighbours.EAST].light.heightmap[(z shl 4) or 0]
-            },
-
-            if (z > 0) {
-                light.heightmap[((z - 1) shl 4) or x]
-            } else {
-                neighbours[ChunkNeighbours.NORTH].light.heightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x]
-            },
-
-            if (z < ProtocolDefinition.SECTION_MAX_Z) {
-                light.heightmap[((z + 1) shl 4) or x]
-            } else {
-                neighbours[ChunkNeighbours.SOUTH].light.heightmap[(0 shl 4) or x]
-            }
-        )
+        // TODO: clear neighbours and let them propagate?
+        // TODO: Optimize for specific section height (i.e. not trace everything above)
+        calculate()
     }
 
     fun getNeighbourMinHeight(neighbours: Array<Chunk>, x: Int, z: Int, heightmapIndex: Int = (z shl 4) or x): Int {
@@ -93,47 +168,4 @@ class ChunkSkyLight(val light: ChunkLight) {
         )
     }
 
-    private fun doWest(x: Int, topY: Int, bottomY: Int, z: Int) {
-        if (topY == Int.MIN_VALUE) return // no blocks are set in that column, no need to trace. all levels are MAX
-        if (bottomY > topY) return // started position is higher than at this, no need to trace
-
-
-        // trace section after section
-        val sectionStart = topY.sectionHeight
-        val sectionEnd = bottomY.sectionHeight
-
-        for (sectionHeight in sectionStart downTo (sectionEnd + 1)) {
-            val section = chunk[sectionHeight] ?: continue
-            section.light.traceSkyLightIncrease(x, 0, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, Directions.EAST, 0, false)
-        }
-
-        // trace lowest section just from heightmap start
-    }
-
-    private fun floodFill(neighbours: Array<Chunk>, x: Int, z: Int) {
-        val heightmapIndex = (z shl 4) or x
-        val maxHeight = light.heightmap[heightmapIndex]
-
-
-        if (x > 0) {
-            doWest(x - 1, light.heightmap[heightmapIndex - 1], maxHeight, z)
-        } else {
-            val neighbour = neighbours[ChunkNeighbours.WEST].light
-            neighbour.sky.doWest(ProtocolDefinition.SECTION_MAX_X, neighbour.heightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X], maxHeight, z)
-        }
-
-
-    }
-
-    fun startFloodFill(x: Int, z: Int) {
-
-    }
-
-    fun recalculate(sectionHeight: Int) {
-        val minY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
-
-        // TODO: clear neighbours and let them propagate?
-        // TODO: Optimize for specific section height (i.e. not trace everything above)
-        calculate()
-    }
 }

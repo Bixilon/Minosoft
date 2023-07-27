@@ -29,7 +29,7 @@ class LightHeightmap(chunk: Chunk) : Heightmap(chunk) {
     override fun onHeightmapUpdate(x: Int, z: Int, previous: Int, now: Int) {
         if (previous > now) {
             // block is lower
-            return chunk.light.sky.startFloodFill(x, z)
+            return chunk.light.sky.floodFill(x, z)
         }
         // block is now higher
         // ToDo: Neighbours
