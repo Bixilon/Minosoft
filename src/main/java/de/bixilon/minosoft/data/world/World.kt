@@ -228,7 +228,7 @@ class World(
             reset += { chunk.light.reset() }
             calculate += {
                 if (heightmap) {
-                    chunk.light.recalculateHeightmap()
+                    chunk.light.heightmap.recalculate()
                 }
                 chunk.light.calculate()
             }

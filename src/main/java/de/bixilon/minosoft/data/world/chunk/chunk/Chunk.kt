@@ -62,7 +62,7 @@ class Chunk(
 
 
     init {
-        light.recalculateHeightmap()
+        light.heightmap.recalculate()
     }
 
     @Deprecated("neighbours.complete", ReplaceWith("neighbours.complete"))
@@ -162,7 +162,7 @@ class Chunk(
         if (executed.isEmpty()) {
             return lock.unlock()
         }
-        light.recalculateHeightmap()
+        light.heightmap.recalculate()
         light.recalculate()
 
         for (section in sections) {

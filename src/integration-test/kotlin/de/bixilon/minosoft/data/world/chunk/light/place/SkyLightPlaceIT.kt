@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.c
 import org.testng.annotations.Test
 
 
-@Test(groups = ["light"], dependsOnGroups = ["block"], threadPoolSize = 8, priority = -100)
+@Test(groups = ["light"], dependsOnGroups = ["block"], threadPoolSize = 8, priority = 1000)
 class SkyLightPlaceIT {
 
     fun aboveBlock() {

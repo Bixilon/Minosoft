@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.heightmap.FixedHeightmap
+import de.bixilon.minosoft.data.world.chunk.heightmap.LightHeightmap
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.AbstractWorldUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkLightUpdate
@@ -29,7 +31,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ChunkLight(private val chunk: Chunk) {
     private val connection = chunk.connection
-    val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { if (chunk.world.dimension.canSkylight()) Int.MIN_VALUE else Int.MAX_VALUE }
+    val heightmap = if (chunk.world.dimension.canSkylight()) LightHeightmap(chunk) else FixedHeightmap.MAX_VALUE
 
     val bottom = BorderSectionLight(false, chunk)
     val top = BorderSectionLight(true, chunk)
@@ -39,10 +41,7 @@ class ChunkLight(private val chunk: Chunk) {
         if (!chunk.world.dimension.light) {
             return
         }
-        val heightmapIndex = (z shl 4) or x
-        val previous = heightmap[heightmapIndex]
-        recalculateHeightmap(x, y, z, next)
-        onHeightmapUpdate(x, y, z, previous, heightmap[heightmapIndex])
+        heightmap.onBlockChange(x, y, z, next)
 
         val neighbours = chunk.neighbours.get() ?: return
 
@@ -180,118 +179,8 @@ class ChunkLight(private val chunk: Chunk) {
         }
     }
 
-    fun recalculateHeightmap() {
-        if (!chunk.world.dimension.canSkylight()) {
-            return
-        }
-        chunk.lock.lock()
-        val maxY = chunk.maxSection * ProtocolDefinition.SECTION_HEIGHT_Y
 
-        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-            for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                checkHeightmapY(x, maxY, z)
-            }
-        }
-        chunk.lock.unlock()
-        calculateSkylight()
-    }
-
-    private fun checkHeightmapY(x: Int, startY: Int, z: Int) {
-        val sections = chunk.sections
-
-        var y = Int.MIN_VALUE
-
-        sectionLoop@ for (sectionIndex in (startY.sectionHeight - chunk.minSection) downTo 0) {
-            if (sectionIndex >= sections.size) {
-                // starting from above world
-                continue
-            }
-            val section = sections[sectionIndex] ?: continue
-            if (section.blocks.isEmpty) continue
-
-            section.acquire()
-            for (sectionY in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
-                val state = section.blocks[x, sectionY, z] ?: continue
-                val light = state.block.getLightProperties(state)
-
-                if (light.skylightEnters && !light.filtersSkylight && light.propagatesLight(Directions.DOWN)) {
-                    // can go through block
-                    continue
-                }
-                y = (sectionIndex + chunk.minSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
-                if (!light.skylightEnters) {
-                    y++
-                }
-                section.release()
-                break@sectionLoop
-            }
-            section.release()
-        }
-        val heightmapIndex = (z shl 4) or x
-        heightmap[heightmapIndex] = y
-    }
-
-    private fun onHeightmapUpdate(x: Int, y: Int, z: Int, previous: Int, now: Int) {
-        if (previous == now) {
-            return
-        }
-
-        if (previous < y) {
-            // block is now higher
-            // ToDo: Neighbours
-            val sections = chunk.sections
-            val maxIndex = previous.sectionHeight - chunk.minSection
-            val minIndex = now.sectionHeight - chunk.minSection
-            bottom.reset()
-            for (index in maxIndex downTo minIndex) {
-                val section = sections[index] ?: continue
-                section.light.reset()
-            }
-            for (index in maxIndex downTo minIndex) {
-                val section = sections[index] ?: continue
-                section.light.calculate()
-            }
-            calculateSkylight()
-        } else if (previous > y && chunk.world.dimension.canSkylight()) {
-            // block is lower
-            startSkylightFloodFill(x, z)
-        }
-    }
-
-    private fun recalculateHeightmap(x: Int, y: Int, z: Int, blockState: BlockState?) {
-        if (!chunk.world.dimension.canSkylight()) {
-            return
-        }
-        chunk.lock.lock()
-        val index = (z shl 4) or x
-
-        val current = heightmap[index]
-
-        if (current > y + 1) {
-            // our block is/was not the highest, ignore everything
-            chunk.lock.unlock()
-            return
-        }
-        if (blockState == null) {
-            checkHeightmapY(x, y, z)
-            chunk.lock.unlock()
-            return
-        }
-
-        // we are the highest block now
-        // check if light can pass
-        val light = blockState.block.getLightProperties(blockState)
-        if (!light.skylightEnters) {
-            heightmap[index] = y + 1
-        } else if (light.filtersSkylight || !light.propagatesLight(Directions.DOWN)) {
-            heightmap[index] = y
-        }
-
-        chunk.lock.unlock()
-        return
-    }
-
-    private fun calculateSkylight() {
+    fun calculateSkylight() {
         if (!chunk.world.dimension.canSkylight() || !chunk.neighbours.complete) {
             // no need to calculate it
             return
@@ -400,6 +289,7 @@ class ChunkLight(private val chunk: Chunk) {
         }
     }
 
+    @Deprecated("heightmap")
     inline fun getMaxHeight(x: Int, z: Int): Int {
         return heightmap[(z shl 4) or x]
     }
