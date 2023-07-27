@@ -118,7 +118,7 @@ interface KeyActionFilter {
                 filter.satisfied = false
                 return
             }
-            filter.result = input.bindings.isDown(name)
+            filter.result = !input.bindings.isDown(name)
         }
     }
 
