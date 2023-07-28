@@ -133,12 +133,12 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
                 this[1]
             }
 
-            offset.y < 0 -> {
+            offset.y > 0 -> {
                 offset.y--
                 this[4]
             }
 
-            offset.y > 0 -> {
+            offset.y < 0 -> {
                 offset.y++
                 this[3]
             }

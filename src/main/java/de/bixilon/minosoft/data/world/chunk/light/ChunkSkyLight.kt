@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -33,42 +34,42 @@ class ChunkSkyLight(val light: ChunkLight) {
         floodFill()
     }
 
-    private fun trace(x: Int, topY: Int, bottomY: Int, z: Int, source: Directions) {
-        if (topY == Int.MIN_VALUE && bottomY == Int.MIN_VALUE) return // no blocks are set in that column, no need to trace. all levels are MAX
-        if (bottomY > topY) return // started position is higher than at this, no need to trace
+    private fun traceSection(sectionHeight: SectionHeight, x: Int, topY: Int, bottomY: Int, z: Int, source: Directions) {
+        val section = chunk.getOrPut(sectionHeight) ?: return
+        val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
 
+        for (y in topY downTo bottomY) {
+            section.light.traceSkyLightIncrease(x, y, z, NEIGHBOUR_TRACE_LEVEL, source, baseY + y, false)
+        }
+        section.light.update = true
+    }
+
+    private fun trace(x: Int, topY: Int, bottomY: Int, z: Int, source: Directions) {
+        if (topY == Int.MIN_VALUE) return // no blocks are set in that column, no need to trace. all levels are MAX
+        if (bottomY > topY) return // started position is higher than at this, no need to trace
 
         // trace section after section
         val topSection = topY.sectionHeight
         val bottomSection = bottomY.sectionHeight
 
+        val sections = topSection - maxOf(chunk.minSection, bottomSection) + 1
 
 
-
-        for (sectionHeight in topSection downTo maxOf(chunk.minSection, bottomSection + 1)) {
-            val section = chunk[sectionHeight] ?: continue
-            val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
-
-            for (y in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
-                section.light.traceSkyLightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, source, baseY + y, false)
-            }
-            section.light.update = true
+        // top section
+        if (sections > 1) {
+            traceSection(topSection, x, topY.inSectionHeight, 0, z, source)
         }
 
-        // trace lowest section just from heightmap start
+        // middle sections
+        for (sectionHeight in (topSection - 1) downTo maxOf(chunk.minSection, bottomSection) + 1) {
+            traceSection(sectionHeight, x, ProtocolDefinition.SECTION_MAX_Y, 0, z, source)
+        }
 
-        if (bottomSection < chunk.minSection) {
-            chunk.light.bottom.traceSkyIncrease(x, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I)
-        } else {
-            val section = chunk[bottomSection]
-            if (section != null) {
-                val baseY = bottomSection * ProtocolDefinition.SECTION_HEIGHT_Y
-                val start = if (topSection == bottomSection) topY.inSectionHeight else ProtocolDefinition.SECTION_MAX_Y
-                for (y in start downTo bottomY.inSectionHeight) {
-                    section.light.traceSkyLightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, source, baseY + y, false)
-                }
-                section.light.update = true
-            }
+        // lowest section
+        traceSection(if (bottomY == Int.MIN_VALUE) chunk.minSection else bottomSection, x, if (topSection == bottomSection) topY.inSectionHeight else ProtocolDefinition.SECTION_MAX_Y, if (bottomY == Int.MIN_VALUE) 0 else bottomY.inSectionHeight, z, source)
+
+        if (bottomY == Int.MIN_VALUE) {
+            chunk.light.bottom.traceSkyIncrease(x, z, NEIGHBOUR_TRACE_LEVEL)
         }
     }
 
@@ -168,4 +169,8 @@ class ChunkSkyLight(val light: ChunkLight) {
         )
     }
 
+
+    private companion object {
+        const val NEIGHBOUR_TRACE_LEVEL = ProtocolDefinition.MAX_LIGHT_LEVEL_I - 1
+    }
 }
