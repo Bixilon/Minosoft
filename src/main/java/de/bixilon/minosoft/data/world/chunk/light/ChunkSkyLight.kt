@@ -34,17 +34,17 @@ class ChunkSkyLight(val light: ChunkLight) {
         floodFill()
     }
 
-    private fun traceSection(sectionHeight: SectionHeight, x: Int, topY: Int, bottomY: Int, z: Int, source: Directions) {
+    private fun traceSection(sectionHeight: SectionHeight, x: Int, topY: Int, bottomY: Int, z: Int, target: Directions) {
         val section = chunk.getOrPut(sectionHeight) ?: return
         val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
 
         for (y in topY downTo bottomY) {
-            section.light.traceSkyLightIncrease(x, y, z, NEIGHBOUR_TRACE_LEVEL, source, baseY + y, false)
+            section.light.traceSkyLightIncrease(x, y, z, NEIGHBOUR_TRACE_LEVEL, target, baseY + y, false)
         }
         section.light.update = true
     }
 
-    private fun trace(x: Int, topY: Int, bottomY: Int, z: Int, source: Directions) {
+    private fun trace(x: Int, topY: Int, bottomY: Int, z: Int, target: Directions) {
         if (topY == Int.MIN_VALUE) return // no blocks are set in that column, no need to trace. all levels are MAX
         if (bottomY > topY) return // started position is higher than at this, no need to trace
 
@@ -57,16 +57,16 @@ class ChunkSkyLight(val light: ChunkLight) {
 
         // top section
         if (sections > 1) {
-            traceSection(topSection, x, topY.inSectionHeight, 0, z, source)
+            traceSection(topSection, x, topY.inSectionHeight, 0, z, target)
         }
 
         // middle sections
         for (sectionHeight in (topSection - 1) downTo maxOf(chunk.minSection, bottomSection) + 1) {
-            traceSection(sectionHeight, x, ProtocolDefinition.SECTION_MAX_Y, 0, z, source)
+            traceSection(sectionHeight, x, ProtocolDefinition.SECTION_MAX_Y, 0, z, target)
         }
 
         // lowest section
-        traceSection(if (bottomY == Int.MIN_VALUE) chunk.minSection else bottomSection, x, if (topSection == bottomSection) topY.inSectionHeight else ProtocolDefinition.SECTION_MAX_Y, if (bottomY == Int.MIN_VALUE) 0 else bottomY.inSectionHeight, z, source)
+        traceSection(if (bottomY == Int.MIN_VALUE) chunk.minSection else bottomSection, x, if (topSection == bottomSection) topY.inSectionHeight else ProtocolDefinition.SECTION_MAX_Y, if (bottomY == Int.MIN_VALUE) 0 else bottomY.inSectionHeight, z, target)
 
         if (bottomY == Int.MIN_VALUE) {
             chunk.light.bottom.traceSkyIncrease(x, z, NEIGHBOUR_TRACE_LEVEL)
@@ -91,31 +91,31 @@ class ChunkSkyLight(val light: ChunkLight) {
         traceDown(x, maxHeight, z)
 
         if (x > 0) {
-            trace(x - 1, light.heightmap[heightmapIndex - 1], maxHeight, z, Directions.EAST)
+            trace(x - 1, light.heightmap[heightmapIndex - 1], maxHeight, z, Directions.WEST)
         } else {
             val neighbour = neighbours[ChunkNeighbours.WEST].light
-            neighbour.sky.trace(ProtocolDefinition.SECTION_MAX_X, neighbour.heightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X], maxHeight, z, Directions.EAST)
+            neighbour.sky.trace(ProtocolDefinition.SECTION_MAX_X, neighbour.heightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X], maxHeight, z, Directions.WEST)
         }
 
         if (x < ProtocolDefinition.SECTION_MAX_X) {
-            trace(x + 1, light.heightmap[heightmapIndex + 1], maxHeight, z, Directions.WEST)
+            trace(x + 1, light.heightmap[heightmapIndex + 1], maxHeight, z, Directions.EAST)
         } else {
             val neighbour = neighbours[ChunkNeighbours.EAST].light
-            neighbour.sky.trace(0, neighbour.heightmap[(z shl 4) or 0], maxHeight, z, Directions.WEST)
+            neighbour.sky.trace(0, neighbour.heightmap[(z shl 4) or 0], maxHeight, z, Directions.EAST)
         }
 
         if (z > 0) {
-            trace(x, light.heightmap[((z - 1) shl 4) or x], maxHeight, z - 1, Directions.SOUTH)
+            trace(x, light.heightmap[((z - 1) shl 4) or x], maxHeight, z - 1, Directions.NORTH)
         } else {
             val neighbour = neighbours[ChunkNeighbours.NORTH].light
-            neighbour.sky.trace(x, neighbour.heightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x], maxHeight, ProtocolDefinition.SECTION_MAX_Z, Directions.SOUTH)
+            neighbour.sky.trace(x, neighbour.heightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x], maxHeight, ProtocolDefinition.SECTION_MAX_Z, Directions.NORTH)
         }
 
         if (z < ProtocolDefinition.SECTION_MAX_Z) {
-            trace(x, light.heightmap[((z + 1) shl 4) or x], maxHeight, z + 1, Directions.NORTH)
+            trace(x, light.heightmap[((z + 1) shl 4) or x], maxHeight, z + 1, Directions.SOUTH)
         } else {
             val neighbour = neighbours[ChunkNeighbours.SOUTH].light
-            neighbour.sky.trace(x, neighbour.heightmap[(0 shl 4) or x], maxHeight, 0, Directions.NORTH)
+            neighbour.sky.trace(x, neighbour.heightmap[(0 shl 4) or x], maxHeight, 0, Directions.SOUTH)
         }
     }
 

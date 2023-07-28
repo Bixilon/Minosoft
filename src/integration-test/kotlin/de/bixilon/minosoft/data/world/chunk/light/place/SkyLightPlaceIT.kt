@@ -73,6 +73,8 @@ class SkyLightPlaceIT {
     fun belowBlock3() {
         val world = createConnection(3, light = true).world
         world.fill(7, 10, 7, 9, 10, 9, StoneTest0.state, false)
+        // world.chunks[0,0]!!.light.reset()
+        // world.chunks[0,0]!!.light.sky.calculate()
         world.assertLight(8, 9, 8, 0xD0)
     }
 
