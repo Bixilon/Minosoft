@@ -42,7 +42,7 @@ open class SectionDataProvider<T>(
         if (data != null && calculateInitial) {
             recalculate()
         } else {
-            minPosition = Vec3i.EMPTY
+            minPosition = Vec3i(ProtocolDefinition.CHUNK_SECTION_SIZE)
             maxPosition = Vec3i.EMPTY
         }
     }
