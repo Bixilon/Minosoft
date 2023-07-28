@@ -228,9 +228,12 @@ class SectionLight(
         val blocks = section.blocks
 
         blocks.acquire()
-        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-            for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+        val min = blocks.minPosition
+        val max = blocks.maxPosition
+
+        for (x in min.x..max.x) {
+            for (z in min.z..max.z) {
+                for (y in min.y..max.y) {
                     val index = getIndex(x, y, z)
                     val luminance = blocks[index]?.luminance ?: continue
                     if (luminance == 0) {
