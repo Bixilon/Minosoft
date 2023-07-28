@@ -372,7 +372,7 @@ class SectionLight(
                 (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.sectionHeight - 1, false))?.light?.traceSkyLightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, nextNeighbourLevel, Directions.DOWN, totalY - 1)
             }
         }
-        if (target != Directions.DOWN && target != null && (lightProperties.propagatesLight(Directions.UP))) {
+        if (target != Directions.DOWN && (target != null || lightProperties.propagatesLight(Directions.UP))) {
             if (y < ProtocolDefinition.SECTION_MAX_Y) {
                 traceSkyLightIncrease(x, y + 1, z, nextNeighbourLevel, Directions.UP, totalY + 1)
             } else if (section.sectionHeight < chunk.maxSection) {
