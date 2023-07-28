@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.kutil.benchmark.BenchmarkUtil
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createChunkWithNeighbours
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createOpaqueLight
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createSolidBlock
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.fillBottom
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createOpaqueLight
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createSolidBlock
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.fillBottom
 import org.testng.annotations.Test
 import kotlin.system.measureNanoTime
 

@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.GlassTest0
 import de.bixilon.minosoft.data.registries.blocks.StairsTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createChunkWithNeighbours
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import org.testng.Assert.assertEquals
