@@ -36,6 +36,15 @@ class SkyLightTraceIT {
         world.assertLight(7, 11, 8, 0xE0)
     }
 
+    fun `heightmap optimization west, upper block set 2`() {
+        val world = createConnection(3, light = true).world
+        world[Vec3i(8, 255, 8)] = StoneTest0.state
+        world[Vec3i(7, 1, 8)] = StoneTest0.state
+        for (y in 0..254) {
+            world.assertLight(8, y, 8, 0xE0)
+        }
+    }
+
     fun `heightmap optimization east, upper block set`() {
         val world = createConnection(3, light = true).world
         world[Vec3i(8, 10, 8)] = StoneTest0.state
