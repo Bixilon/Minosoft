@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.c
 import org.testng.annotations.Test
 
 
-@Test(groups = ["light"], dependsOnGroups = ["block"], threadPoolSize = 8, priority = -100)
+@Test(groups = ["light"], dependsOnGroups = ["block"], threadPoolSize = 8, priority = 1000)
 class SkyLightPlaceIT {
 
     fun aboveBlock() {
@@ -44,9 +44,37 @@ class SkyLightPlaceIT {
         world.assertLight(8, 9, 8, 0xE0)
     }
 
+    fun `below block 1`() {
+        val world = createConnection(3, light = true).world
+        world[Vec3i(8, 16, 8)] = StoneTest0.state
+        world.assertLight(8, 15, 8, 0xE0)
+    }
+
+    fun `below block 2`() {
+        val world = createConnection(3, light = true).world
+        world[Vec3i(8, 0, 8)] = StoneTest0.state
+        world.assertLight(8, -1, 8, 0xE0)
+    }
+
+    fun `below block 3`() {
+        val world = createConnection(3, light = true).world
+        world[Vec3i(8, 15, 8)] = StoneTest0.state
+        world.assertLight(8, 14, 8, 0xE0)
+    }
+
+    fun `more blocks below block`() {
+        val world = createConnection(3, light = true).world
+        world[Vec3i(8, 37, 8)] = StoneTest0.state
+        for (y in 0..36) {
+            world.assertLight(8, y, 8, 0xE0)
+        }
+    }
+
     fun belowBlock3() {
         val world = createConnection(3, light = true).world
         world.fill(7, 10, 7, 9, 10, 9, StoneTest0.state, false)
+        // world.chunks[0,0]!!.light.reset()
+        // world.chunks[0,0]!!.light.sky.calculate()
         world.assertLight(8, 9, 8, 0xD0)
     }
 

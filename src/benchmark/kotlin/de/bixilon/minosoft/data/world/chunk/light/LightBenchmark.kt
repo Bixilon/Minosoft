@@ -79,9 +79,10 @@ internal class LightBenchmark {
         for (index in 0 until 256) {
             highest.unsafeSet(index or (0x0F shl 8), solid)
         }
+
         var totalPlace = 0L
         var totalBreak = 0L
-        val benchmark = BenchmarkUtil.benchmark(10000) {
+        val benchmark = BenchmarkUtil.benchmark(100000) {
             totalBreak += measureNanoTime { chunk[7, 255, 7] = null }
             totalPlace += measureNanoTime { chunk[7, 255, 7] = solid }
         }

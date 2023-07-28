@@ -18,7 +18,6 @@ import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
@@ -96,25 +95,6 @@ class ChunkSection(
         this.biomes.setData(biomes.cast())
     }
 
-
-    operator fun set(x: Int, y: Int, z: Int, block: BlockState?): BlockState? {
-        val previous = blocks.set(x, y, z, block)
-        if (chunk.world.dimension.light) {
-            light.onBlockChange(x, y, z, previous, block)
-        }
-
-        return previous
-    }
-
-    fun unsafeSet(x: Int, y: Int, z: Int, block: BlockState?): BlockState? {
-        val previous = blocks.unsafeSet(x, y, z, block)
-
-        if (chunk.world.dimension.light) {
-            light.onBlockChange(x, y, z, previous, block)
-        }
-
-        return previous
-    }
 
     fun clear() {
         blocks.clear()

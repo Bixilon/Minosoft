@@ -32,7 +32,7 @@ import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.light.ChunkLight.Companion.canSkylight
+import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
 import de.bixilon.minosoft.data.world.difficulty.WorldDifficulty
@@ -187,7 +187,7 @@ class World(
         chunkDelta.x = (origin.x - position.x) shr 4
         chunkDelta.y = (origin.z - position.z) shr 4
 
-        val state = chunk.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
+        val state = chunk.neighbours.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
         if (state.block !is RandomDisplayTickable) return
         if (!state.block.hasRandomTicks(connection, state, position)) return
 
@@ -214,7 +214,7 @@ class World(
     fun getBrightness(position: BlockPosition): Float {
         val light = getLight(position)
         var level = light and SectionLight.BLOCK_LIGHT_MASK
-        if (dimension.canSkylight()) {
+        if (dimension.hasSkyLight()) {
             level = maxOf(level, light and SectionLight.SKY_LIGHT_MASK shr 4)
         }
         return dimension.ambientLight[level]
@@ -228,7 +228,7 @@ class World(
             reset += { chunk.light.reset() }
             calculate += {
                 if (heightmap) {
-                    chunk.light.recalculateHeightmap()
+                    chunk.light.heightmap.recalculate()
                 }
                 chunk.light.calculate()
             }

@@ -11,27 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.dimension.effects
+package de.bixilon.minosoft.data.world.chunk.light
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 
-interface DimensionEffects : Identified {
-    val daylightCycle: Boolean
-    val skyLight: Boolean
-    val fixedTexture: ResourceLocation? get() = null
+object ChunkLightUtil {
 
-    val weather: Boolean
-    val sun: Boolean
-    val moon: Boolean
-    val stars: Boolean
-
-    val clouds: Boolean
-    fun getCloudHeight(connection: PlayConnection): IntRange
-
-    val brighten: Vec3? get() = null
-
-    val fog: Boolean
+    fun DimensionProperties.hasSkyLight(): Boolean {
+        return this.skyLight || this.effects.skyLight
+    }
 }

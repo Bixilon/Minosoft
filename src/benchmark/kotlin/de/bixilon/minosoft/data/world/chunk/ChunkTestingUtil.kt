@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.TestBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -109,8 +110,7 @@ object ChunkTestingUtil {
     fun createBlock(name: String, luminance: Int, lightProperties: LightProperties): Block {
         val block = TestBlock(minosoft(name), BlockSettings())
         val state = AdvancedBlockState(block, properties = emptyMap(), collisionShape = AbstractVoxelShape.EMPTY, outlineShape = AbstractVoxelShape.EMPTY, luminance = luminance, lightProperties = lightProperties, solidRenderer = true)
-        block::states.javaField!!.forceSet(block, setOf(state))
-        block.states::default.javaField!!.forceSet(block, state)
+        block::states.forceSet(SimpleStateManager(state))
 
         return block
     }

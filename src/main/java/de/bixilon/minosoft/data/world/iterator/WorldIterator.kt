@@ -57,7 +57,7 @@ class WorldIterator(
             } else if (chunk.chunkPosition != chunkPosition) {
                 offset.x = chunkPosition.x - chunk.chunkPosition.x
                 offset.y = chunkPosition.y - chunk.chunkPosition.y
-                chunk = chunk.traceChunk(offset) ?: continue
+                chunk = chunk.neighbours.trace(offset) ?: continue
             }
             if (this.chunk !== chunk) {
                 this.chunk = chunk
