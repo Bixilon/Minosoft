@@ -71,19 +71,24 @@ class Chunk(
 
     operator fun set(x: Int, y: Int, z: Int, state: BlockState?) {
         val section = getOrPut(y.sectionHeight) ?: return
-        val previous = section.set(x, y and 0x0F, z, state)
+        val previous = section.blocks.set(x, y and 0x0F, z, state)
         if (previous == state) return
         val entity = getOrPutBlockEntity(x, y, z)
-        light.onBlockChange(x, y, z, section, state) // TODO: heightmap gets updated after the block set? -> optimize/maybe even invalid
+
+        if (world.dimension.light) {
+            light.onBlockChange(x, y, z, section, state)
+            section.light.onBlockChange(x, y and 0x0F, z, previous, state)
+        }
 
         SingleBlockUpdate(Vec3i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + x, y, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + z), this, state, entity).fire(connection)
     }
 
-    operator fun set(x: Int, y: Int, z: Int, state: BlockState?, entity: BlockEntity?) {
-        val section = getOrPut(y.sectionHeight) ?: return
-        section[x, y and 0x0F, z] = state
-        section.blockEntities[x, y and 0x0F, z] = entity
-    }
+//    fun set(x: Int, y: Int, z: Int, state: BlockState?, entity: BlockEntity?) {
+//        val section = getOrPut(y.sectionHeight) ?: return
+//       section.blocks[x, y and 0x0F, z] = state
+//        section.blockEntities[x, y and 0x0F, z] = entity
+//        // TODO: light update
+//    }
 
     operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
 

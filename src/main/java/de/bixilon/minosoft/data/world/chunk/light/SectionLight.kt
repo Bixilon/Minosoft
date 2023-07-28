@@ -27,12 +27,12 @@ class SectionLight(
     var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION), // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) : AbstractSectionLight() {
 
-    fun onBlockChange(x: Int, y: Int, z: Int, previous: BlockState?, now: BlockState?) {
+    fun onBlockChange(x: Int, y: Int, z: Int, previous: BlockState?, state: BlockState?) {
         val previousLuminance = previous?.luminance ?: 0
-        val luminance = now?.luminance ?: 0
+        val luminance = state?.luminance ?: 0
 
         if (previousLuminance == luminance) {
-            val nowProperties = now?.block?.getLightProperties(now)
+            val nowProperties = state?.block?.getLightProperties(state)
             if (previous?.block?.getLightProperties(previous)?.propagatesLight == nowProperties?.propagatesLight) {
                 // no change for light data
                 return
