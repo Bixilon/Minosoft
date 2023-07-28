@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
-class LightHeightmap(chunk: Chunk) : Heightmap(chunk) {
+class LightHeightmap(chunk: Chunk) : ChunkHeightmap(chunk) {
 
 
     override fun recalculate() {

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.heightmap
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 
-class FixedHeightmap(val value: Int) : AbstractHeightmap {
+class FixedHeightmap(val value: Int) : Heightmap {
 
     override fun recalculate() = Unit
 
