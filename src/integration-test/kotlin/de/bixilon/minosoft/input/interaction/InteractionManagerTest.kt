@@ -26,7 +26,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityAttac
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
 import org.testng.annotations.Test
 
-@Test(groups = ["integration"])
+@Test(groups = ["interaction"])
 class InteractionManagerTest {
 
     fun attackNoTarget() {
