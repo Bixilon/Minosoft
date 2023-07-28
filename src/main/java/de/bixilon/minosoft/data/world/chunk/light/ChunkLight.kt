@@ -37,11 +37,10 @@ class ChunkLight(val chunk: Chunk) {
     val sky = ChunkSkyLight(this)
 
 
-    fun onBlockChange(x: Int, y: Int, z: Int, section: ChunkSection, next: BlockState?) {
-        if (!chunk.world.dimension.light) {
-            return
-        }
+    fun onBlockChange(x: Int, y: Int, z: Int, section: ChunkSection, previous: BlockState?, next: BlockState?) {
         heightmap.onBlockChange(x, y, z, next)
+
+        section.light.onBlockChange(x, y and 0x0F, z, previous, next)
 
         val neighbours = chunk.neighbours.get() ?: return
 
@@ -49,7 +48,7 @@ class ChunkLight(val chunk: Chunk) {
     }
 
 
-    private fun fireLightChange(section: ChunkSection, sectionHeight: Int, neighbours: Array<Chunk>, fireSameChunkEvent: Boolean = true) {
+    fun fireLightChange(section: ChunkSection, sectionHeight: Int, neighbours: Array<Chunk>, fireSameChunkEvent: Boolean = true) {
         if (!section.light.update) {
             return
         }

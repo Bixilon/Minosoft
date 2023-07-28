@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.light.place
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.minosoft.data.registries.blocks.TorchTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
@@ -166,24 +166,23 @@ class BlockLightPlaceIT {
 
     fun lightUpdate() {
         val world = ConnectionTestUtil.createConnection(3, light = true).world
-        val events: MutableSet<Vec3i> = synchronizedSetOf()
+        val events: MutableList<Vec3i> = synchronizedListOf()
         world.connection.events.listen<WorldUpdateEvent> {
             if (it.update !is ChunkLightUpdate) return@listen
             events += Vec3i(it.update.chunkPosition.x, (it.update as ChunkLightUpdate).sectionHeight, it.update.chunkPosition.y)
         }
         world[Vec3i(8, 24, 8)] = TorchTest0.state
 
-        assertEquals(
-            events, setOf(
-                Vec3i(+0, 1, +0),
-                Vec3i(+0, 0, +0),
-                Vec3i(+0, 2, +0),
-                Vec3i(+0, 1, -1),
-                Vec3i(+0, 1, +1),
-                Vec3i(-1, 1, +0),
-                Vec3i(+1, 1, +0),
-            )
-        )
+        assertEquals(events.toSet(), setOf(
+            Vec3i(+0, 1, +0),
+            Vec3i(+0, 0, +0),
+            Vec3i(+0, 2, +0),
+            Vec3i(+0, 1, -1),
+            Vec3i(+0, 1, +1),
+            Vec3i(-1, 1, +0),
+            Vec3i(+1, 1, +0),
+        ))
+        assertEquals(events.size, 7)
     }
 
 

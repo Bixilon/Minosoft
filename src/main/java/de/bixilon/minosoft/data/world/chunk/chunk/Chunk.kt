@@ -76,8 +76,7 @@ class Chunk(
         val entity = getOrPutBlockEntity(x, y, z)
 
         if (world.dimension.light) {
-            light.onBlockChange(x, y, z, section, state)
-            section.light.onBlockChange(x, y and 0x0F, z, previous, state)
+            light.onBlockChange(x, y, z, section, previous, state)
         }
 
         SingleBlockUpdate(Vec3i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + x, y, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + z), this, state, entity).fire(connection)
