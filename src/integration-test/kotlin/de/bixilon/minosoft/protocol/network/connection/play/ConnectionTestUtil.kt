@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 object ConnectionTestUtil {
+    private val profiles = createProfiles()
 
     init {
         reference()
@@ -56,7 +57,7 @@ object ConnectionTestUtil {
         connection.player.startInit()
         connection::network.forceSet(TestNetwork())
         connection::events.forceSet(EventMaster())
-        connection::profiles.forceSet(createProfiles())
+        connection::profiles.forceSet(profiles)
         connection::assetsManager.forceSet(TestAssetsManager)
         connection::state.forceSet(DataObserver(PlayConnectionStates.PLAYING))
         connection::tags.forceSet(TagManager())
