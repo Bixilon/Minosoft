@@ -91,6 +91,8 @@ object WorldTestUtil {
             }
         }
 
+        if (!dimension.light && !dimension.skyLight) return // no need for occlusion when light is ignored
+
         if (superUnsafe) {
             for (x in (start.x shr 4)..(end.x shr 4)) {
                 for (z in (start.z shr 4)..(end.z shr 4)) {
@@ -107,9 +109,7 @@ object WorldTestUtil {
                 }
             }
         }
-        if (dimension.light || dimension.skyLight) {
-            recalculateLight(heightmap = true) // yah, might break the result, don't use fill if you want to test light
-        }
+        recalculateLight(heightmap = true) // yah, might break the result, don't use fill if you want to test light
     }
 
     private val DATA = SectionDataProvider::class.java.getDeclaredField("data").apply { isAccessible = true }

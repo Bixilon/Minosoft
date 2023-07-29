@@ -18,6 +18,6 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 object ChunkLightUtil {
 
     fun DimensionProperties.hasSkyLight(): Boolean {
-        return this.skyLight || this.effects.skyLight
+        return this.light && this.skyLight
     }
 }

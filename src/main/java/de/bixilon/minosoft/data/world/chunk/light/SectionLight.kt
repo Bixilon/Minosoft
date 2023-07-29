@@ -275,7 +275,7 @@ class SectionLight(
 
     private fun propagateX(baseY: Int, neighbours: Array<ChunkSection?>) {
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-        for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
+            for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 val totalY = baseY + y
                 neighbours[Directions.O_WEST]?.light?.get(ProtocolDefinition.SECTION_MAX_Z, y, z)?.toInt()?.let { light ->
                     (light and BLOCK_LIGHT_MASK).let { if (it > 1) traceBlockIncrease(0, y, z, it - 1, Directions.EAST) }

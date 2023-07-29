@@ -135,7 +135,8 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
         size.onCreate(chunk.chunkPosition)
         world.view.updateServerDistance()
 
-        val updates = hashSetOf<AbstractWorldUpdate>(ChunkCreateUpdate(chunk.chunkPosition, chunk))
+        val updates = HashSet<AbstractWorldUpdate>(9, 1.0f)
+        updates += ChunkCreateUpdate(chunk.chunkPosition, chunk)
 
         for (index in 0 until ChunkNeighbours.COUNT) {
             val offset = ChunkNeighbours.OFFSETS[index]

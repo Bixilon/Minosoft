@@ -128,7 +128,7 @@ class ChunkSkyLight(val light: ChunkLight) {
     private fun floodFill() {
         val neighbours = this.chunk.neighbours.get() ?: return
         for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
                 floodFill(neighbours, x, z)
             }
         }

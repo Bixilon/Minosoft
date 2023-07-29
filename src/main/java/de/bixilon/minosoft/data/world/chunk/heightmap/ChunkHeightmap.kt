@@ -34,7 +34,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
         val maxY = (chunk.maxSection + 1) * ProtocolDefinition.SECTION_HEIGHT_Y
 
         for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
                 trace(x, maxY, z, false)
             }
         }
