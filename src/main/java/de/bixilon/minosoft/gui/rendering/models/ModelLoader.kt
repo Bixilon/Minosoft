@@ -53,7 +53,7 @@ class ModelLoader(
     }
 
     private fun loadBlockStates(block: Block) {
-        val blockStateJson = assetsManager[block.identifier.blockState()].readJsonObject()
+        val blockStateJson = assetsManager.getOrNull(block.identifier.blockState())?.readJsonObject() ?: return
 
         val model = RootModel(this, blockStateJson)
 
@@ -87,12 +87,12 @@ class ModelLoader(
     fun loadItem(item: Item) {
         val model = loadItemModel(item.identifier.prefix("item/"))
 
-        item.model = model.bake(context).unsafeCast()
+        item.model = model?.bake(context).unsafeCast()
     }
 
-    fun loadItemModel(name: ResourceLocation): GenericUnbakedModel {
+    fun loadItemModel(name: ResourceLocation): GenericUnbakedModel? {
         unbakedBlockModels[name]?.let { return it.unsafeCast() }
-        val data = assetsManager[name.model()].readJsonObject()
+        val data = assetsManager.getOrNull(name.model())?.readJsonObject() ?: return null
 
         val parent = data["parent"]?.toResourceLocation()?.let { loadItemModel(it) }
 

@@ -150,10 +150,10 @@ class SolidCullSectionPreparer(
                         light[O_UP] = sectionLight[(y + 1) shl 8 or baseIndex]
                     }
 
-                    checkNorth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
-                    checkSouth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
                     checkWest(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
                     checkEast(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
+                    checkNorth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
+                    checkSouth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
 
                     if (position.y - 1 >= maxHeight) {
                         light[O_UP] = (light[O_UP].toInt() or 0xF0).toByte()
