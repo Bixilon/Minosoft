@@ -26,7 +26,7 @@ abstract class ExecutableNode(
     name: String,
     aliases: Set<String> = setOf(),
     val suggestion: SuggestionType? = null,
-    var onlyDirectExecution: Boolean = true,
+    var allowArguments: Boolean = true,
     var executor: CommandExecutor? = null,
     executable: Boolean = executor != null,
     redirect: CommandNode? = null,
@@ -68,7 +68,7 @@ abstract class ExecutableNode(
 
     override fun executeChild(child: CommandNode, reader: CommandReader, stack: CommandStack) {
         super.executeChild(child, reader, stack)
-        if (!onlyDirectExecution) {
+        if (allowArguments) {
             execute(stack)
         }
     }

@@ -31,7 +31,7 @@ import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 object AccountManageCommand : Command {
     override var node = LiteralNode("account")
         .addChild(
-            LiteralNode("list", onlyDirectExecution = false, executor = {
+            LiteralNode("list", allowArguments = true, executor = {
                 val filtered = it.collect()
                 if (filtered.isEmpty()) throw CommandException("No account matched your filter!")
 

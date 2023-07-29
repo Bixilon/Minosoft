@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.KUtil.table
 object ConnectionManageCommand : Command {
     override var node = LiteralNode("connection")
         .addChild(
-            LiteralNode("list", onlyDirectExecution = false, executor = {
+            LiteralNode("list", allowArguments = true, executor = {
                 val filtered = it.collect()
                 if (filtered.isEmpty()) throw CommandException("No connection matched your filter!")
 

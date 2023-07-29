@@ -36,7 +36,7 @@ class LiteralNode : ExecutableNode {
     ) : super(name, aliases, suggestion, false, null, executable, redirect)
 
 
-    constructor(name: String, aliases: Set<String> = setOf(), onlyDirectExecution: Boolean = true, executor: CommandExecutor) : super(name, aliases, onlyDirectExecution = onlyDirectExecution, executor = executor, executable = true)
+    constructor(name: String, aliases: Set<String> = setOf(), allowArguments: Boolean = true, executor: CommandExecutor) : super(name, aliases, allowArguments = allowArguments, executor = executor, executable = true)
 
     constructor(builder: CommandNodeBuilder) : this(builder.name ?: throw NullPointerException("No name in builder!"), setOf(), builder.suggestionType, builder.executable)
 

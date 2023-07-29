@@ -38,7 +38,7 @@ class ArgumentNode : ExecutableNode, SignedNode {
     }
 
 
-    constructor(name: String, parser: ArgumentParser<*>, onlyDirectExecution: Boolean = true, executor: CommandExecutor) : super(name, executable = true, onlyDirectExecution = onlyDirectExecution, executor = executor) {
+    constructor(name: String, parser: ArgumentParser<*>, allowArguments: Boolean = false, executor: CommandExecutor) : super(name, executable = true, allowArguments = allowArguments, executor = executor) {
         this.executor = executor
         this.parser = parser
     }
