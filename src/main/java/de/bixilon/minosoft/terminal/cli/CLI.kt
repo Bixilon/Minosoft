@@ -77,7 +77,7 @@ object CLI {
         while (true) {
             val line: String
             try {
-                line = readLine().trimWhitespaces()
+                line = readLine().trimWhitespaces().replace("\n", "").replace("\r", "")
                 terminal.flush()
             } catch (exception: EndOfFileException) {
                 Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { exception.printStackTrace() }
