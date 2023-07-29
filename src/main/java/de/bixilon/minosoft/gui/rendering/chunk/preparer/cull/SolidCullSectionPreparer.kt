@@ -84,14 +84,17 @@ class SolidCullSectionPreparer(
 
         val floatOffset = FloatArray(3)
 
-        for (y in blocks.minPosition.y..blocks.maxPosition.y) {
+        val min = blocks.minPosition.array
+        val max = blocks.maxPosition.array
+
+        for (y in min[1]..max[1]) {
             position.y = offsetY + y
             floatOffset[1] = (position.y - cameraOffset.y).toFloat()
             val fastBedrock = y == 0 && isLowestSection && fastBedrock
-            for (x in blocks.minPosition.x..blocks.maxPosition.x) {
-                position.x = offsetX + x
-                floatOffset[0] = (position.x - cameraOffset.x).toFloat()
-                for (z in blocks.minPosition.z..blocks.maxPosition.z) {
+            for (z in min[2]..max[2]) {
+                position.z = offsetZ + z
+                floatOffset[2] = (position.z - cameraOffset.z).toFloat()
+                for (x in min[0]..max[0]) {
                     val baseIndex = (z shl 4) or x
                     val index = (y shl 8) or baseIndex
                     blockState = blocks[index] ?: continue
@@ -99,8 +102,8 @@ class SolidCullSectionPreparer(
                         continue
                     }
                     light[SELF_LIGHT_INDEX] = sectionLight[index]
-                    position.z = offsetZ + z
-                    floatOffset[2] = (position.z - cameraOffset.z).toFloat()
+                    position.x = offsetX + x
+                    floatOffset[0] = (position.x - cameraOffset.x).toFloat()
 
                     val maxHeight = chunk.light.heightmap[baseIndex]
                     if (position.y >= maxHeight) {
