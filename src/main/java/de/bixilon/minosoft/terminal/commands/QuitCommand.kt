@@ -13,26 +13,9 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-import de.bixilon.minosoft.terminal.commands.connection.*
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
+import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.minosoft.commands.nodes.LiteralNode
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand, QuitCommand,
-        ConnectionManageCommand,
-        AccountManageCommand,
-        ReloadCommand,
-
-        PingCommand, ConnectCommand,
-
-        CrashCommand, DumpCommand,
-
-        AboutCommand,
-
-
-        SayCommand,
-        ActionCommand, QueryCommand,
-        DebugCommand,
-        DisconnectCommand,
-    )
+object QuitCommand : Command {
+    override var node = LiteralNode("quit", setOf("exit"), executor = { ShutdownManager.shutdown() })
 }

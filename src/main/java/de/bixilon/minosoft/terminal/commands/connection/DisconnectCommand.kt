@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,28 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.terminal.commands.connection
 
-import de.bixilon.minosoft.terminal.commands.connection.*
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
+import de.bixilon.minosoft.commands.nodes.LiteralNode
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand, QuitCommand,
-        ConnectionManageCommand,
-        AccountManageCommand,
-        ReloadCommand,
-
-        PingCommand, ConnectCommand,
-
-        CrashCommand, DumpCommand,
-
-        AboutCommand,
-
-
-        SayCommand,
-        ActionCommand, QueryCommand,
-        DebugCommand,
-        DisconnectCommand,
-    )
+object DisconnectCommand : ConnectionCommand {
+    override var node = LiteralNode("disconnect", setOf("leave"), executor = { it.connection.disconnect() })
 }
