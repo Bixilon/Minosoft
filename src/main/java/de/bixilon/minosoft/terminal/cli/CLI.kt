@@ -70,6 +70,7 @@ object CLI {
 
         this::connection.observe(this) { register() }
 
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "§aA headless input system is available, §epress tab§a or type §ehelp§a to see all available commands!" }
         reader.pollLines()
     }
 
