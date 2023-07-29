@@ -131,10 +131,12 @@ object Minosoft {
         BOOT_LATCH.dec() // remove initial count
         BOOT_LATCH.await()
         val end = nanos()
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
+        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
         GlobalEventMaster.fire(FinishBootEvent())
         DefaultThreadPool += { ModLoader.load(LoadingPhases.POST_BOOT) }
-
+        if (RunConfiguration.DISABLE_EROS) {
+            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Eros is disabled, no gui will show up! Use the cli to connect to servers!" }
+        }
 
         RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }
     }
