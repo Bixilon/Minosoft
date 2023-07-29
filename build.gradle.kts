@@ -192,7 +192,7 @@ testing {
                 implementation("de.bixilon:kotlin-glm:$glmVersion")
                 implementation("it.unimi.dsi:fastutil-core:8.5.12")
 
-                implementation("de.bixilon:mbf-kotlin:1.0") { exclude("com.github.luben", "zstd-jni") }
+                implementation("de.bixilon:mbf-kotlin:1.0.2") { exclude("com.github.luben", "zstd-jni") }
 
                 jacksonCore("core")
                 jacksonCore("databind")
@@ -355,7 +355,7 @@ dependencies {
     implementation("de.bixilon", "kutil", kutilVersion)
     implementation("de.bixilon", "jiibles", "1.1.1")
     implementation("de.bixilon", "kotlin-glm", glmVersion)
-    implementation("de.bixilon", "mbf-kotlin", "1.0") { exclude("com.github.luben", "zstd-jni") }
+    implementation("de.bixilon", "mbf-kotlin", "1.0.2") { exclude("com.github.luben", "zstd-jni") }
     implementation("de.bixilon.javafx", "javafx-svg", "0.3") { exclude("org.openjfx", "javafx-controls") }
 
     // netty

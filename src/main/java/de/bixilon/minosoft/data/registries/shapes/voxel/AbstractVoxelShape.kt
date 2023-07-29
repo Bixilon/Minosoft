@@ -116,6 +116,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
             when (data) {
                 is Int -> return this[data]
                 is Collection<*> -> {
+                    if (data.isEmpty()) return EMPTY
                     val aabbs: MutableSet<AABB> = ObjectOpenHashSet()
                     for (id in data) {
                         aabbs += this[id.toInt()]
@@ -130,6 +131,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
             when (data) {
                 is Int -> return VoxelShape(aabbs[data])
                 is Collection<*> -> {
+                    if (data.isEmpty()) return EMPTY
                     val shape: MutableSet<AABB> = ObjectOpenHashSet()
                     for (id in data) {
                         shape += aabbs[id.toInt()]
