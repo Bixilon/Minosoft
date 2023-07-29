@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.light.ChunkSkyLight.Companion.NEIGHBOUR_TRACE_LEVEL
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -316,21 +317,17 @@ class SectionLight(
         }
     }
 
-    internal inline fun traceSkyLightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions?, totalY: Int) {
-        return traceSkyLightIncrease(x, y, z, nextLevel, direction, totalY, false)
-    }
-
-    fun traceSkyLightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, target: Directions?, totalY: Int, force: Boolean) {
+    fun traceSkyLightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, target: Directions?, totalY: Int) {
         val chunk = section.chunk
         val heightmapIndex = (z shl 4) or x
-        if (!force && totalY >= chunk.light.heightmap[heightmapIndex]) {
+        if (totalY >= chunk.light.heightmap[heightmapIndex]) {
             // this light level will be 15, don't care
             return
         }
         val chunkNeighbours = chunk.neighbours.get() ?: return
         val index = heightmapIndex or (y shl 8)
         val currentLight = this[index].toInt()
-        if (!force && ((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
+        if (((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
             return
         }
 
@@ -405,6 +402,37 @@ class SectionLight(
                 traceSkyLightIncrease(x + 1, y, z, nextNeighbourLevel, Directions.EAST, totalY)
             } else {
                 neighbours[Directions.O_EAST, ChunkNeighbours.EAST, chunkNeighbours]?.light?.traceSkyLightIncrease(0, y, z, nextNeighbourLevel, Directions.EAST, totalY)
+            }
+        }
+    }
+
+    fun traceSkyLightDown(x: Int, y: Int, z: Int, target: Directions?, totalY: Int) { // TODO: remove code duplicates
+        val chunk = section.chunk
+        val index = (y shl 8) or (z shl 4) or x
+
+        val state = section.blocks[index]
+        var lightProperties = state?.block?.getLightProperties(state)
+
+        if (lightProperties == null) {
+            lightProperties = TransparentProperty
+        } else if (!lightProperties.propagatesLight || (target != null && !lightProperties.propagatesLight(target.inverted))) {
+            return
+        }
+
+        val neighbours = this.section.neighbours ?: return
+
+        this.light[index] = ((this[index].toInt() and BLOCK_LIGHT_MASK) or (ProtocolDefinition.MAX_LIGHT_LEVEL_I shl 4)).toByte()
+
+        if (!update) {
+            update = true
+        }
+
+
+        if (lightProperties.propagatesLight(Directions.DOWN)) {
+            if (y > 0) {
+                traceSkyLightIncrease(x, y - 1, z, NEIGHBOUR_TRACE_LEVEL, Directions.DOWN, totalY - 1)
+            } else {
+                (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.sectionHeight - 1, false))?.light?.traceSkyLightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, NEIGHBOUR_TRACE_LEVEL, Directions.DOWN, totalY - 1)
             }
         }
     }

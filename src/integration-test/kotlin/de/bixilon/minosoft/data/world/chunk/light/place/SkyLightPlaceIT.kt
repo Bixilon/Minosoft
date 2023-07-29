@@ -87,6 +87,10 @@ class SkyLightPlaceIT {
     fun filteredBelowBlock5() {
         val world = createConnection(3, light = true).world
         world.fill(6, 10, 6, 10, 10, 10, SlimeTest0.state, false)
+        world.chunks[0, 0]!!.light.reset()
+        world.chunks[0, 0]!!.light.sky.calculate()
+        world.assertLight(8, 11, 8, 0xF0)
+        world.assertLight(8, 10, 8, 0xE0)
         world.assertLight(8, 9, 8, 0xD0)
     }
 

@@ -39,7 +39,7 @@ class ChunkSkyLight(val light: ChunkLight) {
         val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
 
         for (y in topY downTo bottomY) {
-            section.light.traceSkyLightIncrease(x, y, z, NEIGHBOUR_TRACE_LEVEL, target, baseY + y, false)
+            section.light.traceSkyLightIncrease(x, y, z, NEIGHBOUR_TRACE_LEVEL, target, baseY + y)
         }
         section.light.update = true
     }
@@ -80,7 +80,8 @@ class ChunkSkyLight(val light: ChunkLight) {
             return
         }
         val section = chunk[y.sectionHeight] ?: return
-        section.light.traceSkyLightIncrease(x, y.inSectionHeight, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, null, y, true)
+
+        section.light.traceSkyLightDown(x, y.inSectionHeight, z, Directions.DOWN, y)
     }
 
     private fun floodFill(neighbours: Array<Chunk>, x: Int, z: Int) {
@@ -170,7 +171,7 @@ class ChunkSkyLight(val light: ChunkLight) {
     }
 
 
-    private companion object {
+    companion object {
         const val NEIGHBOUR_TRACE_LEVEL = ProtocolDefinition.MAX_LIGHT_LEVEL_I - 1
     }
 }
