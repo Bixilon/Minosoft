@@ -80,8 +80,9 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
 
     private fun LineRenderInfo.pushAndRender(offset: Vec2, text: TextComponent, line: StringBuilder, width: Float, color: RGBColor, properties: TextRenderProperties, consumer: GUIVertexConsumer?, options: GUIVertexOptions?) {
-        push(text, line)
-        if (consumer != null) {
+        if (consumer == null) {
+            push(text, line)
+        } else {
             renderFormatting(offset, text, width, color, properties, consumer, options)
         }
     }
@@ -102,6 +103,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         var skipWhitespaces = false
 
         val line = StringBuilder()
+        var update = false
         var filled = false
         val lineStart = Vec2(offset.offset)
 
@@ -119,6 +121,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 }
                 lineStart(offset.offset)
                 skipWhitespaces = true
+                update = false
                 if (filled) break else continue
             }
             if (skipWhitespaces && Character.isWhitespace(codePoint)) {
@@ -127,12 +130,14 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             val renderer = getRenderer(codePoint, properties, textFont, fontManager)
             if (renderer != null && renderer.calculateWidth(properties.scale, properties.shadow) <= 0.0f) {
+                update = true
                 continue
             }
             skipWhitespaces = false
             if (renderer == null) {
                 continue
             }
+            update = false
 
             val lineIndex = info.lineIndex
 
@@ -159,6 +164,9 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             line.appendCodePoint(codePoint)
         }
 
+        if (update && consumer == null) {
+            info.update(offset, properties, 0.0f, 0.0f, true)
+        }
         if (line.isNotEmpty()) {
             info.lines[info.lineIndex].pushAndRender(lineStart, text, line, offset.offset.x - lineStart.x, color, properties, consumer, options)
         }

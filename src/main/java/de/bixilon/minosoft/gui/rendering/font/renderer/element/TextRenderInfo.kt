@@ -26,7 +26,7 @@ class TextRenderInfo(
     var cutOff = false
 
 
-    fun update(offset: TextOffset, properties: TextRenderProperties, width: Float, spacing: Float): LineRenderInfo {
+    fun update(offset: TextOffset, properties: TextRenderProperties, width: Float, spacing: Float, empty: Boolean): LineRenderInfo {
         size.x = maxOf(offset.offset.x - offset.initial.x + width, size.x)
 
         val line: LineRenderInfo
@@ -34,7 +34,9 @@ class TextRenderInfo(
             // first char of all lines
             line = LineRenderInfo()
             lines += line
-            size.y += properties.lineHeight
+            if (!empty) {
+                size.y += properties.lineHeight
+            }
         } else {
             line = lines[lineIndex]
         }

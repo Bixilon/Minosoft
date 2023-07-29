@@ -65,7 +65,12 @@ class ChatComponentRendererTest {
 
     fun emptyChar() {
         val info = render(TextComponent("a")) // a has a length of 0px
-        info.assert(lineIndex = 0, lines = emptyList(), size = Vec2())
+        info.assert(lineIndex = 0, lines = listOf(LineRenderInfo(BaseComponent())), size = Vec2())
+    }
+
+    fun `empty char and then char`() {
+        val info = render(TextComponent("ab")) // a has a length of 0px
+        info.assert(lineIndex = 0, lines = listOf(LineRenderInfo(BaseComponent("b"), width = 0.5f)), size = Vec2(0.5f, 11f))
     }
 
     fun singleChar() {
@@ -473,6 +478,33 @@ class ChatComponentRendererTest {
             LineRenderInfo(BaseComponent(), 0.0f),
             LineRenderInfo(BaseComponent(TextComponent("bcd")), 5.0f),
         ))
+    }
+
+    fun `render empty chars and newline`() {
+        val consumer = DummyComponentConsumer()
+        val text = TextComponent("aaaa\naaaa")
+
+        val info = render(text, fontManager = FontManager(consumer.Font()), consumer = consumer)
+        info.assert(lineIndex = 1, size = Vec2(0.0f, 11.0f), lines = listOf(
+            LineRenderInfo(BaseComponent(), 0.0f),
+            LineRenderInfo(BaseComponent(), 0.0f),
+        ))
+        consumer.assert(*arrayOf<DummyComponentConsumer.RendererdCodePoint>())
+    }
+
+    fun `render empty chars mixed and newline`() {
+        val text = TextComponent("abaaa\naaaba")
+        val consumer = DummyComponentConsumer()
+
+        val info = render(text, fontManager = FontManager(consumer.Font()), consumer = consumer)
+        info.assert(lineIndex = 1, size = Vec2(0.5f, 22.0f), lines = listOf(
+            LineRenderInfo(BaseComponent("b"), 0.5f),
+            LineRenderInfo(BaseComponent("b"), 0.5f),
+        ))
+        consumer.assert(
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
+            DummyComponentConsumer.RendererdCodePoint(Vec2(10, 21)),
+        )
     }
 
     // TODO: shadow, formatting (italic; strikethrough; underlined)
