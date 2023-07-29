@@ -47,12 +47,18 @@ class ChunkSection(
             return
         }
         acquire()
-        var blockEntity: BlockEntity?
-        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            blockEntity = blockEntities[index] ?: continue
-            val position = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
-            val blockState = blocks[index] ?: continue
-            blockEntity.tick(connection, blockState, position, random)
+        val min = blockEntities.minPosition
+        val max = blockEntities.maxPosition
+        for (y in min.y..max.y) {
+            for (z in min.z..max.z) {
+                for (x in min.x..max.x) {
+                    val index = getIndex(x, y, z)
+                    val entity = blockEntities[index] ?: continue
+                    val state = blocks[index] ?: continue
+                    val position = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
+                    entity.tick(connection, state, position, random)
+                }
+            }
         }
         release()
     }
