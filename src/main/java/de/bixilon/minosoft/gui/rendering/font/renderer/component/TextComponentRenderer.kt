@@ -129,14 +129,11 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             }
 
             val renderer = getRenderer(codePoint, properties, textFont, fontManager)
-            if (renderer != null && renderer.calculateWidth(properties.scale, properties.shadow) <= 0.0f) {
+            if (renderer == null || renderer.calculateWidth(properties.scale, properties.shadow) <= 0.0f) {
                 update = true
                 continue
             }
             skipWhitespaces = false
-            if (renderer == null) {
-                continue
-            }
             update = false
 
             val lineIndex = info.lineIndex

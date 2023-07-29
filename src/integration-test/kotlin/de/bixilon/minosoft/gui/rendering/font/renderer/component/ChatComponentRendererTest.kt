@@ -299,11 +299,25 @@ class ChatComponentRendererTest {
 
     fun `no font`() {
         val info = TextRenderInfo(Vec2(Float.MAX_VALUE))
+        ChatComponentRenderer.render(TextOffset(Vec2(10, 10)), FontManager(EmptyFont), TextRenderProperties(), info, null, null, TextComponent("abc"))
+
+        info.assert(
+            lineIndex = 0,
+            lines = listOf(LineRenderInfo()),
+            size = Vec2(0.0f, 0.0f),
+        )
+    }
+
+    fun `no font with new lines`() {
+        val info = TextRenderInfo(Vec2(Float.MAX_VALUE))
         ChatComponentRenderer.render(TextOffset(Vec2(10, 10)), FontManager(EmptyFont), TextRenderProperties(), info, null, null, TextComponent("abc\ndef"))
 
         info.assert(
             lineIndex = 1,
-            lines = listOf(LineRenderInfo()),
+            lines = listOf(
+                LineRenderInfo(),
+                LineRenderInfo(),
+            ),
             size = Vec2(0.0f, 11.0f),
         )
     }
@@ -505,6 +519,18 @@ class ChatComponentRendererTest {
             DummyComponentConsumer.RendererdCodePoint(Vec2(10, 10)),
             DummyComponentConsumer.RendererdCodePoint(Vec2(10, 21)),
         )
+    }
+
+    fun `null chars and new line`() {
+        val text = TextComponent("0123\n4567")
+        val consumer = DummyComponentConsumer()
+
+        val info = render(text, fontManager = FontManager(consumer.Font()), consumer = consumer)
+        info.assert(lineIndex = 1, size = Vec2(0.0f, 11.0f), lines = listOf(
+            LineRenderInfo(BaseComponent(), 0.0f),
+            LineRenderInfo(BaseComponent(), 0.0f),
+        ))
+        consumer.assert(*arrayOf<DummyComponentConsumer.RendererdCodePoint>())
     }
 
     // TODO: shadow, formatting (italic; strikethrough; underlined)
