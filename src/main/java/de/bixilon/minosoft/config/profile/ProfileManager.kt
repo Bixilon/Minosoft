@@ -274,7 +274,7 @@ interface ProfileManager<T : Profile> {
             } finally {
                 profile.reloading = false
             }
-            Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Reloaded profile: $profileName ($namespace);" }
+            Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Reloaded profile: $profileName ($namespace)" }
         })
     }
 

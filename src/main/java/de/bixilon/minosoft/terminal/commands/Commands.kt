@@ -27,5 +27,7 @@ object Commands {
         PingCommand, ConnectCommand,
 
         CrashCommand, DumpCommand,
+
+        AboutCommand,
     )
 }
