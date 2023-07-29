@@ -22,16 +22,15 @@ object AboutCommand : Command {
 
     private fun PrintTarget.printAbout() {
         print("-------------- Minosoft --------------")
-        print("This is minosoft version §e${MinosoftProperties.general.name}")
+        print("This is minosoft version §e${MinosoftProperties.general.name}.")
         val git = MinosoftProperties.git
         if (git == null) {
-            print("Sadly git version information is not available.")
+            print("Sadly git version information is not available :( ")
         } else {
-            print("This version was built from §e${git.branch}§r on top of §e${git.commit}")
+            print("This version was built from branch §e${git.branch}§r of the commit §e${git.commit}")
         }
 
-        print("This software was mainly created by §eMoritz Zwerger§r (https://bixilon.de)")
-        print("and is licensed under the §eGPL3§r license.")
+        print("This software was mainly created by §eMoritz Zwerger§r (https://bixilon.de) and is licensed under the §eGPL3§r license.")
 
         print("The source code is available under https://gitlab.bixilon.de/bixilon/minosoft.")
         print("Feel free to §econtribute§r, §efork§r and §esubmit§r a pull request!")
