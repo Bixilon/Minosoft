@@ -13,33 +13,33 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.commands.nodes.ArgumentNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
-import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
 import de.bixilon.minosoft.commands.stack.print.PrintTarget
 
 object HelpCommand : Command {
-    override var node: LiteralNode = LiteralNode("help", setOf("?"), executor = { it.print.printHelp() })
-        .addChild(ArgumentNode("subcommand", parser = EnumParser(HelpCommands), executor = { it.print.printHelp(it["subcommand"]!!) }))
+    override var node: LiteralNode = LiteralNode("help", setOf("?"), executor = { it.print.overview() })
+        .addChild(LiteralNode("account", executor = { it.print.account() }))
 
-    fun PrintTarget.printHelp() {
+    private fun PrintTarget.overview() {
         print("-------------- Minosoft help --------------")
+        print("Tip: You can always press [tab] to auto complete commands and see what (sub)commands are available!")
+        print("Another tip: The help command has subcommands (e.g. type help account)")
+        print("Filters: Most commands takes filters. That can either be an identifier of something or a selector (like @). Selectors can even have properties like @[type=offline]")
+        print("Here are some useful commands:")
+        print("  account [add|remove|list|select]      - Manages your accounts")
+        print("  connection [list|disconnect|select]   - Manages the connection to a server")
+        print("  connect [address] <version>           - Connects to a server")
+        print("  ping [address] <version>              - Shows the motd of a server")
+        print("  *say* [message]                       - Lets you write something in the chat. Requires a selected connection.")
+        print("  about                                 - Shows some useful information")
     }
 
-    fun PrintTarget.printHelp(subcommand: HelpCommands) {
-        print("-------------- Minosoft help --------------")
-        print("Subcommand: $subcommand")
-    }
-
-    enum class HelpCommands {
-        GENERAL,
-        ;
-
-        companion object : ValuesEnum<HelpCommands> {
-            override val VALUES: Array<HelpCommands> = values()
-            override val NAME_MAP: Map<String, HelpCommands> = EnumUtil.getEnumValues(VALUES)
-        }
+    private fun PrintTarget.account() {
+        print("-------------- Account help --------------")
+        print("account add offline [username]          - Adds a new offline account")
+        print("account add microsoft                   - Adds a new microsoft account")
+        print("account list <filter>                   - Lists all accounts")
+        print("account select <filter>                 - Selects an account")
+        print("account remove <filter>                 - Removes an account")
     }
 }
