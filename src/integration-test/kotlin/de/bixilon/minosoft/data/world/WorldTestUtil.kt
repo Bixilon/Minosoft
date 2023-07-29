@@ -37,11 +37,11 @@ import de.bixilon.minosoft.test.IT
 object WorldTestUtil {
 
 
-    fun createWorld(connection: PlayConnection?, light: Boolean = false): World {
+    fun createWorld(connection: PlayConnection?, light: Boolean = false, capacity: Int = 0): World {
         val world = IT.OBJENESIS.newInstance(World::class.java)
         world::occlusion.forceSet(DataObserver(0))
         world::lock.forceSet(SimpleLock())
-        world::chunks.forceSet(ChunkManager(world))
+        world::chunks.forceSet(ChunkManager(world, maxOf(0, capacity), 0))
         world::border.forceSet(WorldBorder())
         world::dimension.forceSet(DataObserver(DimensionProperties(light = light, skyLight = light)))
         world::connection.forceSet(connection)

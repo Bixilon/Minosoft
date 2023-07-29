@@ -61,7 +61,7 @@ class World(
     val lock = SimpleLock()
     val random = Random()
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
-    val chunks = ChunkManager(this)
+    val chunks = ChunkManager(this, 1000, 100)
     val entities = WorldEntities()
     var hardcore by observed(false)
     var dimension: DimensionProperties by observed(DimensionProperties())

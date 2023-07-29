@@ -32,9 +32,9 @@ import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChan
 import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChangeUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 
-class ChunkManager(val world: World) {
-    val chunks: LockMap<Vec2i, Chunk> = LockMap(hashMapOf(), world.lock)
-    val prototypes: LockMap<Vec2i, ChunkPrototype> = LockMap(hashMapOf(), world.lock)
+class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: Int = 0) {
+    val chunks: LockMap<Vec2i, Chunk> = LockMap(HashMap(chunkCapacity), world.lock)
+    val prototypes: LockMap<Vec2i, ChunkPrototype> = LockMap(HashMap(prototypeCapacity), world.lock)
     val size = WorldSizeManager(world)
     val ticker = ChunkTicker(this)
     var revision by observed(0)
