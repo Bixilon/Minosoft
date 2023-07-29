@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.CallbackLatch
@@ -74,7 +75,7 @@ object Minosoft {
     fun main(args: Array<String>) {
         val start = nanos()
         Log::class.java.forceInit()
-        ShutdownManager.addHook { Log.ASYNC_LOGGING = false; Log.await() }
+        ShutdownManager.addHook { Log.ASYNC_LOGGING = false; catchAll { Log.await() } }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
 
