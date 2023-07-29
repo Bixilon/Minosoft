@@ -38,4 +38,8 @@ object OverworldEffects : DimensionEffects {
     }
 
     override val fog: Boolean get() = true
+
+    override fun toString(): String {
+        return identifier.toString()
+    }
 }

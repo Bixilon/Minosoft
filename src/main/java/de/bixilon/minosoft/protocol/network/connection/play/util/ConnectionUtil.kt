@@ -30,6 +30,7 @@ import de.bixilon.minosoft.modding.event.events.chat.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.CommandC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.SignedChatMessageC2SP
@@ -148,5 +149,9 @@ class ConnectionUtil(
     fun resetWorld() {
         connection.world.entities.clear(connection)
         connection.world.clear()
+    }
+
+    fun respawn() {
+        connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
     }
 }

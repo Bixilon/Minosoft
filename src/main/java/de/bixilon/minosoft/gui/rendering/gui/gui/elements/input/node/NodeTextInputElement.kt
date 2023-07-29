@@ -91,7 +91,7 @@ class NodeTextInputElement(
         try {
             node.execute(CommandReader(value), stack)
         } catch (exception: Throwable) {
-            exception.message?.let { stack.print.print(TextComponent("Error: $it").color(ChatColors.RED)) }
+            exception.message?.let { stack.print.error(TextComponent(it).color(ChatColors.RED)) }
         }
         updateError(null)
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,28 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.terminal.commands.connection
 
-import de.bixilon.minosoft.terminal.commands.connection.ActionCommand
-import de.bixilon.minosoft.terminal.commands.connection.QueryCommand
-import de.bixilon.minosoft.terminal.commands.connection.SayCommand
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
+import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.stack.CommandStack
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        ConnectionManageCommand,
-        AccountManageCommand,
-        ReloadCommand,
-
-        PingCommand, ConnectCommand,
-
-        CrashCommand, DumpCommand,
-
-        AboutCommand,
+object ActionCommand : ConnectionCommand {
+    override var node = LiteralNode("action", setOf("do"))
+        .addChild(LiteralNode("respawn", executor = { it.respawn() }))
 
 
-        SayCommand,
-        ActionCommand, QueryCommand,
-    )
+    private fun CommandStack.respawn() {
+        if (connection.player.healthCondition.hp > 0.0f) {
+            return print.error("You are still alive!")
+        }
+        print.print("Performing respawn...")
+        connection.util.respawn()
+    }
 }

@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.terminal.commands.connection
 
-import de.bixilon.minosoft.commands.nodes.ChatNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 
-object SayCommand : ConnectionCommand {
-    override var node = LiteralNode("say", setOf("chat", "send"))
-        .addChild(ChatNode("message", allowCLI = false))
+object QueryCommand : ConnectionCommand {
+    override var node = LiteralNode("query")
+        .addChild(LiteralNode("health", executor = { it.print.print("Health §c${it.connection.player.healthCondition.hp}§r/§c${it.connection.player.attributes[MinecraftAttributes.MAX_HEALTH]}, hunger=${it.connection.player.healthCondition.hunger}") }))
+        .addChild(LiteralNode("xp", setOf("experience", "exp"), executor = { it.print.print("Experience: level §e${it.connection.player.experienceCondition.level}") }))
+        .addChild(LiteralNode("dimension", executor = { it.print.print("Dimension: §e${it.connection.world.dimension.effects}") }))
 }

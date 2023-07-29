@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 
 class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
@@ -43,7 +42,7 @@ class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     }
 
     fun respawn() {
-        guiRenderer.connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
+        guiRenderer.connection.util.respawn()
         canPop = true
         guiRenderer.gui.pop()
     }
