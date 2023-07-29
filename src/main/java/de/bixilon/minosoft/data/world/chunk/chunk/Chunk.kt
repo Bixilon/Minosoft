@@ -16,7 +16,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.math.simple.IntMath.clamp
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -29,6 +28,7 @@ import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
+import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider.Companion.unsafeSetSection
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
@@ -81,13 +81,6 @@ class Chunk(
 
         SingleBlockUpdate(Vec3i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + x, y, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + z), this, state, entity).fire(connection)
     }
-
-//    fun set(x: Int, y: Int, z: Int, state: BlockState?, entity: BlockEntity?) {
-//        val section = getOrPut(y.sectionHeight) ?: return
-//       section.blocks[x, y and 0x0F, z] = state
-//        section.blockEntities[x, y and 0x0F, z] = entity
-//        // TODO: light update
-//    }
 
     operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
 
@@ -181,7 +174,7 @@ class Chunk(
         var section = sections[index] // get another time, it might have changed already
         if (section == null) {
             section = ChunkSection(sectionHeight, chunk = this)
-            section.blocks::section.forceSet(section)
+            section.blocks.unsafeSetSection(section)
             val neighbours = this.neighbours.get()
             if (neighbours != null) {
                 this.neighbours.completeSection(neighbours, section, sectionHeight, world.cacheBiomeAccessor)

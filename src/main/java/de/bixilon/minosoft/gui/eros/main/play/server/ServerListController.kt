@@ -235,7 +235,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     private fun updateServer(server: AbstractServer, refreshInfo: Boolean = false) {
         val serverType = serverType ?: return
-        if (server !in serverType.servers) {
+        if (server !in serverType.servers) { // <- initial server not added (fixed in kutil 1.24)
             return
         }
         val card = ServerCard.CARDS[server] ?: ServerCard(server).apply {

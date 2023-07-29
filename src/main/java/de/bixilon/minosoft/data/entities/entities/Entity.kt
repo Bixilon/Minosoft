@@ -41,6 +41,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import java.util.*
+import kotlin.reflect.jvm.javaField
 
 abstract class Entity(
     val connection: PlayConnection,
@@ -246,7 +247,7 @@ abstract class Entity(
         forceTeleport(initialPosition)
         forceRotate(initialRotation)
         if (!RunConfiguration.DISABLE_RENDERING) {
-            this::renderInfo.forceSet(EntityRenderInfo(this))
+            Companion.renderInfo[this] = EntityRenderInfo(this)
         }
     }
 
@@ -256,6 +257,8 @@ abstract class Entity(
 
 
     companion object {
+        private val renderInfo = Entity::renderInfo.javaField!!.apply { isAccessible = true }
+
         val FLAGS_DATA = EntityDataField("ENTITY_FLAGS")
         val AIR_SUPPLY_DATA = EntityDataField("ENTITY_AIR_SUPPLY")
         val CUSTOM_NAME_DATA = EntityDataField("ENTITY_CUSTOM_NAME")

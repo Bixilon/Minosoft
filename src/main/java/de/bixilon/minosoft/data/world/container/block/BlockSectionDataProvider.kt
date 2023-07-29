@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isW
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import kotlin.reflect.jvm.javaField
 
 class BlockSectionDataProvider(
     data: Array<BlockState?>? = null,
@@ -85,5 +86,14 @@ class BlockSectionDataProvider(
             return true
         }
         return this.isWaterlogged()
+    }
+
+    companion object {
+        private val sections = BlockSectionDataProvider::section.javaField!!.apply { isAccessible = true }
+
+        @Deprecated("properly integrate in constructor")
+        fun BlockSectionDataProvider.unsafeSetSection(section: ChunkSection) {
+            this@Companion.sections[this] = section
+        }
     }
 }
