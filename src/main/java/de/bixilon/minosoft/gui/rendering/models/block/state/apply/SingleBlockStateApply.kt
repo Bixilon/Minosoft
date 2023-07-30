@@ -146,7 +146,7 @@ data class SingleBlockStateApply(
                 val shade = rotatedDirection.shade
 
                 val a = positions.properties(rotatedDirection)
-                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, face.cull, texture, a)
+                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, if (a == null) null else rotatedDirection, texture, a)
 
                 bakedFaces[rotatedDirection.ordinal] += bakedFace
                 properties[rotatedDirection.ordinal] += a ?: continue

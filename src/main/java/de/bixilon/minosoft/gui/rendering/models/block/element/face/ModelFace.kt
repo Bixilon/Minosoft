@@ -36,7 +36,6 @@ data class ModelFace(
     val texture: String,
     val uv: FaceUV,
     val rotation: Int,
-    val cull: Directions?,
     val tintIndex: Int = -1,
 ) {
 
@@ -79,10 +78,9 @@ data class ModelFace(
             } ?: fallbackUV(direction, from, to)
 
             val rotation = data["rotation"]?.toInt()?.rotation() ?: 0
-            val cull = data["cullface"]?.toString()?.let { if (it == "none") null else Directions[it] }
             val tintIndex = data["tintindex"]?.toInt() ?: TintManager.DEFAULT_TINT_INDEX
 
-            return ModelFace(texture, uv, rotation, cull, tintIndex)
+            return ModelFace(texture, uv, rotation, tintIndex)
         }
 
         fun deserialize(from: Vec3, to: Vec3, data: Map<String, JsonObject>): Map<Directions, ModelFace>? {

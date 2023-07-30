@@ -30,7 +30,7 @@ class BakedFace(
     val uv: FloatArray,
     val shade: Float,
     val tintIndex: Int,
-    val cull: Directions?,
+    cull: Directions?,
     val texture: Texture,
     val properties: FaceProperties? = null,
 ) {
