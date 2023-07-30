@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.bake
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.bgyr
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.gyrb
+import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.rbgy
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.yrbg
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.assertFace
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.createFaces
@@ -40,12 +41,12 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), yrbg, 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), rbgy, 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), gyrb, 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), yrbg, 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), yrbg, 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), gyrb, 0.6f)
     }
 
     fun y90Rotation1() {
@@ -70,11 +71,11 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f), 1.0f)
-        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.8f)
-        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.8f)
-        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), floatArrayOf(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), 0.6f)
-        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), floatArrayOf(1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f), 0.6f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), yrbg, 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), rbgy, 1.0f)
+        baked.assertFace(Directions.NORTH, positions(Directions.NORTH, from, to), gyrb, 0.8f)
+        baked.assertFace(Directions.SOUTH, positions(Directions.SOUTH, from, to), yrbg, 0.8f)
+        baked.assertFace(Directions.WEST, positions(Directions.WEST, from, to), yrbg, 0.6f)
+        baked.assertFace(Directions.EAST, positions(Directions.EAST, from, to), gyrb, 0.6f)
     }
 }
