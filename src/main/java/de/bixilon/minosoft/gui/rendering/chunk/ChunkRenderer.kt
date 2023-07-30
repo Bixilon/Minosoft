@@ -99,10 +99,6 @@ class ChunkRenderer(
         layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visible.blockEntities.isEmpty() }
     }
 
-    override fun init(latch: AbstractLatch) {
-        context.models.load(latch)
-    }
-
     override fun postInit(latch: AbstractLatch) {
         shader.load()
         transparentShader.load()

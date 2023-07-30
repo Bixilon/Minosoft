@@ -38,8 +38,9 @@ data class ModelFace(
     val rotation: Int,
     val tintIndex: Int = -1,
 ) {
+    var loadedTexture: Texture? = null
 
-    fun createTexture(model: BlockModel, manager: TextureManager): Texture {
+    private fun createTexture(model: BlockModel, manager: TextureManager): Texture {
         if (!this.texture.startsWith("#")) {
             return manager.staticTextures.createTexture(texture.toResourceLocation())
         }
@@ -49,6 +50,11 @@ data class ModelFace(
             return manager.debugTexture
         }
         return manager.staticTextures.createTexture(name)
+    }
+
+    fun load(model: BlockModel, manager: TextureManager) {
+        this.loadedTexture = createTexture(model, manager)
+
     }
 
     companion object {

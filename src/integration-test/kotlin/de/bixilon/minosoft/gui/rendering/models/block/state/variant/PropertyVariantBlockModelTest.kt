@@ -68,18 +68,22 @@ class PropertyVariantBlockModelTest {
 
 
     private object A : BlockStateApply {
-        override fun bake(textures: TextureManager) = null
+        override fun load(textures: TextureManager) = Unit
+        override fun bake() = null
     }
 
     private object B : BlockStateApply {
-        override fun bake(textures: TextureManager) = null
+        override fun load(textures: TextureManager) = Unit
+        override fun bake() = null
     }
 
     private object C : BlockStateApply {
-        override fun bake(textures: TextureManager) = null
+        override fun load(textures: TextureManager) = Unit
+        override fun bake() = null
     }
 
     private object D : BlockStateApply {
-        override fun bake(textures: TextureManager) = null
+        override fun load(textures: TextureManager) = Unit
+        override fun bake() = null
     }
 }

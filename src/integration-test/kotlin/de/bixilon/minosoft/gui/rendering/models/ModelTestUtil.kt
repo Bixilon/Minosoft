@@ -16,9 +16,12 @@ package de.bixilon.minosoft.gui.rendering.models
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.MemoryAssetsManager
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
+import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -51,5 +54,10 @@ object ModelTestUtil {
         }
 
         return result
+    }
+
+    fun SingleBlockStateApply.bake(textures: TextureManager): BakedModel? {
+        load(textures)
+        return bake()
     }
 }

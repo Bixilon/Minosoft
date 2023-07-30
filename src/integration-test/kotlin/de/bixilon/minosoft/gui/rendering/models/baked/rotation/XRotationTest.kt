@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked.rotation
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.bake
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.block
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.assertFace

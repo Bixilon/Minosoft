@@ -34,8 +34,15 @@ class ModelLoader(
         entities.load(latch)
         block.load(latch)
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Done loading models!" }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading all models!" }
+    }
 
+    fun bake(latch: AbstractLatch) {
+        block.bake(latch)
+        entities.bake()
+
+
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models!" }
     }
 
     companion object {

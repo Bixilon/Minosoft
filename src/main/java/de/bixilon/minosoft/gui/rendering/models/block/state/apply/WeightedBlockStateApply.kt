@@ -24,12 +24,18 @@ data class WeightedBlockStateApply(
     val models: List<WeightedApply>
 ) : BlockStateApply {
 
-    override fun bake(textures: TextureManager): WeightedBlockRender? {
+    override fun load(textures: TextureManager) {
+        for (model in models) {
+            model.apply.load(textures)
+        }
+    }
+
+    override fun bake(): WeightedBlockRender? {
         val baked: Array<WeightedBlockRender.WeightedEntry?> = arrayOfNulls(models.size)
         var totalWeight = 0
 
         for ((index, entry) in models.withIndex()) {
-            val model = entry.apply.bake(textures) ?: continue
+            val model = entry.apply.bake() ?: continue
             baked[index] = WeightedBlockRender.WeightedEntry(entry.weight, model)
             totalWeight += entry.weight
         }

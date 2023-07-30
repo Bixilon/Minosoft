@@ -34,7 +34,7 @@ class BakedFace(
     val texture: Texture,
     val properties: FaceProperties? = null,
 ) {
-    private var cullIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
+    private val lightIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
 
     private fun color(tint: Int): Int {
         val color = Vec3(this.shade)
@@ -48,7 +48,7 @@ class BakedFace(
 
     fun render(offset: FloatArray, mesh: ChunkMesh, light: ByteArray, tints: IntArray?) {
         val tint = color(tints?.getOrNull(tintIndex) ?: 0)
-        val lightTint = ((light[cullIndex].toInt() shl 24) or tint).buffer()
+        val lightTint = ((light[lightIndex].toInt() shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
 
 

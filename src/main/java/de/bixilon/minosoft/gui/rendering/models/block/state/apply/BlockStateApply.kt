@@ -21,7 +21,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 interface BlockStateApply {
 
-    fun bake(textures: TextureManager): BlockRender?
+    fun load(textures: TextureManager)
+    fun bake(): BlockRender?
 
     companion object {
 

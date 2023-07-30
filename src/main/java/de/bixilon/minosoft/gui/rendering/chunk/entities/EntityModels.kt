@@ -23,10 +23,10 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
 class EntityModels(private val loader: ModelLoader) {
     val context: RenderContext = loader.context
@@ -47,7 +47,7 @@ class EntityModels(private val loader: ModelLoader) {
         unbakedModels.clear()
     }
 
-    fun loadSkeletal() {
+    fun bake() {
         val latch = SimpleLatch(1)
         for (model in skeletal.values) {
             latch.inc()

@@ -17,12 +17,14 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition.AndCondition
 import de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition.BuilderCondition
 import de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition.PrimitiveCondition
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class BuilderBlockModel(
     val parts: List<Apply>,
@@ -41,6 +43,15 @@ class BuilderBlockModel(
         if (applies.isEmpty()) return null
 
         return BuilderApply(applies)
+    }
+
+
+    override fun load(textures: TextureManager): BlockModelPrototype {
+        for (part in parts) {
+            part.apply.load(textures)
+        }
+
+        return super.load(textures)
     }
 
     data class Apply(

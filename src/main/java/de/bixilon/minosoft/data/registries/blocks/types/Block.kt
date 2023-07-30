@@ -36,7 +36,7 @@ abstract class Block(
 ) : RegistryItem(), LightedBlock, HardnessBlock, Translatable, PushingBlock {
     val states: BlockStateManager = unsafeNull()
 
-    val model: BlockRender? = null
+    var model: BlockRender? = null
 
     override val translationKey: ResourceLocation = identifier.translation("block")
 

@@ -18,14 +18,19 @@ import de.bixilon.kutil.cast.CollectionCast.asAnyList
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.block.state.builder.BuilderBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.variant.VariantBlockModel
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 interface DirectBlockModel {
 
     fun choose(state: BlockState): BlockStateApply?
+
+
+    fun load(textures: TextureManager) = BlockModelPrototype(this)
 
     companion object {
 

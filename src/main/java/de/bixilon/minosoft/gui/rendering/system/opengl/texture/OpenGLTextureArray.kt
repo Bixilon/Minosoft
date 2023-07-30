@@ -159,7 +159,7 @@ class OpenGLTextureArray(
     }
 
     @Synchronized
-    override fun preLoad(latch: AbstractLatch) {
+    override fun load(latch: AbstractLatch) {
         if (state == TextureArrayStates.LOADED || state == TextureArrayStates.PRE_LOADED) {
             return
         }
@@ -200,7 +200,7 @@ class OpenGLTextureArray(
 
 
     @Synchronized
-    override fun load(latch: AbstractLatch?) {
+    override fun upload(latch: AbstractLatch?) {
         var totalLayers = 0
         for ((index, textures) in texturesByResolution.withIndex()) {
             if (textures.isEmpty()) {

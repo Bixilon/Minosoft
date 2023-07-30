@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pus
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 data class SingleBlockStateApply(
@@ -111,7 +111,17 @@ data class SingleBlockStateApply(
     }
 
 
-    override fun bake(textures: TextureManager): BakedModel? {
+    override fun load(textures: TextureManager) {
+        if (model.elements == null) return
+
+        for (element in model.elements) {
+            for ((_, face) in element.faces) {
+                face.load(model, textures)
+            }
+        }
+    }
+
+    override fun bake(): BakedModel? {
         if (model.elements == null) return null
 
         val bakedFaces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
@@ -119,7 +129,7 @@ data class SingleBlockStateApply(
 
         for (element in model.elements) {
             for ((direction, face) in element.faces) {
-                val texture = face.createTexture(model, textures)
+                val texture = face.loadedTexture ?: continue
 
                 val rotatedDirection = direction
                     .rotateX(this.x)
@@ -145,7 +155,7 @@ data class SingleBlockStateApply(
                 }
                 val shade = rotatedDirection.shade
 
-                val a = positions.properties(rotatedDirection)
+                val a = positions.properties(rotatedDirection, texture) // TODO: texture might not have been loaded yet
                 val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, if (a == null) null else rotatedDirection, texture, a)
 
                 bakedFaces[rotatedDirection.ordinal] += bakedFace
@@ -156,7 +166,7 @@ data class SingleBlockStateApply(
         return BakedModel(bakedFaces.compact(), properties.compactProperties(), null) // TODO
     }
 
-    fun FloatArray.properties(direction: Directions): FaceProperties? {
+    fun FloatArray.properties(direction: Directions, texture: Texture): FaceProperties? {
         // TODO: Bad code?
 
         val a = direction.axis.ordinal
@@ -166,7 +176,7 @@ data class SingleBlockStateApply(
         return FaceProperties(
             start = magic(0, a),
             end = magic(6, a),
-            transparency = TextureTransparencies.OPAQUE,
+            transparency = texture.transparency,
         )
     }
 

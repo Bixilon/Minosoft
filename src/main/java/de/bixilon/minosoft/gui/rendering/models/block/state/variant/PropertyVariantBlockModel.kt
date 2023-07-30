@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 data class PropertyVariantBlockModel(
     val variants: Map<BlockVariant, BlockStateApply>,
@@ -41,5 +43,12 @@ data class PropertyVariantBlockModel(
             return apply
         }
         return null
+    }
+
+    override fun load(textures: TextureManager): BlockModelPrototype {
+        for ((_, variant) in variants) {
+            variant.load(textures)
+        }
+        return super.load(textures)
     }
 }

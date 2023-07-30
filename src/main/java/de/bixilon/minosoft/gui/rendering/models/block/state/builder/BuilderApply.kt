@@ -28,12 +28,18 @@ class BuilderApply(
     val applies: List<BlockStateApply>
 ) : BlockStateApply {
 
-    override fun bake(textures: TextureManager): BlockRender? {
+    override fun load(textures: TextureManager) {
+        for (apply in applies) {
+            apply.load(textures)
+        }
+    }
+
+    override fun bake(): BlockRender? {
         val static: MutableList<BakedModel> = mutableListOf()
         val dynamic: MutableList<BlockRender> = mutableListOf()
 
         for (apply in this.applies) {
-            val baked = apply.bake(textures) ?: continue
+            val baked = apply.bake() ?: continue
             if (baked is BakedModel) {
                 static += baked
             } else {

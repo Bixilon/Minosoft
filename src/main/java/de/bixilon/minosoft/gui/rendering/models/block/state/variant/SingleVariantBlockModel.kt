@@ -14,10 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 data class SingleVariantBlockModel(
     val apply: BlockStateApply,
 ) : VariantBlockModel {
     override fun choose(state: BlockState): BlockStateApply = apply
+    override fun load(textures: TextureManager): BlockModelPrototype {
+        apply.load(textures)
+        return super.load(textures)
+    }
 }
