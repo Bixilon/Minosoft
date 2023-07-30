@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import org.testng.Assert.*
@@ -29,16 +28,16 @@ import org.testng.annotations.Test
 @Test(groups = ["models"])
 class PropertyVariantBlockModelTest {
 
-    fun readJson() {
-        val model = DirectBlockModel.deserialize(TODO(), TODO())
-        assertTrue(model is PropertyVariantBlockModel)
-        model as PropertyVariantBlockModel
-        assertEquals(model.variants, mapOf(
-            mapOf(BlockProperties.FACING to Directions.EAST, BlockProperties.LIT to true) to null,
-            mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to false) to null,
-            mapOf(BlockProperties.FACING to Directions.SOUTH) to null,
-        ))
-    }
+    // fun readJson() {
+    //     val model = DirectBlockModel.deserialize(TODO(), TODO())
+    //     assertTrue(model is PropertyVariantBlockModel)
+    //     model as PropertyVariantBlockModel
+    //     assertEquals(model.variants, mapOf(
+    //         mapOf(BlockProperties.FACING to Directions.EAST, BlockProperties.LIT to true) to null,
+    //         mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to false) to null,
+    //         mapOf(BlockProperties.FACING to Directions.SOUTH) to null,
+    //     ))
+    // }
 
 
     fun choosing() {

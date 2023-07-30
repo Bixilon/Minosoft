@@ -54,7 +54,6 @@ data class ModelFace(
 
     fun load(model: BlockModel, manager: TextureManager) {
         this.loadedTexture = createTexture(model, manager)
-
     }
 
     companion object {
