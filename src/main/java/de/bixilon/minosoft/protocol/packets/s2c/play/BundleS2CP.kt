@@ -24,6 +24,6 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class BundleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bundle" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Bundle" }
     }
 }

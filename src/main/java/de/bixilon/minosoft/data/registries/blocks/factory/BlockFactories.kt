@@ -11,6 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+@file:Suppress("DEPRECATION")
+
 package de.bixilon.minosoft.data.registries.blocks.factory
 
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
@@ -32,7 +34,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 
-@Suppress("DEPRECATION")
 object BlockFactories : DefaultFactory<BlockFactory<*>>(
     AirBlock.Air, AirBlock.VoidAir, AirBlock.CaveAir,
 

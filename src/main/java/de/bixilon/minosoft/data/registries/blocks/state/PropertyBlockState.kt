@@ -14,30 +14,32 @@
 package de.bixilon.minosoft.data.registries.blocks.state
 
 import com.google.common.base.Objects
+import de.bixilon.kutil.array.ArrayUtil.next
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
+import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.util.KUtil.next
 
 open class PropertyBlockState(
     block: Block,
     val properties: Map<BlockProperties, Any>,
     luminance: Int,
 ) : BlockState(block, luminance) {
+    private val hash = Objects.hashCode(block, properties)
 
     constructor(block: Block, settings: BlockStateSettings) : this(block, settings.properties ?: emptyMap(), settings.luminance)
 
 
     override fun hashCode(): Int {
-        return Objects.hashCode(block, properties)
+        return hash
     }
 
     override fun equals(other: Any?): Boolean {
         if (other is ResourceLocation) return other == block.identifier
-        if (other is PropertyBlockState) return other.block == this.block && other.properties == this.properties
+        if (other is PropertyBlockState) return other.hash == hash && other.block == block && other.luminance == luminance && other.properties == this.properties
 
         return false
     }
@@ -79,7 +81,7 @@ open class PropertyBlockState(
 
     override fun cycle(property: BlockProperties): BlockState {
         val value: Any = this[property]
-        return withProperties(property to block.properties[property]!!.next(value))
+        return withProperties(property to block.states.unsafeCast<PropertyStateManager>().properties[property]!!.next(value))
     }
 
     override fun <T> get(property: BlockProperties): T {

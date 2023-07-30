@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -51,7 +51,7 @@ class RenderLoop(
 
 
     fun startLoop() {
-        Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
+        Log.log(LogMessageType.RENDERING) { "Starting loop" }
         context.connection.events.listen<WindowCloseEvent> { context.state = RenderingStates.QUITTING }
         while (true) {
             if (context.state == RenderingStates.PAUSED) {
@@ -68,9 +68,9 @@ class RenderLoop(
             }
 
             context.renderStats.startFrame()
-            context.framebufferManager.clear()
-            context.renderSystem.framebuffer = null
-            context.renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+            context.framebuffer.clear()
+            context.system.framebuffer = null
+            context.system.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
             context.light.updateAsync() // ToDo: do async
             context.light.update()
@@ -87,11 +87,11 @@ class RenderLoop(
             lastFrame = currentFrame
 
 
-            context.textureManager.staticTextures.animator.draw()
+            context.textures.staticTextures.animator.draw()
 
-            context.renderer.render()
+            context.renderer.draw()
 
-            context.renderSystem.reset() // Reset to enable depth mask, etc again
+            context.system.reset() // Reset to enable depth mask, etc again
 
             context.renderStats.endDraw()
 
@@ -99,7 +99,7 @@ class RenderLoop(
             context.window.pollEvents()
             context.window.swapBuffers()
 
-            context.inputHandler.draw(deltaFrameTime)
+            context.input.draw(deltaFrameTime)
             context.camera.draw()
 
             // handle opengl context tasks, but limit it per frame
@@ -113,7 +113,7 @@ class RenderLoop(
                 Thread.sleep(100L)
             }
 
-            for (error in context.renderSystem.getErrors()) {
+            for (error in context.system.getErrors()) {
                 context.connection.util.sendDebugMessage(error.printMessage)
             }
 
@@ -123,11 +123,11 @@ class RenderLoop(
             context.renderStats.endFrame()
         }
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
+        Log.log(LogMessageType.RENDERING) { "Destroying render window..." }
         context.state = RenderingStates.STOPPED
-        context.renderSystem.destroy()
+        context.system.destroy()
         context.window.destroy()
-        Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
+        Log.log(LogMessageType.RENDERING) { "Render window destroyed!" }
         // disconnect
         context.connection.network.disconnect()
     }

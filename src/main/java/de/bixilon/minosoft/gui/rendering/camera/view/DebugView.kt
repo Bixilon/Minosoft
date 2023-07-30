@@ -66,7 +66,7 @@ class DebugView(private val camera: Camera) : CameraView {
     }
 
     override fun onMouse(delta: Vec2d) {
-        val rotation = context.inputHandler.cameraInput.calculateRotation(delta, this.rotation)
+        val rotation = context.input.cameraInput.calculateRotation(delta, this.rotation)
         if (rotation == this.rotation) {
             return
         }

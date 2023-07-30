@@ -21,7 +21,6 @@ import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import kotlin.math.abs
 
 object Vec3dUtil {
@@ -132,5 +131,35 @@ object Vec3dUtil {
 
     fun Vec3d.length3(): Double {
         return x + y + z
+    }
+
+
+    operator fun Vec3d.get(axis: Axes): Double {
+        return when (axis) {
+            Axes.X -> x
+            Axes.Y -> y
+            Axes.Z -> z
+        }
+    }
+
+    operator fun Vec3d.set(axis: Axes, value: Double) {
+        when (axis) {
+            Axes.X -> x = value
+            Axes.Y -> y = value
+            Axes.Z -> z = value
+        }
+    }
+
+    fun Vec3d.addedY(y: Double): Vec3d {
+        val res = Vec3d(this)
+        res.y += y
+
+        return res
+    }
+
+    fun Vec3d.assign(other: Vec3d) {
+        this.x = other.x
+        this.y = other.y
+        this.z = other.z
     }
 }

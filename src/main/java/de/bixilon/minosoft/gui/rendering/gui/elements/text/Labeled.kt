@@ -14,11 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 
 interface Labeled {
     var text: Any
     val chatComponent: ChatComponent
-
-    val fontAlignment: HorizontalAlignments
 }

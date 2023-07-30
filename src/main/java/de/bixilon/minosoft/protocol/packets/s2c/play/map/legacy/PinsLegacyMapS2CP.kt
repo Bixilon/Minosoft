@@ -47,6 +47,6 @@ class PinsLegacyMapS2CP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Pins legacy map (pins=$pins)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Pins legacy map (pins=$pins)" }
     }
 }

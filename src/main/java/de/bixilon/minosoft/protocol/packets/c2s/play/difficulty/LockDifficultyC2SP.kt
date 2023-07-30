@@ -30,6 +30,6 @@ class LockDifficultyC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Lock difficulty (lock=$lock)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Lock difficulty (lock=$lock)" }
     }
 }

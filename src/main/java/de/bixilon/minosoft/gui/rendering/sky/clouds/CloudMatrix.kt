@@ -25,7 +25,7 @@ class CloudMatrix {
 
 
     fun load(assetsManager: AssetsManager) {
-        val data = assetsManager[CLOUD_MATRIX].readTexture()
+        val data = assetsManager.getOrNull(CLOUD_MATRIX)?.readTexture() ?: return
 
         if (data.size.x != CLOUD_MATRIX_SIZE || data.size.y != CLOUD_MATRIX_SIZE) {
             throw IllegalStateException("Cloud matrix has invalid size: ${data.size}")

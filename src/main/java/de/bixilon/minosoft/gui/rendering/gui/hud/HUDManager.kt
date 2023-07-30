@@ -18,7 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -61,11 +61,11 @@ class HUDManager(
         val toggleKeyBinding = hudBuilder.ENABLE_KEY_BINDING ?: return
         val toggleKeyBindingName = hudBuilder.ENABLE_KEY_BINDING_NAME ?: return
 
-        context.inputHandler.registerKeyCallback(toggleKeyBindingName, toggleKeyBinding, defaultPressed = hudBuilder.DEFAULT_ENABLED) { hudElement.enabled = it }
+        context.input.bindings.register(toggleKeyBindingName, toggleKeyBinding, pressed = hudBuilder.DEFAULT_ENABLED) { hudElement.enabled = it }
     }
 
     private fun registerDefaultElements() {
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
 
         for (builder in DEFAULT_ELEMENTS) {
             latch.inc()
@@ -75,7 +75,7 @@ class HUDManager(
         latch.await()
     }
 
-    fun onMatrixChange() {
+    fun onScreenChange() {
         hudElements.lock.acquire()
         for (element in hudElements.values) {
             if (element is LayoutedGUIElement<*>) {
@@ -93,10 +93,10 @@ class HUDManager(
             element.init()
         }
 
-        context.inputHandler.registerKeyCallback(
+        context.input.bindings.register(
             "minosoft:enable_hud".toResourceLocation(), KeyBinding(
                 KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
-            ), defaultPressed = enabled
+            ), pressed = enabled
         ) { enabled = it }
     }
 

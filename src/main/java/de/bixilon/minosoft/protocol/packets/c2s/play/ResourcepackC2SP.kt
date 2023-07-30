@@ -34,7 +34,7 @@ class ResourcepackC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Resourcepack (hash=$hash, status=$status)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Resourcepack (hash=$hash, status=$status)" }
     }
 
     enum class ResourcePackStates {

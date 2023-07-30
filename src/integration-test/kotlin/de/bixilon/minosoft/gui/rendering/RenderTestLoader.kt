@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.AssetsLoader
-import de.bixilon.minosoft.gui.rendering.font.FontLoader
-import de.bixilon.minosoft.gui.rendering.font.provider.BitmapFontProvider
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
@@ -29,9 +27,8 @@ class RenderTestLoader {
 
     fun init() {
         val connection = createConnection(5)
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
         connection::assetsManager.forceSet(AssetsLoader.create(connection.profiles.resources, connection.version, latch))
-        FontLoader.remove(BitmapFontProvider) // TODO: remove
         connection.assetsManager.load(latch)
         RenderTestUtil.rendering = Rendering(connection)
         RenderTestUtil.rendering.start(latch, audio = false)
@@ -39,7 +36,7 @@ class RenderTestLoader {
         latch.await()
         val context = RenderTestUtil.rendering.context
         assertTrue(context.window is DummyWindow)
-        assertTrue(context.renderSystem is DummyRenderSystem)
+        assertTrue(context.system is DummyRenderSystem)
         RenderTestUtil.context = context
     }
 }

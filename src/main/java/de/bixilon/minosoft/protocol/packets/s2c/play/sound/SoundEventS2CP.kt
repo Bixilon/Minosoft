@@ -82,6 +82,6 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sound event (category=$category, position=$position, sound=$sound, volume=$volume, pitch=$pitch)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Sound event (category=$category, position=$position, sound=$sound, volume=$volume, pitch=$pitch)" }
     }
 }

@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.minosoft.data.registries.dimension.effects.OverworldEffects
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
+import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -29,21 +28,17 @@ import de.bixilon.minosoft.gui.rendering.sky.planet.MoonRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.scatter.SunScatterRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class SkyRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
 ) : Renderer, PreDrawable, AsyncRenderer {
-    override val renderSystem: RenderSystem = context.renderSystem
-    override val framebuffer: Framebuffer? = null
-    override val polygonMode: PolygonModes = PolygonModes.DEFAULT
+    override val renderSystem: RenderSystem = context.system
+    override val framebuffer: IntegratedFramebuffer? = null
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
     var effects by observed(connection.world.dimension.effects)
     var matrix by observed(Mat4())
@@ -57,7 +52,7 @@ class SkyRenderer(
     val sunScatter = SunScatterRenderer(this, sun)
     val moon = MoonRenderer(this)
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun init(latch: AbstractLatch) {
         box.register()
         sunScatter.register()
         sun.register()
@@ -68,7 +63,7 @@ class SkyRenderer(
         }
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) {
+    override fun postInit(latch: AbstractLatch) {
         for (renderer in renderer) {
             renderer.postInit()
         }
@@ -99,7 +94,7 @@ class SkyRenderer(
     }
 
     override fun drawPre() {
-        context.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL, depthMask = false)
+        context.system.reset(depth = DepthFunctions.LESS_OR_EQUAL, depthMask = false)
         for (renderer in renderer) {
             renderer.draw()
         }
@@ -111,7 +106,6 @@ class SkyRenderer(
     }
 
     companion object : RendererBuilder<SkyRenderer> {
-        override val identifier = minosoft("sky")
 
         override fun build(connection: PlayConnection, context: RenderContext): SkyRenderer {
             return SkyRenderer(connection, context)

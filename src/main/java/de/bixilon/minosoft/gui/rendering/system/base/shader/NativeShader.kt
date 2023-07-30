@@ -37,7 +37,7 @@ interface NativeShader {
     fun reload()
 
     fun use(): NativeShader {
-        context.renderSystem.shader = this
+        context.system.shader = this
         return this
     }
 
@@ -84,7 +84,7 @@ interface NativeShader {
     companion object {
         val DEFAULT_DEFINES: Map<String, (context: RenderContext) -> Any?> = mapOf(
             "ANIMATED_TEXTURE_COUNT" to {
-                max(it.textureManager.staticTextures.animator.size, 1)
+                max(it.textures.staticTextures.animator.size, 1)
             }
         )
 

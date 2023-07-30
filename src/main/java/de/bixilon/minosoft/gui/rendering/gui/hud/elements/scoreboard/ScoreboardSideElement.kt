@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -35,7 +35,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.events.scoreboard.*
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -43,13 +43,13 @@ import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, AsyncDrawable {
-    private val backgroundElement = ColorElement(guiRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
-    private val nameBackgroundElement = ColorElement(guiRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
-    private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
+    private val backgroundElement = ColorElement(guiRenderer, size = Vec2.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
+    private val nameBackgroundElement = ColorElement(guiRenderer, size = Vec2.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
+    private val nameElement = TextElement(guiRenderer, "", background = null, parent = this)
     private val scores: LockMap<ScoreboardScore, ScoreboardScoreElement> = lockMapOf()
 
-    override val layoutOffset: Vec2i
-        get() = super.size.let { return@let Vec2i(guiRenderer.scaledSize.x - it.x, (guiRenderer.scaledSize.y - it.y) / 2) }
+    override val layoutOffset: Vec2
+        get() = super.size.let { return@let Vec2(guiRenderer.scaledSize.x - it.x, (guiRenderer.scaledSize.y - it.y) / 2) }
     override val skipDraw: Boolean
         get() = objective == null
 
@@ -64,16 +64,16 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         }
 
     init {
-        _prefMaxSize = Vec2i(MAX_SCOREBOARD_WIDTH, -1)
+        _prefMaxSize = Vec2(MAX_SCOREBOARD_WIDTH, -1)
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         backgroundElement.render(offset, consumer, options)
         nameBackgroundElement.render(offset, consumer, options)
 
-        nameElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0), consumer, options)
-        offset.y += Font.TOTAL_CHAR_HEIGHT
+        nameElement.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0), consumer, options)
+        offset.y += TEXT_PROPERTIES.lineHeight
 
         this.scores.lock.acquire()
         val scores = this.scores.unsafe.entries.sortedWith { a, b -> a.key.compareTo(b.key) }
@@ -82,7 +82,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         var index = 0
         for ((_, score) in scores) {
             score.render(offset, consumer, options)
-            offset.y += Font.TOTAL_CHAR_HEIGHT
+            offset.y += TEXT_PROPERTIES.lineHeight
 
             if (++index >= MAX_SCORES) {
                 break
@@ -93,7 +93,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     override fun forceSilentApply() {
         val objective = objective
         if (objective == null) {
-            _size = Vec2i.EMPTY
+            _size = Vec2.EMPTY
             return
         }
 
@@ -114,10 +114,10 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     fun recalculateSize() {
         val objective = objective
         if (objective == null) {
-            _size = Vec2i.EMPTY
+            _size = Vec2.EMPTY
             return
         }
-        val size = Vec2i(MIN_WIDTH, Font.TOTAL_CHAR_HEIGHT)
+        val size = Vec2(MIN_WIDTH, TEXT_PROPERTIES.lineHeight)
         size.x = maxOf(size.x, nameElement.size.x)
 
         val scores = scores.toSynchronizedMap()
@@ -128,12 +128,12 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
             size.x = maxOf(size.x, element.prefSize.x)
         }
 
-        size.y += SCORE_HEIGHT * minOf(MAX_SCORES, scores.size)
+        size.y += TEXT_PROPERTIES.lineHeight * minOf(MAX_SCORES, scores.size)
 
 
 
         _size = size
-        nameBackgroundElement.size = Vec2i(size.x, SCORE_HEIGHT)
+        nameBackgroundElement.size = Vec2(size.x, TEXT_PROPERTIES.lineHeight)
         backgroundElement.size = size
 
 
@@ -214,9 +214,9 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
     companion object : HUDBuilder<LayoutedGUIElement<ScoreboardSideElement>> {
         override val identifier: ResourceLocation = "minosoft:scoreboard".toResourceLocation()
+        val TEXT_PROPERTIES = TextRenderProperties()
         const val MAX_SCORES = 15
         const val MIN_WIDTH = 30
-        const val SCORE_HEIGHT = Font.TOTAL_CHAR_HEIGHT
         const val MAX_SCOREBOARD_WIDTH = 200
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<ScoreboardSideElement> {

@@ -13,9 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network.connection.status
 
-import de.bixilon.kutil.concurrent.schedule.QueuedTask
-import de.bixilon.kutil.concurrent.schedule.TaskScheduler
-import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionCreateEvent
@@ -33,7 +30,6 @@ import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.util.concurrent.TimeoutException
 
 class StatusConnection(
     var address: String,
@@ -52,7 +48,7 @@ class StatusConnection(
 
     var state by observed(StatusConnectionStates.WAITING)
 
-    private var timeoutTask: QueuedTask? = null
+    val timeout = TimeoutHandler(this)
 
 
     init {
@@ -61,6 +57,7 @@ class StatusConnection(
             ping = null
             status = null
             state = StatusConnectionStates.ERROR
+            timeout.cancel()
             network.disconnect()
         }
         network::connected.observe(this) {
@@ -86,14 +83,6 @@ class StatusConnection(
                 }
             }
         }
-        this::state.observe(this) {
-            if (it == StatusConnectionStates.PING_DONE || it == StatusConnectionStates.ERROR) {
-                val timeoutTask = timeoutTask ?: return@observe
-                timeoutTask.interrupt()
-                TaskScheduler -= timeoutTask
-                this.timeoutTask = null
-            }
-        }
         GlobalEventMaster.fire(StatusConnectionCreateEvent(this))
     }
 
@@ -102,7 +91,7 @@ class StatusConnection(
         val nextIndex = ++addressIndex
         if (addresses.size > nextIndex) {
             val nextAddress = addresses[nextIndex]
-            Log.log(LogMessageType.NETWORK_RESOLVING) { "Could not connect to $address, trying next hostname: $nextAddress" }
+            Log.log(LogMessageType.NETWORK) { "Could not connect to $address, trying next hostname: $nextAddress" }
             realAddress = nextAddress
             ping(nextAddress)
         }
@@ -122,6 +111,7 @@ class StatusConnection(
     }
 
     fun reset() {
+        timeout.cancel()
         realAddress = null
         this.addresses = null
         this.addressIndex = 0
@@ -137,18 +127,8 @@ class StatusConnection(
         if (state == StatusConnectionStates.ESTABLISHING || network.connected) {
             error("Already connecting!")
         }
-        // timeout task
-        timeoutTask = runLater(30000) {
-            if (state == StatusConnectionStates.ERROR) {
-                return@runLater
-            }
-            if (state != StatusConnectionStates.PING_DONE) {
-                network.disconnect()
-                error = TimeoutException()
-                state = StatusConnectionStates.ERROR
-            }
-        }
-        Log.log(LogMessageType.NETWORK_RESOLVING) { "Pinging $address (from ${this.address})" }
+        timeout.register()
+        Log.log(LogMessageType.NETWORK) { "Pinging $address (from ${this.address})" }
 
         state = StatusConnectionStates.ESTABLISHING
         network.connect(address, false)
@@ -164,7 +144,7 @@ class StatusConnection(
         try {
             addresses = resolve()
         } catch (exception: Exception) {
-            Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve ${this.address}" }
+            Log.log(LogMessageType.NETWORK) { "Can not resolve ${this.address}" }
             return
         }
         ping(addresses.first())

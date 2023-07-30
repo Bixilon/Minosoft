@@ -80,7 +80,7 @@ class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             val parserName = if (versionId >= ProtocolVersions.V_22W12A) connection.registries.argumentType[readVarInt()] else readResourceLocation()
             val parser = ArgumentParserFactories[parserName]
             if (parser == null) {
-                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find parser: $parserName" }
+                Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Can not find parser: $parserName" }
                 builder.parser = DummyParser
             } else {
                 builder.parser = parser.read(this)
@@ -90,7 +90,7 @@ class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 val suggestionName = readResourceLocation()
                 val suggestionType = SuggestionFactories[suggestionName]
                 if (suggestionType == null) {
-                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find suggestion type: $suggestionName" }
+                    Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Can not find suggestion type: $suggestionName" }
                 } else {
                     builder.suggestionType = suggestionType.build(this.connection, this)
                 }
@@ -101,6 +101,6 @@ class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Commands (nodes=$nodes, rootNode=$rootNode)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Commands (nodes=$nodes, rootNode=$rootNode)" }
     }
 }

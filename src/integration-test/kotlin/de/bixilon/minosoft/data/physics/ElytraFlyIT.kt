@@ -132,7 +132,7 @@ class ElytraFlyIT {
     fun startFlyingInWater() {
         val player = createPlayer(createConnection(5))
         player.forceTeleport(Vec3d(0.0, 31.8, 0.0))
-        player.connection.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.connection.registries.block[WaterFluid]!!.defaultState)
+        player.connection.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.connection.registries.block[WaterFluid]!!.states.default)
 
         player.equip()
 
@@ -149,7 +149,7 @@ class ElytraFlyIT {
     fun startFlyingInLava() {
         val player = createPlayer(createConnection(5))
         player.forceTeleport(Vec3d(0.0, 31.8, 0.0))
-        player.connection.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.connection.registries.block[LavaFluid]!!.defaultState)
+        player.connection.world.fill(Vec3i(-3, 30, -3), Vec3i(3, 33, 3), player.connection.registries.block[LavaFluid]!!.states.default)
         player.equip()
 
         player.runTicks(3)

@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WaterOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val player = context.connection.player
-    override val texture: AbstractTexture = context.textureManager.staticTextures.createTexture("minecraft:misc/underwater".toResourceLocation().texture())
+    override val texture: Texture = context.textures.staticTextures.createTexture("minecraft:misc/underwater".toResourceLocation().texture())
     override val render: Boolean
         get() = player.gamemode != Gamemodes.SPECTATOR && player.physics.submersion.eye is WaterFluid
 

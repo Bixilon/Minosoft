@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec4.Vec4i
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
@@ -23,13 +23,11 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.min
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.spaceSize
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
 import de.bixilon.minosoft.util.collections.DirectList
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
@@ -67,35 +65,35 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         }
 
     @Deprecated("Warning: Should not be directly accessed!")
-    open val cache = GUIMeshCache(guiRenderer.matrix, context.renderSystem.quadOrder, initialCacheSize)
+    open val cache = GUIMeshCache(guiRenderer.halfSize, context.system.quadOrder, context, initialCacheSize)
 
-    private var previousMaxSize = Vec2i.EMPTY
+    private var previousMaxSize = Vec2.EMPTY
 
-    protected open var _prefSize: Vec2i = Vec2i.EMPTY
+    protected open var _prefSize: Vec2 = Vec2.EMPTY
 
     open val canFocus: Boolean get() = false
 
     /**
      * If maxSize was infinity, what size would the element have? (Excluded margin!)
      */
-    open var prefSize: Vec2i
+    open var prefSize: Vec2
         get() = _prefSize
         set(value) {
             _prefSize = value
             apply()
         }
 
-    protected open var _prefMaxSize: Vec2i = Vec2i(-1, -1)
-    open var prefMaxSize: Vec2i
+    protected open var _prefMaxSize: Vec2 = Vec2(-1, -1)
+    open var prefMaxSize: Vec2
         get() = _prefMaxSize
         set(value) {
             _prefMaxSize = value
             apply()
         }
 
-    open val maxSize: Vec2i
+    open val maxSize: Vec2
         get() {
-            var maxSize = Vec2i(prefMaxSize)
+            var maxSize = Vec2(prefMaxSize)
 
             var parentMaxSize = parent?.maxSize
             if (parentMaxSize == null && !ignoreDisplaySize) {
@@ -113,11 +111,11 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
                 maxSize = maxSize.min(it)
             }
 
-            return Vec2i.EMPTY.max(maxSize - margin.spaceSize)
+            return Vec2.EMPTY.max(maxSize - margin.spaceSize)
         }
 
-    protected open var _size: Vec2i = Vec2i.EMPTY
-    open var size: Vec2i
+    protected open var _size: Vec2 = Vec2.EMPTY
+    open var size: Vec2
         get() {
             return _size.min(maxSize)
         }
@@ -126,7 +124,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             apply()
         }
 
-    protected open var _margin: Vec4i = Vec4i.EMPTY
+    protected open var _margin: Vec4 = Vec4.EMPTY
 
     /**
      * Margin for the element
@@ -134,7 +132,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
      * The max size already includes the margin, the size not. To get the actual size of an element, add the margin to the element.
      * For rendering: Every element adds its padding itself
      */
-    open var margin: Vec4i
+    open var margin: Vec4
         get() = _margin
         set(value) {
             _margin = value
@@ -146,8 +144,8 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
      *
      * @return The number of z layers used
      */
-    open fun render(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val offset = Vec2i(offset)
+    open fun render(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val offset = Vec2(offset)
         var directRendering = false
         if (consumer is GUIMesh && consumer.data == cache.data) {
             directRendering = true
@@ -162,10 +160,10 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             }
             return
         }
-        if (!cacheUpToDate || cache.offset != offset || guiRenderer.matrixChange || cache.options != options || cache.matrix !== guiRenderer.matrix) {
+        if (!cacheUpToDate || cache.offset != offset || guiRenderer.resolutionUpdate || cache.options != options || cache.halfSize !== guiRenderer.halfSize) {
             this.cache.clear()
-            cache.matrix = guiRenderer.matrix
-            cache.offset = Vec2i(offset)
+            cache.halfSize = guiRenderer.halfSize
+            cache.offset = Vec2(offset)
             cache.options = options
             forceRender(offset, cache, options)
             if (cache.data !is DirectList) {
@@ -184,7 +182,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
      *
      * @return The number of z layers used
      */
-    abstract fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
+    abstract fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
 
     /**
      * Force applies all changes made to any property, but does not notify the parent about the change

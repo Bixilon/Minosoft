@@ -25,6 +25,6 @@ class BookS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val hand: Hands = Hands[buffer.readVarInt()]
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Book (hand=$hand)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Book (hand=$hand)" }
     }
 }

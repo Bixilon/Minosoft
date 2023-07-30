@@ -42,14 +42,15 @@ import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
-import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import kotlin.reflect.jvm.javaField
 
 open class PixLyzerBlock(
     identifier: ResourceLocation,
@@ -64,7 +65,6 @@ open class PixLyzerBlock(
 
     override val jumpBoost = data["jump_velocity_multiplier"]?.toFloat() ?: 1.0f
 
-    private val material: Material?
     override var hardness: Float = 0.0f
     val requiresTool: Boolean
     val replaceable: Boolean
@@ -73,11 +73,11 @@ open class PixLyzerBlock(
     init {
         val state = data["states"]?.asAnyMap()!!.iterator().next().value.asJsonObject()
         hardness = data["hardness"]?.toFloat() ?: state["hardness"].toFloat()
-        material = registries.material[data["material"] ?: state["material"]]
+        val material = registries.material[data["material"] ?: state["material"]]
         requiresTool = data["requires_tool"]?.toBoolean() ?: state["requires_tool"]?.toBoolean() ?: material?.let { !it.soft } ?: false
-        replaceable = data["replaceable"]?.toBoolean() ?: false
+        replaceable = data["replaceable"]?.toBoolean() ?: material?.replaceable ?: false
 
-        this::item.inject(data["item"])
+        ITEM_FIELD.inject<RegistryItem>(data["item"])
     }
 
     override fun buildState(settings: BlockStateSettings): BlockState {
@@ -102,6 +102,7 @@ open class PixLyzerBlock(
     }
 
     companion object : ResourceLocationCodec<Block>, PixLyzerBlockFactory<Block>, MultiClassFactory<Block> {
+        private val ITEM_FIELD = PixLyzerBlock::item.javaField!!
         override val ALIASES: Set<String> = setOf("Block")
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Block {
@@ -110,7 +111,7 @@ open class PixLyzerBlock(
             val className = data["class"].toString()
             var factory = PixLyzerBlockFactories[className]
             if (factory == null) {
-                Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Block for class $className not found, defaulting..." }
+                Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Block for class $className not found, defaulting..." }
                 factory = PixLyzerBlock
             }
 

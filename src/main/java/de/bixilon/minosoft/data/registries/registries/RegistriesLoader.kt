@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.data.registries.registries
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.protocol.versions.Version
 
 object RegistriesLoader {
 
-    fun load(profile: ResourcesProfile, version: Version, latch: CountUpAndDownLatch): Registries {
+    fun load(profile: ResourcesProfile, version: Version, latch: AbstractLatch): Registries {
         if (!version.flattened) {
             // ToDo: Pre flattening support
             throw PreFlatteningLoadingError()

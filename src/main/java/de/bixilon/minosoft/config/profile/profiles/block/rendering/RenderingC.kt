@@ -15,6 +15,7 @@ package de.bixilon.minosoft.config.profile.profiles.block.rendering
 
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
+import de.bixilon.minosoft.config.profile.profiles.block.rendering.entities.EntitiesC
 
 class RenderingC(profile: BlockProfile) {
 
@@ -23,4 +24,6 @@ class RenderingC(profile: BlockProfile) {
      * If set position based random block models are disabled
      */
     var antiMoirePattern by BooleanDelegate(profile, true, "profile.block.rendering.anti_moire_pattern")
+
+    val entities = EntitiesC(profile)
 }

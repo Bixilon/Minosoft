@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
@@ -25,11 +25,8 @@ class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context
 
     override fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int) {
         val transformedUV = texture.transformUV(uv)
-        data.add(position[0])
-        data.add(position[1])
-        data.add(position[2])
-        data.add(transformedUV.x)
-        data.add(transformedUV.y)
+        data.add(position)
+        data.add(transformedUV.array)
         data.add(transform.buffer())
         data.add(texture.shaderId.buffer())
         data.add(flags.buffer())
@@ -37,11 +34,8 @@ class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context
 
     @Deprecated("Pretty rendering specific")
     override fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float) {
-        data.add(position[0])
-        data.add(position[1])
-        data.add(position[2])
-        data.add(transformedUV.x)
-        data.add(transformedUV.y)
+        data.add(position)
+        data.add(transformedUV.array)
         data.add(transform)
         data.add(textureShaderId)
         data.add(flags)

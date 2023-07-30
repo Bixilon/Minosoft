@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.assets
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import java.io.ByteArrayInputStream
@@ -22,7 +22,6 @@ import java.io.InputStream
 
 class MemoryAssetsManager : AssetsManager {
     private val entries: MutableMap<ResourceLocation, ByteArray> = mutableMapOf()
-    override val namespaces: MutableSet<String> = mutableSetOf()
     override val loaded: Boolean = true
 
     override fun get(path: ResourceLocation): InputStream {
@@ -33,7 +32,7 @@ class MemoryAssetsManager : AssetsManager {
         return entries[path]?.let { ByteArrayInputStream(it) }
     }
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
     }
 
     override fun unload() {
@@ -44,7 +43,6 @@ class MemoryAssetsManager : AssetsManager {
     }
 
     fun push(path: ResourceLocation, data: ByteArray) {
-        namespaces += path.namespace
         entries[path] = data
     }
 

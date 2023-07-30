@@ -158,7 +158,7 @@ class SprintIT {
         val player = createPlayer(createConnection(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.0))
         player.connection.world.fill(10, 8, 5, 20, 8, 15, StoneTest0.state)
-        player.connection.world.fill(10, 9, 9, 20, 9, 15, player.connection.registries.block[LavaFluidBlock]!!.defaultState)
+        player.connection.world.fill(10, 9, 9, 20, 9, 15, player.connection.registries.block[LavaFluidBlock]!!.states.default)
         player.input = PlayerMovementInput(forward = true, sprint = true)
         player.runTicks(20)
         player.assertPosition(17.0, 9.0, 9.7527920785995)

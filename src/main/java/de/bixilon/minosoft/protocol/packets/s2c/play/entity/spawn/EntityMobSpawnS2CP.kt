@@ -72,6 +72,6 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Mob spawn (entityId=$entityId, entityUUID=$entityUUID, entity=$entity)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Mob spawn (entityId=$entityId, entityUUID=$entityUUID, entity=$entity)" }
     }
 }

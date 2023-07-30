@@ -31,6 +31,6 @@ class PongC2SP(val payload: Int) : PlayC2SPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Pong (payload=$payload)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Pong (payload=$payload)" }
     }
 }

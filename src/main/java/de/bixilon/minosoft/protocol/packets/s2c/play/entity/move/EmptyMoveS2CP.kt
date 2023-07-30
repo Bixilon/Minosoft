@@ -24,6 +24,6 @@ class EmptyMoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Entity empty move (entityId=$entityId)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Entity empty move (entityId=$entityId)" }
     }
 }

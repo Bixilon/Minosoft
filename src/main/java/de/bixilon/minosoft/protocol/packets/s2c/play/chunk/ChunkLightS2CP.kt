@@ -55,7 +55,7 @@ class ChunkLightS2CP @JvmOverloads constructor(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk light (position=$position)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Chunk light (position=$position)" }
     }
 
     override fun handle(connection: PlayConnection) {

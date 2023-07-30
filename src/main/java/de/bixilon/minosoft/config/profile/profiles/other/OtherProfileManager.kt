@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ import java.util.concurrent.locks.ReentrantLock
 object OtherProfileManager : ProfileManager<OtherProfile> {
     override val mapper = Jackson.MAPPER.copy()
     override val namespace = "minosoft:other".toResourceLocation()
-    override val latestVersion get() = 2
+    override val latestVersion get() = 3
     override val saveLock = ReentrantLock()
     override val profileClass = OtherProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
@@ -49,6 +49,7 @@ object OtherProfileManager : ProfileManager<OtherProfile> {
     override fun migrate(from: Int, data: MutableMap<String, Any?>) {
         when (from) {
             1 -> OtherProfileMigration.migrate1(data)
+            2 -> OtherProfileMigration.migrate2(data)
         }
     }
 }

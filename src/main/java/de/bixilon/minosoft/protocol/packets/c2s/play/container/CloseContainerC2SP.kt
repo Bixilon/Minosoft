@@ -29,6 +29,6 @@ class CloseContainerC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Close container (containerId=$containerId)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Close container (containerId=$containerId)" }
     }
 }

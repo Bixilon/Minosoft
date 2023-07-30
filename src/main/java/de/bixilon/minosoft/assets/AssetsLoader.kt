@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.assets
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsManager
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.versions.Version
 
 object AssetsLoader {
 
-    fun create(profile: ResourcesProfile, version: Version, latch: CountUpAndDownLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): AssetsManager {
+    fun create(profile: ResourcesProfile, version: Version, latch: AbstractLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): AssetsManager {
         val assetsManager = PriorityAssetsManager()
 
         // assetsManager += Minosoft.OVERRIDE_ASSETS_MANAGER

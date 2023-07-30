@@ -18,7 +18,6 @@ import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
@@ -48,12 +47,18 @@ class ChunkSection(
             return
         }
         acquire()
-        var blockEntity: BlockEntity?
-        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            blockEntity = blockEntities[index] ?: continue
-            val position = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
-            val blockState = blocks[index] ?: continue
-            blockEntity.tick(connection, blockState, position, random)
+        val min = blockEntities.minPosition
+        val max = blockEntities.maxPosition
+        for (y in min.y..max.y) {
+            for (z in min.z..max.z) {
+                for (x in min.x..max.x) {
+                    val index = getIndex(x, y, z)
+                    val entity = blockEntities[index] ?: continue
+                    val state = blocks[index] ?: continue
+                    val position = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
+                    entity.tick(connection, state, position, random)
+                }
+            }
         }
         release()
     }
@@ -96,25 +101,6 @@ class ChunkSection(
         this.biomes.setData(biomes.cast())
     }
 
-
-    operator fun set(x: Int, y: Int, z: Int, block: BlockState?): BlockState? {
-        val previous = blocks.set(x, y, z, block)
-        if (chunk.world.dimension.light) {
-            light.onBlockChange(x, y, z, previous, block)
-        }
-
-        return previous
-    }
-
-    fun unsafeSet(x: Int, y: Int, z: Int, block: BlockState?): BlockState? {
-        val previous = blocks.unsafeSet(x, y, z, block)
-
-        if (chunk.world.dimension.light) {
-            light.onBlockChange(x, y, z, previous, block)
-        }
-
-        return previous
-    }
 
     fun clear() {
         blocks.clear()

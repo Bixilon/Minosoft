@@ -47,6 +47,6 @@ class LegacyTabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Legacy tab list data (items=$items)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Legacy tab list data (items=$items)" }
     }
 }

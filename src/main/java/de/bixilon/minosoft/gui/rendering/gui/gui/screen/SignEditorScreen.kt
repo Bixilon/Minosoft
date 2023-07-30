@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -24,7 +23,8 @@ import de.bixilon.minosoft.data.entities.block.sign.SignSides
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.SignBlock
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign.SignBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -42,9 +42,8 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.SignTextC2SP
@@ -56,11 +55,11 @@ class SignEditorScreen(
     val blockState: BlockState? = guiRenderer.connection.world[blockPosition],
     val blockEntity: SignBlockEntity? = guiRenderer.connection.world.getBlockEntity(blockPosition).nullCast(),
 ) : Screen(guiRenderer), AbstractLayout<Element> {
-    private val headerElement = TextElement(guiRenderer, "Edit sign message", background = false, scale = 3.0f, parent = this)
-    private val positionElement = TextElement(guiRenderer, "at $blockPosition", background = false, parent = this)
+    private val headerElement = TextElement(guiRenderer, "Edit sign message", background = null, properties = TextRenderProperties(scale = 3.0f), parent = this)
+    private val positionElement = TextElement(guiRenderer, "at $blockPosition", background = null, parent = this)
     private val backgroundElement = ImageElement(guiRenderer, getTexture(), uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
-    private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", SIGN_MAX_CHARS, scale = TEXT_SCALE, background = false, cutAtSize = true, parent = this) }
-    private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2i(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
+    private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", SIGN_MAX_CHARS, properties = TEXT_PROPERTIES, background = null, cutAtSize = true, parent = this) }
+    private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
     private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.connection.profiles.gui.sign.limitLength, parent = this) { guiRenderer.connection.profiles.gui.sign.limitLength = it; forceSilentApply() }
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
@@ -68,13 +67,13 @@ class SignEditorScreen(
 
     init {
         for (line in lines) {
-            line.prefMaxSize = Vec2i(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE)
+            line.prefMaxSize = Vec2(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale, TEXT_PROPERTIES.lineHeight)
             line.hideCursor()
         }
         forceSilentApply()
     }
 
-    private fun getTexture(): AbstractTexture? {
+    private fun getTexture(): Texture? {
         if (blockState?.block !is SignBlock) {
             return guiRenderer.atlasManager["minecraft:sign_front"]?.texture
         }
@@ -82,7 +81,7 @@ class SignEditorScreen(
         return null
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
         lengthLimitSwitch.render(offset + VerticalAlignments.BOTTOM.getOffset(size, lengthLimitSwitch.size), consumer, options)
 
@@ -102,7 +101,7 @@ class SignEditorScreen(
         offset.y += (1.8f * BACKGROUND_SCALE).toInt()
         for (line in lines) {
             line.render(offset + HorizontalAlignments.CENTER.getOffset(size, line.size), consumer, options)
-            offset.y += (Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE).toInt()
+            offset.y += TEXT_PROPERTIES.lineHeight + TEXT_PROPERTIES.lineSpacing
         }
         offset.y += size.y / 8
 
@@ -127,11 +126,11 @@ class SignEditorScreen(
         super.forceSilentApply()
 
         for (line in lines) {
-            line.prefMaxSize = Vec2i(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE else SIGN_MAX_CHARS, line.prefMaxSize.y)
+            line.prefMaxSize = Vec2(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale else SIGN_MAX_CHARS, line.prefMaxSize.y)
         }
     }
 
-    override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+    override fun getAt(position: Vec2): Pair<Element, Vec2>? {
         val size = size
 
         if (position.y in size.y - lengthLimitSwitch.size.y..size.y) {
@@ -154,7 +153,7 @@ class SignEditorScreen(
         position.y -= (1.8f * BACKGROUND_SCALE).toInt()
 
         for (line in lines) {
-            getAtCheck(position, line, HorizontalAlignments.CENTER, true, Vec2i(SignBlockEntityRenderer.SIGN_MAX_WIDTH, (Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE).toInt()))?.let { return it }
+            getAtCheck(position, line, HorizontalAlignments.CENTER, true, Vec2(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale, TEXT_PROPERTIES.lineHeight))?.let { return it }
             if (position.y < 0) {
                 return null
             }
@@ -190,7 +189,7 @@ class SignEditorScreen(
         return lines[activeLine].onKey(key, type)
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         val (element, offset) = getAt(position) ?: return false
         val lineIndex = lines.indexOf(element)
         if (element is TextInputElement && lineIndex >= 0 && lineIndex != this.activeLine) {
@@ -213,13 +212,13 @@ class SignEditorScreen(
     }
 
     companion object {
-        private val SIGN_UV_START = Vec2(0.5 / 16.0f, 1.0f / 32.0f)
-        private val SIGN_UV_END = Vec2(6.5 / 16.0f, 7.0f / 32.0f)
-        private const val TEXT_SCALE = 2.0f
+        private val TEXT_PROPERTIES = TextRenderProperties(scale = 2.0f, allowNewLine = false)
+        private val SIGN_UV_START = Vec2(0.5f / 16.0f, 1.0f / 32.0f)
+        private val SIGN_UV_END = Vec2(6.5f / 16.0f, 7.0f / 32.0f)
         private const val SIGN_MAX_CHARS = 384
 
         private const val BACKGROUND_SCALE = 9
-        private val BACKGROUND_SIZE = Vec2i(24, 12) * BACKGROUND_SCALE
+        private val BACKGROUND_SIZE = Vec2(24, 12) * BACKGROUND_SCALE
 
         fun register(guiRenderer: GUIRenderer) {
             guiRenderer.connection.events.listen<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.position, it.side)) }

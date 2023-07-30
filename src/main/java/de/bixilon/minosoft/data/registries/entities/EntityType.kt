@@ -24,9 +24,9 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.effects.attributes.AttributeType
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -71,7 +71,7 @@ data class EntityType(
                 val fields: MutableMap<String, EntityDataField> = mutableMapOf()
                 val dataClass = DefaultEntityFactories.ABSTRACT_ENTITY_DATA_CLASSES[resourceLocation]?.companionObject ?: if (factory != null) factory::class else null
                 if (dataClass == null) {
-                    Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Can not find class for entity data ($resourceLocation)" }
+                    Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find class for entity data ($resourceLocation)" }
                     return@let
                 }
                 for (member in dataClass.members) {
@@ -94,7 +94,7 @@ data class EntityType(
                 for ((fieldName, index) in it) {
                     val fieldType = fields[fieldName]
                     if (fieldType == null) {
-                        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Can not find entity data $fieldName for $resourceLocation" }
+                        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find entity data $fieldName for $resourceLocation" }
                         continue
                     }
                     registries.entityDataIndexMap[fieldType] = index.toInt()
@@ -115,7 +115,7 @@ data class EntityType(
                 for ((name, value) in it) {
                     val type = MinecraftAttributes[name.toResourceLocation().fix()]
                     if (type == null) {
-                        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Can not get entity attribute type: $name" }
+                        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not get entity attribute type: $name" }
                         continue
                     }
                     attributes[type] = value.unsafeCast()

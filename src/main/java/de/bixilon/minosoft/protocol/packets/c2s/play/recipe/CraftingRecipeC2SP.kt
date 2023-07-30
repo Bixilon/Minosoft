@@ -31,6 +31,6 @@ class CraftingRecipeC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Crafting recipe request (containerId=$containerId, recipeId=$recipeId)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Crafting recipe request (containerId=$containerId, recipeId=$recipeId)" }
     }
 }

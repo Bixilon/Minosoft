@@ -81,8 +81,9 @@ object LanguageUtil {
         return ChatComponent.of(key.toString() + "->" + data.contentToString(), null, parent, restricted)
     }
 
-    fun loadLanguage(language: String, assetsManager: AssetsManager, json: Boolean, path: ResourceLocation): Translator {
-        val assets = assetsManager.getAll(ResourceLocation(path.namespace, path.path + language + if (json) ".json" else ".lang"))
+    fun loadLanguage(language: String, assetsManager: AssetsManager, json: Boolean, path: ResourceLocation): Translator? {
+        val assets = assetsManager.getAllOrNull(ResourceLocation(path.namespace, path.path + language + if (json) ".json" else ".lang")) ?: return null
+        if (assets.isEmpty()) return null
         val languages: MutableList<Language> = mutableListOf()
 
         for (asset in assets) {
@@ -106,9 +107,9 @@ object LanguageUtil {
 
 
         if (name != FALLBACK_LANGUAGE) {
-            ExceptionUtil.tryCatch(FileNotFoundException::class.java, executor = { languages += loadLanguage(name, assetsManager, json, path) })
+            ExceptionUtil.tryCatch(FileNotFoundException::class.java, executor = { languages += loadLanguage(name, assetsManager, json, path) ?: return@tryCatch })
         }
-        languages += loadLanguage(FALLBACK_LANGUAGE, assetsManager, json, path)
+        loadLanguage(FALLBACK_LANGUAGE, assetsManager, json, path)?.let { languages += it }
 
         if (languages.size == 1) {
             return languages.first()

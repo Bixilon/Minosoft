@@ -18,9 +18,10 @@ import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.gui.rendering.camera.Camera
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.chunk.light.RenderLight
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
-import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
+import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
 import de.bixilon.minosoft.gui.rendering.shader.ShaderManager
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindowFactory
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
-import de.bixilon.minosoft.gui.rendering.world.light.RenderLight
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class RenderContext(
@@ -43,29 +43,29 @@ class RenderContext(
     val preferQuads = profile.advanced.preferQuads
 
     val window = BaseWindowFactory.create(this)
-    val renderSystem = RenderSystemFactory.create(this)
+    val system = RenderSystemFactory.create(this)
     val camera = Camera(this)
 
-    val inputHandler = RenderWindowInputHandler(this)
+    val input = InputManager(this)
     val screenshotTaker = ScreenshotTaker(this)
-    val tintManager = TintManager(connection)
-    val textureManager = renderSystem.createTextureManager()
+    val tints = TintManager(connection)
+    val textures = system.createTextureManager()
 
     val queue = Queue()
 
-    val shaderManager = ShaderManager(this)
-    val framebufferManager = FramebufferManager(this)
+    val shaders = ShaderManager(this)
+    val framebuffer = FramebufferManager(this)
     val renderer = RendererManager(this)
-    val modelLoader = ModelLoader(this)
+    val models = ModelLoader(this)
 
     val light = RenderLight(this)
 
-    val skeletalManager = SkeletalManager(this)
+    val skeletal = SkeletalManager(this)
 
     lateinit var renderStats: AbstractRenderStats
         private set
 
-    var font: Font = unsafeNull()
+    var font: FontManager = unsafeNull()
 
 
     val thread: Thread = unsafeNull()

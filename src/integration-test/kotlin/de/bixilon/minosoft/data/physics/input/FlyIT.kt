@@ -109,4 +109,23 @@ class FlyIT {
         player.assertGround(false)
         assertTrue(player.abilities.flying)
     }
+
+    fun spectatorNotAllowedFly() {
+        // maybe not vanilla
+        val player = createPlayer(createConnection(3))
+        player.additional.gamemode = Gamemodes.SPECTATOR
+        player.abilities = Abilities(allowFly = false, flying = false)
+        player.forceTeleport(Vec3d(17.0, 9.5, 8.0))
+        player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
+
+        player.inputActions = MovementInputActions(toggleFly = true)
+        player.runTicks(1)
+        player.assertGround(false)
+        assertTrue(player.abilities.flying)
+
+        player.inputActions = MovementInputActions(toggleFly = true)
+        player.runTicks(1)
+        player.assertGround(false)
+        assertTrue(player.abilities.flying)
+    }
 }

@@ -17,11 +17,11 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.camera.target.TargetHandler
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.input.interaction.InteractionManager
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import kotlin.reflect.jvm.javaField
 
 class ConnectionCamera(
     val connection: PlayConnection,
@@ -32,7 +32,12 @@ class ConnectionCamera(
 
     fun init() {
         entity = connection.player
-        this::interactions.forceSet(InteractionManager(this))
+        Companion.interactions[this] = InteractionManager(this)
         interactions.init()
+    }
+
+
+    companion object {
+        private val interactions = ConnectionCamera::interactions.javaField!!.apply { isAccessible = true }
     }
 }

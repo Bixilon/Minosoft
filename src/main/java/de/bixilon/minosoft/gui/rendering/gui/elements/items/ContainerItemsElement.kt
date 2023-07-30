@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -23,9 +23,9 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class ContainerItemsElement(
@@ -51,7 +51,7 @@ class ContainerItemsElement(
     init {
         silentApply()
 
-        val size = Vec2i.EMPTY
+        val size = Vec2.EMPTY
         for ((slotId, binding) in slots) {
             val item = container[slotId]
             itemElements[slotId] = ItemElementData(
@@ -77,7 +77,7 @@ class ContainerItemsElement(
         }
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (update) {
             forceSilentApply()
         }
@@ -106,7 +106,7 @@ class ContainerItemsElement(
         update = false
     }
 
-    override fun getAt(position: Vec2i): Pair<ItemElement, Vec2i>? {
+    override fun getAt(position: Vec2): Pair<ItemElement, Vec2>? {
         for (item in itemElements.values) {
             if (position isSmaller item.offset) {
                 continue
@@ -122,6 +122,6 @@ class ContainerItemsElement(
 
     private data class ItemElementData(
         val element: ItemElement,
-        val offset: Vec2i,
+        val offset: Vec2,
     )
 }

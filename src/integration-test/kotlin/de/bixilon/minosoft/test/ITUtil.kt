@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.test
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.VersionRegistry
 import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
@@ -24,6 +24,8 @@ import org.testng.SkipException
 
 object ITUtil {
     private val profile = createResourcesProfile()
+    private val pixlyzer: MutableMap<Version, Registries> = mutableMapOf()
+
 
     fun createResourcesProfile(): ResourcesProfile {
         return ResourcesProfile()
@@ -36,11 +38,13 @@ object ITUtil {
     }
 
     fun loadPixlyzerData(version: Version): Registries {
+        pixlyzer[version]?.let { return it }
         val registries = Registries(false)
 
         val data = PixLyzerUtil.loadPixlyzerData(version, profile)
 
-        registries.load(version, data, CountUpAndDownLatch(0))
+        registries.load(version, data, SimpleLatch(0))
+        pixlyzer[version] = registries
 
         return registries
     }

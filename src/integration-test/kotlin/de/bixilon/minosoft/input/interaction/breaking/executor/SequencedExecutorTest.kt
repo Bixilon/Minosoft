@@ -27,7 +27,7 @@ class SequencedExecutorTest {
     fun testSequenceId() {
         val connection = createConnection()
         val executor = SequencedExecutor(BreakHandler(connection.camera.interactions))
-        val state = connection.registries.block[RockBlock.Stone]!!.defaultState
+        val state = connection.registries.block[RockBlock.Stone]!!.states.default
         assertEquals(1, executor.start(Vec3i(1, 1, 1), state))
         assertEquals(2, executor.finish())
         assertEquals(3, executor.start(Vec3i(1, 1, 2), state))
@@ -37,7 +37,7 @@ class SequencedExecutorTest {
     fun testRevert() {
         val connection = createConnection(1)
         val executor = SequencedExecutor(BreakHandler(connection.camera.interactions))
-        val state = connection.registries.block[RockBlock.Stone]!!.defaultState
+        val state = connection.registries.block[RockBlock.Stone]!!.states.default
 
         connection.world[Vec3i(1, 1, 1)] = state
 
@@ -55,7 +55,7 @@ class SequencedExecutorTest {
     fun testAcknowledge() {
         val connection = createConnection()
         val executor = SequencedExecutor(BreakHandler(connection.camera.interactions))
-        val state = connection.registries.block[RockBlock.Stone]!!.defaultState
+        val state = connection.registries.block[RockBlock.Stone]!!.states.default
 
         executor.start(Vec3i(1, 1, 1), state)
 

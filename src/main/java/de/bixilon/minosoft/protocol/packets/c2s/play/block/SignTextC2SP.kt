@@ -50,6 +50,6 @@ class SignTextC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Sign text (position=$position)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Sign text (position=$position)" }
     }
 }

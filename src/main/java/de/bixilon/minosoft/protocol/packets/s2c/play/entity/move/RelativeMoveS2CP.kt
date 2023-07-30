@@ -44,6 +44,6 @@ class RelativeMoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity relative move (entityId=$entityId, delta=$delta, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Entity relative move (entityId=$entityId, delta=$delta, onGround=$onGround)" }
     }
 }

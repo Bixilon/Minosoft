@@ -57,6 +57,6 @@ data class ContainerClickC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container click (containerId=$containerId, revision=$revision, slot=$slot, action=$button, actionId=$actionId, changes=$changes, floating=$floating)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Container click (containerId=$containerId, revision=$revision, slot=$slot, action=$button, actionId=$actionId, changes=$changes, floating=$floating)" }
     }
 }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.effects.other.OtherEffect
@@ -70,11 +71,11 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
 
 
     init {
-        _size = Vec2i(HUNGER_CONTAINERS, 1) * HUNGER_SIZE + Vec2i(1, 0) // 1 pixel is overlapping per hunger, so one more
+        _size = Vec2(HUNGER_CONTAINERS, 1) * HUNGER_SIZE + Vec2(1, 0) // 1 pixel is overlapping per hunger, so one more
         hungerProfile::saturationBar.observe(this) { cacheUpToDate = false }
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         var hungerLeft = hunger
         var saturationLeft = saturation.toInt()
 

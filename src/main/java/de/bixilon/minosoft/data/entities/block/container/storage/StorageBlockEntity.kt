@@ -17,8 +17,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
-import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.StorageBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.StorageBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection), BlockActionEntity {

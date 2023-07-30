@@ -52,11 +52,12 @@ open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, sett
     }
 
     override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState) {
-        physics.slowMovement(state, Vec3d(0.25, 0.05f, 0.25))
+        physics.slowMovement(state, SLOW)
     }
 
     companion object : BlockFactory<CobwebBlock> {
         override val identifier = minecraft("cobweb")
+        val SLOW = Vec3d(0.25, 0.05f, 0.25)
 
         override fun build(registries: Registries, settings: BlockSettings) = CobwebBlock(settings = settings)
     }

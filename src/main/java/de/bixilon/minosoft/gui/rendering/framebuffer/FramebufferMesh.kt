@@ -34,10 +34,8 @@ class FramebufferMesh(context: RenderContext) : Mesh(context, DefaultFramebuffer
     }
 
     private fun addVertex(position: Vec2, uv: Vec2) {
-        data.add(position.x)
-        data.add(position.y)
-        data.add(uv.x)
-        data.add(uv.y)
+        data.add(position.array)
+        data.add(uv.array)
     }
 
     data class DefaultFramebufferMeshStruct(

@@ -34,7 +34,6 @@ class ArchiveSource(
     override fun process(mod: MinosoftMod) {
         val stream = JarInputStream(FileInputStream(jar))
         val assets = ZipAssetsManager(stream)
-        val namespaces: MutableSet<String> = mutableSetOf()
         while (true) {
             val entry = stream.nextEntry ?: break
             if (entry.isDirectory) {
@@ -46,11 +45,10 @@ class ArchiveSource(
             } else if (entry.name == LoaderUtil.MANIFEST) {
                 mod.manifest = stream.readJson(false)
             } else {
-                assets.push(entry.name, namespaces, stream)
+                assets.push(entry.name, stream)
             }
         }
         stream.close()
-        assets.namespaces = namespaces
         mod.assetsManager = assets
         assets.loaded = true
     }

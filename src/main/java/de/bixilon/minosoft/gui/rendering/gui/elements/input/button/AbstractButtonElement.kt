@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -37,7 +38,7 @@ abstract class AbstractButtonElement(
     text: Any,
     disabled: Boolean = false,
 ) : Element(guiRenderer) {
-    protected val textElement = TextElement(guiRenderer, text, background = false, parent = this)
+    protected val textElement = TextElement(guiRenderer, text, background = null, parent = this)
     protected abstract val disabledAtlas: AtlasElement?
     protected abstract val normalAtlas: AtlasElement?
     protected abstract val hoveredAtlas: AtlasElement?
@@ -51,16 +52,16 @@ abstract class AbstractButtonElement(
             }
 
             textElement.prefMaxSize = if (value) {
-                Vec2i(-1, -1)
+                Vec2(-1, -1)
             } else {
-                size - Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
+                size - Vec2(TEXT_PADDING * 2, TEXT_PADDING * 2)
             }
             _dynamicSized = value
             forceApply()
         }
 
 
-    override var size: Vec2i
+    override var size: Vec2
         get() = super.size
         set(value) {
             _dynamicSized = false
@@ -98,15 +99,15 @@ abstract class AbstractButtonElement(
 
 
     init {
-        size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
+        size = textElement.size + Vec2(TEXT_PADDING * 2, TEXT_PADDING * 2)
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val texture = when {
             disabled -> disabledAtlas
             hovered -> hoveredAtlas
             else -> normalAtlas
-        } ?: guiRenderer.context.textureManager.whiteTexture
+        } ?: guiRenderer.context.textures.whiteTexture
 
         val size = size
         val background = AtlasImageElement(guiRenderer, texture)
@@ -114,7 +115,7 @@ abstract class AbstractButtonElement(
         val textSize = textElement.size
 
         background.render(offset, consumer, options)
-        textElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, options)
+        textElement.render(offset + Vec2(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, options)
     }
 
     override fun forceSilentApply() {
@@ -122,7 +123,7 @@ abstract class AbstractButtonElement(
         cacheUpToDate = false
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+    override fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (disabled) {
             return true
         }
@@ -154,7 +155,7 @@ abstract class AbstractButtonElement(
         return true
     }
 
-    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+    override fun onMouseEnter(position: Vec2, absolute: Vec2): Boolean {
         hovered = true
         context.window.cursorShape = CursorShapes.HAND
 

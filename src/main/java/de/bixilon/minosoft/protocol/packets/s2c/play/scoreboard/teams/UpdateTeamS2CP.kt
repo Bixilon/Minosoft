@@ -112,6 +112,6 @@ class UpdateTeamS2CP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Team update (name=$name, prefix=$prefix, suffix=$suffix, friendlyFire=$friendlyFire, canSeeInvisibleTeam=$canSeeInvisibleTeam, collisionRule=$collisionRule, nameTagVisibility=$nameTagVisibility, color=$color)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Team update (name=$name, prefix=$prefix, suffix=$suffix, friendlyFire=$friendlyFire, canSeeInvisibleTeam=$canSeeInvisibleTeam, collisionRule=$collisionRule, nameTagVisibility=$nameTagVisibility, color=$color)" }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -60,17 +60,17 @@ class EntityData(
     }
 
     operator fun set(field: EntityDataField, value: Any?) {
-        lock.acquire()
         val index = connection.registries.getEntityDataIndex(field) ?: return
+        lock.acquire()
         this.data[index] = value
         lock.release()
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     inline fun <reified K> get(field: EntityDataField, default: K): K {
+        val index = connection.registries.getEntityDataIndex(field) ?: return default // field is not present (in this version)
         lock.acquire()
         try {
-            val index = connection.registries.getEntityDataIndex(field) ?: return default // field is not present (in this version)
             val data = this.data[index] ?: return default
             if (data !is K) {
                 if (data is Number) {

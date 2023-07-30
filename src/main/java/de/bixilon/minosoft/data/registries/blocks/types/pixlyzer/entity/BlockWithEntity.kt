@@ -19,19 +19,24 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import kotlin.reflect.jvm.javaField
 
-abstract class BlockWithEntity<T : BlockEntity>(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data) {
+abstract class BlockWithEntity<T : BlockEntity>(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), InteractBlockHandler {
     val factory: BlockEntityType<T>? = null
 
     init {
-        this::factory.inject(this)
+        FACTORY_FIELD.inject<RegistryItem>(this)
     }
 
-    override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        return InteractionResults.SUCCESS
+    override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?) = InteractionResults.SUCCESS
+
+    private companion object {
+        val FACTORY_FIELD = BlockWithEntity<*>::factory.javaField!!
     }
 }

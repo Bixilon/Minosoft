@@ -13,22 +13,23 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.text
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class ContainerText(
     var text: TextElement,
-    private var offset: Vec2i = Vec2i.EMPTY,
+    private var offset: Vec2 = Vec2.EMPTY,
 ) {
-    fun render(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    fun render(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         text.render(offset + this.offset, consumer, options)
     }
 
@@ -41,10 +42,10 @@ class ContainerText(
                 return null
             }
             text.setFallbackColor(DEFAULT_TEXT_COLOR)
-            val textElement = TextElement(guiRenderer, text, background = false, shadow = false)
+            val textElement = TextElement(guiRenderer, text, background = null, properties = TextRenderProperties(shadow = false))
             textElement.prefMaxSize = area.size
 
-            return ContainerText(textElement, area.start)
+            return ContainerText(textElement, Vec2(area.start))
         }
 
         fun createInventoryTitle(guiRenderer: GUIRenderer, area: AtlasArea?): ContainerText? {

@@ -27,7 +27,6 @@ import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
 import de.bixilon.minosoft.physics.parts.climbing.ClimbingPhysics.isClimbing
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
-import de.bixilon.minosoft.util.KUtil
 import kotlin.math.pow
 
 object ElytraPhysics {
@@ -71,11 +70,17 @@ object ElytraPhysics {
         startElytraFalling()
     }
 
-    private fun EntityRotation.elytra() = Vec3d(
-        Trigonometry.sin(KUtil.toRad(-yaw)) * Trigonometry.cos(KUtil.toRad(pitch)),
-        Trigonometry.sin(pitch.rad),
-        Trigonometry.cos(KUtil.toRad(-yaw)) * Trigonometry.cos(KUtil.toRad(pitch))
-    )
+    private fun EntityRotation.elytra(): Vec3d {
+        val yaw = -yaw.rad
+        val pitch = pitch.rad
+        val pitchCos = Trigonometry.cos(pitch)
+
+        return Vec3d(
+            Trigonometry.sin(yaw) * pitchCos,
+            Trigonometry.sin(pitch),
+            Trigonometry.cos(yaw) * pitchCos,
+        )
+    }
 
     private fun LivingEntityPhysics<*>.limitFallDistance() {
         if (velocity.y <= -0.5 || this.fallDistance <= 1.0) {
@@ -91,7 +96,7 @@ object ElytraPhysics {
         val velocity = Vec3d(initialVelocity)
         val rotation = rotation
         val front = rotation.elytra()
-        val pitch = KUtil.toRad(rotation.pitch)
+        val pitch = rotation.pitch.rad
 
 
         val y = kotlin.math.cos(pitch.toDouble()).pow(2) * minOf(1.0, front.length() / 0.4)
@@ -121,7 +126,7 @@ object ElytraPhysics {
         }
 
 
-       this.velocity = velocity * FRICTION
+        this.velocity = velocity * FRICTION
 
         move(this.velocity)
     }

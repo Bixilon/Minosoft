@@ -50,6 +50,6 @@ class StartC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Login start (username=$username, publicKey=$publicKey)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Login start (username=$username, publicKey=$publicKey)" }
     }
 }

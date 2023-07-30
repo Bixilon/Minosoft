@@ -29,6 +29,6 @@ class ResetTitleS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Reset title" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Reset title" }
     }
 }

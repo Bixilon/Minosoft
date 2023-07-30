@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -40,7 +39,7 @@ class CampfireSmokeParticle(connection: PlayConnection, position: Vec3d, velocit
 
         gravityStrength = 3.0E-6f
 
-        this.velocity assign Vec3d(velocity.x, velocity.y + (random.nextDouble() / 500.0), velocity.z)
+        this.velocity(Vec3d(velocity.x, velocity.y + (random.nextDouble() / 500.0), velocity.z))
         movement = false
         spriteDisabled = true
         setRandomSprite()

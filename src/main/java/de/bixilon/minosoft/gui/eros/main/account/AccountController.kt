@@ -16,7 +16,8 @@ package de.bixilon.minosoft.gui.eros.main.account
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.observer.map.MapChange.Companion.values
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
@@ -118,7 +119,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         val profile = ErosProfileManager.selected.general.accountProfile
         if (account.state == AccountStates.WORKING) {
             onSuccess?.let {
-                DefaultThreadPool += {
+                DefaultThreadPool += ForcePooledRunnable {
                     it(account)
                 }
             }
@@ -132,10 +133,10 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             return
         }
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Checking account $account" }
-        val latch = CountUpAndDownLatch(2)
+        val latch = CallbackLatch(2)
         val dialog = CheckingDialog(latch)
         dialog.show()
-        DefaultThreadPool += {
+        DefaultThreadPool += ForcePooledRunnable {
             latch.dec()
             try {
                 account.tryCheck(latch, profile.clientToken) // ToDo: Show error

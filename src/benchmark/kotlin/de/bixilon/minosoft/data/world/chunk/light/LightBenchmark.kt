@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.kutil.benchmark.BenchmarkUtil
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createChunkWithNeighbours
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createOpaqueLight
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createSolidBlock
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.fillBottom
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createOpaqueLight
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createSolidBlock
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.fillBottom
 import org.testng.annotations.Test
 import kotlin.system.measureNanoTime
 
@@ -36,7 +36,7 @@ internal class LightBenchmark {
     @Test
     fun calculateWithSolidBottom() {
         val chunk = createChunkWithNeighbours()
-        chunk.fillBottom(createSolidBlock().defaultState)
+        chunk.fillBottom(createSolidBlock().states.default)
         BenchmarkUtil.benchmark(100000) {
             chunk.light.recalculate()
         }.println()
@@ -46,8 +46,8 @@ internal class LightBenchmark {
     @Test
     fun calculateSimplePlace() {
         val chunk = createChunkWithNeighbours()
-        val solid = createSolidBlock().defaultState
-        val light = createOpaqueLight().defaultState
+        val solid = createSolidBlock().states.default
+        val light = createOpaqueLight().states.default
         val lowest = chunk.getOrPut(0)!!.blocks
         for (index in 0 until 256) {
             lowest.unsafeSet(index, solid)
@@ -70,7 +70,7 @@ internal class LightBenchmark {
     @Test
     fun calculateChangeAtY255() {
         val chunk = createChunkWithNeighbours()
-        val solid = createSolidBlock().defaultState
+        val solid = createSolidBlock().states.default
         val lowest = chunk.getOrPut(0)!!.blocks
         for (index in 0 until 256) {
             lowest.unsafeSet(index, solid)
@@ -79,9 +79,10 @@ internal class LightBenchmark {
         for (index in 0 until 256) {
             highest.unsafeSet(index or (0x0F shl 8), solid)
         }
+
         var totalPlace = 0L
         var totalBreak = 0L
-        val benchmark = BenchmarkUtil.benchmark(10000) {
+        val benchmark = BenchmarkUtil.benchmark(100000) {
             totalBreak += measureNanoTime { chunk[7, 255, 7] = null }
             totalPlace += measureNanoTime { chunk[7, 255, 7] = solid }
         }
@@ -94,8 +95,8 @@ internal class LightBenchmark {
     fun placeBottom() {
         val chunk = createChunkWithNeighbours()
 
-        val solid = createSolidBlock().defaultState
-        val light = createOpaqueLight().defaultState
+        val solid = createSolidBlock().states.default
+        val light = createOpaqueLight().states.default
         val highest = chunk.getOrPut(15)!!.blocks
         for (index in 0 until 256) {
             highest.unsafeSet(index or (0x0F shl 8), solid)

@@ -80,6 +80,6 @@ data class BlockInteractC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Block interact (position=$position, direction=$direction, cursor=$cursorPosition, hand=$hand, insideBlock=$insideBlock, sequence=$sequence)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Block interact (position=$position, direction=$direction, cursor=$cursorPosition, hand=$hand, insideBlock=$insideBlock, sequence=$sequence)" }
     }
 }

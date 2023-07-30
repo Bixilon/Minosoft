@@ -29,7 +29,7 @@ class SpeedGrassWalkIT : WalkIT() {
 
     @Test(priority = -1)
     fun getGrassBlock() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.GRASS_BLOCK]?.defaultState ?: throw SkipException("Can not find grass block!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.GRASS_BLOCK]?.states?.default ?: throw SkipException("Can not find grass block!")
     }
 
     override fun createPlayer(connection: PlayConnection): LocalPlayerEntity {

@@ -44,7 +44,7 @@ import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -57,7 +57,7 @@ import kotlin.math.sin
 class SkyboxRenderer(
     private val sky: SkyRenderer,
 ) : SkyChildRenderer {
-    private val textureCache: MutableMap<ResourceLocation, AbstractTexture> = mutableMapOf()
+    private val textureCache: MutableMap<ResourceLocation, Texture> = mutableMapOf()
     private val colorShader = sky.renderSystem.createShader(minosoft("sky/skybox")) { SkyboxColorShader(it) }
     private val textureShader = sky.renderSystem.createShader(minosoft("sky/skybox/texture")) { SkyboxTextureShader(it) }
     private val colorMesh = SkyboxMesh(sky.context)
@@ -136,7 +136,7 @@ class SkyboxRenderer(
     override fun init() {
         for (properties in DefaultDimensionEffects) {
             val texture = properties.fixedTexture ?: continue
-            textureCache[texture] = sky.context.textureManager.staticTextures.createTexture(texture)
+            textureCache[texture] = sky.context.textures.staticTextures.createTexture(texture)
         }
     }
 
@@ -146,7 +146,7 @@ class SkyboxRenderer(
 
         colorMesh.load()
         textureMesh.load()
-        sky.context.textureManager.staticTextures.use(textureShader)
+        sky.context.textures.staticTextures.use(textureShader)
     }
 
     private fun updateColorShader() {
@@ -232,7 +232,7 @@ class SkyboxRenderer(
                     val x = offset.x + xOffset
                     val y = offset.y + yOffset
                     val z = offset.z + zOffset
-                    val neighbour = chunk.traceChunk(Vec2i(x shr 4, z shr 4)) ?: continue
+                    val neighbour = chunk.neighbours.trace(Vec2i(x shr 4, z shr 4)) ?: continue
                     val biome = neighbour.getBiome(x and 0x0F, y, z and 0x0F) ?: continue
 
                     count++

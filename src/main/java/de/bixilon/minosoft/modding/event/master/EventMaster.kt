@@ -16,7 +16,6 @@ package de.bixilon.minosoft.modding.event.master
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.modding.event.events.AsyncEvent
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
@@ -57,8 +56,10 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
 
     override fun fire(event: Event): Boolean {
         parentLock.acquire()
-        for (parent in parents) {
-            parent.fire(event)
+        if (parents.isNotEmpty()) {
+            for (parent in parents) {
+                parent.fire(event)
+            }
         }
         parentLock.release()
 
@@ -77,7 +78,7 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
         }
         eventInvokerLock.release()
         if (event is AsyncEvent) {
-            worker.work(CountUpAndDownLatch(0))
+            worker.work()
         }
         if (toRemove.isNotEmpty()) {
             eventInvokerLock.lock()

@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
@@ -28,10 +28,10 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
+import de.bixilon.minosoft.gui.rendering.events.input.CharInputEvent
+import de.bixilon.minosoft.gui.rendering.events.input.KeyInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
-import de.bixilon.minosoft.gui.rendering.events.input.RawCharInputEvent
-import de.bixilon.minosoft.gui.rendering.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MAXIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
@@ -369,19 +369,19 @@ class GLFWWindow(
             GLFW_RELEASE -> KeyChangeTypes.RELEASE
             GLFW_REPEAT -> KeyChangeTypes.REPEAT
             else -> {
-                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Unknown glfw action $action" }
+                Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Unknown glfw action $action" }
                 return
             }
         }
 
-        fireGLFWEvent(RawKeyInputEvent(context, keyCode = keyCode, keyChangeType = keyAction))
+        fireGLFWEvent(KeyInputEvent(context, code = keyCode, change = keyAction))
     }
 
     private fun charInput(windowId: Long, char: Int) {
         if (windowId != window) {
             return
         }
-        fireGLFWEvent(RawCharInputEvent(context, char = char))
+        fireGLFWEvent(CharInputEvent(context, char = char))
     }
 
     private fun mouseMove(windowId: Long, x: Double, y: Double) {
@@ -430,7 +430,7 @@ class GLFWWindow(
     }
 
     companion object {
-        private val initLatch = CountUpAndDownLatch(1)
+        private val initLatch = SimpleLatch(1)
 
         init {
             if (PlatformInfo.OS == OSTypes.MAC) {

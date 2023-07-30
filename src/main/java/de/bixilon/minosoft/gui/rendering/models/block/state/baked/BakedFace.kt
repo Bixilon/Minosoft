@@ -16,13 +16,13 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
-import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer.Companion.SELF_LIGHT_INDEX
 
 class BakedFace(
@@ -31,7 +31,7 @@ class BakedFace(
     val shade: Float,
     val tintIndex: Int,
     val cull: Directions?,
-    val texture: AbstractTexture,
+    val texture: Texture,
     val properties: FaceProperties? = null,
 ) {
     private var cullIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
@@ -46,7 +46,7 @@ class BakedFace(
         return color.rgb
     }
 
-    fun render(offset: FloatArray, mesh: WorldMesh, light: ByteArray, tints: IntArray?) {
+    fun render(offset: FloatArray, mesh: ChunkMesh, light: ByteArray, tints: IntArray?) {
         val tint = color(tints?.getOrNull(tintIndex) ?: 0)
         val lightTint = ((light[cullIndex].toInt() shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
@@ -68,7 +68,7 @@ class BakedFace(
         }
     }
 
-    private fun WorldMesh.mesh(texture: AbstractTexture): SingleWorldMesh {
+    private fun ChunkMesh.mesh(texture: Texture): SingleChunkMesh {
         return when (texture.transparency) {
             TextureTransparencies.OPAQUE -> opaqueMesh
             TextureTransparencies.TRANSPARENT -> transparentMesh

@@ -87,6 +87,6 @@ class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Map (id=$id, scale=$scale, trackPosition=$trackPosition, pins=$pins)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Map (id=$id, scale=$scale, trackPosition=$trackPosition, pins=$pins)" }
     }
 }

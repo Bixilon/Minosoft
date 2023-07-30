@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface DimensionEffects : Identified {
     val daylightCycle: Boolean
-    val skylight: Boolean
+    val skyLight: Boolean
     val fixedTexture: ResourceLocation? get() = null
 
     val weather: Boolean

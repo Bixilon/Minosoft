@@ -42,7 +42,7 @@ class BubbleColumnIT {
 
     private fun bubbleColumn(height: Int, drag: Boolean): PlayConnection {
         val connection = ConnectionTestUtil.createConnection(4)
-        connection.world.fill(Vec3i(-10, 16, -10), Vec3i(10, 15 + height, 10), block.withProperties(BlockProperties.BUBBLE_COLUMN_DRAG to drag))
+        connection.world.fill(Vec3i(-10, 16, -10), Vec3i(10, 15 + height, 10), block.states.withProperties(BlockProperties.BUBBLE_COLUMN_DRAG to drag))
         connection.world.fill(Vec3i(-10, 15, -10), Vec3i(10, 15, 10), StoneTest0.state)
 
         return connection

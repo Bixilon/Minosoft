@@ -30,6 +30,6 @@ class EntityNbtC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity NBT (entityId=$entityId, transactionId=$transactionId)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Entity NBT (entityId=$entityId, transactionId=$transactionId)" }
     }
 }

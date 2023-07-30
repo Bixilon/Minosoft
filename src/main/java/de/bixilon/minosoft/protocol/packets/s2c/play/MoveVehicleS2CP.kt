@@ -41,6 +41,6 @@ class MoveVehicleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Vehicle move (position=$position, yaw=$yaw, pitch=$pitch)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Vehicle move (position=$position, yaw=$yaw, pitch=$pitch)" }
     }
 }

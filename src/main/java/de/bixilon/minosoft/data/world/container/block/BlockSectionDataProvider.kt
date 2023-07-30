@@ -18,7 +18,9 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import kotlin.reflect.jvm.javaField
 
 class BlockSectionDataProvider(
     data: Array<BlockState?>? = null,
@@ -55,7 +57,8 @@ class BlockSectionDataProvider(
         occlusion.recalculate(notify)
     }
 
-    override fun unsafeSet(index: Int, value: BlockState?): BlockState? {
+    fun noOcclusionSet(x: Int, y: Int, z: Int, value: BlockState?) = noOcclusionSet(getIndex(x, y, z), value)
+    fun noOcclusionSet(index: Int, value: BlockState?): BlockState? {
         val previous = super.unsafeSet(index, value)
         val previousFluid = previous.isFluid()
         val valueFluid = value.isFluid()
@@ -65,6 +68,12 @@ class BlockSectionDataProvider(
         } else if (previousFluid && !valueFluid) {
             fluidCount--
         }
+
+        return previous
+    }
+
+    override fun unsafeSet(index: Int, value: BlockState?): BlockState? {
+        val previous = noOcclusionSet(index, value)
 
         occlusion.onSet(previous, value)
 
@@ -77,5 +86,14 @@ class BlockSectionDataProvider(
             return true
         }
         return this.isWaterlogged()
+    }
+
+    companion object {
+        private val sections = BlockSectionDataProvider::section.javaField!!.apply { isAccessible = true }
+
+        @Deprecated("properly integrate in constructor")
+        fun BlockSectionDataProvider.unsafeSetSection(section: ChunkSection) {
+            this@Companion.sections[this] = section
+        }
     }
 }

@@ -86,7 +86,7 @@ class AccountProfile(
     var selected: Account? by BackingDelegate(get = { entries[_selected] }, set = { _selected = it?.id })
 
     init {
-        this::_selected.observe(this) { this.selected = entries[_selected] }
+        this::_selected.observe(this) { this.selected = entries[it] }
     }
 
 

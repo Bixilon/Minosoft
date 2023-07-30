@@ -155,10 +155,11 @@ class Frustum(
 
     fun containsChunkSection(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
         val offset = camera.offset.offset
-        val base = Vec3i.of(chunkPosition, sectionHeight) - offset
-        val min = base + minPosition
-        val max = base + maxPosition + 1
-        return containsRegion(Vec3(min), Vec3(max))
+        val base = Vec3i.of(chunkPosition, sectionHeight)
+        base -= offset
+        val min = Vec3(base.x.toFloat() + minPosition.x, base.y.toFloat() + minPosition.y, base.z.toFloat() + minPosition.z)
+        val max = Vec3(base.x + maxPosition.x + 1.0f, base.y + maxPosition.y + 1.0f, base.z + maxPosition.z + 1.0f)
+        return containsRegion(min, max)
     }
 
     fun containsChunk(chunkPosition: Vec2i): Boolean {

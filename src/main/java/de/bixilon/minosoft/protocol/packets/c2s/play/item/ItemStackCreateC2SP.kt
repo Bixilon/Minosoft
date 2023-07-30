@@ -32,6 +32,6 @@ class ItemStackCreateC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Item stack create (slot=$slot, createdItem=$createdItem)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Item stack create (slot=$slot, createdItem=$createdItem)" }
     }
 }

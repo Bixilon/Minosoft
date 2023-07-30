@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.terminal.cli
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -53,7 +54,7 @@ object CLI {
     }
 
 
-    fun startThread(latch: CountUpAndDownLatch) {
+    fun startThread(latch: AbstractLatch) {
         latch.inc()
         Thread({ latch.dec(); startLoop() }, "CLI").start()
     }
@@ -70,6 +71,9 @@ object CLI {
 
         this::connection.observe(this) { register() }
 
+        Minosoft.BOOT_LATCH.await()
+
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "§aA headless input system is available, §epress tab§a or type §ehelp§a to see all available commands!" }
         reader.pollLines()
     }
 
@@ -77,7 +81,7 @@ object CLI {
         while (true) {
             val line: String
             try {
-                line = readLine().trimWhitespaces()
+                line = readLine().trimWhitespaces().replace("\n", "").replace("\r", "")
                 terminal.flush()
             } catch (exception: EndOfFileException) {
                 Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { exception.printStackTrace() }

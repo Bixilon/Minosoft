@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -40,9 +40,9 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         get() = true
 
     init {
-        messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
-        chatProfile::width.observeRendering(this, context = context) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
-        chatProfile::height.observeRendering(this, context = context) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
+        messages.prefMaxSize = Vec2(chatProfile.width, chatProfile.height)
+        chatProfile::width.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(it, messages.prefMaxSize.y) }
+        chatProfile::height.observeRendering(this, context = context) { messages.prefMaxSize = Vec2(messages.prefMaxSize.x, it) }
         forceSilentApply()
     }
 
@@ -58,7 +58,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
     override fun forceSilentApply() {
         messages.silentApply()
-        _size = Vec2i(messages.prefMaxSize.x, messages.size.y + ChatElement.CHAT_INPUT_MARGIN * 2)
+        _size = Vec2(messages.prefMaxSize.x, messages.size.y + ChatElement.CHAT_INPUT_MARGIN * 2)
         cacheUpToDate = false
     }
 
@@ -72,11 +72,11 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         messages.onClose()
     }
 
-    override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+    override fun getAt(position: Vec2): Pair<Element, Vec2>? {
         if (position.x < ChatElement.CHAT_INPUT_MARGIN) {
             return null
         }
-        val offset = Vec2i(position)
+        val offset = Vec2(position)
         offset.x -= ChatElement.CHAT_INPUT_MARGIN
 
         val messagesSize = messages.size

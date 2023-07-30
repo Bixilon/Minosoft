@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.eros.main.play.server
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
@@ -178,7 +178,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     reason = event.reason,
                 ).show()
             })
-            val latch = CountUpAndDownLatch(1)
+            val latch = CallbackLatch(1)
             val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
             connection::state.observeFX(serverCard) {
                 if (it == PlayConnectionStates.LOADING || it.disconnected) {
@@ -235,7 +235,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     private fun updateServer(server: AbstractServer, refreshInfo: Boolean = false) {
         val serverType = serverType ?: return
-        if (server !in serverType.servers) {
+        if (server !in serverType.servers) { // <- initial server not added (fixed in kutil 1.24)
             return
         }
         val card = ServerCard.CARDS[server] ?: ServerCard(server).apply {

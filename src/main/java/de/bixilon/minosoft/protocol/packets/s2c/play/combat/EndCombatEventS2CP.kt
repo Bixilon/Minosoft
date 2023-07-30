@@ -26,6 +26,6 @@ class EndCombatEventS2CP(buffer: PlayInByteBuffer) : CombatEventS2CP {
     val entityId = if (buffer.versionId >= V_1_20_PRE3) -1 else buffer.readInt()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Combat end event (entityId=$entityId, duration=$duration)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Combat end event (entityId=$entityId, duration=$duration)" }
     }
 }

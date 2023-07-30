@@ -17,31 +17,32 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.container.types.PlayerInventory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
-import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
+import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.input.interaction.InteractionManager
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class InteractionManagerKeys(
-    private val input: RenderWindowInputHandler,
+    private val input: InputManager,
     private val interactions: InteractionManager,
 ) {
 
     private fun registerAttack() {
-        input.registerKeyCallback(ATTACK, KeyBinding(
+        input.bindings.register(ATTACK, KeyBinding(
             KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
         )) { interactions.tryAttack(it) }
     }
 
     private fun registerInteraction() {
-        input.registerKeyCallback(USE_ITEM, KeyBinding(
+        input.bindings.register(USE_ITEM, KeyBinding(
             KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_RIGHT),
         )) { interactions.use.change(it) }
     }
 
     private fun registerPick() {
-        input.registerKeyCallback("minosoft:pick_item".toResourceLocation(), KeyBinding(
+        input.bindings.register(PICK, KeyBinding(
             KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_MIDDLE),
         )
         ) { interactions.pick.pickItem(false) } // ToDo: Combination for not copying nbt
@@ -50,25 +51,25 @@ class InteractionManagerKeys(
     private fun registerDrop() {
         // ToDo: This creates a weird condition, because we first drop the stack and then the single item
         // ToDo: Does this swing the arm?
-        input.registerKeyCallback(DROP_ITEM_STACK, KeyBinding(
+        input.bindings.register(DROP_ITEM_STACK, KeyBinding(
             KeyActions.PRESS to setOf(KeyCodes.KEY_Q),
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_LEFT_CONTROL)
         )) { interactions.drop.dropItem(true) }
 
-        input.registerKeyCallback(DROP_ITEM, KeyBinding(
+        input.bindings.register(DROP_ITEM, KeyBinding(
             KeyActions.PRESS to setOf(KeyCodes.KEY_Q),
         )) { interactions.drop.dropItem(false) }
     }
 
     private fun registerSpectate() {
-        input.registerKeyCallback(STOP_SPECTATING, KeyBinding(
+        input.bindings.register(STOP_SPECTATING, KeyBinding(
             KeyActions.PRESS to setOf(KeyCodes.KEY_LEFT_SHIFT),
         )) { interactions.spectate.spectate(null) }
     }
 
     private fun registerHotbar() {
         for (i in 1..PlayerInventory.HOTBAR_SLOTS) {
-            input.registerKeyCallback("minosoft:hotbar_slot_$i".toResourceLocation(), KeyBinding(
+            input.bindings.register("minosoft:hotbar_slot_$i".toResourceLocation(), KeyBinding(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_CODE_MAP["$i"]!!),
             )) { interactions.hotbar.selectSlot(i - 1) }
         }
@@ -98,7 +99,7 @@ class InteractionManagerKeys(
         }
 
 
-        input.registerKeyCallback("minosoft:swap_items".toResourceLocation(), KeyBinding(
+        input.bindings.register(SWAP, KeyBinding(
             KeyActions.PRESS to setOf(KeyCodes.KEY_F),
         )) { interactions.hotbar.trySwap() }
     }
@@ -120,6 +121,8 @@ class InteractionManagerKeys(
     companion object {
         private val ATTACK = "minosoft:attack".toResourceLocation()
         private val USE_ITEM = "minosoft:use_item".toResourceLocation()
+        private val SWAP = minosoft("swap_items")
+        private val PICK = minosoft("pick_item")
 
         private val DROP_ITEM = "minosoft:drop_item".toResourceLocation()
         private val DROP_ITEM_STACK = "minosoft:drop_item_stack".toResourceLocation()

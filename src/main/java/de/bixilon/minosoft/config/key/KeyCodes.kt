@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.config.key
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import java.util.*
 
 enum class KeyCodes {
@@ -159,8 +161,9 @@ enum class KeyCodes {
     val keyName = name.uppercase(Locale.getDefault()).removePrefix("KEY_")
 
 
-    companion object {
-        val VALUES = values()
+    companion object : ValuesEnum<KeyCodes> {
+        override val VALUES = values()
+        override val NAME_MAP = EnumUtil.getEnumValues(VALUES)
         val KEY_CODE_MAP: Map<String, KeyCodes>
 
         init {
@@ -171,6 +174,10 @@ enum class KeyCodes {
             }
 
             KEY_CODE_MAP = keyCodeMap
+        }
+
+        fun KeyCodes.isPrintable(): Boolean {
+            return this.ordinal in KEY_SPACE.ordinal..KEY_WORLD_2.ordinal
         }
     }
 }

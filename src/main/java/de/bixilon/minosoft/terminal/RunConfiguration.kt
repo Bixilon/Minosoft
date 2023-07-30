@@ -17,7 +17,6 @@ import com.google.common.base.StandardSystemProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.loader.parameters.ModParameters
 import java.io.IOException
 import java.nio.file.Path
@@ -50,8 +49,6 @@ object RunConfiguration {
     val X_START_ON_FIRST_THREAD_SET = System.getenv("JAVA_STARTED_ON_FIRST_THREAD_${ProcessHandle.current().pid()}") == "1"
 
     var APPLICATION_NAME = "Minosoft"
-
-    var SKIP_RENDERERS: List<ResourceLocation> = emptyList()
 
     var VERBOSE_LOGGING = false
 

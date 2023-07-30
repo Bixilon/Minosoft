@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.manager.BlockStateManager
+import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
+import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.HardnessBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.PushingBlock
@@ -30,17 +28,13 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
-import de.bixilon.minosoft.input.interaction.InteractionResults
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import java.util.*
+import kotlin.reflect.jvm.javaField
 
 abstract class Block(
     override val identifier: ResourceLocation,
     settings: BlockSettings,
 ) : RegistryItem(), LightedBlock, HardnessBlock, Translatable, PushingBlock {
-    val properties: Map<BlockProperties, Array<Any>> = unsafeNull()
-    val states: Set<BlockState> = unsafeNull()
-    val defaultState: BlockState = unsafeNull()
+    val states: BlockStateManager = unsafeNull()
 
     val model: BlockRender? = null
 
@@ -55,29 +49,16 @@ abstract class Block(
         return identifier.toString()
     }
 
-    @Deprecated("Interface")
-    open fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? = defaultState
-
-    @Deprecated("Interface")
-    open fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        return InteractionResults.IGNORED
-    }
-
-    fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
-        return this.defaultState.withProperties(*properties)
-    }
-
-    fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
-        return this.defaultState.withProperties(properties)
-    }
-
-
-    @Deprecated("Interface")
-    open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
 
     fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperties, Array<Any>>) {
-        this::properties.forceSet(properties)
-        this::states.forceSet(states)
-        this::defaultState.forceSet(default)
+        val manager = when {
+            states.size == 1 -> SimpleStateManager(default)
+            else -> PropertyStateManager(properties, states, default)
+        }
+        STATES.set(this, manager)
+    }
+
+    private companion object {
+        val STATES = Block::states.javaField!!.apply { isAccessible = true }
     }
 }

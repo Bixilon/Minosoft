@@ -26,7 +26,7 @@ class StoneWalkIT : WalkIT() {
 
     @Test(priority = -1)
     fun getStone() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.STONE]?.defaultState ?: throw SkipException("Can not find stone!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.STONE]?.states?.default ?: throw SkipException("Can not find stone!")
     }
 
     fun stoneLanding() {

@@ -100,6 +100,6 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Blocks (chunkPosition=${chunkPosition}, size=${update.size})" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Blocks (chunkPosition=${chunkPosition}, size=${update.size})" }
     }
 }

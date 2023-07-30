@@ -16,6 +16,10 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kotlinglm.vec3.swizzle.xy
+import de.bixilon.kotlinglm.vec3.swizzle.xz
+import de.bixilon.kotlinglm.vec3.swizzle.yz
+import de.bixilon.kotlinglm.vec3.swizzle.zy
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
@@ -25,7 +29,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.reflect.jvm.javaField
 

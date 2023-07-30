@@ -40,7 +40,7 @@ object BakedModelTestUtil {
         connection::assetsManager.forceSet(assets)
         val rendering = Rendering(connection)
 
-        return rendering.context.textureManager
+        return rendering.context.textures
     }
 
     fun createFaces(from: Vec3 = Vec3(0.0f), to: Vec3 = Vec3(1.0f), rotation: Int = 0, texture: String = "#test"): Map<Directions, ModelFace> {
@@ -61,6 +61,6 @@ object BakedModelTestUtil {
         vertices?.let { Assert.assertEquals(face.positions, it, "Vertices mismatch") }
         uv?.let { if (!face.uv.contentEquals(it)) throw AssertionError("UV mismatch, expected [${uv[0]}|${uv[1]}], but got [${face.uv[0]}|${face.uv[1]}]") } // printing the first element is fine, it is always clockwise
         shade?.let { Assert.assertEquals(face.shade, it, "Shade mismatch") }
-        texture?.toResourceLocation()?.texture()?.let { Assert.assertEquals(face.texture.resourceLocation, it, "Texture mismatch") }
+        texture?.toResourceLocation()?.texture()?.let { Assert.assertEquals(face.texture, it, "Texture mismatch") }
     }
 }

@@ -33,6 +33,6 @@ class UnloadChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Unload chunk (position=$position)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Unload chunk (position=$position)" }
     }
 }

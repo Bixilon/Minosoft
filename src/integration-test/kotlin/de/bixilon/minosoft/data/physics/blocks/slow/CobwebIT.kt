@@ -26,7 +26,7 @@ class CobwebIT : SlowMovementIT() {
 
     @Test(priority = -1)
     fun getCobweb() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.COBWEB]?.defaultState ?: throw SkipException("Can not find cobweb!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.COBWEB]?.states?.default ?: throw SkipException("Can not find cobweb!")
     }
 
     fun cobwebLanding() {

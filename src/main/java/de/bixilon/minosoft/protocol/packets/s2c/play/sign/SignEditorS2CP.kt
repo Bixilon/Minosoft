@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class SignEditorS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position = if (buffer.versionId < ProtocolVersions.V_14W03B) buffer.readIntBlockPosition() else buffer.readBlockPosition()
-    val side = if (buffer.versionId >= ProtocolVersions.V_22W12A) if (buffer.readBoolean()) SignSides.FRONT else SignSides.BACK else SignSides.FRONT
+    val side = if (buffer.versionId >= ProtocolVersions.V_23W12A) if (buffer.readBoolean()) SignSides.FRONT else SignSides.BACK else SignSides.FRONT
 
     override fun handle(connection: PlayConnection) {
         if (connection.events.fire(OpenSignEditorEvent(connection, this))) {
@@ -35,6 +35,6 @@ class SignEditorS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sign editor (position=$position, side=$side)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Sign editor (position=$position, side=$side)" }
     }
 }

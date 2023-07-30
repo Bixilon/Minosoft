@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.minosoft.gui.RenderLoop
 import de.bixilon.minosoft.gui.rendering.RenderLoader.awaitPlaying
 import de.bixilon.minosoft.gui.rendering.RenderLoader.load
@@ -29,22 +30,24 @@ class Rendering(private val connection: PlayConnection) {
     val context: RenderContext = RenderContext(connection, this)
     val audioPlayer: AudioPlayer = AudioPlayer(connection, this)
 
-    fun start(latch: CountUpAndDownLatch, render: Boolean = true, audio: Boolean = true) {
-        Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
-        latch.inc()
-        if (audio) startAudioPlayerThread(latch)
-        if (render) startRenderWindowThread(latch)
+    fun start(latch: AbstractLatch, render: Boolean = true, audio: Boolean = true) {
+        Log.log(LogMessageType.RENDERING, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
+        val loading = ParentLatch(2, latch)
+        if (audio) startAudioPlayerThread(loading)
+        if (render) startRenderWindowThread(loading)
+        latch.dec()
     }
 
-    private fun startAudioPlayerThread(latch: CountUpAndDownLatch) {
+    private fun startAudioPlayerThread(latch: AbstractLatch) {
         if (connection.profiles.audio.skipLoading) {
             return
         }
-        val audioLatch = CountUpAndDownLatch(1, latch)
+        val audioLatch = ParentLatch(1, latch)
         Thread({
             try {
                 Thread.currentThread().priority = Thread.MAX_PRIORITY
                 audioPlayer.init(audioLatch)
+                latch.dec() // initial count
                 audioPlayer.startLoop()
                 audioPlayer.exit()
             } catch (exception: Throwable) {
@@ -60,15 +63,16 @@ class Rendering(private val connection: PlayConnection) {
         }, "Audio#${connection.connectionId}").start()
     }
 
-    private fun startRenderWindowThread(latch: CountUpAndDownLatch) {
+    private fun startRenderWindowThread(latch: AbstractLatch) {
         Thread({ startRenderWindow(latch) }, "Rendering#${connection.connectionId}").start()
     }
 
-    private fun startRenderWindow(latch: CountUpAndDownLatch) {
+    private fun startRenderWindow(latch: AbstractLatch) {
         try {
             Thread.currentThread().priority = Thread.MAX_PRIORITY
             CONTEXT_MAP[Thread.currentThread()] = context
             context.load(latch)
+            latch.dec()
             val loop = RenderLoop(context)
             context.awaitPlaying()
             loop.startLoop()

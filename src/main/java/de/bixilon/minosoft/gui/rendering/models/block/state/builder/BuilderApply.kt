@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.com
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class BuilderApply(
     val applies: List<BlockStateApply>
@@ -55,7 +55,7 @@ class BuilderApply(
     private fun List<BakedModel>.combine(): BakedModel {
         val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
         val properties: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
-        var particle: AbstractTexture? = null
+        var particle: Texture? = null
 
         for (model in this) {
             if (particle == null) {

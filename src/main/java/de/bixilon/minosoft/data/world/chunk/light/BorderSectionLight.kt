@@ -128,9 +128,9 @@ class BorderSectionLight(
         val neighbourLevel = nextLevel - 1
 
         if (top) {
-            chunk.sections.getLast()?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLevel, Directions.DOWN, chunk.maxSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
+            chunk.sections.getLast()?.light?.traceSkyLightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLevel, Directions.DOWN, chunk.maxSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
         } else {
-            chunk.sections.getFirst()?.light?.traceSkylightIncrease(x, 0, z, neighbourLevel, Directions.UP, chunk.minSection * ProtocolDefinition.SECTION_HEIGHT_Y)
+            chunk.sections.getFirst()?.light?.traceSkyLightIncrease(x, 0, z, neighbourLevel, Directions.UP, chunk.minSection * ProtocolDefinition.SECTION_HEIGHT_Y)
         }
 
         if (z > 0) {

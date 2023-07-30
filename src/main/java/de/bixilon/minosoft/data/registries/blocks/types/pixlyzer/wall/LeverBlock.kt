@@ -24,17 +24,20 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isPowered
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : WallMountedBlock(resourceLocation, registries, data) {
+open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : WallMountedBlock(resourceLocation, registries, data), InteractBlockHandler, RandomDisplayTickable {
     private val dustParticleType = registries.particleType[DustParticle]
 
     private fun spawnParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, scale: Float) {
@@ -47,20 +50,16 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
         connection.world += DustParticle(connection, position, Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, scale, dustParticleType))
     }
 
-    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        if (!blockState.isPowered()) {
+    override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
+        if (!state.isPowered()) {
             return
         }
         if (random.chance(25)) {
-            spawnParticles(connection, blockState, blockPosition, 0.5f)
+            spawnParticles(connection, state, position, 0.5f)
         }
     }
 
-    override fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? {
-        TODO()
-    }
-
-    override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
+    override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
         val nextState = target.state.cycle(BlockProperties.POWERED)
         connection.world[target.blockPosition] = nextState
         spawnParticles(connection, nextState, target.blockPosition, 1.0f)

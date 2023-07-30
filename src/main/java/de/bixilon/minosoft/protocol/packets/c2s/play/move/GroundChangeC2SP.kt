@@ -32,6 +32,6 @@ class GroundChangeC2SP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Ground change (onGround=$onGround))" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Ground change (onGround=$onGround))" }
     }
 }

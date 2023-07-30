@@ -17,6 +17,6 @@ import de.bixilon.minosoft.commands.nodes.ChatNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 
 object SayCommand : ConnectionCommand {
-    override var node = LiteralNode("say", setOf("chat", "send", "write"))
+    override var node = LiteralNode("say", setOf("chat", "send"))
         .addChild(ChatNode("message", allowCLI = false))
 }

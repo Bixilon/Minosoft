@@ -36,7 +36,7 @@ class ViewManager(private val camera: Camera) {
 
 
     fun init() {
-        camera.context.inputHandler.registerKeyCallback(
+        camera.context.input.bindings.register(
             "minosoft:camera_debug_view".toResourceLocation(),
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
@@ -48,7 +48,7 @@ class ViewManager(private val camera: Camera) {
             camera.context.connection.util.sendDebugMessage("Camera debug view: ${it.format()}")
         }
 
-        camera.context.inputHandler.registerKeyCallback(
+        camera.context.input.bindings.register(
             "minosoft:camera_third_person".toResourceLocation(),
             KeyBinding(
                 KeyActions.STICKY to setOf(KeyCodes.KEY_F5),

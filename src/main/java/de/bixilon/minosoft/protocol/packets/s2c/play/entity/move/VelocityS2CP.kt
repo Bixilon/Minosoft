@@ -35,6 +35,6 @@ class VelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity velocity (entityId=$entityId, velocity=$velocity)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Entity velocity (entityId=$entityId, velocity=$velocity)" }
     }
 }

@@ -35,10 +35,10 @@ class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         // got kicked
         connection.network.disconnect()
         connection.state = PlayConnectionStates.KICKED
-        Log.log(LogMessageType.NETWORK_STATUS, LogLevels.WARN) { "Kicked from ${connection.address}: $reason" }
+        Log.log(LogMessageType.NETWORK, LogLevels.WARN) { "Kicked from ${connection.address}: $reason" }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Kick (reason=$reason)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Kick (reason=$reason)" }
     }
 }

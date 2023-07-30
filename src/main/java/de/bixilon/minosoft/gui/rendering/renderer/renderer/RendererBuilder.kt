@@ -13,11 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
-import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-interface RendererBuilder<T : Renderer> : Identified {
+interface RendererBuilder<T : Renderer> {
 
     fun build(connection: PlayConnection, context: RenderContext): T?
 }

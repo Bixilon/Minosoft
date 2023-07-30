@@ -38,8 +38,10 @@ import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import java.util.*
+import kotlin.reflect.jvm.javaField
 
 abstract class Entity(
     val connection: PlayConnection,
@@ -173,12 +175,8 @@ abstract class Entity(
     val ticksFrozen: Int
         get() = data.get(TICKS_FROZEN_DATA, 0)
 
-
     open val hitboxColor: RGBColor?
-        get() = when {
-            isInvisible -> ChatColors.GREEN
-            else -> ChatColors.WHITE
-        }
+        get() = ChatColors.WHITE
 
 
     fun forceTick(time: Long = millis()) {
@@ -218,7 +216,9 @@ abstract class Entity(
 
     open fun postTick() {
         physics.postTick()
-        renderInfo.tick()
+        if (!RunConfiguration.DISABLE_RENDERING) {
+            renderInfo.tick()
+        }
     }
 
     open fun setObjectData(data: Int) = Unit
@@ -246,7 +246,9 @@ abstract class Entity(
         Entity::class.java.getDeclaredField("physics").forceSet(this, createPhysics())
         forceTeleport(initialPosition)
         forceRotate(initialRotation)
-        this::renderInfo.forceSet(EntityRenderInfo(this))
+        if (!RunConfiguration.DISABLE_RENDERING) {
+            Companion.renderInfo[this] = EntityRenderInfo(this)
+        }
     }
 
     open fun tickRiding() {
@@ -255,6 +257,8 @@ abstract class Entity(
 
 
     companion object {
+        private val renderInfo = Entity::renderInfo.javaField!!.apply { isAccessible = true }
+
         val FLAGS_DATA = EntityDataField("ENTITY_FLAGS")
         val AIR_SUPPLY_DATA = EntityDataField("ENTITY_AIR_SUPPLY")
         val CUSTOM_NAME_DATA = EntityDataField("ENTITY_CUSTOM_NAME")

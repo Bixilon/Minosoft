@@ -15,7 +15,7 @@ package de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.
 
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.CommandEntityTarget
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.world.WorldEntities
+import de.bixilon.minosoft.data.world.entities.WorldEntities
 import java.util.*
 
 class UUIDEntityTarget(

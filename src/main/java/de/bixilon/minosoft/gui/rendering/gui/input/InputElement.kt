@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.input
 
-import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
@@ -22,8 +21,8 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
 interface InputElement : MouseInputElement {
 
-    fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int) = false
-    fun onScroll(position: Vec2i, scrollOffset: Vec2d) = false
+    fun onMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int) = false
+    fun onScroll(position: Vec2, scrollOffset: Vec2) = false
 
     fun onKey(key: KeyCodes, type: KeyChangeTypes) = false
     fun onCharPress(char: Int) = false

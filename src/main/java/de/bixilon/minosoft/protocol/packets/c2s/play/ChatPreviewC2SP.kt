@@ -31,7 +31,7 @@ class ChatPreviewC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Chat preview (id=$id, query=$query)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Chat preview (id=$id, query=$query)" }
     }
 
 }

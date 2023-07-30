@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util
 import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
+import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3t
@@ -27,6 +28,8 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -50,6 +53,8 @@ import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
@@ -57,6 +62,7 @@ import de.bixilon.minosoft.util.url.ResourceURLHandler
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
+import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
@@ -178,9 +184,9 @@ object KUtil {
                 is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
                 is ResourceLocation -> TextComponent(this.toString()).color(ChatColors.GOLD)
                 is Identified -> identifier.format()
-                is Vec4t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()} ${this.w.format()})"
-                is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
-                is Vec2t<*> -> "(${this.x.format()} ${this.y.format()})"
+                is Vec4t<*> -> "(${this._x.format()} ${this._y.format()} ${this._z.format()} ${this._w.format()})"
+                is Vec3t<*> -> "(${this._x.format()} ${this._y.format()} ${this._z.format()})"
+                is Vec2t<*> -> "(${this._x.format()} ${this._y.format()})"
                 else -> this.toString()
             }
         )
@@ -277,6 +283,7 @@ object KUtil {
         DefaultThreadPool += { NettyClient::class.java.forceInit() }
         DefaultThreadPool += { SimpleChannelInboundHandler::class.java.forceInit() }
         DefaultThreadPool += { SSLContext.getDefault() }
+        DefaultThreadPool += { GLM::class.java.forceInit() } // whole glm
     }
 
     fun ByteArray.withLengthPrefix(): ByteArray {
@@ -326,28 +333,6 @@ object KUtil {
         return x.matches(other.x, margin) && y.matches(other.y, margin) && z.matches(other.z, margin)
     }
 
-    fun toRad(value: Float): Float {
-        return value * 0.017453292f
-    }
-
-    fun String.fill(char: Char, length: Int): String {
-        if (this.length >= length) return this
-        val fill = char.toString().repeat(length - this.length)
-
-        return fill + this
-    }
-
-
-    fun <T> Array<T>.next(current: T): T {
-        val index = this.indexOf(current)
-        check(index >= 0) { "Array does not contain $current" }
-
-        if (index == this.size - 1) {
-            return this[0]
-        }
-        return this[index + 1]
-    }
-
     fun <T> table(elements: Collection<T>, vararg headers: AnyString, builder: (T) -> Array<Any?>?): Table {
         val table = Table(headers.unsafeCast())
 
@@ -356,5 +341,31 @@ object KUtil {
         }
 
         return table
+    }
+
+    @Deprecated("kutil 1.24")
+    fun AbstractLatch.waitIfLess(value: Int, timeout: Long = 0L) = synchronized(notify) {
+        while (this.count < value) {
+            waitForChange(timeout)
+        }
+    }
+
+    @Deprecated("kutil 1.24")
+    @JvmStatic
+    inline fun <reified T : Enum<T>> ValuesEnum<T>.set(): EnumSet<T> {
+        return EnumSetUtil.create(T::class.java, VALUES)
+    }
+
+    fun PlayInByteBuffer.dump(name: String) {
+        val pointer = pointer
+        this.pointer = 0
+        val data = readRest()
+        this.pointer = pointer
+
+        val path = "/home/moritz/${name}_${Versions.getById(this.versionId)?.name?.replace(".", "_")}.bin"
+        val stream = FileOutputStream(path)
+        stream.write(data)
+        stream.close()
+        println("Packet dumped to $path")
     }
 }

@@ -13,4 +13,14 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-class CommandException(message: String) : Exception(message)
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
+
+open class CommandException(text: Any) : Exception(), TextFormattable {
+    private val text = ChatComponent.of(text)
+    override val message: String get() = text.message
+
+    override fun toText(): Any {
+        return text
+    }
+}

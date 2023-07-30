@@ -22,9 +22,9 @@ import de.bixilon.minosoft.gui.rendering.shader.generic.GenericTextureShader
 class ShaderManager(
     val context: RenderContext,
 ) {
-    val genericColorShader = context.renderSystem.createShader(minosoft("generic/color")) { ColorShader(it) }
-    val genericTextureShader = context.renderSystem.createShader(minosoft("generic/texture")) { GenericTextureShader(it) }
-    val genericTexture2dShader = context.renderSystem.createShader(minosoft("generic/texture_2d")) { Generic2dTextureShader(it) }
+    val genericColorShader = context.system.createShader(minosoft("generic/color")) { ColorShader(it) }
+    val genericTextureShader = context.system.createShader(minosoft("generic/texture")) { GenericTextureShader(it) }
+    val genericTexture2dShader = context.system.createShader(minosoft("generic/texture_2d")) { Generic2dTextureShader(it) }
 
 
     fun postInit() {

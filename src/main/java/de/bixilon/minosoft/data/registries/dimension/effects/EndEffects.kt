@@ -24,7 +24,7 @@ object EndEffects : DimensionEffects {
     override val identifier = minecraft("the_end")
 
     override val daylightCycle: Boolean get() = false
-    override val skylight: Boolean get() = false
+    override val skyLight: Boolean get() = false
     override val fixedTexture: ResourceLocation = minecraft("environment/end_sky").texture()
 
     override val weather: Boolean get() = false

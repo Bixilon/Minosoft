@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.eros.util
 import afester.javafx.svg.SvgLoader
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
@@ -29,6 +29,7 @@ import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.image.Image
 import javafx.stage.Stage
+
 
 class JavaFXInitializer internal constructor() : Application() {
 
@@ -43,13 +44,12 @@ class JavaFXInitializer internal constructor() : Application() {
         worker += { DesktopUtil.initialize() }
         worker.work(LATCH)
 
-
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }
         LATCH.dec()
     }
 
     companion object {
-        private val LATCH = CountUpAndDownLatch(2)
+        private val LATCH = SimpleLatch(2)
 
         val initialized: Boolean
             get() = LATCH.count == 0

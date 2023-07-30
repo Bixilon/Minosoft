@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.SpriteTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteTexture
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 
 data class TextureAnimation(

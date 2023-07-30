@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets
 
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.world.WorldEntities
+import de.bixilon.minosoft.data.world.entities.WorldEntities
 
 interface CommandEntityTarget {
 

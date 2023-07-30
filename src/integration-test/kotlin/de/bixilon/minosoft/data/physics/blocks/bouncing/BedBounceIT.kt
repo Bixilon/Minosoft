@@ -26,7 +26,7 @@ class BedBounceIT : BounceIT() {
 
     @Test(priority = -1)
     fun getBed() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.RED_BED]?.defaultState ?: throw SkipException("Can not find bed!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.RED_BED]?.states?.default ?: throw SkipException("Can not find bed!")
     }
 
     fun bedLanding() {

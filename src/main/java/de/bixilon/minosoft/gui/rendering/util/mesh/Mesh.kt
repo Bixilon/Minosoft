@@ -26,13 +26,13 @@ import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 abstract class Mesh(
     val context: RenderContext,
     private val struct: MeshStruct,
-    val quadType: PrimitiveTypes = context.renderSystem.quadType,
+    val quadType: PrimitiveTypes = context.system.quadType,
     var initialCacheSize: Int = 10000,
     val clearOnLoad: Boolean = true,
     data: AbstractFloatList? = null,
     val onDemand: Boolean = false,
 ) : AbstractVertexConsumer {
-    override val order = context.renderSystem.quadOrder
+    override val order = context.system.quadOrder
     private var _data: AbstractFloatList? = data ?: if (onDemand) null else FloatListUtil.direct(initialCacheSize)
     var data: AbstractFloatList
         get() {
@@ -57,7 +57,7 @@ abstract class Mesh(
     fun finish() {
         if (state != MeshStates.PREPARING) throw IllegalStateException("Mesh is not preparing: $state")
         val data = this.data
-        buffer = context.renderSystem.createVertexBuffer(struct, data, quadType)
+        buffer = context.system.createVertexBuffer(struct, data, quadType)
         state = MeshStates.FINISHED
     }
 

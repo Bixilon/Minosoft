@@ -24,19 +24,19 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
-open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
+open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : GenericColorMesh(context, initialCacheSize = initialCacheSize) {
 
     fun drawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor) {
         data.ensureSize(4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
 
-        val direction = (end - start).normalize()
+        val direction = (end - start).normalizeAssign()
         val normal1 = Vec3(direction.z, direction.z, direction.x - direction.y)
         if (normal1 == Vec3.EMPTY) {
             normal1.x = normal1.z
             normal1.z = direction.z
         }
         normal1.normalizeAssign()
-        val normal2 = (direction cross normal1).normalize()
+        val normal2 = (direction cross normal1).normalizeAssign()
 
         val halfLineWidth = lineWidth / 2
         val directionWidth = direction * halfLineWidth
@@ -64,10 +64,10 @@ open class LineMesh(context: RenderContext) : GenericColorMesh(context) {
 
     private fun drawLineQuad(start: Vec3, end: Vec3, normal1: Vec3, normal2: Vec3, directionWidth: Vec3, color: Float) {
         val positions = arrayOf(
-            start + normal2 - directionWidth,
-            start + normal1 - directionWidth,
-            end + normal1 + directionWidth,
-            end + normal2 + directionWidth,
+            Vec3(start.x + normal2.x - directionWidth.x, start.y + normal2.y - directionWidth.y, start.z + normal2.z - directionWidth.z),
+            Vec3(start.x + normal1.x - directionWidth.x, start.y + normal1.y - directionWidth.y, start.z + normal1.z - directionWidth.z),
+            Vec3(end.x + normal1.x + directionWidth.x, end.y + normal1.y + directionWidth.y, end.z + normal1.z + directionWidth.z),
+            Vec3(end.x + normal2.x + directionWidth.x, end.y + normal2.y + directionWidth.y, end.z + normal2.z + directionWidth.z),
         )
         for (index in 0 until order.size step 2) {
             addVertex(positions[order[index]], color)

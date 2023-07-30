@@ -32,11 +32,13 @@ import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChan
 import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChangeUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 
-class ChunkManager(val world: World) {
-    val chunks: LockMap<Vec2i, Chunk> = LockMap(hashMapOf(), world.lock)
-    val prototypes: LockMap<Vec2i, ChunkPrototype> = LockMap(hashMapOf(), world.lock)
+class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: Int = 0) {
+    val chunks: LockMap<Vec2i, Chunk> = LockMap(HashMap(chunkCapacity), world.lock)
+    val prototypes: LockMap<Vec2i, ChunkPrototype> = LockMap(HashMap(prototypeCapacity), world.lock)
     val size = WorldSizeManager(world)
+    val ticker = ChunkTicker(this)
     var revision by observed(0)
+
 
     operator fun get(position: ChunkPosition): Chunk? {
         return chunks[position]
@@ -133,7 +135,8 @@ class ChunkManager(val world: World) {
         size.onCreate(chunk.chunkPosition)
         world.view.updateServerDistance()
 
-        val updates = hashSetOf<AbstractWorldUpdate>(ChunkCreateUpdate(chunk.chunkPosition, chunk))
+        val updates = HashSet<AbstractWorldUpdate>(9, 1.0f)
+        updates += ChunkCreateUpdate(chunk.chunkPosition, chunk)
 
         for (index in 0 until ChunkNeighbours.COUNT) {
             val offset = ChunkNeighbours.OFFSETS[index]
@@ -167,5 +170,9 @@ class ChunkManager(val world: World) {
 
 
         return chunk
+    }
+
+    fun tick(simulationDistance: Int, cameraPosition: Vec2i) {
+        ticker.tick(simulationDistance, cameraPosition)
     }
 }

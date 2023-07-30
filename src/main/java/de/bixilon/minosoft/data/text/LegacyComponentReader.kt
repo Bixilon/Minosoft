@@ -50,15 +50,15 @@ object LegacyComponentReader {
             }
             if (text.isNotEmpty()) {
                 // an url follows, push the previous part
-                this += TextComponent(text, sequence.color, sequence.formatting.copy(), parent?.clickEvent, parent?.hoverEvent)
+                this += TextComponent(text, sequence.color, sequence.formatting.copy(), null, parent?.clickEvent, parent?.hoverEvent)
                 text.clear()
             }
 
-            this += TextComponent(part, sequence.color, sequence.formatting.copy(), parent?.clickEvent ?: event, parent?.hoverEvent)
+            this += TextComponent(part, sequence.color, sequence.formatting.copy(), null, parent?.clickEvent ?: event, parent?.hoverEvent)
         }
         if (text.isNotEmpty()) {
             // data that was not pushed yet
-            this += TextComponent(text, sequence.color, sequence.formatting.copy(), parent?.clickEvent, parent?.hoverEvent)
+            this += TextComponent(text, sequence.color, sequence.formatting.copy(), null, parent?.clickEvent, parent?.hoverEvent)
         }
 
         sequence.reset()  // clear it up again for next usage

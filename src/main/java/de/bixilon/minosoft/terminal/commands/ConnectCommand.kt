@@ -30,7 +30,7 @@ import de.bixilon.minosoft.util.DNSUtil
 
 object ConnectCommand : Command {
     override var node = LiteralNode("connect")
-        .addChild(ArgumentNode("address", StringParser(StringParser.StringModes.QUOTED), onlyDirectExecution = false) { stack ->
+        .addChild(ArgumentNode("address", StringParser(StringParser.StringModes.QUOTED), allowArguments = true) { stack ->
             val address = stack.get<String>("address")!!
             val version = stack.get<String>("version")?.let { Versions[it] ?: throw CommandException("Unknown version $it") }
             val account = AccountProfileManager.selected.selected ?: throw CommandException("No account selected!")

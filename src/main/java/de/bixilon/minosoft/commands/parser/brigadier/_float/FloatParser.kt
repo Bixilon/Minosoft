@@ -52,7 +52,7 @@ class FloatParser(
         override fun read(buffer: PlayInByteBuffer): FloatParser {
             val flags = buffer.readUnsignedByte()
             val min = if (flags.isBitMask(0x01)) buffer.readFloat() else -Float.MAX_VALUE
-            val max = if (flags.isBitMask(0x03)) buffer.readFloat() else Float.MAX_VALUE
+            val max = if (flags.isBitMask(0x02)) buffer.readFloat() else Float.MAX_VALUE
             return FloatParser(min = min, max = max)
         }
 

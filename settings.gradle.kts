@@ -16,7 +16,6 @@ rootProject.name = "minosoft"
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven(url = "https://s01.oss.sonatype.org/content/repositories/releases/")
         mavenCentral()
     }
 }

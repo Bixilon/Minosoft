@@ -17,12 +17,12 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.ChildAlignable
 
 class GridColumnConstraint(
-    var prefWidth: Int = 0,
-    var maxWidth: Int = Int.MAX_VALUE,
+    var prefWidth: Float = 0.0f,
+    var maxWidth: Float = Float.MAX_VALUE,
     var grow: GridGrow = GridGrow.ALWAYS,
     var alignment: HorizontalAlignments = HorizontalAlignments.LEFT,
 ) : ChildAlignable {
     override var childAlignment: HorizontalAlignments by this::alignment
 
-    var width: Int = 0
+    var width: Float = 0.0f
 }

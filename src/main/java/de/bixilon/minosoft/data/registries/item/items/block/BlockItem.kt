@@ -21,15 +21,22 @@ import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import kotlin.reflect.jvm.javaField
 
 abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identifier), StackableItem, PlaceableItem {
     val block: T = unsafeNull()
     protected abstract val _block: Identified
 
     init {
-        this::block.inject(_block)
+        BLOCK_FIELD.inject<RegistryItem>(_block)
     }
 
-    override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack) = block.defaultState
+    override fun getPlacementState(connection: PlayConnection, target: BlockTarget, stack: ItemStack) = block.states.default
+
+
+    private companion object {
+        private val BLOCK_FIELD = BlockItem<*>::block.javaField!!
+    }
 }

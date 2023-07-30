@@ -13,19 +13,26 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-import de.bixilon.minosoft.terminal.commands.connection.SayCommand
+import de.bixilon.minosoft.terminal.commands.connection.*
 import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
 
 object Commands {
     val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
+        HelpCommand, QuitCommand,
         ConnectionManageCommand,
         AccountManageCommand,
         ReloadCommand,
 
         PingCommand, ConnectCommand,
 
-        CrashCommand,
+        CrashCommand, DumpCommand,
+
+        AboutCommand,
+
+
+        SayCommand,
+        ActionCommand, QueryCommand,
+        DebugCommand,
+        DisconnectCommand,
     )
 }

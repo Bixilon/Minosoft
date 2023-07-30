@@ -25,13 +25,13 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 abstract class PlanetRenderer(
     protected val sky: SkyRenderer,
 ) : SkyChildRenderer {
-    protected abstract val texture: AbstractTexture
-    protected val shader = sky.context.renderSystem.createShader(minosoft("sky/planet")) { PlanetShader(it) }
+    protected abstract val texture: Texture
+    protected val shader = sky.context.system.createShader(minosoft("sky/planet")) { PlanetShader(it) }
     private var mesh = PlanetMesh(sky.context)
     protected var day = -1L
     protected var matrix = Mat4()

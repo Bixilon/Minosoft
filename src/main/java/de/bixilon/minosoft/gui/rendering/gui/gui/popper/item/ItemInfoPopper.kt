@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper.item
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -29,16 +29,16 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 class ItemInfoPopper(
     guiRenderer: GUIRenderer,
-    position: Vec2i,
+    position: Vec2,
     val stack: ItemStack,
 ) : MouseTrackedPopper(guiRenderer, position) {
-    private val textElement = TextElement(guiRenderer, "", background = false, parent = this)
+    private val textElement = TextElement(guiRenderer, "", background = null, parent = this)
 
     init {
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
         textElement.render(offset, consumer, options)

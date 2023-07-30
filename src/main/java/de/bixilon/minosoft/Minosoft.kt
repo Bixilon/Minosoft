@@ -17,8 +17,10 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.file.watcher.FileWatcherService
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
@@ -67,23 +69,23 @@ object Minosoft {
     val MINOSOFT_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false)
     val OVERRIDE_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false, prefix = "assets_override")
     val LANGUAGE_MANAGER = MultiLanguageManager()
-    val BOOT_LATCH = CountUpAndDownLatch(1)
+    val BOOT_LATCH = CallbackLatch(1)
 
     @JvmStatic
     fun main(args: Array<String>) {
         val start = nanos()
         Log::class.java.forceInit()
-        ShutdownManager.addHook { Log.ASYNC_LOGGING = false; Log.await() }
+        ShutdownManager.addHook { Log.ASYNC_LOGGING = false; catchAll { Log.await() } }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
 
         KUtil.initUtilClasses()
         KUtil.init()
         ModLoader.initModLoading()
-        ModLoader.load(LoadingPhases.PRE_BOOT, CountUpAndDownLatch(0))
+        ModLoader.load(LoadingPhases.PRE_BOOT)
         ModLoader.await(LoadingPhases.PRE_BOOT)
 
-        MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
+        MINOSOFT_ASSETS_MANAGER.load()
 
         if (PlatformInfo.OS == OSTypes.MAC) {
             checkMacOS()
@@ -129,21 +131,23 @@ object Minosoft {
         BOOT_LATCH.dec() // remove initial count
         BOOT_LATCH.await()
         val end = nanos()
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
+        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
         GlobalEventMaster.fire(FinishBootEvent())
-        DefaultThreadPool += { ModLoader.load(LoadingPhases.POST_BOOT, CountUpAndDownLatch(0)) }
-
+        DefaultThreadPool += { ModLoader.load(LoadingPhases.POST_BOOT) }
+        if (RunConfiguration.DISABLE_EROS) {
+            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Eros is disabled, no gui will show up! Use the cli to connect to servers!" }
+        }
 
         RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }
     }
 
-    private fun startFileWatcherService(latch: CountUpAndDownLatch) {
+    private fun startFileWatcherService(latch: AbstractLatch) {
         Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "Starting file watcher service..." }
         FileWatcherService.start()
         Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "File watcher service started!" }
     }
 
-    private fun loadLanguageFiles(latch: CountUpAndDownLatch) {
+    private fun loadLanguageFiles(latch: AbstractLatch) {
         val language = ErosProfileManager.selected.general.language
         ErosProfileManager.selected.general::language.observe(this, true) {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }

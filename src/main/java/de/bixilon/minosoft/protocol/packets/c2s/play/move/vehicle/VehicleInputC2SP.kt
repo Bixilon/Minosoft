@@ -47,6 +47,6 @@ class VehicleInputC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Vehicle input (sideways=$sideways, forward=$forward, jump=$jump, unmount=$unmount)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Vehicle input (sideways=$sideways, forward=$forward, jump=$jump, unmount=$unmount)" }
     }
 }

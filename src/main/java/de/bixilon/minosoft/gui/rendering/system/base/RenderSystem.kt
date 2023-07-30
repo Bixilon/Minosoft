@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.system.base
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniform
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
+import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -45,30 +45,35 @@ interface RenderSystem {
     fun destroy()
 
     fun reset(
-        depthTest: Boolean = true,
-        blending: Boolean = false,
-        faceCulling: Boolean = true,
-        polygonOffset: Boolean = false,
-        depthMask: Boolean = true,
-        sourceRGB: BlendingFunctions = BlendingFunctions.ONE,
-        destinationRGB: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
-        sourceAlpha: BlendingFunctions = BlendingFunctions.ONE,
-        destinationAlpha: BlendingFunctions = BlendingFunctions.ZERO,
-        depth: DepthFunctions = DepthFunctions.LESS,
-        clearColor: RGBColor = Colors.TRANSPARENT,
-        polygonOffsetFactor: Float = 0.0f,
-        polygonOffsetUnit: Float = 0.0f,
+        depthTest: Boolean = RenderSettings.DEFAULT.depthTest,
+        blending: Boolean = RenderSettings.DEFAULT.blending,
+        faceCulling: Boolean = RenderSettings.DEFAULT.faceCulling,
+        polygonOffset: Boolean = RenderSettings.DEFAULT.polygonOffset,
+        depthMask: Boolean = RenderSettings.DEFAULT.depthMask,
+        sourceRGB: BlendingFunctions = RenderSettings.DEFAULT.sourceRGB,
+        destinationRGB: BlendingFunctions = RenderSettings.DEFAULT.destinationRGB,
+        sourceAlpha: BlendingFunctions = RenderSettings.DEFAULT.sourceAlpha,
+        destinationAlpha: BlendingFunctions = RenderSettings.DEFAULT.destinationAlpha,
+        depth: DepthFunctions = RenderSettings.DEFAULT.depth,
+        clearColor: RGBColor = RenderSettings.DEFAULT.clearColor,
+        polygonOffsetFactor: Float = RenderSettings.DEFAULT.polygonOffsetFactor,
+        polygonOffsetUnit: Float = RenderSettings.DEFAULT.polygonOffsetUnit,
     ) {
-        setBlendFunction(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha)
-        this[RenderingCapabilities.DEPTH_TEST] = depthTest
-        this[RenderingCapabilities.BLENDING] = blending
-        this[RenderingCapabilities.FACE_CULLING] = faceCulling
-        this[RenderingCapabilities.POLYGON_OFFSET] = polygonOffset
-        this.depth = depth
-        this.depthMask = depthMask
-        this.clearColor = clearColor
+        val settings = RenderSettings(depthTest, blending, faceCulling, polygonOffset, depthMask, sourceRGB, destinationRGB, sourceAlpha, destinationAlpha, depth, clearColor, polygonOffsetFactor, polygonOffsetUnit)
+        this.set(settings)
+    }
+
+    fun set(settings: RenderSettings) {
+        setBlendFunction(settings.sourceRGB, settings.destinationRGB, settings.sourceAlpha, settings.destinationAlpha)
+        this[RenderingCapabilities.DEPTH_TEST] = settings.depthTest
+        this[RenderingCapabilities.BLENDING] = settings.blending
+        this[RenderingCapabilities.FACE_CULLING] = settings.faceCulling
+        this[RenderingCapabilities.POLYGON_OFFSET] = settings.polygonOffset
+        this.depth = settings.depth
+        this.depthMask = settings.depthMask
+        this.clearColor = settings.clearColor
         shader = null
-        polygonOffset(polygonOffsetFactor, polygonOffsetUnit)
+        polygonOffset(settings.polygonOffsetFactor, settings.polygonOffsetUnit)
     }
 
     fun enable(capability: RenderingCapabilities)

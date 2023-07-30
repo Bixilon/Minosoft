@@ -13,14 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec4.Vec4i
+import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.concurrent.Reference
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.string.StringUtil.truncate
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -31,8 +33,10 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -48,8 +52,8 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
@@ -62,7 +66,7 @@ import de.bixilon.minosoft.util.SystemInformation
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     private val connection = context.connection
     private val layout = GridLayout(guiRenderer, Vec2i(3, 1)).apply { parent = this@DebugHUDElement }
-    override val layoutOffset: Vec2i = Vec2i.EMPTY
+    override val layoutOffset: Vec2 = Vec2.EMPTY
 
 
     init {
@@ -82,16 +86,16 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout[Vec2i(0, 0)] = initLeft()
         layout[Vec2i(2, 0)] = initRight()
 
-        this.prefMaxSize = Vec2i(-1, Int.MAX_VALUE)
+        this.prefMaxSize = Vec2(-1, Int.MAX_VALUE)
         this.ignoreDisplaySize = true
     }
 
     private fun initLeft(): Element {
         val layout = RowLayout(guiRenderer)
-        layout.margin = Vec4i(2)
+        layout.margin = Vec4(2)
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
-        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}" }
-        context.renderer[WorldRenderer]?.apply {
+        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}§r; t=§d${context.renderStats.avgFrameTime.avg.formatNanos()}" }
+        context.renderer[ChunkRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, l=${loaded.size.format()}, cQ=${culledQueue.size.format()}, q=${meshingQueue.size.format()}, pT=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lQ=${loadingQueue.size.format()}/${meshingQueue.maxMeshesToLoad.format()}, w=${connection.world.chunks.chunks.size.format()}" }
         }
 
@@ -186,28 +190,28 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             }
         }
 
-        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + context.framebufferManager.world.`fun`.effect?.identifier.format() }
+        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + context.framebuffer.world.`fun`.effect?.identifier.format() }
 
         return layout
     }
 
     private fun initRight(): Element {
         val layout = RowLayout(guiRenderer, HorizontalAlignments.RIGHT)
-        layout.margin = Vec4i(2)
-        layout += TextElement(guiRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", HorizontalAlignments.RIGHT)
-        layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", HorizontalAlignments.RIGHT)
+        layout.margin = Vec4(2)
+        layout += TextElement(guiRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", properties = RIGHT)
+        layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", properties = RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += AutoTextElement(guiRenderer, 1) { "Allocation rate ${AllocationRate.allocationRate.formatBytes()}/s}" }
+        layout += AutoTextElement(guiRenderer, 1, RIGHT) { "Allocation rate ${AllocationRate.allocationRate.formatBytes()}/s" }
 
         SystemInformation.RUNTIME.apply {
-            layout += AutoTextElement(guiRenderer, 1) {
+            layout += AutoTextElement(guiRenderer, 1, RIGHT) {
                 val total = maxMemory()
                 val used = totalMemory() - freeMemory()
                 "Memory ${(used * 100.0 / total).rounded10}% ${used.formatBytes()} / ${total.formatBytes()}"
             }
-            layout += AutoTextElement(guiRenderer, 1) {
+            layout += AutoTextElement(guiRenderer, 1, RIGHT) {
                 val total = maxMemory()
                 val allocated = totalMemory()
                 "Allocated ${(allocated * 100.0 / total).rounded10}% ${allocated.formatBytes()} / ${total.formatBytes()}"
@@ -216,39 +220,39 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", HorizontalAlignments.RIGHT)
-        layout += TextElement(guiRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}")
+        layout += TextElement(guiRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", properties = RIGHT)
+        layout += TextElement(guiRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}", properties = RIGHT)
 
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "Display <?>", HorizontalAlignments.RIGHT).apply {
+        layout += TextElement(guiRenderer, "Display <?>", properties = RIGHT).apply {
             guiRenderer.context.connection.events.listen<ResizeWindowEvent> {
                 text = "Display ${it.size.x.format()}x${it.size.y.format()}"
             }
         }
 
-        context.renderSystem.apply {
-            layout += TextElement(guiRenderer, "GPU $gpuType", HorizontalAlignments.RIGHT)
-            layout += TextElement(guiRenderer, "Version $version", HorizontalAlignments.RIGHT)
+        context.system.apply {
+            layout += TextElement(guiRenderer, "GPU $gpuType", properties = RIGHT)
+            layout += TextElement(guiRenderer, "Version $version", properties = RIGHT)
         }
 
         MinosoftProperties.git?.let {
             layout += LineSpacerElement(guiRenderer)
 
             MinosoftPropertiesLoader.apply {
-                layout += TextElement(guiRenderer, "Git ${it.commitShort}/${it.branch}", HorizontalAlignments.RIGHT)
+                layout += TextElement(guiRenderer, "Git ${it.commitShort}/${it.branch}", properties = RIGHT)
             }
         }
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "${connection.events.size.format()}x listeners", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "${connection.events.size.format()}x listeners", properties = RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
 
         context.connection.camera.target.apply {
-            layout += AutoTextElement(guiRenderer, 1, HorizontalAlignments.RIGHT) {
+            layout += AutoTextElement(guiRenderer, 1, properties = RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"
             }
@@ -291,7 +295,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", entity.connection.world.dimension.effects) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(entity.connection.world.getLight(entity.renderInfo.eyeBlockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(entity.connection.world.getLight(entity.renderInfo.eyePosition.blockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", chunk.neighbours.complete) }
 
                 lastChunk.value = chunk
@@ -306,7 +310,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         }
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         layout.forceRender(offset, consumer, options)
     }
 
@@ -330,6 +334,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
             KeyActions.STICKY to setOf(KeyCodes.KEY_F3),
         )
+        private val RIGHT = TextRenderProperties(HorizontalAlignments.RIGHT)
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<DebugHUDElement> {
             return LayoutedGUIElement(DebugHUDElement(guiRenderer)).apply { enabled = false }

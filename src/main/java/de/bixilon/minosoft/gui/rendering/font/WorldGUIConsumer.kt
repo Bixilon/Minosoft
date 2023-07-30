@@ -15,23 +15,23 @@ package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 
-class WorldGUIConsumer(val mesh: SingleWorldMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
+class WorldGUIConsumer(val mesh: SingleChunkMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
+    private val whiteTexture = mesh.context.textures.whiteTexture
     override val order: IntArray get() = mesh.order
 
-    override fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        val transformed = transform.fastTimes(position.x.toFloat() / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y.toFloat() / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)
-        mesh.addVertex(transformed, uv, texture as AbstractTexture, tint.rgb, light)
+    override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+        val transformed = transform.fastTimes(position.x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)
+        mesh.addVertex(transformed, uv, (texture as Texture?) ?: whiteTexture.texture, tint.rgb, light)
     }
 
     override fun addCache(cache: GUIMeshCache) {
@@ -48,12 +48,5 @@ class WorldGUIConsumer(val mesh: SingleWorldMesh, val transform: Mat4, val light
             this[0, 1] * x + this[1, 1] * y + this[2, 1] + this[3, 1],
             this[0, 2] * x + this[1, 2] * y + this[2, 2] + this[3, 2],
         )
-    }
-
-    fun offset(x: Float) {
-        transform[3, 0] += transform[0, 0] * x
-        transform[3, 1] += transform[0, 1] * x
-        transform[3, 2] += transform[0, 2] * x
-        transform[3, 3] += transform[0, 3] * x
     }
 }

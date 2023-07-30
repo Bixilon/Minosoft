@@ -1,10 +1,11 @@
 # Minosoft
+
 [<img src="https://img.shields.io/matrix/minosoft:matrix.org?style=for-the-badge">](https://matrix.to/#/#minosoft:matrix.org)
 <img src="https://img.shields.io/gitlab/pipeline-status/bixilon/minosoft?branch=master&gitlab_url=https%3A%2F%2Fgitlab.bixilon.de&style=for-the-badge">
 <img src="https://img.shields.io/badge/license-GPLv3-brightgreen?style=for-the-badge">
 
 Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
-(To be clear: This is not clone of minecraft, it is a reimplementation)  
+(This is not a classical clone of minecraft, it completely re implements it!)
 (This software is not affiliated with Mojang AB, the original developer of Minecraft)
 
 <h2>Notice: I am *not* responsible for anti cheat banned accounts, this project is heavily in development!</h2>
@@ -12,7 +13,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 ## Feature overview
 
 - Rendering
-- Connect with any version to any server  (1.7 - 1.19.3)
+- Connect with any version to any server  (1.7 - 1.20.1)
 - [Bleeding edge performance (e.g. incredible start time)](/doc/Performance.md)
 - Free (as far as we consider original minecraft as free) and open source
 - Easy use of multiple accounts
@@ -75,7 +76,7 @@ I always try to add support for the newest version of minecraft. Mostly it is pr
 
 ### Supported versions
 
-Almost all versions (and snapshots!) between 1.7 and the latest one (1.19.3 as of writing this) are supported.  
+Almost all versions (and snapshots!) between 1.7 and the latest one (1.20.1 as of writing this) are supported.  
 I plan to maintain Minosoft to at least version 1.20, so stay tuned, also support for older protocols will not be dropped as newer protocols are added. It is still recommended using the latest stable version.  
 See [Version support](/doc/VersionSupport.md) for more details.
 
@@ -123,7 +124,6 @@ Thanks to @jugendhacker you can get minosoft directly from the arch user reposit
 3. Change directory (`cd minosoft`)
 4. Optional: Checkout a current feature branch (Warning: might be unstable; might not even build) (`git checkout <branch>`)
 5. Build and run Minosoft with `./gradlew run` (or on windows `./gradlew.bat run`). Alternatively just click on `run.cmd`. If any errors occur, feel free to contact me or open an issue
-
 
 ## Code mirrors
 

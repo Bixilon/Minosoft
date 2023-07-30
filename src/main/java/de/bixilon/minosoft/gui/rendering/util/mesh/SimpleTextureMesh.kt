@@ -20,16 +20,13 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
-open class SimpleTextureMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.renderSystem.quadType) : Mesh(context, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
+open class SimpleTextureMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
-    fun addVertex(position: Vec3, texture: AbstractTexture, uv: Vec2, tintColor: RGBColor?) {
-        data.add(position.x)
-        data.add(position.y)
-        data.add(position.z)
-        data.add(uv.x)
-        data.add(uv.y)
+    fun addVertex(position: Vec3, texture: Texture, uv: Vec2, tintColor: RGBColor?) {
+        data.add(position.array)
+        data.add(uv.array)
         data.add(texture.renderData.shaderTextureId.buffer())
         data.add((tintColor?.rgba ?: Colors.WHITE).buffer())
     }

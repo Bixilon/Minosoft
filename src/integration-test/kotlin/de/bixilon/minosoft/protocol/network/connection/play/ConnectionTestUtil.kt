@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
+import de.bixilon.kotlinglm.pow
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.TestAssetsManager
@@ -37,6 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 object ConnectionTestUtil {
+    private val profiles = createProfiles()
 
     init {
         reference()
@@ -51,12 +53,12 @@ object ConnectionTestUtil {
         connection::version.forceSet(version)
         connection::registries.forceSet(Registries())
         connection.registries.parent = if (version == IT.VERSION) IT.REGISTRIES else ITUtil.loadPixlyzerData(version)
-        connection::world.forceSet(createWorld(connection, light))
+        connection::world.forceSet(createWorld(connection, light, (worldSize * 2 + 1).pow(2)))
         connection::player.forceSet(LocalPlayerEntity(connection.account, connection, SignatureKeyManagement(connection, TestAccount)))
         connection.player.startInit()
         connection::network.forceSet(TestNetwork())
         connection::events.forceSet(EventMaster())
-        connection::profiles.forceSet(createProfiles())
+        connection::profiles.forceSet(profiles)
         connection::assetsManager.forceSet(TestAssetsManager)
         connection::state.forceSet(DataObserver(PlayConnectionStates.PLAYING))
         connection::tags.forceSet(TagManager())

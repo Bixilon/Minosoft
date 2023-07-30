@@ -51,6 +51,6 @@ class EncryptionC2SP private constructor(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Encryption response (secret=${secret.toBase64()}, nonce=$nonce)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Encryption response (secret=${secret.toBase64()}, nonce=$nonce)" }
     }
 }

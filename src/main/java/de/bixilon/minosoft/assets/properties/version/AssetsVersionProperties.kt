@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.assets.properties.version
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.protocol.versions.Version
@@ -27,7 +27,7 @@ object AssetsVersionProperties {
     private val ASSETS_PROPERTIES_FILE = "minosoft:mapping/assets_properties.json".toResourceLocation()
     private val PROPERTIES: MutableMap<Version, AssetsVersionProperty> = mutableMapOf()
 
-    fun load(latch: CountUpAndDownLatch) {
+    fun load(latch: AbstractLatch?) {
         if (PROPERTIES.isNotEmpty()) {
             throw IllegalStateException("Already loaded!")
         }

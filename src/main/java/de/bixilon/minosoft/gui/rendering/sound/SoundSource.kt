@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import org.lwjgl.openal.AL10.*
@@ -78,10 +78,10 @@ class SoundSource {
         get() = alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING
 
     val available: Boolean
-        get() = !isPlaying || TimeUtil.millis - playTime > (sound?.data?.length ?: 0L)    // ToDo: Allow pause
+        get() = !isPlaying || millis() - playTime > (sound?.data?.length ?: 0L)    // ToDo: Allow pause
 
     fun play() {
-        playTime = TimeUtil.millis
+        playTime = millis()
         alSourcePlay(source)
     }
 

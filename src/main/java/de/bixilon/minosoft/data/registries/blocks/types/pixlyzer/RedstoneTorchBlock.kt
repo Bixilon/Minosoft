@@ -14,29 +14,30 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isLit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : TorchBlock(resourceLocation, registries, data) {
+open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : TorchBlock(resourceLocation, registries, data), RandomDisplayTickable {
     private val redstoneDustParticle = registries.particleType[DustParticle]
 
-    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        if (!blockState.isLit()) {
+    override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
+        if (!state.isLit()) {
             return
         }
 
-        (flameParticle ?: redstoneDustParticle)?.let { connection.world += it.factory?.build(connection, Vec3d(blockPosition) + Vec3d(0.5, 0.7, 0.5) + (Vec3d.of { random.nextDouble() - 0.5 } * 0.2), Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, 1.0f, it)) }
+        (flameParticle ?: redstoneDustParticle)?.let { connection.world += it.factory?.build(connection, Vec3d(position) + Vec3d(0.5, 0.7, 0.5) + (Vec3d.of { random.nextDouble() - 0.5 } * 0.2), Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, 1.0f, it)) }
     }
 
     companion object : PixLyzerBlockFactory<RedstoneTorchBlock> {

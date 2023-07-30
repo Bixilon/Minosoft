@@ -34,6 +34,6 @@ class PingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Ping (payload=$payload)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Ping (payload=$payload)" }
     }
 }

@@ -15,12 +15,11 @@ package de.bixilon.minosoft.gui.rendering.entity
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.collections.iterator.async.ConcurrentIterator
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
-import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyActions
@@ -33,10 +32,12 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
+import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -47,8 +48,9 @@ import java.util.concurrent.atomic.AtomicInteger
 class EntityRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : Renderer, OpaqueDrawable {
-    override val renderSystem: RenderSystem = context.renderSystem
+) : WorldRenderer {
+    override val layers = LayerSettings()
+    override val renderSystem: RenderSystem = context.system
     val profile = connection.profiles.entity
     val visibilityGraph = context.camera.visibilityGraph
     private val models: LockMap<Entity, EntityModel<*>> = lockMapOf()
@@ -63,7 +65,11 @@ class EntityRenderer(
 
     private var reset = false
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun registerLayers() {
+        layers.register(EntityLayer, null, this::draw) { visibleCount <= 0 }
+    }
+
+    override fun init(latch: AbstractLatch) {
         connection.events.listen<EntitySpawnEvent> { event ->
             if (event.entity is LocalPlayerEntity) return@listen
             DefaultThreadPool += { event.entity.createModel(this)?.let { models[event.entity] = it } }
@@ -79,12 +85,12 @@ class EntityRenderer(
         profile.hitbox::enabled.observe(this) { this.hitboxes = it }
         context.camera.offset::offset.observe(this) { reset = true }
 
-        context.inputHandler.registerKeyCallback(
+        context.input.bindings.register(
             HITBOX_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
                 KeyActions.STICKY to setOf(KeyCodes.KEY_B),
-            ), defaultPressed = profile.hitbox.enabled
+            ), pressed = profile.hitbox.enabled
         ) {
             profile.hitbox.enabled = it
             connection.util.sendDebugMessage("Entity hit boxes: ${it.format()}")
@@ -92,7 +98,7 @@ class EntityRenderer(
         }
     }
 
-    override fun postAsyncInit(latch: CountUpAndDownLatch) {
+    override fun postAsyncInit(latch: AbstractLatch) {
         localModel = context.connection.player.createModel(this)
 
         models[connection.player] = localModel
@@ -108,8 +114,9 @@ class EntityRenderer(
     override fun prePrepareDraw() {
         val count = AtomicInteger()
         val reset = reset
+        val millis = millis()
         runAsync {
-            it.entity.draw(millis())
+            it.entity.draw(millis)
             if (reset) {
                 it.reset()
             }
@@ -134,11 +141,7 @@ class EntityRenderer(
         models.lock.release()
     }
 
-    override fun setupOpaque() {
-        context.renderSystem.reset(faceCulling = false)
-    }
-
-    override fun drawOpaque() {
+    private fun draw() {
         // ToDo: Probably more transparent
         models.lock.acquire()
         for (model in models.unsafe.values) {
@@ -151,20 +154,17 @@ class EntityRenderer(
     }
 
     private fun runAsync(executor: ((EntityModel<*>) -> Unit)) {
-        val worker = UnconditionalWorker()
         models.lock.acquire()
-        for (model in models.unsafe.values) {
-            worker += UnconditionalTask(ThreadPool.Priorities.HIGH) {
-                executor(model)
-            }
-        }
+        ConcurrentIterator(models.unsafe.values.spliterator(), priority = ThreadPool.HIGHER).iterate(executor)
         models.lock.release()
-        worker.work()
     }
 
+    private object EntityLayer : RenderLayer {
+        override val settings = RenderSettings(faceCulling = false)
+        override val priority: Int get() = 1000
+    }
 
     companion object : RendererBuilder<EntityRenderer> {
-        override val identifier = minosoft("entity")
         private val HITBOX_TOGGLE_KEY_COMBINATION = minosoft("toggle_hitboxes")
 
 

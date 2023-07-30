@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.loader.mod
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.modding.loader.LoaderUtil.unloadAll
 import de.bixilon.minosoft.modding.loader.LoadingPhases
@@ -24,7 +24,7 @@ import org.xeustechnologies.jcl.JarClassLoader
 class MinosoftMod(
     val source: ModSource,
     val phase: LoadingPhases,
-    val latch: CountUpAndDownLatch,
+    val latch: AbstractLatch,
 ) : Comparable<MinosoftMod> {
     val classLoader = JarClassLoader()
     var manifest: ModManifest? = null

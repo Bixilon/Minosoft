@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.text.TextPopper
 
-class NodeErrorElement(guiRenderer: GUIRenderer, position: Vec2i) : TextPopper(guiRenderer, position, ChatComponent.EMPTY) {
+class NodeErrorElement(guiRenderer: GUIRenderer, position: Vec2) : TextPopper(guiRenderer, position, ChatComponent.EMPTY) {
     var error: Throwable? = null
         set(value) {
             if (field == value) {

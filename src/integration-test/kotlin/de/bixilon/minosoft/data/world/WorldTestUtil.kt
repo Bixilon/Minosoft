@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import de.bixilon.minosoft.data.world.entities.WorldEntities
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.TEST_WORLD_VIEW
@@ -36,11 +37,11 @@ import de.bixilon.minosoft.test.IT
 object WorldTestUtil {
 
 
-    fun createWorld(connection: PlayConnection?, light: Boolean = false): World {
+    fun createWorld(connection: PlayConnection?, light: Boolean = false, capacity: Int = 0): World {
         val world = IT.OBJENESIS.newInstance(World::class.java)
         world::occlusion.forceSet(DataObserver(0))
         world::lock.forceSet(SimpleLock())
-        world::chunks.forceSet(ChunkManager(world))
+        world::chunks.forceSet(ChunkManager(world, maxOf(0, capacity), 0))
         world::border.forceSet(WorldBorder())
         world::dimension.forceSet(DataObserver(DimensionProperties(light = light, skyLight = light)))
         world::connection.forceSet(connection)
@@ -72,7 +73,7 @@ object WorldTestUtil {
                 if (chunk == null) {
                     chunk = this.chunks[chunkPosition] ?: continue
                 } else if (chunk.chunkPosition != chunkPosition) {
-                    chunk = chunk.traceChunk(chunkPosition - chunk.chunkPosition) ?: continue
+                    chunk = chunk.neighbours.trace(chunkPosition - chunk.chunkPosition) ?: continue
                 }
                 for (y in start.y..end.y) {
                     val section = chunk.getOrPut(y.sectionHeight) ?: continue
@@ -90,12 +91,14 @@ object WorldTestUtil {
             }
         }
 
+        if (!dimension.light && !dimension.skyLight) return // no need for occlusion when light is ignored
+
         if (superUnsafe) {
             for (x in (start.x shr 4)..(end.x shr 4)) {
                 for (z in (start.z shr 4)..(end.z shr 4)) {
                     val chunkPosition = Vec2i(x, z)
                     chunk = if (chunk != null) {
-                        chunk.traceChunk(chunkPosition - chunk.chunkPosition) ?: continue
+                        chunk.neighbours.trace(chunkPosition - chunk.chunkPosition) ?: continue
                     } else {
                         this.chunks[chunkPosition] ?: continue
                     }
@@ -106,9 +109,7 @@ object WorldTestUtil {
                 }
             }
         }
-        if (dimension.light || dimension.skyLight) {
-            recalculateLight(heightmap = true) // yah, might break the result, don't use fill if you want to test light
-        }
+        recalculateLight(heightmap = true) // yah, might break the result, don't use fill if you want to test light
     }
 
     private val DATA = SectionDataProvider::class.java.getDeclaredField("data").apply { isAccessible = true }

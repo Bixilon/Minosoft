@@ -26,7 +26,7 @@ class ScaffoldingIT : ClimbingIT() {
 
     @Test(priority = -1)
     fun getScaffolding() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.SCAFFOLDING]?.defaultState ?: throw SkipException("Can not find scaffolding!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.SCAFFOLDING]?.states?.default ?: throw SkipException("Can not find scaffolding!")
     }
 
     fun scaffoldingFallingInto1() {

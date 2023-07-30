@@ -13,29 +13,28 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.spaceSize
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.spaceSize
 
 class ZLayout(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val children: MutableList<Element> = synchronizedListOf()
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         for (child in children.toSynchronizedList()) {
             child.render(margin.offset + offset, consumer, options)
         }
     }
 
     override fun forceSilentApply() {
-        var size = Vec2i.EMPTY
+        var size = Vec2.EMPTY
         for (child in children.toSynchronizedList()) {
             child.silentApply()
             size = size.max(child.size)

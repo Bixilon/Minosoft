@@ -15,9 +15,10 @@ package de.bixilon.minosoft.gui.rendering.stats
 
 import de.bixilon.kutil.avg.LongAverage
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 
 class RenderStats : AbstractRenderStats {
-    override val avgFrameTime: LongAverage = LongAverage(1L * 1000000000L) // 1 second * SECOND_SCALE
+    override val avgFrameTime: LongAverage = LongAverage(1L * 1000000000L, Long.MAX_VALUE) // 1 second * SECOND_SCALE
     override var totalFrames: Long = 0L
         private set
 
@@ -27,7 +28,7 @@ class RenderStats : AbstractRenderStats {
 
     override var smoothAvgFPS: Double = 0.0
         get() {
-            val time = TimeUtil.millis
+            val time = millis()
             if (time - lastSmoothFPSCalculationTime > 100) {
                 field = avgFPS
                 lastSmoothFPSCalculationTime = time

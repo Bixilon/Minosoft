@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.loader.mod.source
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -50,7 +50,7 @@ class SplitDirectorySource(
 
     private fun processResources(mod: MinosoftMod) {
         val assets = DirectoryAssetsManager(resources.path)
-        assets.load(CountUpAndDownLatch(0, mod.latch))
+        assets.load(ParentLatch(0, mod.latch))
         mod.assetsManager = assets
 
         val manifestPath = File(resources.path + "/" + LoaderUtil.MANIFEST)

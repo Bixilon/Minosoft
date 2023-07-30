@@ -22,19 +22,18 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 open class ImageElement(
     guiRenderer: GUIRenderer,
-    texture: AbstractTexture?,
+    texture: Texture?,
     uvStart: Vec2 = Vec2.EMPTY,
     uvEnd: Vec2 = Vec2(1.0f, 1.0f),
-    size: Vec2i = texture?.size ?: Vec2i.EMPTY,
+    size: Vec2 = texture?.size?.let { Vec2(it) } ?: Vec2.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
-    var texture: AbstractTexture? = texture
+    var texture: Texture? = texture
         set(value) {
             field = value
             cacheUpToDate = false
@@ -50,14 +49,14 @@ open class ImageElement(
             cacheUpToDate = false
         }
 
-    override var size: Vec2i
+    override var size: Vec2
         get() = super.size
         set(value) {
             super.size = value
             cacheUpToDate = false
         }
 
-    override var prefSize: Vec2i
+    override var prefSize: Vec2
         get() = size
         set(value) {
             size = value
@@ -74,9 +73,9 @@ open class ImageElement(
     }
 
 
-    constructor(guiRenderer: GUIRenderer, texture: AbstractTexture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2i = texture.size, tint: RGBColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2(uvStart) * texture.singlePixelSize, Vec2(uvEnd) * texture.singlePixelSize, size, tint)
+    constructor(guiRenderer: GUIRenderer, texture: Texture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2 = Vec2(texture.size), tint: RGBColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2(uvStart) * texture.array.pixel, Vec2(uvEnd) * texture.array.pixel, size, tint)
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         consumer.addQuad(offset, offset + size, texture ?: return, uvStart, uvEnd, tint, options)
     }
 

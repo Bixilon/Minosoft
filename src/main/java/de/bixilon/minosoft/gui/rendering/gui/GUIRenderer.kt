@@ -13,17 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.gui
 
-import de.bixilon.kotlinglm.GLM
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.DraggedManager
@@ -31,14 +28,12 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.popper.PopperManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
-import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -47,28 +42,25 @@ import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 class GUIRenderer(
     val connection: PlayConnection,
     override val context: RenderContext,
-) : AsyncRenderer, InputHandler, OtherDrawable {
+) : AsyncRenderer, InputHandler, Drawable {
     private val profile = connection.profiles.gui
-    override val renderSystem = context.renderSystem
-    var scaledSize: Vec2i by observed(context.window.size)
+    override val renderSystem = context.system
+    var scaledSize: Vec2 by observed(Vec2(context.window.size))
     val gui = GUIManager(this)
     val hud = HUDManager(this)
     val popper = PopperManager(this)
     val dragged = DraggedManager(this)
-    var matrix: Mat4 = Mat4()
+    var halfSize: Vec2 = Vec2()
         private set
-    var matrixChange = true
-    override val framebuffer: Framebuffer
-        get() = context.framebufferManager.gui.framebuffer
-    override val polygonMode: PolygonModes
-        get() = context.framebufferManager.gui.polygonMode
-    val shader = context.renderSystem.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
+    var resolutionUpdate = true
+    override val framebuffer: IntegratedFramebuffer get() = context.framebuffer.gui
+    val shader = context.system.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
     val atlasManager = AtlasManager(context)
 
-    var currentMousePosition: Vec2i by observed(Vec2i.EMPTY)
+    var currentMousePosition: Vec2 by observed(Vec2.EMPTY)
         private set
 
-    override fun init(latch: CountUpAndDownLatch) {
+    override fun init(latch: AbstractLatch) {
         atlasManager.init()
         gui.init()
         hud.init()
@@ -76,13 +68,13 @@ class GUIRenderer(
         dragged.init()
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) {
+    override fun postInit(latch: AbstractLatch) {
         atlasManager.postInit()
         shader.load()
 
-        connection.events.listen<ResizeWindowEvent> { recalculateMatrices(it.size) }
-        context.window::systemScale.observe(this) { recalculateMatrices(systemScale = it) }
-        profile::scale.observeRendering(this) { recalculateMatrices(scale = it) }
+        connection.events.listen<ResizeWindowEvent> { updateResolution(Vec2(it.size)) }
+        context.window::systemScale.observe(this) { updateResolution(systemScale = it) }
+        profile::scale.observeRendering(this) { updateResolution(scale = it) }
 
         gui.postInit()
         hud.postInit()
@@ -90,15 +82,15 @@ class GUIRenderer(
         dragged.postInit()
     }
 
-    private fun recalculateMatrices(windowSize: Vec2i = context.window.size, scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
-        scaledSize = windowSize.scale(systemScale, scale)
-        matrix = GLM.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
-        matrixChange = true
+    private fun updateResolution(windowSize: Vec2 = Vec2(context.window.size), scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
+        scaledSize = Vec2(windowSize.scale(systemScale, scale))
+        halfSize = scaledSize / 2.0f
+        resolutionUpdate = true
 
-        gui.onMatrixChange()
-        hud.onMatrixChange()
-        popper.onMatrixChange()
-        dragged.onMatrixChange()
+        gui.onScreenChange()
+        hud.onScreenChange()
+        popper.onScreenChange()
+        dragged.onScreenChange()
     }
 
     fun setup() {
@@ -113,7 +105,7 @@ class GUIRenderer(
         shader.use()
     }
 
-    override fun onMouseMove(position: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2): Boolean {
         val scaledPosition = position.scale()
         currentMousePosition = scaledPosition
         return popper.onMouseMove(scaledPosition) || dragged.onMouseMove(scaledPosition) || gui.onMouseMove(scaledPosition)
@@ -123,11 +115,11 @@ class GUIRenderer(
         return popper.onCharPress(char) || dragged.onCharPress(char) || gui.onCharPress(char)
     }
 
-    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        return popper.onKey(type, key) || dragged.onKey(type, key) || gui.onKey(type, key)
+    override fun onKey(code: KeyCodes, change: KeyChangeTypes): Boolean {
+        return popper.onKey(code, change) || dragged.onKey(code, change) || gui.onKey(code, change)
     }
 
-    override fun onScroll(scrollOffset: Vec2d): Boolean {
+    override fun onScroll(scrollOffset: Vec2): Boolean {
         return popper.onScroll(scrollOffset) || dragged.onScroll(scrollOffset) || gui.onScroll(scrollOffset)
     }
 
@@ -138,39 +130,30 @@ class GUIRenderer(
         dragged.drawAsync()
     }
 
-    override fun drawOther() {
+    override fun draw() {
         hud.draw()
         gui.draw()
         popper.draw()
         dragged.draw()
-        if (this.matrixChange) {
-            this.matrixChange = false
+        if (this.resolutionUpdate) {
+            this.resolutionUpdate = false
         }
     }
 
-    fun Vec2i.scale(systemScale: Vec2 = context.window.systemScale, scale: Float = profile.scale): Vec2i {
-        val output = Vec2i(this)
+    fun Vec2.scale(systemScale: Vec2 = context.window.systemScale, scale: Float = profile.scale): Vec2 {
         val totalScale = systemScale * scale
-        // ToDo: This is just a dirty workaround and does not fix the problem at all
-        while (output.x % totalScale.x.toInt() != 0) {
-            output.x++
-        }
-        while (output.y % totalScale.y.toInt() != 0) {
-            output.y++
-        }
-        return output / totalScale
+        return this / totalScale
     }
 
     fun isKeyDown(vararg keyCodes: KeyCodes): Boolean {
-        return context.inputHandler.isKeyDown(*keyCodes)
+        return context.input.isKeyDown(*keyCodes)
     }
 
     fun isKeyDown(modifier: ModifierKeys): Boolean {
-        return context.inputHandler.isKeyDown(modifier)
+        return context.input.isKeyDown(modifier)
     }
 
     companion object : RendererBuilder<GUIRenderer> {
-        override val identifier = "minosoft:gui".toResourceLocation()
 
         override fun build(connection: PlayConnection, context: RenderContext): GUIRenderer {
             return GUIRenderer(connection, context)

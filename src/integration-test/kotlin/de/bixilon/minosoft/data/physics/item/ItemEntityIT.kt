@@ -119,7 +119,7 @@ class ItemEntityIT {
         entity.connection.world.fill(Vec3i(-5, 4, -5), Vec3i(5, 4, 5), GlassTest0.state)
         entity.runTicks(30)
         entity.assertPosition(1.55521462290592, 5.0, -1.55521462290592)
-        entity.assertVelocity(6.081541491145816E-4, -0.08, -6.081541491145816E-4)
+        entity.assertVelocity(6.081541491145816E-4, -0.04, -6.081541491145816E-4)
         entity.assertGround(true)
     }
 
@@ -130,7 +130,7 @@ class ItemEntityIT {
         entity.connection.world.fill(Vec3i(-5, 4, -5), Vec3i(5, 4, 5), GlassTest0.state)
         entity.runTicks(30)
         entity.assertPosition(-3.0597864176904332, 5.0, 4.895658268304694)
-        entity.assertVelocity(-1.6015292949696051E-4, -0.08, 2.56244687195137E-4)
+        entity.assertVelocity(-1.6015292949696051E-4, -0.04, 2.56244687195137E-4)
         entity.assertGround(true)
     }
 }

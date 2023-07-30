@@ -165,7 +165,7 @@ class MatrixHandler(
     }
 
     private fun updateShaders(cameraPosition: Vec3) {
-        for (shader in context.renderSystem.shaders) {
+        for (shader in context.system.shaders) {
             if (shader is ViewProjectionShader) {
                 shader.viewProjectionMatrix = viewProjectionMatrix
             }

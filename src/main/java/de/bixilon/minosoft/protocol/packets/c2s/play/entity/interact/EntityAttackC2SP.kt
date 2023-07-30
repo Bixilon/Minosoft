@@ -39,6 +39,6 @@ class EntityAttackC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity attack (entityId=$entityId, sneaking=$sneaking)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Entity attack (entityId=$entityId, sneaking=$sneaking)" }
     }
 }

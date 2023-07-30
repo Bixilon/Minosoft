@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.EmptyIterator
+import de.bixilon.kutil.collections.iterator.EmptyIterator
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
@@ -42,7 +42,7 @@ open class SectionDataProvider<T>(
         if (data != null && calculateInitial) {
             recalculate()
         } else {
-            minPosition = Vec3i.EMPTY
+            minPosition = Vec3i(ProtocolDefinition.CHUNK_SECTION_SIZE)
             maxPosition = Vec3i.EMPTY
         }
     }
@@ -226,6 +226,9 @@ open class SectionDataProvider<T>(
 
     @Suppress("UNCHECKED_CAST")
     override fun iterator(): Iterator<T> {
-        return (data?.iterator() ?: EmptyIterator) as Iterator<T>
+        val data = this.data ?: return EmptyIterator.unsafeCast()
+        if (this.isEmpty) return EmptyIterator.unsafeCast()
+
+        return data.iterator().unsafeCast()
     }
 }

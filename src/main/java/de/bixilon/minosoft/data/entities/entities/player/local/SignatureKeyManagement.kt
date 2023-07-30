@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.player.local
 
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler.runLater
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.chat.message.internal.InternalChatMessage
@@ -39,7 +39,7 @@ class SignatureKeyManagement(
     var key: PlayerPrivateKey? = null
         private set
 
-    fun init(latch: CountUpAndDownLatch?) {
+    fun init(latch: AbstractLatch?) {
         if (key != null) throw IllegalStateException("Already initialized!")
         fetchKey(latch)
     }
@@ -71,7 +71,7 @@ class SignatureKeyManagement(
         sendSession()
     }
 
-    private fun fetchKey(latch: CountUpAndDownLatch?) {
+    private fun fetchKey(latch: AbstractLatch?) {
         lock.lock()
         try {
             account.fetchKey(latch)?.let { updateKey(it) }

@@ -22,7 +22,8 @@ import de.bixilon.kutil.concurrent.schedule.RepeatedTask
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.file.FileUtil
 import de.bixilon.kutil.file.FileUtil.read
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
@@ -117,13 +118,13 @@ object GlobalProfileManager {
     }
 
     @Synchronized
-    fun initialize(latch: CountUpAndDownLatch) {
+    fun initialize(latch: AbstractLatch?) {
         if (initialized) {
             throw IllegalStateException("Already initialized!")
         }
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profiles..." }
         loadSelectedProfiles()
-        val innerLatch = CountUpAndDownLatch(1, latch)
+        val innerLatch = latch.child(1)
         for ((namespace, manager) in DEFAULT_MANAGERS) {
             innerLatch.inc()
             DefaultThreadPool += { manager.load(selectedProfiles[namespace]);innerLatch.dec() }

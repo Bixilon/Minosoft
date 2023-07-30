@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply.Companion.rotation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
@@ -40,13 +40,13 @@ data class ModelFace(
     val tintIndex: Int = -1,
 ) {
 
-    fun createTexture(model: BlockModel, manager: TextureManager): AbstractTexture {
+    fun createTexture(model: BlockModel, manager: TextureManager): Texture {
         if (!this.texture.startsWith("#")) {
             return manager.staticTextures.createTexture(texture.toResourceLocation())
         }
         val name = model.textures?.get(this.texture.substring(1))
         if (name == null || name !is ResourceLocation) {
-            Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Can not find mapped texture ${this.texture}, please check for broken resource packs!" }
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find mapped texture ${this.texture}, please check for broken resource packs!" }
             return manager.debugTexture
         }
         return manager.staticTextures.createTexture(name)

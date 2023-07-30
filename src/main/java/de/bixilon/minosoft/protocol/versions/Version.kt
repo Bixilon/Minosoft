@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.versions
 
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -36,7 +36,7 @@ class Version(
     val sortingId: Int = (versionId == -1).decide(Int.MAX_VALUE, versionId)
 
 
-    fun load(profile: ResourcesProfile, latch: CountUpAndDownLatch): Registries {
+    fun load(profile: ResourcesProfile, latch: AbstractLatch): Registries {
         return RegistriesLoader.load(profile, this, latch)
     }
 

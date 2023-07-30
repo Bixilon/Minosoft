@@ -37,12 +37,14 @@ class EntityCollectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.events.fire(CollectItemAnimationEvent(connection, this))) {
+        val entity = connection.world.entities[itemEntityId] ?: return
+        val collector = connection.world.entities[collectorEntityId] ?: return
+        if (connection.events.fire(CollectItemAnimationEvent(connection, entity, collector, count))) {
             return
         }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity collect animation (itemEntityId=$itemEntityId, collectorEntityId=$collectorEntityId, count=$collectorEntityId)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Entity collect animation (itemEntityId=$itemEntityId, collectorEntityId=$collectorEntityId, count=$collectorEntityId)" }
     }
 }

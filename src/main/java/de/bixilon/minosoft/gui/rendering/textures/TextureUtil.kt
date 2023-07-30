@@ -15,10 +15,12 @@ package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
@@ -47,7 +49,7 @@ object TextureUtil {
         return "$namespace:$path".toResourceLocation()
     }
 
-    fun TextureTransparencies.getMesh(mesh: WorldMesh): SingleWorldMesh {
+    fun TextureTransparencies.getMesh(mesh: ChunkMesh): SingleChunkMesh {
         return when (this) {
             TextureTransparencies.OPAQUE -> mesh.opaqueMesh
             TextureTransparencies.TRANSLUCENT -> mesh.translucentMesh

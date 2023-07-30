@@ -80,7 +80,7 @@ internal class DirectedPropertyTest {
         assertTrue(shape.isSideCovered(Directions.EAST))
     }
 
-    // @Test // TODO: This test is correct, isSideCovered is broken
+    @Test
     fun testSideCovered6() {
         val shape = VoxelShape(
             AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
@@ -100,6 +100,53 @@ internal class DirectedPropertyTest {
         val shape = VoxelShape(
             AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
             AABB(0.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f),
+        )
+
+        assertTrue(shape.isSideCovered(Directions.DOWN))
+        assertFalse(shape.isSideCovered(Directions.UP))
+        assertFalse(shape.isSideCovered(Directions.NORTH))
+        assertTrue(shape.isSideCovered(Directions.SOUTH))
+        assertFalse(shape.isSideCovered(Directions.WEST))
+        assertFalse(shape.isSideCovered(Directions.EAST))
+    }
+
+    @Test
+    fun testSideCovered8() {
+        val shape = VoxelShape(
+            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
+            AABB(0.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f),
+        )
+
+        assertTrue(shape.isSideCovered(Directions.DOWN))
+        assertFalse(shape.isSideCovered(Directions.UP))
+        assertFalse(shape.isSideCovered(Directions.NORTH))
+        assertTrue(shape.isSideCovered(Directions.SOUTH))
+        assertFalse(shape.isSideCovered(Directions.WEST))
+        assertFalse(shape.isSideCovered(Directions.EAST))
+    }
+
+
+    @Test
+    fun testSideCovered9() { // overlapping
+        val shape = VoxelShape(
+            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.6f, 1.0f),
+            AABB(0.0f, 0.4f, 0.5f, 1.0f, 1.0f, 1.0f),
+        )
+
+        assertTrue(shape.isSideCovered(Directions.DOWN))
+        assertFalse(shape.isSideCovered(Directions.UP))
+        assertFalse(shape.isSideCovered(Directions.NORTH))
+        assertTrue(shape.isSideCovered(Directions.SOUTH))
+        assertFalse(shape.isSideCovered(Directions.WEST))
+        assertFalse(shape.isSideCovered(Directions.EAST))
+    }
+
+    // @Test // TODO: This test is correct, isSideCovered is broken
+    fun testSideCovered10() { // overlapping
+        val shape = VoxelShape(
+            AABB(0.0f, 0.0f, 0.0f, 1.0f, 0.6f, 1.0f),
+            AABB(0.1f, 0.0f, 0.0f, 0.9f, 0.8f, 1.0f),
+            AABB(0.0f, 0.4f, 0.5f, 1.0f, 0.9f, 1.0f),
         )
 
         assertTrue(shape.isSideCovered(Directions.DOWN))

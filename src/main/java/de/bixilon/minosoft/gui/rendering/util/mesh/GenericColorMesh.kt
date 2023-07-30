@@ -20,19 +20,15 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 
-open class GenericColorMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.renderSystem.quadType) : Mesh(context, GenericColorMeshStruct, primitiveType) {
+open class GenericColorMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType, initialCacheSize: Int = 1000) : Mesh(context, GenericColorMeshStruct, primitiveType, initialCacheSize) {
 
     fun addVertex(position: Vec3, color: RGBColor?) {
-        data.add(position.x)
-        data.add(position.y)
-        data.add(position.z)
+        data.add(position.array)
         data.add((color ?: ChatColors.WHITE).rgba.buffer())
     }
 
     fun addVertex(position: Vec3, color: Float) {
-        data.add(position.x)
-        data.add(position.y)
-        data.add(position.z)
+        data.add(position.array)
         data.add(color)
     }
 

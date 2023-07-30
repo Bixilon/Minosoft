@@ -474,7 +474,7 @@ class BreakHandlerTest {
     companion object {
 
         fun createTarget(connection: PlayConnection, block: ResourceLocation, distance: Double): BlockState {
-            val state = connection.registries.block[block]!!.defaultState
+            val state = connection.registries.block[block]!!.states.default
             connection.world[Vec3i(1, 2, 3)] = state
 
             val target = BlockTarget(Vec3d(1.0, 2.0, 3.0), distance, Directions.UP, state, null, Vec3i(1, 2, 3), false)

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.registries.blocks.light
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.shapes.side.SideQuad
 import de.bixilon.minosoft.data.registries.shapes.side.VoxelSide
-import de.bixilon.minosoft.data.registries.shapes.side.VoxelSideSet
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
@@ -34,7 +34,8 @@ class DirectedProperty(
     companion object {
         private val TRUE = BooleanArray(Directions.SIZE) { true }
         private val FALSE = BooleanArray(Directions.SIZE) { false }
-        private val FULL_SIDE = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
+        private val FULL_SIDE = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        private val REQUIRED_SURFACE_AREA = FULL_SIDE.surfaceArea() - 0.0001f // add some padding for floating point
 
         private val BooleanArray.isSimple: Boolean?
             get() {
@@ -69,11 +70,13 @@ class DirectedProperty(
         }
 
 
-        private fun AbstractVoxelShape.getSide(side: Directions): VoxelSideSet {
+        private fun AbstractVoxelShape.getSide(side: Directions): VoxelSide? {
             // ToDo: This whole calculation is technically wrong, it could be that 2 different sides of 2 blocks are "free". That means that light can still not pass the blocks, but
             // this algorithm does not cover it. Let's see it as performance hack
 
-            val sides: MutableSet<VoxelSide> = ObjectOpenHashSet()
+            if (this.aabbs == 0) return null
+
+            val sides: MutableSet<SideQuad> = ObjectOpenHashSet()
 
             for (aabb in this) {
                 when (side.axis) {
@@ -81,41 +84,60 @@ class DirectedProperty(
                         if ((side == Directions.DOWN && aabb.min.y != 0.0) || (side == Directions.UP && aabb.max.y != 1.0)) {
                             continue
                         }
-                        sides += VoxelSide(aabb.min.x, aabb.min.z, aabb.max.x, aabb.max.z)
+                        val side = SideQuad(aabb.min.x.toFloat(), aabb.min.z.toFloat(), aabb.max.x.toFloat(), aabb.max.z.toFloat())
+                        if (side.surfaceArea() > 0.0f) {
+                            sides += side
+                        }
                     }
 
                     Axes.X -> {
                         if ((side == Directions.WEST && aabb.min.x != 0.0) || (side == Directions.EAST && aabb.max.x != 1.0)) {
                             continue
                         }
-                        sides += VoxelSide(aabb.min.y, aabb.min.z, aabb.max.y, aabb.max.z)
+                        val side = SideQuad(aabb.min.y.toFloat(), aabb.min.z.toFloat(), aabb.max.y.toFloat(), aabb.max.z.toFloat())
+                        if (side.surfaceArea() > 0.0f) {
+                            sides += side
+                        }
                     }
 
                     Axes.Z -> {
                         if ((side == Directions.NORTH && aabb.min.z != 0.0) || (side == Directions.SOUTH && aabb.max.z != 1.0)) {
                             continue
                         }
-                        sides += VoxelSide(aabb.min.x, aabb.min.y, aabb.max.x, aabb.max.y)
+                        val side = SideQuad(aabb.min.x.toFloat(), aabb.min.y.toFloat(), aabb.max.x.toFloat(), aabb.max.y.toFloat())
+                        if (side.surfaceArea() > 0.0f) {
+                            sides += side
+                        }
                     }
                 }
             }
 
-            return VoxelSideSet(sides)
+            if (sides.isEmpty()) return null
+
+            return VoxelSide(sides)
+        }
+
+        private fun VoxelSide.getSideArea(target: SideQuad): Float {
+            // overlapping is broken, see https://stackoverflow.com/questions/7342935/algorithm-to-compute-total-area-covered-by-a-set-of-overlapping-segments
+            var area = 0.0f
+
+            for (quad in this) {
+                val width = minOf(target.max.x, quad.max.x) - maxOf(quad.min.x, target.min.x)
+                val height = minOf(target.max.y, quad.max.y) - maxOf(quad.min.y, target.min.y)
+
+                area += width * height
+            }
+
+            return area
         }
 
         fun AbstractVoxelShape.isSideCovered(direction: Directions): Boolean {
-            val side = getSide(direction)
-            if (side.isEmpty()) {
-                return false
-            }
+            // this should be improved: https://stackoverflow.com/questions/76373725/check-if-a-quad-is-fully-covered-by-a-set-of-others
+            val side = getSide(direction) ?: return false
 
-            val rest = FULL_SIDE - side
-            var compacted = rest.compact()
-            if (rest != compacted) {
-                compacted = FULL_SIDE - compacted
-            }
+            val surface = side.getSideArea(FULL_SIDE)
 
-            return !FULL_SIDE.touches(compacted)
+            return surface >= REQUIRED_SURFACE_AREA
         }
     }
 }

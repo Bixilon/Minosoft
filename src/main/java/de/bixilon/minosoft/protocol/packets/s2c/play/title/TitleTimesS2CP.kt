@@ -32,6 +32,6 @@ class TitleTimesS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Title time (fadeInTime=$fadeInTime, stayTime=$stayTime, fadeOutTime=$fadeOutTime)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Title time (fadeInTime=$fadeInTime, stayTime=$stayTime, fadeOutTime=$fadeOutTime)" }
     }
 }

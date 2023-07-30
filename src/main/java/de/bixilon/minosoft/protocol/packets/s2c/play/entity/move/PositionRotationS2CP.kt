@@ -98,6 +98,6 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Position + rotation (position=$position, rotation=$rotation, onGround=$onGround, flags=$flags, teleportId=$teleportId, dismountVehicle=$dismountVehicle)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Position + rotation (position=$position, rotation=$rotation, onGround=$onGround, flags=$flags, teleportId=$teleportId, dismountVehicle=$dismountVehicle)" }
     }
 }

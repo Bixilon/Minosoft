@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -41,9 +42,9 @@ class EnchantmentButtonElement(
     override val disabledAtlas = guiRenderer.atlasManager["enchanting_table_card_disabled"]
     override val normalAtlas = guiRenderer.atlasManager["enchanting_table_card_normal"]
     override val hoveredAtlas = guiRenderer.atlasManager["enchanting_table_card_hovered"]
-    private val levelText = TextElement(guiRenderer, ChatComponent.EMPTY, background = false)
+    private val levelText = TextElement(guiRenderer, ChatComponent.EMPTY, background = null)
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
         val level = AtlasImageElement(guiRenderer, if (disabled) disabledLevelAtlas else levelAtlas)
@@ -58,7 +59,7 @@ class EnchantmentButtonElement(
     init {
         _parent = container
         dynamicSized = false
-        _size = normalAtlas?.size ?: Vec2i(108, 19)
+        _size = normalAtlas?.size?.let { Vec2(it) } ?: Vec2(108, 19)
     }
 
     override fun submit() {

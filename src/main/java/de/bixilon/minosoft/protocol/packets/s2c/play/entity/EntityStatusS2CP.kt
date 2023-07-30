@@ -34,13 +34,13 @@ class EntityStatusS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val entity = connection.world.entities[entityId] ?: return
         val event = EntityEvents.get(connection.version, entity, eventId)
         if (event == null) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Unknown entity event (entity=${entity.type.identifier}, id=$eventId)" }
+            Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Unknown entity event (entity=${entity.type.identifier}, id=$eventId)" }
             return
         }
         event.unsafeCast<EntityEvent<Entity>>().handle(entity)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity status (entityId=$entityId, event=$eventId)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Entity status (entityId=$entityId, event=$eventId)" }
     }
 }

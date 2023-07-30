@@ -31,7 +31,7 @@ class SlabTest : BlockTest<Block>() {
 
     fun getSlabs() {
         super.retrieveBlock(MinecraftBlocks.OAK_SLAB)
-        top = block.withProperties(BlockProperties.SLAB_TYPE to Halves.UPPER)
+        top = block.states.withProperties(BlockProperties.SLAB_TYPE to Halves.UPPER)
     }
 }
 

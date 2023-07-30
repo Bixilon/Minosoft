@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec4
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec4.Vec4
 
 object Vec4Util {
@@ -26,5 +27,38 @@ object Vec4Util {
     val Vec4.Companion.MAX: Vec4
         get() = Vec4(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
 
+
+    val Vec4.top: Float
+        get() = this.x
+
+    val Vec4.right: Float
+        get() = this.y
+
+    val Vec4.bottom: Float
+        get() = this.z
+
+    val Vec4.left: Float
+        get() = this.w
+
+    val Vec4.horizontal: Float
+        get() = right + left
+
+    val Vec4.vertical: Float
+        get() = top + bottom
+
+    val Vec4.spaceSize: Vec2
+        get() = Vec2(horizontal, vertical)
+
+    val Vec4.offset: Vec2
+        get() = Vec2(left, top)
+
     fun FloatArray.dot(x: Float, y: Float, z: Float) = this[0] * x + this[1] * y + this[2] * z + this[3]
+
+    fun Vec4.copy(top: Float = this.top, right: Float = this.right, bottom: Float = this.bottom, left: Float = this.left): Vec4 {
+        return Vec4(top, right, bottom, left)
+    }
+
+    fun marginOf(top: Float = 0.0f, right: Float = 0.0f, bottom: Float = 0.0f, left: Float = 0.0f): Vec4 {
+        return Vec4(top, right, bottom, left)
+    }
 }

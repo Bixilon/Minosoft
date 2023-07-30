@@ -18,14 +18,13 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class EndRodParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : AnimatedParticle(connection, position, 0.0125f, data) {
 
     init {
-        this.velocity assign velocity
+        this.velocity(velocity)
 
         this.scale *= 0.75f
         this.maxAge = 60 + random.nextInt(12)

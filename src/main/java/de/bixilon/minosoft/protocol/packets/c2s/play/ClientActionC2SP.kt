@@ -36,7 +36,7 @@ class ClientActionC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Client action (action=$action)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Client action (action=$action)" }
     }
 
     enum class ClientActions {

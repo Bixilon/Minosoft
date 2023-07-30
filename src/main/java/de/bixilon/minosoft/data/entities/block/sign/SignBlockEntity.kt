@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection) {

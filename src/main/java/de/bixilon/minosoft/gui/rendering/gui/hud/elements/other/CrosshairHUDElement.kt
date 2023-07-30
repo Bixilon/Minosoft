@@ -57,9 +57,9 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         val mesh = mesh ?: return
 
         if (crosshairProfile.complementaryColor) {
-            context.renderSystem.reset(blending = true, sourceRGB = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
+            context.system.reset(blending = true, sourceRGB = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
         } else {
-            context.renderSystem.reset()
+            context.system.reset()
         }
 
         guiRenderer.shader.use()
@@ -91,7 +91,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         mesh?.unload()
         this.mesh = null
 
-        val mesh = GUIMesh(context, guiRenderer.matrix, BufferedArrayFloatList(42))
+        val mesh = GUIMesh(context, guiRenderer.halfSize, BufferedArrayFloatList(42))
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
         mesh.addQuad(start, start + CROSSHAIR_SIZE, crosshairAtlasElement, crosshairProfile.color, null)
 

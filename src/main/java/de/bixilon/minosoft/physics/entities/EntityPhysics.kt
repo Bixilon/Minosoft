@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.physics.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -33,7 +33,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.handlers.general.AbstractEntityPhysics
 import de.bixilon.minosoft.physics.handlers.movement.SneakAdjuster
@@ -49,7 +48,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
         protected set
     var headYaw = 0.0f
         protected set
-    override var positionInfo by observed(EntityPositionInfo.EMPTY)
+    override var positionInfo = EntityPositionInfo.EMPTY
         protected set
 
 
@@ -94,7 +93,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     override fun preTick() {
         super.preTick()
-        updatePositionInfo()
+        updatePositionInfo() // TODO: this kills performance, it is not needed most if the times. Only if the world changes
     }
 
     override fun tick() {
@@ -107,7 +106,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
 
     fun getLandingPosition(): BlockPosition {
         val info = this.positionInfo
-        val position = Vec3d(info.inChunkPosition.x, position.y - 0.2, info.inChunkPosition.z).blockPosition
+        val position = Vec3i(info.inChunkPosition.x, (position.y - 0.2).toInt(), info.inChunkPosition.z)
         val state = positionInfo.chunk?.get(position)
         if (state == null) {
             val down = positionInfo.chunk?.get(position + Directions.DOWN)

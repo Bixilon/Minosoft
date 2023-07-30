@@ -88,6 +88,6 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Entity effect (entityId=$entityId, effect=$effect, isAmbient=$isAmbient, hideParticles=$hideParticles, showIcon=$showIcon)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Entity effect (entityId=$entityId, effect=$effect, isAmbient=$isAmbient, hideParticles=$hideParticles, showIcon=$showIcon)" }
     }
 }

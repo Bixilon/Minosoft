@@ -15,8 +15,6 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.random.RandomUtil.nextInt
@@ -24,6 +22,7 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
@@ -33,10 +32,11 @@ import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.light.ChunkLight.Companion.canSkylight
+import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.manager.ChunkManager
 import de.bixilon.minosoft.data.world.difficulty.WorldDifficulty
+import de.bixilon.minosoft.data.world.entities.WorldEntities
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.data.world.particle.WorldParticleRenderer
@@ -50,7 +50,6 @@ import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import java.util.*
 
 /**
@@ -60,8 +59,9 @@ class World(
     val connection: PlayConnection,
 ) : BiomeAccessor, WorldAudioPlayer, WorldParticleRenderer {
     val lock = SimpleLock()
+    val random = Random()
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
-    val chunks = ChunkManager(this)
+    val chunks = ChunkManager(this, 1000, 100)
     val entities = WorldEntities()
     var hardcore by observed(false)
     var dimension: DimensionProperties by observed(DimensionProperties())
@@ -73,7 +73,6 @@ class World(
 
     var name: ResourceLocation? by observed(null)
 
-    private val random = Random()
 
     override var audioPlayer: AbstractAudioPlayer? = null
     override var particleRenderer: AbstractParticleRenderer? = null
@@ -162,45 +161,37 @@ class World(
         val simulationDistance = view.simulationDistance
         val cameraPosition = connection.player.physics.positionInfo.chunkPosition
         lock.acquire()
-        val worker = UnconditionalWorker()
-        for ((chunkPosition, chunk) in chunks.chunks.unsafe) {
-            // ToDo: Cache (improve performance)
-            if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
-                continue
-            }
-            worker += UnconditionalTask(priority = ThreadPool.HIGH) { chunk.tick(connection, chunkPosition, random) }
-        }
+        chunks.tick(simulationDistance, cameraPosition)
         lock.release()
-        worker.work()
         border.tick()
     }
 
-    fun randomTick() {
+    fun randomDisplayTick() {
         val origin = connection.player.physics.positionInfo.blockPosition
         val chunk = this.chunks[origin.chunkPosition] ?: return
 
-        val offset = Vec3i.EMPTY
+        val position = Vec3i.EMPTY
         val chunkDelta = Vec2i.EMPTY
 
         for (i in 0 until 667) {
-            randomTick(16, origin, offset, chunkDelta, chunk)
-            randomTick(32, origin, offset, chunkDelta, chunk)
+            randomDisplayTick(16, origin, position, chunkDelta, chunk)
+            randomDisplayTick(32, origin, position, chunkDelta, chunk)
         }
     }
 
-    private fun randomTick(radius: Int, origin: BlockPosition, offset: BlockPosition, chunkDelta: Vec2i, chunk: Chunk) {
-        offset.x = random.nextInt(-radius, radius)
-        offset.y = random.nextInt(-radius, radius)
-        offset.z = random.nextInt(-radius, radius)
-
-        val position = origin + offset
+    private fun randomDisplayTick(radius: Int, origin: BlockPosition, position: BlockPosition, chunkDelta: Vec2i, chunk: Chunk) {
+        position.x = origin.x + random.nextInt(-radius, radius)
+        position.y = origin.x + random.nextInt(-radius, radius)
+        position.z = origin.x + random.nextInt(-radius, radius)
 
         chunkDelta.x = (origin.x - position.x) shr 4
         chunkDelta.y = (origin.z - position.z) shr 4
 
-        val state = chunk.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
+        val state = chunk.neighbours.traceBlock(position.x and 0x0F, position.y, position.z and 0x0F, chunkDelta) ?: return
+        if (state.block !is RandomDisplayTickable) return
+        if (!state.block.hasRandomTicks(connection, state, position)) return
 
-        state.block.randomTick(connection, state, position, random)
+        state.block.randomDisplayTick(connection, state, position, random)
     }
 
     operator fun get(aabb: AABB): WorldIterator {
@@ -223,7 +214,7 @@ class World(
     fun getBrightness(position: BlockPosition): Float {
         val light = getLight(position)
         var level = light and SectionLight.BLOCK_LIGHT_MASK
-        if (dimension.canSkylight()) {
+        if (dimension.hasSkyLight()) {
             level = maxOf(level, light and SectionLight.SKY_LIGHT_MASK shr 4)
         }
         return dimension.ambientLight[level]
@@ -237,7 +228,7 @@ class World(
             reset += { chunk.light.reset() }
             calculate += {
                 if (heightmap) {
-                    chunk.light.recalculateHeightmap()
+                    chunk.light.heightmap.recalculate()
                 }
                 chunk.light.calculate()
             }

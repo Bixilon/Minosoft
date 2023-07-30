@@ -62,7 +62,7 @@ object EntityEvents : DefaultFactory<EntityEvent<*>>(
         for ((name, data) in json) {
             val clazz = DefaultEntityFactories.ABSTRACT_ENTITY_DATA_CLASSES[name]?.java ?: DefaultEntityFactories[name]?.javaClass // TODO: This is the companion class
             if (clazz == null) {
-                Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Entity Events: Entity for $name not found!" }
+                Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Entity Events: Entity for $name not found!" }
                 continue
             }
             val map = Int2ObjectOpenHashMap<EntityEvent<*>>()

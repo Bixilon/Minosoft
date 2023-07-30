@@ -30,6 +30,7 @@ import de.bixilon.minosoft.modding.event.events.chat.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.CommandC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.SignedChatMessageC2SP
@@ -75,7 +76,7 @@ class ConnectionUtil(
         try {
             val key = keyManagement.key
             if (key == null) {
-                connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.EPOCH, salt = 0, signature = null, false, Acknowledgement.EMPTY))
+                connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.now(), salt = 0, signature = null, false, Acknowledgement.EMPTY))
                 return
             }
             sendSignedMessage(key, trimmed)
@@ -107,12 +108,12 @@ class ConnectionUtil(
         }
         val trimmed = ChatUtil.trimChatMessage(command).removePrefix("/")
         ChatUtil.validateChatMessage(connection, trimmed)
+        val time = Instant.now()
         if (stack.size == 0) {
-            connection.sendPacket(CommandC2SP(trimmed, Instant.EPOCH, 0L, emptyMap(), false, Acknowledgement.EMPTY)) // TODO: remove
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Command $trimmed failed to pars!" }
+            connection.sendPacket(CommandC2SP(trimmed, time, 0L, emptyMap(), false, Acknowledgement.EMPTY)) // TODO: remove
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Command $trimmed failed to parse!" }
             throw IllegalArgumentException("Empty command stack! Did the command fail to parse?")
         }
-        val time = Instant.now()
         val salt = SecureRandom().nextLong()
         val acknowledgement = Acknowledgement.EMPTY
 
@@ -148,5 +149,9 @@ class ConnectionUtil(
     fun resetWorld() {
         connection.world.entities.clear(connection)
         connection.world.clear()
+    }
+
+    fun respawn() {
+        connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
     }
 }

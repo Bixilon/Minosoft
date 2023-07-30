@@ -24,6 +24,6 @@ class FeaturesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val features = buffer.readArray { buffer.readResourceLocation() }.toSet()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Features (features=$features)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Features (features=$features)" }
     }
 }

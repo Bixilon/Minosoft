@@ -38,7 +38,7 @@ class PowderSnowIT : SlowMovementIT() {
 
     @Test(priority = -1)
     fun getPowderSnow() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.POWDER_SNOW]?.defaultState ?: throw SkipException("Can not find powder snow!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.POWDER_SNOW]?.states?.default ?: throw SkipException("Can not find powder snow!")
     }
 
     private fun LocalPlayerEntity.setFrozenTicks(ticks: Int) {

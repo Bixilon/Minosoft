@@ -15,12 +15,12 @@ package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.chunk.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.*
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 
 class ParticleShader(
     override val native: NativeShader,

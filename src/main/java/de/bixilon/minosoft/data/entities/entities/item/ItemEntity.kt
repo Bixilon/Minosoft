@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.physics.entities.living.ItemEntityPhysics
+import de.bixilon.minosoft.physics.entities.item.ItemEntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ItemEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {

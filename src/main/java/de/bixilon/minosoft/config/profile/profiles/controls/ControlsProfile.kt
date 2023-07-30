@@ -40,7 +40,7 @@ class ControlsProfile(
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 
-    var keyBindings: MutableMap<ResourceLocation, KeyBinding> by MapDelegate(this, mutableMapOf(), "")
+    var bindings: MutableMap<ResourceLocation, KeyBinding> by MapDelegate(this, mutableMapOf(), "")
         private set
 
     val mouse = MouseC(this)

@@ -19,7 +19,6 @@ import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.NoRenderParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -35,7 +34,7 @@ class EntityEmitterParticle(
 
     init {
         val cameraPosition = entity.renderInfo.position
-        this.position assign Vec3d(cameraPosition.x, cameraPosition.y + entity.type.height * 0.5, cameraPosition.z)
+        this.position(Vec3d(cameraPosition.x, cameraPosition.y + entity.type.height * 0.5, cameraPosition.z))
         this.maxAge = maxAge
         movement = false
         tick()

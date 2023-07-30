@@ -36,6 +36,6 @@ class RotationC2SP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Rotation (rotation=$rotation, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Rotation (rotation=$rotation, onGround=$onGround)" }
     }
 }

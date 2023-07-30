@@ -16,16 +16,16 @@ package de.bixilon.minosoft.gui.rendering.models.fluid.fluids
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 
 class LavaFluidModel : FluidModel {
-    override var still: AbstractTexture? = null
-    override var flowing: AbstractTexture? = null
+    override var still: Texture? = null
+    override var flowing: Texture? = null
 
     override fun load(context: RenderContext) {
-        still = context.textureManager.staticTextures.createTexture(STILL)
-        flowing = context.textureManager.staticTextures.createTexture(FLOWING)
+        still = context.textures.staticTextures.createTexture(STILL)
+        flowing = context.textures.staticTextures.createTexture(FLOWING)
     }
 
     companion object {

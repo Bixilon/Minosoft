@@ -20,8 +20,10 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.toVec2
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2i
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -58,7 +60,7 @@ class AtlasManager(private val context: RenderContext) {
             }
             val versionData = versions[versionToUse.toString()].asJsonObject()
 
-            val texture = context.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation().texture(), mipmaps = false)
+            val texture = context.textures.staticTextures.createTexture(versionData["texture"].toResourceLocation().texture(), mipmaps = false)
             val start = versionData["start"].toVec2i()
             val end = versionData["end"].toVec2i()
             val slots: Int2ObjectOpenHashMap<AtlasSlot> = Int2ObjectOpenHashMap()
@@ -67,8 +69,8 @@ class AtlasManager(private val context: RenderContext) {
                 for ((slotId, slotData) in it) {
                     val slot = slotData.asJsonObject()
                     slots[slotId.toInt()] = AtlasSlot(
-                        start = slot["start"].toVec2i(),
-                        end = slot["end"].toVec2i(),
+                        start = slot["start"].toVec2(),
+                        end = slot["end"].toVec2(),
                     )
                 }
             }
@@ -78,8 +80,8 @@ class AtlasManager(private val context: RenderContext) {
                 for ((areaName, areaPosition) in it) {
                     val position = areaPosition.asJsonObject()
                     areas[areaName] = AtlasArea(
-                        start = position["start"].toVec2i(),
-                        end = position["end"].toVec2i(),
+                        start = position["start"].toVec2(),
+                        end = position["end"].toVec2(),
                     )
                 }
             }
@@ -104,8 +106,8 @@ class AtlasManager(private val context: RenderContext) {
 
     fun postInit() {
         for (element in elements.values) {
-            val singePixelSize = element.resolution?.let { Vec2(1.0f) / it / (Vec2(element.texture.atlasSize) / it) } ?: ATLAS_SINGLE_DEFAULT_PIXEL_SIZE
-            element.uvStart = singePixelSize * element.start
+            val singePixelSize = element.resolution?.let { Vec2(1.0f) / it / (Vec2(element.texture.array.size) / it) } ?: ATLAS_SINGLE_DEFAULT_PIXEL_SIZE
+            element.uvStart = singePixelSize * element.start + RenderConstants.UV_ADD
             element.uvEnd = singePixelSize * element.end
         }
     }

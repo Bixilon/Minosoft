@@ -27,7 +27,7 @@ class ChatSuggestionsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val matches = buffer.readArray { buffer.readString() }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chat suggestions (action=$action, matches=$matches)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Chat suggestions (action=$action, matches=$matches)" }
     }
 
     enum class Actions {

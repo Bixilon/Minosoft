@@ -39,13 +39,13 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val blockEntity = connection.world.getOrPutBlockEntity(position) ?: return
 
         if (blockEntity !is BlockActionEntity) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Block entity $blockEntity can not accept block entity actions!" }
+            Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { "Block entity $blockEntity can not accept block entity actions!" }
             return
         }
         blockEntity.setBlockActionData(data1, data2)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block action (position=$position, data1=$data1, data2=$data2, block=$block)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Block action (position=$position, data1=$data1, data2=$data2, block=$block)" }
     }
 }

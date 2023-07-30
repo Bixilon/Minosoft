@@ -15,6 +15,7 @@ package de.bixilon.minosoft.physics.submersion
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -35,7 +36,6 @@ import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPositio
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.physics.VanillaMath.vanillaNormalizeAssign
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.properties.SwimmingVehicle
@@ -46,8 +46,7 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
     private val world = physics.entity.connection.world
     var eye: Fluid? = null
         private set
-    var heights: Object2DoubleOpenHashMap<Fluid> = Object2DoubleOpenHashMap()
-        private set
+    val heights: Object2DoubleOpenHashMap<Fluid> = Object2DoubleOpenHashMap(0, 0.1f)
 
     @Deprecated("eye is WaterFluid")
     var waterSubmersionState: Boolean = false
@@ -107,7 +106,8 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         physics.velocity = physics.velocity + update.velocity
     }
 
-    private fun update(fluid: Fluid, aabb: AABB, pushable: Boolean, previousHeight: Double) {
+    private fun update(fluid: Fluid?, aabb: AABB, pushable: Boolean, previousHeight: Double) {
+        if (fluid == null) return
         val update = getFluidUpdate(fluid, aabb, pushable)
 
         if (update == null) {
@@ -130,11 +130,13 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         }
     }
 
+    @Deprecated("performance")
     private fun update(type: ResourceLocation, aabb: AABB, pushable: Boolean, previousHeight: Double) {
-        val fluid = physics.entity.connection.registries.fluid[type] ?: return // TODO: remove this and stream fluids: waterlogged makes problems
+        val fluid = physics.entity.connection.registries.fluid[type] // TODO: remove this and stream fluids: waterlogged makes problems
         update(fluid, aabb, pushable, previousHeight)
     }
 
+    @Deprecated("performance")
     private fun update(type: Identified, aabb: AABB, pushable: Boolean, previous: Double) = update(type.identifier, aabb, pushable, previous)
 
     private fun updateWaterSubmersion() {
@@ -146,8 +148,10 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         if (vehicle is Boat) {
             // TODO
         }
-        val eyePosition = Vec3d(physics.position.x, eyeHeight, physics.position.z).blockPosition
-        val block = world[eyePosition] ?: return
+        val position = physics.position
+        val eyePosition = Vec3i(position.x.floor, eyeHeight.floor, position.z.floor)
+
+        val block = physics.positionInfo.chunk?.get(eyePosition.x and 0x0F, eyePosition.y, eyePosition.z and 0x0F) ?: return
         if (block.block !is FluidHolder) {
             return
         }
@@ -164,23 +168,25 @@ class SubmersionState(private val physics: EntityPhysics<*>) : Tickable {
         if (vehicle is SwimmingVehicle && !vehicle.canUpdatePassengerFluidMovement(WaterFluid)) {
             return
         }
-        update(WaterFluid, aabb, pushable, previous)
+        update(physics.entity.connection.registries.fluid.water, aabb, pushable, previous)
     }
 
     private fun clear() {
-        this.heights = Object2DoubleOpenHashMap()
+        this.heights.clear()
         primaryFluid = null
     }
 
     private fun update() {
-        val previous = this.heights
+        val previousWater = this.heights.getDouble(WaterFluid)
+        val previousLava = this.heights.getDouble(LavaFluid)
+
         clear()
 
         val aabb = physics.aabb.shrink(0.001)
         val pushable = physics.fluidPushable
 
-        updateWater(aabb, pushable, previous.getDouble(WaterFluid))
-        update(LavaFluid, aabb, pushable, previous.getDouble(LavaFluid))
+        updateWater(aabb, pushable, previousWater)
+        update(physics.entity.connection.registries.fluid.lava, aabb, pushable, previousLava)
     }
 
     override fun tick() {

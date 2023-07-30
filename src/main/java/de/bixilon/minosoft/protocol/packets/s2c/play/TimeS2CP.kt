@@ -36,6 +36,6 @@ class TimeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "World time set (time=$time, age=$age)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "World time set (time=$time, age=$age)" }
     }
 }

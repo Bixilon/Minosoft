@@ -30,22 +30,20 @@ class StairsTest : BlockTest<Block>() {
         super.retrieveBlock(MinecraftBlocks.OAK_STAIRS)
     }
 
-    @Test(enabled = false)    // ToDo: This test is correct, but failing
     fun testLightPropertiesNorth() {
-        block.withProperties(BlockProperties.FACING to Directions.NORTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, false, true, true, true))
+        block.states.withProperties(BlockProperties.FACING to Directions.NORTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, false, true, true, true))
     }
 
-    @Test(enabled = false)        // ToDo: This test is correct, but failing
     fun testLightPropertiesSouth() {
-        block.withProperties(BlockProperties.FACING to Directions.SOUTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, false, true, true))
+        block.states.withProperties(BlockProperties.FACING to Directions.SOUTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, false, true, true))
     }
 
     fun testLightPropertiesWest() {
-        block.withProperties(BlockProperties.FACING to Directions.WEST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, false, true))
+        block.states.withProperties(BlockProperties.FACING to Directions.WEST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, false, true))
     }
 
     fun testLightPropertiesEast() {
-        block.withProperties(BlockProperties.FACING to Directions.EAST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, true, false))
+        block.states.withProperties(BlockProperties.FACING to Directions.EAST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, true, false))
     }
 }
 

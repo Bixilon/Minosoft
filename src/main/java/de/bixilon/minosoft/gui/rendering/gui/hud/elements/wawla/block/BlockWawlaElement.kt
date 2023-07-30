@@ -48,7 +48,7 @@ class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : Wawla
         if (namespace == Namespaces.DEFAULT) {
             return null
         }
-        return TextElement(guiRenderer, TextComponent(namespace).color(ChatColors.BLUE), background = false)
+        return TextElement(guiRenderer, TextComponent(namespace).color(ChatColors.BLUE), background = null)
     }
 
     private fun createAdditionalInformation(): TextElement? {
@@ -69,6 +69,6 @@ class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : Wawla
 
         component.setFallbackColor(ChatColors.GRAY)
 
-        return TextElement(guiRenderer, component, background = false)
+        return TextElement(guiRenderer, component, background = null)
     }
 }

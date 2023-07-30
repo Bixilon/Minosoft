@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
@@ -72,5 +73,27 @@ object Vec3iUtil {
 
     fun Vec3i.length2(): Int {
         return x * x + y * y + z * z
+    }
+
+    operator fun Vec3i.get(axis: Axes): Int {
+        return when (axis) {
+            Axes.X -> x
+            Axes.Y -> y
+            Axes.Z -> z
+        }
+    }
+
+    operator fun Vec3i.set(axis: Axes, value: Int) {
+        when (axis) {
+            Axes.X -> x = value
+            Axes.Y -> y = value
+            Axes.Z -> z = value
+        }
+    }
+
+    fun Vec3i.assignPlus(a: Vec3i, b: Vec3i) {
+        this.x = a.x + b.x
+        this.y = a.y + b.y
+        this.z = a.z + b.z
     }
 }

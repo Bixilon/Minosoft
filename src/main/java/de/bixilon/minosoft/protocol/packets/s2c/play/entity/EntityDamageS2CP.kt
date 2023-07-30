@@ -30,6 +30,6 @@ class EntityDamageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity damage (entityId=$entityId, type=$type, source=$source, direct=$direct, position=$position)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Entity damage (entityId=$entityId, type=$type, source=$source, direct=$direct, position=$position)" }
     }
 }

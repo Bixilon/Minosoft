@@ -185,7 +185,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Initialize (entityId=$entityId, gamemode=$gamemode, dimension=$dimension, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Initialize (entityId=$entityId, gamemode=$gamemode, dimension=$dimension, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
     }
 
     companion object : PacketErrorHandler {

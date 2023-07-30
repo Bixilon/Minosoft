@@ -17,9 +17,10 @@ import de.bixilon.kutil.avg.Average
 
 interface AbstractRenderStats {
     val avgFrameTime: Average<Long>
-    val smoothAvgFPS: Double
 
     val avgFPS: Double
+    val smoothAvgFPS: Double
+
     val totalFrames: Long
 
 

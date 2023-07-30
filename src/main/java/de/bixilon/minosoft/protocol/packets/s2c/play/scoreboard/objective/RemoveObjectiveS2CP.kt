@@ -27,7 +27,7 @@ class RemoveObjectiveS2CP(
 ) : ObjectiveS2CP {
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Remove scoreboard objective (objective=$objective)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Remove scoreboard objective (objective=$objective)" }
     }
 
     override fun handle(connection: PlayConnection) {

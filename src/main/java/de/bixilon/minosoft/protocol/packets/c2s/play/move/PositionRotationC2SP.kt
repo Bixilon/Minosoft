@@ -45,6 +45,6 @@ class PositionRotationC2SP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Position + rotation (position=$position, rotation=$rotation, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Position + rotation (position=$position, rotation=$rotation, onGround=$onGround)" }
     }
 }

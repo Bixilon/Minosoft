@@ -18,7 +18,8 @@ import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
@@ -42,9 +43,7 @@ import de.bixilon.minosoft.data.registries.entities.damage.DamageType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
-import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.data.registries.fluid.FluidFactories
-import de.bixilon.minosoft.data.registries.fluid.fluids.PixLyzerFluid
+import de.bixilon.minosoft.data.registries.fluid.FluidRegistry
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.ItemRegistry
 import de.bixilon.minosoft.data.registries.materials.Material
@@ -88,7 +87,7 @@ class Registries(
     val biome: Registry<Biome> = register("biome", Registry(codec = Biome))
     val dimension: Registry<Dimension> = register("dimension_type", Registry(codec = Dimension))
     val material: Registry<Material> = register("material", Registry(codec = Material))
-    val fluid: Registry<Fluid> = register("fluid", Registry(codec = PixLyzerFluid, integrated = FluidFactories))
+    val fluid: FluidRegistry = register("fluid", FluidRegistry())
     val soundEvent: ResourceLocationRegistry = register("sound_event", ResourceLocationRegistry())
     val recipes = RecipeRegistry()
 
@@ -140,13 +139,14 @@ class Registries(
         set(value) {
             field = value
             this.setParent(value)
+            fluid.updateWaterLava()
         }
 
     fun getEntityDataIndex(field: EntityDataField): Int? {
         return entityDataIndexMap[field] ?: parent?.getEntityDataIndex(field)
     }
 
-    fun load(version: Version, pixlyzerData: Map<String, Any>, latch: CountUpAndDownLatch) {
+    fun load(version: Version, pixlyzerData: Map<String, Any>, latch: AbstractLatch) {
         isFlattened = version.flattened
         block.flattened = isFlattened
         blockState.flattened = isFlattened
@@ -207,7 +207,7 @@ class Registries(
         worker += WorkerTask(this::statistic) { statistic.rawUpdate(pixlyzerData["statistics"]?.toJsonObject(), this) }
         worker += WorkerTask(this::misc, dependencies = arrayOf(this::item)) { misc.rawUpdate(pixlyzerData["misc"]?.toJsonObject(), this) }
 
-        val inner = CountUpAndDownLatch(1, latch)
+        val inner = ParentLatch(1, latch)
         worker.work(inner)
         inner.dec()
         while (inner.count > 0) {
@@ -228,7 +228,8 @@ class Registries(
         if (cleanup) {
             shape.cleanup()
         }
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
+        fluid.updateWaterLava()
+        Log.log(LogMessageType.LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
     }
 
     operator fun <T : RegistryItem> get(type: Class<T>): Registry<T>? {
@@ -250,7 +251,7 @@ class Registries(
             val fixedKey = key.toResourceLocation().fix()
             val registry = this[fixedKey]
             if (registry == null) {
-                Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Can not find registry: $fixedKey" }
+                Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find registry: $fixedKey" }
                 continue
             }
             val values: List<JsonObject> = if (value is List<*>) {
@@ -263,7 +264,7 @@ class Registries(
                 registry.update(values, this)
             } catch (error: Throwable) {
                 error.printStackTrace()
-                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Can not update $fixedKey registry: $error" }
+                Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { "Can not update $fixedKey registry: $error" }
             }
         }
     }

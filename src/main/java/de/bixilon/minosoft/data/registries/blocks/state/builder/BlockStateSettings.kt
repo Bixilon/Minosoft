@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape.Companion.deserialize
+import java.util.*
 
 class BlockStateSettings(
     val properties: Map<BlockProperties, Any>?,
@@ -60,7 +61,7 @@ class BlockStateSettings(
             val data = this["properties"]?.toJsonObject() ?: return null
             if (data.isEmpty()) return null
 
-            val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
+            val properties: MutableMap<BlockProperties, Any> = EnumMap(BlockProperties::class.java)
 
             for ((group, json) in data) {
                 try {

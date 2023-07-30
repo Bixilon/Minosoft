@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.textures.properties
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 data class AnimationProperties(
     val interpolate: Boolean = false,
@@ -36,7 +36,7 @@ data class AnimationProperties(
     var frameCount = -1
         private set
 
-    fun postInit(texture: AbstractTexture) {
+    fun postInit(texture: Texture) {
         if (initialized) {
             error("")
         }

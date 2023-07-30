@@ -70,7 +70,7 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Encryption request (serverId=$serverId, publicKey=${publicKey.toBase64()}, nonce=${nonce.toBase64()})" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Encryption request (serverId=$serverId, publicKey=${publicKey.toBase64()}, nonce=${nonce.toBase64()})" }
     }
 
     companion object : PacketErrorHandler {

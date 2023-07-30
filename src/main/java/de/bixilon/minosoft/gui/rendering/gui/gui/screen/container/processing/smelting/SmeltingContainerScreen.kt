@@ -37,20 +37,20 @@ abstract class SmeltingContainerScreen<C : SmeltingContainer>(
     private var fuel = 0.0f
     private var process = 0.0f
 
-    override fun forceRenderContainerScreen(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRenderContainerScreen(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRenderContainerScreen(offset, consumer, options)
 
         if (fuelArea != null) {
             val fuelImage = AtlasImageElement(guiRenderer, fuelAtlasElement, size = fuelArea.size)
             val fuel = fuel
-            fuelImage.prefMaxSize.y = (fuelImage.size.y * fuel).toInt()
+            fuelImage.prefMaxSize.y = (fuelImage.size.y * fuel)
             fuelImage.uvStart = Vec2(fuelAtlasElement?.uvStart?.x ?: 0.0f, interpolateLinear(1.0f - fuel, fuelAtlasElement?.uvStart?.y ?: 0.0f, fuelAtlasElement?.uvEnd?.y ?: 0.0f))
             fuelImage.render(offset + fuelArea.start + Vec2i(0, fuelArea.size.y - fuelImage.size.y), consumer, options)
         }
         if (processArea != null) {
             val process = process
             val processImage = AtlasImageElement(guiRenderer, processAtlasElement, size = processArea.size)
-            processImage.prefMaxSize.x = (processImage.size.x * process).toInt()
+            processImage.prefMaxSize.x = (processImage.size.x * process)
             processImage.uvEnd = Vec2(interpolateLinear(process, processAtlasElement?.uvStart?.x ?: 0.0f, processAtlasElement?.uvEnd?.x ?: 0.0f), processAtlasElement?.uvEnd?.y ?: 0.0f)
             processImage.render(offset + processArea.start, consumer, options)
         }

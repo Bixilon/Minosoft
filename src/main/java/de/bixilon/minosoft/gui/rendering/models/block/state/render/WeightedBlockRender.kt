@@ -19,10 +19,10 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 import kotlin.math.abs
 
@@ -52,11 +52,11 @@ class WeightedBlockRender(
         Broken("Could not find a model: This should never happen!")
     }
 
-    override fun getParticleTexture(random: Random?, position: Vec3i): AbstractTexture? {
+    override fun getParticleTexture(random: Random?, position: Vec3i): Texture? {
         return getModel(random, position).getParticleTexture(random, position)
     }
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         return getModel(random, position).render(position, offset, mesh, random, state, neighbours, light, tints)
     }
 

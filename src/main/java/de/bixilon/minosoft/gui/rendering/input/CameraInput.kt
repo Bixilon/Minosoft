@@ -19,6 +19,8 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.EntityRotation.Companion.CIRCLE_DEGREE
+import de.bixilon.minosoft.data.entities.EntityRotation.Companion.HALF_CIRCLE_DEGREE
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.input.camera.MovementInputActions
@@ -35,7 +37,7 @@ class CameraInput(
     private var changeFly = false
 
     private fun registerKeyBindings() {
-        context.inputHandler.registerCheckCallback(
+        context.input.bindings.registerCheck(
             MOVE_SPRINT_KEYBINDING to KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_CONTROL),
             ),
@@ -72,7 +74,7 @@ class CameraInput(
         )
 
 
-        context.inputHandler.registerKeyCallback(
+        context.input.bindings.register(
             ZOOM_KEYBINDING, KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_C),
             )
@@ -85,19 +87,19 @@ class CameraInput(
 
     fun updateInput(delta: Double) {
         val input = PlayerMovementInput(
-            forward = context.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
-            backward = context.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
-            left = context.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
-            right = context.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
-            jump = context.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
-            sneak = context.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
-            sprint = context.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
-            flyDown = context.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
-            flyUp = context.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
+            forward = MOVE_FORWARDS_KEYBINDING in context.input.bindings,
+            backward = MOVE_BACKWARDS_KEYBINDING in context.input.bindings,
+            left = MOVE_LEFT_KEYBINDING in context.input.bindings,
+            right = MOVE_RIGHT_KEYBINDING in context.input.bindings,
+            jump = JUMP_KEYBINDING in context.input.bindings,
+            sneak = SNEAK_KEYBINDING in context.input.bindings,
+            sprint = MOVE_SPRINT_KEYBINDING in context.input.bindings,
+            flyDown = FLY_DOWN_KEYBINDING in context.input.bindings,
+            flyUp = FLY_UP_KEYBINDING in context.input.bindings,
         )
 
-        val changeFly = context.inputHandler.isKeyBindingDown(CHANGE_FLY_KEYBINDING)
-        val startElytraFly = context.inputHandler.isKeyBindingDown(START_ELYTRA_FLY_KEYBINDING)
+        val changeFly = CHANGE_FLY_KEYBINDING in context.input.bindings
+        val startElytraFly = START_ELYTRA_FLY_KEYBINDING in context.input.bindings
         val inputActions = MovementInputActions(
             toggleFly = changeFly != this.changeFly,
             startElytraFly = startElytraFly,
@@ -114,12 +116,12 @@ class CameraInput(
     fun calculateRotation(delta: Vec2d, rotation: EntityRotation): EntityRotation {
         val delta = delta * 0.1f * controlsProfile.mouse.sensitivity
         var yaw = delta.x + rotation.yaw
-        if (yaw > 180) {
-            yaw -= 360
-        } else if (yaw < -180) {
-            yaw += 360
+        if (yaw > HALF_CIRCLE_DEGREE) {
+            yaw -= CIRCLE_DEGREE
+        } else if (yaw < -HALF_CIRCLE_DEGREE) {
+            yaw += CIRCLE_DEGREE
         }
-        yaw %= 180
+        yaw %= HALF_CIRCLE_DEGREE
         val pitch = GLM.clamp(delta.y + rotation.pitch, -89.9, 89.9)
         return EntityRotation(yaw.toFloat(), pitch.toFloat())
     }

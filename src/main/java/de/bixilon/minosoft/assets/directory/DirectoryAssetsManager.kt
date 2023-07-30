@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.assets.directory
 
 import de.bixilon.kutil.file.FileUtil.slashPath
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
@@ -39,7 +39,6 @@ class DirectoryAssetsManager(
     val prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX,
 ) : AssetsManager {
     private val basePath = File(rootPath).slashPath + "/" + prefix
-    override val namespaces: MutableSet<String> = ObjectOpenHashSet()
     private var assets: MutableSet<ResourceLocation> = ObjectOpenHashSet()
     override var loaded: Boolean = false
         private set
@@ -59,11 +58,10 @@ class DirectoryAssetsManager(
             }
             val path = file.slashPath.removePrefix(basePath).removePrefix("/").toAssetName(false, prefix) ?: continue
             assets += path
-            namespaces += path.namespace
         }
     }
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
         check(!loaded) { "Already loaded!" }
         scanDirectory(File(basePath))
         File("$rootPath/pack.png").let { if (it.exists() && it.isFile) image = FileInputStream(it).readAllBytes() }

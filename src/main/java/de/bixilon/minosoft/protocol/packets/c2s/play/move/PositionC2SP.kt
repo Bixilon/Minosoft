@@ -41,6 +41,6 @@ class PositionC2SP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Position (position=$position, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Position (position=$position, onGround=$onGround)" }
     }
 }

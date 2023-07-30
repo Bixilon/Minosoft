@@ -52,7 +52,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         this.entries = entries
     }
 
-    private fun EnumSet<Actions>.actions(): Array<AbstractAction> {
+    private fun Set<Actions>.actions(): Array<AbstractAction> {
         val array = arrayOfNulls<AbstractAction>(this.size)
         for ((index, entry) in this.withIndex()) {
             array[index] = entry.action
@@ -107,6 +107,6 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Tab list data (entries=$entries)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Tab list data (entries=$entries)" }
     }
 }

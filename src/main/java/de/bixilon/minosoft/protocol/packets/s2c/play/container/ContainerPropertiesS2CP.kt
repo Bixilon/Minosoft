@@ -33,6 +33,6 @@ class ContainerPropertiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container properties (containerId=$containerId, property=$property, value=$value)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Container properties (containerId=$containerId, property=$property, value=$value)" }
     }
 }

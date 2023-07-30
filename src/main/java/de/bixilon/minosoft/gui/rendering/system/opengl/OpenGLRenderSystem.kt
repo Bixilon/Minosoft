@@ -140,7 +140,7 @@ class OpenGLRenderSystem(
         if (RenderConstants.OPENGL_DEBUG_MODE) {
             glEnable(GL_DEBUG_OUTPUT)
             glDebugMessageCallback({ source, type, id, severity, length, message, userParameter ->
-                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity, length=$length, message=$message, userParameter=$userParameter" }
+                Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity, length=$length, message=$message, userParameter=$userParameter" }
             }, 0)
         }
         active = true

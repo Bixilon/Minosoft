@@ -37,6 +37,6 @@ class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Status pong (payload=$payload)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Status pong (payload=$payload)" }
     }
 }

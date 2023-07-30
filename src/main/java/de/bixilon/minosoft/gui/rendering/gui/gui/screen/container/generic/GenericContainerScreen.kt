@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.generic
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.types.generic.GenericContainer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -26,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerScree
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.text.ContainerText
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import kotlin.reflect.KClass
 
@@ -53,9 +54,9 @@ open class GenericContainerScreen(
     private val inventoryTitle = ContainerText.createInventoryTitle(guiRenderer, footerAtlas?.areas?.get("text"))
 
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val centerOffset = (size - containerSize) / 2
-        val initialOffset = Vec2i(centerOffset)
+        val initialOffset = Vec2(centerOffset)
 
         super.forceRender(centerOffset, consumer, options)
 
@@ -74,7 +75,7 @@ open class GenericContainerScreen(
         forceRenderContainerScreen(initialOffset, consumer, options)
     }
 
-    override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+    override fun getAt(position: Vec2): Pair<Element, Vec2>? {
         val centerOffset = (size - containerSize) / 2
         if (position isSmaller centerOffset) {
             return null

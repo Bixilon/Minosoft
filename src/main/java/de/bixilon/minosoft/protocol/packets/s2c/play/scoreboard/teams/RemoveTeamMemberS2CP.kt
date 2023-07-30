@@ -51,6 +51,6 @@ class RemoveTeamMemberS2CP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Team member remove (name=$name, members=$members)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Team member remove (name=$name, members=$members)" }
     }
 }

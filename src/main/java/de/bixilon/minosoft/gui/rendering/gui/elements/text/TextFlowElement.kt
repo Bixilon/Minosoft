@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,26 +13,25 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 open class TextFlowElement(
     guiRenderer: GUIRenderer,
     var messageExpireTime: Long,
+    val properties: TextRenderProperties = TextRenderProperties(),
 ) : Element(guiRenderer), AbstractLayout<TextElement> {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
     private var visibleLines: List<TextFlowLineElement> = emptyList() // all visible lines **from bottom to top**
@@ -73,27 +72,27 @@ open class TextFlowElement(
         }
 
 
-    override var prefSize: Vec2i
+    override var prefSize: Vec2
         get() = maxSize
         set(value) = Unit
 
-    private var textSize = Vec2i.EMPTY
+    private var textSize = Vec2.EMPTY
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val visibleLines = visibleLines
         if (visibleLines.isEmpty()) {
             return
         }
         background.render(offset, consumer, options)
 
-        var yOffset = 0
+        var yOffset = 0.0f
         for (message in visibleLines.reversed()) {
-            message.textElement.render(offset + Vec2i(0, yOffset), consumer, options)
-            yOffset += Font.TOTAL_CHAR_HEIGHT
+            message.textElement.render(offset + Vec2(0, yOffset), consumer, options)
+            yOffset += properties.lineHeight + properties.lineSpacing
         }
     }
 
-    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
+    override fun onScroll(position: Vec2, scrollOffset: Vec2): Boolean {
         this.scrollOffset += scrollOffset.y.toInt()
         return true
     }
@@ -102,9 +101,9 @@ open class TextFlowElement(
     override fun forceSilentApply() {
         val visibleLines: MutableList<TextFlowLineElement> = mutableListOf()
         val maxSize = maxSize
-        val maxLines = maxSize.y / Font.TOTAL_CHAR_HEIGHT
-        val currentTime = TimeUtil.millis
-        var textSize = Vec2i.EMPTY
+        val maxLines = (maxSize.y / (properties.lineHeight + properties.lineSpacing)).toInt()
+        val currentTime = millis()
+        var textSize = Vec2.EMPTY
         val active = this.active
 
 
@@ -118,8 +117,8 @@ open class TextFlowElement(
             }
 
             // ToDo: Cache lines
-            val textElement = TextElement(guiRenderer, message.text, background = false, parent = this)
-            val lines = textElement.renderInfo.lines
+            val textElement = TextElement(guiRenderer, message.text, background = null, parent = this)
+            val lines = textElement.info.lines
 
             val lineIterator = lines.reversed().iterator()
 
@@ -143,7 +142,7 @@ open class TextFlowElement(
                 if (visibleLines.size >= maxLines) {
                     break
                 }
-                val lineElement = TextElement(guiRenderer, line.text, background = false)
+                val lineElement = TextElement(guiRenderer, line.text, background = null)
                 textSize = textSize.max(lineElement.size)
                 visibleLines += TextFlowLineElement(lineElement, message)
             }
@@ -151,7 +150,7 @@ open class TextFlowElement(
 
 
         this.textSize = textSize
-        _size = Vec2i(maxSize.x, visibleLines.size * Font.TOTAL_CHAR_HEIGHT)
+        _size = Vec2(maxSize.x, visibleLines.size * (properties.lineHeight + properties.lineSpacing))
         background.size = size
         this.visibleLines = visibleLines
         cacheUpToDate = false
@@ -172,7 +171,7 @@ open class TextFlowElement(
         if (active) {
             return
         }
-        val currentTime = TimeUtil.millis
+        val currentTime = millis()
 
         for (line in visibleLines) {
             if (currentTime - line.text.addTime > messageExpireTime) {
@@ -182,18 +181,18 @@ open class TextFlowElement(
         }
     }
 
-    override fun getAt(position: Vec2i): Pair<TextElement, Vec2i>? {
+    override fun getAt(position: Vec2): Pair<TextElement, Vec2>? {
         val line = getLineAt(position) ?: return null
         return Pair(line.first.textElement, line.second)
     }
 
-    private fun getLineAt(position: Vec2i): Pair<TextFlowLineElement, Vec2i>? {
+    private fun getLineAt(position: Vec2): Pair<TextFlowLineElement, Vec2>? {
         val reversedY = size.y - position.y
-        val line = visibleLines.getOrNull(reversedY / Font.TOTAL_CHAR_HEIGHT) ?: return null
+        val line = visibleLines.getOrNull((reversedY / (properties.lineHeight + properties.lineSpacing)).toInt()) ?: return null
         if (position.x > line.textElement.size.x) {
             return null
         }
-        val offset = Vec2i(position.x, reversedY % Font.TOTAL_CHAR_HEIGHT)
+        val offset = Vec2(position.x, reversedY % (properties.lineHeight + properties.lineSpacing))
         return Pair(line, offset)
     }
 
@@ -205,7 +204,7 @@ open class TextFlowElement(
 
     private data class TextFlowTextElement(
         val text: ChatComponent,
-        val addTime: Long = TimeUtil.millis,
+        val addTime: Long = millis(),
     )
 
     private data class TextFlowLineElement(

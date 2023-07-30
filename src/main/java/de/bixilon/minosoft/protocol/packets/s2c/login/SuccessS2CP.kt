@@ -43,6 +43,6 @@ class SuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Login success (uuid=$uuid, name=$name, properties=$properties)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Login success (uuid=$uuid, name=$name, properties=$properties)" }
     }
 }

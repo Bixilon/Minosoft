@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.assets.multi
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.FileNotFoundException
@@ -25,15 +25,12 @@ import java.io.InputStream
 class PriorityAssetsManager(
     vararg managers: AssetsManager,
 ) : MultiAssetsManager {
-    private val managers: MutableMap<String, MutableSet<AssetsManager>> = mutableMapOf()
-    override val namespaces: MutableSet<String> = mutableSetOf()
+    private val managers: MutableSet<AssetsManager> = mutableSetOf()
     override val loaded: Boolean
         get() {
-            for (managers in managers.values) {
-                for (manager in managers) {
-                    if (!manager.loaded) {
-                        return false
-                    }
+            for (manager in managers) {
+                if (!manager.loaded) {
+                    return false
                 }
             }
             return true
@@ -46,29 +43,23 @@ class PriorityAssetsManager(
     }
 
     override fun unload() {
-        for ((_, managers) in managers) {
-            for (manager in managers) {
-                manager.unload()
-            }
+        for (manager in managers) {
+            manager.unload()
         }
         this.managers.clear()
     }
 
     fun add(manager: AssetsManager) {
-        for (namespace in manager.namespaces) {
-            this.managers.getOrPut(namespace) { mutableSetOf() } += manager
-            this.namespaces += namespace
-        }
+        this.managers += manager
     }
 
     operator fun plusAssign(manager: AssetsManager) = add(manager)
 
     override fun get(path: ResourceLocation): InputStream {
-        return getOrNull(path) ?: throw FileNotFoundException("Can not find assets-manager for $path")
+        return getOrNull(path) ?: throw FileNotFoundException("Can not find asset $path")
     }
 
     override fun getOrNull(path: ResourceLocation): InputStream? {
-        val managers = this.managers[path.namespace] ?: return null
         for (manager in managers) {
             return manager.getOrNull(path) ?: continue
         }
@@ -76,34 +67,27 @@ class PriorityAssetsManager(
     }
 
     override fun getAll(path: ResourceLocation, list: MutableList<InputStream>) {
-        val managers = this.managers[path.namespace] ?: return
         for (manager in managers) {
             manager.getAll(path, list)
         }
     }
 
-    override fun load(latch: CountUpAndDownLatch) {
-        for ((_, managers) in managers) {
-            for (manager in managers) {
-                if (manager.loaded) {
-                    continue
-                }
-                manager.load(latch)
+    override fun load(latch: AbstractLatch?) {
+        for (manager in managers) {
+            if (manager.loaded) {
+                continue
             }
+            manager.load(latch)
         }
     }
 
     override fun contains(path: ResourceLocation): Boolean {
-        for ((namespace, managers) in managers) {
-            if (path.namespace != namespace) {
-                continue
-            }
-            for (manager in managers) {
-                if (path in manager) {
-                    return true
-                }
+        for (manager in managers) {
+            if (path in manager) {
+                return true
             }
         }
+
         return false
     }
 }

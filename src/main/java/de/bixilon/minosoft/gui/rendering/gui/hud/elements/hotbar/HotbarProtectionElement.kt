@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.item.items.armor.DefendingArmorItem.Companion.getProtection
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -21,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
     private val emptyProtection = guiRenderer.atlasManager["minecraft:empty_protection"]
@@ -34,7 +35,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
     private var protection = 0.0f
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (protection <= 0.0f) {
             return
         }
@@ -71,7 +72,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
     override fun forceSilentApply() {
         _size = if (protection <= 0.0f) {
-            Vec2i.EMPTY
+            Vec2.EMPTY
         } else {
             SIZE
         }
@@ -84,6 +85,6 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
     companion object {
         private val ARMOR_SIZE = Vec2i(8, 9)
-        private val SIZE = Vec2i(10 * ARMOR_SIZE.x, ARMOR_SIZE.y)
+        private val SIZE = Vec2(10 * ARMOR_SIZE.x, ARMOR_SIZE.y)
     }
 }

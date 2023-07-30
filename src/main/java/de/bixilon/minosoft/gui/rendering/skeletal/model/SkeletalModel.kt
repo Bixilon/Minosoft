@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.meta.SkeletalMeta
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.skeletal.model.resolution.SkeletalResolution
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 data class SkeletalModel(
@@ -42,7 +42,7 @@ data class SkeletalModel(
                 textures[entry.id] = override
                 continue
             }
-            val texture = context.textureManager.staticTextures.createTexture(entry.resourceLocation)
+            val texture = context.textures.staticTextures.createTexture(entry.resourceLocation)
             textures[entry.id] = texture
         }
         return BakedSkeletalModel(this, textures)

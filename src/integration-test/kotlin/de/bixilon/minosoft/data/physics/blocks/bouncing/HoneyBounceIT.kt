@@ -33,7 +33,7 @@ class HoneyBounceIT : BounceIT() {
 
     @Test(priority = -1)
     fun getHoney() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.HONEY_BLOCK]?.defaultState ?: throw SkipException("Can not find honey!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.HONEY_BLOCK]?.states?.default ?: throw SkipException("Can not find honey!")
     }
 
     fun honeyLanding1() {

@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Com
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LitBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -37,7 +38,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<CampfireBlockEntity>(resourceLocation, registries, data), LitBlock {
+open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<CampfireBlockEntity>(resourceLocation, registries, data), LitBlock, RandomDisplayTickable {
     val lavaParticles = data["lava_particles"]?.toBoolean() ?: true
 
     private val cosySmokeParticle = registries.particleType[CampfireSmokeParticle.CosyFactory]!!
@@ -65,27 +66,27 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
             cosySmokeParticle
         }
 
-        connection.world += CampfireSmokeParticle(connection, position, Vec3d(0.0f, 0.07f, 0.0f), particleType.default(), isSignal)
+        connection.world += CampfireSmokeParticle(connection, position, SMOKE_VELOCITY, particleType.default(), isSignal)
 
         if (extinguished) {
             val position = Vec3d(blockPosition).horizontalPlus(
                 { 0.5 + 4.0.noised(random) },
                 0.5
             )
-            connection.world += SmokeParticle(connection, position, Vec3d(0.0f, 0.005f, 0.0f), smokeParticle.default())
+            connection.world += SmokeParticle(connection, position, EXTINGUISHED_VELOCITY, smokeParticle.default())
         }
     }
 
-    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        if (!blockState.isLit()) {
+    override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
+        if (!state.isLit()) {
             return
         }
         if (random.chance(10)) {
-            connection.world.playSoundEvent(CAMPFIRE_CRACKLE_SOUND, blockPosition + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
+            connection.world.playSoundEvent(CAMPFIRE_CRACKLE_SOUND, position + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
         }
 
         if (lavaParticles && random.chance(20)) {
-            val position = Vec3d(blockPosition) + 0.5
+            val position = Vec3d(position) + 0.5
             for (i in 0 until random.nextInt(1) + 1) {
                 connection.world += LavaParticle(connection, position, lavaParticle.default())
             }
@@ -113,6 +114,8 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     companion object : PixLyzerBlockFactory<CampfireBlock> {
         private val CAMPFIRE_CRACKLE_SOUND = "minecraft:block.campfire.crackle".toResourceLocation()
         const val MAX_ITEMS = 4
+        private val SMOKE_VELOCITY = Vec3d(0.0f, 0.07f, 0.0f)
+        private val EXTINGUISHED_VELOCITY = Vec3d(0.0f, 0.005f, 0.0f)
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CampfireBlock {
             return CampfireBlock(resourceLocation, registries, data)

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -30,8 +30,8 @@ class FireOverlay(
 ) : Overlay {
     private val config = context.connection.profiles.rendering.overlay.fire
     private val player = context.connection.player
-    private val shader = context.shaderManager.genericTexture2dShader
-    private var texture: AbstractTexture = context.textureManager.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
+    private val shader = context.shaders.genericTexture2dShader
+    private var texture: Texture = context.textures.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
     private val lava = context.connection.registries.fluid[LavaFluid]
     override val render: Boolean
         get() {
@@ -76,7 +76,7 @@ class FireOverlay(
     override fun draw() {
         mesh.unload()
         postInit()
-        context.renderSystem.reset(blending = true, depthTest = false)
+        context.system.reset(blending = true, depthTest = false)
         shader.use()
         mesh.draw()
     }

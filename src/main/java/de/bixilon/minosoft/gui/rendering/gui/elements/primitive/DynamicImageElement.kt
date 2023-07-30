@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -22,19 +21,18 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 open class DynamicImageElement(
     guiRenderer: GUIRenderer,
     texture: DynamicTexture?,
     uvStart: Vec2 = Vec2.EMPTY,
     uvEnd: Vec2 = Vec2(1.0f, 1.0f),
-    size: Vec2i = Vec2i.EMPTY,
+    size: Vec2 = Vec2.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
     parent: Element? = null,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6), DynamicStateChangeCallback {
@@ -59,14 +57,14 @@ open class DynamicImageElement(
             cacheUpToDate = false
         }
 
-    override var size: Vec2i
+    override var size: Vec2
         get() = super.size
         set(value) {
             super.size = value
             cacheUpToDate = false
         }
 
-    override var prefSize: Vec2i
+    override var prefSize: Vec2
         get() = size
         set(value) {
             size = value
@@ -85,14 +83,14 @@ open class DynamicImageElement(
     }
 
     private fun getAvailableTexture(): ShaderIdentifiable {
-        val texture = texture ?: return context.textureManager.whiteTexture.texture
+        val texture = texture ?: return context.textures.whiteTexture.texture
         if (texture.state != DynamicTextureState.LOADED) {
-            return context.textureManager.whiteTexture.texture
+            return context.textures.whiteTexture.texture
         }
         return texture
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         consumer.addQuad(offset, offset + size, getAvailableTexture(), uvStart, uvEnd, tint, options)
     }
 

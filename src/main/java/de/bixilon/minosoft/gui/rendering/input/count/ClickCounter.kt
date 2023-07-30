@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.input.count
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 
 interface ClickCounter {
 
-    fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2i, time: Long = TimeUtil.millis): Int
+    fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2, time: Long = millis()): Int
 
 
     companion object {

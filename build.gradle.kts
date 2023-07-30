@@ -26,11 +26,11 @@ import java.nio.charset.StandardCharsets
 
 
 plugins {
-    kotlin("jvm") version "1.9.0-Beta"
+    kotlin("jvm") version "1.9.0"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.2.0"
-    id("com.github.ben-manes.versions") version "0.46.0"
+    id("com.github.ben-manes.versions") version "0.47.0"
 }
 
 fun getProperty(name: String): String {
@@ -48,6 +48,7 @@ val ikonliVersion = getProperty("ikonli.version")
 val nettyVersion = getProperty("netty.version")
 val jacksonVersion = getProperty("jackson.version")
 val kutilVersion = getProperty("kutil.version")
+val glmVersion = getProperty("glm.version")
 
 val os = properties["platform"]?.let { OSTypes[it] } ?: PlatformInfo.OS
 val architecture = properties["architecture"]?.let { Architectures[it] } ?: PlatformInfo.ARCHITECTURE
@@ -56,7 +57,7 @@ logger.info("Building for ${os.name.lowercase()}, ${architecture.name.lowercase(
 
 repositories {
     mavenCentral()
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/releases/")
 }
 
 buildscript {
@@ -145,7 +146,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:1.9.0-Beta")
+                implementation("org.jetbrains.kotlin:kotlin-test:1.9.0")
             }
 
             targets {
@@ -188,10 +189,10 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:0.9.9.1-7")
+                implementation("de.bixilon:kotlin-glm:$glmVersion")
                 implementation("it.unimi.dsi:fastutil-core:8.5.12")
 
-                implementation("de.bixilon:mbf-kotlin:1.0") { exclude("com.github.luben", "zstd-jni") }
+                implementation("de.bixilon:mbf-kotlin:1.0.2") { exclude("com.github.luben", "zstd-jni") }
 
                 jacksonCore("core")
                 jacksonCore("databind")
@@ -221,7 +222,7 @@ testing {
                         options {
                             val options = this as TestNGOptions
                             options.preserveOrder = true
-                            options.excludeGroups("command", "registry", "biome", "input", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "block", "physics", "light", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "world_renderer", "rendering")
+                            // options.excludeGroups("chunk", "input", "font", "command", "registry", "biome", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "block", "physics", "light", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "world_renderer", "rendering")
                         }
                     }
                 }
@@ -246,7 +247,7 @@ testing {
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("de.bixilon:kotlin-glm:0.9.9.1-7")
+                implementation("de.bixilon:kotlin-glm:$glmVersion")
             }
 
             targets {
@@ -325,13 +326,13 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 
 dependencies {
     implementation("org.slf4j", "slf4j-api", "2.0.7")
-    implementation("com.google.guava", "guava", "31.1-jre")
+    implementation("com.google.guava", "guava", "32.1.1-jre")
     implementation("dnsjava", "dnsjava", "3.5.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.23.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.4.2")
-    implementation("com.github.luben", "zstd-jni", "1.5.5-3", classifier = zstdNatives)
+    implementation("com.github.oshi", "oshi-core", "6.4.4")
+    implementation("com.github.luben", "zstd-jni", "1.5.5-5", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
@@ -353,8 +354,8 @@ dependencies {
     // de.bixilon
     implementation("de.bixilon", "kutil", kutilVersion)
     implementation("de.bixilon", "jiibles", "1.1.1")
-    implementation("de.bixilon", "kotlin-glm", "0.9.9.1-7")
-    implementation("de.bixilon", "mbf-kotlin", "1.0") { exclude("com.github.luben", "zstd-jni") }
+    implementation("de.bixilon", "kotlin-glm", glmVersion)
+    implementation("de.bixilon", "mbf-kotlin", "1.0.2") { exclude("com.github.luben", "zstd-jni") }
     implementation("de.bixilon.javafx", "javafx-svg", "0.3") { exclude("org.openjfx", "javafx-controls") }
 
     // netty
@@ -371,7 +372,7 @@ dependencies {
     lwjgl("stb")
 
     // kotlin
-    implementation(kotlin("reflect", "1.9.0-Beta"))
+    implementation(kotlin("reflect", "1.9.0"))
 
 
     // platform specific
@@ -397,12 +398,20 @@ tasks.test {
     useJUnitPlatform()
 }
 
-lateinit var git: Grgit
-lateinit var commit: Commit
+var git: Grgit? = null
+var commit: Commit? = null
 
 fun loadGit() {
-    git = Grgit.open(mapOf("currentDir" to project.rootDir))
-    commit = git.log { LogOp(git.repository).apply { maxCommits = 1 } }.first()
+    val git: Grgit
+    try {
+        git = Grgit.open(mapOf("currentDir" to project.rootDir))
+    } catch (error: Throwable) {
+        logger.warn("Can not open git folder: $error")
+        return
+    }
+    this.git = git
+    val commit = git.log { LogOp(git.repository).apply { maxCommits = 1 } }.first()
+    this.commit = commit
     val tag = git.tag.list().find { it.commit == commit }
     var nextVersion = if (tag != null) {
         stable = true
@@ -425,7 +434,7 @@ val versionJsonTask = tasks.register("versionJson") {
     outputs.upToDateWhen { false }
 
     doFirst {
-        fun generateGit(): Map<String, Any> {
+        fun generateGit(git: Grgit, commit: Commit): Map<String, Any> {
             return mapOf(
                 "branch" to git.branch.current().name,
                 "commit" to commit.id,
@@ -441,7 +450,11 @@ val versionJsonTask = tasks.register("versionJson") {
             )
         )
         try {
-            versionInfo["git"] = generateGit()
+            val git = git
+            val commit = commit
+            if (git != null && commit != null) {
+                versionInfo["git"] = generateGit(git, commit)
+            }
         } catch (exception: Throwable) {
             exception.printStackTrace()
         }

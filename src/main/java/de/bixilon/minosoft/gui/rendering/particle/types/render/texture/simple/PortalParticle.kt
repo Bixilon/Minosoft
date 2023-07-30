@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -34,8 +33,8 @@ class PortalParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
         }
 
     init {
-        this.velocity assign velocity
-        this.position assign position
+        this.velocity(velocity)
+        this.position(position)
 
         this.scale = 0.1f * (random.nextFloat() * 0.2f + 0.5f)
 
@@ -60,7 +59,7 @@ class PortalParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
         val lifeTime = floatAge / maxAge
         val velocityMultiplier = 1.0f - (-lifeTime + lifeTime * lifeTime * 2.0f)
 
-        this.position assign (startPosition + velocity * velocityMultiplier)
+        this.position(startPosition + velocity * velocityMultiplier)
         this.position.y += 1.0 - lifeTime
     }
 

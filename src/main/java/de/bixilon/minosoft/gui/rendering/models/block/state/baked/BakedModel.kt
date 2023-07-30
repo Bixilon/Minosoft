@@ -17,17 +17,17 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 
 class BakedModel(
     val faces: Array<Array<BakedFace>>,
     val properties: Array<SideProperties?>,
-    val particle: AbstractTexture?,
+    val particle: Texture?,
 ) : BlockRender {
 
     init {
@@ -39,8 +39,7 @@ class BakedModel(
 
     override fun getParticleTexture(random: Random?, position: Vec3i) = particle
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         var rendered = false
 
         for ((directionIndex, faces) in faces.withIndex()) {

@@ -37,6 +37,6 @@ class GenerateStructureC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Generate structure (position=$position, levels=$levels, keepJigsaw=$keepJigsaw)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Generate structure (position=$position, levels=$levels, keepJigsaw=$keepJigsaw)" }
     }
 }

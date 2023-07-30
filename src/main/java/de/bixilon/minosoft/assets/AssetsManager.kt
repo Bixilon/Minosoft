@@ -13,19 +13,13 @@
 
 package de.bixilon.minosoft.assets
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.FileNotFoundException
 import java.io.InputStream
 
 interface AssetsManager {
-
-    /**
-     * All namespaces this assets-manager can provide
-     */
-    val namespaces: Set<String>
-
     /**
      * The icon of the assets-manager (probably the pack.png)
      */
@@ -60,7 +54,6 @@ interface AssetsManager {
         return list
     }
 
-    @Throws(FileNotFoundException::class)
     fun getAll(path: ResourceLocation): List<InputStream> {
         return getAllOrNull(path) ?: throw FileNotFoundException("Can not find any assets matching $path!")
     }
@@ -72,7 +65,7 @@ interface AssetsManager {
     /**
      * Loads all assets
      */
-    fun load(latch: CountUpAndDownLatch)
+    fun load(latch: AbstractLatch? = null)
 
     /**
      * Deletes all assets from memory

@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.processing
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.container.processing.BrewingStandBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
@@ -27,16 +28,14 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-open class BrewingStandBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : ProcessingBlock<BrewingStandBlockEntity>(resourceLocation, registries, data) {
+open class BrewingStandBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : ProcessingBlock<BrewingStandBlockEntity>(resourceLocation, registries, data), RandomDisplayTickable {
     private val smokeParticle = registries.particleType[SmokeParticle]
 
-    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        super.randomTick(connection, blockState, blockPosition, random)
-
+    override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
         smokeParticle?.let {
             connection.world += SmokeParticle(
                 connection,
-                blockPosition.toVec3d + Vec3d(0.4, 0.7, 0.4) + Vec3d.horizontal({ random.nextDouble() * 0.2 }, random.nextDouble() * 0.3),
+                position.toVec3d + Vec3d(0.4, 0.7, 0.4) + Vec3d.horizontal({ random.nextDouble() * 0.2 }, random.nextDouble() * 0.3),
                 Vec3d.EMPTY,
                 it.default(),
             )

@@ -17,7 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
 import de.bixilon.kutil.collections.map.bi.MutableBiMap
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
@@ -45,7 +45,7 @@ object Versions : Iterable<Version> {
     }
 
     @Synchronized
-    fun load(latch: CountUpAndDownLatch) {
+    fun load(latch: AbstractLatch) {
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading versions..." }
         val index: Map<String, Map<String, Any>> = Minosoft.MINOSOFT_ASSETS_MANAGER[VERSIONS_INDEX].readJson()
 
@@ -124,7 +124,7 @@ object Versions : Iterable<Version> {
         val map: MutableBiMap<T, Int> = mutableBiMapOf()
         for (name in list) {
             val packetType = typeGetter(name)
-            map.put(packetType, map.size)?.let { Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Packet $name registered twice (version=$versionId)" } }
+            map.put(packetType, map.size)?.let { Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Packet $name registered twice (version=$versionId)" } }
         }
         return map
     }
@@ -132,7 +132,7 @@ object Versions : Iterable<Version> {
     private fun readS2PPacketMapping(versionId: Int, state: ProtocolStates, list: List<String>): AbstractBiMap<S2CPacketType, Int> {
         return readPacketMapping(versionId, list) {
             PacketTypeRegistry.getS2C(state, it)?.let { type -> return@readPacketMapping type }
-            Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=SERVER_TO_CLIENT)!" }
+            Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=SERVER_TO_CLIENT)!" }
             return@readPacketMapping S2CPacketType.EMPTY()
         }
     }
@@ -140,7 +140,7 @@ object Versions : Iterable<Version> {
     private fun readC2SPacketMapping(versionId: Int, state: ProtocolStates, list: List<String>): AbstractBiMap<C2SPacketType, Int> {
         return readPacketMapping(versionId, list) {
             PacketTypeRegistry.getC2S(state, it)?.let { type -> return@readPacketMapping type }
-            Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=CLIENT_TO_SERVER)!" }
+            Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=CLIENT_TO_SERVER)!" }
             return@readPacketMapping C2SPacketType.EMPTY()
         }
     }

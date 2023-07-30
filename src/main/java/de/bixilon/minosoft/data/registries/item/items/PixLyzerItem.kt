@@ -45,7 +45,7 @@ open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registri
             val className = data["class"]?.toString()
             var factory = PixLyzerItemFactories[className]
             if (factory == null) {
-                Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Item for class $className not found, defaulting..." }
+                Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Item for class $className not found, defaulting..." }
                 // ToDo: This item class got renamed or is not yet implemented
                 factory = if (data["food_properties"] != null) {
                     PixLyzerFoodItem // ToDo: Remove this edge case

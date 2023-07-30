@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.world.positions
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
@@ -25,9 +27,25 @@ object ChunkPositionUtil {
     val BlockPosition.chunkPosition: ChunkPosition
         get() = ChunkPosition(x shr 4, z shr 4)
 
+
+    val Vec3d.chunkPosition: ChunkPosition
+        get() = ChunkPosition(x.toInt() shr 4, z.toInt() shr 4)
+
     val BlockPosition.inChunkPosition: InChunkPosition
         get() = Vec3i(x and 0x0F, y, this.z and 0x0F)
 
     val BlockPosition.inChunkSectionPosition: InChunkSectionPosition
         get() = Vec3i(x and 0x0F, y.inSectionHeight, z and 0x0F)
+
+
+    fun Vec2i.assignChunkPosition(position: Vec3i) {
+        this.x = position.x shr 4
+        this.y = position.z shr 4
+    }
+
+    fun Vec3i.assignInChunkPosition(position: Vec3i) {
+        this.x = position.x and 0x0F
+        this.y = position.y and 0x0F
+        this.z = position.z and 0x0F
+    }
 }

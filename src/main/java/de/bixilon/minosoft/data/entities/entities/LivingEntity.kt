@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.entities.entities.properties.StatusEffectPropert
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
@@ -89,6 +90,13 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
 
     open val isSleeping: Boolean
         get() = bedPosition != null
+
+
+    override val hitboxColor: RGBColor?
+        get() = when {
+            isInvisible -> ChatColors.GREEN
+            else -> super.hitboxColor
+        }
 
     override fun createPhysics(): LivingEntityPhysics<*> {
         return LivingEntityPhysics(this)

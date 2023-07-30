@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -28,12 +28,12 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.util.Initializable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, HorizontalAlignments.CENTER, 2), LayoutedElement, Initializable {
+class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, HorizontalAlignments.CENTER, 2.0f), LayoutedElement, Initializable {
     private val connection = context.connection
     private val bossbars: MutableMap<Bossbar, BossbarElement> = synchronizedMapOf()
 
-    override val layoutOffset: Vec2i
-        get() = Vec2i((guiRenderer.scaledSize.x - super.size.x) / 2, 2)
+    override val layoutOffset: Vec2
+        get() = Vec2((guiRenderer.scaledSize.x - super.size.x) / 2, 2)
 
     val atlasManager = guiRenderer.atlasManager
 

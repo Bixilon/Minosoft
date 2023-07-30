@@ -28,6 +28,6 @@ class PingC2SP(val payload: Long) : C2SPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Status ping (payload=$payload)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Status ping (payload=$payload)" }
     }
 }

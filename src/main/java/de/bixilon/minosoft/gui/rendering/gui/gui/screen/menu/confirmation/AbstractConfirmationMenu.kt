@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
@@ -46,9 +47,9 @@ abstract class AbstractConfirmationMenu(
     }
 
     protected fun initButtons() {
-        add(TextElement(guiRenderer, text, HorizontalAlignments.CENTER, false, scale = 1.5f))
-        add(TextElement(guiRenderer, subtext, HorizontalAlignments.CENTER, false))
-        add(SpacerElement(guiRenderer, Vec2i(0, 30)))
+        add(TextElement(guiRenderer, text, background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, scale = 1.5f)))
+        add(TextElement(guiRenderer, subtext, background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER)))
+        add(SpacerElement(guiRenderer, Vec2(0, 30)))
 
         for (button in createButtons()) {
             add(button)

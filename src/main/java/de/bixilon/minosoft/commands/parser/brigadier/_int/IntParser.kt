@@ -51,7 +51,7 @@ class IntParser(
         override fun read(buffer: PlayInByteBuffer): IntParser {
             val flags = buffer.readUnsignedByte()
             val min = if (flags.isBitMask(0x01)) buffer.readInt() else Int.MIN_VALUE
-            val max = if (flags.isBitMask(0x03)) buffer.readInt() else Int.MAX_VALUE
+            val max = if (flags.isBitMask(0x02)) buffer.readInt() else Int.MAX_VALUE
             return IntParser(min = min, max = max)
         }
 

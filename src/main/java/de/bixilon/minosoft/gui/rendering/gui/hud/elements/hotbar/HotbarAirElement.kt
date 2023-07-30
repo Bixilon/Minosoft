@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
     private val water = guiRenderer.context.connection.registries.fluid[WaterFluid]!!
@@ -37,7 +38,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
     private var bubbles = 0
     private var poppingCount = 0
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (bubbles + poppingCount <= 0) {
             return
         }
@@ -90,9 +91,9 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
 
     override fun forceSilentApply() {
         _size = if (bubbles + poppingCount <= 0) {
-            Vec2i.EMPTY
+            Vec2.EMPTY
         } else {
-            Vec2i(BUBBLE_SIZE.x * (bubbles + poppingCount), BUBBLE_SIZE.y)
+            Vec2(BUBBLE_SIZE.x * (bubbles + poppingCount), BUBBLE_SIZE.y)
         }
         cacheUpToDate = false
     }

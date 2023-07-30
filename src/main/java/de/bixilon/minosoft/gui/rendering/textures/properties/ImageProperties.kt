@@ -13,14 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.textures.properties
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 data class ImageProperties(
     val texture: TextureProperties = TextureProperties(),
     val animation: AnimationProperties? = null,
 ) {
 
-    fun postInit(texture: AbstractTexture) {
+    fun postInit(texture: Texture) {
         animation?.postInit(texture)
+    }
+
+
+    companion object {
+        val DEFAULT = ImageProperties()
     }
 }

@@ -23,7 +23,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W11A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -54,7 +53,7 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         // ToDo: load from pixlyzer
         0
     }
-    val hasTitle: Boolean = if (buffer.versionId > V_14W03B && buffer.versionId <= V_1_16) { // also completely guessed
+    val hasTitle: Boolean = if (buffer.versionId > V_14W03B && buffer.versionId <= V_1_14) { // upper version completely guessed
         buffer.readBoolean()
     } else {
         true
@@ -86,6 +85,6 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Open container (containerId=$containerId, containerType=$containerType, title=\"$title\", slotCount=$slotCount, hasTitle=$hasTitle, entityId=$entityId)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Open container (containerId=$containerId, containerType=$containerType, title=\"$title\", slotCount=$slotCount, hasTitle=$hasTitle, entityId=$entityId)" }
     }
 }

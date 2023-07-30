@@ -225,7 +225,7 @@ abstract class ClimbingIT {
     protected fun climbingUpTrapdoor(): LocalPlayerEntity {
         val player = createPlayer(createConnection())
         player.connection.world.fill(Vec3i(5, 0, 5), Vec3i(5, 10, 5), block)
-        player.connection.world[Vec3i(5, 10, 5)] = player.connection.registries.block[MinecraftBlocks.OAK_TRAPDOOR]?.defaultState?.withProperties(BlockProperties.DOOR_OPEN to true) ?: throw SkipException("Can not get oak trapdoor!")
+        player.connection.world[Vec3i(5, 10, 5)] = player.connection.registries.block[MinecraftBlocks.OAK_TRAPDOOR]?.states?.default?.withProperties(BlockProperties.DOOR_OPEN to true) ?: throw SkipException("Can not get oak trapdoor!")
         player.forceTeleport(Vec3d(5.0, 8.0, 5.0))
         player.input = PlayerMovementInput(jump = true)
 

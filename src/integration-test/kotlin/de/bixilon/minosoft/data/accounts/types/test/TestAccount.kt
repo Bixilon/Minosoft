@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.accounts.types.test
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
@@ -36,5 +36,5 @@ object TestAccount : Account("Bixilon") {
 
     override fun logout(clientToken: String) = Unit
 
-    override fun check(latch: CountUpAndDownLatch?, clientToken: String) = Unit
+    override fun check(latch: AbstractLatch?, clientToken: String) = Unit
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.actions.types.SimpleContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -30,7 +30,7 @@ class FloatingItem(
     guiRenderer: GUIRenderer,
     val stack: ItemStack,
     val container: Container? = null,
-    size: Vec2i = RawItemElement.DEFAULT_SIZE,
+    size: Vec2 = RawItemElement.DEFAULT_SIZE,
 ) : Dragged(guiRenderer) {
     private val itemElement = RawItemElement(guiRenderer, size, stack, this)
 
@@ -39,14 +39,14 @@ class FloatingItem(
         _size = size
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         itemElement.render(offset, consumer, options)
     }
 
     override fun forceSilentApply() {
     }
 
-    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int, target: Element?) {
+    override fun onDragMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int, target: Element?) {
         if (action != MouseActions.PRESS) {
             return
         }
@@ -55,6 +55,7 @@ class FloatingItem(
         }
         if (target == null) {
             container?.actions?.invoke(SimpleContainerAction(null, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART))
+            guiRenderer.dragged.element = null
             return
         }
     }

@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.builder
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import java.util.*
 
 class BuiltModel(
@@ -26,7 +26,7 @@ class BuiltModel(
     val dynamic: Array<BlockRender>,
 ) : BlockRender {
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: WorldMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         var rendered = model.render(position, offset, mesh, random, state, neighbours, light, tints)
 
         for (dynamic in this.dynamic) {

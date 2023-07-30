@@ -25,6 +25,6 @@ class ChunkCenterS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val position = ChunkPosition(buffer.readVarInt(), buffer.readVarInt())
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk center (position=$position)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Chunk center (position=$position)" }
     }
 }

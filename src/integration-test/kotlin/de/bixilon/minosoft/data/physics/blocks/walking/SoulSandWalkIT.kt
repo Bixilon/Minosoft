@@ -26,7 +26,7 @@ class SoulSandWalkIT : WalkIT() {
 
     @Test(priority = -1)
     fun getSoulSand() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.SOUL_SAND]?.defaultState ?: throw SkipException("Can not find soul sand!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.SOUL_SAND]?.states?.default ?: throw SkipException("Can not find soul sand!")
     }
 
     fun soulSandLanding() {

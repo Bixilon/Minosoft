@@ -137,7 +137,7 @@ class SneakIT {
         val player = createPlayer(createConnection(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.8))
         player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
-        player.connection.world[Vec3i(17, 8, 9)] = player.connection.registries.block[MinecraftBlocks.SNOW]!!.withProperties(BlockProperties.SNOW_LAYERS to 4)
+        player.connection.world[Vec3i(17, 8, 9)] = player.connection.registries.block[MinecraftBlocks.SNOW]!!.states.withProperties(BlockProperties.SNOW_LAYERS to 4)
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(20)
 
@@ -150,7 +150,7 @@ class SneakIT {
         val player = createPlayer(createConnection(3))
         player.forceTeleport(Vec3d(17.0, 9.0, 8.8))
         player.connection.world[Vec3i(17, 8, 8)] = StoneTest0.state
-        player.connection.world[Vec3i(17, 8, 9)] = player.connection.registries.block[MinecraftBlocks.SNOW]!!.withProperties(BlockProperties.SNOW_LAYERS to 5)
+        player.connection.world[Vec3i(17, 8, 9)] = player.connection.registries.block[MinecraftBlocks.SNOW]!!.states.withProperties(BlockProperties.SNOW_LAYERS to 5)
         player.input = PlayerMovementInput(forward = true, sneak = true)
         player.runTicks(15)
 

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.advancements
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 
 data class AdvancementDisplay(
@@ -22,6 +23,6 @@ data class AdvancementDisplay(
     val description: ChatComponent,
     val icon: ItemStack?,
     val frame: AdvancementFrames,
-    val background: String?,
+    val background: ResourceLocation?,
     val position: Vec2,
 )

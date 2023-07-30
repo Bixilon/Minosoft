@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
@@ -24,6 +24,9 @@ import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.mark.TextCursorStyles
@@ -31,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -44,22 +47,21 @@ class NodeTextInputElement(
     cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     editable: Boolean = true,
     onChange: () -> Unit = {},
-    background: Boolean = true,
-    shadow: Boolean = true,
-    scale: Float = 1.0f,
+    background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR,
     cutAtSize: Boolean = false,
     parent: Element? = null,
-) : TextInputElement(guiRenderer, value, maxLength, cursorStyles, editable, onChange, background, shadow, scale, cutAtSize, parent) {
+    properties: TextRenderProperties = TextRenderProperties.DEFAULT,
+) : TextInputElement(guiRenderer, value, maxLength, cursorStyles, editable, onChange, background, properties, cutAtSize, parent) {
     private var showError = false
-    private val errorElement = NodeErrorElement(guiRenderer, Vec2i.EMPTY)
-    private val suggestions = NodeSuggestionsElement(guiRenderer, Vec2i.EMPTY, this)
+    private val errorElement = NodeErrorElement(guiRenderer, Vec2.EMPTY)
+    private val suggestions = NodeSuggestionsElement(guiRenderer, Vec2.EMPTY, this)
 
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
         errorElement.position = offset
-        suggestions.position = offset + Vec2i(cursorOffset.x, 0)
+        suggestions.position = offset + Vec2(cursorOffset.x, 0)
     }
 
 
@@ -89,7 +91,7 @@ class NodeTextInputElement(
         try {
             node.execute(CommandReader(value), stack)
         } catch (exception: Throwable) {
-            exception.message?.let { stack.print.print(TextComponent("Error: $it").color(ChatColors.RED)) }
+            exception.message?.let { stack.print.print(TextComponent(it).color(ChatColors.RED)) }
         }
         updateError(null)
     }

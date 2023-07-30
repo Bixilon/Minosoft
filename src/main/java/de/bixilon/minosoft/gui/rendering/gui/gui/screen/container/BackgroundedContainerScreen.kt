@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 abstract class BackgroundedContainerScreen<C : Container>(
@@ -34,14 +34,14 @@ abstract class BackgroundedContainerScreen<C : Container>(
     protected val containerBackground = AtlasImageElement(guiRenderer, atlasElement)
     override val customRenderer: Boolean get() = true
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val centerOffset = offset + (size - containerBackground.size) / 2
         super.forceRender(centerOffset, consumer, options)
         containerBackground.render(centerOffset, consumer, options)
         forceRenderContainerScreen(centerOffset, consumer, options)
     }
 
-    override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+    override fun getAt(position: Vec2): Pair<Element, Vec2>? {
         val centerOffset = (size - containerBackground.size) / 2
         if (position isSmaller centerOffset) {
             return null
@@ -51,5 +51,5 @@ abstract class BackgroundedContainerScreen<C : Container>(
         return getContainerAt(start) ?: super.getAt(position - centerOffset)
     }
 
-    protected open fun getContainerAt(position: Vec2i): Pair<Element, Vec2i>? = null
+    protected open fun getContainerAt(position: Vec2): Pair<Element, Vec2>? = null
 }

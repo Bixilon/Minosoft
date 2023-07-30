@@ -33,6 +33,6 @@ class BlockNbtC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Block nbt (transactionId=$transactionId, blockPosition=$blockPosition)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Block nbt (transactionId=$transactionId, blockPosition=$blockPosition)" }
     }
 }

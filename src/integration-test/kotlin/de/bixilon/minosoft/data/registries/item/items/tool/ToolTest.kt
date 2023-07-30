@@ -26,7 +26,7 @@ abstract class ToolTest {
     protected fun mine(item: Identified, block: ResourceLocation): Pair<Boolean, Float?> {
         val connection = ConnectionTestUtil.createConnection()
         val item: ToolItem = IT.REGISTRIES.item[item]?.unsafeCast() ?: throw SkipException("tool not available")
-        val block = IT.REGISTRIES.block[block]?.defaultState ?: throw SkipException("block not available")
+        val block = IT.REGISTRIES.block[block]?.states?.default ?: throw SkipException("block not available")
 
         val suitable = item.isSuitableFor(connection, block, ItemStack(item))
         val speed = item.getMiningSpeed(connection, block, ItemStack(item))

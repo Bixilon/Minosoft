@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 
 enum class VerticalAlignments {
     TOP,
@@ -22,16 +22,16 @@ enum class VerticalAlignments {
     ;
 
     companion object {
-        fun VerticalAlignments.getOffset(height: Int, childHeight: Int): Int {
+        fun VerticalAlignments.getOffset(height: Float, childHeight: Float): Float {
             return when (this) {
-                TOP -> 0
+                TOP -> 0.0f
                 BOTTOM -> height - childHeight
                 CENTER -> (height - childHeight) / 2
             }
         }
 
-        fun VerticalAlignments.getOffset(size: Vec2i, childSize: Vec2i): Vec2i {
-            return Vec2i(0, getOffset(size.y, childSize.y))
+        fun VerticalAlignments.getOffset(size: Vec2, childSize: Vec2): Vec2 {
+            return Vec2(0, getOffset(size.y, childSize.y))
         }
     }
 }

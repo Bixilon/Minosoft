@@ -25,14 +25,14 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import java.util.*
 
 class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val player = context.connection.player
-    override var texture: AbstractTexture = unsafeNull()
+    override var texture: Texture = unsafeNull()
     private var blockState: BlockState? = null
     private var position: Vec3i = Vec3i.EMPTY
     override val render: Boolean

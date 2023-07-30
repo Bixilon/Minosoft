@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.loader.mod
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.ModList
 import de.bixilon.minosoft.modding.loader.mod.manifest.ModManifest
@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 internal class MinosoftModTest {
 
     private fun createMod(): MinosoftMod {
-        return MinosoftMod(ArchiveSource(File(".")), LoadingPhases.PRE_BOOT, CountUpAndDownLatch(0))
+        return MinosoftMod(ArchiveSource(File(".")), LoadingPhases.PRE_BOOT, SimpleLatch(0))
     }
 
     @Test

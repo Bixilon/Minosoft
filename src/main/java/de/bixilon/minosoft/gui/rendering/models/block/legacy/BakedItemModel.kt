@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.legacy
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -21,5 +22,5 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 @Deprecated("legacy")
 interface BakedItemModel {
-    fun render2d(guiRenderer: GUIRenderer, offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, textureSize: Vec2i, stack: ItemStack)
+    fun render2d(guiRenderer: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, textureSize: Vec2, stack: ItemStack)
 }

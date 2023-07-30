@@ -29,6 +29,6 @@ class CenterWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Center set world border (center=$center)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Center set world border (center=$center)" }
     }
 }

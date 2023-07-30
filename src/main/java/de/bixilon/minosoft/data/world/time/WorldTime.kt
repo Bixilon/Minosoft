@@ -25,7 +25,7 @@ class WorldTime(
 
     val age = abs(age)
 
-    val moonPhase = MoonPhases[this.age.toInt() / ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size] // ToDo: Verify
+    val moonPhase = MoonPhases[(this.age / ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size).toInt()] // ToDo: Verify
     val phase = DayPhases.of(this.time)
     val progress = phase.getProgress(this.time)
 

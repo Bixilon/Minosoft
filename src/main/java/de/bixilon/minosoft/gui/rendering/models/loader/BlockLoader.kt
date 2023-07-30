@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.loader
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.CustomBlockModel
@@ -44,13 +44,13 @@ class BlockLoader(private val loader: ModelLoader) {
         return DirectBlockModel.deserialize(this, data)
     }
 
-    fun load(latch: CountUpAndDownLatch) {
+    fun load(latch: AbstractLatch?) {
         for (block in loader.context.connection.registries.block) {
             val model = loadState(block) ?: continue
 
             for (state in block.states) {
                 val apply = model.choose(state) ?: continue
-                state.model = apply.bake(loader.context.textureManager)
+                state.model = apply.bake(loader.context.textures)
             }
         }
     }

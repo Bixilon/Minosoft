@@ -15,15 +15,18 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.font.FontLoader
-import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
+import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
+import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
+import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.Stopwatch
@@ -48,9 +51,10 @@ object RenderLoader {
         }
     }
 
-    fun RenderContext.load(latch: CountUpAndDownLatch) {
+    fun RenderContext.load(latch: AbstractLatch) {
+        val renderLatch = ParentLatch(1, latch)
         setThread()
-        Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating window..." }
         val stopwatch = Stopwatch()
         registerRenderer()
 
@@ -59,32 +63,32 @@ object RenderLoader {
 
         camera.init()
 
-        tintManager.init(connection.assetsManager)
+        tints.init(connection.assetsManager)
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.labTime()})..." }
 
-        renderSystem.init()
+        system.init()
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Enabling all open gl features (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Enabling all open gl features (after ${stopwatch.labTime()})..." }
 
-        renderSystem.reset()
+        system.reset()
 
         // Init stage
-        val initLatch = CountUpAndDownLatch(1, latch)
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (after ${stopwatch.labTime()})..." }
-        textureManager.dynamicTextures.load(initLatch)
-        textureManager.initializeSkins(connection)
-        textureManager.loadDefaultTextures()
-        font = FontLoader.load(this, initLatch)
+        val initLatch = ParentLatch(1, renderLatch)
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font and gathering textures (after ${stopwatch.labTime()})..." }
+        textures.dynamicTextures.load(initLatch)
+        textures.initializeSkins(connection)
+        textures.loadDefaultTextures()
+        font = FontManager.create(this, initLatch)
 
 
-        framebufferManager.init()
+        framebuffer.init()
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Initializing renderer (after ${stopwatch.labTime()})..." }
         light.init()
-        skeletalManager.init()
+        skeletal.init()
         renderer.init(initLatch)
 
         // Wait for init stage to complete
@@ -92,33 +96,35 @@ object RenderLoader {
         initLatch.await()
 
         // Post init stage
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading textures (after ${stopwatch.labTime()})..." }
-        textureManager.staticTextures.preLoad(latch)
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Preloading textures (after ${stopwatch.labTime()})..." }
+        textures.staticTextures.preLoad(renderLatch)
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
-        textureManager.staticTextures.load(latch)
-        font.postInit(latch)
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
+        textures.staticTextures.load(renderLatch)
+        font.postInit(renderLatch)
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }
-        shaderManager.postInit()
-        skeletalManager.postInit()
-        renderer.postInit(latch)
-        framebufferManager.postInit()
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }
+        shaders.postInit()
+        skeletal.postInit()
+        renderer.postInit(renderLatch)
+        framebuffer.postInit()
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading skeletal meshes (after ${stopwatch.labTime()})" }
-        modelLoader.entities.loadSkeletal()
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading skeletal meshes (after ${stopwatch.labTime()})" }
+        models.entities.loadSkeletal()
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Registering callbacks (after ${stopwatch.labTime()})..." }
 
         window::focused.observeRendering(this) { state = it.decide(RenderingStates.RUNNING, RenderingStates.SLOW) }
 
         window::iconified.observeRendering(this) { state = it.decide(RenderingStates.PAUSED, RenderingStates.RUNNING) }
-        profile.animations::sprites.observe(this, true) { textureManager.staticTextures.animator.enabled = it }
+        profile.animations::sprites.observe(this, true) { textures.staticTextures.animator.enabled = it }
 
 
-        inputHandler.init()
-        DefaultKeyCombinations.registerAll(this)
+        input.init()
+        DefaultKeyBindings.register(this)
+        DebugKeyBindings.register(this)
+
         this::state.observe(this) {
             if (it == RenderingStates.PAUSED || it == RenderingStates.SLOW || it == RenderingStates.STOPPED) {
                 pause(true)
@@ -128,20 +134,20 @@ object RenderLoader {
 
         connection.events.fire(ResizeWindowEvent(this, previousSize = Vec2i(0, 0), size = window.size))
 
-        textureManager.dynamicTextures.activate()
-        textureManager.staticTextures.activate()
+        textures.dynamicTextures.activate()
+        textures.staticTextures.activate()
 
 
-        latch.dec() // initial count from rendering
-        latch.await()
+        renderLatch.dec() // initial count from rendering
+        renderLatch.await()
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
+        Log.log(LogMessageType.RENDERING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
     }
 
     fun RenderContext.awaitPlaying() {
         state = RenderingStates.AWAITING
 
-        val latch = CountUpAndDownLatch(1)
+        val latch = SimpleLatch(1)
 
         connection::state.observe(this) {
             if (it == PlayConnectionStates.PLAYING && latch.count > 0) {
@@ -154,7 +160,6 @@ object RenderLoader {
             state = RenderingStates.RUNNING
             window.visible = true
         }
-        Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${time.formatNanos()}" }
+        Log.log(LogMessageType.RENDERING) { "Showing window after ${time.formatNanos()}" }
     }
-
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -69,14 +69,14 @@ class SkeletalInstance(
     }
 
     fun draw() {
-        context.skeletalManager.draw(this, light)
+        context.skeletal.draw(this, light)
     }
 
     fun updatePosition(position: Vec3d, rotation: EntityRotation) {
         val matrix = Mat4()
             .translateAssign(Vec3(position - context.camera.offset.offset))
-            .rotateAssign((180.0f - rotation.yaw).rad, Vec3(0, 1, 0))
-            .translateAssign(Vec3(-0.5, 0.0f, -0.5)) // move to bottom center
+            .rotateAssign((EntityRotation.HALF_CIRCLE_DEGREE - rotation.yaw).rad, Y_ROTATION_VECTOR)
+            .translateAssign(CENTER_OFFSET) // move to bottom center
 
         if (baseTransform != matrix) {
             baseTransform = matrix
@@ -139,5 +139,10 @@ class SkeletalInstance(
         if (model.state == SkeletalModelStates.LOADED) {
             model.unload()
         }
+    }
+
+    companion object {
+        private val CENTER_OFFSET = Vec3(-0.5, 0.0f, -0.5)
+        private val Y_ROTATION_VECTOR = Vec3(0, 1, 0)
     }
 }

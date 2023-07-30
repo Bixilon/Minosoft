@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
@@ -59,19 +59,19 @@ internal object MinosoftSIT {
     }
 
     fun initAssetsManager() {
-        Minosoft.MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
+        Minosoft.MINOSOFT_ASSETS_MANAGER.load()
     }
 
     fun setupPacketRegistry() {
-        PacketTypeRegistry.init(CountUpAndDownLatch(0))
+        PacketTypeRegistry.init(null)
     }
 
     fun loadVersionsJson() {
-        Versions.load(CountUpAndDownLatch(0))
+        Versions.load(SimpleLatch(0))
     }
 
     fun loadAssetsProperties() {
-        AssetsVersionProperties.load(CountUpAndDownLatch(0))
+        AssetsVersionProperties.load(SimpleLatch(0))
     }
 
     fun loadDefaultRegistries() {

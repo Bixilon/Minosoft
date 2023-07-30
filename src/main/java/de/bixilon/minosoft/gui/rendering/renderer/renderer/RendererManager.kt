@@ -14,41 +14,43 @@
 package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.ParentLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
-import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
-import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.pipeline.RendererPipeline
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class RendererManager(
-    private val context: RenderContext,
-) {
-    private val renderers: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
+    val context: RenderContext,
+) : Drawable, Iterable<Renderer> {
+    private val list: MutableList<Renderer> = mutableListOf()
+    private val renderers: MutableMap<RendererBuilder<*>, Renderer> = linkedMapOf()
+    private val pipeline = RendererPipeline(this)
     private val connection = context.connection
-    private val renderSystem = context.renderSystem
-    private val framebufferManager = context.framebufferManager
 
+
+    fun <T : Renderer> register(renderer: T): T {
+        this.list += renderer
+
+        return renderer
+    }
 
     fun <T : Renderer> register(builder: RendererBuilder<T>): T? {
-        val resourceLocation = builder.identifier
-        if (resourceLocation in RunConfiguration.SKIP_RENDERERS) {
-            return null
-        }
         val renderer = builder.build(connection, context) ?: return null
-        val previous = renderers.put(resourceLocation, renderer)
+        val previous = renderers.put(builder, renderer)
         if (previous != null) {
-            Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Renderer $previous(${builder.identifier}) got replaced by $renderer!" }
+            Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Renderer $previous ($builder) got replaced by $renderer!" }
         }
+        list += renderer
+        pipeline += renderer
         return renderer
     }
 
@@ -56,126 +58,67 @@ class RendererManager(
         register(builder)
     }
 
-    operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
-        return this[renderer.identifier].unsafeCast()
+    operator fun <T : Renderer> get(builder: RendererBuilder<T>): T? {
+        return renderers[builder].unsafeCast()
     }
 
-    operator fun get(resourceLocation: ResourceLocation): Renderer? {
-        return renderers[resourceLocation]
-    }
+    private fun runAsync(latch: AbstractLatch?, runnable: (Renderer, AbstractLatch) -> Unit) {
+        val inner = if (latch == null) SimpleLatch(0) else ParentLatch(0, latch)
 
-    fun init(latch: CountUpAndDownLatch) {
-        val inner = CountUpAndDownLatch(0, latch)
-        var worker = UnconditionalWorker()
-        for (renderer in renderers.values) {
-            worker += { renderer.preAsyncInit(inner) }
-        }
-        worker.work(inner)
-
-        for (renderer in renderers.values) {
-            renderer.init(inner)
-        }
-
-        worker = UnconditionalWorker()
-        for (renderer in renderers.values) {
-            worker += { renderer.asyncInit(inner) }
+        val worker = UnconditionalWorker()
+        for (renderer in list) {
+            worker += { runnable.invoke(renderer, inner) }
         }
         worker.work(inner)
     }
 
-    fun postInit(latch: CountUpAndDownLatch) {
-        for (renderer in renderers.values) {
+    fun init(latch: AbstractLatch) {
+        for (renderer in list) {
+            if (renderer !is WorldRenderer) continue
+            renderer.registerLayers()
+        }
+        pipeline.world.rebuild()
+
+        runAsync(latch, Renderer::preAsyncInit)
+
+        for (renderer in list) {
+            renderer.init(latch)
+        }
+        runAsync(latch, Renderer::asyncInit)
+    }
+
+    fun postInit(latch: AbstractLatch) {
+        for (renderer in list) {
             renderer.postInit(latch)
         }
-        val inner = CountUpAndDownLatch(0, latch)
-        val worker = UnconditionalWorker()
-        for (renderer in renderers.values) {
-            worker += { renderer.postAsyncInit(inner) }
-        }
-        worker.work(inner)
+
+        runAsync(latch, Renderer::postAsyncInit)
     }
 
-    private fun renderNormal(rendererList: Collection<Renderer>) {
-        for (phase in RenderPhases.VALUES) {
-            for (renderer in rendererList) {
-                if (renderer is SkipAll && renderer.skipAll) {
-                    continue
-                }
-                if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
-                    continue
-                }
-                if (phase.invokeSkip(renderer)) {
-                    continue
-                }
-                renderSystem.framebuffer = renderer.framebuffer
-                renderSystem.polygonMode = renderer.polygonMode
-                phase.invokeSetup(renderer)
-                phase.invokeDraw(renderer)
-            }
-        }
-    }
-
-    private fun prepareDraw(rendererList: Collection<Renderer>) {
-        for (renderer in rendererList) {
+    private fun prepare() {
+        for (renderer in list) {
             renderer.prePrepareDraw()
         }
 
-        val latch = CountUpAndDownLatch(0)
+        val latch = SimpleLatch(0)
         val worker = UnconditionalWorker()
-        for (renderer in rendererList) {
-            if (renderer !is AsyncRenderer) {
-                continue
-            }
+        for (renderer in list) {
+            if (renderer !is AsyncRenderer) continue
             worker += UnconditionalTask(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync() }
         }
         worker.work(latch)
 
-        for (renderer in rendererList) {
+        for (renderer in list) {
             renderer.postPrepareDraw()
         }
     }
 
-    fun render() {
-        val renderers = renderers.values
-
-        prepareDraw(renderers)
-        renderNormal(renderers)
-
-        renderSystem.framebuffer = null
-        renderPre(renderers)
-        framebufferManager.draw()
-        renderPost(renderers)
+    override fun draw() {
+        prepare()
+        pipeline.draw()
     }
 
-    private fun renderPre(renderers: Collection<Renderer>) {
-        for (renderer in renderers) {
-            if (renderer is SkipAll && renderer.skipAll) {
-                continue
-            }
-            if (renderer !is PreDrawable) {
-                continue
-            }
-            if (renderer.skipPre) {
-                continue
-            }
-            renderSystem.polygonMode = renderer.polygonMode
-            renderer.drawPre()
-        }
-    }
-
-    private fun renderPost(renderers: Collection<Renderer>) {
-        for (renderer in renderers) {
-            if (renderer is SkipAll && renderer.skipAll) {
-                continue
-            }
-            if (renderer !is PostDrawable) {
-                continue
-            }
-            if (renderer.skipPost) {
-                continue
-            }
-            renderSystem.polygonMode = renderer.polygonMode
-            renderer.drawPost()
-        }
+    override fun iterator(): Iterator<Renderer> {
+        return list.iterator()
     }
 }

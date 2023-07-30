@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.registries.blocks.GlassTest0
+import de.bixilon.minosoft.data.registries.blocks.StairsTest0
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
-import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createChunkWithNeighbours
+import de.bixilon.minosoft.data.world.chunk.LightTestingUtil.createChunkWithNeighbours
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import org.testng.Assert.assertEquals
@@ -25,32 +27,13 @@ import org.testng.annotations.Test
 @Test(groups = ["light"], dependsOnGroups = ["block"])
 class GeneralHeightmapTest {
 
-    fun testMaxHeightEast() {
-        val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(2, 10, 3)] = StoneTest0.state
-        chunk[Vec3i(3, 11, 2)] = StoneTest0.state
-        chunk[Vec3i(3, 12, 4)] = StoneTest0.state
-        chunk[Vec3i(4, 13, 3)] = StoneTest0.state
-        assertEquals(chunk.light.getNeighbourMaxHeight(chunk.neighbours.get()!!, 3, 3), 14)
-    }
-
     fun testMinHeightEast() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(2, 10, 3)] = StoneTest0.state
         chunk[Vec3i(3, 11, 2)] = StoneTest0.state
         chunk[Vec3i(3, 12, 4)] = StoneTest0.state
         chunk[Vec3i(4, 13, 3)] = StoneTest0.state
-        assertEquals(chunk.light.getNeighbourMinHeight(chunk.neighbours.get()!!, 3, 3), 11)
-    }
-
-    fun testMaxHeightNeighbourEast() {
-        val chunk: Chunk = createChunkWithNeighbours()
-        val neighbours = chunk.neighbours.get()!!
-        chunk[Vec3i(14, 10, 3)] = StoneTest0.state
-        chunk[Vec3i(15, 11, 2)] = StoneTest0.state
-        chunk[Vec3i(15, 12, 4)] = StoneTest0.state
-        neighbours[ChunkNeighbours.EAST][Vec3i(0, 13, 3)] = StoneTest0.state
-        assertEquals(chunk.light.getNeighbourMaxHeight(neighbours, 15, 3), 14)
+        assertEquals(chunk.light.sky.getNeighbourMinHeight(chunk.neighbours.get()!!, 3, 3), 11)
     }
 
     fun testMinHeightNeighbourEast() {
@@ -60,8 +43,26 @@ class GeneralHeightmapTest {
         chunk[Vec3i(15, 12, 2)] = StoneTest0.state
         chunk[Vec3i(15, 13, 4)] = StoneTest0.state
         neighbours[ChunkNeighbours.EAST][Vec3i(0, 10, 3)] = StoneTest0.state
-        assertEquals(chunk.light.getNeighbourMinHeight(neighbours, 15, 3), 11)
+        assertEquals(chunk.light.sky.getNeighbourMinHeight(neighbours, 15, 3), 11)
+    }
+    // TODO: Test other directions
+
+    fun `top of the world and not passing`() {
+        val chunk: Chunk = createChunkWithNeighbours()
+        chunk[Vec3i(2, 255, 3)] = StoneTest0.state
+        assertEquals(chunk.light.heightmap[2, 3], 256)
     }
 
-    // TODO: Test other directions
+    fun `top of the world and entering`() {
+        val chunk: Chunk = createChunkWithNeighbours()
+        chunk[Vec3i(2, 255, 3)] = StairsTest0.state
+        assertEquals(chunk.light.heightmap[2, 3], 255)
+    }
+
+    fun `top of the world and passing`() {
+        val chunk: Chunk = createChunkWithNeighbours()
+        chunk[Vec3i(2, 255, 3)] = GlassTest0.state
+        assertEquals(chunk.light.heightmap[2, 3], Int.MIN_VALUE)
+    }
+
 }

@@ -20,15 +20,15 @@ internal class VoxelSideTest {
 
     @Test
     fun testMinus1() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(0.0f, 0.0f, 0.5f, 0.5f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(0.0f, 0.0f, 0.5f, 0.5f)
 
         val result = a - b
 
         assertEquals(
             setOf(
-                VoxelSide(0.0f, 0.5f, 1.0f, 1.0f),
-                VoxelSide(0.5f, 0.0f, 1.0f, 1.0f),
+                SideQuad(0.0f, 0.5f, 1.0f, 1.0f),
+                SideQuad(0.5f, 0.0f, 1.0f, 1.0f),
             ),
             result.sides
         )
@@ -36,17 +36,17 @@ internal class VoxelSideTest {
 
     @Test
     fun testMinus2() {
-        val a = VoxelSide(1.0f, 1.0f, 4.0f, 4.0f)
-        val b = VoxelSide(2.0f, 2.0f, 3.0f, 3.0f)
+        val a = SideQuad(1.0f, 1.0f, 4.0f, 4.0f)
+        val b = SideQuad(2.0f, 2.0f, 3.0f, 3.0f)
 
         val result = a - b
 
         assertEquals(
             setOf(
-                VoxelSide(1.0f, 1.0f, 4.0f, 2.0f),
-                VoxelSide(3.0f, 1.0f, 4.0f, 4.0f),
-                VoxelSide(1.0f, 3.0f, 4.0f, 4.0f),
-                VoxelSide(1.0f, 1.0f, 2.0f, 4.0f),
+                SideQuad(1.0f, 1.0f, 4.0f, 2.0f),
+                SideQuad(3.0f, 1.0f, 4.0f, 4.0f),
+                SideQuad(1.0f, 3.0f, 4.0f, 4.0f),
+                SideQuad(1.0f, 1.0f, 2.0f, 4.0f),
             ),
             result.sides
         )
@@ -54,60 +54,29 @@ internal class VoxelSideTest {
 
     @Test
     fun testMinus3() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(1.0f, 1.0f, 2.0f, 2.0f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(1.0f, 1.0f, 2.0f, 2.0f)
 
         val result = a - b
 
-        assertEquals(emptySet<VoxelSide>(), result.sides)
+        assertEquals(emptySet<SideQuad>(), result.sides)
     }
 
     @Test
     fun testMinus4() {
-        val a = VoxelSide(0.0f, 0.0f, 0.5f, 0.5f)
-        val b = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
+        val a = SideQuad(0.0f, 0.0f, 0.5f, 0.5f)
+        val b = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
 
         val result = a - b
 
-        assertEquals(emptySet<VoxelSide>(), result.sides)
+        assertEquals(emptySet<SideQuad>(), result.sides)
     }
 
-    private fun testOr1() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(0.0f, 0.0f, 0.5f, 0.5f)
-
-        val or = a or b
-        assertEquals(or, b)
-    }
-
-    private fun testOr2() {
-        val a = VoxelSide(0.0f, 0.0f, 3.0f, 3.0f)
-        val b = VoxelSide(1.0f, 1.0f, 2.0f, 2.0f)
-
-        val or = a or b
-        assertEquals(or, b)
-    }
-
-    private fun testOr3() {
-        val a = VoxelSide(1.0f, 1.0f, 2.0f, 2.0f)
-        val b = VoxelSide(0.0f, 0.0f, 3.0f, 3.0f)
-
-        val or = a or b
-        assertEquals(or, a)
-    }
-
-    private fun testOr4() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(0.0f, 0.0f, 0.5f, 1.0f)
-
-        val or = a or b
-        assertEquals(or, b)
-    }
 
     @Test
     fun testTouches1() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
 
         assertTrue(a.touches(b))
         assertTrue(b.touches(a))
@@ -115,8 +84,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches2() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(0.0f, 0.0f, 0.5f, 0.5f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(0.0f, 0.0f, 0.5f, 0.5f)
 
         assertTrue(a.touches(b))
         assertTrue(b.touches(a))
@@ -124,8 +93,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches3() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(-1.0f, -1.0f, 0.5f, 0.5f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(-1.0f, -1.0f, 0.5f, 0.5f)
 
         assertTrue(a.touches(b))
         assertTrue(b.touches(a))
@@ -133,8 +102,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches4() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(-1.0f, -1.0f, 2.0f, 2.0f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(-1.0f, -1.0f, 2.0f, 2.0f)
 
         assertTrue(a.touches(b))
         assertTrue(b.touches(a))
@@ -142,8 +111,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches5() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(0.1f, -1.0f, 2.0f, 0.9f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(0.1f, -1.0f, 2.0f, 0.9f)
 
         assertTrue(a.touches(b))
         assertTrue(b.touches(a))
@@ -151,8 +120,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches6() {
-        val a = VoxelSide(0.0f, 0.0f, 3.0f, 3.0f)
-        val b = VoxelSide(1.0f, 1.0f, 2.0f, 2.0f)
+        val a = SideQuad(0.0f, 0.0f, 3.0f, 3.0f)
+        val b = SideQuad(1.0f, 1.0f, 2.0f, 2.0f)
 
         assertTrue(a.touches(b))
         assertTrue(b.touches(a))
@@ -160,8 +129,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches7() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(1.0f, 1.0f, 2.0f, 2.0f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(1.0f, 1.0f, 2.0f, 2.0f)
 
         assertTrue(a.touches(b))
         assertTrue(b.touches(a))
@@ -169,8 +138,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches8() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(2.0f, 2.0f, 3.0f, 3.0f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(2.0f, 2.0f, 3.0f, 3.0f)
 
         assertFalse(a.touches(b))
         assertFalse(b.touches(a))
@@ -178,8 +147,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches9() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(0.0f, 2.0f, 3.0f, 3.0f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(0.0f, 2.0f, 3.0f, 3.0f)
 
         assertFalse(a.touches(b))
         assertFalse(b.touches(a))
@@ -187,8 +156,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches10() {
-        val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
-        val b = VoxelSide(2.0f, 0.0f, 3.0f, 3.0f)
+        val a = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
+        val b = SideQuad(2.0f, 0.0f, 3.0f, 3.0f)
 
         assertFalse(a.touches(b))
         assertFalse(b.touches(a))
@@ -196,8 +165,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches11() {
-        val a = VoxelSide(2.0f, 0.0f, 3.0f, 3.0f)
-        val b = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
+        val a = SideQuad(2.0f, 0.0f, 3.0f, 3.0f)
+        val b = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
 
         assertFalse(a.touches(b))
         assertFalse(b.touches(a))
@@ -205,8 +174,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches12() {
-        val a = VoxelSide(0.0f, 2.0f, 3.0f, 3.0f)
-        val b = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
+        val a = SideQuad(0.0f, 2.0f, 3.0f, 3.0f)
+        val b = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
 
         assertFalse(a.touches(b))
         assertFalse(b.touches(a))
@@ -214,8 +183,8 @@ internal class VoxelSideTest {
 
     @Test
     fun testTouches13() {
-        val a = VoxelSide(2.0f, 2.0f, 3.0f, 3.0f)
-        val b = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
+        val a = SideQuad(2.0f, 2.0f, 3.0f, 3.0f)
+        val b = SideQuad(0.0f, 0.0f, 1.0f, 1.0f)
 
         assertFalse(a.touches(b))
         assertFalse(b.touches(a))

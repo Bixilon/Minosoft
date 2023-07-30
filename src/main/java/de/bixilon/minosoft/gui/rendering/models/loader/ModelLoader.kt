@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.models.loader
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.world.entities.EntityModels
+import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityModels
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -29,12 +29,12 @@ class ModelLoader(
     val block = BlockLoader(this)
 
 
-    fun load(latch: CountUpAndDownLatch) {
+    fun load(latch: AbstractLatch) {
         fluids.load(latch)
         entities.load(latch)
         block.load(latch)
 
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading models!" }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Done loading models!" }
 
     }
 

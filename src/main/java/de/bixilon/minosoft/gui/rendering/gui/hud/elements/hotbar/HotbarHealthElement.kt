@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
@@ -146,7 +147,7 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
     private var maxHealth = 0.0f
     override var totalMaxHealth = 0.0f
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (text) {
             return super.forceRender(offset, consumer, options)
         }

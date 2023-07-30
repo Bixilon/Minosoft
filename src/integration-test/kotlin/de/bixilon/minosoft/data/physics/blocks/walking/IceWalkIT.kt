@@ -32,7 +32,7 @@ class IceWalkIT : WalkIT() {
 
     @Test(priority = -1)
     fun getIce() {
-        this.block = IT.REGISTRIES.block[MinecraftBlocks.ICE]?.defaultState ?: throw SkipException("Can not find ice!")
+        this.block = IT.REGISTRIES.block[MinecraftBlocks.ICE]?.states?.default ?: throw SkipException("Can not find ice!")
     }
 
     fun iceLanding() {

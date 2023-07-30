@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.loader
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.util.logging.Log
@@ -24,8 +24,8 @@ class FluidModelLoader(private val loader: ModelLoader) {
     private val context: RenderContext = loader.context
 
 
-    fun load(latch: CountUpAndDownLatch) {
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading fluid models..." }
+    fun load(latch: AbstractLatch) {
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading fluid models..." }
 
         for (fluid in context.connection.registries.fluid) {
             load(fluid)

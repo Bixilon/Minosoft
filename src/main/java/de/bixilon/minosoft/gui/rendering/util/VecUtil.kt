@@ -28,12 +28,6 @@ import java.util.*
 @Deprecated(message = "Use VecXUtil instead")
 object VecUtil {
 
-    infix fun <T : Number> Vec3t<T>.assign(other: Vec3t<T>) {
-        x = other.x
-        y = other.y
-        z = other.z
-    }
-
     @JvmName(name = "times2")
     infix operator fun Vec3d.times(lambda: () -> Double): Vec3d {
         return Vec3d(
@@ -93,11 +87,11 @@ object VecUtil {
     }
 
     infix operator fun Vec3d.plusAssign(lambda: () -> Double) {
-        this assign this + lambda
+        this(this + lambda)
     }
 
     infix operator fun Vec3d.timesAssign(lambda: () -> Double) {
-        this assign this * lambda
+        this(this * lambda)
     }
 
     val Float.sqr: Float
@@ -117,7 +111,7 @@ object VecUtil {
         get() = this shr 4
 
     val Vec3i.entityPosition: Vec3d
-        get() = Vec3d(x + 0.5f, y, z + 0.5f) // ToDo: Confirm
+        get() = Vec3d(x + 0.5, y + 0.0, z + 0.5) // ToDo: Confirm
 
     val Vec3i.centerf: Vec3
         get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f)
@@ -211,8 +205,12 @@ object VecUtil {
 
     val <T : Number> Vec3t<T>.toVec3: Vec3
         get() = Vec3(this)
+    val Vec3d.toVec3: Vec3
+        get() = Vec3(this)
 
     val <T : Number> Vec3t<T>.toVec3d: Vec3d
+        get() = Vec3d(this)
+    val Vec3.toVec3d: Vec3d
         get() = Vec3d(this)
 
 

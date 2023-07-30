@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
@@ -70,7 +70,7 @@ class OpenGLDynamicTextureArray(
         }
 
         texture.state = DynamicTextureState.LOADED
-        context.textureManager.staticTextures.activate()
+        context.textures.staticTextures.activate()
     }
 
     override fun pushBuffer(identifier: UUID, force: Boolean, data: () -> TextureData): OpenGLDynamicTexture {
@@ -90,15 +90,15 @@ class OpenGLDynamicTextureArray(
         texture.state = DynamicTextureState.LOADING
 
         fun load() {
-            val (size, bytes) = data()
+            val data = data()
 
-            if (bytes.limit() > resolution * resolution * 4 || bytes.limit() < resolution * 4) { // allow anything in 1..resolution for y size
+            if (data.buffer.limit() > resolution * resolution * 4 || data.buffer.limit() < resolution * 4) { // allow anything in 1..resolution for y size
                 Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Dynamic texture $texture, has not a size of ${resolution}x${resolution}!" }
             }
 
-            val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, size)
+            val mipmaps = OpenGLTextureUtil.generateMipMaps(data.buffer, data.size)
             texture.data = mipmaps
-            texture.size = size
+            texture.size = data.size
             if (force) {
                 load(texture, index, mipmaps) // thread check already done
             } else {
@@ -122,7 +122,7 @@ class OpenGLDynamicTextureArray(
     }
 
 
-    override fun load(latch: CountUpAndDownLatch) {
+    override fun load(latch: AbstractLatch?) {
         val textureId = OpenGLTextureUtil.createTextureArray()
         this.textureId = textureId
 
@@ -169,7 +169,7 @@ class OpenGLDynamicTextureArray(
     private fun reload() {
         lock.lock()
         glDeleteTextures(textureId)
-        load(CountUpAndDownLatch(0))
+        load(null)
 
         for ((index, textureReference) in textures.withIndex()) {
             val texture = textureReference?.get() ?: continue

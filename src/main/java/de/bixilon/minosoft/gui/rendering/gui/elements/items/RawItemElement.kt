@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -22,6 +23,8 @@ import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -38,11 +41,11 @@ import de.bixilon.minosoft.util.KUtil
 
 class RawItemElement(
     guiRenderer: GUIRenderer,
-    size: Vec2i = DEFAULT_SIZE,
+    size: Vec2 = DEFAULT_SIZE,
     stack: ItemStack?,
     parent: Element?,
 ) : Element(guiRenderer) {
-    private val countText = TextElement(guiRenderer, "", background = false, noBorder = true)
+    private val countText = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(charSpacing = CharSpacing.VERTICAL))
 
     var _stack: ItemStack? = null
         set(value) {
@@ -72,7 +75,7 @@ class RawItemElement(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val stack = stack ?: return
         if (!stack._valid) return
         val size = size
@@ -85,7 +88,7 @@ class RawItemElement(
 
             val color = ChatColors.WHITE
             if (item is PixLyzerBlockItem) {
-                val defaultState = item.block.defaultState
+                val defaultState = item.block.states.default
                 defaultState.model?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
                     element = ImageElement(guiRenderer, it, size = textureSize)
                 }
@@ -125,6 +128,6 @@ class RawItemElement(
         private val INFINITE_TEXT = TextComponent("∞").color(ChatColors.RED)
         private val ZERO_TEXT = TextComponent("0").color(ChatColors.YELLOW)
 
-        val DEFAULT_SIZE = Vec2i(17, 17) // 16x16 for the item and 1px for the count offset
+        val DEFAULT_SIZE = Vec2(17, 17) // 16x16 for the item and 1px for the count offset
     }
 }

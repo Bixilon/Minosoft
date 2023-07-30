@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
 class GridRowConstraint(
-    var prefHeight: Int = 0,
-    var maxHeight: Int = Int.MAX_VALUE,
+    var prefHeight: Float = 0.0f,
+    var maxHeight: Float = Float.MAX_VALUE,
     var grow: GridGrow = GridGrow.ALWAYS,
 ) {
-    var height: Int = Int.MAX_VALUE // ToDo
+    var height: Float = Float.MAX_VALUE // ToDo
 }

@@ -29,6 +29,6 @@ class PlayStatusS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val forcesSecureChat = if (buffer.versionId >= ProtocolVersions.V_1_19_1_RC2) buffer.readBoolean() else null
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Play status (motd=\"$motd§r\", favicon=$favicon, previewsChat=$previewsChat, forcesSecureChat=$forcesSecureChat)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Play status (motd=\"$motd§r\", favicon=$favicon, previewsChat=$previewsChat, forcesSecureChat=$forcesSecureChat)" }
     }
 }

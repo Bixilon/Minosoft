@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
-import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -27,13 +26,13 @@ abstract class Dragged(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         get() = guiRenderer.dragged.element?.element === this
 
 
-    open fun onDragStart(position: Vec2i, target: Element?) = Unit
-    open fun onDragMove(position: Vec2i, target: Element?) = Unit
-    open fun onDragEnd(position: Vec2i, target: Element?) = Unit
+    open fun onDragStart(position: Vec2, target: Element?) = Unit
+    open fun onDragMove(position: Vec2, target: Element?) = Unit
+    open fun onDragEnd(position: Vec2, target: Element?) = Unit
 
-    open fun onDragScroll(position: Vec2i, scrollOffset: Vec2d, target: Element?) = Unit
+    open fun onDragScroll(position: Vec2, scrollOffset: Vec2, target: Element?) = Unit
 
-    open fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int, target: Element?) = Unit
+    open fun onDragMouseAction(position: Vec2, button: MouseButtons, action: MouseActions, count: Int, target: Element?) = Unit
     open fun onDragKey(key: KeyCodes, type: KeyChangeTypes, target: Element?) = Unit
     open fun onDragChar(char: Char, target: Element?) = Unit
 

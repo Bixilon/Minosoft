@@ -15,12 +15,12 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.test.IT.OBJENESIS
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.testng.Assert.assertEquals
@@ -30,15 +30,15 @@ import org.testng.annotations.Test
 class BakedFaceTest {
     private val texture = "block/test"
 
-    private fun texture(): AbstractTexture {
+    private fun texture(): Texture {
         val manager = BakedModelTestUtil.createTextureManager(texture)
         return manager.staticTextures.createTexture(texture.toResourceLocation())
     }
 
-    private fun singleMesh(): SingleWorldMesh {
-        val mesh = OBJENESIS.newInstance(SingleWorldMesh::class.java)
+    private fun singleMesh(): SingleChunkMesh {
+        val mesh = OBJENESIS.newInstance(SingleChunkMesh::class.java)
         mesh::quadType.forceSet(PrimitiveTypes.QUAD)
-        mesh::order.forceSet(SingleWorldMesh.QUAD_ORDER)
+        mesh::order.forceSet(SingleChunkMesh.QUAD_ORDER)
 
         mesh.data = HeapArrayFloatList(1000)
 
@@ -47,8 +47,8 @@ class BakedFaceTest {
         return mesh
     }
 
-    private fun mesh(): WorldMesh {
-        val mesh = OBJENESIS.newInstance(WorldMesh::class.java)
+    private fun mesh(): ChunkMesh {
+        val mesh = OBJENESIS.newInstance(ChunkMesh::class.java)
         mesh::opaqueMesh.forceSet(singleMesh())
 
         return mesh

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 
@@ -31,7 +31,7 @@ object RenderUtil {
     }
 
     fun RenderContext.runAsync(runnable: () -> Unit) {
-        DefaultThreadPool += ThreadPoolRunnable(ThreadPool.HIGHER, forcePool = false) {
+        DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGHER) {
             try {
                 runnable()
             } catch (error: Throwable) {

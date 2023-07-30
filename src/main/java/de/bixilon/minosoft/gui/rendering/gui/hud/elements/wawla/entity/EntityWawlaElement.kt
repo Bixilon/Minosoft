@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponentUtil.removeTrailingNewlines
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla.WawlaElement
@@ -50,7 +51,7 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
             val name = target.entity.additional.tabDisplayName
             if (name.length > 0) {
                 name.setFallbackColor(ChatColors.WHITE)
-                return TextElement(guiRenderer, name, background = false, scale = 1.2f)
+                return TextElement(guiRenderer, name, background = null, properties = TextRenderProperties(scale = 1.2f))
             }
         }
         return createNameElement(target.entity.type.translationKey)
@@ -61,7 +62,7 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
         if (namespace == Namespaces.DEFAULT) {
             return null
         }
-        return TextElement(guiRenderer, TextComponent(namespace).color(ChatColors.BLUE), background = false)
+        return TextElement(guiRenderer, TextComponent(namespace).color(ChatColors.BLUE), background = null)
     }
 
     private fun createBaseInformation(): TextElement? {
@@ -82,7 +83,7 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
 
         component.setFallbackColor(ChatColors.GRAY)
 
-        return TextElement(guiRenderer, component, background = false)
+        return TextElement(guiRenderer, component, background = null)
     }
 
     private fun createAdditionalInformation(): TextElement? {
@@ -95,6 +96,6 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
 
         text.setFallbackColor(ChatColors.GRAY)
 
-        return TextElement(guiRenderer, text, background = false)
+        return TextElement(guiRenderer, text, background = null)
     }
 }

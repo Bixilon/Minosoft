@@ -50,7 +50,7 @@ class CommandBlockC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Command block (position=$position, command=\"$command\", type=$type, trackOutput=$trackOutput, isConditional=$isConditional, isAutomatic=$isAutomatic)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Command block (position=$position, command=\"$command\", type=$type, trackOutput=$trackOutput, isConditional=$isConditional, isAutomatic=$isAutomatic)" }
     }
 
     enum class CommandBlockTypes {

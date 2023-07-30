@@ -22,7 +22,7 @@ import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pro
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.ZCenterProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.SortProperty
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.world.WorldEntities
+import de.bixilon.minosoft.data.world.entities.WorldEntities
 import java.util.*
 
 class SelectorEntityTarget(

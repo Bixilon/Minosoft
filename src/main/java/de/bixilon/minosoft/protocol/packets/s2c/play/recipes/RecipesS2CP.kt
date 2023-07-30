@@ -54,9 +54,9 @@ class RecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Recipes (count=${recipes.size})" }
+            Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Recipes (count=${recipes.size})" }
         } else {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Recipes (recipes=$recipes)" }
+            Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Recipes (recipes=$recipes)" }
         }
     }
 

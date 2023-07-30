@@ -58,6 +58,6 @@ class SignedChatMessageC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Signed chat message (message=$message, time=$time, signature=$signature, previewed=$previewed)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Signed chat message (message=$message, time=$time, signature=$signature, previewed=$previewed)" }
     }
 }

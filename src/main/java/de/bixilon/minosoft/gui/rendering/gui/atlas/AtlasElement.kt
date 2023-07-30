@@ -15,17 +15,17 @@ package de.bixilon.minosoft.gui.rendering.gui.atlas
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class AtlasElement(
-    override val texture: AbstractTexture,
+    override val texture: Texture,
     val resolution: Vec2i?,
     val start: Vec2i,
     val end: Vec2i,
     val slots: Int2ObjectOpenHashMap<AtlasSlot>,
     val areas: Map<String, AtlasArea>,
-) : TextureLike {
+) : TexturePart {
     override val size: Vec2i = end - start
     override lateinit var uvStart: Vec2
     override lateinit var uvEnd: Vec2

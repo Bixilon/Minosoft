@@ -30,10 +30,11 @@ open class SweetBerryBushBlock(resourceLocation: ResourceLocation, registries: R
         if (entity !is LivingEntity) {
             return
         }
-        physics.slowMovement(state, Vec3d(0.8f, 0.75, 0.8f))
+        physics.slowMovement(state, SLOW)
     }
 
     companion object : PixLyzerBlockFactory<SweetBerryBushBlock> {
+        val SLOW = Vec3d(0.8f, 0.75, 0.8f)
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SweetBerryBushBlock {
             return SweetBerryBushBlock(resourceLocation, registries, data)

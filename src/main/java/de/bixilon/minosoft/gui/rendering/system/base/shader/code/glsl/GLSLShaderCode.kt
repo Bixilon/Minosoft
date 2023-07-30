@@ -29,7 +29,7 @@ class GLSLShaderCode(
         for ((name, value) in NativeShader.DEFAULT_DEFINES) {
             value(context)?.let { defines[name] = it }
         }
-        defines[context.renderSystem.vendor.shaderDefine] = ""
+        defines[context.system.vendor.shaderDefine] = ""
     }
 
     val code: String

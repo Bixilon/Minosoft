@@ -15,13 +15,14 @@ package de.bixilon.minosoft.data.registries.shapes.voxel
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 class VoxelShape(
-    val aabb: Set<AABB>,
+    val aabb: Collection<AABB>,
 ) : AbstractVoxelShape() {
     override val aabbs: Int = aabb.size
 
-    constructor(vararg aabbs: AABB) : this(aabbs.toSet())
+    constructor(vararg aabbs: AABB) : this(ObjectOpenHashSet(aabbs))
 
     constructor(min: Vec3d, max: Vec3d) : this(setOf(AABB(min, max)))
     constructor(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double) : this(Vec3d(minX, minY, minZ), Vec3d(maxX, maxY, maxZ))

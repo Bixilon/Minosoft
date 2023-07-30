@@ -15,13 +15,14 @@ package de.bixilon.minosoft.data.registries.shapes.voxel
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
@@ -39,13 +40,18 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
         return false
     }
 
-    operator fun plus(offset: Vec3t<out Number>): AbstractVoxelShape {
-        val result: MutableSet<AABB> = ObjectOpenHashSet()
+    private inline fun modify(modify: (AABB) -> AABB): AbstractVoxelShape {
+        val result: MutableList<AABB> = ArrayList()
         for (aabb in this) {
-            result.add(aabb + offset)
+            result += modify(aabb)
         }
         return VoxelShape(result)
     }
+
+    operator fun plus(offset: Vec3t<out Number>) = modify { it + offset }
+    operator fun plus(offset: Vec3d) = modify { it + offset }
+    operator fun plus(offset: Vec3) = modify { it + offset }
+    operator fun plus(offset: Vec3i) = modify { it + offset }
 
     fun add(other: AbstractVoxelShape): AbstractVoxelShape {
         val aabbs: MutableSet<AABB> = ObjectOpenHashSet()
@@ -110,6 +116,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
             when (data) {
                 is Int -> return this[data]
                 is Collection<*> -> {
+                    if (data.isEmpty()) return EMPTY
                     val aabbs: MutableSet<AABB> = ObjectOpenHashSet()
                     for (id in data) {
                         aabbs += this[id.toInt()]
@@ -124,6 +131,7 @@ abstract class AbstractVoxelShape : Iterable<AABB> {
             when (data) {
                 is Int -> return VoxelShape(aabbs[data])
                 is Collection<*> -> {
+                    if (data.isEmpty()) return EMPTY
                     val shape: MutableSet<AABB> = ObjectOpenHashSet()
                     for (id in data) {
                         shape += aabbs[id.toInt()]

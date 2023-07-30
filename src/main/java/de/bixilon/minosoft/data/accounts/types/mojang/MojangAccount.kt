@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
@@ -48,7 +48,7 @@ class MojangAccount(
     override val type: ResourceLocation get() = identifier
 
     override fun join(serverId: String) {
-        AccountUtil.joinMojangServer(username, accessToken, uuid, serverId)
+        AccountUtil.joinMojangServer(accessToken, uuid, serverId)
     }
 
     override fun logout(clientToken: String) {
@@ -65,7 +65,7 @@ class MojangAccount(
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang account login successful (username=$username)" }
     }
 
-    override fun check(latch: CountUpAndDownLatch?, clientToken: String) {
+    override fun check(latch: AbstractLatch?, clientToken: String) {
         if (refreshed) {
             return
         }

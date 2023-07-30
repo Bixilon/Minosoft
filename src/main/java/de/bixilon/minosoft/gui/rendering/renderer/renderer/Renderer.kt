@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,25 +13,21 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
+import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 
 interface Renderer {
     val context: RenderContext
     val renderSystem: RenderSystem
-    val framebuffer: Framebuffer?
-        get() = context.framebufferManager.world.framebuffer
-    val polygonMode: PolygonModes
-        get() = context.framebufferManager.world.polygonMode
+    val framebuffer: IntegratedFramebuffer?
 
-    fun preAsyncInit(latch: CountUpAndDownLatch) = Unit
-    fun init(latch: CountUpAndDownLatch) = Unit
-    fun asyncInit(latch: CountUpAndDownLatch) = Unit
-    fun postInit(latch: CountUpAndDownLatch) = Unit
-    fun postAsyncInit(latch: CountUpAndDownLatch) = Unit
+    fun preAsyncInit(latch: AbstractLatch) = Unit
+    fun init(latch: AbstractLatch) = Unit
+    fun asyncInit(latch: AbstractLatch) = Unit
+    fun postInit(latch: AbstractLatch) = Unit
+    fun postAsyncInit(latch: AbstractLatch) = Unit
 
     fun prePrepareDraw() = Unit
     fun postPrepareDraw() = Unit

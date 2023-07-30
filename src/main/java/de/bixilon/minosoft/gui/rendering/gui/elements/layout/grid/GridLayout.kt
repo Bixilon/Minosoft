@@ -13,24 +13,23 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.horizontal
-import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
-import java.lang.Integer.min
-import kotlin.math.max
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.horizontal
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.offset
 
 class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRenderer) {
     val columnConstraints: Array<GridColumnConstraint> = Array(grid.x) { GridColumnConstraint() }
     val rowConstraints: Array<GridRowConstraint> = Array(grid.y) { GridRowConstraint() }
 
     private val children: Array<Array<GridCell?>> = Array(grid.x) { arrayOfNulls(grid.y) }
-    private var columnStart = IntArray(grid.x)
-    private var rowStart = IntArray(grid.y)
+    private var columnStart = FloatArray(grid.x)
+    private var rowStart = FloatArray(grid.y)
 
     override var cacheEnabled: Boolean
         get() = super.cacheEnabled
@@ -76,12 +75,12 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
          */
 
         // calculate width of every cell
-        val width = IntArray(grid.x)
+        val width = FloatArray(grid.x)
 
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue
-                width[x] = min(max(width[x], child.prefSize.x + child.margin.horizontal), columnConstraints[x].maxWidth)
+                width[x] = minOf(maxOf(width[x], child.prefSize.x + child.margin.horizontal), columnConstraints[x].maxWidth)
             }
         }
 
@@ -97,10 +96,10 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
             if (constraint.grow != GridGrow.NEVER) {
                 continue
             }
-            if (availableWidth != 0) {
+            if (availableWidth != 0.0f) {
                 if (nextAvailable < 0) {
                     constraint.width = availableWidth
-                    availableWidth = 0
+                    availableWidth = 0.0f
                 } else {
                     constraint.width = width[x]
                     availableWidth -= width[x]
@@ -117,20 +116,20 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
                     continue
                 }
                 val widthFraction = availableWidth / remainingAlwaysGrowColumns--
-                constraint.width = min(widthFraction, constraint.maxWidth)
+                constraint.width = minOf(widthFraction, constraint.maxWidth)
                 availableWidth -= constraint.width
             }
         }
 
 
-        _size = Vec2i(width.sum(), 0)
+        _size = Vec2(width.sum(), 0.0f)
 
         // apply the size changes to all children
         applyOnlyChildren()
 
 
         // ToDo: Respect maxSize?
-        val columnStart = IntArray(grid.x)
+        val columnStart = FloatArray(grid.x)
         // set the start offsets
         for (x in 1 until grid.x) {
             val offset = columnStart[x - 1]
@@ -142,11 +141,11 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
     }
 
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue
-                child.render(offset + margin.offset + Vec2i(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), consumer, options)
+                child.render(offset + margin.offset + Vec2(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), consumer, options)
             }
         }
     }

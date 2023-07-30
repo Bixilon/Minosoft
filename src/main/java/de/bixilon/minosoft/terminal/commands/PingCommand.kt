@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.versions.Versions
 
 object PingCommand : Command {
     override var node = LiteralNode("ping")
-        .addChild(ArgumentNode("address", StringParser(StringParser.StringModes.QUOTED), onlyDirectExecution = false) { stack ->
+        .addChild(ArgumentNode("address", StringParser(StringParser.StringModes.QUOTED), allowArguments = true) { stack ->
             val address = stack.get<String>("address")!!
             val version = stack.get<String>("version")?.let { Versions[it] ?: throw IllegalArgumentException("Unknown version $it") }
             val connection = StatusConnection(address, version)

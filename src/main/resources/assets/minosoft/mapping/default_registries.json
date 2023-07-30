@@ -518,10 +518,10 @@
       "minecraft:bed_break": {
         "id": 0
       },
-      "minecraft:rain_start": {
+      "minecraft:rain_stop": {
         "id": 1
       },
-      "minecraft:rain_stop": {
+      "minecraft:rain_start": {
         "id": 2
       },
       "minecraft:gamemode_change": {

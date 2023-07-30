@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,10 +26,10 @@ class RemoveBossbarS2CP(
 
     override fun handle(connection: PlayConnection) {
         val bossbar = connection.bossbarManager.bossbars.remove(uuid) ?: return
-        connection.fire(BossbarRemoveEvent(connection, uuid, bossbar))
+        connection.events.fire(BossbarRemoveEvent(connection, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar remove (uuid=$uuid)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Bossbar remove (uuid=$uuid)" }
     }
 }
