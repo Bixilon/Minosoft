@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
@@ -42,7 +42,7 @@ object InteractionTestUtil {
     private val TICK = KeyHandler::class.java.getDeclaredMethod("onTick").apply { isAccessible = true }
     private val RELEASE = KeyHandler::class.java.getDeclaredMethod("onRelease").apply { isAccessible = true }
 
-    private val pig = EntityType(Pig.identifier, Namespaces.minecraft(""), 1.0f, 1.0f, true, false, mapOf(), Pig, null)
+    private val pig = EntityType(Pig.identifier, minecraft(""), 1.0f, 1.0f, true, false, mapOf(), Pig, null)
 
     fun createConnection(): PlayConnection {
         val connection = ConnectionTestUtil.createConnection(0)

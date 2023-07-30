@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.wood
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
@@ -24,7 +24,7 @@ interface Azalea {
     class Leaves(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : LeavesBlock(identifier, settings), Azalea {
 
         companion object : BlockFactory<Leaves> {
-            override val identifier = Namespaces.minecraft("azalea_leaves")
+            override val identifier = minecraft("azalea_leaves")
 
             override fun build(registries: Registries, settings: BlockSettings) = Leaves(settings = settings)
         }
