@@ -15,6 +15,7 @@ package de.bixilon.minosoft.terminal.commands.connection
 
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.terminal.commands.CommandException
 
 object ActionCommand : ConnectionCommand {
     override var node = LiteralNode("action", setOf("do"))
@@ -23,7 +24,7 @@ object ActionCommand : ConnectionCommand {
 
     private fun CommandStack.respawn() {
         if (connection.player.healthCondition.hp > 0.0f) {
-            return print.error("You are still alive!")
+            throw CommandException("You are still alive!")
         }
         print.print("Performing respawn...")
         connection.util.respawn()

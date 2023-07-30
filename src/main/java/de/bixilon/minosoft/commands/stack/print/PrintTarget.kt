@@ -13,14 +13,7 @@
 
 package de.bixilon.minosoft.commands.stack.print
 
-import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-
 interface PrintTarget {
 
     fun print(message: Any)
-    fun error(message: Any) {
-        print(BaseComponent(TextComponent("[ERROR] ").bold().color(ChatColors.RED), message))
-    }
 }
