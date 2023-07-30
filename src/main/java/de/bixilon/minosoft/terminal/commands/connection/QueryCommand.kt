@@ -14,11 +14,22 @@
 package de.bixilon.minosoft.terminal.commands.connection
 
 import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 
 object QueryCommand : ConnectionCommand {
     override var node = LiteralNode("query")
-        .addChild(LiteralNode("health", executor = { it.print.print("Health §c${it.connection.player.healthCondition.hp}§r/§c${it.connection.player.attributes[MinecraftAttributes.MAX_HEALTH]}, hunger=${it.connection.player.healthCondition.hunger}") }))
+        .addChild(LiteralNode("health", executor = { it.health() }))
         .addChild(LiteralNode("xp", setOf("experience", "exp"), executor = { it.print.print("Experience: level §e${it.connection.player.experienceCondition.level}") }))
         .addChild(LiteralNode("dimension", executor = { it.print.print("Dimension: §e${it.connection.world.dimension.effects}") }))
+
+
+    private fun CommandStack.health() {
+        val health = connection.player.healthCondition
+        if (health.hp == 0.0f) {
+            return print.print("You are §cdead§r!")
+        }
+        val max = connection.player.attributes[MinecraftAttributes.MAX_HEALTH]
+        print.print("Health §c${health.hp}§r/§c${max}§r, hunger=§a${health.hunger}")
+    }
 }
