@@ -13,6 +13,17 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.offset
 
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+
 interface RandomOffsetBlock {
     val randomOffset: RandomOffsetTypes? // TODO: make non nullable
+
+
+    fun offsetBlock(position: Vec3i): Vec3 {
+        val offset = this.randomOffset ?: return Vec3.EMPTY
+        return position.getWorldOffset(offset)
+    }
 }

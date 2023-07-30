@@ -36,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -125,7 +124,7 @@ class BlockOutlineRenderer(
 
         val blockOffset = target.blockPosition.toVec3d
         if (target.state.block is RandomOffsetBlock) {
-            target.state.block.randomOffset?.let { blockOffset += target.blockPosition.getWorldOffset(it) }
+            blockOffset += target.state.block.offsetBlock(target.blockPosition)
         }
 
 
