@@ -40,7 +40,7 @@ class WeightedBlockRender(
         if (random == null) return models.first().model
         random.setSeed(position.positionHash)
 
-        var weightLeft = abs(random.nextLong() % totalWeight)
+        var weightLeft = abs(random.nextLong().toInt() % totalWeight)
 
         for ((weight, model) in models) {
             weightLeft -= weight
