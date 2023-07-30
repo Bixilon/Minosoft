@@ -34,16 +34,15 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.reflect.jvm.javaField
 
 enum class Directions(
-    @Deprecated("remove") val campfireId: Int,
     val vector: Vec3i,
     val index: Vec3i,
 ) {
-    DOWN(-1, Vec3i(0, -1, 0), Vec3i(1, -1, 1)),
-    UP(-1, Vec3i(0, 1, 0), Vec3i(3, -1, 3)),
-    NORTH(2, Vec3i(0, 0, -1), Vec3i(0, 0, -1)),
-    SOUTH(0, Vec3i(0, 0, 1), Vec3i(2, 2, -1)),
-    WEST(1, Vec3i(-1, 0, 0), Vec3i(-1, 3, 2)),
-    EAST(3, Vec3i(1, 0, 0), Vec3i(-1, 1, 0)),
+    DOWN(Vec3i(0, -1, 0), Vec3i(1, -1, 1)),
+    UP(Vec3i(0, 1, 0), Vec3i(3, -1, 3)),
+    NORTH(Vec3i(0, 0, -1), Vec3i(0, 0, -1)),
+    SOUTH(Vec3i(0, 0, 1), Vec3i(2, 2, -1)),
+    WEST(Vec3i(-1, 0, 0), Vec3i(-1, 3, 2)),
+    EAST(Vec3i(1, 0, 0), Vec3i(-1, 1, 0)),
     ;
 
     val negative = ordinal % 2 == 0

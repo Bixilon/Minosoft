@@ -29,8 +29,7 @@ Versions marked with "lts" are long term supported. They (and the latest one) wi
 
 ## April fool
 
-Mojang mostly did not change the version number of them, thus making it impossible to distinct between snapshots and
-them.  
+Mojang mostly did not change the version number of them, thus making it impossible to distinct between snapshots and them.  
 Also it is quite heavy to implement them. They might work, but are not supported at all.
 
 ## Snapshots

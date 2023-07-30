@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.container.ItemStackUtil
@@ -98,6 +99,15 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
         override val identifier: ResourceLocation = minecraft("campfire")
         private val HORIZONTAL = arrayOf(Directions.SOUTH, Directions.WEST, Directions.NORTH, Directions.EAST)
         const val DIRECTION_OFFSET = 0.3125
+
+
+        private val Directions.campfireId:Int get() = when(this) {
+            Directions.NORTH -> 2
+            Directions.SOUTH -> 0
+            Directions.WEST -> 1
+            Directions.EAST -> 3
+            else -> Broken()
+        }
 
 
         override fun build(connection: PlayConnection): CampfireBlockEntity {
