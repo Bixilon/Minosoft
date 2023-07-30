@@ -27,9 +27,9 @@ class BlockLoader(private val loader: ModelLoader) {
     val assets = loader.context.connection.assetsManager
     val version = loader.context.connection.version
 
-    fun loadBlock(name: ResourceLocation): BlockModel {
+    fun loadBlock(name: ResourceLocation): BlockModel? {
         val file = name.model("block/")
-        val data = assets[file].readJsonObject()
+        val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
         val parent = data["parent"]?.toString()?.let { loadBlock(it.toResourceLocation()) }
 
@@ -39,7 +39,7 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun loadState(block: Block): DirectBlockModel? {
         val file = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier)?.blockState() ?: return null
-        val data = assets[file].readJsonObject()
+        val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
         return DirectBlockModel.deserialize(this, data)
     }

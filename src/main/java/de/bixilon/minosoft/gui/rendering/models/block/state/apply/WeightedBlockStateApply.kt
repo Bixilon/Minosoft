@@ -53,9 +53,10 @@ data class WeightedBlockStateApply(
             for (entry in data) {
                 var weight = entry["weight"]?.toInt() ?: 1
                 if (weight < 0) weight = 1
-                val apply = SingleBlockStateApply.deserialize(loader, entry)
+                val apply = SingleBlockStateApply.deserialize(loader, entry) ?: continue
                 models += WeightedApply(weight, apply)
             }
+            if(models.isEmpty()) return null
 
             return WeightedBlockStateApply(models)
         }

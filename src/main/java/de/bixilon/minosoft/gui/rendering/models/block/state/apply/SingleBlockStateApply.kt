@@ -198,8 +198,8 @@ data class SingleBlockStateApply(
             return SingleBlockStateApply(model, uvLock, x, y)
         }
 
-        fun deserialize(loader: BlockLoader, data: JsonObject): SingleBlockStateApply {
-            val model = loader.loadBlock(data["model"].toString().toResourceLocation())
+        fun deserialize(loader: BlockLoader, data: JsonObject): SingleBlockStateApply? {
+            val model = loader.loadBlock(data["model"].toString().toResourceLocation()) ?: return null
 
             return deserialize(model, data)
         }

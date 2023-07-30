@@ -40,7 +40,7 @@ class BlockModelTest {
         assets.push(minosoft("models/block/named.json"), json)
 
 
-        return loader.block.loadBlock(minosoft("block/named"))
+        return loader.block.loadBlock(minosoft("block/named"))!!
     }
 
     fun emptyModel() {
