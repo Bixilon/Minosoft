@@ -121,6 +121,30 @@ data class SingleBlockStateApply(
         }
     }
 
+    private fun getTextureRotation(direction: Directions): Int {
+        if (x == 0 && y == 0) return 0
+
+        if (x == 0 && direction.axis == Axes.Y) {
+            return if (direction.negative) -y else y
+        }
+        if (y == 0) {
+            if (direction.axis == Axes.X) {
+                return if (direction.negative) x else -x
+            }
+        }
+
+        //    if (direction.axis == Axes.X) uv = uv.pushRight(2, if (rotatedDirection.negative) -x else x)
+//
+        //    if ((rotatedDirection == Directions.DOWN && x == 1 || rotatedDirection == Directions.UP && x == 3 || rotatedDirection == Directions.NORTH || rotatedDirection == Directions.SOUTH && x == 2)) {
+        //        uv = uv.pushRight(2, 2)
+        //    }
+        //    if (direction.axis == Axes.Y && y != 0 && !uvLock) {
+        //        uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y)
+        //    }
+
+        return 0
+    }
+
     override fun bake(): BakedModel? {
         if (model.elements == null) return null
 
@@ -143,23 +167,17 @@ data class SingleBlockStateApply(
 
                 var uv = face.uv.toArray(rotatedDirection, face.rotation)
 
-                if (x > 0 && !uvLock) {
-                    if (direction.axis == Axes.X) uv = uv.pushRight(2, if (rotatedDirection.negative) -x else x)
-
-                    if ((rotatedDirection == Directions.DOWN && x == 1 || rotatedDirection == Directions.UP && x == 3 || rotatedDirection == Directions.NORTH || rotatedDirection == Directions.SOUTH && x == 2)) {
-                        uv = uv.pushRight(2, 2)
-                    }
-                }
-                if (direction.axis == Axes.Y && y != 0 && !uvLock) {
-                    uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y)
+                if (!uvLock) {
+                    val rotation = getTextureRotation(direction)
+                    uv = uv.pushRight(2, rotation)
                 }
                 val shade = rotatedDirection.shade
 
-                val a = positions.properties(rotatedDirection, texture) // TODO: texture might not have been loaded yet
-                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, if (a == null) null else rotatedDirection, texture, a)
+                val faceProperties = positions.properties(rotatedDirection, texture)
+                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, if (faceProperties == null) null else rotatedDirection, texture, faceProperties)
 
                 bakedFaces[rotatedDirection.ordinal] += bakedFace
-                properties[rotatedDirection.ordinal] += a ?: continue
+                properties[rotatedDirection.ordinal] += faceProperties ?: continue
             }
         }
 
