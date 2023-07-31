@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.CustomBlockModel
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
@@ -57,6 +58,8 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun bake(latch: AbstractLatch?) {
         for (block in loader.context.connection.registries.block) {
+            if (block !is WoolBlock.Red) continue
+
             val prototype = block.model.nullCast<BlockModelPrototype>() ?: continue
             block.model = null
 

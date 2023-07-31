@@ -119,7 +119,7 @@ class UVLockTest {
     fun `stairs top y=90`() {
         val from = Vec3(0.5f, 0.5f, 0.0f)
         val to = Vec3(1.0f, 1.0f, 1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to ModelFace("#test", FaceUV(0, 0, 8, 16), 0, -1)))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 1)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to ModelFace("#test", FaceUV(0, 16, 8, 0), 0, -1)))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
@@ -129,17 +129,17 @@ class UVLockTest {
     fun `stairs top y=180`() {
         val from = Vec3(0.5f, 0.5f, 0.0f)
         val to = Vec3(1.0f, 1.0f, 1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to ModelFace("#test", FaceUV(0, 0, 8, 16), 0, -1)))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 2)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to ModelFace("#test", FaceUV(0, 16, 8, 0), 0, -1)))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 2)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3(0, 0.5, 0.0), Vec3(0.5f, 1, 1.0f)), block(8, 0, 16, 0, 16, 16, 9, 16), 1.0f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3(0, 0.5, 0.0), Vec3(0.5f, 1, 1.0f)), block(8, 0, 16, 0, 16, 16, 8, 16), 1.0f)
     }
 
     fun `stairs top y=270`() {
         val from = Vec3(0.5f, 0.5f, 0.0f)
         val to = Vec3(1.0f, 1.0f, 1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to ModelFace("#test", FaceUV(8, 0, 16, 16), 0, -1)))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 3)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to ModelFace("#test", FaceUV(8, 16, 16, 0), 0, -1)))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 3)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
@@ -149,7 +149,7 @@ class UVLockTest {
     fun `stairs top 2 y=270`() {
         val from = Vec3(0.5f, 0.5f, 0.0f)
         val to = Vec3(1.0f, 1.0f, 1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to ModelFace("#test", FaceUV(0, 0, 8, 16), 0, -1)))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 3)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to ModelFace("#test", FaceUV(0, 16, 8, 0), 0, -1)))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 3)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
