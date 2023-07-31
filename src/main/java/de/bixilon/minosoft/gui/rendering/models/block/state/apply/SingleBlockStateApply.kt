@@ -148,6 +148,12 @@ data class SingleBlockStateApply(
         return rotatedX(direction, direction.rotateX(x)) + rotatedY(direction.rotateX(x), rotated)
     }
 
+
+    private fun FaceUV.rotateLeft(): FaceUV {
+        // return FaceUV(Vec2(start.y, -(start.x - 0.5f) + 0.5f), Vec2(end.y, -(end.x - 0.5f) + 0.5f)) // TODO: tests correct, but result wrong?
+        return FaceUV(Vec2(end.y, -(start.x - 0.5f) + 0.5f), Vec2(start.y, -(end.x - 0.5f) + 0.5f))
+    }
+
     override fun bake(): BakedModel? {
         if (model.elements == null) return null
 
@@ -168,7 +174,24 @@ data class SingleBlockStateApply(
                     .rotateY(direction.rotateX(this.x))
 
 
-                val abc = face.uv ?: if (uvLock) fallbackUV(rotatedDirection, positions.start(), positions.end()) else fallbackUV(direction, element.from, element.to)
+                var abc = face.uv ?: if (uvLock) fallbackUV(rotatedDirection, positions.start(), positions.end()) else fallbackUV(direction, element.from, element.to)
+
+                if (uvLock && face.uv != null) {
+                    if (direction.axis == Axes.Y) {
+                        if (y == 1) {
+                            abc = abc.rotateLeft()
+                            abc = abc.rotateLeft()
+                            abc = abc.rotateLeft()
+                        }
+                        if (y == 2) {
+                            abc = abc.rotateLeft()
+                            abc = abc.rotateLeft()
+                        }
+                        if (y == 3) {
+                            abc = abc.rotateLeft()
+                        }
+                    }
+                }
 
                 var uv = abc.toArray(rotatedDirection, face.rotation)
 
