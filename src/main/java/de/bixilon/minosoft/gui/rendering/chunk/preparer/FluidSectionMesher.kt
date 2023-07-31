@@ -31,10 +31,10 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -96,14 +96,8 @@ class FluidSectionMesher(
                         if (fluid.matches(neighbour)) {
                             return true
                         }
-                        val model = neighbour.model ?: return false
-                        random.setSeed(neighbourPosition.positionHash)
-                        /*
-                        val size = model.getTouchingFaceProperties(random, direction.inverted)
-                        return size?.canCull(FLUID_FACE_PROPERTY, false) ?: false
 
-                         */
-                        return false
+                        return FaceCulling.canCull(blockState, model.properties, direction, neighbour)
                     }
 
                     val topBlock = if (y == ProtocolDefinition.SECTION_MAX_Y) {

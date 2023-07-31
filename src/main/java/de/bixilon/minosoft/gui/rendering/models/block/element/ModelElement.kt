@@ -33,10 +33,9 @@ data class ModelElement(
 
     fun positions(direction: Directions): FloatArray {
         val positions = BakingUtil.positions(direction, from, to)
-        if (rotation == null) return positions
+        rotation?.apply(positions)
 
-
-        TODO("Can not rotate positions yet!")
+        return positions
     }
 
     companion object {

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.types.wood
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
-import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
@@ -26,16 +25,13 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.Waterloggabl
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.transparency.TransparentBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
-import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsRequirement
 import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordItem
-import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordRequirement
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.CustomBlockCulling
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 
 abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, BlockStateBuilder, ToolRequirement, WaterloggableBlock, BlockWithItem<Item>, LightedBlock {
     override val hardness get() = 0.2f
@@ -47,7 +43,7 @@ abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings
 
     override fun getLightProperties(blockState: BlockState) = LIGHT_PROPERTIES
 
-    override fun shouldCull(state: BlockState, face: BakedFace, directions: Directions, neighbour: BlockState): Boolean {
+    override fun shouldCull(state: BlockState, properties: FaceProperties, directions: Directions, neighbour: BlockState): Boolean {
         return neighbour.block != this
     }
 

@@ -22,14 +22,17 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 
 object FaceCulling {
 
-    fun canCull(state: BlockState, face: BakedFace, direction: Directions, neighbour: BlockState?): Boolean {
+    inline fun canCull(state: BlockState, face: BakedFace, direction: Directions, neighbour: BlockState?): Boolean {
+        return canCull(state, face.properties, direction, neighbour)
+    }
+
+    fun canCull(state: BlockState, properties: FaceProperties?, direction: Directions, neighbour: BlockState?): Boolean {
         if (neighbour == null) return false
-        if (!face.touchingSide) return false
+        if (properties == null) return false
 
         val model = neighbour.model ?: return false
         val neighbourProperties = model.getProperties(direction) ?: return false // not touching side
 
-        val properties = face.properties ?: return false
 
         if (!properties.isCoveredBy(neighbourProperties)) return false
 
@@ -39,7 +42,7 @@ object FaceCulling {
         }
 
         if (state.block is CustomBlockCulling) {
-            return state.block.shouldCull(state, face, direction, neighbour)
+            return state.block.shouldCull(state, properties, direction, neighbour)
         }
 
         if (neighbourProperties.transparency == null) return false // can not determinate it

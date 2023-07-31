@@ -28,6 +28,10 @@ data class ElementRotation(
     val rescale: Boolean = false,
 ) {
 
+    fun apply(positions: FloatArray) {
+//        TODO("Can not rotate yet!")
+    }
+
 
     companion object {
         private val ORIGIN = Vec3(0.5f)

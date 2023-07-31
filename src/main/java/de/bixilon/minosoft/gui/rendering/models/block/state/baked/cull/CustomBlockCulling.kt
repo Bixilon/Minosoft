@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 
 interface CustomBlockCulling {
 
-    fun shouldCull(state: BlockState, face: BakedFace, directions: Directions, neighbour: BlockState): Boolean
+    fun shouldCull(state: BlockState, properties: FaceProperties, directions: Directions, neighbour: BlockState): Boolean
 }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.fluid
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
@@ -21,6 +22,7 @@ interface FluidModel {
     val tint: TintProvider? get() = null
     val still: Texture?
     val flowing: Texture?
+    val properties: FaceProperties
 
     fun load(context: RenderContext)
 }
