@@ -73,11 +73,11 @@ class CuboidBakeTest {
         val baked = model.bake(createTextureManager("block/test"))!!
 
 
-        baked.assertFace(Directions.DOWN, block(2, 2, 1, 2, 2, 16, 13, 2, 16, 13, 2, 1), block(1, 3, 16, 3, 16, 14, 1, 14), 0.5f)
-        baked.assertFace(Directions.UP, block(2, 15, 1, 13, 15, 1, 13, 15, 16, 2, 15, 16), block(1, 13, 1, 2, 16, 2, 16, 13), 1.0f)
-        baked.assertFace(Directions.NORTH, block(2, 2, 1, 13, 2, 1, 13, 15, 1, 2, 15, 1), block(14, 15, 3, 15, 3, 2, 14, 2), 0.8f)
-        baked.assertFace(Directions.SOUTH, block(2, 2, 16, 2, 15, 16, 13, 15, 16, 13, 2, 16), block(2, 15, 2, 2, 13, 2, 13, 15), 0.8f)
-        baked.assertFace(Directions.WEST, block(2, 2, 1, 2, 15, 1, 2, 15, 16, 2, 2, 16), block(1, 15, 1, 2, 16, 2, 16, 15), 0.6f)
-        baked.assertFace(Directions.EAST, block(13, 2, 1, 13, 2, 16, 13, 15, 16, 13, 15, 1), block(15, 15, 0, 15, 0, 2, 15, 2), 0.6f)
+        baked.assertFace(Directions.DOWN, block(2, 2, 1, 2, 2, 16, 13, 2, 16, 13, 2, 1), block(1, 2, 16, 2, 16, 13, 1, 13), 0.5f)
+        baked.assertFace(Directions.UP, block(2, 15, 1, 13, 15, 1, 13, 15, 16, 2, 15, 16), block(1, 14, 1, 3, 16, 3, 16, 14), 1.0f)
+        baked.assertFace(Directions.NORTH, block(2, 2, 1, 13, 2, 1, 13, 15, 1, 2, 15, 1), block(14, 14, 3, 14, 3, 1, 14, 1), 0.8f)
+        baked.assertFace(Directions.SOUTH, block(2, 2, 16, 2, 15, 16, 13, 15, 16, 13, 2, 16), block(2, 14, 2, 1, 13, 1, 13, 14), 0.8f)
+        baked.assertFace(Directions.WEST, block(2, 2, 1, 2, 15, 1, 2, 15, 16, 2, 2, 16), block(1, 14, 1, 1, 16, 1, 16, 14), 0.6f)
+        baked.assertFace(Directions.EAST, block(13, 2, 1, 13, 2, 16, 13, 15, 16, 13, 15, 1), block(15, 14, 0, 14, 0, 1, 15, 1), 0.6f)
     }
 }
