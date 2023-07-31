@@ -37,7 +37,7 @@ class YRotationTest {
         val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
-            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.DOWN to createFaces(from, to)[Directions.DOWN]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.DOWN to createFaces()[Directions.DOWN]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }
@@ -54,7 +54,7 @@ class YRotationTest {
         val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
-            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to createFaces(from, to)[Directions.UP]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.UP to createFaces()[Directions.UP]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }
@@ -71,7 +71,7 @@ class YRotationTest {
         val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
-            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.NORTH to createFaces(from, to)[Directions.NORTH]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.NORTH to createFaces()[Directions.NORTH]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }
@@ -88,7 +88,7 @@ class YRotationTest {
         val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
-            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.SOUTH to createFaces(from, to)[Directions.SOUTH]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.SOUTH to createFaces()[Directions.SOUTH]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }
@@ -105,7 +105,7 @@ class YRotationTest {
         val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
-            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.WEST to createFaces(from, to)[Directions.WEST]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.WEST to createFaces()[Directions.WEST]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }
@@ -122,7 +122,7 @@ class YRotationTest {
         val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
 
         fun bake(rotation: Int): BakedModel {
-            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.EAST to createFaces(from, to)[Directions.EAST]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
+            val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = mapOf(Directions.EAST to createFaces()[Directions.EAST]!!))), textures = mapOf("test" to minecraft("block/test").texture())), y = rotation)
 
             return model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         }

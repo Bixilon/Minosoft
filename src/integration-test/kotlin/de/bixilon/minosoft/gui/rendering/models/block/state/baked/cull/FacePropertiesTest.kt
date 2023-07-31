@@ -35,7 +35,7 @@ class FacePropertiesTest {
     fun fullBlock() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
@@ -50,7 +50,7 @@ class FacePropertiesTest {
     fun lowerSlab() {
         val from = Vec3(0.0f, 0.0f, 0.0f)
         val to = Vec3(1.0f, 0.5f, 1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
@@ -65,7 +65,7 @@ class FacePropertiesTest {
     fun upperSlab() {
         val from = Vec3(0.0f, 0.5f, 0.0f)
         val to = Vec3(1.0f, 1.0f, 1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
@@ -80,7 +80,7 @@ class FacePropertiesTest {
     fun northSlab() {
         val from = Vec3(0.0f, 0.0f, 0.0f)
         val to = Vec3(1.0f, 1.0f, 0.5f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
@@ -96,7 +96,7 @@ class FacePropertiesTest {
     fun southSlab() {
         val from = Vec3(0.0f, 0.0f, 0.5f)
         val to = Vec3(1.0f, 1.0f, 1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
@@ -112,7 +112,7 @@ class FacePropertiesTest {
     fun westSlab() {
         val from = Vec3(0.0f, 0.0f, 0.0f)
         val to = Vec3(0.5f, 1.0f, 1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
@@ -128,7 +128,7 @@ class FacePropertiesTest {
     fun eastSlab() {
         val from = Vec3(0.5f, 0.0f, 0.0f)
         val to = Vec3(1.0f, 1.0f, 1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 
@@ -144,7 +144,7 @@ class FacePropertiesTest {
     fun `mini cube`() {
         val from = Vec3(0.1f, 0.2f, 0.3f)
         val to = Vec3(0.7f, 0.8f, 0.9f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
 

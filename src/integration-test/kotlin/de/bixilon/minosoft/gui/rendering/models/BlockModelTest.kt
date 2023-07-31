@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
-import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -162,12 +161,12 @@ class BlockModelTest {
                 from = Vec3(0, 0, 0),
                 to = Vec3(1, 1, 1),
                 faces = mapOf(
-                    Directions.DOWN to ModelFace("#down", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, -1),
-                    Directions.UP to ModelFace("#up", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, -1),
-                    Directions.NORTH to ModelFace("#north", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, -1),
-                    Directions.SOUTH to ModelFace("#south", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, -1),
-                    Directions.WEST to ModelFace("#west", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, -1),
-                    Directions.EAST to ModelFace("#east", FaceUV(Vec2(0, 1), Vec2(1, 0)), 0, -1),
+                    Directions.DOWN to ModelFace("#down", null, 0, -1),
+                    Directions.UP to ModelFace("#up", null, 0, -1),
+                    Directions.NORTH to ModelFace("#north", null, 0, -1),
+                    Directions.SOUTH to ModelFace("#south", null, 0, -1),
+                    Directions.WEST to ModelFace("#west", null, 0, -1),
+                    Directions.EAST to ModelFace("#east", null, 0, -1),
                 ),
                 shade = true,
                 rotation = null,

@@ -34,7 +34,7 @@ import java.util.*
 
 data class ModelFace(
     val texture: String,
-    val uv: FaceUV,
+    val uv: FaceUV?,
     val rotation: Int,
     val tintIndex: Int = -1,
 ) {
@@ -58,19 +58,6 @@ data class ModelFace(
 
     companion object {
 
-        fun fallbackUV(direction: Directions, from: Vec3, to: Vec3): FaceUV {
-            return when (direction) {
-                // @formatter:off
-                Directions.DOWN ->  FaceUV(from.x,      1.0f - from.z,   to.x,             1.0f - to.z)
-                Directions.UP ->    FaceUV(from.x,      to.z,            to.x,             from.z     )
-                Directions.NORTH -> FaceUV(1.0f - to.x, 1.0f - from.y,   1.0f - from.x,    1.0f - to.y)
-                Directions.SOUTH -> FaceUV(from.x,      1.0f - from.y,   to.x,             1.0f - to.y)
-                Directions.WEST ->  FaceUV(from.z,      1.0f - from.y,   to.z,             1.0f - to.y)
-                Directions.EAST ->  FaceUV(1.0f - to.z, 1.0f - from.y,   1.0f - from.z,    1.0f - to.y)
-                // @formatter:on
-            }
-        }
-
         fun deserialize(direction: Directions, from: Vec3, to: Vec3, data: JsonObject): ModelFace {
             val texture = data["texture"].toString()
 
@@ -80,7 +67,7 @@ data class ModelFace(
                     start = Vec2(it[0], it[3].toFloat()) / BLOCK_SIZE,
                     end = Vec2(it[2], it[1].toFloat()) / BLOCK_SIZE,
                 )
-            } ?: fallbackUV(direction, from, to)
+            }
 
             val rotation = data["rotation"]?.toInt()?.rotation() ?: 0
             val tintIndex = data["tintindex"]?.toInt() ?: TintManager.DEFAULT_TINT_INDEX

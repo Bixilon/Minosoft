@@ -36,7 +36,7 @@ class CuboidBakeTest {
         val from = Vec3(6, 0, 6) / BLOCK_SIZE
         val to = Vec3(10, 16, 16) / BLOCK_SIZE
 
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
@@ -52,7 +52,7 @@ class CuboidBakeTest {
     fun cuboidY90_1() {
         val from = Vec3(1, 0, 0) / BLOCK_SIZE
         val to = Vec3(16, 16, 16) / BLOCK_SIZE
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
@@ -68,7 +68,7 @@ class CuboidBakeTest {
     fun cuboidY90() {
         val from = Vec3(1, 2, 3) / BLOCK_SIZE
         val to = Vec3(16, 15, 14) / BLOCK_SIZE
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
@@ -84,7 +84,7 @@ class CuboidBakeTest {
     fun x90y90() {
         val from = Vec3(1, 2, 3) / BLOCK_SIZE
         val to = Vec3(16, 15, 14) / BLOCK_SIZE
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 1)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 

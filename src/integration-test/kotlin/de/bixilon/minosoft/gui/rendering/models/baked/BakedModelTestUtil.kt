@@ -13,14 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.MemoryAssetsManager
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
-import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace.Companion.fallbackUV
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
@@ -43,11 +41,11 @@ object BakedModelTestUtil {
         return rendering.context.textures
     }
 
-    fun createFaces(from: Vec3, to: Vec3, rotation: Int = 0, texture: String = "#test"): Map<Directions, ModelFace> {
+    fun createFaces(rotation: Int = 0, texture: String = "#test"): Map<Directions, ModelFace> {
         val map: MutableMap<Directions, ModelFace> = mutableMapOf()
 
         for (direction in Directions) {
-            map[direction] = ModelFace(texture, fallbackUV(direction, from, to), rotation = rotation)
+            map[direction] = ModelFace(texture, null, rotation = rotation)
         }
 
         return map

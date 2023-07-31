@@ -34,7 +34,7 @@ class XYRotationTest {
         val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
         val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
 
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 1)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 1)
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         baked.assertFace(Directions.DOWN, block(0, 6, 6, 0, 6, 10, 16, 6, 10, 16, 6, 6))
@@ -49,7 +49,7 @@ class XYRotationTest {
         val from = Vec3(6, 0, 6) / ModelElement.BLOCK_SIZE
         val to = Vec3(10, 16, 16) / ModelElement.BLOCK_SIZE
 
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 3)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 3)
 
         val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
         baked.assertFace(Directions.DOWN, block(0, 6, 6, 0, 6, 10, 16, 6, 10, 16, 6, 6))

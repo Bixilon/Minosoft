@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.apply
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.data.direction.DirectionUtil.rotateX
 import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compact
@@ -166,7 +168,9 @@ data class SingleBlockStateApply(
                     .rotateY(direction.rotateX(this.x))
 
 
-                var uv = face.uv.toArray(rotatedDirection, face.rotation)
+                val abc = face.uv ?: if (uvLock) fallbackUV(rotatedDirection, positions.start(), positions.end()) else fallbackUV(direction, element.from, element.to)
+
+                var uv = abc.toArray(rotatedDirection, face.rotation)
 
                 if (!uvLock) {
                     val rotation = getTextureRotation(direction, rotatedDirection)
@@ -183,6 +187,14 @@ data class SingleBlockStateApply(
         }
 
         return BakedModel(bakedFaces.compact(), properties.compactProperties(), null) // TODO
+    }
+
+    private fun FloatArray.start(): Vec3 {
+        return Vec3(this[0], this[1], this[2])
+    }
+
+    private fun FloatArray.end(): Vec3 {
+        return Vec3(this[6], this[7], this[8])
     }
 
     fun FloatArray.properties(direction: Directions, texture: Texture): FaceProperties? {
@@ -240,5 +252,18 @@ data class SingleBlockStateApply(
                 Directions.NORTH, Directions.SOUTH -> 0.8f
                 Directions.WEST, Directions.EAST -> 0.6f
             }
+
+        fun fallbackUV(direction: Directions, from: Vec3, to: Vec3): FaceUV {
+            return when (direction) {
+                // @formatter:off
+                Directions.DOWN ->  FaceUV(from.x,      1.0f - from.z,   to.x,             1.0f - to.z)
+                Directions.UP ->    FaceUV(from.x,      to.z,            to.x,             from.z     )
+                Directions.NORTH -> FaceUV(1.0f - to.x, 1.0f - from.y,   1.0f - from.x,    1.0f - to.y)
+                Directions.SOUTH -> FaceUV(from.x,      1.0f - from.y,   to.x,             1.0f - to.y)
+                Directions.WEST ->  FaceUV(from.z,      1.0f - from.y,   to.z,             1.0f - to.y)
+                Directions.EAST ->  FaceUV(1.0f - to.z, 1.0f - from.y,   1.0f - from.z,    1.0f - to.y)
+                // @formatter:on
+            }
+        }
     }
 }

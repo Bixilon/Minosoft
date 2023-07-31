@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.apply.WeightedBlockS
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.WeightedBlockRender
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 import java.util.*
@@ -88,9 +87,9 @@ class WeightedModelTest {
     }
 
 
-    private val A = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(1), Vec3(10), faces = createFaces(Vec3.EMPTY, Vec3.EMPTY))), textures = mapOf("test" to minecraft("block/test").texture())))
-    private val B = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(2), Vec3(10), faces = createFaces(Vec3.EMPTY, Vec3.EMPTY))), textures = mapOf("test" to minecraft("block/test").texture())))
-    private val C = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(3), Vec3(10), faces = createFaces(Vec3.EMPTY, Vec3.EMPTY))), textures = mapOf("test" to minecraft("block/test").texture())))
-    private val D = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(4), Vec3(10), faces = createFaces(Vec3.EMPTY, Vec3.EMPTY))), textures = mapOf("test" to minecraft("block/test").texture())))
+    private val A = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(1), Vec3(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
+    private val B = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(2), Vec3(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
+    private val C = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(3), Vec3(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
+    private val D = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(Vec3(4), Vec3(10), faces = createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
 
 }
