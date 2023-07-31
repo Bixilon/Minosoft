@@ -37,7 +37,7 @@ class FaceRotationTest {
     fun rotation1() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(rotation = 1))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to, rotation = 1))), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
@@ -54,7 +54,7 @@ class FaceRotationTest {
     fun rotation1Y90() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(rotation = 1))), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to, rotation = 1))), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
@@ -71,7 +71,7 @@ class FaceRotationTest {
     fun rotation3() {
         val from = Vec3(0.0f)
         val to = Vec3(1.0f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(rotation = 3))), textures = mapOf("test" to minecraft("block/test").texture())))
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to, rotation = 3))), textures = mapOf("test" to minecraft("block/test").texture())))
 
         val baked = model.bake(createTextureManager("block/test"))!!
 

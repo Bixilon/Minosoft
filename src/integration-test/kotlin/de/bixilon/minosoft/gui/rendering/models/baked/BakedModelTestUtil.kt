@@ -43,7 +43,7 @@ object BakedModelTestUtil {
         return rendering.context.textures
     }
 
-    fun createFaces(from: Vec3 = Vec3(0.0f), to: Vec3 = Vec3(1.0f), rotation: Int = 0, texture: String = "#test"): Map<Directions, ModelFace> {
+    fun createFaces(from: Vec3, to: Vec3, rotation: Int = 0, texture: String = "#test"): Map<Directions, ModelFace> {
         val map: MutableMap<Directions, ModelFace> = mutableMapOf()
 
         for (direction in Directions) {
