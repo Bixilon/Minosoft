@@ -79,8 +79,6 @@ class WeightedModelTest {
         baked.assert(Vec3i(33, -61, 15), 3)
         baked.assert(Vec3i(33, -61, 16), 1)
         baked.assert(Vec3i(33, -61, 17), 2)
-
-
     }
 
     private fun WeightedBlockRender.assert(position: Vec3i, entry: Int) {
