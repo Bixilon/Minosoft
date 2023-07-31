@@ -80,4 +80,16 @@ class CuboidBakeTest {
         baked.assertFace(Directions.WEST, block(2, 2, 1, 2, 15, 1, 2, 15, 16, 2, 2, 16), block(1, 14, 1, 1, 16, 1, 16, 14), 0.6f)
         baked.assertFace(Directions.EAST, block(13, 2, 1, 13, 2, 16, 13, 15, 16, 13, 15, 1), block(15, 14, 0, 14, 0, 1, 15, 1), 0.6f)
     }
+
+    fun x90y90() {
+        val from = Vec3(1, 2, 3) / BLOCK_SIZE
+        val to = Vec3(16, 15, 14) / BLOCK_SIZE
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())), x = 1, y = 1)
+
+        val baked = model.bake(createTextureManager("block/test"))!!
+
+
+        baked.assertFace(Directions.DOWN, block(2, 3, 1, 2, 3, 16, 15, 3, 16, 15, 3, 1), block(15, 14, 0, 14, 0, 1, 15, 1))
+        baked.assertFace(Directions.UP, block(2, 13, 1, 15, 13, 1, 15, 13, 16, 2, 13, 16), block(1, 14, 1, 1, 16, 1, 16, 14))
+    }
 }
