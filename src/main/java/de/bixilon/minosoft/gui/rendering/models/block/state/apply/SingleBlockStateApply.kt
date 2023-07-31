@@ -121,28 +121,29 @@ data class SingleBlockStateApply(
         }
     }
 
-    private fun getTextureRotation(direction: Directions): Int {
+    private fun rotatedY(direction: Directions, rotated: Directions): Int {
+        if (direction.axis != Axes.Y) return 0
+        return if (direction.negative) -y else y
+    }
+
+    private fun rotatedX(direction: Directions, rotated: Directions): Int {
+        if (direction.axis == Axes.X) {
+            return if (direction.negative) -x else x
+        }
+        if (direction == Directions.NORTH || rotated == Directions.NORTH) return 2
+        return 0
+    }
+
+    private fun getTextureRotation(direction: Directions, rotated: Directions): Int {
         if (x == 0 && y == 0) return 0
 
-        if (x == 0 && direction.axis == Axes.Y) {
-            return if (direction.negative) -y else y
+        if (x == 0) {
+            return rotatedY(direction, rotated)
         }
         if (y == 0) {
-            if (direction.axis == Axes.X) {
-                return if (direction.negative) x else -x
-            }
+            return rotatedX(direction, rotated)
         }
-
-        //    if (direction.axis == Axes.X) uv = uv.pushRight(2, if (rotatedDirection.negative) -x else x)
-//
-        //    if ((rotatedDirection == Directions.DOWN && x == 1 || rotatedDirection == Directions.UP && x == 3 || rotatedDirection == Directions.NORTH || rotatedDirection == Directions.SOUTH && x == 2)) {
-        //        uv = uv.pushRight(2, 2)
-        //    }
-        //    if (direction.axis == Axes.Y && y != 0 && !uvLock) {
-        //        uv = uv.pushRight(2, if (rotatedDirection.negative) -y else y)
-        //    }
-
-        return 0
+        return rotatedX(direction, direction.rotateX(x)) + rotatedY(direction.rotateX(x), rotated)
     }
 
     override fun bake(): BakedModel? {
@@ -168,7 +169,7 @@ data class SingleBlockStateApply(
                 var uv = face.uv.toArray(rotatedDirection, face.rotation)
 
                 if (!uvLock) {
-                    val rotation = getTextureRotation(direction)
+                    val rotation = getTextureRotation(direction, rotatedDirection)
                     uv = uv.pushRight(2, rotation)
                 }
                 val shade = rotatedDirection.shade

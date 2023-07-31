@@ -90,6 +90,6 @@ class CuboidBakeTest {
 
 
         baked.assertFace(Directions.DOWN, block(2, 3, 1, 2, 3, 16, 15, 3, 16, 15, 3, 1), block(15, 14, 0, 14, 0, 1, 15, 1))
-        baked.assertFace(Directions.UP, block(2, 13, 1, 15, 13, 1, 15, 13, 16, 2, 13, 16), block(1, 14, 1, 1, 16, 1, 16, 14))
+        baked.assertFace(Directions.UP, block(2, 14, 1, 15, 14, 1, 15, 14, 16, 2, 14, 16), block(1, 14, 1, 1, 16, 1, 16, 14))
     }
 }
