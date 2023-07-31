@@ -99,18 +99,18 @@ class UVLockTest {
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), block(8, 16, 8, 0, 16, 0, 16, 16), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), block(8, 0, 16, 0, 16, 16, 8, 16), 1.0f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, Vec3(0.5f, 0.5f, 0.0f), Vec3(1.0f)), block(8, 16, 8, 0, 16, 0, 16, 16), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, Vec3(0.5f, 0.5f, 0.0f), Vec3(1.0f)), block(8, 0, 16, 0, 16, 16, 8, 16), 1.0f)
     }
 
     fun `half cube with y=270`() {
-        val from = Vec3(0.0f)
+        val from = Vec3(0.0f, 0.5f, 0.0f)
         val to = Vec3(1.0f, 1.0f, 0.5f)
-        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 270)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(from, to))), textures = mapOf("test" to minecraft("block/test").texture())), uvLock = true, y = 3)
 
         val baked = model.bake(createTextureManager("block/test"))!!
 
-        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, to), block(0, 16, 0, 0, 8, 0, 8, 16), 0.5f)
-        baked.assertFace(Directions.UP, positions(Directions.UP, from, to), block(0, 0, 8, 0, 8, 16, 16, 0), 1.0f)
+        baked.assertFace(Directions.DOWN, positions(Directions.DOWN, from, Vec3(0.5f, 1.0f, 1.0f)), block(0, 16, 0, 0, 8, 0, 8, 16), 0.5f)
+        baked.assertFace(Directions.UP, positions(Directions.UP, from, Vec3(0.5f, 1.0f, 1.0f)), block(0, 0, 8, 0, 8, 16, 16, 0), 1.0f)
     }
 }
