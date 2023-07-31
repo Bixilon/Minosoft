@@ -27,16 +27,20 @@ data class ElementRotation(
     val angle: Float,
     val rescale: Boolean = false,
 ) {
+
+
     companion object {
         private val ORIGIN = Vec3(0.5f)
 
         fun deserialize(data: JsonObject): ElementRotation? {
-            val angle = data["angle"]?.toFloat() ?: 0.0f
+            val angle = data["angle"]?.toFloat() ?: return null
+            if (angle == 0.0f) return null
+
             val rescale = data["rescale"]?.toBoolean() ?: false
 
-            if (angle == 0.0f && !rescale) return null
             val origin = data["origin"]?.toVec3()?.apply { this /= BLOCK_SIZE } ?: ORIGIN
             val axis = Axes[data["axis"].toString()]
+
 
             return ElementRotation(origin, axis, angle, rescale)
         }

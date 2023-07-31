@@ -76,6 +76,7 @@ object BakingUtil {
 
 
     fun FloatArray.pushRight(components: Int, steps: Int): FloatArray {
+        if (steps == 0 || components == 0) return this
         if (this.size % components != 0) throw IllegalArgumentException("Size mismatch!")
         var steps = steps % (size / components)
         if (steps < 0) steps += size * components

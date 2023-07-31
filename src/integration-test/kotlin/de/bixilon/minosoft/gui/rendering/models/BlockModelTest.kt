@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
-import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply.Companion.fallbackUV
+import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace.Companion.fallbackUV
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.raw.light.GUILights

@@ -20,6 +20,7 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
 data class ModelElement(
@@ -29,6 +30,14 @@ data class ModelElement(
     val shade: Boolean = true,
     val rotation: ElementRotation? = null,
 ) {
+
+    fun positions(direction: Directions): FloatArray {
+        val positions = BakingUtil.positions(direction, from, to)
+        if (rotation == null) return positions
+
+
+        TODO("Can not rotate positions yet!")
+    }
 
     companion object {
         const val BLOCK_SIZE = 16.0f

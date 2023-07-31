@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
@@ -56,6 +57,27 @@ data class ModelFace(
         this.loadedTexture = createTexture(model, manager)
     }
 
+
+    fun getUV(uvLock: Boolean, from: Vec3, to: Vec3, direction: Directions, rotatedDirection: Directions, positions: FloatArray, x: Int, y: Int): FaceUV {
+        if (!uvLock) {
+            return this.uv ?: fallbackUV(direction, from, to)
+        }
+        var rotated = this.uv ?: return fallbackUV(rotatedDirection, positions.start(), positions.end())
+
+        if (direction.axis == Axes.X && x > 0) {
+            for (i in 0 until x) {
+                rotated = rotated.rotateLeft()
+            }
+        }
+        if (direction.axis == Axes.Y && y > 0) {
+            for (i in 0 until y) {
+                rotated = rotated.rotateLeft()
+            }
+        }
+
+        return rotated
+    }
+
     companion object {
 
         fun deserialize(direction: Directions, from: Vec3, to: Vec3, data: JsonObject): ModelFace {
@@ -88,6 +110,32 @@ data class ModelFace(
             if (map.isEmpty()) return null
 
             return map
+        }
+
+        fun fallbackUV(direction: Directions, from: Vec3, to: Vec3): FaceUV {
+            return when (direction) {
+                // @formatter:off
+                Directions.DOWN ->  FaceUV(from.x,      1.0f - from.z,   to.x,             1.0f - to.z)
+                Directions.UP ->    FaceUV(from.x,      to.z,            to.x,             from.z     )
+                Directions.NORTH -> FaceUV(1.0f - to.x, 1.0f - from.y,   1.0f - from.x,    1.0f - to.y)
+                Directions.SOUTH -> FaceUV(from.x,      1.0f - from.y,   to.x,             1.0f - to.y)
+                Directions.WEST ->  FaceUV(from.z,      1.0f - from.y,   to.z,             1.0f - to.y)
+                Directions.EAST ->  FaceUV(1.0f - to.z, 1.0f - from.y,   1.0f - from.z,    1.0f - to.y)
+                // @formatter:on
+            }
+        }
+
+        private fun FloatArray.start(): Vec3 {
+            return Vec3(this[0], this[1], this[2])
+        }
+
+        private fun FloatArray.end(): Vec3 {
+            return Vec3(this[6], this[7], this[8])
+        }
+
+
+        private fun FaceUV.rotateLeft(): FaceUV {
+            return FaceUV(Vec2(-start.y + 1.0f, end.x), Vec2(-end.y + 1.0f, start.x))
         }
     }
 }
