@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.preparer
+package de.bixilon.minosoft.gui.rendering.chunk.preparer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -39,7 +39,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
-class SolidSectionPreparer(
+class SolidSectionMesher(
     val context: RenderContext,
 ) {
     private val profile = context.connection.profiles.block.rendering
@@ -52,7 +52,7 @@ class SolidSectionPreparer(
         profile.performance::fastBedrock.observe(this, true) { this.fastBedrock = it }
     }
 
-    fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMesh) {
+    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMesh) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
 
 

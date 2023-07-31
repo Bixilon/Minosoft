@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.preparer
+package de.bixilon.minosoft.gui.rendering.chunk.preparer
 
 import de.bixilon.kotlinglm.func.cos
 import de.bixilon.kotlinglm.func.sin
@@ -33,7 +33,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkMesher
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -48,7 +47,7 @@ import de.bixilon.minosoft.util.KUtil.isTrue
 import java.util.*
 import kotlin.math.atan2
 
-class FluidSectionPreparer(
+class FluidSectionMesher(
     val context: RenderContext,
 ) {
     private val water = context.connection.registries.fluid[WaterFluid]
@@ -56,7 +55,7 @@ class FluidSectionPreparer(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMesh) {
+    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMesh) {
         val blocks = section.blocks
 
         val random = Random(0L)

@@ -15,17 +15,17 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.kutil.concurrent.pool.runnable.InterruptableRunnable
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.preparer.FluidSectionMesher
+import de.bixilon.minosoft.gui.rendering.chunk.preparer.SolidSectionMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.smallMesh
-import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
-import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 
 class ChunkMesher(
     private val renderer: ChunkRenderer,
 ) {
-    private val solidSectionPreparer = SolidSectionPreparer(renderer.context)
-    private val fluidSectionPreparer = FluidSectionPreparer(renderer.context)
+    private val solid = SolidSectionMesher(renderer.context)
+    private val fluid = FluidSectionMesher(renderer.context)
 
     private fun mesh(item: WorldQueueItem): ChunkMesh? {
         if (item.section.blocks.isEmpty) {
@@ -39,10 +39,10 @@ class ChunkMesher(
         }
         val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, item.chunk, item.section.sectionHeight)
         val mesh = ChunkMesh(renderer.context, item.chunkPosition, item.sectionHeight, item.section.smallMesh)
-        solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
+        solid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
 
         if (item.section.blocks.fluidCount > 0) {
-            fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
+            fluid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
         }
 
         return mesh
