@@ -17,12 +17,13 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.DirectionUtil.rotateX
 import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.element.ElementRotation
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compact
@@ -39,6 +40,7 @@ data class SingleBlockStateApply(
     val uvLock: Boolean = false,
     val x: Int = 0,
     val y: Int = 0,
+    val rotation: Vec2? = null,
 ) : BlockStateApply {
 
     private fun FloatArray.rotateX(count: Int) {
@@ -166,9 +168,16 @@ data class SingleBlockStateApply(
                     .rotateY(this.y)
 
 
-                val positions = element.positions(direction)
+                var positions = element.positions(direction)
                     .rotateX(direction)
-                    .rotateY(direction.rotateX(this.x))
+                if (this.rotation != null && this.rotation.x != 0.0f) {
+                    ElementRotation(axis = Axes.X, angle = this.rotation.x).apply(positions)
+                }
+                positions = positions.rotateY(direction.rotateX(this.x))
+
+                if (this.rotation != null && this.rotation.y != 0.0f) {
+                    ElementRotation(axis = Axes.Y, angle = this.rotation.y).apply(positions)
+                }
 
 
                 var uv = face.getUV(uvLock, element.from, element.to, direction, rotatedDirection, positions, x, y).toArray(rotatedDirection, face.rotation)
@@ -219,17 +228,19 @@ data class SingleBlockStateApply(
         fun Int.rotation(): Int {
             var rotation = this
 
-            if (rotation % ROTATION_STEP != 0) throw IllegalArgumentException("Invalid rotation: $rotation")
             rotation /= ROTATION_STEP
             return rotation and 0x03
         }
 
         fun deserialize(model: BlockModel, data: JsonObject): SingleBlockStateApply {
             val uvLock = data["uvlock"]?.toBoolean() ?: false
-            val x = data["x"]?.toInt()?.rotation() ?: 0
-            val y = data["y"]?.toInt()?.rotation() ?: 0
 
-            return SingleBlockStateApply(model, uvLock, x, y)
+            val x = data["x"]?.toFloat() ?: 0.0f
+            val y = data["y"]?.toFloat() ?: 0.0f
+
+            val rotation = Vec2(x % ROTATION_STEP, y % ROTATION_STEP)
+
+            return SingleBlockStateApply(model, uvLock, x.toInt().rotation(), y.toInt().rotation(), rotation = if (rotation.x == 0.0f && rotation.y == 0.0f) null else rotation)
         }
 
         fun deserialize(loader: BlockLoader, data: JsonObject): SingleBlockStateApply? {
