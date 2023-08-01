@@ -21,9 +21,9 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
-class FlatItemRender(val layer0: Texture) : ItemRender {
+class FlatItemRender(val texture: Texture) : ItemRender {
 
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
-        ImageElement(gui, layer0, size = size).render(offset, consumer, options)
+        ImageElement(gui, texture, size = size).render(offset, consumer, options)
     }
 }

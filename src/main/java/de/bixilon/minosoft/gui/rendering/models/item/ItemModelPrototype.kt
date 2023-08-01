@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class ItemModelPrototype(
-    private var layer0: Texture,
+    private var texture: Texture,
 ) : ItemRender {
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = prototype()
 
@@ -30,6 +30,6 @@ class ItemModelPrototype(
 
 
     fun bake(): ItemRender {
-        return FlatItemRender(this.layer0)
+        return FlatItemRender(this.texture)
     }
 }

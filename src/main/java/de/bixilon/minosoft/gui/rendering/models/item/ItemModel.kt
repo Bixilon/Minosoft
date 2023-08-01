@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 
 class ItemModel(
     val display: Map<DisplayPositions, ModelDisplay>? = null,
@@ -29,10 +30,9 @@ class ItemModel(
 
     fun load(textures: TextureManager): ItemModelPrototype? {
         if (this.textures == null) return null
-        val layer0 = this.textures["layer0"]?.toResourceLocation()?.texture() ?: return null
+        val texture = this.textures["layer0", "particle"]?.toResourceLocation()?.texture() ?: return null
 
-
-        return ItemModelPrototype(textures.staticTextures.createTexture(layer0))
+        return ItemModelPrototype(textures.staticTextures.createTexture(texture))
     }
 
     companion object {
