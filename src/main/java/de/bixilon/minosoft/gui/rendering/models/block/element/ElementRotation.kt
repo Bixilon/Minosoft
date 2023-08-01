@@ -13,23 +13,30 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.element
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.entities.EntityRotation.Companion.CIRCLE_DEGREE
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
 data class ElementRotation(
-    val origin: Vec3,
+    val origin: Vec3 = ORIGIN,
     val axis: Axes,
     val angle: Float,
     val rescale: Boolean = false,
 ) {
 
     fun apply(positions: FloatArray) {
-//        TODO("Can not rotate yet!")
+        val angle = -angle.rad
+        Vec3(0, positions).rotateAssign(angle, axis, origin, rescale)
+        Vec3(3, positions).rotateAssign(angle, axis, origin, rescale)
+        Vec3(6, positions).rotateAssign(angle, axis, origin, rescale)
+        Vec3(9, positions).rotateAssign(angle, axis, origin, rescale)
     }
 
 
@@ -37,7 +44,7 @@ data class ElementRotation(
         private val ORIGIN = Vec3(0.5f)
 
         fun deserialize(data: JsonObject): ElementRotation? {
-            val angle = data["angle"]?.toFloat() ?: return null
+            val angle = data["angle"]?.toFloat()?.mod(CIRCLE_DEGREE.toFloat()) ?: return null
             if (angle == 0.0f) return null
 
             val rescale = data["rescale"]?.toBoolean() ?: false

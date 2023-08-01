@@ -14,20 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -35,8 +31,8 @@ import org.testng.annotations.Test
 @Test(groups = ["models", "culling"])
 class FaceCullingTest {
 
-    private fun createFace(transparency: TextureTransparencies = TextureTransparencies.OPAQUE, properties: FaceProperties? = FaceProperties(Vec2(0), Vec2(1), transparency)): BakedFace {
-        return BakedFace(floatArrayOf(), floatArrayOf(), 1.0f, -1, null, MemoryTexture(Vec2i.EMPTY), properties)
+    private fun createFace(transparency: TextureTransparencies = TextureTransparencies.OPAQUE, properties: FaceProperties? = FaceProperties(Vec2(0), Vec2(1), transparency)): FaceProperties? {
+        return properties
     }
 
     private fun createBlock(transparency: TextureTransparencies = TextureTransparencies.OPAQUE, properties: SideProperties? = SideProperties(arrayOf(FaceProperties(Vec2(0), Vec2(1), transparency)), transparency), type: Int = 0): BlockState {
@@ -228,7 +224,7 @@ class FaceCullingTest {
         val block = object : Block(minosoft("dummy"), BlockSettings()), CustomBlockCulling {
             override val hardness get() = Broken()
 
-            override fun shouldCull(state: BlockState, face: BakedFace, directions: Directions, neighbour: BlockState): Boolean {
+            override fun shouldCull(state: BlockState, properties: FaceProperties, directions: Directions, neighbour: BlockState): Boolean {
                 throw AssertionError("shouldCall invoked!")
             }
         }
@@ -244,7 +240,7 @@ class FaceCullingTest {
     private fun forceNoCull() = object : Block(minosoft("dummy"), BlockSettings()), CustomBlockCulling {
         override val hardness get() = Broken()
 
-        override fun shouldCull(state: BlockState, face: BakedFace, directions: Directions, neighbour: BlockState): Boolean {
+        override fun shouldCull(state: BlockState, properties: FaceProperties, directions: Directions, neighbour: BlockState): Boolean {
             return false
         }
     }

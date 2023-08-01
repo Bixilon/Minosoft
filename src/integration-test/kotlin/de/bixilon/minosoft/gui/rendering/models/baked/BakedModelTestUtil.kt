@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.testng.Assert
+import kotlin.math.abs
 
 object BakedModelTestUtil {
     private val texture = Minosoft::class.java.getResourceAsStream("/assets/minosoft/textures/debug.png")!!.readAllBytes()
@@ -56,9 +57,18 @@ object BakedModelTestUtil {
         if (faces.size != 1) throw IllegalArgumentException("Model has more/less than once face: ${faces.size}!")
         val face = faces.first()
 
-        vertices?.let { Assert.assertEquals(face.positions, it, "Vertices mismatch") }
+        vertices?.let { assertMatches(face.positions, it, "Vertices mismatch") }
         uv?.let { if (!face.uv.contentEquals(it)) throw AssertionError("UV mismatch, expected [${uv[0]}|${uv[1]}], but got [${face.uv[0]}|${face.uv[1]}]") } // printing the first element is fine, it is always clockwise
         shade?.let { Assert.assertEquals(face.shade, it, "Shade mismatch") }
         texture?.toResourceLocation()?.texture()?.let { Assert.assertEquals(face.texture, it, "Texture mismatch") }
+    }
+
+    private fun assertMatches(actual: FloatArray, expected: FloatArray, message: String) {
+        if (actual.size != expected.size) throw AssertionError("Size mismatch!")
+
+        for (i in actual.indices) {
+            val delta = abs(actual[i] - expected[i])
+            if (delta > 0.01f) throw AssertionError("$message: Delta is too high at index $i: ${actual[i]}, expected ${expected[i]}")
+        }
     }
 }

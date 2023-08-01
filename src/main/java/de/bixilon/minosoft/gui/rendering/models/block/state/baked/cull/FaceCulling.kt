@@ -22,10 +22,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 
 object FaceCulling {
 
-    inline fun canCull(state: BlockState, face: BakedFace, direction: Directions, neighbour: BlockState?): Boolean {
-        return canCull(state, face.properties, direction, neighbour)
-    }
-
     fun canCull(state: BlockState, properties: FaceProperties?, direction: Directions, neighbour: BlockState?): Boolean {
         if (neighbour == null) return false
         if (properties == null) return false
