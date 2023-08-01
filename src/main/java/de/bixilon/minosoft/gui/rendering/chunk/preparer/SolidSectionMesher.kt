@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.preparer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -27,6 +28,7 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
@@ -135,6 +137,14 @@ class SolidSectionMesher(
                         light[O_UP] = (light[O_UP].toInt() or 0xF0).toByte()
                     }
 
+                    var offset: Vec3? = null
+                    if (state.block is RandomOffsetBlock) {
+                        offset = state.block.offsetBlock(position)
+                        floatOffset[0] += offset.x
+                        floatOffset[1] += offset.y
+                        floatOffset[2] += offset.z
+                    }
+
                     val tints = tints.getAverageBlockTint(chunk, neighbourChunks, state, x, y, z)
                     var rendered = model.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints)
 
@@ -142,6 +152,11 @@ class SolidSectionMesher(
                         rendered = entity.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints) || rendered
                     }
 
+                    if (offset != null) {
+                        floatOffset[0] -= offset.x
+                        floatOffset[1] -= offset.y
+                        // z is automatically reset
+                    }
 
                     if (rendered) {
                         mesh.addBlock(x, y, z)
