@@ -13,9 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.builder
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import java.util.*
@@ -36,6 +41,14 @@ class BuiltModel(
         }
 
         return rendered
+    }
+
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
+        model.render(gui, offset, consumer, options, size, stack)
+
+        for (dynamic in this.dynamic) {
+            dynamic.render(gui, offset, consumer, options, size, stack)
+        }
     }
 
     // TODO: getSize/culling support

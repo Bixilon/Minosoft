@@ -22,12 +22,18 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import kotlin.reflect.jvm.javaField
 
 abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identifier), StackableItem, PlaceableItem {
     val block: T = unsafeNull()
     protected abstract val _block: Identified
+    override var model: ItemRender?
+        get() = super.model ?: block.model ?: block.states.default.model
+        set(value) {
+            super.model = value
+        }
 
     init {
         BLOCK_FIELD.inject<RegistryItem>(_block)
