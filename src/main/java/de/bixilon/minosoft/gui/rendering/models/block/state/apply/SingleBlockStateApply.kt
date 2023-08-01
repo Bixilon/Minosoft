@@ -124,9 +124,7 @@ data class SingleBlockStateApply(
         particle = model.getTexture("#particle", textures)
 
         for (element in model.elements) {
-            for ((_, face) in element.faces) {
-                face.load(model, textures)
-            }
+            element.load(model, textures)
         }
     }
 

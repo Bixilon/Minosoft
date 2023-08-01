@@ -26,17 +26,21 @@ import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BlockLoader(private val loader: ModelLoader) {
+    private val cache: MutableMap<ResourceLocation, BlockModel> = HashMap(1000)
     val assets = loader.context.connection.assetsManager
     val version = loader.context.connection.version
 
     fun loadBlock(name: ResourceLocation): BlockModel? {
         val file = name.model("block/")
+        cache[file]?.let { return it }
         val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
         val parent = data["parent"]?.toString()?.let { loadBlock(it.toResourceLocation()) }
 
 
-        return BlockModel.deserialize(parent, data)
+        val model = BlockModel.deserialize(parent, data)
+        cache[file] = model
+        return model
     }
 
     fun loadState(block: Block): DirectBlockModel? {
@@ -62,6 +66,10 @@ class BlockLoader(private val loader: ModelLoader) {
 
             prototype.bake(block)
         }
+    }
+
+    fun cleanup() {
+        this.cache.clear()
     }
 
 

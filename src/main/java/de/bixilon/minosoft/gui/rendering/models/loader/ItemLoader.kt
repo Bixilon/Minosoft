@@ -27,17 +27,20 @@ import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ItemLoader(private val loader: ModelLoader) {
+    private val cache: MutableMap<ResourceLocation, ItemModel> = HashMap(1000)
     val assets = loader.context.connection.assetsManager
     val version = loader.context.connection.version
 
     fun loadItem(name: ResourceLocation): ItemModel? {
         val file = name.model("item/")
+        cache[file]?.let { return it }
         val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
         val parent = data["parent"]?.toString()?.let { loadItem(it.toResourceLocation()) }
 
-
-        return ItemModel.deserialize(parent, data)
+        val model = ItemModel.deserialize(parent, data)
+        cache[file] = model
+        return model
     }
 
     private fun loadItem(item: Item): ItemModel? {
@@ -63,5 +66,9 @@ class ItemLoader(private val loader: ModelLoader) {
 
             item.model = prototype.bake()
         }
+    }
+
+    fun cleanup() {
+        this.cache.clear()
     }
 }

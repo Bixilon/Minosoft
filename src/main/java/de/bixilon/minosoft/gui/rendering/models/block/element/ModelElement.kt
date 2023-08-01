@@ -19,8 +19,10 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
 data class ModelElement(
@@ -36,6 +38,12 @@ data class ModelElement(
         rotation?.apply(positions)
 
         return positions
+    }
+
+    fun load(model: BlockModel, textures: TextureManager) {
+        for ((_, face) in faces) {
+            face.load(model, textures)
+        }
     }
 
     companion object {

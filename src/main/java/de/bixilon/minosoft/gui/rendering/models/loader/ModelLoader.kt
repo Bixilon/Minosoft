@@ -47,6 +47,11 @@ class ModelLoader(
         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models!" }
     }
 
+    fun cleanup() {
+        block.cleanup()
+        item.cleanup()
+    }
+
     companion object {
 
         fun ResourceLocation.model(prefix: String? = null): ResourceLocation {
