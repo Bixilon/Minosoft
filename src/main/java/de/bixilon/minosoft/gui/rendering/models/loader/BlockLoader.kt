@@ -35,7 +35,7 @@ class BlockLoader(private val loader: ModelLoader) {
         cache[file]?.let { return it }
         val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
-        val parent = data["parent"]?.toString()?.let { loadBlock(it.toResourceLocation()) }
+        val parent = data["parent"]?.toString()?.toResourceLocation()?.let { loadBlock(it) }
 
 
         val model = BlockModel.deserialize(parent, data)

@@ -71,7 +71,7 @@ data class BlockModel(
         private fun elements(data: List<JsonObject>): List<ModelElement>? {
             if (data.isEmpty()) return null
 
-            val elements: MutableList<ModelElement> = mutableListOf()
+            val elements: MutableList<ModelElement> = ArrayList(data.size)
 
             for (entry in data.reversed()) {
                 elements += ModelElement.deserialize(entry) ?: continue

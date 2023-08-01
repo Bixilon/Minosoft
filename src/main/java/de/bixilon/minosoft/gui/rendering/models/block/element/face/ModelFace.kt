@@ -64,14 +64,14 @@ data class ModelFace(
 
     companion object {
 
-        fun deserialize(direction: Directions, from: Vec3, to: Vec3, data: JsonObject): ModelFace {
+        fun deserialize(data: JsonObject): ModelFace {
             val texture = data["texture"].toString()
 
             val uv = data["uv"]?.listCast<Number>()?.let {
                 // auto transform (flip) y coordinate (in minosoft 0|0 is left up, not like in minecraft/opengl where it is left down)
                 FaceUV(
-                    start = Vec2(it[0], it[3].toFloat()) / BLOCK_SIZE,
-                    end = Vec2(it[2], it[1].toFloat()) / BLOCK_SIZE,
+                    start = Vec2(it[0].toFloat(), it[3].toFloat()) / BLOCK_SIZE,
+                    end = Vec2(it[2].toFloat(), it[1].toFloat()) / BLOCK_SIZE,
                 )
             }
 
@@ -81,12 +81,12 @@ data class ModelFace(
             return ModelFace(texture, uv, rotation, tintIndex)
         }
 
-        fun deserialize(from: Vec3, to: Vec3, data: Map<String, JsonObject>): Map<Directions, ModelFace>? {
+        fun deserialize(data: Map<String, JsonObject>): Map<Directions, ModelFace>? {
             val map: MutableMap<Directions, ModelFace> = EnumMap(Directions::class.java)
 
             for ((key, value) in data) {
                 val direction = Directions[key]
-                val face = deserialize(direction, from, to, value)
+                val face = deserialize(value)
 
                 map[direction] = face
             }
