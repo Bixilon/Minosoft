@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.MemoryAssetsManager
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -38,6 +40,7 @@ object BakedModelTestUtil {
         }
         connection::assetsManager.forceSet(assets)
         val rendering = Rendering(connection)
+        rendering.context.textures::debugTexture.forceSet(MemoryTexture(Vec2i(0, 0)))
 
         return rendering.context.textures
     }

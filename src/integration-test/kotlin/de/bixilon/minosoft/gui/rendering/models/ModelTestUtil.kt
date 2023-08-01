@@ -26,10 +26,12 @@ import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ModelTestUtil {
+    private val cache = BlockLoader::class.java.getDeclaredField("cache").apply { isAccessible = true }
 
     fun createLoader(): ModelLoader {
         val instance = IT.OBJENESIS.newInstance(ModelLoader::class.java)
         instance::block.forceSet(IT.OBJENESIS.newInstance(BlockLoader::class.java))
+        cache[instance.block] = HashMap<Any, Any>()
 
 
         return instance
