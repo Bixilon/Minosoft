@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -111,7 +111,7 @@ class MojangAddController(
         errorFX.isVisible = false
         DefaultThreadPool += {
             try {
-                val account = MojangAccount.login(email = emailFX.text, password = passwordFX.text, clientToken = profile.clientToken)
+                val account = MojangAccount.login(email = emailFX.text, password = passwordFX.text)
                 profile.entries[account.id] = account
                 profile.selected = account
                 JavaFXUtil.runLater {

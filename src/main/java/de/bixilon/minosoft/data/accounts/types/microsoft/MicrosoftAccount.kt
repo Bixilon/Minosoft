@@ -34,7 +34,6 @@ import de.bixilon.minosoft.util.account.minecraft.MinecraftTokens
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import org.jetbrains.annotations.Nullable
 import java.net.ConnectException
 import java.util.*
 
@@ -54,14 +53,14 @@ class MicrosoftAccount(
 
     @Synchronized
     override fun join(serverId: String) {
-        tryCheck(null, "null")
+        tryCheck(null)
         AccountUtil.joinMojangServer(minecraft.accessToken, uuid, serverId)
     }
 
-    override fun logout(clientToken: String) = Unit
+    override fun logout() = Unit
 
     @Synchronized
-    override fun check(latch: AbstractLatch?, @Nullable clientToken: String) {
+    override fun check(latch: AbstractLatch?) {
         val innerLatch = latch?.child(1)
         try {
             this.error = null
@@ -82,19 +81,19 @@ class MicrosoftAccount(
         }
     }
 
-    override fun tryCheck(latch: AbstractLatch?, clientToken: String) {
+    override fun tryCheck(latch: AbstractLatch?) {
         if (state == AccountStates.CHECKING || state == AccountStates.REFRESHING) {
             // already checking
             return
         }
         if (minecraft.expires >= millis() / 1000) {
-            return check(latch, "null")
+            return check(latch)
         }
         if (state == AccountStates.WORKING) {
             // Nothing to do
             return
         }
-        check(latch, clientToken)
+        check(latch)
     }
 
     private fun refreshMicrosoftToken(latch: AbstractLatch?) {

@@ -139,7 +139,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         DefaultThreadPool += ForcePooledRunnable {
             latch.dec()
             try {
-                account.tryCheck(latch, profile.clientToken) // ToDo: Show error
+                account.tryCheck(latch) // ToDo: Show error
                 if (select) {
                     profile.selected = account
                 }
