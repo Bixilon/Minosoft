@@ -11,12 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.legacy
+package de.bixilon.minosoft.gui.rendering.models.loader.legacy
 
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.versions.Version
 
-interface CustomBlockModel {
+interface CustomModel {
     fun getModelName(version: Version) = modelName
     val modelName: ResourceLocation? get() = null
 }

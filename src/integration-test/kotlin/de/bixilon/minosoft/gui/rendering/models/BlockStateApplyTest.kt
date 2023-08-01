@@ -19,7 +19,6 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
-import de.bixilon.minosoft.data.registries.blocks.types.legacy.CustomBlockModel
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.createAssets
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.block.state.variant.SingleVariantBlockModel
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader.Companion.blockState
+import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.test.IT
@@ -40,7 +40,7 @@ class BlockStateApplyTest {
         val loader = ModelTestUtil.createLoader()
         loader.block::version.forceSet(version)
         val assets = loader.createAssets(files)
-        val modelName = (if (block is CustomBlockModel) block.getModelName(version) else block.identifier)!!.blockState()
+        val modelName = (if (block is CustomModel) block.getModelName(version) else block.identifier)!!.blockState()
         assets.push(modelName, state)
 
 

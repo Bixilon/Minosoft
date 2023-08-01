@@ -16,59 +16,52 @@ package de.bixilon.minosoft.gui.rendering.models.loader
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
-import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
-import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
-import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.block.BlockItem
+import de.bixilon.minosoft.data.registries.item.items.block.legacy.PixLyzerBlockItem
+import de.bixilon.minosoft.gui.rendering.models.item.ItemModel
+import de.bixilon.minosoft.gui.rendering.models.item.ItemModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class BlockLoader(private val loader: ModelLoader) {
+class ItemLoader(private val loader: ModelLoader) {
     val assets = loader.context.connection.assetsManager
     val version = loader.context.connection.version
 
-    fun loadBlock(name: ResourceLocation): BlockModel? {
-        val file = name.model("block/")
+    fun loadItem(name: ResourceLocation): ItemModel? {
+        val file = name.model("item/")
         val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
-        val parent = data["parent"]?.toString()?.let { loadBlock(it.toResourceLocation()) }
+        val parent = data["parent"]?.toString()?.let { loadItem(it.toResourceLocation()) }
 
 
-        return BlockModel.deserialize(parent, data)
+        return ItemModel.deserialize(parent, data)
     }
 
-    fun loadState(block: Block): DirectBlockModel? {
-        val file = (if (block is CustomModel) block.getModelName(version) else block.identifier)?.blockState() ?: return null
-        val data = assets.getOrNull(file)?.readJsonObject() ?: return null
+    private fun loadItem(item: Item): ItemModel? {
+        val file = (if (item is CustomModel) item.getModelName(version) else item.identifier) ?: return null
 
-        return DirectBlockModel.deserialize(this, data)
+        return loadItem(file)
     }
 
     fun load(latch: AbstractLatch?) {
-        for (block in loader.context.connection.registries.block) {
-            val model = loadState(block) ?: continue
+        for (item in loader.context.connection.registries.item) {
+            if (item is BlockItem<*> || item is PixLyzerBlockItem) continue // block models are loaded in a different step
+            if (item.model != null) continue // already has a model set
+            val model = loadItem(item) ?: continue
 
             val prototype = model.load(loader.context.textures)
-            block.model = prototype
+            item.model = prototype
         }
     }
 
     fun bake(latch: AbstractLatch?) {
-        for (block in loader.context.connection.registries.block) {
-            val prototype = block.model.nullCast<BlockModelPrototype>() ?: continue
-            block.model = null
+        for (item in loader.context.connection.registries.item) {
+            val prototype = item.model.nullCast<ItemModelPrototype>() ?: continue
 
-            prototype.bake(block)
-        }
-    }
-
-
-    companion object {
-
-        fun ResourceLocation.blockState(): ResourceLocation {
-            return ResourceLocation(this.namespace, "blockstates/" + this.path + ".json")
+            item.model = prototype.bake()
         }
     }
 }

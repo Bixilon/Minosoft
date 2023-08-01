@@ -55,7 +55,7 @@ data class BlockModel(
 
     companion object {
 
-        private fun display(data: JsonObject, parent: Map<DisplayPositions, ModelDisplay>?): Map<DisplayPositions, ModelDisplay>? {
+        fun display(data: JsonObject, parent: Map<DisplayPositions, ModelDisplay>?): Map<DisplayPositions, ModelDisplay>? {
             if (data.isEmpty()) return parent
 
             val display: MutableMap<DisplayPositions, ModelDisplay> = parent?.toMutableMap() ?: EnumMap(DisplayPositions::class.java)
@@ -82,7 +82,7 @@ data class BlockModel(
             return elements
         }
 
-        private fun textures(data: JsonObject, parent: Map<String, Any>?): Map<String, Any>? {
+        fun textures(data: JsonObject, parent: Map<String, Any>?): Map<String, Any>? {
             if (data.isEmpty()) return parent
 
             val textures: MutableMap<String, Any> = parent?.toMutableMap() ?: mutableMapOf()

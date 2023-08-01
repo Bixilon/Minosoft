@@ -27,20 +27,22 @@ class ModelLoader(
     val fluids = FluidModelLoader(this)
     val entities = EntityModels(this)
     val block = BlockLoader(this)
+    val item = ItemLoader(this)
 
 
     fun load(latch: AbstractLatch) {
         fluids.load(latch)
         entities.load(latch)
         block.load(latch)
+        item.load(latch)
 
         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading all models!" }
     }
 
     fun bake(latch: AbstractLatch) {
         block.bake(latch)
+        item.bake(latch)
         entities.bake()
-
 
         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models!" }
     }
