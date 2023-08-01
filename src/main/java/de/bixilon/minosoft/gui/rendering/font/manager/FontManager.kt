@@ -52,11 +52,7 @@ class FontManager(default: FontType? = null) {
         fonts[name]?.let { return it }
 
 
-        val font = FontLoader.load(context, this, index, latch)
-        if (font == null) {
-            Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Font $index seems to be empty!" }
-            return null
-        }
+        val font = FontLoader.load(context, this, index, latch) ?: return null
         val type = font.trim() ?: return null
 
         this.fonts[name] = type
@@ -68,8 +64,12 @@ class FontManager(default: FontType? = null) {
         fun create(context: RenderContext, latch: AbstractLatch): FontManager {
             val manager = FontManager()
 
-            val default = manager.load(DefaultFontIndices.DEFAULT, context, latch) ?: EmptyFont
-            manager::default.forceSet(default)
+            val default = manager.load(DefaultFontIndices.DEFAULT, context, latch)
+            if (default == null) {
+                Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Default font is empty!" }
+            }
+
+            manager::default.forceSet(default ?: EmptyFont)
 
             for (index in DefaultFontIndices.ALL) {
                 manager.load(index, context, latch)
