@@ -65,15 +65,14 @@ class SignBlockEntityRenderer(
         return true
     }
 
-    private fun renderText(offset: FloatArray, rotationVector: Vec3, yRotation: Float, mesh: ChunkMesh, light: Int) {
+    private fun renderText(offset: FloatArray, rotationVector: Vec3, yRotation: Float, mesh: SingleChunkMesh, light: Int) {
         val textPosition = offset.toVec3() + rotationVector
 
-        val textMesh = mesh.textMesh!!
         var primitives = 0
         for (line in sign.lines) {
             primitives += ChatComponentRenderer.calculatePrimitiveCount(line)
         }
-        textMesh.data.ensureSize(primitives * textMesh.order.size * SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
+        mesh.data.ensureSize(primitives * mesh.order.size * SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
 
         val alignment = context.connection.profiles.block.rendering.entities.sign.fontAlignment
 
@@ -90,7 +89,7 @@ class SignBlockEntityRenderer(
 
         val rotationVector = Vec3(X_OFFSET, 17.5f / BLOCK_SIZE - Y_OFFSET, 9.0f / BLOCK_SIZE + Z_OFFSET)
         rotationVector.signRotate(yRotation.rad)
-        renderText(offset, rotationVector, yRotation, mesh, light)
+        renderText(offset, rotationVector, yRotation, mesh.textMesh!!, light)
     }
 
     private fun renderWallText(position: FloatArray, mesh: ChunkMesh, light: Int) {
@@ -104,7 +103,7 @@ class SignBlockEntityRenderer(
 
         val rotationVector = Vec3(X_OFFSET, 12.5f / BLOCK_SIZE - Y_OFFSET, 2.0f / BLOCK_SIZE + Z_OFFSET)
         rotationVector.signRotate(yRotation.rad)
-        renderText(position, rotationVector, yRotation, mesh, light)
+        renderText(position, rotationVector, yRotation, mesh.textMesh!!, light)
     }
 
     private fun Vec3.signRotate(yRotation: Float) {

@@ -63,7 +63,6 @@ class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
     }
 
     companion object {
-        // TODO: uv coordinates should start in the upper left corner, then a 0=>0 mapping is possible
         val TRIANGLE_ORDER = intArrayOf(
             0, 0,
             3, 3,
