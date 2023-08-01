@@ -104,10 +104,15 @@ open class PixLyzerBlock(
         return identifier.toString()
     }
 
-    override fun offsetBlock(position: Vec3i): Vec3 {
+    override fun offsetShape(position: Vec3i): Vec3 {
         val offset = randomOffset ?: return Vec3.EMPTY
-        return super.offsetBlock(position) + if (offset == RandomOffsetTypes.XZ) NULL_OFFSET_XZ else NULL_OFFSET_XYZ  // this corrects wrong pixlyzer data
+        return super.offsetShape(position) + if (offset == RandomOffsetTypes.XZ) NULL_OFFSET_XZ else NULL_OFFSET_XYZ  // this corrects wrong pixlyzer data
     }
+
+    override fun offsetModel(position: Vec3i): Vec3 {
+        return super.offsetShape(position)
+    }
+
 
     companion object : ResourceLocationCodec<Block>, PixLyzerBlockFactory<Block>, MultiClassFactory<Block> {
         private val NULL_OFFSET_XYZ = Vec3i(0, 0, 0).getWorldOffset(RandomOffsetTypes.XYZ)

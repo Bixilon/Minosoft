@@ -56,5 +56,17 @@ class ElementRotationTest {
         baked.assertFace(Directions.UP, floatArrayOf(0.5f, 1.0f, -0.2f, 1.2f, 1.0f, 0.5f, 0.5f, 1.0f, 1.2f, -0.2f, 1.0f, 0.5f), rbgy, 1.0f)
     }
 
+    fun `rotate grass around origin 45 degree on the y axis and rescale`() {
+        val from = Vec3(0.8, 0, 8) / 16
+        val to = Vec3(15.2, 16, 8) / 16
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = createFaces(), rotation = ElementRotation(origin = Vec3(0.5f), axis = Axes.Y, angle = 45.0f, rescale = true))), textures = mapOf("test" to minecraft("block/test").texture())))
+
+
+        val baked = model.bake(createTextureManager("block/test"))!!
+
+
+        baked.assertFace(Directions.NORTH, floatArrayOf(0.05f, 0.0f, 0.95f, 0.95f, 0.0f, 0.05f, 0.95f, 1.0f, 0.05f, 0.05f, 1.0f, 0.95f))
+    }
+
     // TODO: a,z axis
 }

@@ -22,8 +22,10 @@ interface RandomOffsetBlock {
     val randomOffset: RandomOffsetTypes? // TODO: make non nullable
 
 
-    fun offsetBlock(position: Vec3i): Vec3 {
+    fun offsetShape(position: Vec3i): Vec3 {
         val offset = this.randomOffset ?: return Vec3.EMPTY
         return position.getWorldOffset(offset)
     }
+
+    fun offsetModel(position: Vec3i): Vec3 = offsetShape(position)
 }

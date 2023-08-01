@@ -139,11 +139,12 @@ class SolidSectionMesher(
 
                     var offset: Vec3? = null
                     if (state.block is RandomOffsetBlock) {
-                        offset = state.block.offsetBlock(position)
+                        offset = state.block.offsetModel(position)
                         floatOffset[0] += offset.x
                         floatOffset[1] += offset.y
                         floatOffset[2] += offset.z
                     }
+
 
                     val tints = tints.getAverageBlockTint(chunk, neighbourChunks, state, x, y, z)
                     var rendered = model.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints)

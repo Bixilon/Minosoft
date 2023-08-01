@@ -124,7 +124,7 @@ class BlockOutlineRenderer(
 
         val blockOffset = target.blockPosition.toVec3d
         if (target.state.block is RandomOffsetBlock) {
-            blockOffset += target.state.block.offsetBlock(target.blockPosition)
+            blockOffset += target.state.block.offsetShape(target.blockPosition)
         }
 
 

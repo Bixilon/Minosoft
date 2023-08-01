@@ -101,7 +101,7 @@ class TargetHandler(
             return null
         }
         var shape = state.block.getOutlineShape(camera.connection, state) ?: return null
-        state.block.nullCast<RandomOffsetBlock>()?.offsetBlock(blockPosition)?.let { shape += it }
+        state.block.nullCast<RandomOffsetBlock>()?.offsetShape(blockPosition)?.let { shape += it }
 
         shape += blockPosition
 
