@@ -33,7 +33,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.MeshedEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.preparer.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
+import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE

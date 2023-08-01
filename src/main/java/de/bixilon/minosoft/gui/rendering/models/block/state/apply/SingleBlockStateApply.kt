@@ -42,6 +42,7 @@ data class SingleBlockStateApply(
     val y: Int = 0,
     val rotation: Vec2? = null,
 ) : BlockStateApply {
+    private var particle: Texture? = null
 
     private fun FloatArray.rotateX(count: Int) {
 
@@ -120,6 +121,7 @@ data class SingleBlockStateApply(
 
     override fun load(textures: TextureManager) {
         if (model.elements == null) return
+        particle = model.getTexture("#particle", textures)
 
         for (element in model.elements) {
             for ((_, face) in element.faces) {
@@ -196,7 +198,7 @@ data class SingleBlockStateApply(
             }
         }
 
-        return BakedModel(bakedFaces.compact(), properties.compactProperties(), null) // TODO
+        return BakedModel(bakedFaces.compact(), properties.compactProperties(), this.particle)
     }
 
     fun FloatArray.properties(direction: Directions, texture: Texture): FaceProperties? {

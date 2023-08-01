@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.kutil.concurrent.pool.runnable.InterruptableRunnable
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.preparer.FluidSectionMesher
-import de.bixilon.minosoft.gui.rendering.chunk.preparer.SolidSectionMesher
+import de.bixilon.minosoft.gui.rendering.chunk.mesher.FluidSectionMesher
+import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.smallMesh
 import de.bixilon.minosoft.util.chunk.ChunkUtil

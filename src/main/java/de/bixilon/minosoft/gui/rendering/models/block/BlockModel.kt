@@ -19,12 +19,18 @@ import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.raw.light.GUILights
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 data class BlockModel(
@@ -34,6 +40,18 @@ data class BlockModel(
     val textures: Map<String, Any>?, // either String or ResourceLocation
     val ambientOcclusion: Boolean = true,
 ) {
+
+    fun getTexture(name: String, textures: TextureManager): Texture {
+        if (!name.startsWith("#")) {
+            return textures.staticTextures.createTexture(name.toResourceLocation())
+        }
+        val texture = this.textures?.get(name.substring(1))
+        if (texture == null || texture !is ResourceLocation) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find mapped texture ${name}/${texture}, please check for broken resource packs!" }
+            return textures.debugTexture
+        }
+        return textures.staticTextures.createTexture(texture)
+    }
 
     companion object {
 
