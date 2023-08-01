@@ -138,7 +138,7 @@ class SolidSectionMesher(
                     val tints = tints.getAverageBlockTint(chunk, neighbourChunks, state, x, y, z)
                     var rendered = model.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints)
 
-                    if (blockModel == null && entity is BlockRender) {
+                    if (entity is BlockRender) {
                         rendered = entity.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints) || rendered
                     }
 
