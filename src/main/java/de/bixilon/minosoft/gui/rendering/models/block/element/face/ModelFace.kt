@@ -25,6 +25,9 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockSta
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import java.util.*
 
@@ -39,6 +42,10 @@ data class ModelFace(
 
     fun load(model: BlockModel, textures: TextureManager) {
         this.loadedTexture = model.getTexture(this.texture, textures)
+        if (this.loadedTexture == null) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find mapped texture ${texture}, please check for broken resource packs!" }
+            this.loadedTexture = textures.debugTexture
+        }
     }
 
 
