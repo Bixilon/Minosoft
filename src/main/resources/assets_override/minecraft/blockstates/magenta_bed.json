@@ -1,33 +1,33 @@
 {
   "variants": {
     "part=head,facing=north": {
-      "model": "minecraft:block/magenta_bed_head"
+      "model": "block/bed/magenta/head"
     },
     "part=head,facing=east": {
-      "model": "minecraft:block/magenta_bed_head",
+      "model": "block/bed/magenta/head",
       "y": 90
     },
     "part=head,facing=south": {
-      "model": "minecraft:block/magenta_bed_head",
+      "model": "block/bed/magenta/head",
       "y": 180
     },
     "part=head,facing=west": {
-      "model": "minecraft:block/magenta_bed_head",
+      "model": "block/bed/magenta/head",
       "y": 270
     },
     "part=foot,facing=north": {
-      "model": "minecraft:block/magenta_bed_foot"
+      "model": "block/bed/magenta/foot"
     },
     "part=foot,facing=east": {
-      "model": "minecraft:block/magenta_bed_foot",
+      "model": "block/bed/magenta/foot",
       "y": 90
     },
     "part=foot,facing=south": {
-      "model": "minecraft:block/magenta_bed_foot",
+      "model": "block/bed/magenta/foot",
       "y": 180
     },
     "part=foot,facing=west": {
-      "model": "minecraft:block/magenta_bed_foot",
+      "model": "block/bed/magenta/foot",
       "y": 270
     }
   }

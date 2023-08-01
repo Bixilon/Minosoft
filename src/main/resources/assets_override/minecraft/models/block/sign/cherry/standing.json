@@ -1,0 +1,7 @@
+{
+  "parent": "block/sign/template/standing",
+  "textures": {
+    "particle": "minecraft:block/cherry_planks",
+    "sign": "minecraft:entity/signs/cherry"
+  }
+}

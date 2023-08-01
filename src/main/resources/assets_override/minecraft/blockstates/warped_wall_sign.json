@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "minecraft:block/warped_wall_sign"
+      "model": "block/sign/warped/wall"
     },
     "facing=east": {
-      "model": "minecraft:block/warped_wall_sign",
+      "model": "block/sign/warped/wall",
       "y": 90
     },
     "facing=south": {
-      "model": "minecraft:block/warped_wall_sign",
+      "model": "block/sign/warped/wall",
       "y": 180
     },
     "facing=west": {
-      "model": "minecraft:block/warped_wall_sign",
+      "model": "block/sign/warped/wall",
       "y": 270
     }
   }

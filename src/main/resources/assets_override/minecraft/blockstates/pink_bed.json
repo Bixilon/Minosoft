@@ -1,33 +1,33 @@
 {
   "variants": {
     "part=head,facing=north": {
-      "model": "minecraft:block/pink_bed_head"
+      "model": "block/bed/pink/head"
     },
     "part=head,facing=east": {
-      "model": "minecraft:block/pink_bed_head",
+      "model": "block/bed/pink/head",
       "y": 90
     },
     "part=head,facing=south": {
-      "model": "minecraft:block/pink_bed_head",
+      "model": "block/bed/pink/head",
       "y": 180
     },
     "part=head,facing=west": {
-      "model": "minecraft:block/pink_bed_head",
+      "model": "block/bed/pink/head",
       "y": 270
     },
     "part=foot,facing=north": {
-      "model": "minecraft:block/pink_bed_foot"
+      "model": "block/bed/pink/foot"
     },
     "part=foot,facing=east": {
-      "model": "minecraft:block/pink_bed_foot",
+      "model": "block/bed/pink/foot",
       "y": 90
     },
     "part=foot,facing=south": {
-      "model": "minecraft:block/pink_bed_foot",
+      "model": "block/bed/pink/foot",
       "y": 180
     },
     "part=foot,facing=west": {
-      "model": "minecraft:block/pink_bed_foot",
+      "model": "block/bed/pink/foot",
       "y": 270
     }
   }

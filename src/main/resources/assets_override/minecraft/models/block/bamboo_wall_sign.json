@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/template_wall_sign",
-  "textures": {
-    "particle": "minecraft:block/bamboo_block",
-    "sign": "minecraft:entity/signs/bamboo"
-  }
-}
