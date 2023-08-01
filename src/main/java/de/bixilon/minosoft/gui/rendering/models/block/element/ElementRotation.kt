@@ -33,10 +33,15 @@ data class ElementRotation(
 
     fun apply(positions: FloatArray) {
         val angle = -angle.rad
-        Vec3(0, positions).rotateAssign(angle, axis, origin, rescale)
-        Vec3(3, positions).rotateAssign(angle, axis, origin, rescale)
-        Vec3(6, positions).rotateAssign(angle, axis, origin, rescale)
-        Vec3(9, positions).rotateAssign(angle, axis, origin, rescale)
+
+        val vec = Vec3(0, positions)
+
+        for (index in 0 until 4) {
+            val offset = index * 3
+            vec.ofs = offset
+
+            vec.rotateAssign(angle, axis, origin, rescale)
+        }
     }
 
 
