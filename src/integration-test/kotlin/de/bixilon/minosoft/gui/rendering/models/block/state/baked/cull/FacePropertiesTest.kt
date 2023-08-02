@@ -22,7 +22,9 @@ import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply
+import de.bixilon.minosoft.gui.rendering.models.block.state.apply.WeightedBlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import org.testng.Assert.assertEquals
@@ -31,6 +33,44 @@ import org.testng.annotations.Test
 
 @Test(groups = ["models", "culling"])
 class FacePropertiesTest {
+
+    private fun BlockRender.assertProperties(direction: Directions, vararg properties: FaceProperties) {
+        val actual = this.getProperties(direction) ?: return assertEquals(properties.size, 0)
+
+        assertEquals(actual.faces, properties)
+    }
+
+    fun `full cube`() {
+        val from = Vec3(0.0f)
+        val to = Vec3(1.0f)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
+
+        val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
+
+
+        baked.assertProperties(Directions.DOWN, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.UP, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.NORTH, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.SOUTH, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.WEST, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.EAST, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+    }
+
+    fun `smaller cube`() {
+        val from = Vec3(0.1f)
+        val to = Vec3(0.9f)
+        val model = SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())))
+
+        val baked = model.bake(BakedModelTestUtil.createTextureManager("block/test"))!!
+
+
+        baked.assertProperties(Directions.DOWN)
+        baked.assertProperties(Directions.UP)
+        baked.assertProperties(Directions.NORTH)
+        baked.assertProperties(Directions.SOUTH)
+        baked.assertProperties(Directions.WEST)
+        baked.assertProperties(Directions.EAST)
+    }
 
     fun fullBlock() {
         val from = Vec3(0.0f)
@@ -154,5 +194,27 @@ class FacePropertiesTest {
         assertNull(baked.getProperties(Directions.SOUTH)?.faces)
         assertNull(baked.getProperties(Directions.WEST)?.faces)
         assertNull(baked.getProperties(Directions.EAST)?.faces)
+    }
+
+    fun `full cube weighted model`() { // TODO: still wrong, grass block is failing
+        val from = Vec3(0.0f)
+        val to = Vec3(1.0f)
+
+        val weighted = WeightedBlockStateApply(listOf(
+            WeightedBlockStateApply.WeightedApply(1, SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 0)),
+            WeightedBlockStateApply.WeightedApply(1, SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 1)),
+            WeightedBlockStateApply.WeightedApply(1, SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 2)),
+            WeightedBlockStateApply.WeightedApply(1, SingleBlockStateApply(BlockModel(elements = listOf(ModelElement(from, to, faces = BakedModelTestUtil.createFaces())), textures = mapOf("test" to minecraft("block/test").texture())), y = 3)),
+        ))
+
+        weighted.load(BakedModelTestUtil.createTextureManager("block/test"))
+        val baked = weighted.bake()!!
+
+        baked.assertProperties(Directions.DOWN, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.UP, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.NORTH, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.SOUTH, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.WEST, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
+        baked.assertProperties(Directions.EAST, FaceProperties(Vec2(0, 0), Vec2(1, 1), TextureTransparencies.OPAQUE))
     }
 }

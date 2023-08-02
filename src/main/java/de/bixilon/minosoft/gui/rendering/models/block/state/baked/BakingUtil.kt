@@ -49,9 +49,10 @@ object BakingUtil {
         val array: Array<SideProperties?> = arrayOfNulls(size)
 
         for ((index, entries) in this.withIndex()) {
+            if (entries.isEmpty()) continue
             val size = entries.toTypedArray()
-            if (size.isEmpty()) continue
 
+            // TODO: minify sizes (e.g. grass: there is one with OPAQUE and TRANSPARENT. OPAQUE should be used om that case (same sized))
 
             var transparency: TextureTransparencies? = null
             var set = false
@@ -67,6 +68,7 @@ object BakingUtil {
                     break
                 }
             }
+
 
             array[index] = SideProperties(size, transparency)
         }
