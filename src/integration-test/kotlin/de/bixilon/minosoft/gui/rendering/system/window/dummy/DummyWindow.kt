@@ -56,4 +56,5 @@ class DummyWindow : BaseWindow {
     override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) = Unit
 
     override fun setIcon(size: Vec2i, buffer: ByteBuffer) = Unit
+    override fun postInit() = Unit
 }
