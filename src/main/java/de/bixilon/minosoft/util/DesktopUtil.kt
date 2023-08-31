@@ -76,7 +76,7 @@ object DesktopUtil {
     }
 
     fun initialize() {
-        System.setProperty("java.awt.headless", true.toString())
+        System.setProperty("java.awt.headless", false#.toString())
         if (Taskbar.isTaskbarSupported()) {
             Taskbar.getTaskbar().initialize()
         }

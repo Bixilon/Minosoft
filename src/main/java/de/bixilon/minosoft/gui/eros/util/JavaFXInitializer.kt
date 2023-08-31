@@ -38,10 +38,11 @@ class JavaFXInitializer internal constructor() : Application() {
 
         JavaFXUtil.JAVA_FX_THREAD = Thread.currentThread()
         JavaFXUtil.HOST_SERVICES = hostServices
+        DesktopUtil.initialize()
+
         val worker = UnconditionalWorker()
         worker += { JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER[DesktopUtil.ICON]) }
         worker += { catchAll { JavaFXUtil.BIXILON_LOGO = SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()]) } }
-        worker += { DesktopUtil.initialize() }
         worker.work(LATCH)
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }
