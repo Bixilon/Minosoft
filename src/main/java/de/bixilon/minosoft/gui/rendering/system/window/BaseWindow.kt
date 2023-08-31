@@ -64,6 +64,8 @@ interface BaseWindow {
         maxSize = DEFAULT_MAXIMUM_WINDOW_SIZE
     }
 
+    fun postInit()
+
     fun destroy()
 
     fun close()
