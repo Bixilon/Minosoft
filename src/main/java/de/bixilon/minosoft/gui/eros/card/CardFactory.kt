@@ -15,14 +15,14 @@ package de.bixilon.minosoft.gui.eros.card
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import javafx.fxml.FXMLLoader
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import javafx.scene.control.ListCell
 
 interface CardFactory<T : ListCell<*>> {
     val LAYOUT: ResourceLocation
 
     fun build(): T {
-        val loader = FXMLLoader()
+        val loader = JavaFXUtil.createLoader()
 
         loader.load<Any>(Minosoft.MINOSOFT_ASSETS_MANAGER[LAYOUT])
 
