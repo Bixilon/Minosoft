@@ -101,7 +101,7 @@ object JavaFXUtil {
 
     fun <T : JavaFXController> openModal(title: Any, layout: ResourceLocation, controller: T? = null, modality: Modality = Modality.WINDOW_MODAL): T {
         startThemeWatcher()
-        val fxmlLoader = FXMLLoader()
+        val fxmlLoader = createLoader()
         controller?.let { fxmlLoader.setController(it) }
         val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
         parent.registerFreezeDumpKey()
@@ -111,7 +111,7 @@ object JavaFXUtil {
     fun <T : JavaFXController> openModalAsync(title: Any, layout: ResourceLocation, controller: T? = null, modality: Modality = Modality.WINDOW_MODAL, callback: ((T) -> Unit)? = null) {
         DefaultThreadPool += add@{
             startThemeWatcher()
-            val fxmlLoader = FXMLLoader()
+            val fxmlLoader = createLoader()
             controller?.let { fxmlLoader.setController(it) }
             val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
             parent.registerFreezeDumpKey()
@@ -125,7 +125,7 @@ object JavaFXUtil {
     }
 
     fun <T : EmbeddedJavaFXController<out Pane>> loadEmbeddedController(layout: ResourceLocation, controller: T? = null): T {
-        val fxmlLoader = FXMLLoader()
+        val fxmlLoader = createLoader()
         controller?.let { fxmlLoader.setController(it) }
         val pane = fxmlLoader.load<Pane>(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
 
@@ -225,5 +225,15 @@ object JavaFXUtil {
                 }
             }
         }
+    }
+
+    fun createLoader(): FXMLLoader {
+        val loader = FXMLLoader()
+
+        if (loader.classLoader == null) {
+            loader.classLoader = FXMLLoader::class.java.classLoader
+        }
+
+        return loader
     }
 }
