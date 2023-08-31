@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
@@ -23,7 +22,6 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
-import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
@@ -132,7 +130,7 @@ object RenderLoader {
         }
 
 
-        connection.events.fire(ResizeWindowEvent(this, previousSize = Vec2i(0, 0), size = window.size))
+        window.postInit()
 
         textures.dynamicTextures.activate()
         textures.staticTextures.activate()
