@@ -36,12 +36,21 @@ object FaceCulling {
             // impossible to see that face
             return true
         }
+        if (neighbourProperties.transparency == null) {
+            for (property in neighbourProperties.faces) {
+                if (property.transparency != TextureTransparencies.OPAQUE) continue
+                if (!properties.isCoveredBy(property)) continue
+                return true
+            }
+        }
 
         if (state.block is CustomBlockCulling) {
             return state.block.shouldCull(state, properties, direction, neighbour)
         }
 
-        if (neighbourProperties.transparency == null) return false // can not determinate it
+        if (neighbourProperties.transparency == null) {
+            return false
+        }
 
         if (state.block != neighbour.block) return false
         if (neighbourProperties.transparency == properties.transparency) return true
@@ -59,16 +68,25 @@ object FaceCulling {
         var area = 0.0f
 
         for (quad in this.faces) {
-            val width = minOf(target.end.x, quad.end.x) - maxOf(quad.start.x, target.start.x)
-            val height = minOf(target.end.y, quad.end.y) - maxOf(quad.start.y, target.start.y)
-
-            area += width * height
+            area += quad.getSideArea(target)
         }
 
         return area
     }
 
+    private fun FaceProperties.getSideArea(target: FaceProperties): Float {
+        val width = minOf(target.end.x, end.x) - maxOf(start.x, target.start.x)
+        val height = minOf(target.end.y, end.y) - maxOf(start.y, target.start.y)
+
+        return width * height
+    }
+
     fun FaceProperties.isCoveredBy(properties: SideProperties): Boolean {
+        val area = properties.getSideArea(this)
+        return surface <= area
+    }
+
+    fun FaceProperties.isCoveredBy(properties: FaceProperties): Boolean {
         val area = properties.getSideArea(this)
         return surface <= area
     }
