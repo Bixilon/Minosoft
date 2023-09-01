@@ -121,7 +121,7 @@ data class SingleBlockStateApply(
 
     override fun load(textures: TextureManager) {
         if (model.elements == null) return
-        particle = model.getTexture("#particle", textures)
+        particle = model.getOrNullTexture("#particle", textures)
 
         for (element in model.elements) {
             element.load(model, textures)
@@ -161,7 +161,7 @@ data class SingleBlockStateApply(
 
         for (element in model.elements) {
             for ((direction, face) in element.faces) {
-                val texture = face.loadedTexture ?: continue
+                val texture = model.getTexture(face.texture) ?: continue
 
                 val rotatedDirection = direction
                     .rotateX(this.x)

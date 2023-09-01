@@ -28,6 +28,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 data class BlockModel(
@@ -37,8 +40,9 @@ data class BlockModel(
     val textures: Map<String, Any>?, // either String or ResourceLocation
     val ambientOcclusion: Boolean = true,
 ) {
+    val loadedTextures: HashMap<String, Texture> = hashMapOf()
 
-    fun getTexture(name: String, textures: TextureManager): Texture? {
+    fun createTexture(name: String, textures: TextureManager): Texture? {
         if (!name.startsWith("#")) {
             return textures.staticTextures.createTexture(name.toResourceLocation())
         }
@@ -46,7 +50,31 @@ data class BlockModel(
         if (texture == null || texture !is ResourceLocation) {
             return null
         }
+
         return textures.staticTextures.createTexture(texture)
+    }
+
+    fun getOrNullTexture(name: String, textures: TextureManager): Texture? {
+        this.loadedTextures[name]?.let { return it }
+
+        val texture = createTexture(name, textures) ?: return null
+
+        this.loadedTextures[name] = texture
+        return texture
+    }
+
+    fun getTexture(name: String, textures: TextureManager): Texture {
+        val texture = getOrNullTexture(name, textures)
+        if (texture == null) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find mapped texture ${name}, please check for broken resource packs!" }
+            return textures.debugTexture
+        }
+
+        return texture
+    }
+
+    fun getTexture(name: String): Texture? {
+        return this.loadedTextures[name]
     }
 
     companion object {

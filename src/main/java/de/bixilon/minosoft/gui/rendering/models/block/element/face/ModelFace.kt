@@ -23,11 +23,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply.Companion.rotation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import java.util.*
 
@@ -37,15 +33,10 @@ data class ModelFace(
     val rotation: Int,
     val tintIndex: Int = -1,
 ) {
-    var loadedTexture: Texture? = null
 
 
     fun load(model: BlockModel, textures: TextureManager) {
-        this.loadedTexture = model.getTexture(this.texture, textures)
-        if (this.loadedTexture == null) {
-            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find mapped texture ${texture}, please check for broken resource packs!" }
-            this.loadedTexture = textures.debugTexture
-        }
+        model.getTexture(this.texture, textures)
     }
 
 
