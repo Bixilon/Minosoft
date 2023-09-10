@@ -16,13 +16,14 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
 object BakingUtil {
 
-    fun positions(direction: Directions, from: Vec3, to: Vec3): FloatArray {
+    fun positions(direction: Directions, from: Vec3, to: Vec3): FaceVertexData {
         return when (direction) {
             // @formatter:off
             Directions.DOWN ->  floatArrayOf(from.x, from.y, from.z, /**/  from.x, from.y, to.z,    /**/  to.x,   from.y, to.z,   /**/  to.x,   from.y, from.z )

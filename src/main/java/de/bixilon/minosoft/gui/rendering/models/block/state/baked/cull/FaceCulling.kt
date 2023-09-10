@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -57,10 +56,6 @@ object FaceCulling {
 
         return false
     }
-
-
-    private inline val BakedFace.touchingSide: Boolean get() = properties != null
-
 
     // TODO: merge with DirectedProperty
     private fun SideProperties.getSideArea(target: FaceProperties): Float {

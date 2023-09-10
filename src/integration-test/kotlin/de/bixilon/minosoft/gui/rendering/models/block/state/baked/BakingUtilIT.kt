@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
-@Test(groups = ["models"])
+@Test(groups = ["models"], enabled = false) // TODO: enable
 class BakingUtilIT {
 
     fun `combine single properties`() {

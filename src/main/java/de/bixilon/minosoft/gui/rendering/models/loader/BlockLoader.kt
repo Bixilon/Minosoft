@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BlockLoader(private val loader: ModelLoader) {
-    private val cache: MutableMap<ResourceLocation, BlockModel> = HashMap(1000)
+    private val cache: MutableMap<ResourceLocation, BlockModel> = HashMap(loader.context.connection.registries.block.size)
     val assets = loader.context.connection.assetsManager
     val version = loader.context.connection.version
 

@@ -24,6 +24,8 @@ import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.element.ElementRotation
+import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compact
@@ -44,19 +46,15 @@ data class SingleBlockStateApply(
 ) : BlockStateApply {
     private var particle: Texture? = null
 
-    private fun FloatArray.rotateX(count: Int) {
-
-        fun FloatArray.rotateOffsetX(offset: Int) {
-            val y = this[offset + 1]
-            val z = this[offset + 2]
-
-            this[offset + 1] = z
-            this[offset + 2] = -y + 1.0f
-        }
-
+    private fun FaceVertexData.rotateX(count: Int) {
         for (c in 0 until count) {
             for (i in 0 until 4) {
-                rotateOffsetX(i * 3)
+                val offset = i * 3
+                val y = this[offset + 1]
+                val z = this[offset + 2]
+
+                this[offset + 1] = z
+                this[offset + 2] = -y + 1.0f
             }
         }
     }
@@ -75,26 +73,22 @@ data class SingleBlockStateApply(
         return 0
     }
 
-    private fun FloatArray.rotateX(direction: Directions): FloatArray {
+    private fun FaceVertexData.rotateX(direction: Directions): FaceVertexData {
         if (x == 0) return this
         rotateX(x)
         return pushRight(3, direction.xRotations())
     }
 
 
-    private fun FloatArray.rotateY(count: Int) {
-
-        fun FloatArray.rotateOffsetY(offset: Int) {
-            val x = this[offset + 0]
-            val z = this[offset + 2]
-
-            this[offset + 0] = -z + 1.0f // translates to origin and back; same as -(z-0.5f) + 0.5f
-            this[offset + 2] = x
-        }
-
+    private fun FaceVertexData.rotateY(count: Int) {
         for (c in 0 until count) {
             for (i in 0 until 4) {
-                rotateOffsetY(i * 3)
+                val offset = i * 3
+                val x = this[offset + 0]
+                val z = this[offset + 2]
+
+                this[offset + 0] = -z + 1.0f // translates to origin and back; same as -(z-0.5f) + 0.5f
+                this[offset + 2] = x
             }
         }
     }
@@ -112,20 +106,10 @@ data class SingleBlockStateApply(
         return 0
     }
 
-    private fun FloatArray.rotateY(direction: Directions): FloatArray {
+    private fun FaceVertexData.rotateY(direction: Directions): FaceVertexData {
         if (y == 0) return this
         rotateY(y)
         return pushRight(3, direction.yRotations())
-    }
-
-
-    override fun load(textures: TextureManager) {
-        if (model.elements == null) return
-        particle = model.getOrNullTexture("#particle", textures)
-
-        for (element in model.elements) {
-            element.load(model, textures)
-        }
     }
 
     private fun rotatedY(direction: Directions): Int {
@@ -153,6 +137,16 @@ data class SingleBlockStateApply(
         return rotatedX(direction, direction.rotateX(x)) + rotatedY(direction.rotateX(x))
     }
 
+    override fun load(textures: TextureManager) {
+        if (model.elements == null) return
+        particle = model.getOrNullTexture("#particle", textures)
+
+        for (element in model.elements) {
+            element.load(model, textures)
+        }
+    }
+
+
     override fun bake(): BakedModel? {
         if (model.elements == null) return null
 
@@ -160,61 +154,67 @@ data class SingleBlockStateApply(
         val properties: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
 
         for (element in model.elements) {
-            for ((direction, face) in element.faces) {
-                val texture = model.getTexture(face.texture) ?: continue
-
-                val rotatedDirection = direction
-                    .rotateX(this.x)
-                    .rotateY(this.y)
-
-
-                var positions = element.positions(direction)
-                    .rotateX(direction)
-                if (this.rotation != null && this.rotation.x != 0.0f) {
-                    ElementRotation(axis = Axes.X, angle = this.rotation.x).apply(positions)
-                }
-                positions = positions.rotateY(direction.rotateX(this.x))
-
-                if (this.rotation != null && this.rotation.y != 0.0f) {
-                    ElementRotation(axis = Axes.Y, angle = this.rotation.y).apply(positions)
-                }
-
-
-                var uv = face.getUV(uvLock, element.from, element.to, direction, rotatedDirection, positions, x, y).toArray(rotatedDirection, face.rotation)
-
-                if (!uvLock) {
-                    val rotation = getTextureRotation(direction, rotatedDirection)
-                    uv = uv.pushRight(2, rotation)
-                }
-                val shade = rotatedDirection.shade
-
-                val faceProperties = if (element.rotation == null && this.rotation == null) positions.properties(rotatedDirection, texture) else null
-                val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, if (faceProperties == null) null else rotatedDirection, texture, faceProperties)
-
-                bakedFaces[rotatedDirection.ordinal] += bakedFace
-                properties[rotatedDirection.ordinal] += faceProperties ?: continue
-            }
+            element.bake(bakedFaces, properties)
         }
 
         return BakedModel(bakedFaces.compact(), properties.compactProperties(), this.particle)
     }
 
-    fun FloatArray.properties(direction: Directions, texture: Texture): FaceProperties? {
+    private fun Vec2.applyRotation(axis: Axes, data: FaceVertexData) {
+        val value = this[axis.ordinal]
+        if (value == 0.0f) return
+        ElementRotation(axis = axis, angle = value).apply(data)
+    }
+
+    private fun ModelElement.bake(faces: Array<MutableList<BakedFace>>, properties: Array<MutableList<FaceProperties>>) {
+        for ((direction, face) in this.faces) {
+            val texture = model.getTexture(face.texture) ?: continue
+
+            val rotatedDirection = direction
+                .rotateX(x)
+                .rotateY(y)
+
+
+            var positions = positions(direction)
+                .rotateX(direction)
+
+            this@SingleBlockStateApply.rotation?.applyRotation(Axes.X, positions)
+            positions = positions.rotateY(direction.rotateX(x))
+            this@SingleBlockStateApply.rotation?.applyRotation(Axes.Y, positions)
+
+
+            var uv = face.getUV(uvLock, from, to, direction, rotatedDirection, positions, x, y).toArray(rotatedDirection, face.rotation)
+
+            if (!uvLock) {
+                val rotation = getTextureRotation(direction, rotatedDirection)
+                uv = uv.pushRight(2, rotation)
+            }
+            val shade = rotatedDirection.shade
+
+            val faceProperties = if (rotation == null && this@SingleBlockStateApply.rotation == null) positions.properties(rotatedDirection, texture) else null
+            val bakedFace = BakedFace(positions, uv, shade, face.tintIndex, if (faceProperties == null) null else rotatedDirection, texture, faceProperties)
+
+            faces[rotatedDirection.ordinal] += bakedFace
+            properties[rotatedDirection.ordinal] += faceProperties ?: continue
+        }
+    }
+
+    fun FaceVertexData.properties(direction: Directions, texture: Texture): FaceProperties? {
         // TODO: Bad code?
 
-        val a = direction.axis.ordinal
-        val b = this[a]
-        if ((direction.negative && b != 0.0f) || (!direction.negative && b != 1.0f)) return null
+        val axis = direction.axis.ordinal
+        val value = this[axis]
+        if ((direction.negative && value != 0.0f) || (!direction.negative && value != 1.0f)) return null
 
         return FaceProperties(
-            start = magic(0, a),
-            end = magic(6, a),
+            start = getVec2(0, axis),
+            end = getVec2(6, axis),
             transparency = texture.transparency,
         )
     }
 
-    private fun FloatArray.magic(offset: Int, index: Int): Vec2 {
-        return when (index) {
+    private fun FaceVertexData.getVec2(offset: Int, axis: Int): Vec2 {
+        return when (axis) {
             0 -> Vec2(this[offset + 1], this[offset + 2])
             1 -> Vec2(this[offset + 0], this[offset + 2])
             2 -> Vec2(this[offset + 0], this[offset + 1])

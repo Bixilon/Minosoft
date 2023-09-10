@@ -33,7 +33,7 @@ data class ModelElement(
     val rotation: ElementRotation? = null,
 ) {
 
-    fun positions(direction: Directions): FloatArray {
+    fun positions(direction: Directions): FaceVertexData {
         val positions = BakingUtil.positions(direction, from, to)
         rotation?.apply(positions)
 

@@ -31,12 +31,12 @@ data class ElementRotation(
     val rescale: Boolean = false,
 ) {
 
-    fun apply(positions: FloatArray) {
+    fun apply(positions: FaceVertexData) {
         val angle = -angle.rad
 
         val vec = Vec3(0, positions)
 
-        for (index in 0 until 4) {
+        for (index in 0 until VERTEX_SIZE) {
             val offset = index * 3
             vec.ofs = offset
 
