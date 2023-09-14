@@ -36,7 +36,7 @@ data class ElementRotation(
 
         val vec = Vec3(0, positions)
 
-        for (index in 0 until VERTEX_SIZE) {
+        for (index in 0 until VERTEX_DATA_COMPONENTS) {
             val offset = index * 3
             vec.ofs = offset
 

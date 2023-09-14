@@ -16,4 +16,4 @@ package de.bixilon.minosoft.gui.rendering.models.block.element
 typealias FaceVertexData = FloatArray
 
 
-const val VERTEX_SIZE: Int = 4
+const val VERTEX_DATA_COMPONENTS: Int = 4
