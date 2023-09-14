@@ -136,12 +136,11 @@ class FluidSectionMesher(
                         val minUV = Vec2.EMPTY
                         val maxUV = Vec2(if (still) 1.0f else 0.5f) // Minecraft just uses half of the sprite
 
-
                         val texturePositions = arrayOf(
-                            Vec2(maxUV.x, minUV.y),
                             minUV,
-                            Vec2(minUV.x, maxUV.y),
+                            Vec2(maxUV.x, minUV.y),
                             maxUV,
+                            Vec2(minUV.x, maxUV.y),
                         )
 
 
@@ -227,10 +226,10 @@ class FluidSectionMesher(
                             Vec3(faceXEnd, offsetPosition.y + v2, faceZEnd),
                         )
                         val texturePositions = arrayOf(
-                            TEXTURE_1,
                             Vec2(0.0f, (1 - v1) / 2),
-                            Vec2(0.5f, (1 - v2) / 2),
+                            TEXTURE_1,
                             TEXTURE_2,
+                            Vec2(0.5f, (1 - v2) / 2),
                         )
 
                         val meshToUse = model.flowing.transparency.getMesh(mesh)
