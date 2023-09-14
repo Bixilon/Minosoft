@@ -33,9 +33,7 @@ class FluidModelLoader(private val loader: ModelLoader) {
     }
 
     private fun load(fluid: Fluid) {
-        if (fluid.model != null) {
-            return
-        }
+        if (fluid.model != null) return
         val model = fluid.createModel() ?: return
         fluid.model = model
         model.load(context)

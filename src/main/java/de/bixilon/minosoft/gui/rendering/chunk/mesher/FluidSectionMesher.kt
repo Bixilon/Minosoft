@@ -35,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -44,7 +45,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.isTrue
-import java.util.*
 import kotlin.math.atan2
 
 class FluidSectionMesher(
@@ -53,13 +53,20 @@ class FluidSectionMesher(
     private val water = context.connection.registries.fluid[WaterFluid]
     private val tints = context.tints
 
+    private fun BlockState.getFluid(): Fluid? {
+        val block = block
+        return when {
+            block is FluidHolder -> block.fluid
+            water != null && isWaterlogged() -> water
+            else -> null
+        }
+    }
+
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
     fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMesh) {
         val blocks = section.blocks
 
-        val random = Random(0L)
-        var blockState: BlockState
         var position: Vec3i
         var rendered = false
         var tint: Int
@@ -73,17 +80,11 @@ class FluidSectionMesher(
         for (y in blocks.minPosition.y..blocks.maxPosition.y) {
             for (z in blocks.minPosition.z..blocks.maxPosition.z) {
                 for (x in blocks.minPosition.x..blocks.maxPosition.x) {
-                    blockState = blocks[x, y, z] ?: continue
-                    val block = blockState.block
-                    val fluid = when {
-                        block is FluidHolder -> block.fluid
-                        water != null && blockState.isWaterlogged() -> water
-                        else -> continue
-                    }
+                    val state = blocks[x, y, z] ?: continue
+                    val fluid = state.getFluid() ?: continue
+
                     val model = fluid.model ?: continue
-                    val stillTexture = model.still ?: continue
-                    val flowingTexture = model.flowing ?: continue
-                    val height = fluid.getHeight(blockState)
+                    val height = fluid.getHeight(state)
 
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     tint = tints.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE
@@ -97,7 +98,7 @@ class FluidSectionMesher(
                             return true
                         }
 
-                        return FaceCulling.canCull(blockState, model.properties, direction, neighbour)
+                        return FaceCulling.canCull(state, FaceProperties(Vec2.EMPTY, Vec2(1.0f), model.transparency), direction, neighbour)
                     }
 
                     val topBlock = if (y == ProtocolDefinition.SECTION_MAX_Y) {
@@ -129,7 +130,7 @@ class FluidSectionMesher(
                     val offsetPosition = Vec3(position - cameraOffset)
 
                     if (!skip[Directions.O_UP]) {
-                        val velocity = fluid.getVelocity(blockState, position, chunk)
+                        val velocity = fluid.getVelocity(state, position, chunk)
                         val still = velocity.x == 0.0 && velocity.z == 0.0
                         val texture: Texture
                         val minUV = Vec2.EMPTY
@@ -145,9 +146,9 @@ class FluidSectionMesher(
 
 
                         if (still) {
-                            texture = stillTexture
+                            texture = model.still
                         } else {
-                            texture = flowingTexture
+                            texture = model.flowing
                             maxUV.x = 0.5f
 
                             val atan = atan2(velocity.x, velocity.z).toFloat()
@@ -232,9 +233,9 @@ class FluidSectionMesher(
                             TEXTURE_2,
                         )
 
-                        val meshToUse = flowingTexture.transparency.getMesh(mesh)
+                        val meshToUse = model.flowing.transparency.getMesh(mesh)
                         val fluidLight = chunk.light[x, offsetY + y, z]
-                        addFluidVertices(meshToUse, positions, texturePositions, flowingTexture, tint, fluidLight)
+                        addFluidVertices(meshToUse, positions, texturePositions, model.flowing, tint, fluidLight)
                         rendered = true
                     }
 
@@ -273,21 +274,21 @@ class FluidSectionMesher(
                 return 1.0f
             }
 
-            val blockState = chunk[inChunkPosition]
-            if (blockState == null) {
+            val state = chunk[inChunkPosition]
+            if (state == null) {
                 count++
                 continue
             }
 
-            if (!fluid.matches(blockState)) {
+            if (!fluid.matches(state)) {
                 // TODO: this was !blockState.material.solid
-                if (blockState.block !is CollidableBlock || blockState.block.getCollisionShape(EmptyCollisionContext, blockPosition, blockState, null) == AbstractVoxelShape.EMPTY) {
+                if (state.block !is CollidableBlock || state.block.getCollisionShape(EmptyCollisionContext, blockPosition, state, null) == AbstractVoxelShape.EMPTY) {
                     count++
                 }
                 continue
             }
 
-            val height = fluid.getHeight(blockState)
+            val height = fluid.getHeight(state)
 
             if (height >= 0.8f) {
                 totalHeight += height * 10.0f
@@ -307,13 +308,5 @@ class FluidSectionMesher(
 
         private val TEXTURE_1 = Vec2(0.0f, 0.5f)
         private val TEXTURE_2 = Vec2(0.5f, 0.5f)
-
-        /*
-        private val FLUID_FACE_PROPERTY = FaceProperties(
-            Vec2.EMPTY,
-            Vec2(1.0f, 1.0f),
-            TextureTransparencies.OPAQUE,
-        )
-         */
     }
 }

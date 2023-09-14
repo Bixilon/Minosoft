@@ -13,20 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.models.fluid.fluids
 
-import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class LavaFluidModel : FluidModel {
-    override var still: Texture? = null
-    override var flowing: Texture? = null
-    override var properties = FaceProperties(Vec2.EMPTY, Vec2(1.0f), TextureTransparencies.OPAQUE) // TODO: determinate by texture
+    override var still: Texture = unsafeNull()
+    override var flowing: Texture = unsafeNull()
+    override val transparency = TextureTransparencies.OPAQUE// TODO: from texture
 
     override fun load(context: RenderContext) {
         still = context.textures.staticTextures.createTexture(STILL)

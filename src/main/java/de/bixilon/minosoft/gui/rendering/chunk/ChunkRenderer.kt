@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.VisibleMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesher.ChunkMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.CulledQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshLoadingQueue

@@ -51,9 +51,8 @@ data class SingleBlockStateApply(
             for (index in 0 until VERTEX_DATA_COMPONENTS) {
                 val offset = index * 3
                 val y = this[offset + 1]
-                val z = this[offset + 2]
 
-                this[offset + 1] = z
+                this[offset + 1] = this[offset + 2]
                 this[offset + 2] = -y + 1.0f
             }
         }
@@ -78,9 +77,8 @@ data class SingleBlockStateApply(
             for (index in 0 until VERTEX_DATA_COMPONENTS) {
                 val offset = index * 3
                 val x = this[offset + 0]
-                val z = this[offset + 2]
 
-                this[offset + 0] = -z + 1.0f // translates to origin and back; same as -(z-0.5f) + 0.5f
+                this[offset + 0] = -this[offset + 2] + 1.0f // translates to origin and back; same as -(z-0.5f) + 0.5f
                 this[offset + 2] = x
             }
         }

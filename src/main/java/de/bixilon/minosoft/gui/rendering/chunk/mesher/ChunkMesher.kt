@@ -11,12 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk
+package de.bixilon.minosoft.gui.rendering.chunk.mesher
 
 import de.bixilon.kutil.concurrent.pool.runnable.InterruptableRunnable
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesher.FluidSectionMesher
-import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.smallMesh
 import de.bixilon.minosoft.util.chunk.ChunkUtil

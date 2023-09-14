@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.RenderTestUtil.frame
 import org.testng.Assert
 import org.testng.annotations.Test
 
-@Test(groups = ["world_renderer"], dependsOnGroups = ["rendering", "block"])
+@Test(groups = ["chunk_renderer"], dependsOnGroups = ["rendering", "block"])
 class ChunkRendererTest {
 
     private fun create(): ChunkRenderer {
