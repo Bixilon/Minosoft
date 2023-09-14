@@ -40,7 +40,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return BlockState(this, settings.luminance)
     }
 
-    override fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack): Float {
+    override fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack, speed: Float): Float {
         if (stack.item.item is ShearsItem) {
             return 5.0f
         }

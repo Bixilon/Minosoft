@@ -63,7 +63,7 @@ abstract class ToolItem(identifier: ResourceLocation) : Item(identifier), Mining
         }
 
         if (state.block is CustomDiggingBlock) {
-            speed = state.block.getMiningSpeed(connection, state, stack)
+            speed = state.block.getMiningSpeed(connection, state, stack, speed)
         }
         isInTag(connection, state)?.let { if (it) return speed else 1.0f }
 

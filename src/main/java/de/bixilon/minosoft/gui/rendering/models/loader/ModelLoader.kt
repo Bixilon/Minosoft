@@ -36,7 +36,7 @@ class ModelLoader(
         block.load(latch)
         item.load(latch)
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading all models!" }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all models!" }
     }
 
     fun bake(latch: AbstractLatch) {

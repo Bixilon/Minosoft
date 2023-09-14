@@ -19,5 +19,5 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface CustomDiggingBlock {
 
-    fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack): Float
+    fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack, speed: Float): Float
 }

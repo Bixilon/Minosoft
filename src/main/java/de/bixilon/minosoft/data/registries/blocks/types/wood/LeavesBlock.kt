@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.wood
 
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterloggableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
+import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.CustomDiggingBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -32,8 +34,9 @@ import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
 import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordItem
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.CustomBlockCulling
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, BlockStateBuilder, ToolRequirement, WaterloggableBlock, BlockWithItem<Item>, LightedBlock {
+abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, BlockStateBuilder, ToolRequirement, CustomDiggingBlock, WaterloggableBlock, BlockWithItem<Item>, LightedBlock {
     override val hardness get() = 0.2f
     override val item: Item = this::item.inject(identifier)
 
@@ -49,6 +52,14 @@ abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings
 
     override fun isCorrectTool(item: Item): Boolean {
         return item is SwordItem || item is ShearsItem
+    }
+
+    override fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack, speed: Float): Float {
+        if (stack.item.item is ShearsItem) {
+            return 15.0f
+        }
+
+        return speed
     }
 
     companion object {
