@@ -58,7 +58,7 @@ data class ElementRotation(
             val axis = Axes[data["axis"].toString()]
 
 
-            return ElementRotation(origin, axis, angle, rescale)
+            return ElementRotation(origin, axis, -angle, rescale)
         }
     }
 }
