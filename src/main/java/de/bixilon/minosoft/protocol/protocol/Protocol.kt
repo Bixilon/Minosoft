@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kutil.collections.CollectionUtil.biMapOf
 import de.bixilon.kutil.collections.map.bi.BiMap
-import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.ChannelC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.status.StatusS2CP
 
 object Protocol {
     val C2S_PACKET_MAPPING: Map<ProtocolStates, BiMap<C2SPacketType, Int>> = mapOf(
-        ProtocolStates.HANDSHAKING to biMapOf(
+        ProtocolStates.HANDSHAKE to biMapOf(
             PacketTypeRegistry.getC2S(HandshakeC2SP::class.java)!! to 0x00,
         ),
         ProtocolStates.STATUS to biMapOf(

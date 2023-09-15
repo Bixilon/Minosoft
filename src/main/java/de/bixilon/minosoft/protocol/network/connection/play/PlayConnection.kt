@@ -59,7 +59,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.channel.DefaultChann
 import de.bixilon.minosoft.protocol.network.connection.play.settings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicker
 import de.bixilon.minosoft.protocol.network.connection.play.util.ConnectionUtil
-import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.versions.Version
@@ -148,7 +148,7 @@ class PlayConnection(
         }
         network::state.observe(this) { state ->
             when (state) {
-                ProtocolStates.HANDSHAKING, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
+                ProtocolStates.HANDSHAKE, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
                 ProtocolStates.LOGIN -> {
                     this.state = PlayConnectionStates.LOGGING_IN
                     this.network.send(StartC2SP(this.player, this.sessionId))

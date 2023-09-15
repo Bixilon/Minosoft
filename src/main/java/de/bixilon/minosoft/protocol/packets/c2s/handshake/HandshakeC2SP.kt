@@ -10,7 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.handshaking
+package de.bixilon.minosoft.protocol.packets.c2s.handshake
 
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(state = ProtocolStates.HANDSHAKING)
+@LoadPacket(state = ProtocolStates.HANDSHAKE)
 class HandshakeC2SP(
     val address: ServerAddress,
     val action: Actions = Actions.STATUS,

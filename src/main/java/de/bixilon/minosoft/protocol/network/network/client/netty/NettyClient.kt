@@ -51,7 +51,7 @@ class NettyClient(
 ) : SimpleChannelInboundHandler<Any>(), ClientNetwork {
     override var connected by observed(false)
         private set
-    override var state by observed(ProtocolStates.HANDSHAKING)
+    override var state by observed(ProtocolStates.HANDSHAKE)
     override var compressionThreshold = -1
         set(value) {
             field = value
@@ -86,7 +86,7 @@ class NettyClient(
     private var sendingPaused = false
 
     override fun connect(address: ServerAddress, native: Boolean) {
-        state = ProtocolStates.HANDSHAKING
+        state = ProtocolStates.HANDSHAKE
         val natives = if (native) TransportNatives.get() else NioNatives
         val bootstrap = Bootstrap()
             .group(natives.pool)
