@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.builder
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
@@ -22,7 +24,9 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 
 class BuiltModel(
@@ -51,5 +55,11 @@ class BuiltModel(
         }
     }
 
-    // TODO: getSize/culling support
+    override fun getProperties(direction: Directions): SideProperties? {
+        return model.getProperties(direction) // TODO: dynamic?
+    }
+
+    override fun getParticleTexture(random: Random?, position: Vec3i): Texture? {
+        return model.getParticleTexture(random, position)
+    }
 }
