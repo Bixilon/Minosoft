@@ -113,8 +113,8 @@ class OpenGLTextureArray(
 
     private fun preLoad(animationIndex: AtomicInteger, textures: Collection<Texture>) {
         for (texture in textures) {
-            check(texture.size.x <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.x}" }
-            check(texture.size.y <= TEXTURE_MAX_RESOLUTION) { "Texture's height exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.y}" }
+            check(texture.size.x <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.x})" }
+            check(texture.size.y <= TEXTURE_MAX_RESOLUTION) { "Texture's height exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.y})" }
 
 
             var arrayId = -1
@@ -241,7 +241,7 @@ class OpenGLTextureArray(
 
 
     companion object {
-        const val TEXTURE_MAX_RESOLUTION = 1024
-        val TEXTURE_RESOLUTION_ID_MAP = intArrayOf(16, 32, 64, 128, 256, 512, TEXTURE_MAX_RESOLUTION) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
+        const val TEXTURE_MAX_RESOLUTION = 2048
+        val TEXTURE_RESOLUTION_ID_MAP = intArrayOf(16, 32, 64, 128, 256, 512, 1024, TEXTURE_MAX_RESOLUTION) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
     }
 }
