@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(state = ProtocolStates.HANDSHAKING)
 class HandshakeC2SP(
     val address: ServerAddress,
-    val nextState: ProtocolStates = ProtocolStates.STATUS,
+    val action: Actions = Actions.STATUS,
     val protocolId: Int = ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID,
 ) : C2SPacket {
 
@@ -33,10 +33,16 @@ class HandshakeC2SP(
         buffer.writeVarInt(protocolId)
         buffer.writeString(address.hostname)
         buffer.writeShort(address.port)
-        buffer.writeVarInt(nextState.ordinal)
+        buffer.writeVarInt(action.protocolId)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Handshake (protocolId=$protocolId, hostname=${address.hostname}, port=${address.port}, nextState=$nextState)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Handshake (protocolId=$protocolId, hostname=${address.hostname}, port=${address.port}, action=$action)" }
+    }
+
+    enum class Actions(val protocolId: Int) {
+        STATUS(1),
+        PLAY(2),
+        ;
     }
 }

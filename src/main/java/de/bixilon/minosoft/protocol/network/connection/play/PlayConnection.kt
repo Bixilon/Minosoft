@@ -133,7 +133,7 @@ class PlayConnection(
                 ERRORED_CONNECTIONS -= this
 
                 state = PlayConnectionStates.HANDSHAKING
-                network.send(HandshakeC2SP(address, ProtocolStates.LOGIN, version.protocolId))
+                network.send(HandshakeC2SP(address, HandshakeC2SP.Actions.PLAY, version.protocolId))
                 // after sending it, switch to next state
                 network.state = ProtocolStates.LOGIN
             } else {

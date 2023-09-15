@@ -63,7 +63,7 @@ class StatusConnection(
         network::connected.observe(this) {
             if (it) {
                 state = StatusConnectionStates.HANDSHAKING
-                network.send(HandshakeC2SP(realAddress!!, ProtocolStates.STATUS, forcedVersion?.protocolId ?: Versions.AUTOMATIC.protocolId))
+                network.send(HandshakeC2SP(realAddress!!, HandshakeC2SP.Actions.STATUS, forcedVersion?.protocolId ?: Versions.AUTOMATIC.protocolId))
                 network.state = ProtocolStates.STATUS
                 return@observe
             }
