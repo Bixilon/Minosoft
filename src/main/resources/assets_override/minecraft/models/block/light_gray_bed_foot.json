@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/template_bed_foot",
-  "textures": {
-    "bed": "minecraft:entity/bed/light_gray"
-  }
-}

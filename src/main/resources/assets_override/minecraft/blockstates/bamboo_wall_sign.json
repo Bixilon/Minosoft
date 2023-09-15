@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "minecraft:block/bamboo_wall_sign"
+      "model": "block/sign/bamboo/wall"
     },
     "facing=east": {
-      "model": "minecraft:block/bamboo_wall_sign",
+      "model": "block/sign/bamboo/wall",
       "y": 90
     },
     "facing=south": {
-      "model": "minecraft:block/bamboo_wall_sign",
+      "model": "block/sign/bamboo/wall",
       "y": 180
     },
     "facing=west": {
-      "model": "minecraft:block/bamboo_wall_sign",
+      "model": "block/sign/bamboo/wall",
       "y": 270
     }
   }

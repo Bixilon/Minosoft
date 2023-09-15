@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.queue.meshing
+package de.bixilon.minosoft.gui.rendering.world.queue.meshing
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.world.positions.ChunkPosition

@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.cast.CollectionCast.asAnyMap
@@ -46,6 +48,8 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -57,7 +61,6 @@ open class PixLyzerBlock(
     registries: Registries,
     data: Map<String, Any>,
 ) : Block(identifier, BlockSettings(soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] })), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, OutlinedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock, WaterloggableBlock, CollidableBlock, ToolRequirement, BlockWithItem<Item> {
-
     override val randomOffset: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
 
     override val friction = data["friction"]?.toFloat() ?: FrictionBlock.DEFAULT_FRICTION
@@ -101,7 +104,19 @@ open class PixLyzerBlock(
         return identifier.toString()
     }
 
+    override fun offsetShape(position: Vec3i): Vec3 {
+        val offset = randomOffset ?: return Vec3.EMPTY
+        return super.offsetShape(position) + if (offset == RandomOffsetTypes.XZ) NULL_OFFSET_XZ else NULL_OFFSET_XYZ  // this corrects wrong pixlyzer data
+    }
+
+    override fun offsetModel(position: Vec3i): Vec3 {
+        return super.offsetShape(position)
+    }
+
+
     companion object : ResourceLocationCodec<Block>, PixLyzerBlockFactory<Block>, MultiClassFactory<Block> {
+        private val NULL_OFFSET_XYZ = Vec3i(0, 0, 0).getWorldOffset(RandomOffsetTypes.XYZ)
+        private val NULL_OFFSET_XZ = Vec3i(0, 0, 0).getWorldOffset(RandomOffsetTypes.XZ)
         private val ITEM_FIELD = PixLyzerBlock::item.javaField!!
         override val ALIASES: Set<String> = setOf("Block")
 

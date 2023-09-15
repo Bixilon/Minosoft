@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.delegates.BackingDelegate
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
@@ -28,7 +27,6 @@ import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.latestVersion
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.util.KUtil
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -49,12 +47,6 @@ class AccountProfile(
     @Deprecated("Account warning", level = DeprecationLevel.HIDDEN)
     val NOTICE by StringDelegate(this, "NEVER EVER SHARE THIS FILE WITH SOMEBODY (NOT IN ISSUES, BUG REPORTS, NOWHERE!). IF YOU DO SO, YOU PUT YOUR ACCOUNTS AT HIGH RISK!!!")
 
-    /**
-     * The client token.
-     * This 128 length long string is generated randomly while the profile was created
-     * Will be sent to mojang when logging in/refreshing an account
-     */
-    var clientToken by StringDelegate(this, KUtil.RANDOM.randomString(128))
 
     /**
      * Before using an account, it always tries to fetch the profile.

@@ -39,9 +39,9 @@ class OfflineAccount(username: String) : Account(username) {
 
     override fun join(serverId: String) = Unit
 
-    override fun logout(clientToken: String) = Unit
+    override fun logout() = Unit
 
-    override fun check(latch: AbstractLatch?, clientToken: String) = Unit
+    override fun check(latch: AbstractLatch?) = Unit
 
     override fun toString(): String {
         return "OfflineAccount{$username}"

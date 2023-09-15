@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
-import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.FluidModel
+import de.bixilon.minosoft.gui.rendering.models.fluid.FluidModel
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics

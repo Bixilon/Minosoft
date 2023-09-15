@@ -70,6 +70,7 @@ class FadingTextElement(
         updateSize(phase)
 
         parent?.onChildChange(this)
+        cacheEnabled = false
     }
 
     fun hide(force: Boolean = false) {
@@ -93,6 +94,11 @@ class FadingTextElement(
         val next = phase.next(millis)
         this.phase = next
         updateSize(next)
-        super.cacheEnabled = cacheEnabled
+        if (next == null) {
+            // animation end
+            cacheEnabled = true
+        } else {
+            cacheEnabled = false
+        }
     }
 }

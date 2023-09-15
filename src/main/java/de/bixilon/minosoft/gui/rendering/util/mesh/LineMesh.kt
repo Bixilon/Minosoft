@@ -69,8 +69,8 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
             Vec3(end.x + normal1.x + directionWidth.x, end.y + normal1.y + directionWidth.y, end.z + normal1.z + directionWidth.z),
             Vec3(end.x + normal2.x + directionWidth.x, end.y + normal2.y + directionWidth.y, end.z + normal2.z + directionWidth.z),
         )
-        for ((positionIndex, _) in order) {
-            addVertex(positions[positionIndex], color)
+        for (index in 0 until order.size step 2) {
+            addVertex(positions[order[index]], color)
         }
     }
 
@@ -83,8 +83,8 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         val offset = context.camera.offset.offset
         for (direction in Directions.VALUES) {
             val positions = direction.getPositions(Vec3(aabb.min - offset), Vec3(aabb.max - offset))
-            for ((positionIndex, _) in order) {
-                addVertex(positions[positionIndex], color)
+            for (index in 0 until order.size step 2) {
+                addVertex(positions[order[index]], color)
             }
         }
     }

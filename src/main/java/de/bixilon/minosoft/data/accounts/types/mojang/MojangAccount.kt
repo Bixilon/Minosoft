@@ -18,12 +18,14 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.http.HTTP2.postJson
@@ -37,6 +39,7 @@ import java.util.*
 @Deprecated("Mojang authentication is legacy. Will be removed in the future!")
 class MojangAccount(
     override val id: String,
+    val clientToken: String,
     username: String,
     override val uuid: UUID,
     val email: String,
@@ -51,7 +54,7 @@ class MojangAccount(
         AccountUtil.joinMojangServer(accessToken, uuid, serverId)
     }
 
-    override fun logout(clientToken: String) {
+    override fun logout() {
         val response = mutableMapOf(
             "accessToken" to accessToken,
             "clientToken" to clientToken,
@@ -65,7 +68,7 @@ class MojangAccount(
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang account login successful (username=$username)" }
     }
 
-    override fun check(latch: AbstractLatch?, clientToken: String) {
+    override fun check(latch: AbstractLatch?) {
         if (refreshed) {
             return
         }
@@ -115,7 +118,9 @@ class MojangAccount(
         private const val MOJANG_URL_INVALIDATE = "https://authserver.mojang.com/invalidate"
         override val identifier: ResourceLocation = "minosoft:mojang_account".toResourceLocation()
 
-        fun login(clientToken: String, email: String, password: String): MojangAccount {
+        fun login(email: String, password: String): MojangAccount {
+            val clientToken = KUtil.RANDOM.randomString(128)
+
             val response = mutableMapOf(
                 "agent" to mutableMapOf(
                     "name" to "Minecraft",
@@ -138,6 +143,7 @@ class MojangAccount(
             val uuid = response.body["selectedProfile"].asJsonObject()["id"].toString().toUUID()
             val account = MojangAccount(
                 id = response.body["user"].asJsonObject()["id"].unsafeCast(),
+                clientToken = clientToken,
                 username = response.body["selectedProfile"].asJsonObject()["name"].unsafeCast(),
                 uuid = uuid,
                 email = email,

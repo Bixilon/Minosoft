@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.Hard
 import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.PushingBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import kotlin.reflect.jvm.javaField
 
@@ -34,6 +35,8 @@ abstract class Block(
     settings: BlockSettings,
 ) : RegistryItem(), LightedBlock, HardnessBlock, Translatable, PushingBlock {
     val states: BlockStateManager = unsafeNull()
+
+    var model: BlockRender? = null
 
     override val translationKey: ResourceLocation = identifier.translation("block")
 
@@ -45,9 +48,6 @@ abstract class Block(
     override fun toString(): String {
         return identifier.toString()
     }
-
-    @Deprecated("Interface")
-    open fun canCull(blockState: BlockState, other: BlockState): Boolean = true
 
 
     fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperties, Array<Any>>) {

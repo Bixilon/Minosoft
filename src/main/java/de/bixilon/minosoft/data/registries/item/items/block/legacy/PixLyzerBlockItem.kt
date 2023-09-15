@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.item.items.block.PlaceableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import kotlin.reflect.jvm.javaField
 
@@ -34,6 +35,12 @@ open class PixLyzerBlockItem(
     data: Map<String, Any>,
 ) : PixLyzerItem(resourceLocation, registries, data), PlaceableItem {
     val block: Block = unsafeNull()
+
+    override var model: ItemRender?
+        get() = super.model ?: block.model ?: block.states.default.model
+        set(value) {
+            super.model = value
+        }
 
     init {
         BLOCK_FIELD.inject<RegistryItem>(data["block"])

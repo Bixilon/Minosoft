@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class GUIMeshCache(
     var halfSize: Vec2,
-    override val order: Array<Pair<Int, Int>>,
+    override val order: IntArray,
     val context: RenderContext,
     initialCacheSize: Int = 1000,
     var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),

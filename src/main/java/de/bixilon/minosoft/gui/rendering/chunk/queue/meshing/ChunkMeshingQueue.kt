@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTaskManager
+import de.bixilon.minosoft.gui.rendering.world.queue.meshing.ChunkQueueComparator
 import de.bixilon.minosoft.util.SystemInformation
 
 class ChunkMeshingQueue(

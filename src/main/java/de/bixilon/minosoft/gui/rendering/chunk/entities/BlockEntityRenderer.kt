@@ -18,11 +18,15 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderContext
 
 interface BlockEntityRenderer<E : BlockEntity> {
+    val enabled: Boolean get() = true
+
     val blockState: BlockState
     var light: Int
+        get() = 0
+        set(value) = Unit
 
-    fun draw(context: RenderContext)
+    fun draw(context: RenderContext) = Unit
 
-    fun unload() {}
-    fun load() {}
+    fun unload() = Unit
+    fun load() = Unit
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "block/bed/template/head",
+  "textures": {
+    "bed": "minecraft:entity/bed/white"
+  }
+}

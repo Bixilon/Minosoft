@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -29,14 +29,18 @@ import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.WallSignBlock
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.OnlyMeshedBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.MeshedEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.preparer.cull.SolidCullSectionPreparer
+import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
-import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import java.util.*
@@ -45,7 +49,8 @@ class SignBlockEntityRenderer(
     val sign: SignBlockEntity,
     val context: RenderContext,
     override val blockState: BlockState,
-) : OnlyMeshedBlockEntityRenderer<SignBlockEntity> {
+) : MeshedEntityRenderer<SignBlockEntity> {
+    override val enabled: Boolean get() = false
 
     private fun getRotation(): Float {
         if (blockState !is PropertyBlockState) return 0.0f
@@ -53,26 +58,25 @@ class SignBlockEntityRenderer(
         return rotation * 22.5f
     }
 
-    override fun singleRender(position: Vec3i, offset: FloatArray, mesh: ChunkMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val block = this.blockState.block
         if (block is StandingSignBlock) {
-            renderStandingText(offset, mesh, light[SolidCullSectionPreparer.SELF_LIGHT_INDEX].toInt())
+            renderStandingText(offset, mesh, light[SELF_LIGHT_INDEX].toInt())
         } else if (block is WallSignBlock) {
-            renderWallText(offset, mesh, light[SolidCullSectionPreparer.SELF_LIGHT_INDEX].toInt())
+            renderWallText(offset, mesh, light[SELF_LIGHT_INDEX].toInt())
         }
 
         return true
     }
 
-    private fun renderText(offset: FloatArray, rotationVector: Vec3, yRotation: Float, mesh: ChunkMesh, light: Int) {
+    private fun renderText(offset: FloatArray, rotationVector: Vec3, yRotation: Float, mesh: SingleChunkMesh, light: Int) {
         val textPosition = offset.toVec3() + rotationVector
 
-        val textMesh = mesh.textMesh!!
         var primitives = 0
         for (line in sign.lines) {
             primitives += ChatComponentRenderer.calculatePrimitiveCount(line)
         }
-        textMesh.data.ensureSize(primitives * textMesh.order.size * SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
+        mesh.data.ensureSize(primitives * mesh.order.size * SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
 
         val alignment = context.connection.profiles.block.rendering.entities.sign.fontAlignment
 
@@ -87,9 +91,9 @@ class SignBlockEntityRenderer(
     private fun renderStandingText(offset: FloatArray, mesh: ChunkMesh, light: Int) {
         val yRotation = getRotation()
 
-        val rotationVector = Vec3(X_OFFSET, 17.5f / UnbakedElement.BLOCK_RESOLUTION - Y_OFFSET, 9.0f / UnbakedElement.BLOCK_RESOLUTION + Z_OFFSET)
+        val rotationVector = Vec3(X_OFFSET, 17.5f / BLOCK_SIZE - Y_OFFSET, 9.0f / BLOCK_SIZE + Z_OFFSET)
         rotationVector.signRotate(yRotation.rad)
-        renderText(offset, rotationVector, yRotation, mesh, light)
+        renderText(offset, rotationVector, yRotation, mesh.textMesh!!, light)
     }
 
     private fun renderWallText(position: FloatArray, mesh: ChunkMesh, light: Int) {
@@ -101,9 +105,9 @@ class SignBlockEntityRenderer(
             else -> Broken("Sign rotation: $rotation")
         }
 
-        val rotationVector = Vec3(X_OFFSET, 12.5f / UnbakedElement.BLOCK_RESOLUTION - Y_OFFSET, 2.0f / UnbakedElement.BLOCK_RESOLUTION + Z_OFFSET)
+        val rotationVector = Vec3(X_OFFSET, 12.5f / BLOCK_SIZE - Y_OFFSET, 2.0f / BLOCK_SIZE + Z_OFFSET)
         rotationVector.signRotate(yRotation.rad)
-        renderText(position, rotationVector, yRotation, mesh, light)
+        renderText(position, rotationVector, yRotation, mesh.textMesh!!, light)
     }
 
     private fun Vec3.signRotate(yRotation: Float) {
@@ -111,6 +115,8 @@ class SignBlockEntityRenderer(
         rotateAssign(yRotation, Axes.Y)
         this += 0.5f
     }
+
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = Unit
 
     companion object {
         private val TEXT_PROPERTIES = TextRenderProperties(scale = 1.35f, allowNewLine = false, shadow = false, fallbackColor = ChatColors.BLACK)

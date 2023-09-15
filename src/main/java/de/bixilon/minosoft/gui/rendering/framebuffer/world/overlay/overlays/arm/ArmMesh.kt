@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-open class ArmMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.preferredPrimitiveType) : Mesh(context, ArmMeshStruct, primitiveType, initialCacheSize = 2 * 3 * ArmMeshStruct.FLOATS_PER_VERTEX), SkeletalVertexConsumer {
+open class ArmMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, ArmMeshStruct, primitiveType, initialCacheSize = 2 * 3 * ArmMeshStruct.FLOATS_PER_VERTEX), SkeletalVertexConsumer {
 
 
     fun addVertex(position: FloatArray, uv: Vec2) {

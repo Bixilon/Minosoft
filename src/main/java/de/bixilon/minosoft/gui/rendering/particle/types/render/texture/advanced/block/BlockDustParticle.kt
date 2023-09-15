@@ -35,7 +35,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
         val blockPosition = position.blockPosition
         check(data.blockState != null)
         val textureRandom = Random(0L)
-        texture = data.blockState.blockModel?.getParticleTexture(textureRandom, blockPosition)
+        texture = data.blockState.model?.getParticleTexture(textureRandom, blockPosition)
 
         gravityStrength = 1.0f
         color = 0.6f.asGray()

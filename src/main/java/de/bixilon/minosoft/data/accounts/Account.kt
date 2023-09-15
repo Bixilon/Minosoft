@@ -56,11 +56,11 @@ abstract class Account(
 
     abstract fun join(serverId: String)
 
-    abstract fun logout(clientToken: String)
-    abstract fun check(latch: AbstractLatch?, clientToken: String)
+    abstract fun logout()
+    abstract fun check(latch: AbstractLatch?)
 
     @Synchronized
-    open fun tryCheck(latch: AbstractLatch?, clientToken: String) {
+    open fun tryCheck(latch: AbstractLatch?) {
         if (state == AccountStates.CHECKING || state == AccountStates.REFRESHING) {
             // already checking
             return
@@ -69,7 +69,7 @@ abstract class Account(
             // Nothing to do
             return
         }
-        check(latch, clientToken)
+        check(latch)
     }
 
     fun save() {

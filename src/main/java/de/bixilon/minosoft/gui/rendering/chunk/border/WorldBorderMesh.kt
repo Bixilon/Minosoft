@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -58,10 +58,10 @@ class WorldBorderMesh(
         }
     }
 
-    private fun addVertexX(x: Float, width: Float, positions: Array<Vec2>, index: Boolean) {
-        for ((position, texture) in order) {
-            val (z, y) = positions[position]
-            val texture = if (index) textureIndex(texture) else texture
+    private fun addVertexX(x: Float, width: Float, positions: Array<Vec2>, rotated: Boolean) {
+        for (index in 0 until order.size step 2) {
+            val (z, y) = positions[index]
+            val texture = if (rotated) textureIndex(index + 1) else index + 1
             addVertex(x, y, z, textureIndex(texture), width)
         }
     }
@@ -72,10 +72,10 @@ class WorldBorderMesh(
         addVertexX((minOf(WorldBorder.MAX_RADIUS, center.x + radius) - offset.x).toFloat(), width, positions, true)
     }
 
-    private fun addVertexZ(z: Float, width: Float, positions: Array<Vec2>, index: Boolean) {
-        for ((position, texture) in order) {
-            val (x, y) = positions[position]
-            val texture = if (index) textureIndex(texture) else texture
+    private fun addVertexZ(z: Float, width: Float, positions: Array<Vec2>, rotated: Boolean) {
+        for (index in 0 until order.size step 2) {
+            val (x, y) = positions[index]
+            val texture = if (rotated) textureIndex(index + 1) else index + 1
             addVertex(x, y, z, textureIndex(texture), width)
         }
     }

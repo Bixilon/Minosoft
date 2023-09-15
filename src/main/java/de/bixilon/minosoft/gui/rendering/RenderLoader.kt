@@ -67,18 +67,16 @@ object RenderLoader {
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.labTime()})..." }
 
         system.init()
-
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Enabling all open gl features (after ${stopwatch.labTime()})..." }
-
         system.reset()
 
         // Init stage
         val initLatch = ParentLatch(1, renderLatch)
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font and gathering textures (after ${stopwatch.labTime()})..." }
-        textures.dynamicTextures.load(initLatch)
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.labTime()})..." }
+        textures.dynamicTextures.upload(initLatch)
         textures.initializeSkins(connection)
         textures.loadDefaultTextures()
         font = FontManager.create(this, initLatch)
+        models.load(latch)
 
 
         framebuffer.init()
@@ -94,12 +92,16 @@ object RenderLoader {
         initLatch.await()
 
         // Post init stage
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Preloading textures (after ${stopwatch.labTime()})..." }
-        textures.staticTextures.preLoad(renderLatch)
-
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
         textures.staticTextures.load(renderLatch)
+
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Uploading textures (after ${stopwatch.labTime()})..." }
+        textures.staticTextures.upload(renderLatch)
+
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Baking models (after ${stopwatch.labTime()})..." }
         font.postInit(renderLatch)
+        models.bake(renderLatch)
+        models.cleanup()
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }
         shaders.postInit()
@@ -107,11 +109,7 @@ object RenderLoader {
         renderer.postInit(renderLatch)
         framebuffer.postInit()
 
-
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading skeletal meshes (after ${stopwatch.labTime()})" }
-        models.entities.loadSkeletal()
-
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Registering callbacks (after ${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Finishing up (after ${stopwatch.labTime()})..." }
 
         window::focused.observeRendering(this) { state = it.decide(RenderingStates.RUNNING, RenderingStates.SLOW) }
 

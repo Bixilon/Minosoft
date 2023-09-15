@@ -57,34 +57,6 @@ object TextureUtil {
         }!!
     }
 
-    fun resolveTextures(textureArray: StaticTextureArray, textures: Map<String, String>): Map<String, Texture> {
-        val resolvedTextures: MutableMap<String, Texture> = mutableMapOf()
-
-        fun resolveTexture(key: String, value: String): Texture {
-            resolvedTextures[key]?.let { return it }
-
-            val variable = value.removePrefix("#")
-            var texture: Texture? = null
-            if (variable.length != value.length) {
-                // resolve variable first
-                texture = resolveTexture(variable, textures[variable]!!)
-            }
-
-            if (texture == null) {
-                texture = textureArray.createTexture(value.toResourceLocation().texture())
-            }
-
-            resolvedTextures[key] = texture
-            return texture
-        }
-
-
-
-        for ((key, value) in textures) {
-            resolveTexture(key, value)
-        }
-        return resolvedTextures
-    }
 
     /**
      * Other way of reading a texture if the first (preferred one) method does not work

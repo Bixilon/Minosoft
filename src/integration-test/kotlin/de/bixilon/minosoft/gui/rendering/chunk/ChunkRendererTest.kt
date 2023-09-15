@@ -15,14 +15,13 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil
 import de.bixilon.minosoft.gui.rendering.RenderTestUtil.frame
 import org.testng.Assert
 import org.testng.annotations.Test
 
-@Test(groups = ["world_renderer"], dependsOnGroups = ["rendering", "block"])
+@Test(groups = ["chunk_renderer"], dependsOnGroups = ["rendering", "block"])
 class ChunkRendererTest {
 
     private fun create(): ChunkRenderer {
@@ -39,14 +38,6 @@ class ChunkRendererTest {
                 break
             }
         }
-    }
-
-    @Test(priority = -1)
-    fun loadModels() {
-        val latch = SimpleLatch(1)
-        RenderTestUtil.context.models.load(latch)
-        latch.dec()
-        latch.await()
     }
 
     fun testCreation() {

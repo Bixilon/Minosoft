@@ -14,15 +14,22 @@
 package de.bixilon.minosoft.gui.rendering.chunk.entities
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntityModels(val context: RenderContext) {
+class EntityModels(private val loader: ModelLoader) {
+    val context: RenderContext = loader.context
     private val unbakedModels: MutableMap<ResourceLocation, SkeletalModel> = mutableMapOf()
     val skeletal: MutableMap<ResourceLocation, BakedSkeletalModel> = mutableMapOf()
 
@@ -40,7 +47,7 @@ class EntityModels(val context: RenderContext) {
         unbakedModels.clear()
     }
 
-    fun loadSkeletal() {
+    fun bake() {
         val latch = SimpleLatch(1)
         for (model in skeletal.values) {
             latch.inc()
@@ -52,5 +59,16 @@ class EntityModels(val context: RenderContext) {
         for (model in skeletal.values) {
             model.load()
         }
+    }
+
+
+    fun load(latch: AbstractLatch?) {
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading entity models..." }
+        val innerLatch = latch.child(DefaultEntityModels.MODELS.size)
+
+        for (register in DefaultEntityModels.MODELS) {
+            DefaultThreadPool += { register.register(context, loader); innerLatch.dec() }
+        }
+        innerLatch.await()
     }
 }

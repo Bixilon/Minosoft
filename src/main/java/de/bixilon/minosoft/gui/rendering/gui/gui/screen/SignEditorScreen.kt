@@ -42,7 +42,6 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
@@ -78,7 +77,8 @@ class SignEditorScreen(
         if (blockState?.block !is SignBlock) {
             return guiRenderer.atlasManager["minecraft:sign_front"]?.texture
         }
-        return blockState.blockModel?.nullCast<BakedBlockStateModel>()?.faces?.firstOrNull()?.firstOrNull()?.texture ?: guiRenderer.atlasManager["minecraft:sign_front"]?.texture
+        // TODO return blockState.model?.nullCast<BakedBlockStateModel>()?.faces?.firstOrNull()?.firstOrNull()?.texture ?: guiRenderer.atlasManager["minecraft:sign_front"]?.texture
+        return null
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

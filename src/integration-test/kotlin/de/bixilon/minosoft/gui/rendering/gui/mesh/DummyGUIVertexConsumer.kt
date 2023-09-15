@@ -17,10 +17,11 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 open class DummyGUIVertexConsumer : GUIVertexConsumer {
-    override val order: Array<Pair<Int, Int>> get() = Mesh.QUAD_TO_QUAD_ORDER
+    override val order: IntArray get() = OpenGLRenderSystem.QUAD_ORDER
     var char = 0
 
     override fun addCache(cache: GUIMeshCache) {

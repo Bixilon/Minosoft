@@ -122,7 +122,7 @@ class OpenGLDynamicTextureArray(
     }
 
 
-    override fun load(latch: AbstractLatch?) {
+    override fun upload(latch: AbstractLatch?) {
         val textureId = OpenGLTextureUtil.createTextureArray()
         this.textureId = textureId
 
@@ -169,7 +169,7 @@ class OpenGLDynamicTextureArray(
     private fun reload() {
         lock.lock()
         glDeleteTextures(textureId)
-        load(null)
+        upload(null)
 
         for ((index, textureReference) in textures.withIndex()) {
             val texture = textureReference?.get() ?: continue

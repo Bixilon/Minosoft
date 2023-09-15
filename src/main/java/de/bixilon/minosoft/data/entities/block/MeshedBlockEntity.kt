@@ -17,14 +17,14 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.MeshedBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.MeshedEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class MeshedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    override fun getRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): MeshedBlockEntityRenderer<*>? {
+    override fun getRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): MeshedEntityRenderer<*> {
         var renderer = this.renderer
-        if (renderer is MeshedBlockEntityRenderer<*> && renderer.blockState == blockState) {
+        if (renderer is MeshedEntityRenderer && renderer.blockState == blockState) {
             return renderer
         }
         renderer = createMeshedRenderer(context, blockState, blockPosition)
@@ -36,5 +36,5 @@ abstract class MeshedBlockEntity(connection: PlayConnection) : BlockEntity(conne
         throw IllegalAccessException()
     }
 
-    abstract fun createMeshedRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i): MeshedBlockEntityRenderer<*>
+    abstract fun createMeshedRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i): MeshedEntityRenderer<*>
 }

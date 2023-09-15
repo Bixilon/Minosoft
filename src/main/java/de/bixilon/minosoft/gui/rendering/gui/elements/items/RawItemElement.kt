@@ -15,10 +15,8 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.item.items.block.legacy.PixLyzerBlockItem
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -32,12 +30,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.util.KUtil
 
 class RawItemElement(
     guiRenderer: GUIRenderer,
@@ -83,20 +78,10 @@ class RawItemElement(
 
         val item = stack.item.item
         val model = item.model
-        if (model == null) {
-            var element: Element? = null
-
-            val color = ChatColors.WHITE
-            if (item is PixLyzerBlockItem) {
-                val defaultState = item.block.states.default
-                defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
-                    element = ImageElement(guiRenderer, it, size = textureSize)
-                }
-            }
-
-            (element ?: ColorElement(guiRenderer, textureSize, color)).render(offset, consumer, options)
+        if (model != null) {
+            model.render(guiRenderer, offset, consumer, options, textureSize, stack)
         } else {
-            model.render2d(guiRenderer, offset, consumer, options, textureSize, stack)
+            ColorElement(guiRenderer, textureSize, ChatColors.WHITE).render(offset, consumer, options)
         }
 
         val countSize = countText.size

@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.VisibleMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesher.ChunkMesher
 import de.bixilon.minosoft.gui.rendering.chunk.queue.CulledQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshLoadingQueue
@@ -97,10 +98,6 @@ class ChunkRenderer(
         layers.register(TranslucentLayer, shader, this::drawBlocksTranslucent) { visible.translucent.isEmpty() }
         layers.register(TextLayer, textShader, this::drawText) { visible.text.isEmpty() }
         layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visible.blockEntities.isEmpty() }
-    }
-
-    override fun init(latch: AbstractLatch) {
-        context.models.load(latch)
     }
 
     override fun postInit(latch: AbstractLatch) {

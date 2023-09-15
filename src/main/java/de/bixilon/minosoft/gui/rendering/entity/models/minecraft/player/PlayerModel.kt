@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProper
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.SkeletalEntityModel
-import de.bixilon.minosoft.gui.rendering.models.ModelLoader.Companion.bbModel
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement

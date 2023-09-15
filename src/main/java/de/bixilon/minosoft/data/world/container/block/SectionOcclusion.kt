@@ -46,16 +46,31 @@ class SectionOcclusion(
         update(calculateOcclusion(floodFill()), notify)
     }
 
-    private fun trace(regions: ShortArray, x: Int, y: Int, z: Int, nextId: Short) {
+    private inline fun ShortArray.updateRegion(x: Int, y: Int, z: Int, id: Short): Boolean {
         val index = y shl 8 or (z shl 4) or x
-        if (regions[index] > 0) {
-            return
+        if (this[index] > 0) {
+            return true
         }
         val state = provider[index]
         if (state.isFullyOpaque()) {
-            return
+            return true
         }
-        regions[index] = nextId
+        this[index] = id
+        return false
+    }
+
+    private fun startTrace(regions: ShortArray, x: Int, y: Int, z: Int, nextId: Short) {
+        if (regions.updateRegion(x, y, z, nextId)) return
+
+        // no need to trace negative coordinates initially
+        if (x < ProtocolDefinition.SECTION_MAX_X) trace(regions, x + 1, y, z, nextId)
+        if (y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, x, y + 1, z, nextId)
+        if (z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, x, y, z + 1, nextId)
+    }
+
+    private fun trace(regions: ShortArray, x: Int, y: Int, z: Int, nextId: Short) {
+        if (regions.updateRegion(x, y, z, nextId)) return
+
         if (x > 0) trace(regions, x - 1, y, z, nextId)
         if (x < ProtocolDefinition.SECTION_MAX_X) trace(regions, x + 1, y, z, nextId)
         if (y > 0) trace(regions, x, y - 1, z, nextId)
@@ -73,7 +88,7 @@ class SectionOcclusion(
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                    trace(regions, x, y, z, ++next)
+                    startTrace(regions, x, y, z, ++next)
                 }
             }
         }

@@ -39,13 +39,13 @@ class DummyStaticTextureArray(renderSystem: RenderSystem) : StaticTextureArray {
         return textures.getOrPut(resourceLocation) { DummyTexture() }
     }
 
-    override fun preLoad(latch: AbstractLatch) {
+    override fun load(latch: AbstractLatch) {
         for (texture in textures.values) {
             (texture as DummyTexture).state = TextureStates.LOADED
         }
     }
 
-    override fun load(latch: AbstractLatch?) {
+    override fun upload(latch: AbstractLatch?) {
         animator.init()
     }
 

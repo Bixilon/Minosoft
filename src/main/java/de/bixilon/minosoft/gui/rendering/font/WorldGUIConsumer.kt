@@ -18,6 +18,8 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -27,11 +29,33 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class WorldGUIConsumer(val mesh: SingleChunkMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
     private val whiteTexture = mesh.context.textures.whiteTexture
-    override val order: Array<Pair<Int, Int>> get() = mesh.order
+    override val order: IntArray get() = mesh.order
 
     override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         val transformed = transform.fastTimes(position.x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)
         mesh.addVertex(transformed, uv, (texture as Texture?) ?: whiteTexture.texture, tint.rgb, light)
+    }
+
+    override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+        // TODO: remove that override and change vertex order globally
+        val topOffset = if (italic) (end.y - start.y) / FontProperties.CHAR_BASE_HEIGHT * FormattingProperties.ITALIC_OFFSET else 0.0f
+
+        val positions = arrayOf(
+            Vec2(start.x + topOffset, start.y),
+            Vec2(end.x + topOffset, start.y),
+            end,
+            Vec2(start.x, end.y),
+        )
+        val texturePositions = arrayOf(
+            uvStart,
+            Vec2(uvEnd.x, uvStart.y),
+            uvEnd,
+            Vec2(uvStart.x, uvEnd.y),
+        )
+
+        for (index in 0 until order.size step 2) {
+            addVertex(positions[order[index]], texture, texturePositions[order[index + 1]], tint, options)
+        }
     }
 
     override fun addCache(cache: GUIMeshCache) {

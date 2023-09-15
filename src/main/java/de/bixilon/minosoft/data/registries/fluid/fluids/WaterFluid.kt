@@ -31,7 +31,7 @@ import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.fluids.WaterFluidModel
+import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.WaterFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d

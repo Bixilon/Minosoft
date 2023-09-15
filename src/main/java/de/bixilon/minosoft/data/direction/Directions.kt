@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.direction
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -25,7 +24,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
@@ -36,15 +34,16 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.reflect.jvm.javaField
 
 enum class Directions(
-    @Deprecated("remove") val horizontalId: Int,
     val vector: Vec3i,
+    val index: Vec3i,
 ) {
-    DOWN(-1, Vec3i(0, -1, 0)),
-    UP(-1, Vec3i(0, 1, 0)),
-    NORTH(2, Vec3i(0, 0, -1)),
-    SOUTH(0, Vec3i(0, 0, 1)),
-    WEST(1, Vec3i(-1, 0, 0)),
-    EAST(3, Vec3i(1, 0, 0));
+    DOWN(Vec3i(0, -1, 0), Vec3i(1, -1, 1)),
+    UP(Vec3i(0, 1, 0), Vec3i(3, -1, 3)),
+    NORTH(Vec3i(0, 0, -1), Vec3i(0, 0, -1)),
+    SOUTH(Vec3i(0, 0, 1), Vec3i(2, 2, -1)),
+    WEST(Vec3i(-1, 0, 0), Vec3i(-1, 3, 2)),
+    EAST(Vec3i(1, 0, 0), Vec3i(-1, 1, 0)),
+    ;
 
     val negative = ordinal % 2 == 0
 
@@ -68,15 +67,6 @@ enum class Directions(
         return vector[axis]
     }
 
-    fun rotateYC(): Directions {
-        return when (this) {
-            NORTH -> EAST
-            SOUTH -> WEST
-            WEST -> NORTH
-            EAST -> SOUTH
-            else -> Broken("Rotation: $this")
-        }
-    }
 
     @Deprecated("outsource")
     fun getPositions(from: Vec3, to: Vec3): Array<Vec3> {
@@ -87,34 +77,6 @@ enum class Directions(
             SOUTH -> arrayOf(Vec3(from.x, to.y, to.z), to, Vec3(to.x, from.y, to.z), Vec3(from.x, from.y, to.z))
             WEST -> arrayOf(Vec3(from.x, to.y, from.z), Vec3(from.x, to.y, to.z), Vec3(from.x, from.y, to.z), from)
             EAST -> arrayOf(to, Vec3(to.x, to.y, from.z), Vec3(to.x, from.y, from.z), Vec3(to.x, from.y, to.z))
-        }
-    }
-
-    @Deprecated("outsource")
-    fun getSize(rotated: Directions, from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
-        var pair = when (this) {
-            DOWN, UP -> Pair(from.xz, to.xz)
-            NORTH, SOUTH -> Pair(from.xy, to.xy)
-            WEST, EAST -> Pair(from.yz, to.yz)
-        }
-        if (rotated.negative != negative) {
-            pair = Pair(Vec2(1.0f) - pair.first, Vec2(1.0f) - pair.second)
-
-            pair = Pair(
-                Vec2(minOf(pair.first.x, pair.second.x), minOf(pair.first.y, pair.second.y)),
-                Vec2(maxOf(pair.first.x, pair.second.x), maxOf(pair.first.y, pair.second.y)),
-            )
-        }
-
-        return pair
-    }
-
-    @Deprecated("outsource")
-    fun getFallbackUV(from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
-        return when (this) {
-            DOWN, UP -> Pair(from.xz, to.xz)
-            SOUTH, NORTH -> Pair(Vec2(1) - to.xy, Vec2(1) - from.xy)
-            WEST, EAST -> Pair(Vec2(1) - to.zy, Vec2(1) - from.zy)
         }
     }
 
@@ -186,6 +148,12 @@ enum class Directions(
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = EnumUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
+
+        val INDEXED = arrayOf(
+            arrayOf(NORTH, DOWN, SOUTH, UP), // X
+            arrayOf(NORTH, EAST, SOUTH, WEST), // y
+            arrayOf(EAST, DOWN, WEST, UP), // z
+        )
 
         val XYZ = arrayOf(WEST, EAST, DOWN, UP, NORTH, SOUTH)
 

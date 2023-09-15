@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "minecraft:block/crimson_wall_sign"
+      "model": "block/sign/crimson/wall"
     },
     "facing=east": {
-      "model": "minecraft:block/crimson_wall_sign",
+      "model": "block/sign/crimson/wall",
       "y": 90
     },
     "facing=south": {
-      "model": "minecraft:block/crimson_wall_sign",
+      "model": "block/sign/crimson/wall",
       "y": 180
     },
     "facing=west": {
-      "model": "minecraft:block/crimson_wall_sign",
+      "model": "block/sign/crimson/wall",
       "y": 270
     }
   }

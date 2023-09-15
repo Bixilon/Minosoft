@@ -34,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLU
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.logging.Log
@@ -65,12 +64,12 @@ class OpenGLRenderSystem(
     var blendingDestination = BlendingFunctions.ZERO
         private set
 
-    override var preferredPrimitiveType: PrimitiveTypes = if (context.preferQuads) {
+    override var quadType: PrimitiveTypes = if (context.preferQuads) {
         PrimitiveTypes.QUAD
     } else {
         PrimitiveTypes.TRIANGLE
     }
-    override var primitiveMeshOrder: Array<Pair<Int, Int>> = if (preferredPrimitiveType == PrimitiveTypes.QUAD) Mesh.QUAD_TO_QUAD_ORDER else Mesh.TRIANGLE_TO_QUAD_ORDER
+    override var quadOrder: IntArray = if (quadType == PrimitiveTypes.QUAD) QUAD_ORDER else TRIANGLE_ORDER
     var boundVao = -1
     var boundBuffer = -1
     var uniformBufferBindingIndex = 0
@@ -329,6 +328,22 @@ class OpenGLRenderSystem(
     }
 
     companion object {
+        val TRIANGLE_ORDER = intArrayOf(
+            // TOOD: they are all rotated 90° wrong, fix this for triangle and quad order
+            0, 1,
+            3, 2,
+            2, 3,
+            2, 3,
+            1, 0,
+            0, 1,
+        )
+        val QUAD_ORDER = intArrayOf(
+            0, 1,
+            3, 2,
+            2, 3,
+            1, 0,
+        )
+
         private val RenderingCapabilities.gl: Int
             get() {
                 return when (this) {

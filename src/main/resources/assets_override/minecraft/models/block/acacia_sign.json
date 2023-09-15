@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/template_standing_sign",
-  "textures": {
-    "particle": "minecraft:block/acacia_planks",
-    "sign": "minecraft:entity/signs/acacia"
-  }
-}

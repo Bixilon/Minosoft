@@ -1,0 +1,6 @@
+{
+  "parent": "block/bed/template/foot",
+  "textures": {
+    "bed": "minecraft:entity/bed/orange"
+  }
+}

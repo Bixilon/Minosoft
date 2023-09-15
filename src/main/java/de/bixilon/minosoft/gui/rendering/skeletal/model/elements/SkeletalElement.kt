@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
+import com.sun.marlin.MarlinConst.BLOCK_SIZE
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.faces.SkeletalFace
@@ -49,7 +49,7 @@ data class SkeletalElement(
 
         val outlinerId = outlinerMapping[uuid] ?: 0
 
-        val inflate = (inflate / UnbakedElement.BLOCK_RESOLUTION) / 2
+        val inflate = (inflate / BLOCK_SIZE) / 2
         for ((direction, face) in faces) {
             face.bake(model, this, direction, inflate, outlinerId, textures, consumer)
         }

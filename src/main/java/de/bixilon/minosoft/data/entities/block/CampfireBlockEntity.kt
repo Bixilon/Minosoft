@@ -16,10 +16,12 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isLit
@@ -72,7 +74,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             }
         }
 
-        val facing = blockState.getFacing().horizontalId
+        val facing = blockState.getFacing().campfireId
 
         for ((index, item) in items.withIndex()) {
             item ?: continue
@@ -82,9 +84,9 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             val direction = HORIZONTAL[Math.floorMod(index + facing, Directions.SIDES.size)]
 
             val position = Vec3d(blockPosition) + Vec3d(
-                0.5f - direction.vector.x * DIRECTION_OFFSET + direction.rotateYC().vector.x * DIRECTION_OFFSET,
+                0.5f - direction.vector.x * DIRECTION_OFFSET + direction.rotateY().vector.x * DIRECTION_OFFSET,
                 0.5f,
-                0.5f - direction.vector.z * DIRECTION_OFFSET + direction.rotateYC().vector.z * DIRECTION_OFFSET,
+                0.5f - direction.vector.z * DIRECTION_OFFSET + direction.rotateY().vector.z * DIRECTION_OFFSET,
             )
 
             for (i in 0 until 4) {
@@ -97,6 +99,15 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
         override val identifier: ResourceLocation = minecraft("campfire")
         private val HORIZONTAL = arrayOf(Directions.SOUTH, Directions.WEST, Directions.NORTH, Directions.EAST)
         const val DIRECTION_OFFSET = 0.3125
+
+
+        private val Directions.campfireId:Int get() = when(this) {
+            Directions.NORTH -> 2
+            Directions.SOUTH -> 0
+            Directions.WEST -> 1
+            Directions.EAST -> 3
+            else -> Broken()
+        }
 
 
         override fun build(connection: PlayConnection): CampfireBlockEntity {

@@ -44,7 +44,7 @@ open class CobwebBlock(identifier: ResourceLocation = Companion.identifier, sett
         return item is SwordItem || item is ShearsItem
     }
 
-    override fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack): Float {
+    override fun getMiningSpeed(connection: PlayConnection, state: BlockState, stack: ItemStack, speed: Float): Float {
         if (stack.item.item is SwordItem || stack.item.item is ShearsItem) {
             return 15.0f
         }

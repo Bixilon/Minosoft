@@ -28,5 +28,5 @@ interface StaticTextureArray : TextureArray {
     fun pushTexture(texture: Texture)
     fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, properties: Boolean = true, default: (mipmaps: Boolean) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture
 
-    fun preLoad(latch: AbstractLatch)
+    fun load(latch: AbstractLatch)
 }

@@ -101,8 +101,8 @@ interface RenderSystem {
 
     var clearColor: RGBColor
 
-    var preferredPrimitiveType: PrimitiveTypes
-    var primitiveMeshOrder: Array<Pair<Int, Int>>
+    var quadType: PrimitiveTypes
+    var quadOrder: IntArray
 
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 
@@ -121,8 +121,8 @@ interface RenderSystem {
 
     fun createNativeShader(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): NativeShader
 
-    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer
-    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer {
+    fun createVertexBuffer(struct: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = quadType): FloatVertexBuffer
+    fun createVertexBuffer(struct: MeshStruct, data: AbstractFloatList, primitiveType: PrimitiveTypes = quadType): FloatVertexBuffer {
         if (data is DirectArrayFloatList) {
             return createVertexBuffer(struct, data.toBuffer(), primitiveType)
         }

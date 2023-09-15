@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "minecraft:block/dark_oak_wall_sign"
+      "model": "block/sign/dark_oak/wall"
     },
     "facing=east": {
-      "model": "minecraft:block/dark_oak_wall_sign",
+      "model": "block/sign/dark_oak/wall",
       "y": 90
     },
     "facing=south": {
-      "model": "minecraft:block/dark_oak_wall_sign",
+      "model": "block/sign/dark_oak/wall",
       "y": 180
     },
     "facing=west": {
-      "model": "minecraft:block/dark_oak_wall_sign",
+      "model": "block/sign/dark_oak/wall",
       "y": 270
     }
   }

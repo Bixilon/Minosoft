@@ -29,7 +29,7 @@ class DummyComponentConsumer : GUIVertexConsumer {
     val chars: MutableList<RendererdCodePoint> = mutableListOf()
     val quads: MutableList<RendererdQuad> = mutableListOf()
 
-    override val order: Array<Pair<Int, Int>> get() = emptyArray()
+    override val order: IntArray get() = IntArray(0)
     override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) = Broken()
     override fun ensureSize(size: Int) = Unit

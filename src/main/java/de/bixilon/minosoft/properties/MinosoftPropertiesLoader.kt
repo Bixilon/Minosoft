@@ -16,6 +16,7 @@ package de.bixilon.minosoft.properties
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.properties.general.GeneralP
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -25,8 +26,13 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 object MinosoftPropertiesLoader {
 
     fun load() {
-        val json = Minosoft.MINOSOFT_ASSETS_MANAGER[minosoft("version.json")].readJson<MinosoftP>()
-        MinosoftProperties = json
+        val properties = Minosoft.MINOSOFT_ASSETS_MANAGER.getOrNull(minosoft("version.json"))?.readJson<MinosoftP>()
+        MinosoftProperties = if (properties == null) {
+            Log.log(LogMessageType.OTHER, LogLevels.FATAL) { "Can not load version.json! Did you compile with gradle?" }
+            MinosoftP(GeneralP("unknown", false), null)
+        } else {
+            properties
+        }
 
         RunConfiguration.APPLICATION_NAME = "Minosoft ${MinosoftProperties.general.name}"
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "This is minosoft version ${MinosoftProperties.general.name}${MinosoftProperties.git?.let { ", built on ${it.commitShort}/${it.branch}" }}!" }

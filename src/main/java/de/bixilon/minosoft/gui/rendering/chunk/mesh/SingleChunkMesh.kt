@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -24,24 +25,26 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, WorldMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand), Comparable<SingleChunkMesh> {
     var distance: Float = 0.0f // Used for sorting
 
+    override val order = if (quadType == PrimitiveTypes.QUAD) QUAD_ORDER else TRIANGLE_ORDER
+
     fun addVertex(position: FloatArray, uv: Vec2, texture: Texture, tintColor: Int, light: Int) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.renderData.transformUV(uv).array
         data.add(position)
         data.add(transformedUV)
         data.add(texture.renderData.shaderTextureId.buffer())
-        data.add((tintColor or (light shl 24)).buffer())
+        data.add(((light shl 24) or tintColor).buffer())
     }
 
-    fun addVertex(x: Float, y: Float, z: Float, uv: Vec2, texture: Texture, shaderTextureId: Float, tintLight: Float) {
+    fun addVertex(x: Float, y: Float, z: Float, uv: FloatArray, texture: Texture, shaderTextureId: Float, lightTint: Float) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
-        val transformedUV = texture.renderData.transformUV(uv.array)
+        val transformedUV = texture.renderData.transformUV(uv)
         data.add(x)
         data.add(y)
         data.add(z)
         data.add(transformedUV)
         data.add(shaderTextureId)
-        data.add(tintLight)
+        data.add(lightTint)
     }
 
     override fun compareTo(other: SingleChunkMesh): Int {
@@ -54,8 +57,25 @@ class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         val position: Vec3,
         val uv: Vec2,
         val indexLayerAnimation: Int,
-        val tintLight: Int,
+        val lightTint: Int,
     ) {
         companion object : MeshStruct(WorldMeshStruct::class)
+    }
+
+    companion object {
+        val TRIANGLE_ORDER = intArrayOf(
+            0, 0,
+            3, 3,
+            2, 2,
+            2, 2,
+            1, 1,
+            0, 0,
+        )
+        val QUAD_ORDER = intArrayOf(
+            0, 0,
+            3, 3,
+            2, 2,
+            1, 1,
+        )
     }
 }

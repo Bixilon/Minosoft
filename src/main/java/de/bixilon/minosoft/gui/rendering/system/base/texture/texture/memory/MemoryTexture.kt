@@ -28,7 +28,7 @@ class MemoryTexture(
     override val size: Vec2i,
     override var properties: ImageProperties = ImageProperties(),
     override var mipmaps: Boolean = true,
-    buffer: ByteBuffer,
+    buffer: ByteBuffer=TextureGenerator.allocate(size),
 ) : Texture {
     override lateinit var array: TextureArrayProperties
     override lateinit var renderData: TextureRenderData

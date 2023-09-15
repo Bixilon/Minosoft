@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "minecraft:block/mangrove_wall_sign"
+      "model": "block/sign/mangrove/wall"
     },
     "facing=east": {
-      "model": "minecraft:block/mangrove_wall_sign",
+      "model": "block/sign/mangrove/wall",
       "y": 90
     },
     "facing=south": {
-      "model": "minecraft:block/mangrove_wall_sign",
+      "model": "block/sign/mangrove/wall",
       "y": 180
     },
     "facing=west": {
-      "model": "minecraft:block/mangrove_wall_sign",
+      "model": "block/sign/mangrove/wall",
       "y": 270
     }
   }

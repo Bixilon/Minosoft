@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
-open class SimpleTextureMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.preferredPrimitiveType) : Mesh(context, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
+open class SimpleTextureMesh(context: RenderContext, primitiveType: PrimitiveTypes = context.system.quadType) : Mesh(context, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3, texture: Texture, uv: Vec2, tintColor: RGBColor?) {
         data.add(position.array)

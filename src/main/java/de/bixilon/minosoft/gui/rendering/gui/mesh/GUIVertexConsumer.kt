@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdenti
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 interface GUIVertexConsumer {
-    val order: Array<Pair<Int, Int>>
+    val order: IntArray
 
     fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?)
     fun addVertex(position: Vec2i, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
@@ -44,8 +44,8 @@ interface GUIVertexConsumer {
             uvEnd,
         )
 
-        for ((vertexIndex, textureIndex) in order) {
-            addVertex(positions[vertexIndex], texture, texturePositions[textureIndex], tint, options)
+        for (index in 0 until order.size step 2) {
+            addVertex(positions[order[index]], texture, texturePositions[order[index + 1]], tint, options)
         }
     }
 
@@ -74,8 +74,8 @@ interface GUIVertexConsumer {
             uvEnd,
         )
 
-        for ((vertexIndex, textureIndex) in this.order) {
-            addVertex(positions[vertexIndex], texture, texturePositions[textureIndex], tint, options)
+        for (index in 0 until order.size step 2) {
+            addVertex(positions[order[index]], texture, texturePositions[order[index + 1]], tint, options)
         }
     }
 

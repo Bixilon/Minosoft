@@ -32,7 +32,6 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.raycastDistance
@@ -102,7 +101,7 @@ class TargetHandler(
             return null
         }
         var shape = state.block.getOutlineShape(camera.connection, state) ?: return null
-        state.block.nullCast<RandomOffsetBlock>()?.randomOffset?.let { shape += blockPosition.getWorldOffset(it) }
+        state.block.nullCast<RandomOffsetBlock>()?.offsetShape(blockPosition)?.let { shape += it }
 
         shape += blockPosition
 

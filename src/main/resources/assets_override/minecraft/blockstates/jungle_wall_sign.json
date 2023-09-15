@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "minecraft:block/jungle_wall_sign"
+      "model": "block/sign/jungle/wall"
     },
     "facing=east": {
-      "model": "minecraft:block/jungle_wall_sign",
+      "model": "block/sign/jungle/wall",
       "y": 90
     },
     "facing=south": {
-      "model": "minecraft:block/jungle_wall_sign",
+      "model": "block/sign/jungle/wall",
       "y": 180
     },
     "facing=west": {
-      "model": "minecraft:block/jungle_wall_sign",
+      "model": "block/sign/jungle/wall",
       "y": 270
     }
   }

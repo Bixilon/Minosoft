@@ -34,7 +34,7 @@ object TestAccount : Account("Bixilon") {
 
     override fun join(serverId: String) = Unit
 
-    override fun logout(clientToken: String) = Unit
+    override fun logout() = Unit
 
-    override fun check(latch: AbstractLatch?, clientToken: String) = Unit
+    override fun check(latch: AbstractLatch?) = Unit
 }

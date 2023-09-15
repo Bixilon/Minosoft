@@ -34,5 +34,13 @@ Also it is quite heavy to implement them. They might work, but are not supported
 
 ## Snapshots
 
-Snapshots are technically supported, but only the latest one should be used as reference, all previous ones might fail or not even work.
+Snapshots are technically supported, but only the latest one should be used as reference, all previous ones might fail
+or not even work.
 It is **not** recommended using them (and honestly: who cares about those versions?).
+
+## Pre flattening < 1.13
+
+Pre flattening versions work a lot different.
+
+- names of 1.13
+- 

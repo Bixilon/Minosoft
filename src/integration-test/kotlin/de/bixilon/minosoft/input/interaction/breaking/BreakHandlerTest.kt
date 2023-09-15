@@ -127,19 +127,19 @@ class BreakHandlerTest {
     }
 
     fun nothingWool() {
-        breakBlock(WoolBlock.RedWool.identifier, ticks = 25)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
+        breakBlock(WoolBlock.Red.identifier, ticks = 25)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
     }
 
     fun pickaxeWool() {
-        breakBlock(WoolBlock.RedWool.identifier, WoodenTool.WoodenPickaxe, ticks = 25)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
+        breakBlock(WoolBlock.Red.identifier, WoodenTool.WoodenPickaxe, ticks = 25)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
     }
 
     fun shearsWool() {
-        breakBlock(WoolBlock.RedWool.identifier, ShearsItem, ticks = 6)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(WoolBlock.Red.identifier, ShearsItem, ticks = 6)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun efficiencyShearsWool() {
-        breakBlock(WoolBlock.RedWool.identifier, ShearsItem, efficiency = 5, ticks = 0)
+        breakBlock(WoolBlock.Red.identifier, ShearsItem, efficiency = 5, ticks = 0)
     }
 
     fun pickaxeGlass() {
