@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
 
 class DropHandler(
     private val interactions: InteractionManager,

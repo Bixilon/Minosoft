@@ -44,11 +44,11 @@ import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.KickEvent
-import de.bixilon.minosoft.modding.event.events.LoginKickEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
@@ -163,20 +163,17 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             }
 
             connection.events.register(JavaFXEventListener.of<KickEvent> { event ->
-                KickDialog(
-                    title = "minosoft:connection.kick.title".toResourceLocation(),
-                    header = "minosoft:connection.kick.header".toResourceLocation(),
-                    description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(server, account),
-                    reason = event.reason,
-                ).show()
-            })
-            connection.events.register(JavaFXEventListener.of<LoginKickEvent> { event ->
-                KickDialog(
+                (if (connection.network.state == ProtocolStates.LOGIN) KickDialog(
                     title = "minosoft:connection.login_kick.title".toResourceLocation(),
                     header = "minosoft:connection.login_kick.header".toResourceLocation(),
                     description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(server, account),
                     reason = event.reason,
-                ).show()
+                ) else KickDialog(
+                    title = "minosoft:connection.kick.title".toResourceLocation(),
+                    header = "minosoft:connection.kick.header".toResourceLocation(),
+                    description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(server, account),
+                    reason = event.reason,
+                )).show()
             })
             val latch = CallbackLatch(1)
             val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }

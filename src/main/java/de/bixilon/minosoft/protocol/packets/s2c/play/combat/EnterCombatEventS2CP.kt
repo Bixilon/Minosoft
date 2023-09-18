@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.combat
 
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(parent = true)
 class EnterCombatEventS2CP(buffer: PlayInByteBuffer) : CombatEventS2CP {
 
     override fun log(reducedLog: Boolean) {

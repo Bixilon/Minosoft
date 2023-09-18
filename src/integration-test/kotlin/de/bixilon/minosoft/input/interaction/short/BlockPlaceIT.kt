@@ -35,8 +35,8 @@ import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafeRelease
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import org.testng.SkipException
 import org.testng.annotations.Test
 

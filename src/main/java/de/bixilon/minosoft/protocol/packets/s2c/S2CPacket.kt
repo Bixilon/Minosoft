@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c
 
-import de.bixilon.minosoft.protocol.packets.Packet
+import de.bixilon.minosoft.protocol.packets.types.HandleablePacket
+import de.bixilon.minosoft.protocol.packets.types.Packet
 
-interface S2CPacket : Packet
+interface S2CPacket : Packet, HandleablePacket

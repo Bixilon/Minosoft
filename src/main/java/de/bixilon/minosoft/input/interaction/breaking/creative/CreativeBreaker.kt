@@ -16,7 +16,7 @@ package de.bixilon.minosoft.input.interaction.breaking.creative
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.input.interaction.breaking.BreakHandler
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
 
 class CreativeBreaker(
     private val breaking: BreakHandler,

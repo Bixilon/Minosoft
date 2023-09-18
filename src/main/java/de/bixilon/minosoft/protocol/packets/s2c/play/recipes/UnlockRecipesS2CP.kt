@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.recipes
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W48A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12
@@ -26,7 +25,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
 class UnlockRecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val action = Actions[if (buffer.versionId < V_1_12) buffer.readInt() else buffer.readVarInt()]
 

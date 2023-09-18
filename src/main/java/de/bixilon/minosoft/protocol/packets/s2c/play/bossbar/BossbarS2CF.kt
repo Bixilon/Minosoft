@@ -15,16 +15,12 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
-import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
+import de.bixilon.minosoft.protocol.packets.registry.factory.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-@LoadPacket(threadSafe = false)
 object BossbarS2CF : PlayPacketFactory {
-    override val direction = PacketDirection.SERVER_TO_CLIENT
 
-    override fun createPacket(buffer: PlayInByteBuffer): BossbarS2CP {
+    override fun create(buffer: PlayInByteBuffer): BossbarS2CP {
         val uuid = buffer.readUUID()
         return when (BossbarActions[buffer.readVarInt()]) {
             BossbarActions.ADD -> AddBossbarS2CP(uuid, buffer)

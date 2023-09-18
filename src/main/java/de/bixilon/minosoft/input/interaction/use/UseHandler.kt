@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.input.interaction.InteractionManager
 import de.bixilon.minosoft.input.interaction.KeyHandler
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 
 class UseHandler(

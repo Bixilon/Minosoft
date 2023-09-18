@@ -15,13 +15,11 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
 import de.bixilon.minosoft.modding.event.events.title.TitleHideEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(parent = true, threadSafe = false)
 class HideTitleS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
 
     override fun handle(connection: PlayConnection) {

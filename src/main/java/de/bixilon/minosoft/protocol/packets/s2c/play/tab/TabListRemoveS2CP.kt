@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.tab
 import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDataUpdate
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -23,7 +22,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-@LoadPacket(threadSafe = false)
 class TabListRemoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val uuids: Array<UUID> = buffer.readArray { buffer.readUUID() }
 

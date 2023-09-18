@@ -49,8 +49,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.c
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull

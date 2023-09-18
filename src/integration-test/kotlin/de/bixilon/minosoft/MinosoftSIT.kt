@@ -17,8 +17,7 @@ import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
-import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
-import de.bixilon.minosoft.protocol.versions.Versions
+import de.bixilon.minosoft.protocol.versions.VersionLoader
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
 import de.bixilon.minosoft.util.KUtil
@@ -37,7 +36,6 @@ internal object MinosoftSIT {
         disableGC()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
         initAssetsManager()
-        setupPacketRegistry()
         loadVersionsJson()
         loadAssetsProperties()
         loadDefaultRegistries()
@@ -62,12 +60,8 @@ internal object MinosoftSIT {
         Minosoft.MINOSOFT_ASSETS_MANAGER.load()
     }
 
-    fun setupPacketRegistry() {
-        PacketTypeRegistry.init(null)
-    }
-
     fun loadVersionsJson() {
-        Versions.load(SimpleLatch(0))
+        VersionLoader.load(SimpleLatch(0))
     }
 
     fun loadAssetsProperties() {

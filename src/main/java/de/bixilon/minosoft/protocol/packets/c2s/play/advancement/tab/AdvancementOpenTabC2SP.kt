@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.c2s.play.advancement.tab
 
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(parent = true)
 class AdvancementOpenTabC2SP(
     val tabName: String,
 ) : AdvancementTabC2SP(Action.OPEN_TAB) {

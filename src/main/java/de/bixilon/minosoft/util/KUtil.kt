@@ -51,6 +51,8 @@ import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
+import de.bixilon.minosoft.protocol.packets.registry.DefaultPackets
+import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -283,6 +285,8 @@ object KUtil {
         DefaultThreadPool += { NettyClient::class.java.forceInit() }
         DefaultThreadPool += { SimpleChannelInboundHandler::class.java.forceInit() }
         DefaultThreadPool += { SSLContext.getDefault() }
+        DefaultThreadPool += { DefaultPackets::class.java.forceInit() }
+        DefaultThreadPool += { DefaultPacketMapping::class.java.forceInit() }
         DefaultThreadPool += { GLM::class.java.forceInit() } // whole glm
     }
 

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.entities.entities.decoration.Painting
 import de.bixilon.minosoft.data.registries.Motif
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -29,7 +28,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-@LoadPacket(threadSafe = false)
 class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val entityId: Int = buffer.readVarInt()
     private var entityUUID: UUID? = if (buffer.versionId >= ProtocolVersions.V_16W02A) {

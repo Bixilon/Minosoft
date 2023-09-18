@@ -13,27 +13,32 @@
 
 package de.bixilon.minosoft.protocol.versions
 
-import de.bixilon.kutil.collections.map.bi.AbstractBiMap
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.RegistriesLoader
-import de.bixilon.minosoft.protocol.packets.factory.C2SPacketType
-import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.packets.registry.PacketMapping
+import de.bixilon.minosoft.protocol.protocol.PacketDirections
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W34A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W38A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W02A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_RC2
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W17A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W17A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W43A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W12A
 
 class Version(
     val name: String,
     val versionId: Int,
     val protocolId: Int,
     val type: VersionTypes,
-    val s2cPackets: Map<ProtocolStates, AbstractBiMap<S2CPacketType, Int>>,
-    val c2sPackets: Map<ProtocolStates, AbstractBiMap<C2SPacketType, Int>>,
+    val s2c: PacketMapping,
+    val c2s: PacketMapping,
 ) {
-    val sortingId: Int = (versionId == -1).decide(Int.MAX_VALUE, versionId)
+    val sortingId: Int = if (versionId == -1) Int.MAX_VALUE else versionId
 
 
     fun load(profile: ResourcesProfile, latch: AbstractLatch): Registries {
@@ -48,14 +53,19 @@ class Version(
         return this.versionId.compareTo(versionId)
     }
 
-    val flattened: Boolean get() = versionId >= ProtocolVersions.V_17W47A
+    operator fun get(directions: PacketDirections) = when (directions) {
+        PacketDirections.CLIENT_TO_SERVER -> c2s
+        PacketDirections.SERVER_TO_CLIENT -> s2c
+    }
+
+    val flattened: Boolean get() = versionId >= V_17W47A
     val hasOffhand: Boolean get() = versionId >= V_15W31A
-    val maxPacketLength get() = if (versionId < ProtocolVersions.V_1_17_1_RC2) 1 shl 21 else 1 shl 23
-    val maxChatMessageSize get() = if (versionId < ProtocolVersions.V_16W38A) 100 else 256
-    val hasAttackCooldown get() = versionId >= ProtocolVersions.V_15W34A
-    val requiresSignedChat get() = versionId >= ProtocolVersions.V_22W17A
-    val requiresSignedLogin get() = requiresSignedChat && versionId < ProtocolVersions.V_22W43A
-    val supportsRGBChat get() = versionId >= ProtocolVersions.V_20W17A
-    val jsonLanguage get() = versionId >= ProtocolVersions.V_18W02A
-    val doubleSigns get() = versionId >= ProtocolVersions.V_23W12A
+    val maxPacketLength get() = if (versionId < V_1_17_1_RC2) 1 shl 21 else 1 shl 23
+    val maxChatMessageSize get() = if (versionId < V_16W38A) 100 else 256
+    val hasAttackCooldown get() = versionId >= V_15W34A
+    val requiresSignedChat get() = versionId >= V_22W17A
+    val requiresSignedLogin get() = requiresSignedChat && versionId < V_22W43A
+    val supportsRGBChat get() = versionId >= V_20W17A
+    val jsonLanguage get() = versionId >= V_18W02A
+    val doubleSigns get() = versionId >= V_23W12A
 }

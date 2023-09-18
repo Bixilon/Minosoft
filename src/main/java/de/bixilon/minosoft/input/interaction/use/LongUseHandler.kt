@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.item.handler.item.LongItemUseHandler
 import de.bixilon.minosoft.data.registries.item.handler.item.LongUseResults
 import de.bixilon.minosoft.physics.ItemUsing
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
 
 class LongUseHandler(
     private val interactionHandler: UseHandler,

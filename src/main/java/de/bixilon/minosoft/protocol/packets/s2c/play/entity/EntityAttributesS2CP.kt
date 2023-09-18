@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.registries.effects.attributes.container.Attribut
 import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeModifier
 import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W08A
@@ -31,7 +30,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-@LoadPacket(threadSafe = false)
 class EntityAttributesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     val attributes: Map<AttributeType, AttributeContainerUpdate>

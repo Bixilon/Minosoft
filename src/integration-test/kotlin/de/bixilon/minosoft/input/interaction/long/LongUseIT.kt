@@ -28,11 +28,11 @@ import de.bixilon.minosoft.input.interaction.InteractionTestUtil.unsafeRelease
 import de.bixilon.minosoft.physics.ItemUsing
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
-import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.HotbarSlotC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
 import de.bixilon.minosoft.test.ITUtil.todo
 import org.testng.Assert.*
 import org.testng.annotations.Test

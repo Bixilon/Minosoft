@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.map
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.world.map.MapPin
 import de.bixilon.minosoft.data.world.map.MapPinTypes
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W34A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W19A
@@ -28,7 +27,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
 class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val id = buffer.readVarInt()
     val scale = buffer.readUnsignedByte()

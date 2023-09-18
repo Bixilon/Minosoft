@@ -26,7 +26,7 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketHandleException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.WrongConnectionException
-import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
+import de.bixilon.minosoft.protocol.packets.registry.PacketType
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
@@ -48,18 +48,23 @@ class ClientPacketHandler(
         }
     }
 
-    private fun tryHandle(context: ChannelHandlerContext, type: S2CPacketType, packet: S2CPacket) {
+    private fun handleError(context: ChannelHandlerContext, type: PacketType, error: Throwable) {
+        if (type.extra != null) {
+            type.extra.onError(error, connection)
+        }
+        context.fireExceptionCaught(error)
+    }
+
+    private fun tryHandle(context: ChannelHandlerContext, type: PacketType, packet: S2CPacket) {
         if (!client.connected) {
             return
         }
         try {
             handle(packet)
         } catch (exception: NetworkException) {
-            type.onError(exception, connection)
-            context.fireExceptionCaught(exception)
+            handleError(context, type, exception)
         } catch (error: Throwable) {
-            type.onError(error, connection)
-            context.fireExceptionCaught(PacketHandleException(error))
+            handleError(context, type, PacketHandleException(error))
         }
     }
 

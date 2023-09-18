@@ -24,12 +24,9 @@ import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
-import de.bixilon.minosoft.protocol.PacketErrorHandler
-import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.channel.vanila.BrandHandler.sendBrand
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
@@ -38,7 +35,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(threadSafe = false)
 class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int
     val isHardcore: Boolean
@@ -188,6 +184,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Initialize (entityId=$entityId, gamemode=$gamemode, dimension=$dimension, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
     }
 
+    /*
     companion object : PacketErrorHandler {
 
         override fun onError(error: Throwable, connection: Connection) {
@@ -195,4 +192,6 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             connection.network.disconnect()
         }
     }
+
+     */
 }

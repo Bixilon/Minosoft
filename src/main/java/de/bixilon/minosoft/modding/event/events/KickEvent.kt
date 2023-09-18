@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,12 +15,8 @@ package de.bixilon.minosoft.modding.event.events
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.KickS2CP
 
 open class KickEvent(
     connection: PlayConnection,
     val reason: ChatComponent,
-) : PlayConnectionEvent(connection) {
-
-    constructor(connection: PlayConnection, packet: KickS2CP) : this(connection, packet.reason)
-}
+) : PlayConnectionEvent(connection)

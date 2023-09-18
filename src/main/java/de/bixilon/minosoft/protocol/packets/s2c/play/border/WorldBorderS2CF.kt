@@ -15,18 +15,14 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.border
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
-import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
+import de.bixilon.minosoft.protocol.packets.registry.factory.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-@LoadPacket
 object WorldBorderS2CF : PlayPacketFactory {
-    override val direction = PacketDirection.SERVER_TO_CLIENT
 
     // this function was signed by Maximilian Rosenmüller
     // and that means A LOT!
-    override fun createPacket(buffer: PlayInByteBuffer): WorldBorderS2CP {
+    override fun create(buffer: PlayInByteBuffer): WorldBorderS2CP {
         return when (WorldBorderActions[buffer.readVarInt()]) {
             WorldBorderActions.SET_SIZE -> SizeWorldBorderS2CP(buffer)
             WorldBorderActions.INTERPOLATE_SIZE -> InterpolateWorldBorderS2CP(buffer)
