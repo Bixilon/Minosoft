@@ -126,6 +126,12 @@ when (os) {
                 zstdNatives += "-x86"
                 javafxNatives += "-x86"
             }
+            /*
+            Architectures.ARM -> {
+                lwjglNatives += "-arm64"
+                zstdNatives += "-amd64" // TODO: Windows on arm is not yet supported: https://github.com/luben/zstd-jni/issues/277
+            }
+             */
 
             else -> throw IllegalArgumentException("Can not determinate windows natives on $architecture")
         }
