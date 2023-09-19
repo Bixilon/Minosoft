@@ -13,8 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ "ubuntu-latest", "windows-latest", "macos-latest" ]
-    runs-on: ${{ matrix.os }}
+        os: [ "ubuntu", "windows", "macos" ]
+    runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
@@ -44,16 +44,28 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: assemble
+
       - name: Test
         uses: gradle/gradle-build-action@v2
         with:
           arguments: check
-      - name: Package
+
+      - name: Package amd64
         uses: gradle/gradle-build-action@v2
         with:
           arguments: fatJar
-      - name: Upload build
+      - name: Upload amd64 build
         uses: actions/upload-artifact@v3
         with:
-          name: 'minosoft-${{ matrix.os }}'
-          path: build/libs/minosoft-fat-*.jar
+          name: 'minosoft-${{ matrix.os }}-amd64'
+          path: build/libs/minosoft-fat-*-amd64-*.jar
+
+      - name: Package aarch64
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: fatJar -Parchitecture=aarch64
+      - name: Upload aarch64 build
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'minosoft-${{ matrix.os }}-aarch64'
+          path: build/libs/minosoft-fat-*-aarch64-*.jar
