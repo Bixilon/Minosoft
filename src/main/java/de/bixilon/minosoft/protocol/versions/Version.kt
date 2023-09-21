@@ -29,6 +29,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W17A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W17A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W43A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W12A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
 
 class Version(
     val name: String,
@@ -68,4 +69,5 @@ class Version(
     val supportsRGBChat get() = versionId >= V_20W17A
     val jsonLanguage get() = versionId >= V_18W02A
     val doubleSigns get() = versionId >= V_23W12A
+    val hasConfigurationState get() = versionId >= V_23W31A
 }

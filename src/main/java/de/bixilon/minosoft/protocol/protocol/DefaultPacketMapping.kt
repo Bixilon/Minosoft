@@ -14,13 +14,14 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.ChannelC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.ConfigureC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.PingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
 import de.bixilon.minosoft.protocol.packets.registry.PacketMapping
-import de.bixilon.minosoft.protocol.packets.s2c.general.CompressionS2CP
-import de.bixilon.minosoft.protocol.packets.s2c.general.KickS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.common.CompressionS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.common.KickS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.login.ChannelS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.login.EncryptionS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.login.SuccessS2CP
@@ -37,6 +38,7 @@ object DefaultPacketMapping {
         register(ProtocolStates.LOGIN, StartC2SP::class, 0x00)
         register(ProtocolStates.LOGIN, EncryptionC2SP::class, 0x01)
         register(ProtocolStates.LOGIN, ChannelC2SP::class, 0x02)
+        register(ProtocolStates.LOGIN, ConfigureC2SP::class, 0x03)
     }
     val S2C_PACKET_MAPPING = PacketMapping(PacketDirections.SERVER_TO_CLIENT).apply {
         register(ProtocolStates.STATUS, StatusS2CP::class, 0x00)

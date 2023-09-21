@@ -76,7 +76,7 @@ class StatusConnection(
         network::state.observe(this) {
             when (it) {
                 ProtocolStates.HANDSHAKE -> {}
-                ProtocolStates.PLAY, ProtocolStates.LOGIN -> throw IllegalStateException("Invalid state!")
+                ProtocolStates.PLAY, ProtocolStates.LOGIN, ProtocolStates.CONFIGURATION -> throw IllegalStateException("Invalid state!")
                 ProtocolStates.STATUS -> {
                     state = StatusConnectionStates.QUERYING_STATUS
                     network.send(StatusRequestC2SP())

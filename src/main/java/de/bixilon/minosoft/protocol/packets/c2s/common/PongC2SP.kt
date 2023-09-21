@@ -10,24 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.general
 
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+package de.bixilon.minosoft.protocol.packets.c2s.common
+
+import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class CompressionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val threshold: Int = buffer.readVarInt()
+class PongC2SP(val payload: Int) : PlayC2SPacket {
 
-
-    override fun handle(connection: PlayConnection) {
-        connection.network.compressionThreshold = threshold
+    override fun write(buffer: PlayOutByteBuffer) {
+        buffer.writeInt(payload)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Compression (threshold=$threshold)" }
+        if (reducedLog) {
+            return
+        }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Pong (payload=$payload)" }
     }
 }

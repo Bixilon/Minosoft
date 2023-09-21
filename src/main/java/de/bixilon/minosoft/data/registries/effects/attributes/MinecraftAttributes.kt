@@ -27,6 +27,7 @@ object MinecraftAttributes : MinecraftDefaults<AttributeType>() {
     val ARMOR = AttributeType(minecraft("generic.armor"), 0.0, 0.0, 30.0).register()
     val ARMOR_TOUGHNESS = AttributeType(minecraft("generic.armor_toughness"), 0.0, 0.0, 20.0).register()
     val LUCK = AttributeType(minecraft("generic.luck"), 0.0, -1024.0, 1024.0).register()
+    val MAX_ABSORPTION = AttributeType(minecraft("generic.max_absorption"), 0.0, 0.0, 2048.0).register()
     val ZOMBIE_SPAWN_REINFORCEMENTS = AttributeType(minecraft("zombie.spawn_reinforcements"), 0.0, 0.0, 1.0).register()
     val HORSE_JUMP_STRENGTH = AttributeType(minecraft("horse.jump_strength"), 0.7, 0.0, 2.0).register()
 }

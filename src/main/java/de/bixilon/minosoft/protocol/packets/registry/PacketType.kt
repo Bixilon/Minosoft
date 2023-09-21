@@ -42,4 +42,8 @@ class PacketType(
 
         return packet
     }
+
+    override fun toString(): String {
+        return "(name=$name, factory=$factory)"
+    }
 }

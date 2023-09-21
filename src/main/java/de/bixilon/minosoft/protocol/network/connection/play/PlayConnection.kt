@@ -170,6 +170,8 @@ class PlayConnection(
                         Log.log(LogMessageType.CHAT_IN, level = if (it.message.type.position == ChatTextPositions.HOTBAR) LogLevels.VERBOSE else LogLevels.INFO, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message.text }
                     })
                 }
+
+                ProtocolStates.CONFIGURATION -> Unit
             }
         }
         ticker.init()
@@ -261,6 +263,7 @@ class PlayConnection(
     }
 
     companion object {
+        // TODO: heavy memory leak
         val ACTIVE_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
         val ERRORED_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
 

@@ -10,30 +10,35 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play.world
+package de.bixilon.minosoft.protocol.packets.c2s.common
 
-import de.bixilon.minosoft.config.DebugOptions
-import de.bixilon.minosoft.data.world.time.WorldTime
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class TimeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val age = buffer.readLong()
-    val time = buffer.readLong()
+class ResourcepackC2SP(
+    val hash: String,
+    val status: ResourcePackStates,
+) : PlayC2SPacket {
 
-    override fun handle(connection: PlayConnection) {
-        if (DebugOptions.SIMULATE_TIME) {
-            return
+    override fun write(buffer: PlayOutByteBuffer) {
+        if (buffer.versionId < ProtocolVersions.V_1_10_PRE1) {
+            buffer.writeString(hash)
         }
-        connection.world.time = WorldTime(time = (time % ProtocolDefinition.TICKS_PER_DAY).toInt(), age = age)
+        buffer.writeVarInt(status.ordinal)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Time (time=$time, age=$age)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Resourcepack (hash=$hash, status=$status)" }
+    }
+
+    enum class ResourcePackStates {
+        SUCCESSFULLY,
+        DECLINED,
+        FAILED_DOWNLOAD,
+        ACCEPTED,
     }
 }

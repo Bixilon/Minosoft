@@ -10,12 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.general
+package de.bixilon.minosoft.protocol.packets.s2c.configuration
 
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.KickEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.packets.c2s.configuration.ReadyC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -23,25 +21,18 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val reason: ChatComponent = buffer.readChatComponent()
+
+class ReadyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
-        if (!connection.network.connected) {
-            return // already disconnected, maybe timed out?
-        }
-        connection.events.fire(KickEvent(connection, reason))
-        // got kicked
-        connection.network.disconnect()
-        if (connection.network.state == ProtocolStates.LOGIN) {
-            connection.state = PlayConnectionStates.ERROR
-        } else {
-            connection.state = PlayConnectionStates.KICKED
-        }
-        Log.log(LogMessageType.NETWORK, LogLevels.WARN) { "Kicked from ${connection.address}: $reason" }
+        connection.network.receive = false
+        connection.util.prepareSpawn()
+        connection.sendPacket(ReadyC2SP())
+        connection.network.state = ProtocolStates.PLAY
+        connection.network.receive = true
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Login kick (reason=$reason)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Ready" }
     }
 }

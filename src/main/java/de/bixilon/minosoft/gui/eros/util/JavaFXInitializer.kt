@@ -73,7 +73,7 @@ class JavaFXInitializer internal constructor() : Application() {
             Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initializing JavaFX Toolkit..." }
             Thread({ launch(JavaFXInitializer::class.java) }, "JavaFX Toolkit Initializing Thread").start()
             LATCH.dec()
-            await()
+            catchAll { await() }
         }
 
         fun await() {

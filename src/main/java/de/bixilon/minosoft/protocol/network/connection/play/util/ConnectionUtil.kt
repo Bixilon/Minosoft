@@ -44,6 +44,7 @@ class ConnectionUtil(
     private val connection: PlayConnection,
 ) {
     val signer = MessageSigner.forVersion(connection.version, connection)
+    val chunkReceiver = ChunkReceiver(connection)
     private val random = SecureRandom()
 
     fun sendDebugMessage(raw: Any) {
@@ -147,6 +148,7 @@ class ConnectionUtil(
     }
 
     fun resetWorld() {
+        chunkReceiver.reset()
         connection.world.entities.clear(connection)
         connection.world.clear()
     }

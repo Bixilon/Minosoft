@@ -10,18 +10,28 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play
 
+package de.bixilon.minosoft.protocol.packets.s2c.common
+
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.common.PongC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class FeaturesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val features = buffer.readArray { buffer.readResourceLocation() }.toSet()
+class PingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val payload = buffer.readInt()
+
+    override fun handle(connection: PlayConnection) {
+        connection.sendPacket(PongC2SP(payload))
+    }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Features (features=$features)" }
+        if (reducedLog) {
+            return
+        }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Ping (payload=$payload)" }
     }
 }

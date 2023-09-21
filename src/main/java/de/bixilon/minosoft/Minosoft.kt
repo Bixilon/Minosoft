@@ -42,6 +42,7 @@ import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.Eros
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
@@ -92,7 +93,7 @@ object Minosoft {
         }
         MinosoftPropertiesLoader.load()
 
-        val taskWorker = TaskWorker(errorHandler = { _, error -> error.crash() })
+        val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() })
 
         taskWorker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.HIGH, executor = CLI::startThread)
 
@@ -108,8 +109,7 @@ object Minosoft {
         taskWorker += WorkerTask(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
 
         if (!RunConfiguration.DISABLE_EROS) {
-            async(ThreadPool.HIGHER) { javafx.scene.text.Font.getDefault() }
-            taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start() })
+            taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.HIGHER) { javafx.scene.text.Font.getDefault() } })
 
             taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(BOOT_LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
 
@@ -129,6 +129,7 @@ object Minosoft {
 
         BOOT_LATCH.dec() // remove initial count
         BOOT_LATCH.await()
+        if (ErosCrashReport.alreadyCrashed) return
         val end = nanos()
         Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
         GlobalEventMaster.fire(FinishBootEvent())

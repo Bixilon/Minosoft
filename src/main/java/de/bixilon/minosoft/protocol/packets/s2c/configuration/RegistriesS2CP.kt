@@ -10,34 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play
 
+package de.bixilon.minosoft.protocol.packets.s2c.configuration
+
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.HeartbeatC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-
-class HeartbeatS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    var id: Long = when {
-        buffer.versionId < ProtocolVersions.V_14W31A -> {
-            buffer.readInt().toLong()
-        }
-        buffer.versionId < ProtocolVersions.V_1_12_2_PRE2 -> {
-            buffer.readVarInt().toLong()
-        }
-        else -> buffer.readLong()
-    }
+class RegistriesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val registries = buffer.readNBT().nullCast<JsonObject>()
 
     override fun handle(connection: PlayConnection) {
-        connection.sendPacket(HeartbeatC2SP(id))
+        registries?.let { connection.registries.update(it) }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Heartbeat (id=$id)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Registries (size=${registries?.size})" }
     }
 }

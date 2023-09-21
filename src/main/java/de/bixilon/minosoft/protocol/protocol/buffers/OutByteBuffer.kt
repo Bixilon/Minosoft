@@ -49,7 +49,7 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
         writeByte(type.ordinal)
     }
 
-    fun writeNBT(nbt: Any?, compressed: Boolean = false) {
+    fun writeNBT(nbt: Any?, compressed: Boolean, named: Boolean) {
         if (compressed) {
             TODO("Can not write compressed NBT yet!")
         }
@@ -58,7 +58,9 @@ open class OutByteBuffer : de.bixilon.kutil.buffer.bytes.out.OutByteBuffer {
                 return writeNBTTag(null)
             }
             writeNBTTagType(NBTTagTypes.COMPOUND)
-            writeShort(0) // Length of compound tag name
+            if (named) {
+                writeShort(0) // Length of compound tag name
+            }
             writeNBTTag(nbt, false)
             return
         }

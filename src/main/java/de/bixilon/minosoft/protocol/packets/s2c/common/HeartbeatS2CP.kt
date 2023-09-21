@@ -10,10 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play
+package de.bixilon.minosoft.protocol.packets.s2c.common
 
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.common.HeartbeatC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -21,25 +21,23 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ChannelS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val channel: ResourceLocation = buffer.readResourceLocation()
 
-    init {
-        // "read" length prefix
-        if (buffer.versionId < ProtocolVersions.V_14W29A) {
-            buffer.readShort()
-        } else if (buffer.versionId < ProtocolVersions.V_14W31A) {
-            buffer.readVarInt()
+class HeartbeatS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    var id: Long = when {
+        buffer.versionId < ProtocolVersions.V_14W31A -> {
+            buffer.readInt().toLong()
         }
+        buffer.versionId < ProtocolVersions.V_1_12_2_PRE2 -> {
+            buffer.readVarInt().toLong()
+        }
+        else -> buffer.readLong()
     }
 
-    val data = buffer.readRest()
-
     override fun handle(connection: PlayConnection) {
-        connection.channels.play.handle(channel, data)
+        connection.sendPacket(HeartbeatC2SP(id))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Channel (channel=$channel, size=${data.size})" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Heartbeat (id=$id)" }
     }
 }

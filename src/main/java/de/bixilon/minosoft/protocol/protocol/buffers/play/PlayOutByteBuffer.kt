@@ -22,6 +22,7 @@ import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import java.time.Instant
 import java.util.*
@@ -79,7 +80,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     }
 
     fun writeNBT(nbt: Any?) {
-        return writeNBT(nbt, versionId < ProtocolVersions.V_14W28B)
+        return writeNBT(nbt, versionId < ProtocolVersions.V_14W28B, versionId < V_23W31A)
     }
 
     fun writePublicKey(key: PlayerPublicKey) {

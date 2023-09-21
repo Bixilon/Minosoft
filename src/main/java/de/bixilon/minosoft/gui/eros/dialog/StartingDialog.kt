@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.DialogController
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -36,6 +37,7 @@ class StartingDialog(
     @FXML private lateinit var exitButtonFX: Button
 
     public override fun show() {
+        if (ErosCrashReport.alreadyCrashed) return
         JavaFXUtil.openModalAsync(TITLE, LAYOUT, this) {
             if (latch.count == 0 || closing) {
                 return@openModalAsync

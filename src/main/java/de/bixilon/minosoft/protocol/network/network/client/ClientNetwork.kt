@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,9 +20,11 @@ import javax.crypto.Cipher
 
 interface ClientNetwork {
     val connected: Boolean
-    var state: ProtocolStates
-    var compressionThreshold: Int
     val encrypted: Boolean
+
+    var state: ProtocolStates
+    var receive: Boolean
+    var compressionThreshold: Int
 
     fun connect(address: ServerAddress, native: Boolean)
     fun disconnect()
@@ -30,7 +32,6 @@ interface ClientNetwork {
     fun setupEncryption(encrypt: Cipher, decrypt: Cipher)
 
     fun pauseSending(pause: Boolean)
-    fun pauseReceiving(pause: Boolean)
 
     fun send(packet: C2SPacket)
 }

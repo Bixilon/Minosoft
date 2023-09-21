@@ -247,6 +247,7 @@ class Registries(
     }
 
     fun update(registries: JsonObject) {
+        // TODO: Clear them first?
         for ((key, value) in registries) {
             val fixedKey = key.toResourceLocation().fix()
             val registry = this[fixedKey]

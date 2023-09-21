@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -42,7 +43,11 @@ class StartC2SP(
             }
         }
         if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE2) {
-            buffer.writeOptional(profileUUID) { buffer.writeUUID(it) }
+            if (buffer.versionId >= V_23W31A) {
+                buffer.writeUUID(profileUUID!!)
+            } else {
+                buffer.writeOptional(profileUUID) { buffer.writeUUID(it) }
+            }
         }
     }
 

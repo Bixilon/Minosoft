@@ -20,6 +20,7 @@ enum class ProtocolStates {
     STATUS,
     LOGIN,
     PLAY,
+    CONFIGURATION,
     ;
 
     companion object : ValuesEnum<ProtocolStates> {

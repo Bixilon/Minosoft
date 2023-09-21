@@ -45,6 +45,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.recipes.Ingredient
@@ -134,7 +135,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readNBT(): Any? {
-        return readNBTTag(versionId < V_14W28B)
+        return readNBTTag(versionId < V_14W28B, versionId < V_23W31A)
     }
 
     fun readItemStack(): ItemStack? {
@@ -148,7 +149,7 @@ class PlayInByteBuffer : InByteBuffer {
             if (!connection.version.flattened) {
                 metaData = readUnsignedShort()
             }
-            val nbt = readNBTTag(versionId < V_14W28B)?.toMutableJsonObject()
+            val nbt = readNBT()?.toMutableJsonObject()
             return ItemStackUtil.of(
                 item = connection.registries.item[id shl 16 or metaData],
                 connection = connection,

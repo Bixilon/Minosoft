@@ -12,33 +12,21 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play
 
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ChannelC2SP(
-    val channel: ResourceLocation,
-    val data: ByteArray,
+class NextChunkBatchC2SP(
+    val size: Float,
 ) : PlayC2SPacket {
 
-    constructor(channel: ResourceLocation, buffer: OutByteBuffer) : this(channel, buffer.toArray())
-
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeLegacyResourceLocation(channel)
-        if (buffer.versionId < ProtocolVersions.V_14W29A) {
-            buffer.writeShort(data.size)
-        } else if (buffer.versionId < ProtocolVersions.V_14W31A) {
-            buffer.writeVarInt(data.size)
-        }
-        buffer.writeByteArray(data)
+        buffer.writeFloat(size)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Channel (channel=$channel, data=${data.contentToString()})" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Next chunk batch (size=$size)" }
     }
 }

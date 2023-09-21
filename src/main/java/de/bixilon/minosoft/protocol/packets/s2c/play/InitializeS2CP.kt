@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kutil.bit.BitByte.isBit
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -30,6 +31,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.channel.vanila.Brand
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -38,7 +40,8 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int
     val isHardcore: Boolean
-    val gamemode: Gamemodes
+    var gamemode: Gamemodes = unsafeNull()
+        private set
     var world: ResourceLocation? = null
         private set
     var dimension: DimensionProperties? = null
@@ -74,7 +77,9 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             gamemode = Gamemodes[(gamemodeRaw and (0x8.inv()))]
         } else {
             isHardcore = buffer.readBoolean()
-            gamemode = Gamemodes[buffer.readUnsignedByte()]
+            if (buffer.versionId < V_23W31A) {
+                gamemode = Gamemodes[buffer.readUnsignedByte()]
+            }
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
@@ -88,7 +93,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 reducedDebugScreen = buffer.readBoolean()
             }
         } else {
-            if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6) {
+            if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6 && buffer.versionId < V_23W31A) {
                 buffer.readByte() // previous game mode
             }
             if (buffer.versionId >= ProtocolVersions.V_20W22A) {
@@ -96,7 +101,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
                 dimension = buffer.connection.registries.dimension[buffer.readInt()].properties
-            } else {
+            } else if (buffer.versionId < V_23W31A) {
                 registries = buffer.readNBT().asJsonObject()
                 if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A) {
                     dimensionName = buffer.readResourceLocation() // dimension type
@@ -106,7 +111,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 this.world = buffer.readResourceLocation()
             }
 
-            if (buffer.versionId >= ProtocolVersions.V_19W36A) {
+            if (buffer.versionId >= ProtocolVersions.V_19W36A && buffer.versionId < V_23W31A) {
                 hashedSeed = buffer.readLong()
             }
             if (buffer.versionId < ProtocolVersions.V_19W11A) {
@@ -126,13 +131,22 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId >= ProtocolVersions.V_21W40A) {
                 simulationDistance = buffer.readVarInt()
             }
-            if (buffer.versionId >= ProtocolVersions.V_20W20A) {
+            if (buffer.versionId >= ProtocolVersions.V_20W20A && buffer.versionId < V_23W31A) {
                 buffer.readBoolean() // isDebug
                 buffer.readBoolean() // flat
             }
             reducedDebugScreen = buffer.readBoolean()
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {
                 respawnScreen = buffer.readBoolean()
+            }
+            if (buffer.versionId >= V_23W31A) {
+                dimensionName = buffer.readResourceLocation()
+                buffer.readResourceLocation() // world
+                hashedSeed = buffer.readLong()
+                gamemode = Gamemodes[buffer.readUnsignedByte()]
+                buffer.readByte() // previous gamemode
+                buffer.readBoolean() // isDebug
+                buffer.readBoolean() // isFlat
             }
             if (buffer.versionId >= ProtocolVersions.V_1_19_PRE2) {
                 lastDeathPosition = buffer.readOptional { GlobalPositionEntityDataType.read(buffer) }
@@ -169,7 +183,9 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.world.border.reset()
 
         connection.settingsManager.sendClientSettings()
-        connection.sendBrand()
+        if (!connection.version.hasConfigurationState) {
+            connection.sendBrand()
+        }
 
         if (connection.version >= ProtocolVersions.V_1_19_4) { // TODO: find out version
             connection.util.signer.reset()
@@ -183,15 +199,4 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Initialize (entityId=$entityId, gamemode=$gamemode, dimension=$dimension, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
     }
-
-    /*
-    companion object : PacketErrorHandler {
-
-        override fun onError(error: Throwable, connection: Connection) {
-            connection.error = error
-            connection.network.disconnect()
-        }
-    }
-
-     */
 }

@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -85,7 +86,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readBoolean() // debug
             buffer.readBoolean() // flat
         }
-        if (buffer.versionId >= ProtocolVersions.V_20W18A) {
+        if (buffer.versionId >= ProtocolVersions.V_20W18A && buffer.versionId < V_23W31A) {
             if (buffer.versionId >= ProtocolVersions.V_1_19_3_RC3) {
                 keepFlags = buffer.readByte()
             } else {
@@ -97,6 +98,9 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         if (buffer.versionId >= ProtocolVersions.V_1_20_PRE1) {
             portalCooldown = buffer.readVarInt()
+        }
+        if (buffer.versionId >= V_23W31A) {
+            keepFlags = buffer.readByte()
         }
     }
 

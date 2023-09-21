@@ -10,34 +10,24 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.play
 
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
+package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.batch
+
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class HeartbeatC2SP(
-    val id: Long,
-) : PlayC2SPacket {
+class ChunkBatchDoneS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val size = buffer.readVarInt()
 
-    override fun write(buffer: PlayOutByteBuffer) {
-        when {
-            buffer.versionId < ProtocolVersions.V_14W31A -> {
-                buffer.writeInt(id.toInt())
-            }
-            buffer.versionId < ProtocolVersions.V_1_12_2_PRE2 -> {
-                buffer.writeVarInt(id.toInt())
-            }
-            else -> {
-                buffer.writeLong(id)
-            }
-        }
+    override fun handle(connection: PlayConnection) {
+        connection.util.chunkReceiver.onBatchDone(size)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Heartbeat (id=$id)" }
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Chunk batch done (size=$size)" }
     }
 }

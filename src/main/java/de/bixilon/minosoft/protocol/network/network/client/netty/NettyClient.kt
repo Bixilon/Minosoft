@@ -84,6 +84,11 @@ class NettyClient(
     private var channel: Channel? = null
     private val packetQueue: MutableList<C2SPacket> = mutableListOf() // Used for pause sending
     private var sendingPaused = false
+    override var receive = true
+        set(value) {
+            channel?.config()?.isAutoRead = value
+            field = value
+        }
 
     override fun connect(address: ServerAddress, native: Boolean) {
         state = ProtocolStates.HANDSHAKE
@@ -130,11 +135,6 @@ class NettyClient(
         }
     }
 
-    override fun pauseReceiving(pause: Boolean) {
-        val channel = requireChannel()
-        channel.config()?.isAutoRead = !pause
-    }
-
     override fun send(packet: C2SPacket) {
         val channel = getChannel() ?: return
         if (sendingPaused) {
@@ -154,6 +154,7 @@ class NettyClient(
             context.channel().config().setOption(ChannelOption.TCP_NODELAY, true)
         } catch (_: Throwable) {
         }
+        context.channel().config().isAutoRead = this.receive
         this.channel = context.channel()
         connected = true
     }

@@ -10,35 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.play
+package de.bixilon.minosoft.protocol.packets.c2s.configuration
 
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ResourcepackC2SP(
-    val hash: String,
-    val status: ResourcePackStates,
-) : PlayC2SPacket {
+class ReadyC2SP : PlayC2SPacket {
 
-    override fun write(buffer: PlayOutByteBuffer) {
-        if (buffer.versionId < ProtocolVersions.V_1_10_PRE1) {
-            buffer.writeString(hash)
-        }
-        buffer.writeVarInt(status.ordinal)
-    }
+    override fun write(buffer: PlayOutByteBuffer) = Unit
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Resourcepack (hash=$hash, status=$status)" }
-    }
-
-    enum class ResourcePackStates {
-        SUCCESSFULLY,
-        DECLINED,
-        FAILED_DOWNLOAD,
-        ACCEPTED,
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Ready" }
     }
 }

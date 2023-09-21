@@ -13,8 +13,13 @@
 
 package de.bixilon.minosoft.protocol.packets.registry
 
+import de.bixilon.minosoft.protocol.packets.c2s.common.HeartbeatC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.common.PongC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.common.ResourcepackC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.configuration.ReadyC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.ChannelC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.ConfigureC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
@@ -50,8 +55,9 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.recipe.book.DisplayRecipeC2
 import de.bixilon.minosoft.protocol.packets.c2s.play.recipe.book.RecipeBookStatesC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.PingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.general.CompressionS2CP
-import de.bixilon.minosoft.protocol.packets.s2c.general.KickS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.common.*
+import de.bixilon.minosoft.protocol.packets.s2c.configuration.ReadyS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.configuration.RegistriesS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.login.ChannelS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.login.EncryptionS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.login.SuccessS2CP
@@ -60,6 +66,8 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.advancement.AdvancementTabS
 import de.bixilon.minosoft.protocol.packets.s2c.play.advancement.AdvancementsS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.*
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.batch.ChunkBatchDoneS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.batch.ChunkBatchStartS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.border.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.bossbar.BossbarS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.chat.*
@@ -117,9 +125,24 @@ object DefaultPackets {
         ProtocolStates.LOGIN to PacketRegistry(threadSafe = false, extra = PacketExtraHandler.Disconnect).apply {
             register("channel", ChannelC2SP::class)
             register("encryption", EncryptionC2SP::class)
+            register("enter_configuration", ConfigureC2SP::class)
             register("start", StartC2SP::class)
+            register("configure", ConfigureC2SP::class)
+        },
+        ProtocolStates.CONFIGURATION to PacketRegistry(threadSafe = false, extra = PacketExtraHandler.Disconnect).apply {
+            register("channel", de.bixilon.minosoft.protocol.packets.c2s.common.ChannelC2SP::class)
+            register("heartbeat", HeartbeatC2SP::class)
+            register("pong", PongC2SP::class)
+            register("resourcepack", ResourcepackC2SP::class)
+
+            register("ready", ReadyC2SP::class)
         },
         ProtocolStates.PLAY to PacketRegistry(threadSafe = true).apply {
+            register("channel", de.bixilon.minosoft.protocol.packets.c2s.common.ChannelC2SP::class, threadSafe = false)
+            register("heartbeat", HeartbeatC2SP::class)
+            register("pong", PongC2SP::class)
+            register("resourcepack", ResourcepackC2SP::class)
+
             register("advancement_tab", AdvancementCloseTabC2SP::class)
             register("advancement_tab", AdvancementOpenTabC2SP::class)
 
@@ -186,10 +209,8 @@ object DefaultPackets {
             register("displayed_recipe", DisplayedRecipeC2SP::class)
             register("recipe_book", RecipeBookC2SP::class)
 
-            register("channel", de.bixilon.minosoft.protocol.packets.c2s.play.ChannelC2SP::class, threadSafe = false)
-            register("heartbeat", HeartbeatC2SP::class)
-            register("pong", PongC2SP::class)
-            register("resourcepack", ResourcepackC2SP::class)
+            register("next_chunk_batch", NextChunkBatchC2SP::class)
+            register("reconfigure", ReconfigureC2SP::class)
             register("session_data", SessionDataC2SP::class)
             register("settings", SettingsC2SP::class)
             register("trade", TradeC2SP::class)
@@ -208,7 +229,29 @@ object DefaultPackets {
             registerPlay("kick", ::KickS2CP, KickS2CP::class)
             registerPlay("success", ::SuccessS2CP, SuccessS2CP::class)
         },
+        ProtocolStates.CONFIGURATION to PacketRegistry(threadSafe = false, extra = PacketExtraHandler.Disconnect).apply {
+            registerPlay("channel", { de.bixilon.minosoft.protocol.packets.s2c.common.ChannelS2CP(it) })
+            registerPlay("compression", ::CompressionS2CP)
+            registerPlay("features", ::FeaturesS2CP)
+            registerPlay("heartbeat", ::HeartbeatS2CP)
+            registerPlay("kick", ::KickS2CP)
+            registerPlay("ping", ::PingS2CP)
+            registerPlay("resourcepack", ::ResourcepackS2CP)
+            registerPlay("tags", ::TagsS2CP)
+
+            registerPlay("ready", ::ReadyS2CP)
+            registerPlay("registries", ::RegistriesS2CP)
+        },
         ProtocolStates.PLAY to PacketRegistry(threadSafe = true).apply {
+            registerPlay("channel", { de.bixilon.minosoft.protocol.packets.s2c.common.ChannelS2CP(it) }, threadSafe = false)
+            registerPlay("compression", ::CompressionS2CP, threadSafe = false)
+            registerPlay("features", ::FeaturesS2CP, threadSafe = false)
+            registerPlay("heartbeat", ::HeartbeatS2CP)
+            registerPlay("kick", ::KickS2CP, threadSafe = false)
+            registerPlay("ping", ::PingS2CP)
+            registerPlay("resourcepack", ::ResourcepackS2CP)
+            registerPlay("tags", ::TagsS2CP, threadSafe = false)
+
             registerPlay("advancements", ::AdvancementsS2CP, threadSafe = false)
             registerPlay("advancement_tab", ::AdvancementTabS2CP, threadSafe = false)
 
@@ -220,6 +263,8 @@ object DefaultPackets {
             registerPlay("blocks", ::BlocksS2CP, threadSafe = false)
             registerPlay("legacy_block_break", ::LegacyBlockBreakS2CP, threadSafe = false)
 
+            registerPlay("chunk_batch_done", ::ChunkBatchDoneS2CP, threadSafe = false)
+            registerPlay("chunk_batch_start", ::ChunkBatchStartS2CP, threadSafe = false)
             registerPlay("chunk_biome", ::ChunkBiomeS2CP, lowPriority = true)
             registerPlay("chunk_center", ::ChunkCenterS2CP)
             registerPlay("chunk_light", ::ChunkLightS2CP, lowPriority = true)
@@ -348,21 +393,14 @@ object DefaultPackets {
             registerPlay("world_event", ::WorldEventS2CP)
 
             registerPlay("bundle", ::BundleS2CP, threadSafe = false)
-            registerPlay("channel", { de.bixilon.minosoft.protocol.packets.s2c.play.ChannelS2CP(it) }, threadSafe = false)
-            registerPlay("features", ::FeaturesS2CP, threadSafe = false)
             registerPlay("game_event", ::GameEventS2CP, threadSafe = false)
-            registerPlay("heartbeat", ::HeartbeatS2CP)
-            registerPlay("initialize", ::InitializeS2CP, threadSafe = false)
+            registerPlay("initialize", ::InitializeS2CP, threadSafe = false, extra = PacketExtraHandler.Disconnect)
             registerPlay("nbt_response", ::NbtResponseS2CP)
-            registerPlay("ping", ::PingS2CP)
             registerPlay("play_status", ::PlayStatusS2CP)
-            registerPlay("resourcepack", ::ResourcepackS2CP)
-            registerPlay("respawn", ::RespawnS2CP, threadSafe = false)
+            registerPlay("reconfigure", ::ReconfigureS2CP, threadSafe = false)
+            registerPlay("respawn", ::RespawnS2CP, threadSafe = false, extra = PacketExtraHandler.Disconnect)
             registerPlay("statistics", ::StatisticsS2CP)
-            registerPlay("tags", ::TagsS2CP)
 
-            registerPlay("kick", ::KickS2CP, threadSafe = false)
-            registerPlay("compression", ::CompressionS2CP, threadSafe = false)
         },
     )
 

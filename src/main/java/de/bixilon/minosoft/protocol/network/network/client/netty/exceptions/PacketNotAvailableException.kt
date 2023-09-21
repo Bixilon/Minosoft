@@ -22,5 +22,5 @@ class PacketNotAvailableException(
     val state: ProtocolStates,
     val version: Version?,
 ) : NetworkException() {
-    override val message: String = "name=${type.name}, state=$state, version=$version"
+    override val message: String = "name=$type, state=$state, version=$version"
 }

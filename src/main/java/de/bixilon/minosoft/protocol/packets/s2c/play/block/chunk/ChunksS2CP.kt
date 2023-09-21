@@ -65,6 +65,7 @@ class ChunksS2CP : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         for ((position, prototype) in chunks) {
+            connection.util.chunkReceiver.onChunk()
             if (prototype == null) {
                 // unload chunk
                 connection.world.chunks -= position

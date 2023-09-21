@@ -17,7 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.channel.ChannelManager
-import de.bixilon.minosoft.protocol.packets.c2s.play.ChannelC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.common.ChannelC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer

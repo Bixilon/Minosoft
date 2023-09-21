@@ -10,25 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.batch
 
-package de.bixilon.minosoft.protocol.packets.c2s.play
-
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class PongC2SP(val payload: Int) : PlayC2SPacket {
 
-    override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeInt(payload)
+class ChunkBatchStartS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+
+    override fun handle(connection: PlayConnection) {
+        connection.util.chunkReceiver.onBatchStart()
     }
 
     override fun log(reducedLog: Boolean) {
-        if (reducedLog) {
-            return
-        }
-        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Pong (payload=$payload)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Chunk batch start" }
     }
 }

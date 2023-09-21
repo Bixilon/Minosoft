@@ -185,6 +185,11 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
+        handleChunk(connection)
+        connection.util.chunkReceiver.onChunk()
+    }
+
+    private fun handleChunk(connection: PlayConnection) {
         if (action == ChunkAction.UNLOAD) {
             connection.world.chunks -= position
             return
