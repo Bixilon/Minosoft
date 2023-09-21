@@ -210,6 +210,7 @@ object DefaultPackets {
             register("recipe_book", RecipeBookC2SP::class)
 
             register("next_chunk_batch", NextChunkBatchC2SP::class)
+            register("ping", de.bixilon.minosoft.protocol.packets.c2s.play.PingC2SP::class)
             register("reconfigure", ReconfigureC2SP::class)
             register("session_data", SessionDataC2SP::class)
             register("settings", SettingsC2SP::class)
@@ -397,6 +398,7 @@ object DefaultPackets {
             registerPlay("initialize", ::InitializeS2CP, threadSafe = false, extra = PacketExtraHandler.Disconnect)
             registerPlay("nbt_response", ::NbtResponseS2CP)
             registerPlay("play_status", ::PlayStatusS2CP)
+            registerPlay("pong", { de.bixilon.minosoft.protocol.packets.s2c.play.PongS2CP(it) })
             registerPlay("reconfigure", ::ReconfigureS2CP, threadSafe = false)
             registerPlay("respawn", ::RespawnS2CP, threadSafe = false, extra = PacketExtraHandler.Disconnect)
             registerPlay("statistics", ::StatisticsS2CP)
