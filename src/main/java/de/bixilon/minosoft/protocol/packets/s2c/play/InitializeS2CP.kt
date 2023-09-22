@@ -30,7 +30,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.channel.vanila.BrandHandler.sendBrand
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_2_PRE2
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -140,7 +140,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {
                 respawnScreen = buffer.readBoolean()
             }
-            if (buffer.versionId >= V_1_20_2_PRE2) {
+            if (buffer.versionId >= V_1_20_2_PRE1) {
                 buffer.readBoolean() // limited crafting
             }
             if (buffer.versionId >= V_23W31A) {
@@ -187,7 +187,9 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         connection.world.border.reset()
 
-        connection.settingsManager.sendClientSettings()
+        if (connection.version < V_1_20_2_PRE1) {
+            connection.settingsManager.sendClientSettings()
+        }
         if (!connection.version.hasConfigurationState) {
             connection.sendBrand()
         }

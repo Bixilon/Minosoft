@@ -39,6 +39,7 @@ class SuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             connection.network.state = ProtocolStates.CONFIGURATION
             connection.network.receive = true
             connection.sendBrand()
+            connection.settingsManager.sendClientSettings()
         } else {
             connection.network.state = ProtocolStates.PLAY
         }
