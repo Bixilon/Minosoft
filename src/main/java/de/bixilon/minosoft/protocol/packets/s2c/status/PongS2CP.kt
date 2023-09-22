@@ -15,16 +15,13 @@ package de.bixilon.minosoft.protocol.packets.s2c.status
 import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.status.StatusPong
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(state = ProtocolStates.STATUS)
 class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     val payload: Long = buffer.readLong()
 

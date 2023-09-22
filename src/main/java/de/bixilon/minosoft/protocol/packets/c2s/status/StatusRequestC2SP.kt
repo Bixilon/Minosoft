@@ -13,13 +13,10 @@
 package de.bixilon.minosoft.protocol.packets.c2s.status
 
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(state = ProtocolStates.STATUS)
 class StatusRequestC2SP : C2SPacket {
 
     override fun log(reducedLog: Boolean) {

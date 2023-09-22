@@ -13,14 +13,11 @@
 package de.bixilon.minosoft.protocol.packets.c2s.login
 
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(state = ProtocolStates.LOGIN)
 class ChannelC2SP(
     val messageId: Int,
     val data: ByteArray?,

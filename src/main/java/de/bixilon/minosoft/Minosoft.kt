@@ -14,6 +14,7 @@
 package de.bixilon.minosoft
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
@@ -41,6 +42,7 @@ import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.Eros
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
@@ -50,9 +52,8 @@ import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
-import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
-import de.bixilon.minosoft.protocol.versions.Versions
+import de.bixilon.minosoft.protocol.versions.VersionLoader
 import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -92,12 +93,11 @@ object Minosoft {
         }
         MinosoftPropertiesLoader.load()
 
-        val taskWorker = TaskWorker(errorHandler = { _, error -> error.crash() })
+        val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() })
 
         taskWorker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.HIGH, executor = CLI::startThread)
 
-        taskWorker += WorkerTask(identifier = BootTasks.PACKETS, priority = ThreadPool.HIGH, executor = PacketTypeRegistry::init)
-        taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGH, dependencies = arrayOf(BootTasks.PACKETS), executor = Versions::load)
+        taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGH, executor = VersionLoader::load)
         taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGH, dependencies = arrayOf(BootTasks.VERSIONS), executor = GlobalProfileManager::initialize)
         taskWorker += WorkerTask(identifier = BootTasks.FILE_WATCHER, priority = ThreadPool.HIGH, optional = true, executor = this::startFileWatcherService)
 
@@ -109,8 +109,7 @@ object Minosoft {
         taskWorker += WorkerTask(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
 
         if (!RunConfiguration.DISABLE_EROS) {
-            taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start() })
-            DefaultThreadPool += { javafx.scene.text.Font::class.java.forceInit() }
+            taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.HIGHER) { javafx.scene.text.Font.getDefault() } })
 
             taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(BOOT_LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
 
@@ -130,6 +129,7 @@ object Minosoft {
 
         BOOT_LATCH.dec() // remove initial count
         BOOT_LATCH.await()
+        if (ErosCrashReport.alreadyCrashed) return
         val end = nanos()
         Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
         GlobalEventMaster.fire(FinishBootEvent())

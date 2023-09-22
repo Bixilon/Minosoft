@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chat
 
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -20,7 +19,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(threadSafe = false)
 class HideMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val id = if (buffer.versionId >= ProtocolVersions.V_22W42A) buffer.readVarInt() - 1 else -1
     val signature = if (buffer.versionId < ProtocolVersions.V_22W42A || id >= 0) buffer.readSignatureData() else null

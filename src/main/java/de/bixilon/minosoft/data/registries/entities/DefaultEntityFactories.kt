@@ -48,9 +48,9 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.ChestBoat
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import java.util.*
 
 @SuppressWarnings("deprecation")
 object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
@@ -184,18 +184,13 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     Sniffer,
 ) {
 
-    fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, versionId: Int): Entity? {
-        val factory = this[resourceLocation] ?: throw UnknownEntityException("Can not find entity type: $resourceLocation")
-        return buildEntity(factory, connection, position, rotation, data, versionId)
-    }
-
-    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, versionId: Int): Entity? {
+    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, uuid: UUID?, versionId: Int): Entity? {
         val tweakedResourceLocation = factory.tweak(connection, data, versionId)
 
         val tweakedFactory = this[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type: $tweakedResourceLocation for $factory")
 
         val tweakedEntityType = connection.registries.entityType[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type data in ${connection.version}: $tweakedResourceLocation for $factory")
-        return tweakedFactory.build(connection, tweakedEntityType, data ?: EntityData(connection), position, rotation)
+        return tweakedFactory.build(connection, tweakedEntityType, data ?: EntityData(connection), position, rotation, uuid)
     }
 
     val ABSTRACT_ENTITY_DATA_CLASSES = mapOf(

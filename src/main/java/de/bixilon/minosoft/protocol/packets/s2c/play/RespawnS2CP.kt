@@ -22,15 +22,14 @@ import de.bixilon.minosoft.data.world.difficulty.Difficulties
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(threadSafe = false)
 class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var dimension: DimensionProperties
         private set
@@ -87,7 +86,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readBoolean() // debug
             buffer.readBoolean() // flat
         }
-        if (buffer.versionId >= ProtocolVersions.V_20W18A) {
+        if (buffer.versionId >= ProtocolVersions.V_20W18A && buffer.versionId < V_23W31A) {
             if (buffer.versionId >= ProtocolVersions.V_1_19_3_RC3) {
                 keepFlags = buffer.readByte()
             } else {
@@ -100,11 +99,15 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (buffer.versionId >= ProtocolVersions.V_1_20_PRE1) {
             portalCooldown = buffer.readVarInt()
         }
+        if (buffer.versionId >= V_23W31A) {
+            keepFlags = buffer.readByte()
+        }
     }
 
     override fun handle(connection: PlayConnection) {
         connection.util.prepareSpawn()
         connection.player.additional.gamemode = gamemode
+        connection.player.abilities = gamemode.abilities
         val dimensionChange = this.dimension != connection.world.dimension || this.world != connection.world.name
         if (dimensionChange) {
             connection.util.resetWorld()

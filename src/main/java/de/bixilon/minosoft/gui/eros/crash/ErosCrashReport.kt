@@ -147,7 +147,19 @@ class ErosCrashReport : JavaFXWindowController() {
                 }
             }
 
-            JavaFXInitializer.await()
+            for (i in 0 until 10) {
+                try {
+                    JavaFXInitializer.await()
+                } catch (error: InterruptedException) {
+                    continue
+                }
+                break
+            }
+            if (!JavaFXInitializer.initialized) {
+                Log.log(LogMessageType.JAVAFX, LogLevels.FATAL) { "JavaFX Toolkit still not initialized, can't wait longer. Exit!" }
+                ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
+                return
+            }
 
             JavaFXUtil.runLater {
                 val fxmlLoader = FXMLLoader(ErosCrashReport::class.java.getResource("/assets/minosoft/eros/crash/crash_screen.fxml"))

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.input.interaction.InteractionUtil.canInteract
 import de.bixilon.minosoft.input.interaction.breaking.BreakHandler
 import de.bixilon.minosoft.input.interaction.use.UseHandler
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class InteractionManager(val camera: ConnectionCamera) : Tickable {

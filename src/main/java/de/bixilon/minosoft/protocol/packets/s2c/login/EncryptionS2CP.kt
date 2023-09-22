@@ -14,13 +14,9 @@ package de.bixilon.minosoft.protocol.packets.s2c.login
 
 import com.google.common.primitives.Longs
 import de.bixilon.kutil.base64.Base64Util.toBase64
-import de.bixilon.minosoft.protocol.PacketErrorHandler
-import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.EncryptionSignatureData
@@ -31,7 +27,6 @@ import java.math.BigInteger
 import java.security.SecureRandom
 import javax.crypto.Cipher
 
-@LoadPacket(state = ProtocolStates.LOGIN, threadSafe = false)
 class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val serverId: String = buffer.readString()
     val publicKey: ByteArray = buffer.readByteArray()
@@ -71,12 +66,5 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Encryption request (serverId=$serverId, publicKey=${publicKey.toBase64()}, nonce=${nonce.toBase64()})" }
-    }
-
-    companion object : PacketErrorHandler {
-        override fun onError(error: Throwable, connection: Connection) {
-            connection.error = error
-            connection.network.disconnect()
-        }
     }
 }

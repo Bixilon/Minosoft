@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.container
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -22,7 +21,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 
-@LoadPacket
 data class ContainerClickC2SP(
     val containerId: Int,
     val revision: Int,

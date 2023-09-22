@@ -175,18 +175,18 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
         }
     }
 
-    fun readNBTTag(compressed: Boolean): Any? {
+    fun readNBTTag(compressed: Boolean, named: Boolean): Any? {
         if (compressed) {
             val length = readShort().toInt()
             return if (length == -1) {
                 // no nbt data here...
                 null
             } else {
-                InByteBuffer(readByteArray(length).decompress()).readNBTTag(false)
+                InByteBuffer(readByteArray(length).decompress()).readNBTTag(false, named)
             }
         }
         val type = NBTTagTypes[readUnsignedByte()]
-        if (type === NBTTagTypes.COMPOUND) {
+        if (type === NBTTagTypes.COMPOUND && named) {
             var name = readString(readUnsignedShort()) // ToDo: Should this name be ignored?
         }
         return readNBTTag(type)

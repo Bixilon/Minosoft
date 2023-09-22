@@ -18,6 +18,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.nodes.NamedNode
 import de.bixilon.minosoft.commands.nodes.RootNode
+import de.bixilon.minosoft.protocol.packets.s2c.play.chat.CommandsS2CP
 import org.testng.Assert.assertNotNull
 import org.testng.annotations.Test
 

@@ -21,9 +21,13 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.local.LocalPlayerPhysics
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.*
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.vehicle.MoveVehicleC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.vehicle.VehicleInputC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.GroundChangeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.RotationC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.vehicle.MoveVehicleC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.vehicle.VehicleInputC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.ToggleFlyC2SP
 
 class MovementPacketSender(
     private val physics: LocalPlayerPhysics,

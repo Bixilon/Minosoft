@@ -19,7 +19,7 @@ import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnecti
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.status.ServerStatus
@@ -63,7 +63,7 @@ class StatusConnection(
         network::connected.observe(this) {
             if (it) {
                 state = StatusConnectionStates.HANDSHAKING
-                network.send(HandshakeC2SP(realAddress!!, ProtocolStates.STATUS, forcedVersion?.protocolId ?: Versions.AUTOMATIC.protocolId))
+                network.send(HandshakeC2SP(realAddress!!, HandshakeC2SP.Actions.STATUS, forcedVersion?.protocolId ?: Versions.AUTOMATIC.protocolId))
                 network.state = ProtocolStates.STATUS
                 return@observe
             }
@@ -75,8 +75,8 @@ class StatusConnection(
 
         network::state.observe(this) {
             when (it) {
-                ProtocolStates.HANDSHAKING -> {}
-                ProtocolStates.PLAY, ProtocolStates.LOGIN -> throw IllegalStateException("Invalid state!")
+                ProtocolStates.HANDSHAKE -> {}
+                ProtocolStates.PLAY, ProtocolStates.LOGIN, ProtocolStates.CONFIGURATION -> throw IllegalStateException("Invalid state!")
                 ProtocolStates.STATUS -> {
                     state = StatusConnectionStates.QUERYING_STATUS
                     network.send(StatusRequestC2SP())

@@ -59,7 +59,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.channel.DefaultChann
 import de.bixilon.minosoft.protocol.network.connection.play.settings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicker
 import de.bixilon.minosoft.protocol.network.connection.play.util.ConnectionUtil
-import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.versions.Version
@@ -133,7 +133,7 @@ class PlayConnection(
                 ERRORED_CONNECTIONS -= this
 
                 state = PlayConnectionStates.HANDSHAKING
-                network.send(HandshakeC2SP(address, ProtocolStates.LOGIN, version.protocolId))
+                network.send(HandshakeC2SP(address, HandshakeC2SP.Actions.PLAY, version.protocolId))
                 // after sending it, switch to next state
                 network.state = ProtocolStates.LOGIN
             } else {
@@ -148,7 +148,7 @@ class PlayConnection(
         }
         network::state.observe(this) { state ->
             when (state) {
-                ProtocolStates.HANDSHAKING, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
+                ProtocolStates.HANDSHAKE, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
                 ProtocolStates.LOGIN -> {
                     this.state = PlayConnectionStates.LOGGING_IN
                     this.network.send(StartC2SP(this.player, this.sessionId))
@@ -170,6 +170,8 @@ class PlayConnection(
                         Log.log(LogMessageType.CHAT_IN, level = if (it.message.type.position == ChatTextPositions.HOTBAR) LogLevels.VERBOSE else LogLevels.INFO, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message.text }
                     })
                 }
+
+                ProtocolStates.CONFIGURATION -> Unit
             }
         }
         ticker.init()
@@ -261,6 +263,7 @@ class PlayConnection(
     }
 
     companion object {
+        // TODO: heavy memory leak
         val ACTIVE_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
         val ERRORED_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
 

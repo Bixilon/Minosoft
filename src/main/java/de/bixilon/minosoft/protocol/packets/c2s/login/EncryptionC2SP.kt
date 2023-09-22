@@ -15,8 +15,6 @@ package de.bixilon.minosoft.protocol.packets.c2s.login
 import de.bixilon.kutil.base64.Base64Util.toBase64
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.encryption.EncryptionSignatureData
@@ -24,7 +22,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(state = ProtocolStates.LOGIN)
 class EncryptionC2SP private constructor(
     val secret: ByteArray,
     val nonce: Any,

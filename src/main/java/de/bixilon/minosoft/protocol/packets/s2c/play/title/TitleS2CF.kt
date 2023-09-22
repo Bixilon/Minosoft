@@ -15,16 +15,12 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
-import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
+import de.bixilon.minosoft.protocol.packets.registry.factory.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-@LoadPacket(threadSafe = false)
 object TitleS2CF : PlayPacketFactory {
-    override val direction: PacketDirection = PacketDirection.SERVER_TO_CLIENT
 
-    override fun createPacket(buffer: PlayInByteBuffer): TitleS2CP {
+    override fun create(buffer: PlayInByteBuffer): TitleS2CP {
         return when (buffer.readEnum(buffer.connection.registries.titleActions)!!) {
             TitleActions.TITLE_TEXT -> TitleTextS2CP(buffer)
             TitleActions.SUBTITLE -> SubtitleS2CP(buffer)

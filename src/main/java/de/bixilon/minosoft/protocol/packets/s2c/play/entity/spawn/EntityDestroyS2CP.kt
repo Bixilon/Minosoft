@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_RC1
@@ -23,7 +22,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(threadSafe = false)
 class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityIds: IntArray = if (buffer.versionId < ProtocolVersions.V_21W17A || buffer.versionId >= V_1_17_1_RC1) {
         buffer.readEntityIdArray(

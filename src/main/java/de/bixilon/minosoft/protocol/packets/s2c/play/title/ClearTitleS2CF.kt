@@ -13,17 +13,13 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
-import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
+import de.bixilon.minosoft.protocol.packets.registry.factory.PlayPacketFactory
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-@LoadPacket(threadSafe = false)
 object ClearTitleS2CF : PlayPacketFactory {
-    override val direction: PacketDirection = PacketDirection.SERVER_TO_CLIENT
 
-    override fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
+    override fun create(buffer: PlayInByteBuffer): PlayS2CPacket {
         val resetTimes = buffer.readBoolean()
         return if (resetTimes) {
             ResetTitleS2CP(buffer)

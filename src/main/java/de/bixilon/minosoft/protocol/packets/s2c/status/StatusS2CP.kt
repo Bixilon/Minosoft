@@ -15,9 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.status
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.status.PingC2SP
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.status.ServerStatus
 import de.bixilon.minosoft.protocol.status.StatusPing
@@ -28,7 +26,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.concurrent.ThreadLocalRandom
 
-@LoadPacket(state = ProtocolStates.STATUS)
 class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     val status: ServerStatus = ServerStatus(buffer.readJson())
 

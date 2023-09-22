@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,8 +17,9 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.common.SettingsC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_2_PRE1
 
 class ClientSettingsManager(
     private val connection: PlayConnection,
@@ -64,10 +65,15 @@ class ClientSettingsManager(
         sendClientSettings()
     }
 
+    private fun canSendSettings(): Boolean {
+        if (connection.network.state == ProtocolStates.PLAY) return true
+        if (connection.version > V_1_20_2_PRE1 && connection.network.state == ProtocolStates.CONFIGURATION) return true
+        return false
+    }
+
     fun sendClientSettings() {
-        if (connection.network.state != ProtocolStates.PLAY) {
-            return
-        }
+        if (!canSendSettings()) return
+
         connection.sendPacket(SettingsC2SP(
             locale = language,
             chatColors = connection.profiles.gui.chat.chatColors,

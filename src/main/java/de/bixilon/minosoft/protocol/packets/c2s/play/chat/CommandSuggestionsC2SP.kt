@@ -14,14 +14,12 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.chat
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
 class CommandSuggestionsC2SP(
     val text: String,
     val assumeCommand: Boolean,

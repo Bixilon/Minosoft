@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.stone.RockBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkS2CP
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import org.testng.Assert.*
 import org.testng.annotations.Test

@@ -29,5 +29,6 @@ object GamemodeChangeHandler : GameEventHandler {
             return
         }
         connection.player.additional.gamemode = next
+        connection.player.abilities = next.abilities
     }
 }

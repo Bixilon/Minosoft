@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s
 
-import de.bixilon.minosoft.protocol.packets.Packet
+import de.bixilon.minosoft.protocol.packets.types.Packet
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 
 /**

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.abilities
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.minosoft.data.entities.entities.player.local.Abilities
 
 enum class Gamemodes(
     val canBuild: Boolean,
@@ -21,6 +22,7 @@ enum class Gamemodes(
     val useTools: Boolean,
     val canInteract: InteractionAbilities,
     val survival: Boolean,
+    val abilities: Abilities,
 ) {
     SURVIVAL(
         canBuild = true,
@@ -28,6 +30,7 @@ enum class Gamemodes(
         useTools = true,
         canInteract = InteractionAbilities.EVERYTHING,
         survival = true,
+        Abilities(),
     ),
     CREATIVE(
         canBuild = true,
@@ -35,6 +38,7 @@ enum class Gamemodes(
         useTools = true,
         canInteract = InteractionAbilities.EVERYTHING,
         survival = false,
+        Abilities(true, true, true),
     ),
     ADVENTURE(
         canBuild = false,
@@ -42,6 +46,7 @@ enum class Gamemodes(
         useTools = false,
         canInteract = InteractionAbilities.ONLY_ENTITIES,
         survival = true,
+        Abilities(),
     ),
     SPECTATOR(
         canBuild = false,
@@ -49,6 +54,7 @@ enum class Gamemodes(
         useTools = false,
         canInteract = InteractionAbilities.ONLY_ENTITIES,
         survival = false,
+        Abilities(true, true, true),
     ),
     ;
 

@@ -47,7 +47,7 @@ object DebugKeyBindings {
             ignoreConsumer = true,
         )) {
             connection.util.sendDebugMessage("Pausing incoming packets: ${it.format()}")
-            connection.network.pauseReceiving(it)
+            connection.network.receive = it
         }
 
         register(PAUSE_OUTGOING, KeyBinding(

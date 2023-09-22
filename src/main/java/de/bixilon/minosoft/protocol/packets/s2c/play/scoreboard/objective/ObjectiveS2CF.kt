@@ -15,17 +15,13 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
-import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
+import de.bixilon.minosoft.protocol.packets.registry.factory.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-@LoadPacket(threadSafe = false)
 object ObjectiveS2CF : PlayPacketFactory {
-    override val direction = PacketDirection.SERVER_TO_CLIENT
 
-    override fun createPacket(buffer: PlayInByteBuffer): ObjectiveS2CP {
+    override fun create(buffer: PlayInByteBuffer): ObjectiveS2CP {
         val objective = buffer.readString()
         val displayName = if (buffer.versionId < ProtocolVersions.V_14W04A) { // ToDo
             buffer.readChatComponent()

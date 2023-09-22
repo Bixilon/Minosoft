@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries.ENTITY_OBJECT_REGISTRY
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -27,7 +26,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-@LoadPacket(threadSafe = false)
 class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     var entityUUID: UUID? = null
@@ -57,9 +55,9 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         entity = if (buffer.versionId < ProtocolVersions.V_19W05A) {
             val entityResourceLocation = ENTITY_OBJECT_REGISTRY[type].identifier
-            buffer.connection.registries.entityType[entityResourceLocation]!!.build(buffer.connection, position, rotation, null, buffer.versionId)!! // ToDo: Entity meta data tweaking
+            buffer.connection.registries.entityType[entityResourceLocation]!!.build(buffer.connection, position, rotation, null, entityUUID, buffer.versionId)!! // ToDo: Entity meta data tweaking
         } else {
-            buffer.connection.registries.entityType[type].build(buffer.connection, position, rotation, null, buffer.versionId)!!
+            buffer.connection.registries.entityType[type].build(buffer.connection, position, rotation, null, entityUUID, buffer.versionId)!!
         }
         entity.startInit()
         entity.setObjectData(data)

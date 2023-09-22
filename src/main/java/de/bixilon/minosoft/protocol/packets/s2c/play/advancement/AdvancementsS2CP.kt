@@ -19,15 +19,14 @@ import de.bixilon.minosoft.advancements.AdvancementDisplay
 import de.bixilon.minosoft.advancements.AdvancementFrames
 import de.bixilon.minosoft.advancements.AdvancementProgress
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W18A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W35A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
 class AdvancementsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val reset = buffer.readBoolean()
     val advancements: Map<ResourceLocation, Advancement>
@@ -62,7 +61,10 @@ class AdvancementsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     fun PlayInByteBuffer.readAdvancement(): Advancement {
         val parent = readOptional { readResourceLocation() }
         val display = readOptional { readDisplay() }
-        val criteria = readSet { readString() }
+        var criteria = emptySet<String>()
+        if (versionId < V_23W35A) {
+            criteria = readSet { readString() }
+        }
         val requirements = readSet { readSet { readString() } }
         if (versionId >= V_23W18A) { // TODO: not 100% sure
             val sendTelemetry = readBoolean()

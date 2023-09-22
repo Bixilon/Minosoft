@@ -29,7 +29,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.c
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityAttackC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.SwingArmC2SP
 import org.testng.annotations.Test
 
 @Test(groups = ["interaction"])

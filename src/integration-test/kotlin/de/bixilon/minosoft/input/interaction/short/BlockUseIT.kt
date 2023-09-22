@@ -35,8 +35,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.asser
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertOnlyPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
 import org.testng.annotations.Test
 
 @Test(groups = ["interaction"], dependsOnGroups = ["item", "block"])

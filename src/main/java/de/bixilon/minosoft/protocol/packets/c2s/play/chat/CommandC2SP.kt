@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.chat
 
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -22,7 +21,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.time.Instant
 
-@LoadPacket(threadSafe = false)
 class CommandC2SP(
     val command: String,
     val time: Instant = Instant.now(),

@@ -51,7 +51,7 @@ class NettyClient(
 ) : SimpleChannelInboundHandler<Any>(), ClientNetwork {
     override var connected by observed(false)
         private set
-    override var state by observed(ProtocolStates.HANDSHAKING)
+    override var state by observed(ProtocolStates.HANDSHAKE)
     override var compressionThreshold = -1
         set(value) {
             field = value
@@ -84,9 +84,14 @@ class NettyClient(
     private var channel: Channel? = null
     private val packetQueue: MutableList<C2SPacket> = mutableListOf() // Used for pause sending
     private var sendingPaused = false
+    override var receive = true
+        set(value) {
+            channel?.config()?.isAutoRead = value
+            field = value
+        }
 
     override fun connect(address: ServerAddress, native: Boolean) {
-        state = ProtocolStates.HANDSHAKING
+        state = ProtocolStates.HANDSHAKE
         val natives = if (native) TransportNatives.get() else NioNatives
         val bootstrap = Bootstrap()
             .group(natives.pool)
@@ -130,11 +135,6 @@ class NettyClient(
         }
     }
 
-    override fun pauseReceiving(pause: Boolean) {
-        val channel = requireChannel()
-        channel.config()?.isAutoRead = !pause
-    }
-
     override fun send(packet: C2SPacket) {
         val channel = getChannel() ?: return
         if (sendingPaused) {
@@ -154,6 +154,7 @@ class NettyClient(
             context.channel().config().setOption(ChannelOption.TCP_NODELAY, true)
         } catch (_: Throwable) {
         }
+        context.channel().config().isAutoRead = this.receive
         this.channel = context.channel()
         connected = true
     }

@@ -17,8 +17,8 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
-import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.HotbarSlotC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.PlayerActionC2SP
 
 class HotbarHandler(
     val interactions: InteractionManager,

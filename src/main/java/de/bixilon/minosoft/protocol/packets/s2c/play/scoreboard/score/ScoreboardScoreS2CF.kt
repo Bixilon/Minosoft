@@ -15,16 +15,12 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
-import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
+import de.bixilon.minosoft.protocol.packets.registry.factory.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-@LoadPacket(threadSafe = false)
 object ScoreboardScoreS2CF : PlayPacketFactory {
-    override val direction = PacketDirection.SERVER_TO_CLIENT
 
-    override fun createPacket(buffer: PlayInByteBuffer): ScoreboardScoreS2CP {
+    override fun create(buffer: PlayInByteBuffer): ScoreboardScoreS2CP {
         val entity = buffer.readString()
         val action = ScoreboardScoreActions[buffer.readVarInt()]
         val objective = buffer.readNullString()

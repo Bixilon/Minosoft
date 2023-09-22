@@ -38,6 +38,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.lang.reflect.Modifier
+import java.util.*
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.jvm.javaField
@@ -58,8 +59,8 @@ data class EntityType(
         return identifier.toString()
     }
 
-    fun build(connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, versionId: Int): Entity? {
-        return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityData, versionId)
+    fun build(connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, uuid: UUID?, versionId: Int): Entity? {
+        return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityData, uuid, versionId)
     }
 
     companion object : ResourceLocationCodec<EntityType> {

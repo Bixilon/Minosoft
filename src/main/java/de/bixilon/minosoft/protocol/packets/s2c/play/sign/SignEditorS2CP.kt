@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.sign
 import de.bixilon.minosoft.data.entities.block.sign.SignSides
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -23,7 +22,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
 class SignEditorS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position = if (buffer.versionId < ProtocolVersions.V_14W03B) buffer.readIntBlockPosition() else buffer.readBlockPosition()
     val side = if (buffer.versionId >= ProtocolVersions.V_23W12A) if (buffer.readBoolean()) SignSides.FRONT else SignSides.BACK else SignSides.FRONT
