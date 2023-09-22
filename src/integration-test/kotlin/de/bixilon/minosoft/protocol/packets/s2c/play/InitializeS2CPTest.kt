@@ -57,5 +57,12 @@ class InitializeS2CPTest {
         assertEquals(packet.registries?.size, 6)
         assertTrue(packet.registries!!["minecraft:worldgen/biome"] is Map<*, *>)
     }
+
+    fun vanilla_1_20_2() {
+        val packet = PacketReadingTestUtil.read("initialize/vanilla_1_20_2", "1.20.2", constructor = ::InitializeS2CP)
+        assertEquals(packet.gamemode, Gamemodes.SURVIVAL)
+        assertEquals(packet.dimensionName, OverworldEffects.identifier)
+        assertNull(packet.registries)
+    }
 }
 
