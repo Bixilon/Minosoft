@@ -107,6 +107,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         connection.util.prepareSpawn()
         connection.player.additional.gamemode = gamemode
+        connection.player.abilities = gamemode.abilities
         val dimensionChange = this.dimension != connection.world.dimension || this.world != connection.world.name
         if (dimensionChange) {
             connection.util.resetWorld()

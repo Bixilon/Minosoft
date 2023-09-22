@@ -169,6 +169,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         if (previousGamemode != gamemode) {
             playerEntity.additional.gamemode = gamemode
+            playerEntity.abilities = gamemode.abilities
         }
 
         connection.world.hardcore = isHardcore
