@@ -16,6 +16,7 @@ package de.bixilon.minosoft.assets
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
+import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion.packFormat
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsManager
 import de.bixilon.minosoft.assets.multi.PriorityAssetsManager
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
@@ -37,7 +38,7 @@ object AssetsLoader {
         }
 
         if (!profile.assets.disableIndexAssets) {
-            assetsManager += IndexAssetsManager(profile, property.indexVersion, property.indexHash, profile.assets.indexAssetsTypes.toSet())
+            assetsManager += IndexAssetsManager(profile, property.indexVersion, property.indexHash, profile.assets.indexAssetsTypes.toSet(), version.packFormat)
         }
         if (!profile.assets.disableJarAssets) {
             assetsManager += JarAssetsManager(property.jarAssetsHash, property.clientJarHash, profile, version, property.jarAssetsTarBytes ?: JarAssetsManager.DEFAULT_TAR_BYTES)

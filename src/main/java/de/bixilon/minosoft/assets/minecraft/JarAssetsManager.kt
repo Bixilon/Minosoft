@@ -18,6 +18,9 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.InvalidAssetException
+import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion.packFormat
+import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
+import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
 import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.HashTypes
@@ -58,6 +61,8 @@ class JarAssetsManager(
     override var loaded: Boolean = false
         private set
     private var assets: MutableMap<String, ByteArray> = mutableMapOf()
+    override val properties = AssetsManagerProperties(PackProperties(format = version.packFormat))
+
 
     private fun tryLoadAssets(): Boolean {
         val assets = FileAssetsUtil.readOrNull(jarAssetsHash, FileAssetsTypes.GAME, verify = profile.verify)?.let { ByteArrayInputStream(it).readArchive() } ?: return false
