@@ -16,13 +16,17 @@ package de.bixilon.minosoft.protocol.packets.registry
 import de.bixilon.minosoft.protocol.packets.c2s.common.HeartbeatC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.common.PongC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.common.ResourcepackC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.common.SettingsC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.configuration.ReadyC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.handshake.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.ChannelC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.ConfigureC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.*
+import de.bixilon.minosoft.protocol.packets.c2s.play.NextChunkBatchC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.ReconfigureC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.SessionDataC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.TradeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.advancement.tab.AdvancementCloseTabC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.advancement.tab.AdvancementOpenTabC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.*
@@ -124,6 +128,7 @@ object DefaultPackets {
         },
         ProtocolStates.LOGIN to PacketRegistry(threadSafe = false, extra = PacketExtraHandler.Disconnect).apply {
             register("channel", ChannelC2SP::class)
+            register("channel", ChannelC2SP::class)
             register("encryption", EncryptionC2SP::class)
             register("enter_configuration", ConfigureC2SP::class)
             register("start", StartC2SP::class)
@@ -134,6 +139,7 @@ object DefaultPackets {
             register("heartbeat", HeartbeatC2SP::class)
             register("pong", PongC2SP::class)
             register("resourcepack", ResourcepackC2SP::class)
+            register("settings", SettingsC2SP::class)
 
             register("ready", ReadyC2SP::class)
         },
@@ -142,6 +148,7 @@ object DefaultPackets {
             register("heartbeat", HeartbeatC2SP::class)
             register("pong", PongC2SP::class)
             register("resourcepack", ResourcepackC2SP::class)
+            register("settings", SettingsC2SP::class)
 
             register("advancement_tab", AdvancementCloseTabC2SP::class)
             register("advancement_tab", AdvancementOpenTabC2SP::class)
@@ -213,7 +220,6 @@ object DefaultPackets {
             register("ping", de.bixilon.minosoft.protocol.packets.c2s.play.PingC2SP::class)
             register("reconfigure", ReconfigureC2SP::class)
             register("session_data", SessionDataC2SP::class)
-            register("settings", SettingsC2SP::class)
             register("trade", TradeC2SP::class)
         },
     )
