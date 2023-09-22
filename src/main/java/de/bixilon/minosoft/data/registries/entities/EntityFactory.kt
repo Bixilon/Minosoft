@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import java.util.*
 
 interface EntityFactory<T : Entity> : Identified {
 
@@ -31,4 +32,7 @@ interface EntityFactory<T : Entity> : Identified {
     }
 
     fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): T?
+    fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation, uuid: UUID?): T? {
+        return build(connection, entityType, data, position, rotation)
+    }
 }

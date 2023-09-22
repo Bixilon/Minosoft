@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import java.util.*
 
 class RemotePlayerEntity(
     connection: PlayConnection,
@@ -36,8 +37,21 @@ class RemotePlayerEntity(
     companion object : EntityFactory<PlayerEntity> {
         override val identifier: ResourceLocation = minecraft("player")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): RemotePlayerEntity? {
-            throw IllegalAccessError("Can not build player entity!")
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PlayerEntity? {
+            throw IllegalAccessError("Player requires uuid!")
+        }
+
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation, uuid: UUID?): RemotePlayerEntity? {
+            val additional = connection.tabList.uuid[uuid] ?: return null
+
+            return RemotePlayerEntity(
+                connection = connection,
+                entityType = connection.registries.entityType[identifier]!!,
+                data = data,
+                position = position,
+                rotation = rotation,
+                additional = additional,
+            )
         }
     }
 }
