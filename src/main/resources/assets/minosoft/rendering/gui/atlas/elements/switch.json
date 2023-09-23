@@ -1,0 +1,37 @@
+{
+  "normal": {
+    "0": {
+      "texture": "minosoft:textures/icons",
+      "start": [0, 10],
+      "end": [30, 31]
+    }
+  },
+  "disabled": {
+    "0": {
+      "texture": "minosoft:textures/icons",
+      "start": [30, 10],
+      "end": [60, 31]
+    }
+  },
+  "hovered": {
+    "0": {
+      "texture": "minosoft:textures/icons",
+      "start": [60, 10],
+      "end": [90, 31]
+    }
+  },
+  "state_off": {
+    "0": {
+      "texture": "minosoft:textures/icons",
+      "start": [90, 10],
+      "end": [96, 31]
+    }
+  },
+  "state_on": {
+    "0": {
+      "texture": "minosoft:textures/icons",
+      "start": [96, 10],
+      "end": [102, 31]
+    }
+  }
+}

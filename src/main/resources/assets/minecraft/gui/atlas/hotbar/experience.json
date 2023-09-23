@@ -1,0 +1,45 @@
+{
+  "empty": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 64]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/experience_bar_background",
+      "size": [182, 5]
+    }
+  },
+  "full": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 69],
+      "end": [182, 74]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/experience_bar_progress",
+      "size": [182, 5]
+    }
+  },
+  "horse_empty": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 84],
+      "end": [182, 89]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/jump_bar_background",
+      "size": [182, 5]
+    }
+  },
+  "horse_full": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 89],
+      "end": [182, 94]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/jump_bar_progress",
+      "size": [182, 5]
+    }
+  }
+}

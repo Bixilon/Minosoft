@@ -1,0 +1,35 @@
+{
+  "empty": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [16, 9],
+      "end": [25, 18]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/armor_empty",
+      "size": [9, 9]
+    }
+  },
+  "half": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [25, 9],
+      "end": [34, 18]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/armor_half",
+      "size": [9, 9]
+    }
+  },
+  "full": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [34, 9],
+      "end": [43, 18]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/armor_full",
+      "size": [9, 9]
+    }
+  }
+}

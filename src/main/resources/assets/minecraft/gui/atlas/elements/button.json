@@ -1,0 +1,35 @@
+{
+  "disabled": {
+    "0": {
+      "texture": "gui/widgets",
+      "start": [0, 46],
+      "end": [200, 66]
+    },
+    "18": {
+      "texture": "gui/sprites/widget/button_disabled",
+      "size": [200, 20]
+    }
+  },
+  "normal": {
+    "0": {
+      "texture": "gui/widgets",
+      "start": [0, 66],
+      "end": [200, 86]
+    },
+    "18": {
+      "texture": "gui/sprites/widget/button",
+      "size": [200, 20]
+    }
+  },
+  "hovered": {
+    "0": {
+      "texture": "gui/widgets",
+      "start": [0, 86],
+      "end": [200, 106]
+    },
+    "18": {
+      "texture": "gui/sprites/widget/button_highlighted",
+      "size": [200, 20]
+    }
+  }
+}

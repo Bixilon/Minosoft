@@ -1,0 +1,82 @@
+{
+  "container": {
+    "0": {
+      "texture": "minecraft:gui/icons",
+      "start": [16, 27],
+      "end": [25, 36]
+    },
+    "18": {
+      "texture": "minecraft:gui/sprites/hud/food_empty",
+      "size": [9, 9]
+    }
+  },
+  "container_hunger": {
+    "0": {
+      "texture": "minecraft:gui/icons",
+      "start": [133, 27],
+      "end": [142, 36]
+    },
+    "18": {
+      "texture": "minecraft:gui/sprites/hud/food_empty_hunger",
+      "size": [9, 9]
+    }
+  },
+  "container_saturation_half": {
+    "0": {
+      "texture": "minosoft:gui/icons",
+      "start": [0, 0],
+      "end": [9, 9]
+    }
+  },
+  "container_saturation_full": {
+    "0": {
+      "texture": "minosoft:gui/icons",
+      "start": [9, 0],
+      "end": [18, 9]
+    }
+  },
+  "full": {
+    "0": {
+      "texture": "minecraft:gui/icons",
+      "start": [52, 27],
+      "end": [61, 36]
+    },
+    "18": {
+      "texture": "minecraft:gui/sprites/hud/food_full",
+      "size": [9, 9]
+    }
+  },
+  "half": {
+    "0": {
+      "texture": "minecraft:gui/icons",
+      "start": [61, 27],
+      "end": [70, 36]
+    },
+    "18": {
+      "texture": "minecraft:gui/sprites/hud/food_half",
+      "size": [9, 9]
+    }
+  },
+  "full_hunger": {
+    "0": {
+      "texture": "minecraft:gui/icons",
+      "start": [88, 27],
+      "end": [97, 36]
+    },
+    "18": {
+      "texture": "minecraft:gui/sprites/hud/food_full_hunger",
+      "size": [9, 9]
+    }
+  },
+  "half_hunger": {
+    "0": {
+      "texture": "minecraft:gui/icons",
+      "start": [97, 27],
+      "end": [106, 36]
+    },
+    "18": {
+      "texture": "minecraft:gui/sprites/hud/food_half_hunger",
+      "size": [9, 9]
+    }
+  }
+}
