@@ -17,12 +17,12 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -65,11 +65,10 @@ class HUDManager(
     }
 
     private fun registerDefaultElements() {
-        val latch = SimpleLatch(1)
+        val latch = SimpleLatch(DEFAULT_ELEMENTS.size + 1)
 
         for (builder in DEFAULT_ELEMENTS) {
-            latch.inc()
-            DefaultThreadPool += { registerElement(builder); latch.dec() }
+            context.runAsync { registerElement(builder); latch.dec() }
         }
         latch.dec()
         latch.await()
