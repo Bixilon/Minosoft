@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureArray
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -40,7 +41,7 @@ import java.util.*
 class OpenGLDynamicTextureArray(
     val context: RenderContext,
     val renderSystem: OpenGLRenderSystem,
-    val index: Int = 7,
+    val index: Int = OpenGLTextureArray.TEXTURE_RESOLUTION_ID_MAP.size,
     val initialSize: Int = 32,
     val resolution: Int,
 ) : DynamicTextureArray {
