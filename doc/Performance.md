@@ -6,7 +6,7 @@ Yes, it is true. There are a lot of reasons, I want to explain some of them, or 
 
 Sounds like magic and it is not magic. If you use kotlin, you use a different style of programming
 and that indeed can make it faster (e.g. `map[key]?.let` vs `if map.containsKey(key)) map.get(key) …`
-Also language features help out here (e.g. removing recursion layers with `inline`)
+Also language features help out here (e.g. removing function call layers with `inline`)
 
 ## Dirty hacks
 
@@ -21,7 +21,7 @@ cache a lot of things (like 3d biomes) or block states. That often makes things 
 ## Code simplicity
 
 Code should be simple. I try to write everything as simple as possible, not like Minecraft.
-Minecraft has a lot of pieces that not understandable. Normally simple codes is faster.
+Minecraft has a lot of pieces that are not understandable. Normally simple codes is faster.
 
 ## Beging lighter
 
