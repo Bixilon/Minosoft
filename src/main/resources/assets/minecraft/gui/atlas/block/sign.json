@@ -1,5 +1,5 @@
 {
-  "minecraft:sign_front": {
+  "front": {
     "0": {
       "texture": "entity/signs/oak",
       "resolution": [64, 32],

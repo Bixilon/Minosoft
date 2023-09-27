@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -39,9 +40,9 @@ class EnchantmentButtonElement(
     val disabledLevelAtlas: AtlasElement?,
     val index: Int,
 ) : AbstractButtonElement(guiRenderer, "", true) {
-    override val disabledAtlas = guiRenderer.atlasManager["enchanting_table_card_disabled"]
-    override val normalAtlas = guiRenderer.atlasManager["enchanting_table_card_normal"]
-    override val hoveredAtlas = guiRenderer.atlasManager["enchanting_table_card_hovered"]
+    override val disabledAtlas = container.atlas["card_disabled"]
+    override val normalAtlas = container.atlas["card_normal"]
+    override val hoveredAtlas = container.atlas["card_hovered"]
     private val levelText = TextElement(guiRenderer, ChatComponent.EMPTY, background = null)
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

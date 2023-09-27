@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,9 +16,11 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.generic
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.types.generic.GenericContainer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
-import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -39,9 +41,10 @@ open class GenericContainerScreen(
     container,
     Int2ObjectOpenHashMap(),
 ) {
-    private val headerAtlas = guiRenderer.atlasManager["minecraft:generic_container_header"]
-    private val slotRowAtlas = guiRenderer.atlasManager["minecraft:generic_container_slot_row"]
-    private val footerAtlas = guiRenderer.atlasManager["minecraft:generic_container_footer"]
+    private val atlas = guiRenderer.atlas[ATLAS]
+    private val headerAtlas = atlas["header"]
+    private val slotRowAtlas = atlas["row"]
+    private val footerAtlas = atlas["footer"]
     private val header = AtlasImageElement(guiRenderer, headerAtlas)
     private val slotRow = AtlasImageElement(guiRenderer, slotRowAtlas)
     private val footer = AtlasImageElement(guiRenderer, footerAtlas)
@@ -83,16 +86,18 @@ open class GenericContainerScreen(
         return super.getAt(position - centerOffset)
     }
 
-    private fun calculateSlots(): Int2ObjectOpenHashMap<AtlasSlot> {
-        val slots: Int2ObjectOpenHashMap<AtlasSlot> = Int2ObjectOpenHashMap()
+    private fun calculateSlots(): Int2ObjectOpenHashMap<AtlasArea> {
+        val slots: Int2ObjectOpenHashMap<AtlasArea> = Int2ObjectOpenHashMap()
         var slotOffset = 0
         val offset = Vec2i(0, 0)
 
         fun pushElement(atlasElement: AtlasElement) {
-            for ((slotId, slot) in atlasElement.slots) {
-                slots[slotId + slotOffset] = AtlasSlot(slot.start + offset, slot.end + offset)
+            if (atlasElement.slots != null) {
+                for ((slotId, slot) in atlasElement.slots) {
+                    slots[slotId + slotOffset] = AtlasArea(slot.start + offset, slot.end + offset)
+                }
+                slotOffset += atlasElement.slots.size
             }
-            slotOffset += atlasElement.slots.size
             offset.y += atlasElement.size.y
         }
         headerAtlas?.let { pushElement(it) }
@@ -107,10 +112,15 @@ open class GenericContainerScreen(
     }
 
     companion object : ContainerGUIFactory<GenericContainerScreen, GenericContainer> {
+        private val ATLAS = minecraft("container/generic")
         override val clazz: KClass<GenericContainer> = GenericContainer::class
 
-        override fun build(guiRenderer: GUIRenderer, container: GenericContainer): GenericContainerScreen {
-            return GenericContainerScreen(guiRenderer, container)
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(ATLAS)
+        }
+
+        override fun build(gui: GUIRenderer, container: GenericContainer): GenericContainerScreen {
+            return GenericContainerScreen(gui, container)
         }
     }
 }

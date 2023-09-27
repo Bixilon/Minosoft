@@ -18,7 +18,8 @@ import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.debug.DebugHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
 
 class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRenderer) {
@@ -40,7 +40,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
     private var previousNeedsDraw = needsDraw
 
     override fun init() {
-        crosshairAtlasElement = guiRenderer.atlasManager[ATLAS_NAME]
+        crosshairAtlasElement = guiRenderer.atlas[ATLAS]?.get("crosshair")
         crosshairProfile::color.observe(this) { reapply = true }
     }
 
@@ -105,10 +105,10 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
 
 
     companion object : HUDBuilder<CrosshairHUDElement> {
+        private val ATLAS = minecraft("hud/hud")
         const val CROSSHAIR_SIZE = 16
-        override val identifier: ResourceLocation = "minosoft:crosshair".toResourceLocation()
+        override val identifier = minosoft("crosshair")
 
-        private val ATLAS_NAME = "minecraft:crosshair".toResourceLocation()
 
         override fun build(guiRenderer: GUIRenderer): CrosshairHUDElement {
             return CrosshairHUDElement(guiRenderer)

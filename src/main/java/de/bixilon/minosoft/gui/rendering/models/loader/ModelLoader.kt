@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.loader
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityModels
 import de.bixilon.minosoft.util.logging.Log
@@ -56,11 +57,11 @@ class ModelLoader(
     companion object {
 
         fun ResourceLocation.model(): ResourceLocation {
-            return ResourceLocation(this.namespace, "models/$path.json")
+            return this.extend(prefix = "models/", suffix = ".json")
         }
 
         fun ResourceLocation.bbModel(): ResourceLocation {
-            return ResourceLocation(this.namespace, "models/$path.bbmodel")
+            return this.extend(prefix = "models/", suffix = ".bbmodel")
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,13 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.atlas
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health
 
-import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 
-data class AtlasSlot(
-    val start: Vec2,
-    val end: Vec2,
-) {
-    val size = end - start
+class HeartAtlas(val atlas: Atlas?) {
+    val normal = HartType()
+    val poisoned = HartType()
+    val withered = HartType()
+    val absorption = HartType()
+    val frozen = HartType()
+
+    class HartType {
+        fun get(full: Boolean, hardcore: Boolean, blinking: Boolean): AtlasElement = TODO()
+
+    }
+
+
+    companion object {
+        val ATLAS = minecraft("hud/hotbar/hearts")
+    }
 }

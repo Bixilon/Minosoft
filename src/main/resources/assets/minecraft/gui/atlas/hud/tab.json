@@ -7,7 +7,7 @@
     },
     "18": {
       "texture": "gui/sprites/icon/ping_5",
-      "size": [10, 8]
+      "resolution": [10, 8]
     }
   },
   "ping_4": {
@@ -18,7 +18,7 @@
     },
     "18": {
       "texture": "gui/sprites/icon/ping_4",
-      "size": [10, 8]
+      "resolution": [10, 8]
     }
   },
   "ping_3": {
@@ -29,7 +29,7 @@
     },
     "18": {
       "texture": "gui/sprites/icon/ping_3",
-      "size": [10, 8]
+      "resolution": [10, 8]
     }
   },
   "ping_2": {
@@ -40,7 +40,7 @@
     },
     "18": {
       "texture": "gui/sprites/icon/ping_2",
-      "size": [10, 8]
+      "resolution": [10, 8]
     }
   },
   "ping_1": {
@@ -51,7 +51,7 @@
     },
     "18": {
       "texture": "gui/sprites/icon/ping_1",
-      "size": [10, 8]
+      "resolution": [10, 8]
     }
   },
   "ping_0": {
@@ -62,7 +62,7 @@
     },
     "18": {
       "texture": "gui/sprites/icon/unrechable",
-      "size": [10, 8]
+      "resolution": [10, 8]
     }
   }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,11 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
@@ -25,115 +24,19 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.AbstractHotbarHealthElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import java.lang.Float.max
 import java.lang.Float.min
 
 class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
-    private val atlasManager = guiRenderer.atlasManager
 
-    /**
-     *  [normal|hardcore] [normal|poison|wither] [normal|damage] [full|half]
-     */
-    private val hearts = arrayOf(
-        arrayOf(
-            arrayOf(
-                arrayOf(
-                    atlasManager["minecraft:normal_heart"],
-                    atlasManager["minecraft:half_normal_heart"],
-                ),
-                arrayOf(
-                    atlasManager["minecraft:normal_damage_heart"],
-                    atlasManager["minecraft:half_normal_damage_heart"],
-                ),
-            ),
-            arrayOf(
-                arrayOf(
-                    atlasManager["minecraft:poison_heart"],
-                    atlasManager["minecraft:half_poison_heart"],
-                ),
-                arrayOf(
-                    atlasManager["minecraft:poison_damage_heart"],
-                    atlasManager["minecraft:half_poison_damage_heart"],
-                ),
-            ),
-            arrayOf(
-                arrayOf(
-                    atlasManager["minecraft:wither_heart"],
-                    atlasManager["minecraft:half_wither_heart"],
-                ),
-                arrayOf(
-                    atlasManager["minecraft:wither_damage_heart"],
-                    atlasManager["minecraft:half_wither_damage_heart"],
-                ),
-            ),
-        ),
-        arrayOf(
-            arrayOf(
-                arrayOf(
-                    atlasManager["minecraft:hardcore_normal_heart"],
-                    atlasManager["minecraft:hardcore_half_normal_heart"],
-                ),
-                arrayOf(
-                    atlasManager["minecraft:hardcore_normal_damage_heart"],
-                    atlasManager["minecraft:hardcore_half_normal_damage_heart"],
-                ),
-            ),
-            arrayOf(
-                arrayOf(
-                    atlasManager["minecraft:hardcore_poison_heart"],
-                    atlasManager["minecraft:hardcore_half_poison_heart"],
-                ),
-                arrayOf(
-                    atlasManager["minecraft:hardcore_poison_damage_heart"],
-                    atlasManager["minecraft:hardcore_half_poison_damage_heart"],
-                ),
-            ),
-            arrayOf(
-                arrayOf(
-                    atlasManager["minecraft:hardcore_wither_heart"],
-                    atlasManager["minecraft:hardcore_half_wither_heart"],
-                ),
-                arrayOf(
-                    atlasManager["minecraft:hardcore_wither_damage_heart"],
-                    atlasManager["minecraft:hardcore_half_wither_damage_heart"],
-                ),
-            ),
-        ),
-    )
-
-    /**
-     * [normal|hardcore][full|half]
-     */
-    private val absorptionHearts = arrayOf(
-        arrayOf(
-            atlasManager["minecraft:absorption_heart"],
-            atlasManager["minecraft:half_absorption_heart"],
-        ),
-        arrayOf(
-            atlasManager["minecraft:hardcore_absorption_heart"],
-            atlasManager["minecraft:hardcore_half_absorption_heart"],
-        ),
-    )
-
-    /**
-     * [normal|hardcore][full|half]
-     */
-    private val frozenHearts = arrayOf(
-        arrayOf(
-            atlasManager["minecraft:frozen_heart"],
-            atlasManager["minecraft:half_frozen_heart"],
-        ),
-        arrayOf(
-            atlasManager["minecraft:hardcore_frozen_heart"],
-            atlasManager["minecraft:hardcore_half_frozen_heart"],
-        ),
-    )
-    private val blackHeartContainer = atlasManager["minecraft:black_heart_container"]!!
+    private val atlas = HeartAtlas(guiRenderer.atlas[HeartAtlas.ATLAS])
+    private val blackHeartContainer = atlas.atlas["container"] // TODO: There are multiple containers
 
     private var hardcode = false
     private var poison = false
@@ -154,7 +57,6 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
         // ToDo: Damage animation, regeneration, caching, stacking
         drawCanisters(offset, consumer, options, blackHeartContainer)
 
-        val hardcoreIndex = hardcode.decide(1, 0)
 
         var healthLeft = totalHealth
         var heart = 0
@@ -164,41 +66,19 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
             val column = heart % HEARTS_PER_ROW
 
 
-            var selectArray: Array<*>?
-
-            var normalHeart = false
-
-            if (healthLeft <= absorptionsAmount) {
-                selectArray = absorptionHearts[hardcoreIndex]
-            } else {
-                selectArray = hearts[hardcoreIndex]
-
-                // heart type
-                selectArray = selectArray[when {
-                    poison -> 1
-                    wither -> 2
-                    else -> {
-                        normalHeart = true
-                        0
-                    }
-                }]
-
-                // ToDo: damage heart
-                selectArray = selectArray[0]
-            }
-
-            if (frozen && normalHeart) {
-                selectArray = frozenHearts[hardcoreIndex]
+            val heartType = when {
+                healthLeft <= absorptionsAmount -> atlas.absorption
+                poison -> atlas.poisoned
+                wither -> atlas.withered
+                frozen -> atlas.frozen
+                else -> atlas.normal
             }
 
 
             val halfHeart = healthLeft < 1.5f
-            val image = selectArray.unsafeCast<Array<AtlasElement?>>()[when {
-                halfHeart -> 1
-                else -> 0
-            }]?.let { AtlasImageElement(guiRenderer, it) }
+            val image = heartType.get(!halfHeart, hardcode, false)
 
-            image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
+            AtlasImageElement(guiRenderer, image).render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
 
             heart++
             healthLeft -= halfHeart.decide(1.0f, 2.0f)

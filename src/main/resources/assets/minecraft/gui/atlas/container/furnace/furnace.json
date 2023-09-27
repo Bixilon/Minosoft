@@ -189,7 +189,7 @@
       "texture": "gui/container/furnace"
     },
     "18": {
-      "size": [14, 14],
+      "resolution": [14, 14],
       "texture": "gui/sprites/container/furnace/lit_progress"
     }
   },
@@ -200,7 +200,7 @@
       "texture": "gui/container/furnace"
     },
     "18": {
-      "size": [24, 16],
+      "resolution": [24, 16],
       "texture": "gui/sprites/container/furnace/burn_progress"
     }
   }

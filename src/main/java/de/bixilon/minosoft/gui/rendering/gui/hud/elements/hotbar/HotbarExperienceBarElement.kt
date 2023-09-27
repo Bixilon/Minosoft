@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,10 +15,12 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -29,18 +31,19 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
+    private val atlas = guiRenderer.atlas[ATLAS]
 
     /**
      * [experience|horse_jump][full|empty]
      */
     private val atlasElements = arrayOf(
         arrayOf(
-            guiRenderer.atlasManager["minecraft:empty_experience_bar"],
-            guiRenderer.atlasManager["minecraft:full_experience_bar"],
+            atlas["empty"],
+            atlas["full"],
         ),
         arrayOf(
-            guiRenderer.atlasManager["minecraft:empty_horse_jump_bar"],
-            guiRenderer.atlasManager["minecraft:full_horse_jump_bar"],
+            atlas["horse_empty"],
+            atlas["horse_full"],
         ),
     )
 
@@ -88,6 +91,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
     }
 
     companion object {
+        private val ATLAS = minecraft("hud/hotbar/experience")
         private val TEXT_PROPERTIES = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false)
         private val SIZE = Vec2(182, 5)
     }

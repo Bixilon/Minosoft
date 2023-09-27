@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.processing.smelting
 
 import de.bixilon.minosoft.data.container.types.processing.smelting.SmokerContainer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIFactory
 import kotlin.reflect.KClass
@@ -21,14 +22,19 @@ import kotlin.reflect.KClass
 class SmokerContainerScreen(
     guiRenderer: GUIRenderer,
     container: SmokerContainer,
-) : SmeltingContainerScreen<SmokerContainer>(guiRenderer, container, guiRenderer.atlasManager["minecraft:blast_furnace_container"], guiRenderer.atlasManager["minecraft:blast_furnace_container_fuel"], guiRenderer.atlasManager["minecraft:blast_furnace_container_process"]) {
+) : SmeltingContainerScreen<SmokerContainer>(guiRenderer, container, guiRenderer.atlas[ATLAS]) {
 
 
     companion object : ContainerGUIFactory<SmokerContainerScreen, SmokerContainer> {
+        private val ATLAS = minecraft("container/furnace/smoker")
         override val clazz: KClass<SmokerContainer> = SmokerContainer::class
 
-        override fun build(guiRenderer: GUIRenderer, container: SmokerContainer): SmokerContainerScreen {
-            return SmokerContainerScreen(guiRenderer, container)
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(ATLAS)
+        }
+
+        override fun build(gui: GUIRenderer, container: SmokerContainer): SmokerContainerScreen {
+            return SmokerContainerScreen(gui, container)
         }
     }
 }

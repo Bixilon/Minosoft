@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion.packFormat
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
@@ -161,11 +162,11 @@ class JarAssetsManager(
         loaded = false
     }
 
-    override fun contains(path: ResourceLocation): Boolean {
+    override fun getAssetsManager(path: ResourceLocation): AssetsManager? {
         if (path.namespace != Namespaces.MINECRAFT) {
-            return false
+            return null
         }
-        return path.path in assets
+        return if (path.path in assets) this else null
     }
 
     companion object {

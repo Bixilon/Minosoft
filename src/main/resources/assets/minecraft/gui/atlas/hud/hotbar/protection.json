@@ -7,7 +7,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/armor_empty",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "half": {
@@ -18,7 +18,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/armor_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "full": {
@@ -29,7 +29,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/armor_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   }
 }

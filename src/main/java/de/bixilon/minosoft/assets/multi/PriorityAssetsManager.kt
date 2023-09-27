@@ -81,13 +81,11 @@ class PriorityAssetsManager(
         }
     }
 
-    override fun contains(path: ResourceLocation): Boolean {
+    override fun getAssetsManager(path: ResourceLocation): AssetsManager? {
         for (manager in managers) {
-            if (path in manager) {
-                return true
-            }
+            return manager.getAssetsManager(path) ?: continue
         }
 
-        return false
+        return null
     }
 }

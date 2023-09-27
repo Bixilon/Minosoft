@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 
 open class ButtonElement(
@@ -21,11 +22,16 @@ open class ButtonElement(
     disabled: Boolean = false,
     var onSubmit: () -> Unit,
 ) : AbstractButtonElement(guiRenderer, text, disabled) {
-    override val disabledAtlas = guiRenderer.atlasManager["enchanting_table_card_disabled"]
-    override val normalAtlas = guiRenderer.atlasManager["enchanting_table_card_normal"]
-    override val hoveredAtlas = guiRenderer.atlasManager["enchanting_table_card_hovered"]
+    private val atlas = guiRenderer.atlas[ATLAS]
+    override val disabledAtlas = atlas?.get("disabled")
+    override val normalAtlas = atlas?.get("normal")
+    override val hoveredAtlas = atlas?.get("hovered")
 
     override fun submit() {
         onSubmit()
+    }
+
+    private companion object {
+        val ATLAS = minecraft("elements/button")
     }
 }

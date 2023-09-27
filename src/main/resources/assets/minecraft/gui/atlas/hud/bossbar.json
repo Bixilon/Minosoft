@@ -7,7 +7,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/pink_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "pink_full": {
@@ -18,7 +18,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/pink_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "blue_empty": {
@@ -29,7 +29,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/blue_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "blue_full": {
@@ -40,7 +40,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/blue_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "red_empty": {
@@ -51,7 +51,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/red_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "red_full": {
@@ -62,7 +62,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/red_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "green_empty": {
@@ -73,7 +73,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/green_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "green_full": {
@@ -84,7 +84,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/green_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "yellow_empty": {
@@ -95,7 +95,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/yellow_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "yellow_full": {
@@ -106,7 +106,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/yellow_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "purple_empty": {
@@ -117,7 +117,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/purple_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "purple_full": {
@@ -128,7 +128,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/purple_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "white_empty": {
@@ -139,7 +139,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/white_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "white_full": {
@@ -150,7 +150,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/white_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "notches_6_empty": {
@@ -161,7 +161,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/notched_6_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "notches_6_full": {
@@ -172,7 +172,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/notched_6_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "notches_10_empty": {
@@ -183,7 +183,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/notched_10_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "notches_10_full": {
@@ -194,7 +194,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/notched_10_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "notches_12_empty": {
@@ -205,7 +205,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/notched_12_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "notches_12_full": {
@@ -216,7 +216,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/notched_12_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "notches_20_empty": {
@@ -227,7 +227,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/notched_20_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "notches_20_full": {
@@ -238,7 +238,7 @@
     },
     "18": {
       "texture": "gui/sprites/boss_bar/notched_20_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "minecraft:wither_bar_empty": {

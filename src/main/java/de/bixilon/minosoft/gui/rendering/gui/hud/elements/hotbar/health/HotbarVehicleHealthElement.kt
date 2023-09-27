@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
@@ -24,21 +24,15 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.AbstractHotbarHealthElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import java.lang.Float.max
 
 class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
-    private val atlasManager = guiRenderer.atlasManager
+    private val atlasManager = guiRenderer.atlas
 
-    /**
-     *  [full|half]
-     */
-    private val hearts = arrayOf(
-        atlasManager["minecraft:vehicle_heart"],
-        atlasManager["minecraft:vehicle_half_heart"],
-    )
-    private val vehicleHeartContainer = atlasManager["minecraft:vehicle_heart_container"]!!
+    private val atlas = VehicleHeartAtlas(guiRenderer.atlas[HeartAtlas.ATLAS])
 
     private var shown = false
     override var totalHealth = 0.0f
@@ -51,7 +45,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
         if (text) {
             return super.forceRender(offset, consumer, options)
         }
-        drawCanisters(offset, consumer, options, vehicleHeartContainer)
+        drawCanisters(offset, consumer, options, atlas.getContainer(false))
 
         var healthLeft = totalHealth
         var heart = 0
@@ -62,10 +56,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
 
 
             val halfHeart = healthLeft < 1.5f
-            val image = hearts[when {
-                halfHeart -> 1
-                else -> 0
-            }]?.let { AtlasImageElement(guiRenderer, it) }
+            val image = atlas.getHeart(halfHeart)?.let { AtlasImageElement(guiRenderer, it) }
 
             image?.render(offset + Vec2(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
 

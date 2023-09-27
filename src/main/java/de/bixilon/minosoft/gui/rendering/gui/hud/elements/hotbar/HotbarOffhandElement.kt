@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,24 +17,27 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.Arms.Companion.opposite
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.marginOf
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
+    private val atlas = guiRenderer.atlas[HotbarBaseElement.ATLAS]
     private val frames = arrayOf(
-        guiRenderer.atlasManager["minecraft:offhand_right_arm_frame"],
-        guiRenderer.atlasManager["minecraft:offhand_left_arm_frame"],
+        atlas["offhand_right"],
+        atlas["offhand_left"],
     )
 
     val offArm = guiRenderer.context.connection.player.mainArm.opposite // ToDo: Support arm change
     private val frame = frames[offArm.ordinal]!!
 
     private var frameImage = AtlasImageElement(guiRenderer, frame)
-    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, frame.slots)
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, frame.slots ?: Int2ObjectOpenHashMap())
 
     init {
         _size = Vec2(frame.size)

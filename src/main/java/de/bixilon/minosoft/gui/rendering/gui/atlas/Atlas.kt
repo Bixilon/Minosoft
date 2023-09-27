@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+class Atlas(
+    private val elements: Map<String, AtlasElement>,
+) {
 
-interface TexturePart {
-    val texture: Texture
-    val uvStart: Vec2
-    val uvEnd: Vec2
-    val size: Vec2i
+    operator fun get(element: String): AtlasElement? {
+        return elements[element]
+    }
+
+    companion object {
+        operator fun Atlas?.get(element: String): AtlasElement? {
+            if (this == null) return null
+            return this[element]
+        }
+    }
 }

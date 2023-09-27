@@ -11,24 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory
+package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
-import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.BackgroundedContainerScreen
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
-open class InventoryScreen(
-    guiRenderer: GUIRenderer,
-    container: PlayerInventory,
-) : BackgroundedContainerScreen<PlayerInventory>(
-    guiRenderer,
-    container,
-    guiRenderer.atlas[ATLAS]["container"],
-) {
-
-    companion object {
-        val ATLAS = minecraft("container/inventory")
-    }
+interface TexturePart {
+    val texture: Texture
+    val uvStart: Vec2
+    val uvEnd: Vec2
+    val size: Vec2i
 }

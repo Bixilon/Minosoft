@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.processing.smelting
 
 import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceContainer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIFactory
 import kotlin.reflect.KClass
@@ -21,14 +22,19 @@ import kotlin.reflect.KClass
 class FurnaceContainerScreen(
     guiRenderer: GUIRenderer,
     container: FurnaceContainer,
-) : SmeltingContainerScreen<FurnaceContainer>(guiRenderer, container, guiRenderer.atlasManager["minecraft:furnace_container"], guiRenderer.atlasManager["minecraft:furnace_container_fuel"], guiRenderer.atlasManager["minecraft:furnace_container_process"]) {
+) : SmeltingContainerScreen<FurnaceContainer>(guiRenderer, container, guiRenderer.atlas[ATLAS]) {
 
 
     companion object : ContainerGUIFactory<FurnaceContainerScreen, FurnaceContainer> {
+        private val ATLAS = minecraft("container/furnace/furnace")
         override val clazz: KClass<FurnaceContainer> = FurnaceContainer::class
 
-        override fun build(guiRenderer: GUIRenderer, container: FurnaceContainer): FurnaceContainerScreen {
-            return FurnaceContainerScreen(guiRenderer, container)
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(ATLAS)
+        }
+
+        override fun build(gui: GUIRenderer, container: FurnaceContainer): FurnaceContainerScreen {
+            return FurnaceContainerScreen(gui, container)
         }
     }
 }

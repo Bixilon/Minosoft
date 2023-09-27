@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,21 +16,24 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.types.PlayerInventory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
-    private val baseAtlasElement = guiRenderer.atlasManager[BASE]!!
+    private val atlas = guiRenderer.atlas[ATLAS]
+    private val baseAtlasElement = atlas["base"]
     private val base = AtlasImageElement(guiRenderer, baseAtlasElement)
-    private val frame = AtlasImageElement(guiRenderer, guiRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
+    private val frame = AtlasImageElement(guiRenderer, atlas["frame"]!!, size = Vec2i(FRAME_SIZE))
 
-    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, baseAtlasElement.slots)
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, baseAtlasElement?.slots ?: Int2ObjectOpenHashMap())
 
     private var selectedSlot = 0
 
@@ -46,7 +49,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         base.render(offset + HORIZONTAL_MARGIN, consumer, options)
 
-        baseAtlasElement.slots[selectedSlot + PlayerInventory.HOTBAR_OFFSET]?.let {
+        baseAtlasElement?.slots?.get(selectedSlot + PlayerInventory.HOTBAR_OFFSET)?.let {
             frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, consumer, options)
         }
 
@@ -70,8 +73,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     }
 
     companion object {
-        private val BASE = "minecraft:hotbar_base".toResourceLocation()
-        private val FRAME = "minecraft:hotbar_frame".toResourceLocation()
+        val ATLAS = minecraft("gui/hotbar/hotbar")
 
         private val HOTBAR_BASE_SIZE = Vec2(182, 22)
         private const val FRAME_SIZE = 24

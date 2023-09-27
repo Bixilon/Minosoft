@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
-import de.bixilon.minosoft.gui.rendering.gui.atlas.TexturePart
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 

@@ -17,7 +17,9 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -26,8 +28,9 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
-    private val airBubble = guiRenderer.atlasManager["minecraft:air_bubble"]
-    private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]
+    private val atlas = guiRenderer.atlas[ATLAS]
+    private val airBubble = atlas["bubble"]
+    private val poppingAirBubble = atlas["popping"]
 
     init {
         forceSilentApply()
@@ -102,6 +105,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
     }
 
     companion object {
+        private val ATLAS = minecraft("hud/hotbar/air")
         private val BUBBLE_SIZE = Vec2i(8, 9)
         private const val FULL_AIR = 300
         private const val MAX_BUBBLES = 10

@@ -7,25 +7,25 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/container",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "container_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/container_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "container_hardcore": {
     "18": {
       "texture": "gui/sprites/hud/heart/container_hardcore",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "container_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/container_hardcore_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "container_vehicle": {
@@ -36,7 +36,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/vehicle_container",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "full": {
@@ -47,13 +47,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "full_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "full_hardcore": {
@@ -64,13 +64,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/hardcore_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "full_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/hardcore_full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "half": {
@@ -81,7 +81,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "half_hardcore": {
@@ -92,19 +92,19 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/hardcore_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "half_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "half_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/hardcore_half_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "poisoned_full": {
@@ -115,13 +115,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/poisoned_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "poisoned_full_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/poisoned_full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "poisoned_full_hardcore": {
@@ -132,13 +132,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/poisoned_hardcore_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "poisoned_full_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/poisoned_hardcore_full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "poisoned_half": {
@@ -149,7 +149,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/poisoned_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "poisoned_half_hardcore": {
@@ -160,19 +160,19 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/poisoned_hardcore_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "poisoned_half_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/poisoned_half_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "poisoned_half_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/poisoned_hardcore_half_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "withered_full": {
@@ -183,13 +183,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/withered_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "withered_full_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/withered_full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "withered_full_hardcore": {
@@ -200,13 +200,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/withered_hardcore_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "withered_full_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/withered_hardcore_full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "withered_half": {
@@ -217,7 +217,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/withered_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "withered_half_hardcore": {
@@ -228,19 +228,19 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/withered_hardcore_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "withered_half_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/withered_half_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "withered_half_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/withered_hardcore_half_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "absorption_full": {
@@ -251,13 +251,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/absorbing_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "absorption_full_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/absorbing_full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "absorption_full_hardcore": {
@@ -268,13 +268,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/absorbing_hardcore_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "absorption_full_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/absorbing_hardcore_full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "absorption_half": {
@@ -285,7 +285,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/absorbing_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "absorption_half_hardcore": {
@@ -296,19 +296,19 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/absorbing_hardcore_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "absorption_half_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/absorbing_half_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "absorption_half_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/absorbing_hardcore_half_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "frozen_full": {
@@ -319,13 +319,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/frozen_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "frozen_full_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/frozen_full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "frozen_full_hardcore": {
@@ -336,13 +336,13 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/frozen_hardcore_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "frozen_full_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/frozen_hardcore_full_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "frozen_half": {
@@ -353,7 +353,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/frozen_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "frozen_half_hardcore": {
@@ -364,19 +364,19 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/frozen_hardcore_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "frozen_half_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/frozen_half_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "frozen_half_hardcore_blinking": {
     "18": {
       "texture": "gui/sprites/hud/heart/frozen_hardcore_half_blinking",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "half_vehicle": {
@@ -387,7 +387,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/vehicle_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "full_vehicle": {
@@ -398,7 +398,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/heart/vehicle_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "minecraft:inventory_base": {
+  "container": {
     "0": {
       "texture": "gui/container/inventory",
       "start": [0, 0],

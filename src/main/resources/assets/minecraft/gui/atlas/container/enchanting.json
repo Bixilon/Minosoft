@@ -193,7 +193,7 @@
       "texture": "gui/container/enchanting_table"
     },
     "18": {
-      "size": [108, 19],
+      "resolution": [108, 19],
       "texture": "gui/sprites/container/enchanting_table/enchantment_slot"
     }
   },
@@ -204,7 +204,7 @@
       "texture": "gui/container/enchanting_table"
     },
     "18": {
-      "size": [108, 19],
+      "resolution": [108, 19],
       "texture": "gui/sprites/container/enchanting_table/enchantment_slot_disabled"
     }
   },
@@ -215,7 +215,7 @@
       "texture": "gui/container/enchanting_table"
     },
     "18": {
-      "size": [108, 19],
+      "resolution": [108, 19],
       "texture": "gui/sprites/container/enchanting_table/enchantment_slot_highlighted"
     }
   },
@@ -226,7 +226,7 @@
       "texture": "gui/container/enchanting_table"
     },
     "18": {
-      "size": [16, 16],
+      "resolution": [16, 16],
       "texture": "gui/sprites/container/enchanting_table/level_1"
     }
   },
@@ -237,7 +237,7 @@
       "texture": "gui/container/enchanting_table"
     },
     "18": {
-      "size": [16, 16],
+      "resolution": [16, 16],
       "texture": "gui/sprites/container/enchanting_table/level_1_disabled"
     }
   },
@@ -248,7 +248,7 @@
       "texture": "gui/container/enchanting_table"
     },
     "18": {
-      "size": [16, 16],
+      "resolution": [16, 16],
       "texture": "gui/sprites/container/enchanting_table/level_2"
     }
   },
@@ -259,7 +259,7 @@
       "texture": "gui/container/enchanting_table"
     },
     "18": {
-      "size": [16, 16],
+      "resolution": [16, 16],
       "texture": "gui/sprites/container/enchanting_table/level_1_disabled"
     }
   },
@@ -270,7 +270,7 @@
       "texture": "gui/container/enchanting_table"
     },
     "18": {
-      "size": [16, 16],
+      "resolution": [16, 16],
       "texture": "gui/sprites/container/enchanting_table/level_3"
     }
   },
@@ -281,7 +281,7 @@
       "texture": "gui/container/enchanting_table"
     },
     "18": {
-      "size": [16, 16],
+      "resolution": [16, 16],
       "texture": "gui/sprites/container/enchanting_table/level_3_disabled"
     }
   }

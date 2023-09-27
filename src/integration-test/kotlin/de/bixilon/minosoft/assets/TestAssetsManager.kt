@@ -35,7 +35,5 @@ object TestAssetsManager : AssetsManager {
     override fun unload() {
     }
 
-    override fun contains(path: ResourceLocation): Boolean {
-        return false
-    }
+    override fun getAssetsManager(path: ResourceLocation) = null
 }

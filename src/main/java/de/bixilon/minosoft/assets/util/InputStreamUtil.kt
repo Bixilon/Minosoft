@@ -16,6 +16,7 @@ package de.bixilon.minosoft.assets.util
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.bixilon.kutil.buffer.BufferDefinition
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.util.json.Jackson
 import de.matthiasmann.twl.utils.PNGDecoder
@@ -46,7 +47,7 @@ object InputStreamUtil {
         return builder.toString()
     }
 
-    fun InputStream.readJsonObject(close: Boolean = true): Map<String, Any> {
+    fun InputStream.readJsonObject(close: Boolean = true): JsonObject {
         try {
             return Jackson.MAPPER.readValue(this, Jackson.JSON_MAP_TYPE)
         } finally {

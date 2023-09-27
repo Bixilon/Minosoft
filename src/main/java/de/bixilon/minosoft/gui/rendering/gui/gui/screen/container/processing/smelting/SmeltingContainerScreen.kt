@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.data.container.types.processing.smelting.SmeltingContainer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -28,12 +29,12 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 abstract class SmeltingContainerScreen<C : SmeltingContainer>(
     guiRenderer: GUIRenderer,
     container: C,
-    atlasElement: AtlasElement?,
-    protected val fuelAtlasElement: AtlasElement?,
-    protected val processAtlasElement: AtlasElement?,
-) : ProcessingContainerScreen<C>(guiRenderer, container, atlasElement), Pollable {
+    atlas: Atlas?,
+) : ProcessingContainerScreen<C>(guiRenderer, container, atlas?.get("container")), Pollable {
+    protected val fuelAtlasElement: AtlasElement? = atlas?.get("fuel")
+    protected val processAtlasElement: AtlasElement? = atlas?.get("process")
     private val fuelArea = atlasElement?.areas?.get("fuel")
-    private val processArea = atlasElement?.areas?.get("process")
+    private val processArea = atlasElement?.areas?.get("progress")
     private var fuel = 0.0f
     private var process = 0.0f
 

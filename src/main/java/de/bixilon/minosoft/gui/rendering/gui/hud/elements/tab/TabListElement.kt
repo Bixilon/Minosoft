@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -63,15 +62,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     override val layoutOffset: Vec2
         get() = Vec2((guiRenderer.scaledSize.x - super.size.x) / 2, 20)
 
-    private val atlasManager = guiRenderer.atlasManager
-    val pingBarsAtlasElements: Array<AtlasElement> = arrayOf(
-        atlasManager["minecraft:tab_list_ping_0"]!!,
-        atlasManager["minecraft:tab_list_ping_1"]!!,
-        atlasManager["minecraft:tab_list_ping_2"]!!,
-        atlasManager["minecraft:tab_list_ping_3"]!!,
-        atlasManager["minecraft:tab_list_ping_4"]!!,
-        atlasManager["minecraft:tab_list_ping_5"]!!,
-    )
+    val atlas = TabListAtlas(guiRenderer)
 
     init {
         super.prefMaxSize = Vec2(-1, -1)

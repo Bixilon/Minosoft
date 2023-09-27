@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,18 +14,23 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
 import de.bixilon.minosoft.data.container.types.CraftingContainer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import kotlin.reflect.KClass
 
-class CraftingContainerScreen(guiRenderer: GUIRenderer, container: CraftingContainer) : LabeledContainerScreen<CraftingContainer>(guiRenderer, container, guiRenderer.atlasManager["minecraft:crafting_container".toResourceLocation()]) {
+class CraftingContainerScreen(guiRenderer: GUIRenderer, container: CraftingContainer) : LabeledContainerScreen<CraftingContainer>(guiRenderer, container, guiRenderer.atlas[ATLAS]?.get("container")) {
 
 
     companion object : ContainerGUIFactory<CraftingContainerScreen, CraftingContainer> {
+        private val ATLAS = minecraft("container/crafting")
         override val clazz: KClass<CraftingContainer> = CraftingContainer::class
 
-        override fun build(guiRenderer: GUIRenderer, container: CraftingContainer): CraftingContainerScreen {
-            return CraftingContainerScreen(guiRenderer, container)
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(ATLAS)
+        }
+
+        override fun build(gui: GUIRenderer, container: CraftingContainer): CraftingContainerScreen {
+            return CraftingContainerScreen(gui, container)
         }
     }
 }

@@ -23,6 +23,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
@@ -90,6 +91,8 @@ object RenderLoader {
         // Wait for init stage to complete
         initLatch.dec()
         initLatch.await()
+
+        renderer[GUIRenderer]?.atlas?.load() // TODO: remove this
 
         // Post init stage
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }

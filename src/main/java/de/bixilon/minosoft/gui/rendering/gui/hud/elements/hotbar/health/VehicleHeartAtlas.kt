@@ -11,24 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health
 
-import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
-import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.BackgroundedContainerScreen
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 
-open class InventoryScreen(
-    guiRenderer: GUIRenderer,
-    container: PlayerInventory,
-) : BackgroundedContainerScreen<PlayerInventory>(
-    guiRenderer,
-    container,
-    guiRenderer.atlas[ATLAS]["container"],
-) {
+class VehicleHeartAtlas(val atlas: Atlas?) {
 
-    companion object {
-        val ATLAS = minecraft("container/inventory")
-    }
+    fun getContainer(half: Boolean): AtlasElement = TODO()
+
+    fun getHeart(half: Boolean): AtlasElement = TODO()
 }

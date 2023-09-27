@@ -1,5 +1,5 @@
 {
-  "minecraft:hotbar_base": {
+  "base": {
     "0": {
       "texture": "gui/widgets",
       "end": [182, 22],
@@ -44,7 +44,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/hotbar",
-      "size": [182, 22],
+      "resolution": [182, 22],
       "slots": {
         "36": {
           "start": [3, 3],
@@ -85,7 +85,7 @@
       }
     }
   },
-  "minecraft:hotbar_frame": {
+  "frame": {
     "0": {
       "texture": "gui/widgets",
       "start": [0, 0],
@@ -93,10 +93,10 @@
     },
     "18": {
       "texture": "gui/sprites/hud/hotbar_selection",
-      "size": [24, 23]
+      "resolution": [24, 23]
     }
   },
-  "minecraft:offhand_left_arm_frame": {
+  "offhand_left": {
     "0": {
       "texture": "gui/widgets",
       "start": [24, 23],
@@ -110,7 +110,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/hotbar_offhand_left",
-      "size": [29, 24],
+      "resolution": [29, 24],
       "slots": {
         "45": {
           "start": [3, 3],
@@ -119,7 +119,7 @@
       }
     }
   },
-  "minecraft:offhand_right_arm_frame": {
+  "offhand_right": {
     "0": {
       "texture": "gui/widgets",
       "start": [60, 23],
@@ -133,7 +133,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/hotbar_offhand_right",
-      "size": [29, 24],
+      "resolution": [29, 24],
       "slots": {
         "45": {
           "start": [3, 3],

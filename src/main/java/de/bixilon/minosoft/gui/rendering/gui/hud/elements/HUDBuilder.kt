@@ -27,5 +27,6 @@ interface HUDBuilder<T : HUDElement> : Identified {
     val DEFAULT_ENABLED: Boolean
         get() = true
 
+    fun register(gui: GUIRenderer) = Unit
     fun build(guiRenderer: GUIRenderer): T
 }

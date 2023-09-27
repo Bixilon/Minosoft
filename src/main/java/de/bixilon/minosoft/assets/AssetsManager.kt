@@ -72,7 +72,8 @@ interface AssetsManager {
      */
     fun unload()
 
-    operator fun contains(path: ResourceLocation): Boolean
+    fun getAssetsManager(path: ResourceLocation): AssetsManager?
+    operator fun contains(path: ResourceLocation) = getAssetsManager(path) != null
 
 
     companion object {

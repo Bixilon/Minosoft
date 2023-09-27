@@ -38,8 +38,8 @@ class MemoryAssetsManager : AssetsManager {
     override fun unload() {
     }
 
-    override fun contains(path: ResourceLocation): Boolean {
-        return path in entries
+    override fun getAssetsManager(path: ResourceLocation): AssetsManager? {
+        return if (path in entries) this else null
     }
 
     fun push(path: ResourceLocation, data: ByteArray) {

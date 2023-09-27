@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,12 +15,11 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.bossbar.BossbarColors
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -32,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 class BossbarElement(
     guiRenderer: GUIRenderer,
     val bossbar: Bossbar,
-    val atlas: Array<Array<Array<AtlasElement?>>>,
+    val atlas: BossbarAtlas?,
 ) : Element(guiRenderer), Pollable {
     private var color: BossbarColors = bossbar.color
     private var notches: BossbarNotches = bossbar.notches
@@ -89,12 +88,8 @@ class BossbarElement(
 
     private fun setStyle() {
         // ToDo: Cache progress
-        val notches = if (notches == BossbarNotches.NO_NOTCHES) {
-            null
-        } else {
-            atlas[1][notches.ordinal - 1]
-        }
-        progress = BossbarProgressElement(guiRenderer, atlas[0][color.ordinal].unsafeCast(), notches.unsafeCast(), 0.0f)
+        val notches = if (notches == BossbarNotches.NO_NOTCHES) null else atlas?.get(notches)
+        progress = BossbarProgressElement(guiRenderer, atlas?.get(color)!!.cast(), notches?.cast(), 0.0f)
     }
 
     override fun forceSilentApply() {

@@ -22,6 +22,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.error.AssetCorruptedError
 import de.bixilon.minosoft.assets.error.AssetNotFoundError
 import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsManager
@@ -146,7 +147,7 @@ class IndexAssetsManager(
         return FileAssetsUtil.readOrNull(property.hash, type = property.type.type, verify = verify)?.let { ByteArrayInputStream(it) }
     }
 
-    override fun contains(path: ResourceLocation): Boolean {
-        return path in assets
+    override fun getAssetsManager(path: ResourceLocation): AssetsManager? {
+        return if (path in assets) this else null
     }
 }

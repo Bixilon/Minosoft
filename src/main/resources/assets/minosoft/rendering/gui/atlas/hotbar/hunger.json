@@ -7,7 +7,7 @@
     },
     "18": {
       "texture": "minecraft:gui/sprites/hud/food_empty",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "container_hunger": {
@@ -18,7 +18,7 @@
     },
     "18": {
       "texture": "minecraft:gui/sprites/hud/food_empty_hunger",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "container_saturation_half": {
@@ -43,7 +43,7 @@
     },
     "18": {
       "texture": "minecraft:gui/sprites/hud/food_full",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "half": {
@@ -54,7 +54,7 @@
     },
     "18": {
       "texture": "minecraft:gui/sprites/hud/food_half",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "full_hunger": {
@@ -65,7 +65,7 @@
     },
     "18": {
       "texture": "minecraft:gui/sprites/hud/food_full_hunger",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "half_hunger": {
@@ -76,7 +76,7 @@
     },
     "18": {
       "texture": "minecraft:gui/sprites/hud/food_half_hunger",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   }
 }

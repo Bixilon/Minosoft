@@ -11,24 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
-import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
-import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.BackgroundedContainerScreen
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 
-open class InventoryScreen(
-    guiRenderer: GUIRenderer,
-    container: PlayerInventory,
-) : BackgroundedContainerScreen<PlayerInventory>(
-    guiRenderer,
-    container,
-    guiRenderer.atlas[ATLAS]["container"],
-) {
+class TabListAtlas(val atlas: Atlas?) {
+    private val ping = Array(6) { atlas["ping_$it"] }
 
-    companion object {
-        val ATLAS = minecraft("container/inventory")
+
+    constructor(gui: GUIRenderer) : this(gui.atlas[ATLAS])
+
+    fun getPing(ping: Int): AtlasElement? {
+        return this.ping[when {
+            ping < 0 -> 0
+            ping < 150 -> 5
+            ping < 300 -> 4
+            ping < 600 -> 3
+            ping < 1000 -> 2
+            else -> 1
+        }]
+    }
+
+
+    private companion object {
+        val ATLAS = minecraft("hud/tab")
     }
 }

@@ -7,7 +7,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/air",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   },
   "popping": {
@@ -18,7 +18,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/air_bursting",
-      "size": [9, 9]
+      "resolution": [9, 9]
     }
   }
 }

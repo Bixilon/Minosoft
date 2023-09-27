@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.data.bossbar.Bossbar
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -35,61 +36,8 @@ class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, Horizonta
     override val layoutOffset: Vec2
         get() = Vec2((guiRenderer.scaledSize.x - super.size.x) / 2, 2)
 
-    val atlasManager = guiRenderer.atlasManager
 
-    /**
-     * [bar|notches][color.ordinal|notches.ordinal-1][empty|full]
-     */
-    private val atlas = arrayOf(
-        arrayOf(
-            arrayOf(
-                atlasManager["minecraft:bossbar_pink_empty"],
-                atlasManager["minecraft:bossbar_pink_full"],
-            ),
-            arrayOf(
-                atlasManager["minecraft:bossbar_blue_empty"],
-                atlasManager["minecraft:bossbar_blue_full"],
-            ),
-            arrayOf(
-                atlasManager["minecraft:bossbar_red_empty"],
-                atlasManager["minecraft:bossbar_red_full"],
-            ),
-            arrayOf(
-                atlasManager["minecraft:bossbar_green_empty"],
-                atlasManager["minecraft:bossbar_green_full"],
-            ),
-            arrayOf(
-                atlasManager["minecraft:bossbar_yellow_empty"],
-                atlasManager["minecraft:bossbar_yellow_full"],
-            ),
-            arrayOf(
-                atlasManager["minecraft:bossbar_purple_empty"],
-                atlasManager["minecraft:bossbar_purple_full"],
-            ),
-            arrayOf(
-                atlasManager["minecraft:bossbar_white_empty"],
-                atlasManager["minecraft:bossbar_white_full"],
-            ),
-        ),
-        arrayOf(
-            arrayOf(
-                atlasManager["minecraft:bossbar_notches_6_empty"],
-                atlasManager["minecraft:bossbar_notches_6_full"],
-            ),
-            arrayOf(
-                atlasManager["minecraft:bossbar_notches_10_empty"],
-                atlasManager["minecraft:bossbar_notches_10_full"],
-            ),
-            arrayOf(
-                atlasManager["minecraft:bossbar_notches_12_empty"],
-                atlasManager["minecraft:bossbar_notches_12_empty"],
-            ),
-            arrayOf(
-                atlasManager["minecraft:bossbar_notches_20_empty"],
-                atlasManager["minecraft:bossbar_notches_20_full"],
-            ),
-        ),
-    )
+    val atlas = guiRenderer.atlas[ATLAS]?.let { BossbarAtlas(it) }
 
     override fun postInit() {
         connection.events.listen<BossbarAddEvent> {
@@ -117,7 +65,12 @@ class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, Horizonta
 
 
     companion object : HUDBuilder<LayoutedGUIElement<BossbarLayout>> {
+        private val ATLAS = minecraft("hud/bossbar")
         override val identifier: ResourceLocation = "minosoft:bossbar".toResourceLocation()
+
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(ATLAS)
+        }
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<BossbarLayout> {
             return LayoutedGUIElement(BossbarLayout(guiRenderer))

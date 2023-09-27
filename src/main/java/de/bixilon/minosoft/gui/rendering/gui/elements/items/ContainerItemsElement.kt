@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
@@ -26,12 +26,13 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class ContainerItemsElement(
     guiRenderer: GUIRenderer,
     val container: Container,
-    val slots: Int2ObjectOpenHashMap<AtlasSlot>, // ToDo: Use an array?
+    val slots: Int2ObjectMap<AtlasArea>, // ToDo: Use an array?
 ) : Element(guiRenderer), AbstractLayout<ItemElement> {
     private val itemElements: Int2ObjectOpenHashMap<ItemElementData> = Int2ObjectOpenHashMap()
     private var floatingItem: FloatingItem? = null

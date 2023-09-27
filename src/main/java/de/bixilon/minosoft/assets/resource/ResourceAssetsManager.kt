@@ -41,10 +41,10 @@ class ResourceAssetsManager(
         return clazz.getResourceAsStream(url)
     }
 
-    override fun contains(path: ResourceLocation): Boolean {
-        val stream = open(path) ?: return false
+    override fun getAssetsManager(path: ResourceLocation): AssetsManager? {
+        val stream = open(path) ?: return null
         stream.close()
-        return true
+        return this
     }
 
     override fun get(path: ResourceLocation): InputStream {

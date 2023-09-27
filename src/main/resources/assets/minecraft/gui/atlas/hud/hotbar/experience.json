@@ -6,7 +6,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/experience_bar_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "full": {
@@ -17,7 +17,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/experience_bar_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "horse_empty": {
@@ -28,7 +28,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/jump_bar_background",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   },
   "horse_full": {
@@ -39,7 +39,7 @@
     },
     "18": {
       "texture": "gui/sprites/hud/jump_bar_progress",
-      "size": [182, 5]
+      "resolution": [182, 5]
     }
   }
 }

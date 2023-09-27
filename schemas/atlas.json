@@ -26,8 +26,7 @@
           "type": "object",
           "properties": {
             "texture": {
-              "type": "string",
-              "pattern": "\\w+:.+\\.png"
+              "type": "string"
             },
             "start": {
               "$ref": "#/definitions/vec2i"
@@ -80,13 +79,14 @@
             }
           },
           "required": [
-            "texture",
-            "start",
-            "end"
+            "texture"
           ],
           "optional": [
             "slots",
-            "areas"
+            "areas",
+            "resolution",
+            "start",
+            "end"
           ],
           "additionalProperties": false
         }

@@ -7,7 +7,7 @@
     },
     "18": {
       "texture": "gui/sprites/widget/button_disabled",
-      "size": [200, 20]
+      "resolution": [200, 20]
     }
   },
   "normal": {
@@ -18,7 +18,7 @@
     },
     "18": {
       "texture": "gui/sprites/widget/button",
-      "size": [200, 20]
+      "resolution": [200, 20]
     }
   },
   "hovered": {
@@ -29,7 +29,7 @@
     },
     "18": {
       "texture": "gui/sprites/widget/button_highlighted",
-      "size": [200, 20]
+      "resolution": [200, 20]
     }
   }
 }

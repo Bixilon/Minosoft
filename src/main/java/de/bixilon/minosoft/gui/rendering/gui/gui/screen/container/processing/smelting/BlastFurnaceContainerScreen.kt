@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.processing.smelting
 
 import de.bixilon.minosoft.data.container.types.processing.smelting.BlastFurnaceContainer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIFactory
 import kotlin.reflect.KClass
@@ -21,14 +22,19 @@ import kotlin.reflect.KClass
 class BlastFurnaceContainerScreen(
     guiRenderer: GUIRenderer,
     container: BlastFurnaceContainer,
-) : SmeltingContainerScreen<BlastFurnaceContainer>(guiRenderer, container, guiRenderer.atlasManager["minecraft:blast_furnace_container"], guiRenderer.atlasManager["minecraft:blast_furnace_container_fuel"], guiRenderer.atlasManager["minecraft:blast_furnace_container_process"]) {
+) : SmeltingContainerScreen<BlastFurnaceContainer>(guiRenderer, container, guiRenderer.atlas[ATLAS]) {
 
 
     companion object : ContainerGUIFactory<BlastFurnaceContainerScreen, BlastFurnaceContainer> {
+        private val ATLAS = minecraft("container/furnace/blast")
         override val clazz: KClass<BlastFurnaceContainer> = BlastFurnaceContainer::class
 
-        override fun build(guiRenderer: GUIRenderer, container: BlastFurnaceContainer): BlastFurnaceContainerScreen {
-            return BlastFurnaceContainerScreen(guiRenderer, container)
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(ATLAS)
+        }
+
+        override fun build(gui: GUIRenderer, container: BlastFurnaceContainer): BlastFurnaceContainerScreen {
+            return BlastFurnaceContainerScreen(gui, container)
         }
     }
 }
