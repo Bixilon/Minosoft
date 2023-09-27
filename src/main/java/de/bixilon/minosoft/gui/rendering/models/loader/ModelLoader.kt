@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ModelLoader(
     val context: RenderContext,
 ) {
-    val packFormat = context.connection.assetsManager.properties?.pack?.format ?: if (context.connection.version.flattened) Int.MAX_VALUE else 0 // TODO: integrate with assets/refactor_atlas
+    val packFormat = context.connection.assetsManager.properties.pack.format
     val fluids = FluidModelLoader(this)
     val entities = EntityModels(this)
     val block = BlockLoader(this)
