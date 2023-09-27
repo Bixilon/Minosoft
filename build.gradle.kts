@@ -337,7 +337,7 @@ dependencies {
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.23.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.4.5")
+    implementation("com.github.oshi", "oshi-core", "6.4.6")
     implementation("com.github.luben", "zstd-jni", "1.5.5-5", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.13.0")
     implementation("org.kamranzafar", "jtar", "2.3")
@@ -362,7 +362,7 @@ dependencies {
     implementation("de.bixilon", "jiibles", "1.1.1")
     implementation("de.bixilon", "kotlin-glm", glmVersion)
     implementation("de.bixilon", "mbf-kotlin", "1.0.2") { exclude("com.github.luben", "zstd-jni") }
-    implementation("de.bixilon.javafx", "javafx-svg", "0.3") { exclude("org.openjfx", "javafx-controls") }
+    implementation("de.bixilon.javafx", "javafx-svg", "0.3.1") { exclude("org.openjfx", "javafx-controls") }
 
     // netty
     netty("buffer")
