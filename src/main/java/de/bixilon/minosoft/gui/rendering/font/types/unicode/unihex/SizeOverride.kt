@@ -29,9 +29,9 @@ data class SizeOverride(
             val string = this!!.toString()
             val iterator = string.codePoints().iterator()
 
-            if (!iterator.hasNext()) throw IllegalArgumentException("Not a unicode string $this")
+            if (!iterator.hasNext()) throw IllegalArgumentException("Not an unicode string $this")
             val code = iterator.nextInt()
-            if (iterator.hasNext()) throw IllegalArgumentException("Not a unicode string $this")
+            if (iterator.hasNext()) throw IllegalArgumentException("Not an unicode string $this")
 
             return code
         }

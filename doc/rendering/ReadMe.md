@@ -22,7 +22,7 @@ The whole render system gets loaded, as soon as you tell eros to connect to a se
 
 Textures that don't get modified anymore (like block textures or items).
 The textures are stored in 5 dimensional way (2d for x and y coordinates, 1d for the texture index (aka. what texture), 1d for the resolution (like `16x16` or `32x32`) and the last dimension for mipmaps).
-Every vertex can have an additional animation id, that is done via a uniform buffer.
+Every vertex can have an additional animation id, that is done via an uniform buffer.
 
 ### Dynamic textures
 
