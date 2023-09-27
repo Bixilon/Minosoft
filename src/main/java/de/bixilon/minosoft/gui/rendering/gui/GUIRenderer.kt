@@ -64,7 +64,6 @@ class GUIRenderer(
         gui.init()
         hud.init()
         popper.init()
-        dragged.init()
     }
 
     override fun postInit(latch: AbstractLatch) {
@@ -77,7 +76,6 @@ class GUIRenderer(
         gui.postInit()
         hud.postInit()
         popper.postInit()
-        dragged.postInit()
     }
 
     private fun updateResolution(windowSize: Vec2 = Vec2(context.window.size), scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {

@@ -81,7 +81,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
     }
 
 
-    override fun init() {
+    override fun postInit() {
         connection.events.listen<ChatMessageEvent> {
             if (it.message.type.position == ChatTextPositions.HOTBAR) {
                 return@listen
@@ -108,7 +108,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             this.input.value = "/"
         }
 
-        internal.init()
+        internal.postInit()
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

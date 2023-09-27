@@ -161,7 +161,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         queueSizeRecalculation()
     }
 
-    override fun init() {
+    override fun postInit() {
         val connection = context.connection
         connection.events.listen<ObjectivePositionSetEvent> {
             if (it.position != ScoreboardPositions.SIDEBAR) {

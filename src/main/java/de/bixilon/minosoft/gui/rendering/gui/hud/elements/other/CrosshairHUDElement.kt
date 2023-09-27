@@ -39,7 +39,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
     private var reapply = true
     private var previousNeedsDraw = needsDraw
 
-    override fun init() {
+    override fun postInit() {
         crosshairAtlasElement = guiRenderer.atlas[ATLAS]?.get("crosshair")
         crosshairProfile::color.observe(this) { reapply = true }
     }

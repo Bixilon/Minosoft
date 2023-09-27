@@ -31,7 +31,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     private val atlas = guiRenderer.atlas[ATLAS]
     private val baseAtlasElement = atlas["base"]
     private val base = AtlasImageElement(guiRenderer, baseAtlasElement)
-    private val frame = AtlasImageElement(guiRenderer, atlas["frame"]!!, size = Vec2i(FRAME_SIZE))
+    private val frame = AtlasImageElement(guiRenderer, atlas["frame"], size = Vec2i(FRAME_SIZE))
 
     private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, baseAtlasElement?.slots ?: Int2ObjectOpenHashMap())
 

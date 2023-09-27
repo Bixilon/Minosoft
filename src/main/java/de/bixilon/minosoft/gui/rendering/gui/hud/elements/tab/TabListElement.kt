@@ -216,7 +216,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     }
 
 
-    override fun init() {
+    override fun postInit() {
         val connection = context.connection
         connection.tabList::header.observe(this) { header.text = it }
         connection.tabList::footer.observe(this) { footer.text = it }

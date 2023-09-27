@@ -47,7 +47,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
     }
 
 
-    override fun init() {
+    override fun postInit() {
         connection.events.listen<ChatMessageEvent> {
             if (it.message !is InternalChatMessage || profile.chat.internal.hidden) {
                 return@listen

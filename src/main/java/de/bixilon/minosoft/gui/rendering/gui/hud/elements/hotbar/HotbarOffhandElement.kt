@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.Arms.Companion.opposite
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElemen
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.marginOf
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -34,13 +36,13 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     )
 
     val offArm = guiRenderer.context.connection.player.mainArm.opposite // ToDo: Support arm change
-    private val frame = frames[offArm.ordinal]!!
+    private val frame = frames[offArm.ordinal]
 
     private var frameImage = AtlasImageElement(guiRenderer, frame)
-    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, frame.slots ?: Int2ObjectOpenHashMap())
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.context.connection.player.items.inventory, frame?.slots ?: Int2ObjectOpenHashMap())
 
     init {
-        _size = Vec2(frame.size)
+        _size = Vec2(frame?.size ?: Vec2i.EMPTY)
         val margin = if (offArm == Arms.LEFT) {
             marginOf(right = 5.0f)
         } else {

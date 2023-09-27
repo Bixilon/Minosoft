@@ -26,11 +26,10 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Initializable
 
 class DraggedManager(
     private val guiRenderer: GUIRenderer,
-) : Initializable, InputHandler, AsyncDrawable, Drawable {
+) : InputHandler, AsyncDrawable, Drawable {
     private val clickCounter = MouseClickCounter()
     var element: DraggedGUIElement<*>? = null
         set(value) {
@@ -51,12 +50,6 @@ class DraggedManager(
             applyCursor()
         }
     private var lastTickTime: Long = -1L
-
-    override fun init() {
-    }
-
-    override fun postInit() {
-    }
 
     fun onScreenChange() {
         element?.element?.forceSilentApply()

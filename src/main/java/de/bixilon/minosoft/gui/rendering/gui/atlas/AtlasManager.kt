@@ -33,6 +33,7 @@ class AtlasManager(val context: RenderContext) {
     }
 
     operator fun get(atlas: ResourceLocation): Atlas? {
+        if (loader != null) throw IllegalStateException("Atlas is still in loading phase!")
         return this.atlas[atlas]
     }
 }

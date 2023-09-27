@@ -30,7 +30,7 @@ object RenderUtil {
         }
     }
 
-    fun RenderContext.runAsync(runnable: () -> Unit) {
+    inline fun RenderContext.runAsync(crossinline runnable: () -> Unit) {
         DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGHER) {
             try {
                 runnable()
