@@ -95,4 +95,8 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
     override fun optimize() {
         idMap.trim()
     }
+
+    operator fun set(id: Int, meta: Int?, state: BlockState) {
+        this[id shl 4 or (meta ?: 0)] = state
+    }
 }

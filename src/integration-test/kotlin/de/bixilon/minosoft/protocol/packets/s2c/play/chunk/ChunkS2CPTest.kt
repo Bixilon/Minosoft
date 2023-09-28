@@ -97,7 +97,7 @@ class ChunkS2CPTest {
         assertEquals(blocks[3]!![0, 11, 0]!!.block.identifier, MinecraftBlocks.DIRT)
     }
 
-    @Test(groups = ["packet"], invocationCount = 10)
+    @Test(groups = ["packet"])
     fun cuberite_1_12_2() {
         val packet = read("cuberite_1_12_2", "1.12.2", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
         assertEquals(packet.position, Vec2i(0, 0))

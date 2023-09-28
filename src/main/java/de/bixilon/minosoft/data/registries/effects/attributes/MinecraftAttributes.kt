@@ -23,6 +23,7 @@ object MinecraftAttributes : MinecraftDefaults<AttributeType>() {
     val MOVEMENT_SPEED = AttributeType(minecraft("generic.movement_speed"), 0.7).register()
     val FLYING_SPEED = AttributeType(minecraft("generic.flying_speed"), 0.4).register()
     val ATTACK_DAMAGE = AttributeType(minecraft("generic.attack_damage"), 2.0, 0.0, 2048.0).register()
+    val ATTACK_SPEED = AttributeType(minecraft("generic.attack_speed"), 1.0, 0.0, 2048.0).register() // TODO: values
     val ATTACK_KNOCKBACK = AttributeType(minecraft("generic.attack_knockback"), 0.0, 0.0, 5.0).register()
     val ARMOR = AttributeType(minecraft("generic.armor"), 0.0, 0.0, 30.0).register()
     val ARMOR_TOUGHNESS = AttributeType(minecraft("generic.armor_toughness"), 0.0, 0.0, 20.0).register()

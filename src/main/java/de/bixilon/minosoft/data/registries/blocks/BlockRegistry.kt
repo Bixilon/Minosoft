@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CollectionCast.asAnyMap
 import de.bixilon.kutil.json.JsonObject
@@ -42,22 +43,43 @@ class BlockRegistry(
 
 
     private fun legacy(block: Block, data: JsonObject, registries: Registries) {
-        val states = data["states"]
+        val statesData = data["states"]?.nullCast<List<JsonObject>>()
         val id = data["id"]?.toInt()
         val meta = data["meta"]?.toInt()
 
-        if (states == null) {
-            if (id == null) throw IllegalArgumentException("Missing id (block=$block)!")
+        if (statesData == null) {
             // block has only a single state
+            if (id == null) throw IllegalArgumentException("Missing id (block=$block)!")
             val settings = BlockStateSettings.of(registries, data)
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
             block.updateStates(setOf(state), state, emptyMap())
-            registries.blockState[id shl 4 or (meta ?: 0)] = state
+            registries.blockState[id, meta] = state
             return
         }
-        block.updateStates(setOf(BlockState(block, 0)), BlockState(block, 0), emptyMap())
 
-        println("TODO: block properties, ...")
+
+        val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
+
+        val states: MutableSet<BlockState> = ObjectOpenHashSet()
+        for (stateJson in statesData) {
+            val settings = BlockStateSettings.of(registries, stateJson.unsafeCast())
+            val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
+
+            states += state
+            val id = stateJson["id"]?.toInt() ?: id ?: throw IllegalArgumentException("Missing block id: $block!")
+            val meta = stateJson["meta"]?.toInt() ?: meta
+            registries.blockState[id, meta] = state
+
+            if (state !is PropertyBlockState) continue
+
+            for ((property, value) in state.properties) {
+                properties.getOrPut(property) { ObjectOpenHashSet() } += value
+            }
+        }
+
+        val default = data["default_state"]?.toInt()?.let { registries.blockState.forceGet(it) } ?: states.first()
+
+        block.updateStates(states, default, properties.mapValues { it.value.toTypedArray() })
     }
 
     fun flattened(block: Block, data: JsonObject, registries: Registries) {
