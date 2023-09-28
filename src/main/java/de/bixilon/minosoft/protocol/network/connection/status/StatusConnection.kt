@@ -142,6 +142,7 @@ class StatusConnection(
         state = StatusConnectionStates.RESOLVING
         val addresses: List<ServerAddress>
         try {
+            // TODO: Don't resolve if address is ip
             addresses = resolve()
         } catch (exception: Exception) {
             Log.log(LogMessageType.NETWORK) { "Can not resolve ${this.address}" }

@@ -16,6 +16,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -37,6 +38,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W34C
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W36D
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W44A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_2_PRE2
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE7
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_4
@@ -94,7 +96,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId >= V_18W44A) {
                 buffer.readNBT()?.toJsonObject() // heightmap
             }
-            if (action == ChunkAction.CREATE && buffer.versionId < V_21W37A) {
+            if (action == ChunkAction.CREATE && buffer.versionId >= V_19W36A && buffer.versionId < V_21W37A) {
                 this.prototype.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
             }
             readingData = ChunkReadingData(PlayInByteBuffer(buffer.readByteArray(), buffer.connection), dimension, sectionBitMask)
@@ -153,8 +155,8 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     fun PlayInByteBuffer.readBiomeArray(): Array<Biome> {
         val length = when {
             versionId >= ProtocolVersions.V_20W28A -> readVarInt()
-            versionId >= ProtocolVersions.V_19W36A -> ProtocolDefinition.BLOCKS_PER_SECTION / 4 // 1024, 4x4 blocks
-            else -> 0
+            versionId >= V_19W36A -> ProtocolDefinition.BLOCKS_PER_SECTION / 4 // 1024, 4x4 blocks
+            else -> Broken("")
         }
 
         check(length <= this.size) { "Trying to allocate too much memory" }
