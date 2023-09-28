@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -46,7 +47,7 @@ class PropertyVariantBlockModelTest {
             mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to false) to B,
             mapOf(BlockProperties.FACING to Directions.SOUTH) to C,
             mapOf(BlockProperties.LIT to false) to D,
-        ))
+        ).unsafeCast())
         assertEquals(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.EAST, BlockProperties.LIT to true), 0)), A)
         assertEquals(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to false), 0)), B)
         assertNull(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to true), 0)))

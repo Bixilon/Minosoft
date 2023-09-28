@@ -16,12 +16,13 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
 class PropertyCondition(
-    val conditions: Map<BlockProperties, Any>,
+    val conditions: Map<BlockProperty<*>, Any>,
 ) : BuilderCondition {
 
-    override fun matches(properties: Map<BlockProperties, Any>): Boolean {
+    override fun matches(properties: Map<BlockProperty<*>, Any>): Boolean {
         for ((property, value) in this.conditions) {
             val target = properties[property] ?: return false
             if (value is Set<*>) {
@@ -36,13 +37,13 @@ class PropertyCondition(
 
     companion object {
 
-        private fun deserializeOr(property: String, list: List<String>): Pair<BlockProperties, Any> {
+        private fun deserializeOr(property: String, list: List<String>): Pair<BlockProperty<*>, Any> {
             if (list.size == 1) {
                 return BlockProperties.parseProperty(property, list.first())
             }
 
             val values: MutableSet<Any> = mutableSetOf()
-            var blockProperty: BlockProperties? = null
+            var blockProperty: BlockProperty<*>? = null
 
             for (entry in list) {
                 val (entryProperty, entryValue) = BlockProperties.parseProperty(property, entry)
@@ -59,7 +60,7 @@ class PropertyCondition(
         }
 
         fun deserialize(data: JsonObject): PropertyCondition? {
-            val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
+            val properties: MutableMap<BlockProperty<*>, Any> = mutableMapOf()
 
             for ((key, value) in data) {
                 if (key == OrCondition.KEY) continue

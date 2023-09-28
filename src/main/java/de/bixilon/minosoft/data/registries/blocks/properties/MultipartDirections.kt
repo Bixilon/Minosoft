@@ -13,17 +13,32 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.enums.AliasableEnum
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 
-enum class BambooLeaves {
-    NONE,
-    SMALL,
-    LARGE,
+enum class MultipartDirections(
+    vararg names: String,
+) : AliasableEnum {
+    NONE("false"),
+    LOW,
+    UP,
+    SIDE("true"),
+    TALL,
     ;
 
-    companion object : ValuesEnum<BambooLeaves> {
-        override val VALUES = values()
-        override val NAME_MAP: Map<String, BambooLeaves> = EnumUtil.getEnumValues(VALUES)
+    override val names: Array<String> = names.unsafeCast()
+
+    companion object : ValuesEnum<MultipartDirections> {
+        override val VALUES: Array<MultipartDirections> = values()
+        override val NAME_MAP = EnumUtil.getEnumValues(VALUES)
+
+        override fun get(any: Any): MultipartDirections? {
+            if (any is Boolean) {
+                return if (any) SIDE else NONE
+            }
+            return super.get(any)
+        }
     }
 }

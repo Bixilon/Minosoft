@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.fluid
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -47,5 +48,6 @@ abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings)
 
     companion object {
         val LIGHT_PROPERTIES = CustomLightProperties(true, false, true)
+        val LEVEL = BlockProperties.FLUID_LEVEL
     }
 }

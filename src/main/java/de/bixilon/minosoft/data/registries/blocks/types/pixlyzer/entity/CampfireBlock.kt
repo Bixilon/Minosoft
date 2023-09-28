@@ -21,7 +21,7 @@ import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.block.CampfireBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isLit
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.isLit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.LitBlock

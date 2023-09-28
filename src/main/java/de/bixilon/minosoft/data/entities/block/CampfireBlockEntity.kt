@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.DirectionUtil.rotateY
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isLit
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.isLit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.CampfireBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft

@@ -18,7 +18,6 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.World
@@ -31,14 +30,14 @@ import kotlin.math.abs
 abstract class FlowingFluidIT {
     protected val levels by lazy {
         arrayOf(
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 7),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 6),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 5),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 4),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 3),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 2),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 1),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0),
+            block!!.states.withProperties(FluidBlock.LEVEL to 7),
+            block!!.states.withProperties(FluidBlock.LEVEL to 6),
+            block!!.states.withProperties(FluidBlock.LEVEL to 5),
+            block!!.states.withProperties(FluidBlock.LEVEL to 4),
+            block!!.states.withProperties(FluidBlock.LEVEL to 3),
+            block!!.states.withProperties(FluidBlock.LEVEL to 2),
+            block!!.states.withProperties(FluidBlock.LEVEL to 1),
+            block!!.states.withProperties(FluidBlock.LEVEL to 0),
         )
     }
 

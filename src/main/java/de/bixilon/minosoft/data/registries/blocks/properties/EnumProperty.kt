@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,13 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.properties.serializer
+package de.bixilon.minosoft.data.registries.blocks.properties
 
-import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.enums.ValuesEnum
 
-object IntBlockPropertiesSerializer : BlockPropertiesSerializer {
+class EnumProperty<T : Enum<*>>(
+    name: String,
+    private val values: ValuesEnum<T>,
+    private val allowed: Set<T>? = null,
+) : BlockProperty<T>(name) {
 
-    override fun deserialize(value: Any): Int {
-        return value.toInt()
+    override fun parse(value: Any): T {
+        val value = values[value] ?: throw IllegalArgumentException("Invalid enum value: $value")
+        if (allowed != null && value !in allowed) {
+            throw IllegalArgumentException("Enum value not allowed: $value")
+        }
+
+        return value
     }
 }

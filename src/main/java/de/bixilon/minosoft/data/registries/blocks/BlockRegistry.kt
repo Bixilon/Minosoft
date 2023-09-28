@@ -20,7 +20,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactories
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -58,7 +58,7 @@ class BlockRegistry(
         }
 
 
-        val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
+        val properties: MutableMap<BlockProperty<*>, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
         for (stateJson in statesData) {
@@ -83,7 +83,7 @@ class BlockRegistry(
     }
 
     fun flattened(block: Block, data: JsonObject, registries: Registries) {
-        val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
+        val properties: MutableMap<BlockProperty<*>, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
         for ((stateId, stateJson) in data["states"].asAnyMap()) {

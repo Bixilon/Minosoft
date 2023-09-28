@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.manager.BlockStateManager
@@ -50,7 +50,7 @@ abstract class Block(
     }
 
 
-    fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperties, Array<Any>>) {
+    fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperty<*>, Array<Any>>) {
         val manager = when {
             states.size == 1 -> SimpleStateManager(default)
             else -> PropertyStateManager(properties, states, default)

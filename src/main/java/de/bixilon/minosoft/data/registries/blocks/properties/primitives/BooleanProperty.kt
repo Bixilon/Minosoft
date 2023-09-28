@@ -11,19 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.properties
+package de.bixilon.minosoft.data.registries.blocks.properties.primitives
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
-enum class BambooLeaves {
-    NONE,
-    SMALL,
-    LARGE,
-    ;
+class BooleanProperty(name: String) : BlockProperty<Boolean>(name) {
 
-    companion object : ValuesEnum<BambooLeaves> {
-        override val VALUES = values()
-        override val NAME_MAP: Map<String, BambooLeaves> = EnumUtil.getEnumValues(VALUES)
+    override fun parse(value: Any): Boolean {
+        return value.toBoolean()
     }
 }

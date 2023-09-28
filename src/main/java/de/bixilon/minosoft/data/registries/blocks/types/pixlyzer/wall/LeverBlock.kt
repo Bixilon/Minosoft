@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isPowered
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.isPowered
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable

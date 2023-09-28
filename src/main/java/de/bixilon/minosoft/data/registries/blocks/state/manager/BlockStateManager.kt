@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.registries.blocks.state.manager
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 
 interface BlockStateManager : Iterable<BlockState> {
     val default: BlockState
 
 
-    fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
+    fun withProperties(vararg properties: Pair<BlockProperty<*>, Any>): BlockState {
         return this.default.withProperties(*properties)
     }
 
-    fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
+    fun withProperties(properties: Map<BlockProperty<*>, Any>): BlockState {
         return this.default.withProperties(properties)
     }
 }

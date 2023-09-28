@@ -19,14 +19,14 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.light.*
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape.Companion.deserialize
-import java.util.*
 
 class BlockStateSettings(
-    val properties: Map<BlockProperties, Any>?,
+    val properties: Map<BlockProperty<*>, Any>?,
     val luminance: Int,
     val collisionShape: AbstractVoxelShape?,
     val outlineShape: AbstractVoxelShape?,
@@ -57,11 +57,11 @@ class BlockStateSettings(
             return AbstractVoxelShape.EMPTY
         }
 
-        private fun JsonObject.getProperties(): Map<BlockProperties, Any>? {
+        private fun JsonObject.getProperties(): Map<BlockProperty<*>, Any>? {
             val data = this["properties"]?.toJsonObject() ?: return null
             if (data.isEmpty()) return null
 
-            val properties: MutableMap<BlockProperties, Any> = EnumMap(BlockProperties::class.java)
+            val properties: MutableMap<BlockProperty<*>, Any> = HashMap()
 
             for ((group, json) in data) {
                 try {

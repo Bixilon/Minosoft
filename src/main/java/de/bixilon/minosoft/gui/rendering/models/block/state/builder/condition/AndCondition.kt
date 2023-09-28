@@ -15,13 +15,13 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
 class AndCondition(
     val conditions: Set<BuilderCondition>,
 ) : BuilderCondition {
 
-    override fun matches(properties: Map<BlockProperties, Any>): Boolean {
+    override fun matches(properties: Map<BlockProperty<*>, Any>): Boolean {
         for (condition in conditions) {
             if (!condition.matches(properties)) return false
         }

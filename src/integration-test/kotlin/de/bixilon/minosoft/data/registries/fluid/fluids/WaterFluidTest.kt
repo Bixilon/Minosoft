@@ -36,22 +36,22 @@ class WaterFluidTest {
     }
 
     fun heightLevel0() {
-        val state = block.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
+        val state = block.states.withProperties(FluidBlock.LEVEL to 0)
         assertEquals(this.water.getHeight(state), 0.8888889f)
     }
 
     fun heightLevel2() {
-        val state = block.states.withProperties(BlockProperties.FLUID_LEVEL to 2)
+        val state = block.states.withProperties(FluidBlock.LEVEL to 2)
         assertEquals(this.water.getHeight(state), 0.6666667f)
     }
 
     fun heightLevel8() {
-        val state = block.states.withProperties(BlockProperties.FLUID_LEVEL to 8)
+        val state = block.states.withProperties(FluidBlock.LEVEL to 8)
         assertEquals(this.water.getHeight(state), 0.8888889f)
     }
 
     fun heightLevel12() {
-        val state = block.states.withProperties(BlockProperties.FLUID_LEVEL to 12)
+        val state = block.states.withProperties(FluidBlock.LEVEL to 12)
         assertEquals(this.water.getHeight(state), 0.8888889f)
     }
 

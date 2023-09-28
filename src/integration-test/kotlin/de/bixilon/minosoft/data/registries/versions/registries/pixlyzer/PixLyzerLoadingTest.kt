@@ -24,7 +24,7 @@ abstract class PixLyzerLoadingTest(version: String) : RegistryLoadingTest(versio
 
     @Test(priority = 100000)
     open fun loadRegistries() {
-        throw SkipException("temp")
+        throw SkipException("temp") // TODO: remove
         this._registries = ITUtil.loadPixlyzerData(version)
     }
 

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
@@ -27,7 +28,7 @@ interface VariantBlockModel : DirectBlockModel {
     companion object {
 
         private fun parseVariant(variant: String): BlockVariant {
-            val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
+            val properties: MutableMap<BlockProperty<*>, Any> = mutableMapOf()
             for (pair in variant.split(',')) {
                 val (key, rawValue) = pair.split('=', limit = 2)
 

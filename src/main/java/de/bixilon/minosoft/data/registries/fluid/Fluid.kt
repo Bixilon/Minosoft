@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.registries.fluid
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -130,7 +130,7 @@ abstract class Fluid(override val identifier: ResourceLocation) : RegistryItem()
         if (state.block is FluidFilled && state.block.fluid == this) {
             return MAX_LEVEL
         }
-        val level = state.get<Int?>(BlockProperties.FLUID_LEVEL) ?: return 0.0f
+        val level = state[FluidBlock.LEVEL]
         if (level <= 0 || level >= 8) {
             return MAX_LEVEL
         }

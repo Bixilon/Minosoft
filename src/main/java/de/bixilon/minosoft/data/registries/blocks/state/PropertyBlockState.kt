@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.state
 import com.google.common.base.Objects
 import de.bixilon.kutil.array.ArrayUtil.next
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.state.manager.PropertyStateManager
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 
 open class PropertyBlockState(
     block: Block,
-    val properties: Map<BlockProperties, Any>,
+    val properties: Map<BlockProperty<*>, Any>,
     luminance: Int,
 ) : BlockState(block, luminance) {
     private val hash = Objects.hashCode(block, properties)
@@ -45,7 +45,7 @@ open class PropertyBlockState(
     }
 
 
-    override fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
+    override fun withProperties(vararg properties: Pair<BlockProperty<*>, Any>): BlockState {
         val nextProperties = this.properties.toMutableMap()
 
         for ((key, value) in properties) {
@@ -55,7 +55,7 @@ open class PropertyBlockState(
         return getStateWith(nextProperties)
     }
 
-    override fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
+    override fun withProperties(properties: Map<BlockProperty<*>, Any>): BlockState {
         val nextProperties = this.properties.toMutableMap()
 
         for ((key, value) in properties) {
@@ -65,7 +65,7 @@ open class PropertyBlockState(
         return getStateWith(nextProperties)
     }
 
-    private fun getStateWith(properties: Map<BlockProperties, Any>): BlockState {
+    private fun getStateWith(properties: Map<BlockProperty<*>, Any>): BlockState {
         for (state in this.block.states) {
             if (state !is PropertyBlockState) continue
 
@@ -79,14 +79,18 @@ open class PropertyBlockState(
         throw IllegalArgumentException("Can not find ${this.block} with properties: $properties")
     }
 
-    override fun cycle(property: BlockProperties): BlockState {
-        val value: Any = this[property]
+    override fun cycle(property: BlockProperty<*>): BlockState {
+        val value: Any = this[property]!!
         return withProperties(property to block.states.unsafeCast<PropertyStateManager>().properties[property]!!.next(value))
     }
 
-    override fun <T> get(property: BlockProperties): T {
+    override fun <T> get(property: BlockProperty<T>): T {
         val value = this.properties[property] ?: throw IllegalArgumentException("$this has not property $property")
         return value.unsafeCast()
+    }
+
+    override fun <T> getOrNull(property: BlockProperty<T>): T? {
+        return this.properties[property]?.unsafeCast()
     }
 
 
