@@ -201,7 +201,7 @@ internal class ChatComponentTest {
     }
 
     @Test
-    fun hypixelMotd() {
+    fun hypixelMotd() {                                                                     // ↓ Note that extra paragraph
         val string = "                §aHypixel Network §c[1.8-1.19]\n   §c§lLUNAR MAPS §7§l§ §6§lCOSMETICS §7| §d§lSKYBLOCK 0.17.3"
         val component = ChatComponent.of(string)
 

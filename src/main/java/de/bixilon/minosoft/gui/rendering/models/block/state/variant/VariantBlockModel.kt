@@ -18,6 +18,9 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 interface VariantBlockModel : DirectBlockModel {
 
@@ -28,8 +31,12 @@ interface VariantBlockModel : DirectBlockModel {
             for (pair in variant.split(',')) {
                 val (key, rawValue) = pair.split('=', limit = 2)
 
-                val (property, value) = BlockProperties.parseProperty(key, rawValue)
-                properties[property] = value
+                try {
+                    val (property, value) = BlockProperties.parseProperty(key, rawValue)
+                    properties[property] = value
+                } catch (error: Throwable) {
+                    Log.log(LogMessageType.LOADING, LogLevels.WARN) { error }
+                }
             }
 
             return properties
