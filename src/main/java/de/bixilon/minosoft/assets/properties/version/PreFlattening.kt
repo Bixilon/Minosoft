@@ -15,7 +15,7 @@ package de.bixilon.minosoft.assets.properties.version
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.json.MutableJsonObject
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.meta.MinosoftMeta
 import de.bixilon.minosoft.assets.meta.MinosoftMeta.load
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.versions.Version
 object PreFlattening {
     const val VERSION = "1.12.2"
 
-    fun loadRegistry(profile: ResourcesProfile, version: Version, latch: CountUpAndDownLatch): Registries {
+    fun loadRegistry(profile: ResourcesProfile, version: Version, latch: AbstractLatch): Registries {
         val registries = Registries()
 
         val json: MutableJsonObject = synchronizedMapOf()

@@ -40,7 +40,7 @@ import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.ClientActionC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 

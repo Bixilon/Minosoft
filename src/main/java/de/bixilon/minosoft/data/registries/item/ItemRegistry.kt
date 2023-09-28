@@ -27,18 +27,17 @@ class ItemRegistry(
 ) : Registry<Item>(parent = parent, codec = PixLyzerItem, integrated = ItemFactories, flattened = flattened, metaType = MetaTypes.ITEM) {
 
     override fun getOrNull(id: Int): Item? {
-        return if (!flattened) {
-            val itemId = id ushr 16
-            val itemMeta = id and 0xFFFF
-
-            var versionItemId = itemId shl 16
-            if (itemMeta > 0 && itemMeta < Short.MAX_VALUE) {
-                versionItemId = versionItemId or itemMeta
-            }
-            return super.getOrNull(versionItemId) ?: super.getOrNull(itemId shl 16) // ignore meta data ?
-        } else {
-            super.getOrNull(id)
+        if (flattened) {
+            return super.getOrNull(id)
         }
+        val itemId = id ushr 16
+        val meta = id and 0xFFFF
+
+        var versionItemId = itemId shl 16
+        if (meta > 0) {
+            versionItemId = versionItemId or meta
+        }
+        return super.getOrNull(versionItemId) ?: super.getOrNull(itemId shl 16) // ignore meta?
     }
 
     operator fun <T : Item> get(factory: ItemFactory<T>): T? {

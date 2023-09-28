@@ -15,9 +15,10 @@ package de.bixilon.minosoft.data.registries.blocks.types.legacy
 
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.protocol.versions.Version
 
-interface FlatteningRenamedModel : CustomBlockModel, Identified {
+interface FlatteningRenamedModel : CustomModel, Identified {
     val legacyModelName: ResourceLocation?
 
     override fun getModelName(version: Version): ResourceLocation? {

@@ -21,13 +21,14 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class LegacyBlock(
     identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Block(identifier, BlockSettings()), FullBlock, BlockStateBuilder, CustomBlockModel {
+) : Block(identifier, BlockSettings()), FullBlock, BlockStateBuilder, CustomModel {
     override var hardness: Float = 0.0f
 
     override val modelName: ResourceLocation? = data["model"]?.toResourceLocation() ?: identifier

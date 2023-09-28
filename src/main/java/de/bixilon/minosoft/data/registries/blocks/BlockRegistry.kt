@@ -42,10 +42,11 @@ class BlockRegistry(
 
 
     private fun legacy(block: Block, data: JsonObject, registries: Registries) {
-        val json = data["states"]
+        val states = data["states"]
         val id = data["id"]?.toInt()
         val meta = data["meta"]?.toInt()
-        if (json == null) {
+
+        if (states == null) {
             // block has only a single state
             val settings = BlockStateSettings.of(registries, data)
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
@@ -55,7 +56,7 @@ class BlockRegistry(
         }
         block.updateStates(setOf(BlockState(block, 0)), BlockState(block, 0), emptyMap())
 
-        println("TODO")
+        println("TODO: block properties, ...")
     }
 
     fun flattened(block: Block, data: JsonObject, registries: Registries) {

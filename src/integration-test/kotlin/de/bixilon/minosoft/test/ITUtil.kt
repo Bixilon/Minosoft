@@ -51,7 +51,7 @@ object ITUtil {
     }
 
     fun loadPreFlatteningData(version: Version): Registries {
-        return PreFlattening.loadRegistry(profile, version, CountUpAndDownLatch(0))
+        return PreFlattening.loadRegistry(profile, version, SimpleLatch(0))
     }
 
     fun loadRegistries(version: Version): Registries {
