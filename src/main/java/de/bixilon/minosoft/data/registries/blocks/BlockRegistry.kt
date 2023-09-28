@@ -47,11 +47,12 @@ class BlockRegistry(
         val meta = data["meta"]?.toInt()
 
         if (states == null) {
+            if (id == null) throw IllegalArgumentException("Missing id (block=$block)!")
             // block has only a single state
             val settings = BlockStateSettings.of(registries, data)
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
             block.updateStates(setOf(state), state, emptyMap())
-            registries.blockState[id!! shl 4 or (meta ?: 0)] = state
+            registries.blockState[id shl 4 or (meta ?: 0)] = state
             return
         }
         block.updateStates(setOf(BlockState(block, 0)), BlockState(block, 0), emptyMap())

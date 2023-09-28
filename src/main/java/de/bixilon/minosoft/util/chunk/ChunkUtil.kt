@@ -221,11 +221,11 @@ object ChunkUtil {
     private fun readLegacyBiomeArray(buffer: PlayInByteBuffer): XZBiomeArray {
         val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
         for (i in biomes.indices) {
-            biomes[i] = buffer.connection.registries.biome[if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
+            biomes[i] = buffer.connection.registries.biome.getOrNull(if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
                 buffer.readUnsignedByte()
             } else {
                 buffer.readInt()
-            }]
+            })
         }
         return XZBiomeArray(biomes)
     }
