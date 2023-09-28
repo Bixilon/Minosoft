@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
-import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer.fix
+import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer.fixBlockEntity
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -112,7 +112,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     for (i in 0 until buffer.readVarInt()) {
                         val nbt = buffer.readNBT().asJsonObject()
                         val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
-                        val id = (nbt["id"]?.toResourceLocation() ?: continue).fix()
+                        val id = (nbt["id"]?.toResourceLocation() ?: continue).fixBlockEntity()
                         val type = buffer.connection.registries.blockEntityType[id] ?: continue
 
                         val entity = type.build(buffer.connection)

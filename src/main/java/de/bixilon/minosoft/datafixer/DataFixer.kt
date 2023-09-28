@@ -13,15 +13,24 @@
 
 package de.bixilon.minosoft.datafixer
 
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
+import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer
+import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer
+import de.bixilon.minosoft.datafixer.rls.RegistryFixer
 
-object DataFixerUtil {
+object DataFixer {
+    val fixer = listOf(
+        EntityDataTypesFixer,
 
-    fun Map<String, String>.asResourceLocationMap(): Map<ResourceLocation, ResourceLocation> {
-        val out: MutableMap<ResourceLocation, ResourceLocation> = mutableMapOf()
-        for ((key, value) in this) {
-            out[ResourceLocation.of(key)] = ResourceLocation.of(value)
+        BlockEntityFixer,
+        EntityAttributeFixer,
+        RegistryFixer,
+    )
+
+
+    fun load() {
+        for (fixer in this.fixer) {
+            fixer.load()
         }
-        return out
     }
 }

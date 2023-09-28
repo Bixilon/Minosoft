@@ -54,7 +54,7 @@ import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
-import de.bixilon.minosoft.datafixer.rls.RegistryFixer.fix
+import de.bixilon.minosoft.datafixer.rls.RegistryFixer.fixRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.protocol.versions.Version
@@ -251,7 +251,7 @@ class Registries(
     fun update(registries: JsonObject) {
         // TODO: Clear them first?
         for ((key, value) in registries) {
-            val fixedKey = key.toResourceLocation().fix()
+            val fixedKey = key.toResourceLocation().fixRegistry()
             val registry = this[fixedKey]
             if (registry == null) {
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find registry: $fixedKey" }

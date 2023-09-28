@@ -31,7 +31,7 @@ import de.bixilon.minosoft.data.registries.item.items.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
-import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fix
+import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fixEntityAttribute
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
@@ -115,7 +115,7 @@ data class EntityType(
 
             data["attributes"]?.toJsonObject()?.let {
                 for ((name, value) in it) {
-                    val type = MinecraftAttributes[name.toResourceLocation().fix()]
+                    val type = MinecraftAttributes[name.toResourceLocation().fixEntityAttribute()]
                     if (type == null) {
                         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not get entity attribute type: $name" }
                         continue

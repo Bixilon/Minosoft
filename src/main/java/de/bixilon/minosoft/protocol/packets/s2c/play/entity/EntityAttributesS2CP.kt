@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.effects.attributes.AttributeType
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeContainerUpdate
 import de.bixilon.minosoft.data.registries.effects.attributes.container.AttributeModifier
-import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fix
+import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fixEntityAttribute
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
@@ -42,7 +42,7 @@ class EntityAttributesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readVarInt()
         }
         for (i in 0 until attributeCount) {
-            val type = MinecraftAttributes[buffer.readResourceLocation().fix()]
+            val type = MinecraftAttributes[buffer.readResourceLocation().fixEntityAttribute()]
             val baseValue: Double = buffer.readDouble()
             val update = AttributeContainerUpdate(base = baseValue)
             val modifierCount: Int = if (buffer.versionId < V_14W04A) buffer.readUnsignedShort() else buffer.readVarInt()

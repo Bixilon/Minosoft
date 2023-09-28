@@ -25,8 +25,8 @@ object BlockStatePaletteFactory : PaletteFactory {
             1, 2, 3, 4 -> return ArrayPalette(registry, 4)
             5, 6, 7, 8 -> return ArrayPalette(registry, bits)
         }
-        if (version > V_17W46A) return RegistryPalette(registry) // flattened
+        if (version <= V_17W46A) return RegistryPalette(registry, 13) // minecraft uses 13 bits to encode the blocks (8 bits id + 4 bits meta + 1 magic bit, thanks)
 
-        return RegistryPalette(registry, 13) // minecraft uses 13 bits to encode the blocks (8 bits id + 4 bits meta + 1 magic bit, thanks)
+        return RegistryPalette(registry) // flattened
     }
 }

@@ -27,5 +27,7 @@ enum class BootTasks {
     ASSETS_OVERRIDE,
     CLI,
     MODS,
+
+    DATA_FIXER,
     ;
 }

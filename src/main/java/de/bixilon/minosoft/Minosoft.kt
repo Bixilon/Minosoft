@@ -42,6 +42,7 @@ import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.datafixer.DataFixer
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
@@ -124,6 +125,7 @@ object Minosoft {
 
         taskWorker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { OVERRIDE_ASSETS_MANAGER.load(it) })
         taskWorker += WorkerTask(identifier = BootTasks.MODS, executor = { ModLoader.load(LoadingPhases.BOOT, it) })
+        taskWorker += WorkerTask(identifier = BootTasks.DATA_FIXER, executor = { DataFixer.load() })
 
 
         taskWorker.work(BOOT_LATCH)

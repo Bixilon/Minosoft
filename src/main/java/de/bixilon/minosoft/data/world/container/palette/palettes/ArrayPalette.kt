@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container.palette.palettes
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
@@ -34,8 +35,7 @@ class ArrayPalette<T>(private val registry: AbstractRegistry<T?>, override val b
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun getOrNull(id: Int): T? {
-        return array.getOrNull(id) as T?
+        return array.getOrNull(id).unsafeCast()
     }
 }

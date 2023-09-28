@@ -13,44 +13,10 @@
 
 package de.bixilon.minosoft.datafixer.rls
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
 
-object BlockEntityFixer : ResourceLocationFixer {
-    private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
-        "Furnace" to "minecraft:furnace",
-        "Chest" to "minecraft:chest",
-        "EnderChest" to "minecraft:ender_chest",
-        "RecordPlayer" to "minecraft:jukebox",
-        "Trap" to "minecraft:dispenser",
-        "Dropper" to "minecraft:dropper",
-        "Sign" to "minecraft:sign",
-        "wall_sign" to "minecraft:sign",
-        "MobSpawner" to "minecraft:mob_spawner",
-        "Music" to "minecraft:note_block",
-        "Cauldron" to "minecraft:brewing_stand",
-        "EnchantTable" to "minecraft:enchanting_table",
-        "CommandBlock" to "minecraft:command_block",
-        "Beacon" to "minecraft:beacon",
-        "Skull" to "minecraft:skull",
-        "DLDetector" to "minecraft:daylight_detector",
-        "Hopper" to "minecraft:hopper",
-        "Banner" to "minecraft:banner",
-        "FlowerPot" to "minecraft:flower_pot",
-        "Sign" to "minecraft:sign",
-        "Piston" to "minecraft:piston",
-        "Comparator" to "minecraft:comparator",
-        "minecraft:unpowered_comparator" to "minecraft:comparator",
-        "minecraft:powered_comparator" to "minecraft:comparator",
-        "Structure" to "minecraft:structure_block",
-        "Airportal" to "minecraft:end_portal",
-        "EndGateway" to "minecraft:end_gateway",
-        "minecraft:noteblock" to "minecraft:note_block",
-        "Bed" to "minecraft:bed",
-    ).asResourceLocationMap()
+object BlockEntityFixer : ResourceLocationFixer(minosoft("block_entity")) {
 
-
-    override fun _fix(resourceLocation: ResourceLocation): ResourceLocation {
-        return RENAMES.getOrDefault(resourceLocation, resourceLocation)
-    }
+    fun ResourceLocation.fixBlockEntity() = fix(this)
 }

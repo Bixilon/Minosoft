@@ -32,7 +32,6 @@ class RegistryPalette<T>(
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun getOrNull(id: Int): T? {
         return registry.getOrNull(id)
     }

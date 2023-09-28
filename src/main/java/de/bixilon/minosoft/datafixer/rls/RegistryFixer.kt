@@ -13,17 +13,10 @@
 
 package de.bixilon.minosoft.datafixer.rls
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
 
-object RegistryFixer : ResourceLocationFixer {
-    private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
-        "dimension" to "dimension_type",
-        "motive" to "motif",
-        "worldgen/biome" to "biome",
-    ).asResourceLocationMap()
+object RegistryFixer : ResourceLocationFixer(minosoft("registry")) {
 
-    override fun _fix(resourceLocation: ResourceLocation): ResourceLocation {
-        return RENAMES.getOrDefault(resourceLocation, resourceLocation)
-    }
+    fun ResourceLocation.fixRegistry() = fix(this)
 }
