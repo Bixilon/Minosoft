@@ -28,9 +28,9 @@
 
 Resources:
 
-- https://minecraft.fandom.com/wiki/Cloud
-- https://minecraft.fandom.com/wiki/Daylight_cycle
-- https://minecraft.fandom.com/wiki/Effect_(dimension)
+- https://minecraft.wiki/w/Cloud
+- https://minecraft.wiki/w/Daylight_cycle
+- https://minecraft.wiki/w/Effect_(dimension)
 
 ## Tasks
 
