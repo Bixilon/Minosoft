@@ -56,7 +56,7 @@ class SurvivalDigger(
         breaking.interactions.swingHand(Hands.MAIN)
     }
 
-    // thanks to https://minecraft.fandom.com/wiki/Breaking#Calculation
+    // thanks to https://minecraft.wiki/w/Breaking#Calculation
     private fun tick(status: BlockDigStatus?, target: BlockTarget, slot: Int) {
         val stack = connection.player.items.inventory.getHotbarSlot()
 

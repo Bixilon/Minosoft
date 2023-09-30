@@ -26,7 +26,7 @@ import java.util.*
  *
  * @throws IllegalArgumentException If the namespace or path does not match the allowed pattern. and [ALLOWED_PATH_PATTERN]
  *
- * @see <a href="https://minecraft.fandom.com/wiki/Resource_location">Resource location</a>
+ * @see <a href="https://minecraft.wiki/w/Resource_location">Resource location</a>
  */
 open class ResourceLocation(
     val namespace: String = Namespaces.DEFAULT,

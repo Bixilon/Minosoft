@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.world.time
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 
-// see https://minecraft.fandom.com/wiki/Moon
+// see https://minecraft.wiki/w/Moon
 enum class MoonPhases(val light: Float) {
     FULL_MOON(1.0f),
     WANING_GIBBOUS(0.7f),
