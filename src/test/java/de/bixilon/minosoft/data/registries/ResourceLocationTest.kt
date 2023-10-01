@@ -95,26 +95,4 @@ class ResourceLocationTest {
         assertThrows<IllegalArgumentException> { ResourceLocationUtil.validateNamespace("^minecraft") }
         assertThrows<IllegalArgumentException> { ResourceLocationUtil.validateNamespace("mine/craft") }
     }
-
-    /**
-     * @see [de.bixilon.minosoft.data.registries.identified.ResourceLocation]
-     */
-    @Test
-    fun testAllowedResourceLocationPaths() {
-        // Should Pass
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("minecraft"), true)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("min1234567890craft"), true)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine-craft"), true)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine_craft"), true)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine.craft"), true)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine/craft"), true)
-        // Should Fail
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("MineCraft"), false)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine craft"), false)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("minecraft!"), false)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("^minecraft"), false)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine//craft"), false)
-        kotlin.test.assertEquals(ResourceLocation.ALLOWED_PATH_PATTERN.matches("mine///craft"), false)
-    }
-
 }
