@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.NetworkException
+import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketHandleException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.CriticalNetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.natives.NioNatives
 import de.bixilon.minosoft.protocol.network.network.client.netty.natives.TransportNatives
@@ -173,7 +174,8 @@ class NettyClient(
             cause = error.cause ?: cause
         }
         if (RunConfiguration.DISABLE_EROS || connection !is StatusConnection) {
-            Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { cause }
+            val log = if (cause is PacketHandleException) cause.cause else cause
+            Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { log }
         }
         if (cause !is NetworkException || cause is CriticalNetworkException || state == ProtocolStates.LOGIN) {
             connection.error = cause
