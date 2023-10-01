@@ -41,7 +41,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.player.ClientActionC2SP
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W13B
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
@@ -104,7 +104,7 @@ class PlayerInventory(
     }
 
     override fun onOpen() {
-        if (connection.version <= V_1_8_9) { // TODO: find out version
+        if (connection.version < V_17W13B) {
             connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.OPEN_INVENTORY))
         }
     }

@@ -40,7 +40,7 @@ class ClientActionC2SP(
     enum class ClientActions {
         PERFORM_RESPAWN,
         REQUEST_STATISTICS,
-        OPEN_INVENTORY,
+        OPEN_INVENTORY, // removed in 17w13b
         ;
 
         companion object : ValuesEnum<ClientActions> {
