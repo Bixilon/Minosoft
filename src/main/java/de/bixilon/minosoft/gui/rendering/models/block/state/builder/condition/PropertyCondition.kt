@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 
 class PropertyCondition(
     val conditions: Map<BlockProperty<*>, Any>,
@@ -37,16 +38,16 @@ class PropertyCondition(
 
     companion object {
 
-        private fun deserializeOr(property: String, list: List<String>): Pair<BlockProperty<*>, Any> {
+        private fun deserializeOr(block: Block, property: String, list: List<String>): Pair<BlockProperty<*>, Any> {
             if (list.size == 1) {
-                return BlockProperties.parseProperty(property, list.first())
+                return BlockProperties.parseProperty(block, property, list.first())
             }
 
             val values: MutableSet<Any> = mutableSetOf()
             var blockProperty: BlockProperty<*>? = null
 
             for (entry in list) {
-                val (entryProperty, entryValue) = BlockProperties.parseProperty(property, entry)
+                val (entryProperty, entryValue) = BlockProperties.parseProperty(block, property, entry)
                 if (blockProperty == null) {
                     blockProperty = entryProperty
                 }
@@ -59,7 +60,7 @@ class PropertyCondition(
             return Pair(blockProperty, values)
         }
 
-        fun deserialize(data: JsonObject): PropertyCondition? {
+        fun deserialize(block: Block, data: JsonObject): PropertyCondition? {
             val properties: MutableMap<BlockProperty<*>, Any> = mutableMapOf()
 
             for ((key, value) in data) {
@@ -67,12 +68,12 @@ class PropertyCondition(
                 if (key == AndCondition.KEY) continue
 
                 if (value is List<*>) {
-                    val (property, values) = deserializeOr(key, value.unsafeCast())
+                    val (property, values) = deserializeOr(block, key, value.unsafeCast())
                     properties[property] = values
                     continue
                 }
                 val split = value.toString().split('|')
-                val (property, values) = deserializeOr(key, split)
+                val (property, values) = deserializeOr(block, key, split)
                 properties[property] = values
             }
 

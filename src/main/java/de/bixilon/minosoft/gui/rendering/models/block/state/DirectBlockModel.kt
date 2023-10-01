@@ -17,7 +17,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CollectionCast.asAnyList
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.block.state.builder.BuilderBlockModel
@@ -27,16 +28,16 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 interface DirectBlockModel {
 
-    fun choose(state: BlockState): BlockStateApply?
+    fun choose(properties: Map<BlockProperty<*>, Any>): BlockStateApply?
 
 
     fun load(textures: TextureManager) = BlockModelPrototype(this)
 
     companion object {
 
-        fun deserialize(loader: BlockLoader, data: JsonObject): DirectBlockModel? {
-            data["variants"]?.toJsonObject()?.let { return VariantBlockModel.deserialize(loader, it) }
-            data["multipart"]?.asAnyList()?.let { return BuilderBlockModel.deserialize(loader, it.unsafeCast()) }
+        fun deserialize(loader: BlockLoader, block: Block, data: JsonObject): DirectBlockModel? {
+            data["variants"]?.toJsonObject()?.let { return VariantBlockModel.deserialize(loader, block, it) }
+            data["multipart"]?.asAnyList()?.let { return BuilderBlockModel.deserialize(loader, block, it.unsafeCast()) }
 
             return null
         }

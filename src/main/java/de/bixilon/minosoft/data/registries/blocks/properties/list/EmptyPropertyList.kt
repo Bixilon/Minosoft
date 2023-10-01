@@ -11,20 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.block.state.variant
+package de.bixilon.minosoft.data.registries.blocks.properties.list
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
-import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
-import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-
-data class SingleVariantBlockModel(
-    val apply: BlockStateApply,
-) : VariantBlockModel {
-    override fun choose(properties: Map<BlockProperty<*>, Any>): BlockStateApply = apply
-
-    override fun load(textures: TextureManager): BlockModelPrototype {
-        apply.load(textures)
-        return super.load(textures)
-    }
+object EmptyPropertyList : BlockPropertyList {
+    override fun get(name: String) = null
 }

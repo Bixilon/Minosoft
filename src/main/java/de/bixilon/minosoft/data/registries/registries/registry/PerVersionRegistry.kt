@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.Versions
 import java.util.*
 
 class PerVersionRegistry<E, R : AbstractRegistry<E>>(private val registryCreator: () -> R) {
@@ -38,9 +39,10 @@ class PerVersionRegistry<E, R : AbstractRegistry<E>>(private val registryCreator
 
         val versions: SortedMap<Int, R> = sortedMapOf({ t, t2 -> t2 - t })
         for ((versionId, json) in data) {
+            val versionId = versionId.toInt()
             val registry = registryCreator()
-            registry.rawUpdate(json.toJsonObject(), null)
-            versions[versionId.toInt()] = registry
+            registry.update(json.toJsonObject(), Versions.getById(versionId)!!, null)
+            versions[versionId] = registry
         }
         this.versions = versions
     }

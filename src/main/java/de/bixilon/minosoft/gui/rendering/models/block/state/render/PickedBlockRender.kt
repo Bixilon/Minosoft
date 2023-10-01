@@ -11,38 +11,41 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.block
+package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
-import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
-import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 
-class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?) = prototype()
-    override fun getParticleTexture(random: Random?, position: Vec3i) = prototype()
-    override fun getProperties(direction: Directions) = prototype()
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = prototype()
+interface PickedBlockRender : BlockRender {
+    val default: BlockRender?
+
+    fun pick(neighbours: Array<BlockState?>): BlockRender?
 
 
-    private fun prototype(): Nothing = throw IllegalStateException("prototype")
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
+        default?.render(gui, offset, consumer, options, size, stack)
+    }
 
-    fun bake(context: RenderContext, block: Block) {
-        if (block !is ModelChooser) {
-            return ModelChooser.fallback(model, block)
-        }
-        block.bakeModel(context, model)
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+        return pick(neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints) ?: false
+    }
+
+    override fun getProperties(direction: Directions): SideProperties? {
+        return default?.getProperties(direction) // both models should have the same properties
+    }
+
+    override fun getParticleTexture(random: Random?, position: Vec3i): Texture? {
+        return default?.getParticleTexture(random, position)
     }
 }

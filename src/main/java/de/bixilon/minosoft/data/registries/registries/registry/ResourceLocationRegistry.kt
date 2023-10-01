@@ -18,6 +18,8 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
@@ -55,18 +57,19 @@ class ResourceLocationRegistry(
         return valueIdMap[value] ?: parent?.getId(value) ?: -1
     }
 
-    override fun update(data: Map<ResourceLocation, Any>, registries: Registries?) {
+    override fun update(data: Map<String, Any>?, version: Version, registries: Registries?) {
+        if (data == null) return
         for ((resourceLocation, value) in data) {
             val id: Int = when (value) {
                 is Number -> value.toInt()
                 is Map<*, *> -> value["id"].toInt()
                 else -> throw IllegalArgumentException("Don't know what $value is!")
             }
-            addItem(resourceLocation, id)
+            addItem(resourceLocation.toResourceLocation(), id)
         }
     }
 
-    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?) = Broken()
+    override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?) = Broken()
 
     fun addItem(resourceLocation: ResourceLocation, id: Int) {
         idValueMap[id] = resourceLocation

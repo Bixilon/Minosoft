@@ -47,7 +47,7 @@ class BlockLoader(private val loader: ModelLoader) {
         val file = (if (block is CustomModel) block.getModelName(version) else block.identifier)?.blockState() ?: return null
         val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
-        return DirectBlockModel.deserialize(this, data)
+        return DirectBlockModel.deserialize(this, block, data)
     }
 
     fun load(latch: AbstractLatch?) {
@@ -60,11 +60,12 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun bake(latch: AbstractLatch?) {
+        val context = loader.context
         for (block in loader.context.connection.registries.block) {
             val prototype = block.model.nullCast<BlockModelPrototype>() ?: continue
             block.model = null
 
-            prototype.bake(block)
+            prototype.bake(context, block)
         }
     }
 

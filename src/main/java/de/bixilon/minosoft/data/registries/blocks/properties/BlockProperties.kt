@@ -18,6 +18,9 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.BooleanProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.IntProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.dirt.SnowyBlock
+import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 
 @Deprecated("Fallback data")
 object BlockProperties {
@@ -32,14 +35,14 @@ object BlockProperties {
     val STAIR_DIRECTIONAL = EnumProperty("shape", Shapes).register()
     val STAIR_HALF = EnumProperty("half", Halves).register()
     val SLAB_TYPE = EnumProperty("type", Halves).register()
-    val FLUID_LEVEL = IntProperty("level", 0..15).register()
+    val FLUID_LEVEL = FluidBlock.LEVEL.register()
     val MOISTURE_LEVEL = IntProperty("moisture").register()
     val HONEY_LEVEL = IntProperty("honey_level").register()
     val PISTON_EXTENDED = BooleanProperty("extended").register()
     val PISTON_TYPE = EnumProperty("type", PistonTypes).register()
     val PISTON_SHORT = BooleanProperty("short").register()
     val RAILS_SHAPE = EnumProperty("shape", Shapes).register()
-    val SNOWY = BooleanProperty("snowy").register()
+    val SNOWY = SnowyBlock.SNOWY.register()
     val STAGE = IntProperty("stage").register()
     val DISTANCE = IntProperty("distance").register()
     val LEAVES_PERSISTENT = BooleanProperty("persistent").register()
@@ -153,41 +156,48 @@ object BlockProperties {
 
         for (value in list) {
             map.getOrPut(value.name) { mutableListOf() } += value
-            }
-
-            return@run map
         }
 
-    fun parseProperty(group: String, value: Any): Pair<BlockProperty<*>, Any> {
-            val properties = PROPERTIES[group] ?: throw IllegalArgumentException("Can not find group: $group, expected value $value")
+        return@run map
+    }
+
+    fun parseProperty(block: Block, group: String, value: Any): Pair<BlockProperty<*>, Any> {
+        val property = block.properties[group] ?: return parseProperty(group, value)
+
+        return Pair(property, property.parse(value)!!)
+    }
+
+    private fun parseProperty(group: String, value: Any): Pair<BlockProperty<*>, Any> {
+        // TODO: block.properties
+        val properties = PROPERTIES[group] ?: throw IllegalArgumentException("Can not find group: $group, expected value $value")
 
         var property: BlockProperty<*>? = null
-            var retValue: Any? = null
+        var retValue: Any? = null
 
-            for (blockProperty in properties) {
-                retValue = try {
-                    blockProperty.parse(value)
-                } catch (exception: Throwable) {
-                    continue
-                }
-                property = blockProperty
+        for (blockProperty in properties) {
+            retValue = try {
+                blockProperty.parse(value)
+            } catch (exception: Throwable) {
+                continue
             }
-
-            if (property == null || retValue == null) {
-                throw IllegalArgumentException("Can not parse value $value for group $group")
-            }
-            return Pair(property, retValue)
+            property = blockProperty
         }
 
-        fun BlockState.getFacing(): Directions {
-            return this[FACING]
+        if (property == null || retValue == null) {
+            throw IllegalArgumentException("Can not parse value $value for group $group")
         }
+        return Pair(property, retValue)
+    }
 
-        fun BlockState.isPowered(): Boolean {
-            return this[POWERED]
-        }
+    fun BlockState.getFacing(): Directions {
+        return this[FACING]
+    }
 
-        fun BlockState.isLit(): Boolean {
-            return this[LIT]
-        }
+    fun BlockState.isPowered(): Boolean {
+        return this[POWERED]
+    }
+
+    fun BlockState.isLit(): Boolean {
+        return this[LIT]
+    }
 }

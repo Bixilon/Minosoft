@@ -18,5 +18,9 @@ abstract class BlockProperty<T>(
     val name: String,
 ) {
 
+    override fun toString(): String {
+        return name
+    }
+
     abstract fun parse(value: Any): T
 }

@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -36,7 +37,7 @@ class FaceCullingTest {
     }
 
     private fun createBlock(transparency: TextureTransparencies = TextureTransparencies.OPAQUE, properties: SideProperties? = SideProperties(arrayOf(FaceProperties(Vec2(0), Vec2(1), transparency)), transparency), type: Int = 0): BlockState {
-        val block = object : Block(minosoft("dummy$type"), BlockSettings()) {
+        val block = object : Block(minosoft("dummy$type"), BlockSettings(IT.VERSION)) {
             override val hardness: Float get() = Broken()
         }
 
@@ -197,7 +198,7 @@ class FaceCullingTest {
     }
 
     fun `opaque but no invoked custom cull`() {
-        val block = object : Block(minosoft("dummy"), BlockSettings()), CustomBlockCulling {
+        val block = object : Block(minosoft("dummy"), BlockSettings(IT.VERSION)), CustomBlockCulling {
             override val hardness get() = Broken()
 
             override fun shouldCull(state: BlockState, properties: FaceProperties, directions: Directions, neighbour: BlockState): Boolean {
@@ -221,7 +222,7 @@ class FaceCullingTest {
         return SideProperties(arrayOf(*properties), transparency)
     }
 
-    private fun forceNoCull() = object : Block(minosoft("dummy"), BlockSettings()), CustomBlockCulling {
+    private fun forceNoCull() = object : Block(minosoft("dummy"), BlockSettings(IT.VERSION)), CustomBlockCulling {
         override val hardness get() = Broken()
 
         override fun shouldCull(state: BlockState, properties: FaceProperties, directions: Directions, neighbour: BlockState): Boolean {

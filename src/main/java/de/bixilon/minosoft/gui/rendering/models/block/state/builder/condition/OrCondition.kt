@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 
 class OrCondition(
     val conditions: Set<BuilderCondition>,
@@ -30,11 +31,11 @@ class OrCondition(
     companion object {
         const val KEY = "OR"
 
-        fun deserialize(data: List<JsonObject>): OrCondition? {
+        fun deserialize(block: Block, data: List<JsonObject>): OrCondition? {
             val conditions: MutableSet<BuilderCondition> = mutableSetOf()
 
             for (entry in data) {
-                conditions += AndCondition.deserialize(entry) ?: continue
+                conditions += AndCondition.deserialize(block, entry) ?: continue
             }
 
             if (conditions.isEmpty()) return null

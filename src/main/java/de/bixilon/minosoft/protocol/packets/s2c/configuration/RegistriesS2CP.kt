@@ -26,7 +26,7 @@ class RegistriesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val registries = buffer.readNBT().nullCast<JsonObject>()
 
     override fun handle(connection: PlayConnection) {
-        registries?.let { connection.registries.update(it) }
+        registries?.let { connection.registries.update(connection.version, it) }
     }
 
     override fun log(reducedLog: Boolean) {

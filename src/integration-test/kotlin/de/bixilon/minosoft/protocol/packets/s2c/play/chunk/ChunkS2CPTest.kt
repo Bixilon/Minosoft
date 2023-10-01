@@ -34,7 +34,7 @@ class ChunkS2CPTest {
     private fun PlayConnection.readRegistries(name: String) {
         val steam = ChunkS2CPTest::class.java.getResourceAsStream("/packets/chunk/$name.mbf")
         val mbf = MBFBinaryReader(steam!!).readMBF()
-        registries.update(mbf.data.unsafeCast())
+        registries.update(version, mbf.data.unsafeCast())
     }
 
     private fun read(name: String, version: String, connection: PlayConnection = createConnection(version = version), dimension: DimensionProperties): ChunkS2CP {

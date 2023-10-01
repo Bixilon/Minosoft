@@ -16,7 +16,8 @@ package de.bixilon.minosoft.data.registries.blocks.types.fluid
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
+import de.bixilon.minosoft.data.registries.blocks.properties.primitives.IntProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -30,6 +31,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.versions.Version
 import java.util.*
 
 abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FluidHolder, OutlinedBlock, LightedBlock, RandomDisplayTickable, CustomModel {
@@ -46,8 +48,13 @@ abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings)
         fluid.randomTick(connection, state, position, random)
     }
 
+    override fun register(version: Version, list: MapPropertyList) {
+        super.register(version, list)
+        list += LEVEL
+    }
+
     companion object {
         val LIGHT_PROPERTIES = CustomLightProperties(true, false, true)
-        val LEVEL = BlockProperties.FLUID_LEVEL
+        val LEVEL = IntProperty("level", 0..15)
     }
 }

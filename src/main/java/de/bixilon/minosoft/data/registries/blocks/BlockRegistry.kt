@@ -34,6 +34,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.MetaTypes
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import de.bixilon.minosoft.protocol.versions.Version
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 class BlockRegistry(
@@ -50,7 +51,7 @@ class BlockRegistry(
         if (statesData == null) {
             // block has only a single state
             if (id == null) throw IllegalArgumentException("Missing id (block=$block)!")
-            val settings = BlockStateSettings.of(registries, data)
+            val settings = BlockStateSettings.of(block, registries, data)
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
             block.updateStates(setOf(state), state, emptyMap())
             registries.blockState[id, meta] = state
@@ -62,7 +63,7 @@ class BlockRegistry(
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
         for (stateJson in statesData) {
-            val settings = BlockStateSettings.of(registries, stateJson.unsafeCast())
+            val settings = BlockStateSettings.of(block, registries, stateJson.unsafeCast())
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
 
             states += state
@@ -87,7 +88,7 @@ class BlockRegistry(
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
         for ((stateId, stateJson) in data["states"].asAnyMap()) {
-            val settings = BlockStateSettings.of(registries, stateJson.unsafeCast())
+            val settings = BlockStateSettings.of(block, registries, stateJson.unsafeCast())
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
 
             states += state
@@ -105,16 +106,16 @@ class BlockRegistry(
         block.updateStates(states, default, properties.mapValues { it.value.toTypedArray() })
     }
 
-    override fun deserialize(resourceLocation: ResourceLocation, data: JsonObject, registries: Registries?): Block? {
-        val factory = BlockFactories[resourceLocation]
+    override fun deserialize(identifier: ResourceLocation, data: JsonObject, version: Version, registries: Registries?): Block? {
+        val factory = BlockFactories[identifier]
         if (registries == null) throw NullPointerException("registries?")
 
-        var block = factory?.build(registries, BlockSettings.of(registries, data))
+        var block = factory?.build(registries, BlockSettings.of(version, registries, data))
         if (block == null) {
             if (flattened) {
-                block = this.codec!!.deserialize(registries, resourceLocation, data) ?: return null
+                block = this.codec!!.deserialize(registries, identifier, data) ?: return null
             } else {
-                block = LegacyBlock(resourceLocation, registries, data)
+                block = LegacyBlock(identifier, version, registries, data)
             }
         }
 
