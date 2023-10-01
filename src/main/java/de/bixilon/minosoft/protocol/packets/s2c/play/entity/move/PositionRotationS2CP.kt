@@ -88,7 +88,7 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (connection.version.versionId >= ProtocolVersions.V_15W42A) {
             connection.sendPacket(ConfirmTeleportC2SP(teleportId))
         }
-        connection.sendPacket(PositionRotationC2SP(position, rotation, onGround))
+        connection.sendPacket(PositionRotationC2SP(position, position.y + entity.physics.eyeHeight, rotation, onGround))
 
         if (connection.state == PlayConnectionStates.SPAWNING) {
             connection.state = PlayConnectionStates.PLAYING

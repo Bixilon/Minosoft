@@ -32,7 +32,7 @@ import java.util.*
 
 class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int
-    val entityUUID: UUID
+    val entityUUID: UUID?
     val entity: PlayerEntity
 
     init {
@@ -41,8 +41,8 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         var properties: PlayerProperties? = null
         if (buffer.versionId < ProtocolVersions.V_14W21A) {
-            name = buffer.readString()
             entityUUID = buffer.readUUIDString()
+            name = buffer.readString()
             properties = buffer.readPlayerProperties()
         } else {
             entityUUID = buffer.readUUID()

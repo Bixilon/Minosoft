@@ -146,6 +146,7 @@ class NettyClient(
         channel.writeAndFlush(packet)
     }
 
+
     override fun channelRead0(context: ChannelHandlerContext?, message: Any?) {
     }
 
@@ -160,6 +161,7 @@ class NettyClient(
     }
 
     override fun channelInactive(context: ChannelHandlerContext) {
+        Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Connection closed" }
         connected = false
     }
 

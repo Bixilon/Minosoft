@@ -22,6 +22,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
+import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
@@ -68,6 +69,14 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableMap
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.iterator
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 
 class Registries(
@@ -115,6 +124,7 @@ class Registries(
 
     val entityDataIndexMap: MutableMap<EntityDataField, Int> = mutableMapOf()
     val entityType: Registry<EntityType> = register("entity_type", Registry(codec = EntityType))
+    val entityObjectType: Registry<EntityObjectType> = register("entity_object_type", Registry(codec = EntityObjectType))
     val damageType: Registry<DamageType> = register("damage_type", Registry(codec = DamageType))
 
     val blockEntityType = BlockEntityTypeRegistry()

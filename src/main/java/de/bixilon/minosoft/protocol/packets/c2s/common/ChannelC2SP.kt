@@ -35,7 +35,11 @@ class ChannelC2SP(
         } else if (buffer.versionId < ProtocolVersions.V_14W31A) {
             buffer.writeVarInt(data.size)
         }
-        buffer.writeByteArray(data)
+        if (buffer.versionId < ProtocolVersions.V_1_8_9) { // TODO: guessed
+            buffer.writeBareByteArray(data)
+        } else {
+            buffer.writeByteArray(data)
+        }
     }
 
     override fun log(reducedLog: Boolean) {

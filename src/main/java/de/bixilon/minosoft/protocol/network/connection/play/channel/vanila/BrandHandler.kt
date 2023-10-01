@@ -32,7 +32,7 @@ object BrandHandler {
     }
 
     private fun PlayConnection.getBrandChannel(): ResourceLocation {
-        return FallbackRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(version)[DefaultPluginChannels.BRAND]!!.identifier
+        return FallbackRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(version)[DefaultPluginChannels.BRAND]!!.name
     }
 
     private fun PlayConnection.sendBrand(channel: ResourceLocation, brand: String) {
@@ -51,7 +51,7 @@ object BrandHandler {
     ) : PlayChannelHandler {
 
         override fun handle(buffer: PlayInByteBuffer) {
-            connection.serverInfo.brand = buffer.readString()
+            connection.serverInfo.brand = buffer.readString(buffer.bytesLeft)
         }
     }
 }

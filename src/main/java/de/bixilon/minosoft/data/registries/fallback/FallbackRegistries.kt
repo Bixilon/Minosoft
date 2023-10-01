@@ -34,7 +34,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
-import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -57,7 +56,7 @@ object FallbackRegistries {
     val ENTITY_ANIMATION_REGISTRY = PerVersionEnumRegistry(EntityAnimations)
     val ENTITY_ACTIONS_REGISTRY = PerVersionEnumRegistry(EntityActionC2SP.EntityActions)
 
-    val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry(codec = EntityObjectType)
+    val ENTITY_OBJECT_REGISTRY = PerVersionRegistry { Registry(codec = EntityObjectType) }
 
     val BLOCK_DATA_TYPE_REGISTRY: PerVersionRegistry<BlockDataDataType, Registry<BlockDataDataType>> = PerVersionRegistry { Registry(codec = BlockDataDataType) }
 
@@ -97,7 +96,7 @@ object FallbackRegistries {
 
         DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation.of("default_channels")].asJsonObject(), PluginChannel)
 
-        ENTITY_OBJECT_REGISTRY.update(registriesJson[ResourceLocation.of("entity_objects")].asJsonObject(), Versions.AUTOMATIC, null)
+        ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation.of("entity_objects")].asJsonObject(), EntityObjectType)
 
         BLOCK_DATA_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("block_data_data_types")].asJsonObject(), BlockDataDataType)
 

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.input.interaction.InteractionManager
 import de.bixilon.minosoft.input.interaction.KeyHandler
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 
@@ -110,7 +109,7 @@ class UseHandler(
             // TODO: send both packets if item is cooling down
 
             val player = connection.player
-            connection.sendPacket(PositionRotationC2SP(player.physics.position, player.physics.rotation, player.physics.onGround))
+            player.physics().sender.sendPositionRotation()
             if (long.tryUse(hand, slot, stack)) {
                 return
             }

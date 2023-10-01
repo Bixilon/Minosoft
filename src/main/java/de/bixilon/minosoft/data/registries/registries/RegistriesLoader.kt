@@ -39,6 +39,7 @@ object RegistriesLoader {
         titleActions.parent = FallbackRegistries.TITLE_ACTIONS_REGISTRY.forVersion(version)
         entityAnimation.parent = FallbackRegistries.ENTITY_ANIMATION_REGISTRY.forVersion(version)
         entityActions.parent = FallbackRegistries.ENTITY_ACTIONS_REGISTRY.forVersion(version)
+        entityObjectType.parent = FallbackRegistries.ENTITY_OBJECT_REGISTRY.forVersion(version)
         messageType.parent = FallbackRegistries.MESSAGE_TYPES_REGISTRY.forVersion(version)
 
         containerType.parent = FallbackRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version)

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class PositionRotationC2SP(
     val position: Vec3d,
+    val eyeY: Double,
     val rotation: EntityRotation,
     val onGround: Boolean,
 ) : PlayC2SPacket {
@@ -31,7 +32,7 @@ class PositionRotationC2SP(
         buffer.writeDouble(position.x)
         buffer.writeDouble(position.y)
         if (buffer.versionId < ProtocolVersions.V_14W06B) {
-            buffer.writeDouble(position.y - 1.62) // ToDo
+            buffer.writeDouble(eyeY)
         }
         buffer.writeDouble(position.z)
         buffer.writeFloat(rotation.yaw)
