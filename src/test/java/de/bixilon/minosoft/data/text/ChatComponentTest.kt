@@ -275,6 +275,28 @@ internal class ChatComponentTest {
         assertEquals(text, expected)
     }
 
+    @Test
+    fun `nested translation with legacy entity event`() {
+        val language = Language("en_US", mutableMapOf(
+            "chat.type.admin" to "[%s: %s]",
+            "commands.kill.successful" to "Killed %s",
+        ))
+        val text = ChatComponent.of("""{"italic":true,"color":"gray","translate":"chat.type.admin","with":["Bixilon",{"translate":"commands.kill.successful","with":[{"insertion":"0d2dc333-f629-4b59-bdf9-074f58b99c06","hoverEvent":{"action":"show_entity","value":{"text":"{name:\"item.item.slimeball\",id:\"0d2dc333-f629-4b59-bdf9-074f58b99c06\",type:\"minecraft:item\"}"}},"text":"item.item.slimeball"}]}]}""", translator = language)
+
+        val hover = EntityHoverEvent("0d2dc333-f629-4b59-bdf9-074f58b99c06".toUUID(), minecraft("item"), name = TextComponent("item.item.slimeball"))
+
+        val expected = BaseComponent(
+            BaseComponent(
+                TextComponent("[").color(ChatColors.GRAY).italic(),
+                TextComponent("Bixilon").color(ChatColors.GRAY).italic(),
+                TextComponent(": ").color(ChatColors.GRAY).italic(),
+                TextComponent("Killed ").color(ChatColors.GRAY).italic(),
+                TextComponent("item.item.slimeball").color(ChatColors.GRAY).italic().hoverEvent(hover),
+                TextComponent("]").color(ChatColors.GRAY).italic(),
+            ))
+        assertEquals(text, expected)
+    }
+
     private fun assertEquals(expected: ChatComponent, actual: ChatComponent) {
         when (expected) {
             is BaseComponent -> {
