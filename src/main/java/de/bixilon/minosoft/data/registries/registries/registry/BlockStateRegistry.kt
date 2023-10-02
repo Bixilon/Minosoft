@@ -22,6 +22,9 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?> {
@@ -53,7 +56,10 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
     }
 
     internal operator fun set(id: Int, state: BlockState) {
-        idMap[id] = state
+        val previous = idMap.put(id, state)
+        if (previous != null) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Block $state just replaced $previous (id=$id)" }
+        }
     }
 
     private fun _get(id: Int): BlockState? {
