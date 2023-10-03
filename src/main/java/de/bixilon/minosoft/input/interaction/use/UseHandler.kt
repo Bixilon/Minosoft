@@ -83,7 +83,10 @@ class UseHandler(
         // TODO: check for riding status
 
 
-        val target = interactions.camera.target.target
+        var target = interactions.camera.target.target
+        if (target != null && target.distance >= connection.player.reachDistance) {
+            target = null
+        }
 
         // check both hands if we can interact
         // if we can, stop further interactions
