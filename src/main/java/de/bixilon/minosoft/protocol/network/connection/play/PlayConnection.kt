@@ -25,7 +25,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.AssetsLoader
-import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
 import de.bixilon.minosoft.camera.ConnectionCamera
 import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
@@ -95,7 +95,7 @@ class PlayConnection(
     val sequence = AtomicInteger(1)
 
 
-    lateinit var assetsManager: AssetsManager
+    lateinit var assetsManager: ConnectionAssetsManager
         private set
     lateinit var language: Translator
 

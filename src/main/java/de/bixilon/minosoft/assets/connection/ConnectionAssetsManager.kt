@@ -11,19 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.eros.server.entries
+package de.bixilon.minosoft.assets.connection
 
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.assets.multi.PriorityAssetsManager
+import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 
-interface AbstractServer {
-    val address: String
-    val name: ChatComponent
-
-    val queryVersion: Boolean
-    val profiles: MutableMap<ResourceLocation, String>
-    val forcedVersion: Version?
-
-    var faviconHash: String?
-}
+class ConnectionAssetsManager(
+    override val properties: AssetsManagerProperties,
+) : PriorityAssetsManager()

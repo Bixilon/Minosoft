@@ -22,7 +22,7 @@ import java.io.InputStream
 /**
  * A set of assets managers (sorted)
  */
-class PriorityAssetsManager(
+open class PriorityAssetsManager(
     vararg managers: AssetsManager,
 ) : MultiAssetsManager {
     private val managers: MutableSet<AssetsManager> = mutableSetOf()

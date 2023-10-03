@@ -15,10 +15,12 @@ package de.bixilon.minosoft.assets
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
 import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion.packFormat
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsManager
-import de.bixilon.minosoft.assets.multi.PriorityAssetsManager
+import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
+import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperty
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
@@ -26,16 +28,31 @@ import de.bixilon.minosoft.protocol.versions.Version
 
 object AssetsLoader {
 
-    fun create(profile: ResourcesProfile, version: Version, latch: AbstractLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): AssetsManager {
-        val assetsManager = PriorityAssetsManager()
+    private fun ResourcesProfile.createPackProperties(version: Version): AssetsManagerProperties {
+        var packFormat = assets.packFormat
+        if (packFormat < 0) {
+            packFormat = version.packFormat
+        }
+
+        return AssetsManagerProperties(PackProperties(packFormat))
+    }
+
+    private fun ConnectionAssetsManager.addPacks(profile: ResourcesProfile, latch: AbstractLatch) {
+        for (resourcePack in profile.assets.resourcePacks.reversed()) {
+            val manager = resourcePack.type.creator.invoke(resourcePack)
+            manager.load(latch)
+            this += manager
+        }
+    }
+
+    fun create(profile: ResourcesProfile, version: Version, latch: AbstractLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): ConnectionAssetsManager {
+        val properties = profile.createPackProperties(version)
+
+        val assetsManager = ConnectionAssetsManager(properties)
 
         assetsManager += Minosoft.OVERRIDE_ASSETS_MANAGER
-        for (resourcePack in profile.assets.resourcePacks.reversed()) {
-            resourcePack.type.creator(resourcePack).let {
-                it.load(latch)
-                assetsManager += it
-            }
-        }
+
+        assetsManager.addPacks(profile, latch)
 
         if (!profile.assets.disableIndexAssets) {
             assetsManager += IndexAssetsManager(profile, property.indexVersion, property.indexHash, profile.assets.indexAssetsTypes.toSet(), version.packFormat)

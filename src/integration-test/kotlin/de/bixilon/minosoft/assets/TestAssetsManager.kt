@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.assets
 
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
+import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
+import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -36,4 +39,12 @@ object TestAssetsManager : AssetsManager {
     }
 
     override fun getAssetsManager(path: ResourceLocation) = null
+
+
+    fun AssetsManager.box(packFormat: Int = 0): ConnectionAssetsManager {
+        val manager = ConnectionAssetsManager(AssetsManagerProperties(PackProperties(0)))
+        manager += this
+
+        return manager
+    }
 }

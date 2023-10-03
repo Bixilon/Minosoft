@@ -16,7 +16,10 @@ package de.bixilon.minosoft.protocol.network.connection.play
 import de.bixilon.kotlinglm.pow
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.assets.TestAssetsManager
+import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
+import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion.packFormat
+import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
+import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
 import de.bixilon.minosoft.camera.ConnectionCamera
 import de.bixilon.minosoft.config.profile.ProfileTestUtil.createProfiles
 import de.bixilon.minosoft.data.accounts.types.test.TestAccount
@@ -60,7 +63,7 @@ object ConnectionTestUtil {
         connection::network.forceSet(TestNetwork())
         connection::events.forceSet(EventMaster())
         connection::profiles.forceSet(profiles)
-        connection::assetsManager.forceSet(TestAssetsManager)
+        connection::assetsManager.forceSet(ConnectionAssetsManager(AssetsManagerProperties(PackProperties(version.packFormat))))
         connection::state.forceSet(DataObserver(PlayConnectionStates.PLAYING))
         connection::tags.forceSet(TagManager())
         connection::legacyTags.forceSet(FALLBACK_TAGS)
