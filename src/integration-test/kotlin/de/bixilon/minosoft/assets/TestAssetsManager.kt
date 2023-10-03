@@ -42,7 +42,7 @@ object TestAssetsManager : AssetsManager {
 
 
     fun AssetsManager.box(packFormat: Int = 0): ConnectionAssetsManager {
-        val manager = ConnectionAssetsManager(AssetsManagerProperties(PackProperties(0)))
+        val manager = ConnectionAssetsManager(AssetsManagerProperties(PackProperties(packFormat)))
         manager += this
 
         return manager

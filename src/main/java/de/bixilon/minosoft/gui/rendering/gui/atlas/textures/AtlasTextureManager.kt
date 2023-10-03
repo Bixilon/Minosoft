@@ -15,17 +15,31 @@ package de.bixilon.minosoft.gui.rendering.gui.atlas.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.TextureGenerator
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import java.nio.ByteBuffer
 
 class AtlasTextureManager(private val context: RenderContext) {
+    private val cache: MutableMap<ResourceLocation, TextureData> = HashMap()
     private val targets: MutableList<Target> = mutableListOf()
 
-    fun add(textureData: TextureData, start: Vec2i, end: Vec2i, resolution: Vec2i): AtlasTexture {
+    private fun getTexture(texture: ResourceLocation, assets: AssetsManager): TextureData {
+        this.cache[texture]?.let { return it }
+
+        val data = assets[texture].readTexture()
+        this.cache[texture] = data
+
+        return data
+    }
+
+    fun add(texture: ResourceLocation, assets: AssetsManager, start: Vec2i, end: Vec2i, resolution: Vec2i): AtlasTexture {
+        val textureData = getTexture(texture, assets)
         val scale = textureData.size / resolution
 
         val realStart = start * scale
@@ -50,6 +64,7 @@ class AtlasTextureManager(private val context: RenderContext) {
         for (target in targets) {
             context.textures.staticTextures += target.texture
         }
+        this.cache.clear()
         targets.clear()
     }
 

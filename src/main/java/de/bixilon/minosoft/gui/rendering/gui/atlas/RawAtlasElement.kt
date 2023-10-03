@@ -20,7 +20,6 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.atlas.textures.AtlasTextureManager
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -36,9 +35,7 @@ class RawAtlasElement(
 ) {
 
     fun load(textures: AtlasTextureManager): AtlasElement {
-        val textureData = assets[texture].readTexture()
-
-        val (texture, uvStart, uvEnd) = textures.add(textureData, start, end, resolution)
+        val (texture, uvStart, uvEnd) = textures.add(texture, assets, start, end, resolution)
         val size = (end + 1) - start
 
 
