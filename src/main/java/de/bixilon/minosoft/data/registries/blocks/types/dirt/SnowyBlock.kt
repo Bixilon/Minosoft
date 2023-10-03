@@ -52,7 +52,6 @@ abstract class SnowyBlock(identifier: ResourceLocation, settings: BlockSettings)
 
         override fun pick(neighbours: Array<BlockState?>): BlockRender? {
             val above = neighbours[Directions.O_UP] ?: return normal
-            if (above.block is SnowyBlock) return snowy
             if (above.block == MinecraftBlocks.SNOW || above.block == MinecraftBlocks.SNOW_BLOCK) return snowy
 
             return normal
