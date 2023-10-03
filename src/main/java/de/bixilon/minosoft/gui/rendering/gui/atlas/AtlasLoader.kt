@@ -15,45 +15,59 @@ package de.bixilon.minosoft.gui.rendering.gui.atlas
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.gui.atlas.textures.AtlasTextureManager
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import java.util.*
 
 class AtlasLoader(val context: RenderContext) {
     private val raw: MutableMap<ResourceLocation, Map<String, RawAtlasElement>> = HashMap()
 
 
-    fun load(id: String, packFormat: Int, data: JsonObject): RawAtlasElement? {
+    fun loadElement(data: JsonObject): RawAtlasElement? {
         val textureName = data["texture"]?.toResourceLocation()?.texture() ?: throw IllegalArgumentException("Missing texture!")
 
         val assets = context.connection.assetsManager.getAssetsManager(textureName) ?: return null
-        // TODO: check packFormat match
 
         return RawAtlasElement.deserialize(textureName, assets, data)
     }
 
-    fun load(id: String, data: JsonObject): RawAtlasElement? {
-        // TODO: sort all by versionId (descending) and load first best matching
-        // try to load first best
-        TODO()
+    fun loadElement(data: JsonObject, packFormat: Int): RawAtlasElement? {
+        val sorted = TreeMap<Int, JsonObject> { a, b -> (b - a) }
+
+        for ((key, value) in data) {
+            sorted[key.toInt()] = value.unsafeCast()
+        }
+
+        for ((format, data) in sorted) {
+            if (format > packFormat) continue
+            return loadElement(data)
+        }
+        return null
     }
 
     fun load(name: ResourceLocation, data: JsonObject) {
         val elements: MutableMap<String, RawAtlasElement> = hashMapOf()
 
         for ((id, element) in data) {
-            elements[id] = load(id, element.unsafeCast()) ?: continue
+            elements[id] = loadElement(element.unsafeCast(), 0) ?: continue
         }
 
         raw[name] = elements
     }
 
     fun load(name: ResourceLocation) {
-        val file = name.atlas()
-        val data = context.connection.assetsManager[file].readJsonObject()
+        val all = context.connection.assetsManager.getAll(name.atlas())
+        val data: MutableJsonObject = mutableMapOf()
+
+        for (file in all) {
+            data += file.readJsonObject()
+        }
 
         load(name, data)
     }
@@ -70,6 +84,8 @@ class AtlasLoader(val context: RenderContext) {
             }
             map[atlasName] = Atlas(data)
         }
+
+        textures.load()
 
         return map
     }

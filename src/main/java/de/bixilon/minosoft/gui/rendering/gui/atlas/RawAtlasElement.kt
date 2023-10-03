@@ -19,6 +19,8 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.gui.atlas.textures.AtlasTextureManager
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -30,11 +32,17 @@ class RawAtlasElement(
     val end: Vec2i = resolution,
     val slots: Int2ObjectMap<AtlasArea>?,
     val areas: Map<String, AtlasArea>?,
-    val assets: AssetsManager?,
+    val assets: AssetsManager, // used for caching
 ) {
 
     fun load(textures: AtlasTextureManager): AtlasElement {
-        TODO()
+        val textureData = assets[texture].readTexture()
+
+        val (texture, uvStart, uvEnd) = textures.add(textureData, start, end, resolution)
+        val size = (end + 1) - start
+
+
+        return AtlasElement(texture, uvStart, uvEnd, size, slots, areas)
     }
 
     companion object {
@@ -62,7 +70,7 @@ class RawAtlasElement(
             return areas
         }
 
-        fun deserialize(texture: ResourceLocation, assets: AssetsManager?, data: JsonObject): RawAtlasElement {
+        fun deserialize(texture: ResourceLocation, assets: AssetsManager, data: JsonObject): RawAtlasElement {
             val resolution = data["resolution"]?.toVec2i() ?: RESOLUTION
             val start = data["start"]?.toVec2i() ?: START
             val end = data["end"]?.toVec2i() ?: resolution

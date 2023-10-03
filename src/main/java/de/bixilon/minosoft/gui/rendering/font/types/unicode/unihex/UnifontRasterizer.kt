@@ -67,7 +67,7 @@ class UnifontRasterizer(
 
     private fun createTexture(): UnifontTexture {
         val texture = UnifontTexture(calculateRows(width))
-        array.pushTexture(texture)
+        array += texture
         this.textures += texture
 
         return texture

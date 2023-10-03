@@ -11,16 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.atlas
+package de.bixilon.minosoft.gui.rendering.gui.atlas.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
-class CodeTexturePart(
-    override val texture: Texture,
-    override val uvStart: Vec2 = Vec2(0.0f),
-    override val uvEnd: Vec2 = Vec2(1.0f),
-    override val size: Vec2i,
-) : TexturePart
+data class AtlasTexture(
+    val texture: Texture,
+    val uvStart: Vec2,
+    val uvEnd: Vec2,
+)
