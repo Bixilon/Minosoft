@@ -42,8 +42,8 @@ class AtlasTexture(
     fun request(size: Vec2i): Vec2i? = null
 
     fun put(offset: Vec2i, source: TextureData, start: Vec2i, size: Vec2i): CodeTexturePart {
-        for (x in 0 until size.x) {
-            for (y in 0 until size.y) {
+        for (y in 0 until size.y) {
+            for (x in 0 until size.x) {
                 val sourceOffset = ((start.y + y) * source.size.x + (start.x + x)) * 4
                 val destinationOffset = ((offset.y + y) * this.size.x + (offset.x + x)) * 4
 
