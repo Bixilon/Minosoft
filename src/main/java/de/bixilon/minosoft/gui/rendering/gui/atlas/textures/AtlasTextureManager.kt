@@ -13,21 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas.textures
 
-import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.TextureGenerator
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import java.nio.ByteBuffer
 
 class AtlasTextureManager(private val context: RenderContext) {
     private val cache: MutableMap<ResourceLocation, TextureData> = HashMap()
-    private val targets: MutableList<Target> = mutableListOf()
+    private val textures: MutableList<AtlasTexture> = mutableListOf()
 
     private fun getTexture(texture: ResourceLocation, assets: AssetsManager): TextureData {
         this.cache[texture]?.let { return it }
@@ -38,7 +34,7 @@ class AtlasTextureManager(private val context: RenderContext) {
         return data
     }
 
-    fun add(texture: ResourceLocation, assets: AssetsManager, start: Vec2i, end: Vec2i, resolution: Vec2i): AtlasTexture {
+    fun add(texture: ResourceLocation, assets: AssetsManager, start: Vec2i, end: Vec2i, resolution: Vec2i): CodeTexturePart {
         val textureData = getTexture(texture, assets)
         val scale = textureData.size / resolution
 
@@ -48,38 +44,42 @@ class AtlasTextureManager(private val context: RenderContext) {
 
         val target = request(size)
 
-        return target.put(textureData.buffer, textureData.size, realStart, realEnd)
+        return target.put(textureData, realStart, size)
     }
 
     private fun request(size: Vec2i): Target {
-        // TODO: optimize that
-        val target = Target(Vec2i.EMPTY, TextureGenerator.allocate(size), size)
-        this.targets += target
+        for (texture in textures) {
+            val offset = texture.request(size) ?: continue
+            return Target(texture, offset)
+        }
+
+        val target = createTarget(size)
+        this.textures += target.texture
 
         return target
     }
 
+    private fun createTarget(minSize: Vec2i): Target {
+        // TODO: create larger atlases to optimize space
+        return Target(AtlasTexture(minSize), Vec2i.EMPTY)
+    }
+
 
     fun load() {
-        for (target in targets) {
-            context.textures.staticTextures += target.texture
+        for (texture in textures) {
+            context.textures.staticTextures += texture
         }
         this.cache.clear()
-        targets.clear()
+        this.textures.clear()
     }
 
     private data class Target(
+        val texture: AtlasTexture,
         val offset: Vec2i,
-        val buffer: ByteBuffer,
-        val size: Vec2i,
     ) {
-        val texture = MemoryTexture(size, mipmaps = false, buffer = buffer)
 
-        fun put(source: ByteBuffer, size: Vec2i, start: Vec2i, end: Vec2i): AtlasTexture {
-            // TODO
-
-            return AtlasTexture(texture, Vec2(0, 0), Vec2(1, 1))
+        fun put(source: TextureData, start: Vec2i, size: Vec2i): CodeTexturePart {
+            return texture.put(offset, source, start, size)
         }
     }
-
 }

@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
-class CodeTexturePart(
+data class CodeTexturePart(
     override val texture: Texture,
     override val uvStart: Vec2 = Vec2(0.0f),
     override val uvEnd: Vec2 = Vec2(1.0f),
