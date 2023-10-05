@@ -11,33 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items
+package de.bixilon.minosoft.data.registries.item.items.pixlyzer
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 
-open class SpawnEggItem(
+open class MusicDiscItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
 ) : PixLyzerItem(resourceLocation, registries, data) {
-    val color1 = data["spawn_egg_color_1"]?.toInt()?.asRGBColor()
-    val color2 = data["spawn_egg_color_2"]?.toInt()?.asRGBColor()
-    val entityType: EntityType = unsafeNull()
+    val analogOutput = data["analog_output"].nullCast<Item>() ?: 0
+    val sound: ResourceLocation = registries.soundEvent[data["sound"]]
 
-    init {
-        this::entityType.inject(data["spawn_egg_entity_type"])
-    }
+    companion object : PixLyzerItemFactory<MusicDiscItem> {
 
-    companion object : PixLyzerItemFactory<SpawnEggItem> {
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SpawnEggItem {
-            return SpawnEggItem(resourceLocation, registries, data)
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): MusicDiscItem {
+            return MusicDiscItem(resourceLocation, registries, data)
         }
     }
 }

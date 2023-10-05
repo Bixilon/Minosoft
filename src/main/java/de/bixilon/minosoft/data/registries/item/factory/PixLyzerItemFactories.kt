@@ -14,12 +14,10 @@
 package de.bixilon.minosoft.data.registries.item.factory
 
 import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
-import de.bixilon.minosoft.data.registries.item.items.*
-import de.bixilon.minosoft.data.registries.item.items.armor.*
-import de.bixilon.minosoft.data.registries.item.items.block.*
 import de.bixilon.minosoft.data.registries.item.items.block.legacy.*
-import de.bixilon.minosoft.data.registries.item.items.throwable.*
-import de.bixilon.minosoft.data.registries.item.items.tool.*
+import de.bixilon.minosoft.data.registries.item.items.pixlyzer.DyeItem
+import de.bixilon.minosoft.data.registries.item.items.pixlyzer.MusicDiscItem
+import de.bixilon.minosoft.data.registries.item.items.pixlyzer.SpawnEggItem
 
 @Deprecated("item factory")
 object PixLyzerItemFactories : DefaultClassFactory<PixLyzerItemFactory<*>>(

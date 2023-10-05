@@ -150,12 +150,12 @@ class PlayInByteBuffer : InByteBuffer {
                 meta = readUnsignedShort()
             }
             val nbt = readNBT()?.toMutableJsonObject()
-            val item = connection.registries.item.getOrNull(id shl 16 or meta) ?: return null
+            val item = connection.registries.item.getOrNull(id shl 16 or meta) ?: return null // TODO: only if item is not an ItemWithMeta
             return ItemStackUtil.of(
                 item = item,
                 connection = connection,
                 count = count,
-                durability = meta,
+                meta = meta,
                 nbt = nbt ?: mutableMapOf(),
             )
         }

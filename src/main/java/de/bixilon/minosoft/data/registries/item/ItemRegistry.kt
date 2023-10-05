@@ -17,7 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactories
 import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
+import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.registry.MetaTypes
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
 

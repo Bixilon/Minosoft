@@ -13,6 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.item.items
 
-interface DurableItem {
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
+
+interface DurableItem : ItemWithMeta {
     val maxDurability: Int
+
+    override fun setMeta(stack: ItemStack, meta: Int) {
+        stack.durability.durability = meta
+    }
 }

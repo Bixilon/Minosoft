@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.effects.attributes.AttributeType
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.SpawnEggItem
+import de.bixilon.minosoft.data.registries.item.items.pixlyzer.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec

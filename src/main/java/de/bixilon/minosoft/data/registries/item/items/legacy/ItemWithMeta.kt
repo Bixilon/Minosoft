@@ -11,16 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.potion
+package de.bixilon.minosoft.data.registries.item.items.legacy
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
 
-abstract class AbstractPotionItem(identifier: ResourceLocation) : Item(identifier), ItemWithMeta {
+interface ItemWithMeta {
 
-    override fun setMeta(stack: ItemStack, meta: Int) {
-        // TODO: the item might actually be a different item (drinking vs lingering vs splash)
-    }
+    fun setMeta(stack: ItemStack, meta: Int)
 }

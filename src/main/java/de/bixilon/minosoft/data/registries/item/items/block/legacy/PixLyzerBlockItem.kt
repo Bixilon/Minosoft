@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.item.items.block.PlaceableItem
+import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
