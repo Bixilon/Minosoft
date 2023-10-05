@@ -72,8 +72,8 @@ abstract class LegacyLoadingTest(version: String) : RegistryLoadingTest(version)
     }
 
     fun itemId() {
-        assertEquals(registries.item[256].identifier, minecraft("iron_shovel"))
-        assertEquals(registries.item[450].identifier, minecraft("shulker_shell")) // TODO: only > 1.9
-        assertEquals(registries.item[2256].identifier, minecraft("record_13"))
+        assertEquals(registries.item[256 shl 16].identifier, minecraft("iron_shovel"))
+        assertEquals(registries.item[450 shl 16].identifier, minecraft("shulker_shell")) // TODO: only > 1.9
+        assertEquals(registries.item[2256 shl 16].identifier, minecraft("record_13"))
     }
 }
