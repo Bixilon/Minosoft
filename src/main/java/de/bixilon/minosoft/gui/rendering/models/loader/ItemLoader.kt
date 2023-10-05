@@ -73,11 +73,11 @@ class ItemLoader(private val loader: ModelLoader) {
         this.cache.clear()
     }
 
-    fun fixPath(name: ResourceLocation): ResourceLocation {
-        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, 4, "item/", "items/"))
+    fun fixTexturePath(name: ResourceLocation): ResourceLocation {
+        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, 4, "items/", "item/"))
     }
 
     private fun ResourceLocation.itemModel(): ResourceLocation {
-        return fixPath(this).model()
+        return this.prefix("item/").model()
     }
 }

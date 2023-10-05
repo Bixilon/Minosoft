@@ -74,12 +74,12 @@ class BlockLoader(private val loader: ModelLoader) {
         this.cache.clear()
     }
 
-    fun fixPath(name: ResourceLocation): ResourceLocation {
-        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, 4, "block/", "blocks/"))
+    fun fixTexturePath(name: ResourceLocation): ResourceLocation {
+        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, 4, "blocks/", "block/"))
     }
 
     private fun ResourceLocation.blockModel(): ResourceLocation {
-        return fixPath(this).model()
+        return this.prefix("block/").model()
     }
 
 

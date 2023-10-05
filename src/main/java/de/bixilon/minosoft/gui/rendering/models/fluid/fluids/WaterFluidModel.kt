@@ -31,8 +31,8 @@ class WaterFluidModel : FluidModel {
     override val transparency = TextureTransparencies.TRANSLUCENT// TODO: from texture
 
     override fun load(context: RenderContext) {
-        still = context.textures.staticTextures.createTexture(context.models.block.fixPath(STILL).texture())
-        flowing = context.textures.staticTextures.createTexture(context.models.block.fixPath(FLOWING).texture())
+        still = context.textures.staticTextures.createTexture(context.models.block.fixTexturePath(STILL).texture())
+        flowing = context.textures.staticTextures.createTexture(context.models.block.fixTexturePath(FLOWING).texture())
     }
 
     companion object {
