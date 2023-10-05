@@ -41,7 +41,7 @@ data class EntityHoverEvent(
             }
             json["text"]?.let {
                 // 1.14.3.... lol
-                json = Jackson.MAPPER.readValue(it.unsafeCast<String>(), Jackson.JSON_MAP_TYPE)
+                json = Jackson.MAPPER_LENIENT.readValue(it.unsafeCast<String>(), Jackson.JSON_MAP_TYPE)
             }
             var type: ResourceLocation? = null
             json["type"]?.nullCast<String>()?.let {
