@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelFixer.fixPrefix
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -31,7 +32,7 @@ class BlockLoader(private val loader: ModelLoader) {
     val version = loader.context.connection.version
 
     fun loadBlock(name: ResourceLocation): BlockModel? {
-        val file = name.model("block/")
+        val file = name.blockModel()
         cache[file]?.let { return it }
         val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
@@ -71,6 +72,14 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun cleanup() {
         this.cache.clear()
+    }
+
+    fun fixPath(name: ResourceLocation): ResourceLocation {
+        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, 4, "block/", "blocks/"))
+    }
+
+    private fun ResourceLocation.blockModel(): ResourceLocation {
+        return fixPath(this).model()
     }
 
 

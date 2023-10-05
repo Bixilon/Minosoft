@@ -24,6 +24,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ModelLoader(
     val context: RenderContext,
 ) {
+    val packFormat = context.connection.assetsManager.properties?.pack?.format ?: if (context.connection.version.flattened) Int.MAX_VALUE else 0 // TODO: integrate with assets/refactor_atlas
     val fluids = FluidModelLoader(this)
     val entities = EntityModels(this)
     val block = BlockLoader(this)
@@ -54,16 +55,12 @@ class ModelLoader(
 
     companion object {
 
-        fun ResourceLocation.model(prefix: String? = null): ResourceLocation {
-            var path = this.path
-            if (prefix != null && !path.startsWith(prefix)) {
-                path = prefix + path
-            }
+        fun ResourceLocation.model(): ResourceLocation {
             return ResourceLocation(this.namespace, "models/$path.json")
         }
 
         fun ResourceLocation.bbModel(): ResourceLocation {
-            return ResourceLocation(this.namespace, "models/" + this.path + ".bbmodel")
+            return ResourceLocation(this.namespace, "models/$path.bbmodel")
         }
     }
 }
