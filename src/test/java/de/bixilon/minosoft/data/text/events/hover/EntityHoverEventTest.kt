@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.text.events.hover
 
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
-import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.TextComponent
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -26,7 +26,7 @@ class EntityHoverEventTest {
         val data = mapOf("text" to """{name:"item.item.slimeball",id:"0d2dc333-f629-4b59-bdf9-074f58b99c06",type:"minecraft:item"}""")
         val event = EntityHoverEvent.build(data, false)
 
-        val expected = EntityHoverEvent("0d2dc333-f629-4b59-bdf9-074f58b99c06".toUUID(), Namespaces.minecraft("item"), name = TextComponent("item.item.slimeball"))
+        val expected = EntityHoverEvent("0d2dc333-f629-4b59-bdf9-074f58b99c06".toUUID(), minecraft("item"), name = TextComponent("item.item.slimeball"))
 
         assertEquals(expected, event)
     }

@@ -286,14 +286,15 @@ internal class ChatComponentTest {
         val hover = EntityHoverEvent("0d2dc333-f629-4b59-bdf9-074f58b99c06".toUUID(), minecraft("item"), name = TextComponent("item.item.slimeball"))
 
         val expected = BaseComponent(
-            BaseComponent(
                 TextComponent("[").color(ChatColors.GRAY).italic(),
                 TextComponent("Bixilon").color(ChatColors.GRAY).italic(),
                 TextComponent(": ").color(ChatColors.GRAY).italic(),
+            BaseComponent(
                 TextComponent("Killed ").color(ChatColors.GRAY).italic(),
                 TextComponent("item.item.slimeball").color(ChatColors.GRAY).italic().hoverEvent(hover),
+            ),
                 TextComponent("]").color(ChatColors.GRAY).italic(),
-            ))
+        )
         assertEquals(text, expected)
     }
 

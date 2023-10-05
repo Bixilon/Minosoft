@@ -13,42 +13,70 @@
 
 package de.bixilon.minosoft.assets.meta
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.string.StringUtil.formatPlaceholder
+import de.bixilon.kutil.url.URLUtil.toURL
+import de.bixilon.mbf.MBFBinaryReader
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.util.FileAssetsTypes
+import de.bixilon.minosoft.assets.util.FileAssetsUtil
+import de.bixilon.minosoft.assets.util.HashTypes
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
+import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
-import java.io.FileInputStream
+import java.io.ByteArrayInputStream
 
 object MinosoftMeta {
+    private val INDEX = minosoft("mapping/minosoft-meta.json")
     var root: MetaRoot = unsafeNull()
         private set
 
 
     fun load() {
-        val file = FileInputStream("/home/moritz/git/gitlab.bixilon.de/bixilon/minosoft-meta/index.json")
-        this.root = file.readJson<MetaRoot>()
+        this.root = Minosoft.MINOSOFT_ASSETS_MANAGER[INDEX].readJson<MetaRoot>()
     }
 
-    private fun MetaVersionEntry.load(type: String): JsonObject {
-        val file = FileInputStream("/home/moritz/git/gitlab.bixilon.de/bixilon/minosoft-meta/${this.version}/$type.json")
-        return file.readJsonObject()
+    private fun ByteArray.load(): JsonObject {
+        return MBFBinaryReader(ByteArrayInputStream(this)).readMBF().data.unsafeCast()
     }
 
-    fun MetaTypeEntry.load(type: String, version: Version): JsonObject? {
+    private fun MetaVersionEntry.load(profile: ResourcesProfile): JsonObject {
+        FileAssetsUtil.readOrNull(this.hash, FileAssetsTypes.META, compress = false)?.let { return it.load() }
+
+        val data = FileAssetsUtil.read(profile.source.minosoftMeta.formatPlaceholder(
+            "hashPrefix" to hash.substring(0, 2),
+            "fullHash" to hash,
+        ).toURL().openStream(), type = FileAssetsTypes.META, compress = false, hash = HashTypes.SHA256)
+
+        if (data.hash != hash) {
+            throw IllegalStateException("Pixlyzer data mismatch (expected=$hash, hash=${data.hash}!")
+        }
+
+        return data.data.load()
+    }
+
+    fun MetaTypeEntry.load(profile: ResourcesProfile, version: Version): JsonObject? {
         var previous: MetaVersionEntry? = null
+        var previousVersion: Version? = null
+
         for (entry in this) {
             if (entry.version == "_") {
                 previous = entry
                 continue
             }
             val entryVersion = Versions[entry.version] ?: throw IllegalArgumentException("Unknown meta version ${entry.version}")
-            if (entryVersion > version) break
-            previous = entry
+            if (entryVersion > version) continue
+            if (previousVersion != null && previousVersion > entryVersion) {
+                continue
+            }
+            previousVersion = entryVersion
         }
         if (previous == null) return null
 
-        return previous.load(type)
+        return previous.load(profile)
     }
 }

@@ -33,7 +33,7 @@ object PreFlattening {
         // val worker = UnconditionalWorker()
         for ((type, data) in MinosoftMeta.root) {
             //  worker += { data.load(type, version) }
-            json[type] = data.load(type, version) ?: continue
+            json[type] = data.load(profile, version) ?: continue
         }
         //    worker.work(latch)
 
