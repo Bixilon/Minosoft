@@ -26,6 +26,9 @@ import de.bixilon.minosoft.gui.rendering.models.loader.ModelFixer.fixPrefix
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ItemLoader(private val loader: ModelLoader) {
     private val cache: MutableMap<ResourceLocation, ItemModel> = HashMap(loader.context.connection.registries.item.size)
@@ -35,7 +38,11 @@ class ItemLoader(private val loader: ModelLoader) {
     fun loadItem(name: ResourceLocation): ItemModel? {
         val file = name.itemModel()
         cache[file]?.let { return it }
-        val data = assets.getOrNull(file)?.readJsonObject() ?: return null
+        val data = assets.getOrNull(file)?.readJsonObject()
+        if (data == null) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find item model $name" }
+            return null
+        }
 
         val parent = data["parent"]?.toString()?.let { loadItem(it.toResourceLocation()) }
 
