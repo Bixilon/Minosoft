@@ -37,7 +37,7 @@ class RecipeRegistry(
     override fun get(any: Any?): Recipe? {
         return when (any) {
             null -> null
-            is Number -> get(any.toInt())
+            is Number -> getOrNull(any.toInt())
             is ResourceLocation -> resourceLocationRecipeMap[any]
             is String -> get(any.toResourceLocation())
             is Identified -> get(any.identifier)
