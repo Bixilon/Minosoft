@@ -18,7 +18,7 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 
 class SourceC(profile: ResourcesProfile) {
     var pixlyzer by StringDelegate(profile, "https://gitlab.bixilon.de/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false")
-    var minosoftMeta by StringDelegate(profile, "https://gitlab.bixilon.de/bixilon/minosoft-meta-bin/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false")
+    var minosoftMeta by StringDelegate(profile, "https://gitlab.bixilon.de/bixilon/minosoft-meta-bin/-/raw/master/\${hashPrefix}/\${fullHash}?ref_type=heads")
     var minecraftResources by StringDelegate(profile, "https://resources.download.minecraft.net/\${hashPrefix}/\${fullHash}")
     var mojangPackages by StringDelegate(profile, "https://launchermeta.mojang.com/v1/packages/\${fullHash}/\${filename}")
     var pistonObjects by StringDelegate(profile, "https://piston-data.mojang.com/v1/objects/\${fullHash}/\${filename}")
