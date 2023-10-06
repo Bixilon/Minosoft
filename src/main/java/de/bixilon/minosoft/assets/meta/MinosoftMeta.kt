@@ -53,7 +53,7 @@ object MinosoftMeta {
         ).toURL().openStream(), type = FileAssetsTypes.META, compress = false, hash = HashTypes.SHA256)
 
         if (data.hash != hash) {
-            throw IllegalStateException("Pixlyzer data mismatch (expected=$hash, hash=${data.hash}!")
+            throw IllegalStateException("Minosoft meta data mismatch (expected=$hash, hash=${data.hash}!")
         }
 
         return data.data.load()

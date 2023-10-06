@@ -17,12 +17,12 @@ Versions before the minecraft netty rewrite (1.7; 13w41b) are currently not supp
 | 1.15.x     | ✅     | eol                                                                                          |
 | 1.14.x     | ✅     | eol, some minor bugs                                                                         |
 | 1.13.x     | ❌     | eol, no mappings  [#40](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/40)              |
-| **1.12.x** | ❌     | lts, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
-| 1.11.x     | ❌     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
-| 1.10.x     | ❌     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
-| 1.9.x      | ❌     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
-| **1.8.x**  | ❌     | lts, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
-| 1.7.x      | ❌     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
+| **1.12.x** | ✅     | lts, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
+| 1.11.x     | ✅     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
+| 1.10.x     | ✅     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
+| 1.9.x      | ✅     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
+| **1.8.x**  | ✅     | lts, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
+| 1.7.x      | ✅     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
 
 Versions marked as "eol" are end of life. That means that they are not high priority in minosoft, but their support will never get removed.  
 Versions marked with "lts" are long term supported. They (and the latest one) will always be high priority supported.
