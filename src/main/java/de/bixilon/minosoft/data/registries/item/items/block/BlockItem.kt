@@ -29,6 +29,7 @@ import kotlin.reflect.jvm.javaField
 abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identifier), StackableItem, PlaceableItem {
     val block: T = unsafeNull()
     protected abstract val _block: Identified
+    override val translationKey: ResourceLocation get() = block.translationKey
     override var model: ItemRender?
         get() = super.model ?: block.model ?: block.states.default.model
         set(value) {

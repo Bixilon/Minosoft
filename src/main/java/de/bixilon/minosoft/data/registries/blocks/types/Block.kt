@@ -42,7 +42,7 @@ abstract class Block(
 
     var model: BlockRender? = null
 
-    override val translationKey: ResourceLocation = identifier.translation("block")
+    override val translationKey: ResourceLocation = settings.translationKey ?: identifier.translation("block")
 
     @Deprecated("Interface")
     var tintProvider: TintProvider? = null
