@@ -13,20 +13,41 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 
-class HeartAtlas(val atlas: Atlas?) {
-    val normal = HartType()
-    val poisoned = HartType()
-    val withered = HartType()
-    val absorption = HartType()
-    val frozen = HartType()
+class HeartAtlas(private val atlas: Atlas?) {
+    val normal = HartType("")
+    val poisoned = HartType("poisoned")
+    val withered = HartType("withered")
+    val absorption = HartType("absorption")
+    val frozen = HartType("frozen")
 
-    class HartType {
-        fun get(full: Boolean, hardcore: Boolean, blinking: Boolean): AtlasElement = TODO()
 
+    val container = atlas["container"] // TODO: There are multiple containers
+
+    inner class HartType(type: String) {
+        val hearts = Array(2) { full ->
+            Array(2) { hardcore ->
+                Array(2) { blinking ->
+                    val name = StringBuilder()
+                    if (type.isNotEmpty()) {
+                        name.append(type)
+                        name.append('_')
+                    }
+                    name.append(if (full > 0) "full" else "half")
+                    if (hardcore > 0) name.append("_hardcore")
+                    if (blinking > 0) name.append("_blinking")
+
+                    atlas?.get(name.toString())
+                }
+            }
+        } // frozen_full_hardcore_blinking
+
+        fun get(full: Boolean, hardcore: Boolean, blinking: Boolean): AtlasElement? = this.hearts[full.toInt()][hardcore.toInt()][blinking.toInt()]
     }
 
 

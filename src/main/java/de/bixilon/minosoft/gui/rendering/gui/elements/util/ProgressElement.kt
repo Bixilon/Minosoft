@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -56,9 +56,11 @@ open class ProgressElement(
     }
 
     override fun forceSilentApply() {
-        val emptyAtlasElement = emptyAtlasElement ?: return
-        val fullAtlasElement = fullAtlasElement ?: return
-        progressImage = ImageElement(guiRenderer, fullAtlasElement.texture, uvStart = fullAtlasElement.uvStart, uvEnd = Vec2(interpolateLinear(progress, fullAtlasElement.uvStart.x, fullAtlasElement.uvEnd.x), fullAtlasElement.uvEnd.y), size = Vec2((fullAtlasElement.size.x * progress), emptyAtlasElement.size.y))
+        val full = fullAtlasElement ?: return
+
+        val uvEnd = Vec2(interpolateLinear(progress, full.uvStart.x, full.uvEnd.x), full.uvEnd.y)
+        val size = this.size
+        progressImage = ImageElement(guiRenderer, full.texture, uvStart = full.uvStart, uvEnd = uvEnd, size = Vec2((size.x * progress), size.y))
 
         cacheUpToDate = false
     }

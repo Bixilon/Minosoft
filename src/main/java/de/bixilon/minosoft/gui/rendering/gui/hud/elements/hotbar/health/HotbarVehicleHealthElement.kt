@@ -32,7 +32,7 @@ import java.lang.Float.max
 class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
     private val atlasManager = guiRenderer.atlas
 
-    private val atlas = VehicleHeartAtlas(guiRenderer.atlas[HeartAtlas.ATLAS])
+    private val atlas = guiRenderer.atlas[HeartAtlas.ATLAS]?.let { VehicleHeartAtlas(it) }
 
     private var shown = false
     override var totalHealth = 0.0f
@@ -45,7 +45,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
         if (text) {
             return super.forceRender(offset, consumer, options)
         }
-        drawCanisters(offset, consumer, options, atlas.getContainer(false))
+        drawCanisters(offset, consumer, options, atlas?.getContainer(false))
 
         var healthLeft = totalHealth
         var heart = 0
@@ -56,7 +56,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
 
 
             val halfHeart = healthLeft < 1.5f
-            val image = atlas.getHeart(halfHeart)?.let { AtlasImageElement(guiRenderer, it) }
+            val image = atlas?.getHeart(halfHeart)?.let { AtlasImageElement(guiRenderer, it) }
 
             image?.render(offset + Vec2(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
 

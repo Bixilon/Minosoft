@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.AbstractHotbarHealthElement
@@ -36,7 +35,6 @@ import java.lang.Float.min
 class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
 
     private val atlas = HeartAtlas(guiRenderer.atlas[HeartAtlas.ATLAS])
-    private val blackHeartContainer = atlas.atlas["container"] // TODO: There are multiple containers
 
     private var hardcode = false
     private var poison = false
@@ -55,7 +53,7 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
             return super.forceRender(offset, consumer, options)
         }
         // ToDo: Damage animation, regeneration, caching, stacking
-        drawCanisters(offset, consumer, options, blackHeartContainer)
+        drawCanisters(offset, consumer, options, atlas.container)
 
 
         var healthLeft = totalHealth

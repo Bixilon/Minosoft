@@ -16,9 +16,12 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 
-class VehicleHeartAtlas(val atlas: Atlas?) {
+class VehicleHeartAtlas(atlas: Atlas) {
+    private val half = atlas["half_vehicle"]
+    private val full = atlas["full_vehicle"]
+    private val container = atlas["container_vehicle"]
 
-    fun getContainer(half: Boolean): AtlasElement = TODO()
+    fun getContainer(half: Boolean): AtlasElement? = container
 
-    fun getHeart(half: Boolean): AtlasElement = TODO()
+    fun getHeart(half: Boolean): AtlasElement? = if (half) this.half else this.full
 }

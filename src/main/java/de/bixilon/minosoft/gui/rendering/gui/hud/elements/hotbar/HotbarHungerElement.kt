@@ -68,7 +68,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
 
             if (hungerProfile.saturationBar) {
                 val container = when {
-                    hungerEffect -> atlas.hungerContainer
+                    hungerEffect -> atlas.getContainer(true)
                     saturationLeft == 1 -> {
                         saturationLeft -= 1
                         atlas.getSaturationContainer(true)
@@ -79,7 +79,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
                         atlas.getSaturationContainer(false)
                     }
 
-                    else -> atlas.container
+                    else -> atlas.getContainer(false)
                 }
                 AtlasImageElement(guiRenderer, container).render(hungerOffset, consumer, options)
             }
@@ -134,11 +134,13 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     }
 
     private class HungerAtlas(val atlas: Atlas?) {
-        val container = atlas["container"]
-        val hungerContainer = atlas["container_hunger"]
+        private val container = arrayOf(atlas["container"], atlas["container_hunger"])
+        private val saturation = arrayOf(atlas["container_saturation_half"], atlas["container_saturation_full"])
+        private val hunger = arrayOf(arrayOf(atlas["full"], atlas["half"]), arrayOf(atlas["full_hunger"], atlas["half_hunger"]))
 
-        fun getHunger(half: Boolean, hunger: Boolean): AtlasElement = TODO()
-        fun getSaturationContainer(half: Boolean): AtlasElement = TODO()
+        fun getHunger(half: Boolean, hunger: Boolean): AtlasElement? = this.hunger[if (hunger) 1 else 0][if (half) 1 else 0]
+        fun getContainer(hunger: Boolean): AtlasElement? = container[if (hunger) 1 else 0]
+        fun getSaturationContainer(half: Boolean): AtlasElement? = saturation[if (half) 0 else 1]
     }
 
     companion object {

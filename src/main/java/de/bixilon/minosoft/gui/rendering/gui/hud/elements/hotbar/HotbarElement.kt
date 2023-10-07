@@ -208,6 +208,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             gui.atlas.load(HotbarBaseElement.ATLAS)
             gui.atlas.load(HotbarProtectionElement.ATLAS)
             gui.atlas.load(HotbarHungerElement.ATLAS)
+            gui.atlas.load(HotbarExperienceBarElement.ATLAS)
         }
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<HotbarElement> {

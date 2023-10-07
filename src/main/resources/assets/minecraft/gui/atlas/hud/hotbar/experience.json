@@ -2,7 +2,8 @@
   "empty": {
     "0": {
       "texture": "gui/icons",
-      "start": [0, 64]
+      "start": [0, 64],
+      "end": [182, 69]
     },
     "18": {
       "texture": "gui/sprites/hud/experience_bar_background",

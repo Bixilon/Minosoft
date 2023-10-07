@@ -61,6 +61,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
         val bars = atlasElements[barIndex]
 
         val progress = ProgressElement(guiRenderer, bars, progress)
+        progress.prefMaxSize = SIZE
         progress.render(offset, consumer, options)
 
         if (level > 0) {
@@ -91,7 +92,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
     }
 
     companion object {
-        private val ATLAS = minecraft("hud/hotbar/experience")
+        val ATLAS = minecraft("hud/hotbar/experience")
         private val TEXT_PROPERTIES = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false)
         private val SIZE = Vec2(182, 5)
     }
