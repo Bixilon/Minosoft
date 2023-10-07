@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.assets.properties.version
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.meta.MinosoftMeta
@@ -30,12 +31,11 @@ object PreFlattening {
 
         val json: MutableJsonObject = synchronizedMapOf()
 
-        // val worker = UnconditionalWorker()
+        val worker = UnconditionalWorker()
         for ((type, data) in MinosoftMeta.root) {
-            //  worker += { data.load(type, version) }
-            json[type] = data.load(profile, version) ?: continue
+            worker += add@{ json[type] = data.load(profile, version) ?: return@add }
         }
-        //    worker.work(latch)
+        worker.work(latch)
 
         registries.load(version, json, latch)
 

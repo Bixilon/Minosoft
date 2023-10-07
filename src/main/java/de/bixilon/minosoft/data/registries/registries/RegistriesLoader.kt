@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.versions.Version
 object RegistriesLoader {
 
     fun load(profile: ResourcesProfile, version: Version, latch: AbstractLatch): Registries {
-        val registries = if (!version.flattened) PreFlattening.loadRegistry(profile, version, latch) else PixLyzerUtil.loadRegistry(version, profile, latch)
+        val registries = if (!version.flattened) PreFlattening.loadRegistry(profile, version, latch) else PixLyzerUtil.loadRegistry(version, profile, latch) // TODO: prioritize pixlyzer and if it fails load meta
 
         registries.setDefaultParents(version)
 
