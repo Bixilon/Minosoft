@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -97,43 +98,44 @@ open class Registry<T : RegistryItem>(
         return valueIdMap[value] ?: parent?.getId(value)!!
     }
 
-    override fun update(data: Map<ResourceLocation, Any>, registries: Registries?) {
+    override fun update(data: Map<String, Any>?, version: Version, registries: Registries?) {
+        if (data == null) return
         for ((name, value) in data) {
             check(value is Map<*, *>)
             val id = value["id"]?.toInt()?.let { if (metaType != MetaTypes.NONE && !flattened) metaType.modify(it, value["meta"]?.toInt() ?: 0) else it }
-            addItem(name, id, value.unsafeCast(), registries)
+            addItem(name.toResourceLocation(), id, value.unsafeCast(), version, registries)
         }
     }
 
-    override fun update(data: List<JsonObject>, registries: Registries?) {
+    override fun update(data: List<JsonObject>, version: Version, registries: Registries?) {
         for (entry in data) {
             val name = (entry["name"] ?: entry["key"])?.toResourceLocation() ?: throw IllegalArgumentException("Can not find name: $entry")
             val id = entry["id"]?.toInt()
 
             val entryData = entry["element"]?.toJsonObject() ?: entry
-            addItem(name, id, entryData, registries)
+            addItem(name, id, entryData, version, registries)
         }
     }
 
-    protected open fun deserialize(resourceLocation: ResourceLocation, data: JsonObject, registries: Registries?): T? {
+    protected open fun deserialize(identifier: ResourceLocation, data: JsonObject, version: Version, registries: Registries?): T? {
         if (registries != null) {
-            integrated?.build(resourceLocation, registries, data)?.let { return it }
+            integrated?.build(identifier, registries, data)?.let { return it }
         }
 
         if (codec == null) {
             throw IllegalStateException("codec is null!")
         }
-        return codec.deserialize(registries, resourceLocation, data)
+        return codec.deserialize(registries, identifier, data)
     }
 
-    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?): T? {
-        val item = deserialize(resourceLocation, data, registries) ?: return null
+    override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): T? {
+        val item = deserialize(identifier, data, version, registries) ?: return null
 
         if (id != null) {
             idValueMap[id] = item
             valueIdMap[item] = id
         }
-        resourceLocationMap[resourceLocation] = item
+        resourceLocationMap[identifier] = item
 
         return item
     }

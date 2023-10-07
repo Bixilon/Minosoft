@@ -25,7 +25,7 @@ class BlockParticleData(val blockState: BlockState?, type: ParticleType) : Parti
     companion object : ParticleDataFactory<BlockParticleData> {
         override fun read(buffer: PlayInByteBuffer, type: ParticleType): BlockParticleData {
             val blockStateId = if (buffer.versionId < ProtocolVersions.V_17W45A) {
-                buffer.readVarInt() shl 4 // ToDo: What about meta data?
+                buffer.readVarInt() shl 4 // ToDo: What about meta?
             } else {
                 buffer.readVarInt()
             }

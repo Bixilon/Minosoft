@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
-    private val water = guiRenderer.context.connection.registries.fluid[WaterFluid]!!
     private val airBubble = guiRenderer.atlasManager["minecraft:air_bubble"]
     private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]
 
@@ -65,7 +64,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
         var bubbles = 0
         var poppingCount = 0
 
-        if (submergedFluid == water || (air in 1 until FULL_AIR)) {
+        if (submergedFluid is WaterFluid || (air in 1 until FULL_AIR)) {
             bubbles = ((air - 2) / AIR_PER_BUBBLE.toFloat()).ceil // 2 ticks for the popping "animation"
 
 

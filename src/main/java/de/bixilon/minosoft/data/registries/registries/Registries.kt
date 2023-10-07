@@ -22,6 +22,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
+import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
@@ -54,7 +55,7 @@ import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
-import de.bixilon.minosoft.datafixer.rls.RegistryFixer.fix
+import de.bixilon.minosoft.datafixer.rls.RegistryFixer.fixRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.protocol.versions.Version
@@ -68,6 +69,14 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableMap
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.iterator
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 
 class Registries(
@@ -115,6 +124,7 @@ class Registries(
 
     val entityDataIndexMap: MutableMap<EntityDataField, Int> = mutableMapOf()
     val entityType: Registry<EntityType> = register("entity_type", Registry(codec = EntityType))
+    val entityObjectType: Registry<EntityObjectType> = register("entity_object_type", Registry(codec = EntityObjectType))
     val damageType: Registry<DamageType> = register("damage_type", Registry(codec = DamageType))
 
     val blockEntityType = BlockEntityTypeRegistry()
@@ -132,8 +142,6 @@ class Registries(
     var isFullyLoaded = false
         private set
 
-    private var isFlattened = false
-
 
     override var parent: Registries? = null
         set(value) {
@@ -146,11 +154,15 @@ class Registries(
         return entityDataIndexMap[field] ?: parent?.getEntityDataIndex(field)
     }
 
+    fun updateFlattened(flattened: Boolean) {
+        block.flattened = flattened
+        blockState.flattened = flattened
+        item.flattened = flattened
+    }
+
     fun load(version: Version, pixlyzerData: Map<String, Any>, latch: AbstractLatch) {
-        isFlattened = version.flattened
-        block.flattened = isFlattened
-        blockState.flattened = isFlattened
-        item.flattened = isFlattened
+        updateFlattened(version.flattened)
+
 
         var error: Throwable? = null
         val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it })
@@ -171,40 +183,40 @@ class Registries(
 
         // id stuff
         // id resource location stuff
-        worker += WorkerTask(this::containerType) { containerType.rawUpdate(pixlyzerData["container_types"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::gameEvent) { gameEvent.rawUpdate(pixlyzerData["game_events"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::worldEvent) { worldEvent.rawUpdate(pixlyzerData["world_events"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::argumentType) { argumentType.rawUpdate(pixlyzerData["argument_type"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::messageType) { messageType.rawUpdate(pixlyzerData["message_types"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::containerType) { containerType.update(pixlyzerData["container_types"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::gameEvent) { gameEvent.update(pixlyzerData["game_events"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::worldEvent) { worldEvent.update(pixlyzerData["world_events"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::argumentType) { argumentType.update(pixlyzerData["argument_type"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::messageType) { messageType.update(pixlyzerData["message_types"]?.toJsonObject(), version, this) }
 
 
-        worker += WorkerTask(this::entityType) { entityType.rawUpdate(pixlyzerData["entities"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::entityType) { entityType.update(pixlyzerData["entities"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::motif) { motif.rawUpdate(pixlyzerData["motives"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::soundEvent) { soundEvent.rawUpdate(pixlyzerData["sound_events"]?.toJsonObject(), null) }
+        worker += WorkerTask(this::motif) { motif.update(pixlyzerData["motives"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::soundEvent) { soundEvent.update(pixlyzerData["sound_events"]?.toJsonObject(), version, null) }
         worker += WorkerTask(this::soundGroup, dependencies = arrayOf(this::soundEvent)) { soundGroup.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
-        worker += WorkerTask(this::particleType) { particleType.rawUpdate(pixlyzerData["particles"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::material) { material.rawUpdate(pixlyzerData["materials"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::enchantment) { enchantment.rawUpdate(pixlyzerData["enchantments"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::statusEffect) { statusEffect.rawUpdate(pixlyzerData["status_effects"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::biome) { biome.rawUpdate(pixlyzerData["biomes"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::dimension) { dimension.rawUpdate(pixlyzerData["dimensions"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::fluid) { fluid.rawUpdate(pixlyzerData["fluids"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::block, dependencies = arrayOf(this::material, this::fluid, this::shape, this::soundGroup, this::particleType)) { block.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::item, dependencies = arrayOf(this::material, this::block, this::entityType, this::fluid, this::statusEffect, this::soundEvent)) { item.rawUpdate(pixlyzerData["items"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::particleType) { particleType.update(pixlyzerData["particles"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::material) { material.update(pixlyzerData["materials"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::enchantment) { enchantment.update(pixlyzerData["enchantments"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::statusEffect) { statusEffect.update(pixlyzerData["status_effects"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::biome) { biome.update(pixlyzerData["biomes"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::dimension) { dimension.update(pixlyzerData["dimensions"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::fluid) { fluid.update(pixlyzerData["fluids"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::block, dependencies = arrayOf(this::material, this::fluid, this::shape, this::soundGroup, this::particleType)) { block.update(pixlyzerData["blocks"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::item, dependencies = arrayOf(this::material, this::block, this::entityType, this::fluid, this::statusEffect, this::soundEvent)) { item.update(pixlyzerData["items"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::blockEntityType, dependencies = arrayOf(this::block)) { blockEntityType.rawUpdate(pixlyzerData["block_entities"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::blockEntityType, dependencies = arrayOf(this::block)) { blockEntityType.update(pixlyzerData["block_entities"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::villagerProfession) { villagerProfession.rawUpdate(pixlyzerData["villager_professions"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::villagerType) { villagerType.rawUpdate(pixlyzerData["villager_types"]?.toJsonObject(), null) }
+        worker += WorkerTask(this::villagerProfession) { villagerProfession.update(pixlyzerData["villager_professions"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::villagerType) { villagerType.update(pixlyzerData["villager_types"]?.toJsonObject(), version, null) }
 
 
-        worker += WorkerTask(this::blockDataType) { blockDataType.rawUpdate(pixlyzerData["block_data_data_types"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::blockDataType) { blockDataType.update(pixlyzerData["block_data_data_types"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::catVariants) { catVariants.rawUpdate(pixlyzerData["variant/cat"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::frogVariants) { frogVariants.rawUpdate(pixlyzerData["variant/frog"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::catVariants) { catVariants.update(pixlyzerData["variant/cat"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::frogVariants) { frogVariants.update(pixlyzerData["variant/frog"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::statistic) { statistic.rawUpdate(pixlyzerData["statistics"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::statistic) { statistic.update(pixlyzerData["statistics"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::misc, dependencies = arrayOf(this::item)) { misc.rawUpdate(pixlyzerData["misc"]?.toJsonObject(), this) }
 
         val inner = ParentLatch(1, latch)
@@ -246,10 +258,10 @@ class Registries(
         return registries[name]
     }
 
-    fun update(registries: JsonObject) {
+    fun update(version: Version, registries: JsonObject) {
         // TODO: Clear them first?
         for ((key, value) in registries) {
-            val fixedKey = key.toResourceLocation().fix()
+            val fixedKey = key.toResourceLocation().fixRegistry()
             val registry = this[fixedKey]
             if (registry == null) {
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find registry: $fixedKey" }
@@ -262,7 +274,7 @@ class Registries(
             }
 
             try {
-                registry.update(values, this)
+                registry.update(values, version, this)
             } catch (error: Throwable) {
                 error.printStackTrace()
                 Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { "Can not update $fixedKey registry: $error" }

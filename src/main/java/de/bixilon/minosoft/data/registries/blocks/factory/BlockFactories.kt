@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.bee.HoneyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock
+import de.bixilon.minosoft.data.registries.blocks.types.dirt.GrassBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.LavaFluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumnBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterFluidBlock
@@ -41,6 +42,8 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     RockBlock.Granite, RockBlock.PolishedGranite,
     RockBlock.Diorite, RockBlock.PolishedDiorite,
     RockBlock.Andesite, RockBlock.PolishedAndesite,
+
+    GrassBlock,
 
     WaterFluidBlock, BubbleColumnBlock, LavaFluidBlock,
 

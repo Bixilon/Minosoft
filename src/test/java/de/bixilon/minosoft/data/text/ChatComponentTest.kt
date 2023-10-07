@@ -170,6 +170,13 @@ internal class ChatComponentTest {
     }
 
     @Test
+    fun cuberiteChatJson() {
+        val expected = BaseComponent(TextComponent("<"), TextComponent("Bixilon"), TextComponent("> "), TextComponent("hello"))
+        val actual = """{"extra":[{"text":"<"},{"text":"Bixilon"},{"text":"> "},{"text":"hello"}],"text":""}""".chat()
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun testJson1() {
         val text = TextComponent("dummy")
         assertEquals(text.getJson(), mapOf("text" to "dummy"))
@@ -194,7 +201,7 @@ internal class ChatComponentTest {
     }
 
     @Test
-    fun hypixelMotd() {
+    fun hypixelMotd() {                                                                     // ↓ Note that extra paragraph
         val string = "                §aHypixel Network §c[1.8-1.19]\n   §c§lLUNAR MAPS §7§l§ §6§lCOSMETICS §7| §d§lSKYBLOCK 0.17.3"
         val component = ChatComponent.of(string)
 
@@ -265,6 +272,29 @@ internal class ChatComponentTest {
                 TextComponent("[Admin] ").color(ChatColors.GREEN).bold().clickEvent(click).hoverEvent(hover),
                 TextComponent("Bixilon").color(ChatColors.LIGHT_PURPLE).clickEvent(click).hoverEvent(hover),
             ), TextComponent(" starb"))
+        assertEquals(text, expected)
+    }
+
+    @Test
+    fun `nested translation with legacy entity event`() {
+        val language = Language("en_US", mutableMapOf(
+            "chat.type.admin" to "[%s: %s]",
+            "commands.kill.successful" to "Killed %s",
+        ))
+        val text = ChatComponent.of("""{"italic":true,"color":"gray","translate":"chat.type.admin","with":["Bixilon",{"translate":"commands.kill.successful","with":[{"insertion":"0d2dc333-f629-4b59-bdf9-074f58b99c06","hoverEvent":{"action":"show_entity","value":{"text":"{name:\"item.item.slimeball\",id:\"0d2dc333-f629-4b59-bdf9-074f58b99c06\",type:\"minecraft:item\"}"}},"text":"item.item.slimeball"}]}]}""", translator = language)
+
+        val hover = EntityHoverEvent("0d2dc333-f629-4b59-bdf9-074f58b99c06".toUUID(), minecraft("item"), name = TextComponent("item.item.slimeball"))
+
+        val expected = BaseComponent(
+                TextComponent("[").color(ChatColors.GRAY).italic(),
+                TextComponent("Bixilon").color(ChatColors.GRAY).italic(),
+                TextComponent(": ").color(ChatColors.GRAY).italic(),
+            BaseComponent(
+                TextComponent("Killed ").color(ChatColors.GRAY).italic(),
+                TextComponent("item.item.slimeball").color(ChatColors.GRAY).italic().hoverEvent(hover),
+            ),
+                TextComponent("]").color(ChatColors.GRAY).italic(),
+        )
         assertEquals(text, expected)
     }
 

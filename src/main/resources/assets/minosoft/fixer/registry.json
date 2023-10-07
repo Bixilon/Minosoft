@@ -1,0 +1,5 @@
+{
+  "dimension": "dimension_type",
+  "motive": "motif",
+  "worldgen/biome": "biome"
+}

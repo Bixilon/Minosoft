@@ -31,7 +31,7 @@ class BlockS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             position = buffer.readByteBlockPosition()
-            state = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
+            state = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta "compacted"? (between 1.7.10 - 1.8)
         } else {
             position = buffer.readBlockPosition()
             state = buffer.connection.registries.blockState.getOrNull(buffer.readVarInt())

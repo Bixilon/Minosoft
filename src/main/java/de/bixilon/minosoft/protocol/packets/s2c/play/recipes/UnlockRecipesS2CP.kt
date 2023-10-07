@@ -77,11 +77,10 @@ class UnlockRecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    class RecipeBookState(
+    data class RecipeBookState(
         val bookOpen: Boolean,
         val filtering: Boolean,
     ) {
         constructor(buffer: PlayInByteBuffer) : this(buffer.readBoolean(), buffer.readBoolean())
     }
 }
-

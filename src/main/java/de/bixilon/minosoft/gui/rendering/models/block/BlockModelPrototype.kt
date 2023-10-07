@@ -20,12 +20,14 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
+import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 import java.util.*
 
 class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
@@ -37,10 +39,10 @@ class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
 
     private fun prototype(): Nothing = throw IllegalStateException("prototype")
 
-    fun bake(block: Block) {
-        for (state in block.states) {
-            val apply = model.choose(state) ?: continue
-            state.model = apply.bake()
+    fun bake(context: RenderContext, block: Block) {
+        if (block !is ModelChooser) {
+            return ModelChooser.fallback(model, block)
         }
+        block.bakeModel(context, model)
     }
 }

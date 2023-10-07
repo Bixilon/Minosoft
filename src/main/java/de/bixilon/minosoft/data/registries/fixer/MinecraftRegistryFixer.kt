@@ -13,8 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.fixer
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.FlowerPotBlockEntity
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
+import de.bixilon.minosoft.data.registries.effects.attributes.AttributeType
+import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -29,6 +33,7 @@ object MinecraftRegistryFixer {
                 return@listen
             }
             it.registries.fixBlockEntities()
+            it.registries.fixPlayerSpeed()
         }
     }
 
@@ -36,6 +41,11 @@ object MinecraftRegistryFixer {
         // add minecraft:flower_pot as block entity, even if it's not a real entity, but we need it for setting the flower type (in earlier versions of the game)
         val flowerPot = block[FlowerPotBlockEntity] ?: return
         blockEntityType[FlowerPotBlockEntity] = BlockEntityType(FlowerPotBlockEntity.identifier, setOf(flowerPot), FlowerPotBlockEntity)
+    }
+
+    private fun Registries.fixPlayerSpeed() {
+        // old pixlyzer generated all attributes mostly wrong
+        entityType[PlayerEntity]?.attributes?.unsafeCast<MutableMap<AttributeType, Double>>()?.put(MinecraftAttributes.MOVEMENT_SPEED, 0.1f.toDouble())
     }
 
     private fun Registries.fixBlockEntities() {

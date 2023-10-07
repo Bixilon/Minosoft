@@ -20,43 +20,25 @@ import de.bixilon.minosoft.modding.event.events.container.ContainerOpenEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W11A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W02A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val containerId = if (buffer.versionId <= V_1_14) { // ToDo: This is completely guessed, it has changed between 1.13 and 1.14, same as #L38
-        buffer.readUnsignedByte()
-    } else {
-        buffer.readVarInt()
-    }
+    val containerId = if (buffer.versionId <= V_1_14) buffer.readUnsignedByte() else buffer.readVarInt()  // ToDo: This is completely guessed, it has changed between 1.13 and 1.14, same as #L38
     val containerType: ContainerType = when {
-        buffer.versionId < V_14W03B -> {
-            buffer.connection.registries.containerType[buffer.readUnsignedByte()]
-        }
-        buffer.versionId >= V_1_14 -> { // ToDo: This is completely guessed
-            buffer.readRegistryItem(buffer.connection.registries.containerType)
-        }
-        else -> {
-            buffer.readLegacyRegistryItem(buffer.connection.registries.containerType)!!
-        }
+        buffer.versionId < V_14W03B -> buffer.connection.registries.containerType[buffer.readUnsignedByte()]
+        buffer.versionId < V_1_14 -> buffer.readLegacyRegistryItem(buffer.connection.registries.containerType)!! // TODO: version completely guessed
+        else -> buffer.readRegistryItem(buffer.connection.registries.containerType)
     }
     val title: ChatComponent = buffer.readChatComponent()
-    val slotCount: Int = if (buffer.versionId <= V_19W11A) { // ToDo: This is completely guessed, it is not present in 1.16.5 (unchecked)
-        buffer.readUnsignedByte()
-    } else {
-        // ToDo: load from pixlyzer
-        0
-    }
-    val hasTitle: Boolean = if (buffer.versionId > V_14W03B && buffer.versionId <= V_1_14) { // upper version completely guessed
-        buffer.readBoolean()
-    } else {
-        true
-    }
-    var entityId: Int? = if (containerType.identifier == DefaultInventoryTypes.HORSE || buffer.versionId < V_14W03B) { // ToDo: This was removed at some point
+    val slotCount: Int = if (buffer.versionId <= V_19W02A) buffer.readUnsignedByte() else 0 // ToDo: This is completely guessed, it is not present in 1.16.5 (unchecked)
+    val hasTitle: Boolean = if (buffer.versionId > V_14W03B && buffer.versionId <= V_1_8_9) buffer.readBoolean() else true // TODO: upper version (1.8) is probably worng. it changed between 1.7.10..1.8
+    var entityId: Int? = if ((buffer.versionId >= V_19W02A && containerType.identifier == DefaultInventoryTypes.HORSE) || buffer.versionId < V_14W03B) {
         buffer.readInt()
     } else {
         null

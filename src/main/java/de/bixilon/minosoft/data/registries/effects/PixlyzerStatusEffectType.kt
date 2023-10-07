@@ -13,11 +13,13 @@
 package de.bixilon.minosoft.data.registries.effects
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.effects.properties.categories.CategorizedEffect
 import de.bixilon.minosoft.data.registries.effects.properties.categories.StatusEffectCategories
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.Colored
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
@@ -39,7 +41,7 @@ class PixlyzerStatusEffectType(
             return PixlyzerStatusEffectType(
                 identifier = resourceLocation,
                 category = data["category"]?.unsafeCast<String>()?.let { return@let StatusEffectCategories[it] } ?: StatusEffectCategories.NEUTRAL,
-                color = data["color"].unsafeCast<Int>().asRGBColor(),
+                color = data["color"]?.toInt()?.asRGBColor() ?: ChatColors.WHITE,
             )
         }
     }

@@ -13,17 +13,26 @@
 
 package de.bixilon.minosoft.data.container
 
-import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.stack.property.HolderProperty
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 object ItemStackUtil {
 
-    fun of(item: Item, connection: PlayConnection, nbt: JsonObject): ItemStack {
-        TODO()
+    fun of(item: Item, connection: PlayConnection, count: Int, meta: Int, nbt: MutableMap<String, Any>): ItemStack {
+        if (connection.version.flattened) {
+            return of(item, count, connection, durability = meta, nbt = nbt)
+        }
+        val stack = of(item, count, connection, nbt = nbt)
+
+        if (item is ItemWithMeta) {
+            item.setMeta(stack, meta)
+        }
+
+        return stack
     }
 
     fun of(

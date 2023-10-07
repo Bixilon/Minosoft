@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,13 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.properties.serializer
+package de.bixilon.minosoft.data.registries.blocks.types.legacy
 
-import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
+import de.bixilon.minosoft.protocol.versions.Version
 
-object IntBlockPropertiesSerializer : BlockPropertiesSerializer {
+interface FlatteningRenamedModel : CustomModel, Identified {
+    val legacyModelName: ResourceLocation?
 
-    override fun deserialize(value: Any): Int {
-        return value.toInt()
+    override fun getModelName(version: Version): ResourceLocation? {
+        if (version.flattened) return identifier
+        return legacyModelName
     }
 }

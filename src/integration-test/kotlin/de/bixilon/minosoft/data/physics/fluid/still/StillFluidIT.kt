@@ -18,7 +18,6 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.runTicks
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
@@ -32,7 +31,7 @@ abstract class StillFluidIT {
         connection.world.fill(
             Vec3i(-10, 16, -10),
             Vec3i(20, 16, 20),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
+            block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
         connection.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
 
@@ -43,7 +42,7 @@ abstract class StillFluidIT {
         connection.world.fill(
             Vec3i(-10, 16, -10),
             Vec3i(20, 20, 20),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
+            block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
         connection.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
 
@@ -60,7 +59,7 @@ abstract class StillFluidIT {
         player.connection.world.fill(
             Vec3i(4, 5, 7),
             Vec3i(4, 16, 7),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
+            block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
         player.forceTeleport(Vec3d(4.0, 18.0, 7.0))
         player.runTicks(10)
@@ -72,7 +71,7 @@ abstract class StillFluidIT {
         player.connection.world.fill(
             Vec3i(4, 5, 7),
             Vec3i(4, 16, 7),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
+            block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
         player.forceTeleport(Vec3d(4.0, 30.0, 7.0))
         player.runTicks(35)
@@ -100,7 +99,7 @@ abstract class StillFluidIT {
         connection.world.fill(
             Vec3i(-10, 16, -10),
             Vec3i(20, 17, 20),
-            block!!.states.withProperties(BlockProperties.FLUID_LEVEL to 0)
+            block!!.states.withProperties(FluidBlock.LEVEL to 0)
         )
         connection.world.fill(Vec3i(-10, 15, -10), Vec3i(20, 15, 20), StoneTest0.state)
 

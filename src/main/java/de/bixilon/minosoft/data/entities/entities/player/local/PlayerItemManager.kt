@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 class PlayerItemManager(private val player: LocalPlayerEntity) {
     val inventory = PlayerInventory(this, player.connection)
 
+    @Deprecated("this is probably not needed anymore, container network packets are not async anymore")
     val incomplete: SynchronizedMap<Int, IncompleteContainer> = synchronizedMapOf()
 
     val containers: SynchronizedBiMap<Int, Container> = synchronizedBiMapOf(
@@ -53,5 +54,9 @@ class PlayerItemManager(private val player: LocalPlayerEntity) {
         cooldown.clear()
         inventory.clear()
         opened = null
+    }
+
+    init {
+        this::opened.observe(this) { it?.onOpen() }
     }
 }

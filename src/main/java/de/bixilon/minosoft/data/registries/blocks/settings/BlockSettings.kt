@@ -15,19 +15,26 @@ package de.bixilon.minosoft.data.registries.blocks.settings
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BlockSettings(
+    val version: Version,
     val soundGroup: SoundGroup? = null,
+    val translationKey: ResourceLocation? = null,
 ) {
 
     companion object {
-        fun of(registries: Registries, data: JsonObject): BlockSettings {
+
+        fun of(version: Version, registries: Registries, data: JsonObject): BlockSettings {
             val soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] }
+            val translationKey = data["translation_key"]?.toResourceLocation()
 
 
-            return BlockSettings(soundGroup = soundGroup)
+            return BlockSettings(version, soundGroup = soundGroup, translationKey = translationKey)
         }
     }
 }

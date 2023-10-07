@@ -14,9 +14,11 @@
 package de.bixilon.minosoft
 
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.minosoft.assets.meta.MinosoftMeta
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
+import de.bixilon.minosoft.datafixer.DataFixer
 import de.bixilon.minosoft.protocol.versions.VersionLoader
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
@@ -36,6 +38,7 @@ internal object MinosoftSIT {
         disableGC()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
         initAssetsManager()
+        DataFixer.load()
         loadVersionsJson()
         loadAssetsProperties()
         loadDefaultRegistries()
@@ -71,6 +74,7 @@ internal object MinosoftSIT {
     fun loadDefaultRegistries() {
         FallbackTags.load()
         FallbackRegistries.load()
+        MinosoftMeta.load()
     }
 
     fun loadPixlyzerData() {

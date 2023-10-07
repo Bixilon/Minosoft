@@ -15,13 +15,14 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 
 class AndCondition(
     val conditions: Set<BuilderCondition>,
 ) : BuilderCondition {
 
-    override fun matches(properties: Map<BlockProperties, Any>): Boolean {
+    override fun matches(properties: Map<BlockProperty<*>, Any>): Boolean {
         for (condition in conditions) {
             if (!condition.matches(properties)) return false
         }
@@ -31,25 +32,25 @@ class AndCondition(
     companion object {
         const val KEY = "AND"
 
-        fun deserialize(data: List<JsonObject>): BuilderCondition? {
+        fun deserialize(block: Block, data: List<JsonObject>): BuilderCondition? {
             val conditions: MutableSet<PropertyCondition> = mutableSetOf()
 
             for (entry in data) {
-                conditions += PropertyCondition.deserialize(entry) ?: continue
+                conditions += PropertyCondition.deserialize(block, entry) ?: continue
             }
             if (conditions.isEmpty()) return null
 
             return AndCondition(conditions) // TODO: They can be compacted into one Property condition, could speed up memory usage and performance a bit
         }
 
-        fun deserialize(data: JsonObject): BuilderCondition? {
+        fun deserialize(block: Block, data: JsonObject): BuilderCondition? {
             if (data.isEmpty()) return null
 
             val conditions: MutableSet<BuilderCondition> = mutableSetOf()
 
-            PropertyCondition.deserialize(data)?.let { conditions += it }
-            data[KEY]?.let { deserialize(it.unsafeCast<List<JsonObject>>()) }?.let { conditions += it }
-            data[OrCondition.KEY]?.let { OrCondition.deserialize(it.unsafeCast()) }?.let { conditions += it }
+            PropertyCondition.deserialize(block, data)?.let { conditions += it }
+            data[KEY]?.let { deserialize(block, it.unsafeCast<List<JsonObject>>()) }?.let { conditions += it }
+            data[OrCondition.KEY]?.let { OrCondition.deserialize(block, it.unsafeCast()) }?.let { conditions += it }
 
             if (conditions.isEmpty()) return null
 

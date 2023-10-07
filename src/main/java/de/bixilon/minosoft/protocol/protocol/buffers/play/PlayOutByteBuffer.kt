@@ -56,7 +56,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
             }
             writeShort(connection.registries.item.getId(stack.item.item))
             writeByte(stack.item.count)
-            writeShort(stack._durability?.durability ?: 0) // ToDo: This is meta data in general and not just durability
+            writeShort(stack._durability?.durability ?: 0) // ToDo: This is meta in general and not just durability
             writeNBT(stack.getNBT())
             return
         }

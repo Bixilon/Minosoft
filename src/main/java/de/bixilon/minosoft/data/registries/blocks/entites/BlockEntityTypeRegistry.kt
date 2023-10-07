@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import de.bixilon.minosoft.protocol.versions.Version
 
 class BlockEntityTypeRegistry(
     parentRegistry: BlockEntityTypeRegistry? = null,
@@ -36,8 +37,8 @@ class BlockEntityTypeRegistry(
         return super.get(any)
     }
 
-    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?): BlockEntityType<*>? {
-        val item = super.addItem(resourceLocation, id, data, registries) ?: return null
+    override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): BlockEntityType<*>? {
+        val item = super.addItem(identifier, id, data, version, registries) ?: return null
 
         for (block in item.blocks) {
             blockTypeMap[block] = item

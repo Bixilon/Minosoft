@@ -40,6 +40,9 @@ object AssetsVersionProperties {
     }
 
     operator fun get(version: Version): AssetsVersionProperty? {
+        if (!version.flattened) {
+            return PROPERTIES[Versions[PreFlattening.VERSION]]
+        }
         return PROPERTIES[version]
     }
 }

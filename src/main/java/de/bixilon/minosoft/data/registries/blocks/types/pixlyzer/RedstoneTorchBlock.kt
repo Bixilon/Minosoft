@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isLit
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.isLit
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

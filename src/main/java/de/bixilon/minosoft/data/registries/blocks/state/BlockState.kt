@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.state
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.state.error.StatelessBlockError
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -42,17 +42,18 @@ open class BlockState(
         return block.toString()
     }
 
-    open fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
+    open fun withProperties(vararg properties: Pair<BlockProperty<*>, Any>): BlockState {
         if (properties.isEmpty()) return this
         throw StatelessBlockError(this)
     }
 
-    open fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
+    open fun withProperties(properties: Map<BlockProperty<*>, Any>): BlockState {
         if (properties.isEmpty()) return this
         throw StatelessBlockError(this)
     }
 
-    open fun cycle(property: BlockProperties): BlockState = throw StatelessBlockError(this)
+    open fun cycle(property: BlockProperty<*>): BlockState = throw StatelessBlockError(this)
 
-    open operator fun <T> get(property: BlockProperties): T = throw StatelessBlockError(this)
+    open operator fun <T> get(property: BlockProperty<T>): T = throw StatelessBlockError(this)
+    open fun <T> getOrNull(property: BlockProperty<T>): T? = throw StatelessBlockError(this)
 }

@@ -1,0 +1,20 @@
+{
+
+  "generic.maxHealth": "generic.max_health",
+  "zombie.spawnReinforcements": "zombie.spawn_reinforcements",
+
+  "horse.jumpStrength": "horse.jump_strength",
+
+  "generic.followRange": "generic.follow_range",
+
+  "generic.knockbackResistance": "generic.knockback_resistance",
+
+  "generic.movementSpeed": "generic.movement_speed",
+
+  "generic.flyingSpeed": "generic.flying_speed",
+
+  "generic.attackDamage": "generic.attack_damage",
+  "generic.attackKnockback": "generic.attack_knockback",
+  "generic.attackSpeed": "generic.attack_speed",
+  "generic.armorToughness": "generic.armor_toughness"
+}

@@ -16,6 +16,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -25,7 +26,7 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
-import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer.fix
+import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer.fixBlockEntity
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -37,6 +38,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W34C
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W36D
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W44A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_2_PRE2
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE7
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_4
@@ -85,8 +87,8 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 buffer.readBoolean() // ToDo: ignore old data???
             }
             val sectionBitMask = when {
-                buffer.versionId < V_15W34C -> BitSet.valueOf(buffer.readByteArray(2))
-                buffer.versionId < V_15W36D -> BitSet.valueOf(buffer.readByteArray(4))
+                buffer.versionId < V_15W34C -> buffer.readLegacyBitSet(2)
+                buffer.versionId < V_15W36D -> buffer.readLegacyBitSet(4)
                 buffer.versionId < V_21W03A -> BitSet.valueOf(longArrayOf(buffer.readVarInt().toLong()))
                 buffer.versionId < V_21W37A -> BitSet.valueOf(buffer.readLongArray())
                 else -> null
@@ -94,7 +96,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId >= V_18W44A) {
                 buffer.readNBT()?.toJsonObject() // heightmap
             }
-            if (action == ChunkAction.CREATE && buffer.versionId < V_21W37A) {
+            if (action == ChunkAction.CREATE && buffer.versionId >= V_19W36A && buffer.versionId < V_21W37A) {
                 this.prototype.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
             }
             readingData = ChunkReadingData(PlayInByteBuffer(buffer.readByteArray(), buffer.connection), dimension, sectionBitMask)
@@ -110,7 +112,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     for (i in 0 until buffer.readVarInt()) {
                         val nbt = buffer.readNBT().asJsonObject()
                         val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
-                        val id = (nbt["id"]?.toResourceLocation() ?: continue).fix()
+                        val id = (nbt["id"]?.toResourceLocation() ?: continue).fixBlockEntity()
                         val type = buffer.connection.registries.blockEntityType[id] ?: continue
 
                         val entity = type.build(buffer.connection)
@@ -153,8 +155,8 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     fun PlayInByteBuffer.readBiomeArray(): Array<Biome> {
         val length = when {
             versionId >= ProtocolVersions.V_20W28A -> readVarInt()
-            versionId >= ProtocolVersions.V_19W36A -> ProtocolDefinition.BLOCKS_PER_SECTION / 4 // 1024, 4x4 blocks
-            else -> 0
+            versionId >= V_19W36A -> ProtocolDefinition.BLOCKS_PER_SECTION / 4 // 1024, 4x4 blocks
+            else -> Broken("")
         }
 
         check(length <= this.size) { "Trying to allocate too much memory" }

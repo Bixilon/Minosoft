@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CollectionCast.asAnyMap
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactories
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -27,11 +28,13 @@ import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilder
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.legacy.LegacyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.MetaTypes
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import de.bixilon.minosoft.protocol.versions.Version
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 class BlockRegistry(
@@ -40,16 +43,58 @@ class BlockRegistry(
 ) : Registry<Block>(parent = parent, codec = PixLyzerBlock, flattened = flattened, metaType = MetaTypes.BLOCK) {
 
 
-    fun updateStates(block: Block, data: JsonObject, registries: Registries) {
-        val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
+    private fun legacy(block: Block, data: JsonObject, registries: Registries) {
+        val statesData = data["states"]?.nullCast<List<JsonObject>>()
+        val id = data["id"]?.toInt()
+        val meta = data["meta"]?.toInt()
+
+        if (statesData == null) {
+            // block has only a single state
+            if (id == null) throw IllegalArgumentException("Missing id (block=$block)!")
+            val settings = BlockStateSettings.of(block, registries, data)
+            val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
+            block.updateStates(setOf(state), state, emptyMap())
+            registries.blockState[id, meta] = state
+            return
+        }
+
+
+        val properties: MutableMap<BlockProperty<*>, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
-        for ((stateId, stateJson) in data["states"].asAnyMap()) {
-            val settings = BlockStateSettings.of(registries, stateJson.unsafeCast())
+        for (stateJson in statesData) {
+            val settings = BlockStateSettings.of(block, registries, stateJson.unsafeCast())
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
 
             states += state
-            registries.blockState[stateId.toInt()] = state
+            val id = stateJson["id"]?.toInt() ?: id ?: throw IllegalArgumentException("Missing block id: $block!")
+            val meta = stateJson["meta"]?.toInt() ?: meta
+            registries.blockState[id, meta] = state
+
+            if (state !is PropertyBlockState) continue
+
+            for ((property, value) in state.properties) {
+                properties.getOrPut(property) { ObjectOpenHashSet() } += value
+            }
+        }
+
+        val default = data["default_state"]?.toInt()?.let { registries.blockState.forceGet(it) } ?: states.first()
+
+        block.updateStates(states, default, properties.mapValues { it.value.toTypedArray() })
+    }
+
+    fun flattened(block: Block, data: JsonObject, registries: Registries, addBlockStates: Boolean) {
+        val properties: MutableMap<BlockProperty<*>, MutableSet<Any>> = mutableMapOf()
+
+        val states: MutableSet<BlockState> = ObjectOpenHashSet()
+        for ((stateId, stateJson) in data["states"].asAnyMap()) {
+            val settings = BlockStateSettings.of(block, registries, stateJson.unsafeCast())
+            val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
+
+            states += state
+            if (addBlockStates) {
+                registries.blockState[stateId.toInt()] = state
+            }
 
             if (state !is PropertyBlockState) continue
 
@@ -63,13 +108,24 @@ class BlockRegistry(
         block.updateStates(states, default, properties.mapValues { it.value.toTypedArray() })
     }
 
-    override fun deserialize(resourceLocation: ResourceLocation, data: JsonObject, registries: Registries?): Block? {
-        val factory = BlockFactories[resourceLocation]
+    override fun deserialize(identifier: ResourceLocation, data: JsonObject, version: Version, registries: Registries?): Block? {
+        val factory = BlockFactories[identifier]
         if (registries == null) throw NullPointerException("registries?")
 
-        val block = factory?.build(registries, BlockSettings.of(registries, data)) ?: this.codec!!.deserialize(registries, resourceLocation, data) ?: return null
+        var block = factory?.build(registries, BlockSettings.of(version, registries, data))
+        if (block == null) {
+            if (flattened) {
+                block = this.codec!!.deserialize(registries, identifier, data) ?: return null
+            } else {
+                block = LegacyBlock(identifier, version, registries, data)
+            }
+        }
 
-        updateStates(block, data, registries)
+        if (flattened) {
+            flattened(block, data, registries, true)
+        } else {
+            legacy(block, data, registries)
+        }
 
         return block
     }

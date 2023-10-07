@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 
 enum class Axes {
     X {
@@ -35,7 +34,7 @@ enum class Axes {
     abstract fun next(): Axes
     abstract fun previous(): Axes
 
-    companion object : ValuesEnum<Axes>, BlockPropertiesSerializer {
+    companion object : ValuesEnum<Axes> {
         override val VALUES: Array<Axes> = values()
         override val NAME_MAP: Map<String, Axes> = EnumUtil.getEnumValues(VALUES)
 
@@ -45,10 +44,6 @@ enum class Axes {
                 Directions.UP, Directions.DOWN -> Y
                 Directions.NORTH, Directions.SOUTH -> Z
             }
-        }
-
-        override fun deserialize(value: Any): Axes {
-            return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }
 }

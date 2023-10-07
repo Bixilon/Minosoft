@@ -27,16 +27,17 @@ import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.effects.attributes.AttributeType
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.SpawnEggItem
+import de.bixilon.minosoft.data.registries.item.items.pixlyzer.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
-import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fix
+import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fixEntityAttribute
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 import java.lang.reflect.Modifier
 import java.util.*
 import kotlin.reflect.KProperty1
@@ -68,11 +69,11 @@ data class EntityType(
             check(registries != null) { "Registries is null!" }
             val factory = DefaultEntityFactories[resourceLocation]
 
-            data["meta"]?.toJsonObject()?.let {
+            data["meta", "data"]?.toJsonObject()?.let {
                 val fields: MutableMap<String, EntityDataField> = mutableMapOf()
                 val dataClass = DefaultEntityFactories.ABSTRACT_ENTITY_DATA_CLASSES[resourceLocation]?.companionObject ?: if (factory != null) factory::class else null
                 if (dataClass == null) {
-                    Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find class for entity data ($resourceLocation)" }
+                    Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find entity data class for $resourceLocation, fields $it" }
                     return@let
                 }
                 for (member in dataClass.members) {
@@ -114,7 +115,7 @@ data class EntityType(
 
             data["attributes"]?.toJsonObject()?.let {
                 for ((name, value) in it) {
-                    val type = MinecraftAttributes[name.toResourceLocation().fix()]
+                    val type = MinecraftAttributes[name.toResourceLocation().fixEntityAttribute()]
                     if (type == null) {
                         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not get entity attribute type: $name" }
                         continue

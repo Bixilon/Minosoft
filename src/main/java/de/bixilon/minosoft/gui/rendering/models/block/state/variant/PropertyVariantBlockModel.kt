@@ -13,8 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
@@ -23,9 +22,9 @@ data class PropertyVariantBlockModel(
     val variants: Map<BlockVariant, BlockStateApply>,
 ) : VariantBlockModel {
 
-    private fun BlockVariant.matches(state: PropertyBlockState): Boolean {
+    private fun BlockVariant.matches(properties: Map<BlockProperty<*>, Any>): Boolean {
         for ((property, value) in this) {
-            val stateProperty = state.properties[property] ?: return false
+            val stateProperty = properties[property] ?: return false
             if (stateProperty == value) continue
 
             return false
@@ -34,11 +33,11 @@ data class PropertyVariantBlockModel(
         return true
     }
 
-    override fun choose(state: BlockState): BlockStateApply? {
-        if (state !is PropertyBlockState) return null
+    override fun choose(properties: Map<BlockProperty<*>, Any>): BlockStateApply? {
+        if (properties.isEmpty()) return null
 
         for ((variant, apply) in this.variants) {
-            if (!variant.matches(state)) continue
+            if (!variant.matches(properties)) continue
 
             return apply
         }

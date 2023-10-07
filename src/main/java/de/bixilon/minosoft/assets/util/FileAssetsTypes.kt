@@ -18,6 +18,7 @@ object FileAssetsTypes {
     const val SKINS = "skins"
     const val SOUNDS = "sounds"
     const val PIXLYZER = "pixlyzer"
+    const val META = "meta"
 
     const val FAVICON = "favicon"
 }

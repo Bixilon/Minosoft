@@ -22,9 +22,13 @@ import de.bixilon.minosoft.data.registries.item.items.block.BlockItem
 import de.bixilon.minosoft.data.registries.item.items.block.legacy.PixLyzerBlockItem
 import de.bixilon.minosoft.gui.rendering.models.item.ItemModel
 import de.bixilon.minosoft.gui.rendering.models.item.ItemModelPrototype
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelFixer.fixPrefix
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ItemLoader(private val loader: ModelLoader) {
     private val cache: MutableMap<ResourceLocation, ItemModel> = HashMap(loader.context.connection.registries.item.size)
@@ -32,9 +36,13 @@ class ItemLoader(private val loader: ModelLoader) {
     val version = loader.context.connection.version
 
     fun loadItem(name: ResourceLocation): ItemModel? {
-        val file = name.model("item/")
+        val file = name.itemModel()
         cache[file]?.let { return it }
-        val data = assets.getOrNull(file)?.readJsonObject() ?: return null
+        val data = assets.getOrNull(file)?.readJsonObject()
+        if (data == null) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find item model $name" }
+            return null
+        }
 
         val parent = data["parent"]?.toString()?.let { loadItem(it.toResourceLocation()) }
 
@@ -70,5 +78,13 @@ class ItemLoader(private val loader: ModelLoader) {
 
     fun cleanup() {
         this.cache.clear()
+    }
+
+    fun fixTexturePath(name: ResourceLocation): ResourceLocation {
+        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, 4, "items/", "item/"))
+    }
+
+    private fun ResourceLocation.itemModel(): ResourceLocation {
+        return this.prefix("item/").model()
     }
 }

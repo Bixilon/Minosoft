@@ -56,7 +56,7 @@ object FallbackRegistries {
     val ENTITY_ANIMATION_REGISTRY = PerVersionEnumRegistry(EntityAnimations)
     val ENTITY_ACTIONS_REGISTRY = PerVersionEnumRegistry(EntityActionC2SP.EntityActions)
 
-    val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry(codec = EntityObjectType)
+    val ENTITY_OBJECT_REGISTRY = PerVersionRegistry { Registry(codec = EntityObjectType) }
 
     val BLOCK_DATA_TYPE_REGISTRY: PerVersionRegistry<BlockDataDataType, Registry<BlockDataDataType>> = PerVersionRegistry { Registry(codec = BlockDataDataType) }
 
@@ -96,7 +96,7 @@ object FallbackRegistries {
 
         DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation.of("default_channels")].asJsonObject(), PluginChannel)
 
-        ENTITY_OBJECT_REGISTRY.rawUpdate(registriesJson[ResourceLocation.of("entity_objects")].asJsonObject(), null)
+        ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation.of("entity_objects")].asJsonObject(), EntityObjectType)
 
         BLOCK_DATA_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("block_data_data_types")].asJsonObject(), BlockDataDataType)
 

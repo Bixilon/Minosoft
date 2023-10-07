@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.datafixer.enumeration
 
-interface EnumFixer<T : Enum<*>> {
+import de.bixilon.minosoft.datafixer.Fixer
+
+interface EnumFixer<T : Enum<*>> : Fixer {
 
     fun fix(name: String): T {
         return _fix(name.lowercase())

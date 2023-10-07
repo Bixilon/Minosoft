@@ -22,6 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class PositionC2SP(
     val position: Vec3d,
+    val eyeY: Double,
     val onGround: Boolean,
 ) : PlayC2SPacket {
 
@@ -29,7 +30,7 @@ class PositionC2SP(
         buffer.writeDouble(position.x)
         buffer.writeDouble(position.y)
         if (buffer.versionId < ProtocolVersions.V_14W06B) {
-            buffer.writeDouble(0.0) // ToDo
+            buffer.writeDouble(eyeY)
         }
         buffer.writeDouble(position.z)
         buffer.writeBoolean(onGround)
@@ -39,6 +40,6 @@ class PositionC2SP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Position (position=$position, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_OUT, LogLevels.VERBOSE) { "Position (position=$position, eyeY=${eyeY}, onGround=$onGround)" }
     }
 }

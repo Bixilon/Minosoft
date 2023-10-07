@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.test
 
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.minosoft.assets.properties.version.PreFlattening
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.VersionRegistry
 import de.bixilon.minosoft.data.registries.registries.PixLyzerUtil
@@ -41,12 +42,21 @@ object ITUtil {
         pixlyzer[version]?.let { return it }
         val registries = Registries(false)
 
-        val data = PixLyzerUtil.loadPixlyzerData(version, profile)
+        val data = PixLyzerUtil.loadPixlyzerData(profile, version)
 
         registries.load(version, data, SimpleLatch(0))
         pixlyzer[version] = registries
 
         return registries
+    }
+
+    fun loadPreFlatteningData(version: Version): Registries {
+        return PreFlattening.loadRegistry(profile, version, SimpleLatch(0))
+    }
+
+    fun loadRegistries(version: Version): Registries {
+        if (version.flattened) return loadPixlyzerData(version)
+        return loadPreFlatteningData(version)
     }
 
     @Deprecated("Its not implemented")

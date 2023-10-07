@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.time.DateUtil
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext

@@ -35,6 +35,6 @@ object MinosoftPropertiesLoader {
         }
 
         RunConfiguration.APPLICATION_NAME = "Minosoft ${MinosoftProperties.general.name}"
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "This is minosoft version ${MinosoftProperties.general.name}${MinosoftProperties.git?.let { ", built on ${it.commitShort}/${it.branch}" }}!" }
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "This is minosoft version ${MinosoftProperties.general.name}${MinosoftProperties.git?.let { ", built on ${it.commitShort}/${it.branch}" } ?: ""}!" }
     }
 }

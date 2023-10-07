@@ -137,7 +137,7 @@ object VerifyIntegratedBlockRegistry {
 
     fun verify(registries: Registries, version: Version) {
         val error = StringBuilder()
-        val data = PixLyzerUtil.loadPixlyzerData(version, ResourcesProfile())["blocks"]!!.unsafeCast<Map<String, JsonObject>>()
+        val data = PixLyzerUtil.loadPixlyzerData(ResourcesProfile(), version)["blocks"]!!.unsafeCast<Map<String, JsonObject>>()
 
         for ((id, value) in data) {
             if (value["class"] == "AirBlock") {
@@ -154,7 +154,7 @@ object VerifyIntegratedBlockRegistry {
                 continue
             }
             val parsed = PixLyzerBlock.deserialize(registries, identifier, value).unsafeCast<PixLyzerBlock>()
-            registries.block.updateStates(parsed, value, registries)
+            registries.block.flattened(parsed, value, registries, false)
             parsed.postInit(registries)
             parsed.inject(registries)
 

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.builder
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
@@ -30,10 +30,9 @@ class BuilderBlockModel(
     val parts: List<Apply>,
 ) : DirectBlockModel {
 
-    override fun choose(state: BlockState): BlockStateApply? {
+    override fun choose(properties: Map<BlockProperty<*>, Any>): BlockStateApply? {
         val applies: MutableList<BlockStateApply> = mutableListOf()
 
-        val properties = if (state is PropertyBlockState) state.properties else emptyMap()
         for ((condition, apply) in parts) {
             if (!condition.matches(properties)) continue
 
@@ -61,13 +60,13 @@ class BuilderBlockModel(
 
     companion object {
 
-        fun deserialize(loader: BlockLoader, data: List<JsonObject>): BuilderBlockModel? {
+        fun deserialize(loader: BlockLoader, block: Block, data: List<JsonObject>): BuilderBlockModel? {
             val parts: MutableList<Apply> = mutableListOf()
 
             for (entry in data) {
                 val apply = entry["apply"]?.let { BlockStateApply.deserialize(loader, it) } ?: continue
 
-                val condition = entry["when"]?.asJsonObject()?.let { AndCondition.deserialize(it) } ?: PrimitiveCondition.TRUE
+                val condition = entry["when"]?.asJsonObject()?.let { AndCondition.deserialize(block, it) } ?: PrimitiveCondition.TRUE
 
                 parts += Apply(condition, apply)
             }

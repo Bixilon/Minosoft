@@ -17,7 +17,7 @@ import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.isPowered
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.isPowered
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

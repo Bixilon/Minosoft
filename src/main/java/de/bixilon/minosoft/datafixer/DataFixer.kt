@@ -11,24 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items
+package de.bixilon.minosoft.datafixer
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
+import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer
+import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer
+import de.bixilon.minosoft.datafixer.rls.RegistryFixer
 
-open class DyeItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data) {
-    val dyeColor = data["dye_color"].nullCast<String>() ?: "white"
+object DataFixer {
+    val fixer = listOf(
+        EntityDataTypesFixer,
 
-    companion object : PixLyzerItemFactory<DyeItem> {
+        BlockEntityFixer,
+        EntityAttributeFixer,
+        RegistryFixer,
+    )
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): DyeItem {
-            return DyeItem(resourceLocation, registries, data)
+
+    fun load() {
+        for (fixer in this.fixer) {
+            fixer.load()
         }
     }
 }

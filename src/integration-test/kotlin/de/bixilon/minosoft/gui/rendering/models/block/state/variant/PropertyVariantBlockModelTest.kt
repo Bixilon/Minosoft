@@ -13,13 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
-import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import org.testng.Assert.*
@@ -46,23 +42,19 @@ class PropertyVariantBlockModelTest {
             mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to false) to B,
             mapOf(BlockProperties.FACING to Directions.SOUTH) to C,
             mapOf(BlockProperties.LIT to false) to D,
-        ))
-        assertEquals(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.EAST, BlockProperties.LIT to true), 0)), A)
-        assertEquals(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to false), 0)), B)
-        assertNull(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to true), 0)))
+        ).unsafeCast())
+        assertEquals(model.choose(mapOf(BlockProperties.FACING to Directions.EAST, BlockProperties.LIT to true)), A)
+        assertEquals(model.choose(mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to false)), B)
+        assertNull(model.choose(mapOf(BlockProperties.FACING to Directions.WEST, BlockProperties.LIT to true)))
 
-        assertEquals(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.SOUTH, BlockProperties.LIT to false), 0)), C)
-        assertEquals(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.SOUTH, BlockProperties.LIT to true), 0)), C)
-        assertTrue(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.SOUTH), 0)) is C)
+        assertEquals(model.choose(mapOf(BlockProperties.FACING to Directions.SOUTH, BlockProperties.LIT to false)), C)
+        assertEquals(model.choose(mapOf(BlockProperties.FACING to Directions.SOUTH, BlockProperties.LIT to true)), C)
+        assertTrue(model.choose(mapOf(BlockProperties.FACING to Directions.SOUTH)) is C)
 
-        assertEquals(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.NORTH, BlockProperties.LIT to false), 0)), D)
-        assertNull(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.FACING to Directions.NORTH, BlockProperties.LIT to true), 0)))
-        assertEquals(model.choose(PropertyBlockState(DummyBlock, mapOf(BlockProperties.LIT to false), 0)), D)
-        assertNull(model.choose(PropertyBlockState(DummyBlock, mapOf(), 0)))
-    }
-
-    private object DummyBlock : Block(minosoft("test"), BlockSettings()) {
-        override val hardness get() = Broken()
+        assertEquals(model.choose(mapOf(BlockProperties.FACING to Directions.NORTH, BlockProperties.LIT to false)), D)
+        assertNull(model.choose(mapOf(BlockProperties.FACING to Directions.NORTH, BlockProperties.LIT to true)))
+        assertEquals(model.choose(mapOf(BlockProperties.LIT to false)), D)
+        assertNull(model.choose(mapOf()))
     }
 
 

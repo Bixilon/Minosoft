@@ -141,20 +141,21 @@ class PlayInByteBuffer : InByteBuffer {
     fun readItemStack(): ItemStack? {
         if (versionId < V_1_13_2_PRE1) {
             val id = readShort().toInt()
-            if (id == -1) {
+            if (id <= ProtocolDefinition.AIR_BLOCK_ID) {
                 return null
             }
             val count = readUnsignedByte()
-            var metaData = 0
+            var meta = 0
             if (!connection.version.flattened) {
-                metaData = readUnsignedShort()
+                meta = readUnsignedShort()
             }
             val nbt = readNBT()?.toMutableJsonObject()
+            val item = connection.registries.item.getOrNull(id shl 16 or meta) ?: return null // TODO: only if item is not an ItemWithMeta
             return ItemStackUtil.of(
-                item = connection.registries.item[id shl 16 or metaData],
+                item = item,
                 connection = connection,
                 count = count,
-                durability = metaData,
+                meta = meta,
                 nbt = nbt ?: mutableMapOf(),
             )
         }
@@ -371,5 +372,13 @@ class PlayInByteBuffer : InByteBuffer {
         }
 
         return source
+    }
+
+    fun readLegacyBitSet(bytes: Int): BitSet {
+        val array = ByteArray(bytes)
+        for (index in (array.size - 1) downTo 0) { // java BitSet.valueOf is little endian
+            array[index] = readByte()
+        }
+        return BitSet.valueOf(array)
     }
 }

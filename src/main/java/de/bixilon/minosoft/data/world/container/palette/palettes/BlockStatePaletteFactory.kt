@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,16 +14,19 @@
 package de.bixilon.minosoft.data.world.container.palette.palettes
 
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W46A
 
 object BlockStatePaletteFactory : PaletteFactory {
     override val edgeBits get() = 4
 
-    override fun <T : Any?> createPalette(registry: AbstractRegistry<T?>, bits: Int): Palette<T> {
-        return when (bits) {
-            0 -> SingularPalette(registry)
-            1, 2, 3, 4 -> ArrayPalette(registry, 4)
-            5, 6, 7, 8 -> ArrayPalette(registry, bits)
-            else -> RegistryPalette(registry)
+    override fun <T : Any?> createPalette(registry: AbstractRegistry<T?>, bits: Int, version: Int): Palette<T> {
+        when (bits) {
+            0 -> return SingularPalette(registry)
+            1, 2, 3, 4 -> return ArrayPalette(registry, 4)
+            5, 6, 7, 8 -> return ArrayPalette(registry, bits)
         }
+        if (version <= V_17W46A) return RegistryPalette(registry, 13) // minecraft uses 13 bits to encode the blocks (8 bits id + 4 bits meta + 1 magic bit, thanks)
+
+        return RegistryPalette(registry) // flattened
     }
 }

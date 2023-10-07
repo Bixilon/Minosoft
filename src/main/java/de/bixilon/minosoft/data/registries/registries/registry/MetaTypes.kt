@@ -22,6 +22,6 @@ enum class MetaTypes(val bits: Int) {
     private val metaMask = (1 shl bits) - 1
 
     fun modify(id: Int, meta: Int): Int {
-        return (id shr bits) or (meta and metaMask)
+        return (id shl bits) or (meta and metaMask)
     }
 }

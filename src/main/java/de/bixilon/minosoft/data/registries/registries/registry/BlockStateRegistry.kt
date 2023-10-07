@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -20,6 +21,10 @@ import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?> {
@@ -51,17 +56,22 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
     }
 
     internal operator fun set(id: Int, state: BlockState) {
-        idMap[id] = state
+        val previous = idMap.put(id, state)
+        if (previous != null) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Block state $state just replaced $previous (id=$id)" }
+        }
+    }
+
+    private fun _get(id: Int): BlockState? {
+        return idMap[id] ?: parent.unsafeCast<BlockStateRegistry?>()?._get(id)
     }
 
     fun forceGet(id: Int): BlockState? {
-        return idMap[id] ?: parent?.getOrNull(id) ?: let {
-            if (flattened) {
-                null
-            } else {
-                idMap[(id shr 4) shl 4] // Remove metadata and test again
-            }
-        }
+        val state = _get(id)
+        if (state != null) return state
+        if (flattened) return null
+
+        return _get((id shr 4) shl 4) // Remove meta and try again
     }
 
     @Deprecated("Use getOrNull", ReplaceWith("getOrNull(id)"))
@@ -71,8 +81,10 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
 
     @Suppress("DEPRECATION")
     override fun getOrNull(id: Int): BlockState? {
-        if (id == ProtocolDefinition.AIR_BLOCK_ID) {
-            return null
+        if (flattened) {
+            if (id == ProtocolDefinition.AIR_BLOCK_ID) return null
+        } else {
+            if (id shr 4 == ProtocolDefinition.AIR_BLOCK_ID) return null
         }
         val state = forceGet(id) ?: return null
         if (state.block is AirBlock) {
@@ -85,9 +97,13 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         TODO("Not yet implemented")
     }
 
-    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?) = Broken()
+    override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?) = Broken()
 
     override fun optimize() {
         idMap.trim()
+    }
+
+    operator fun set(id: Int, meta: Int?, state: BlockState) {
+        this[id shl 4 or (meta ?: 0)] = state
     }
 }

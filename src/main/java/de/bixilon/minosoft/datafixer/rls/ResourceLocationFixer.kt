@@ -13,14 +13,29 @@
 
 package de.bixilon.minosoft.datafixer.rls
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.datafixer.Fixer
 
-interface ResourceLocationFixer : Fixer {
+abstract class ResourceLocationFixer(private val path: ResourceLocation) : Fixer {
+    private val renames: Map<ResourceLocation, ResourceLocation> = unsafeNull()
 
-    fun _fix(resourceLocation: ResourceLocation): ResourceLocation
 
-    fun ResourceLocation.fix(): ResourceLocation {
-        return _fix(this)
+    override fun load() {
+        this::renames.forceSet(Minosoft.MINOSOFT_ASSETS_MANAGER[this.path.fixer()].readJson())
+    }
+
+    open fun fix(resourceLocation: ResourceLocation): ResourceLocation {
+        return renames[resourceLocation] ?: resourceLocation
+    }
+
+
+    companion object {
+        private fun ResourceLocation.fixer(): ResourceLocation {
+            return this.prefix("fixer/").suffix(".json")
+        }
     }
 }

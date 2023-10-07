@@ -83,7 +83,7 @@ class PlayConnection(
 ) : Connection() {
     val sessionId = KUtil.secureRandomUUID()
     val settingsManager = ClientSettingsManager(this)
-    val registries = Registries()
+    val registries = Registries().apply { updateFlattened(version.flattened) }
     val world = World(this)
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager(this)

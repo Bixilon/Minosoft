@@ -13,14 +13,18 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries
 
+import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.entities.entities.monster.Zombie
+import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.factory.VerifyIntegratedBlockRegistry
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
-import org.testng.Assert
+import org.testng.Assert.assertEquals
+import org.testng.Assert.assertNotNull
 import org.testng.SkipException
 import org.testng.annotations.Test
 
@@ -39,18 +43,22 @@ abstract class RegistryLoadingTest(val versionName: String) {
 
 
     fun testItemSimple() {
-        Assert.assertNotNull(registries.item[MinecraftItems.COAL])
+        assertNotNull(registries.item[MinecraftItems.COAL])
     }
 
     fun testBlockSimple() {
-        Assert.assertNotNull(registries.block[MinecraftBlocks.DIRT])
+        assertNotNull(registries.block[MinecraftBlocks.DIRT])
     }
 
-    fun testBlockIntegrated() {
-        VerifyIntegratedBlockRegistry.verify(registries, version)
+    fun entities() {
+        assertEquals(registries.entityType[RemotePlayerEntity]?.height, 1.8f)
+        assertEquals(registries.entityType[Zombie]?.height, 1.95f)
+        assertEquals(registries.entityType[ItemEntity]?.height, 0.25f)
     }
 
-    fun testEntitySimple() {
-        Assert.assertNotNull(registries.entityType[Zombie])
+    fun biome() {
+        if (version >= V_1_17) throw SkipException("Biomes are datapack only")
+
+        assertNotNull(registries.biome[minecraft("plains")]?.identifier)
     }
 }

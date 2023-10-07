@@ -13,32 +13,10 @@
 
 package de.bixilon.minosoft.datafixer.rls
 
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
 
-object EntityAttributeFixer : ResourceLocationFixer {
-    private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
-        "generic.maxHealth" to "generic.max_health",
-        "zombie.spawnReinforcements" to "zombie.spawn_reinforcements",
+object EntityAttributeFixer : ResourceLocationFixer(minosoft("entity_attribute")) {
 
-        "horse.jumpStrength" to "horse.jump_strength",
-
-        "generic.followRange" to "generic.follow_range",
-
-        "generic.knockbackResistance" to "generic.knockback_resistance",
-
-        "generic.movementSpeed" to "generic.movement_speed",
-
-        "generic.flyingSpeed" to "generic.flying_speed",
-
-        "generic.attackDamage" to "generic.attack_damage",
-        "generic.attackKnockback" to "generic.attack_knockback",
-        "generic.attackSpeed" to "generic.attack_speed",
-        "generic.armorToughness" to "generic.armor_toughness",
-    ).asResourceLocationMap()
-
-
-    override fun _fix(resourceLocation: ResourceLocation): ResourceLocation {
-        return RENAMES.getOrDefault(resourceLocation, resourceLocation)
-    }
+    fun ResourceLocation.fixEntityAttribute() = fix(this)
 }

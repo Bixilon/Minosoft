@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.registries.identified
 
 import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation.Companion.ALLOWED_PATH_PATTERN
 import java.util.*
 
 /**
@@ -82,7 +81,6 @@ open class ResourceLocation(
     }
 
     companion object {
-        val ALLOWED_PATH_PATTERN = Regex("(?!.*//)[a-z0-9_./\\-]+")
 
         /**
          * Creates a resource location from a string.
@@ -96,22 +94,6 @@ open class ResourceLocation(
             if (split.size == 1) {
                 return ResourceLocation(Namespaces.DEFAULT, string)
             }
-            return ResourceLocation(split[0], split[1])
-        }
-
-        /**
-         * Creates a resource location from a string by splitting it at the first colon (:) or at the first slash (/) if there is no colon.
-         * If possible, use minecraft() or minosoft() instead.
-         *
-         * @param path The path to parse
-         * @return The parsed resource location
-         */
-        @Deprecated("Don't know why this was a thing")
-        fun ofPath(path: String): ResourceLocation {
-            if (path.contains(':') || !path.contains('/')) {
-                return of(path)
-            }
-            val split = path.split('/', limit = 2)
             return ResourceLocation(split[0], split[1])
         }
     }

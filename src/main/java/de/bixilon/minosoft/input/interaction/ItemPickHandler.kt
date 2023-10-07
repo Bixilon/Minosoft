@@ -38,7 +38,7 @@ class ItemPickHandler(
         }
         val target = connection.camera.target.target ?: return
 
-        if (target.distance > connection.player.reachDistance) {
+        if (target.distance >= connection.player.reachDistance) {
             return
         }
 

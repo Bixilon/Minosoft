@@ -11,17 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer
+package de.bixilon.minosoft.data.registries.blocks.properties
 
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.kutil.enums.ValuesEnum
 
-object DataFixerUtil {
+class EnumProperty<T : Enum<*>>(
+    name: String,
+    private val values: ValuesEnum<T>,
+    private val allowed: Set<T>? = null,
+) : BlockProperty<T>(name) {
 
-    fun Map<String, String>.asResourceLocationMap(): Map<ResourceLocation, ResourceLocation> {
-        val out: MutableMap<ResourceLocation, ResourceLocation> = mutableMapOf()
-        for ((key, value) in this) {
-            out[ResourceLocation.of(key)] = ResourceLocation.of(value)
+    override fun parse(value: Any): T {
+        val value = values[value] ?: throw IllegalArgumentException("Invalid enum value: $value")
+        if (allowed != null && value !in allowed) {
+            throw IllegalArgumentException("Enum value not allowed: $value")
         }
-        return out
+
+        return value
     }
 }

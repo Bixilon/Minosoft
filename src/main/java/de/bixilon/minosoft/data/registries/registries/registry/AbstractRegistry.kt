@@ -13,12 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.primitive.Clearable
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
+import de.bixilon.minosoft.protocol.versions.Version
 
 interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
     val size: Int
@@ -33,15 +32,10 @@ interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegis
 
     fun getId(value: T): Int
 
-    fun rawUpdate(data: Map<String, Any>?, registries: Registries?) {
-        val map: Map<ResourceLocation, JsonObject> = data?.toResourceLocationMap()?.unsafeCast() ?: return
-        update(map, registries)
-    }
+    fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): T?
 
-    fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?): T?
-
-    fun update(data: List<JsonObject>, registries: Registries?) = Unit
-    fun update(data: Map<ResourceLocation, Any>, registries: Registries?) = Unit
+    fun update(data: List<JsonObject>, version: Version, registries: Registries?) = Unit
+    fun update(data: Map<String, Any>?, version: Version, registries: Registries?) = Unit
 
     fun noParentIterator(): Iterator<T>
 

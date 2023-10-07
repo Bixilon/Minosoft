@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.assets.properties.version.PreFlattening
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.protocol.versions.Version
@@ -21,11 +22,7 @@ import de.bixilon.minosoft.protocol.versions.Version
 object RegistriesLoader {
 
     fun load(profile: ResourcesProfile, version: Version, latch: AbstractLatch): Registries {
-        if (!version.flattened) {
-            // ToDo: Pre flattening support
-            throw PreFlatteningLoadingError()
-        }
-        val registries = PixLyzerUtil.loadRegistry(version, profile, latch)
+        val registries = if (!version.flattened) PreFlattening.loadRegistry(profile, version, latch) else PixLyzerUtil.loadRegistry(version, profile, latch) // TODO: prioritize pixlyzer and if it fails load meta
 
         registries.setDefaultParents(version)
 
@@ -42,6 +39,7 @@ object RegistriesLoader {
         titleActions.parent = FallbackRegistries.TITLE_ACTIONS_REGISTRY.forVersion(version)
         entityAnimation.parent = FallbackRegistries.ENTITY_ANIMATION_REGISTRY.forVersion(version)
         entityActions.parent = FallbackRegistries.ENTITY_ACTIONS_REGISTRY.forVersion(version)
+        entityObjectType.parent = FallbackRegistries.ENTITY_OBJECT_REGISTRY.forVersion(version)
         messageType.parent = FallbackRegistries.MESSAGE_TYPES_REGISTRY.forVersion(version)
 
         containerType.parent = FallbackRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version)

@@ -19,14 +19,15 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.light.*
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape.Companion.deserialize
-import java.util.*
 
 class BlockStateSettings(
-    val properties: Map<BlockProperties, Any>?,
+    val properties: Map<BlockProperty<*>, Any>?,
     val luminance: Int,
     val collisionShape: AbstractVoxelShape?,
     val outlineShape: AbstractVoxelShape?,
@@ -57,15 +58,15 @@ class BlockStateSettings(
             return AbstractVoxelShape.EMPTY
         }
 
-        private fun JsonObject.getProperties(): Map<BlockProperties, Any>? {
+        private fun JsonObject.getProperties(block: Block): Map<BlockProperty<*>, Any>? {
             val data = this["properties"]?.toJsonObject() ?: return null
             if (data.isEmpty()) return null
 
-            val properties: MutableMap<BlockProperties, Any> = EnumMap(BlockProperties::class.java)
+            val properties: MutableMap<BlockProperty<*>, Any> = HashMap()
 
             for ((group, json) in data) {
                 try {
-                    val (property, value) = BlockProperties.parseProperty(group, if (json is String) json.lowercase() else json)
+                    val (property, value) = BlockProperties.parseProperty(block, group, if (json is String) json.lowercase() else json)
                     properties[property] = value
                 } catch (exception: NullPointerException) {
                     throw NullPointerException("Invalid block property $group or value $json")
@@ -98,13 +99,13 @@ class BlockStateSettings(
             return lightProperties
         }
 
-        fun of(registries: Registries, data: JsonObject): BlockStateSettings {
+        fun of(block: Block, registries: Registries, data: JsonObject): BlockStateSettings {
             val collisionShape = data.getCollisionShape(registries.shape)
             val outlineShape = data.getOutlineShape(registries.shape)
 
 
             return BlockStateSettings(
-                properties = data.getProperties(),
+                properties = data.getProperties(block),
                 luminance = data.getLuminance(),
                 collisionShape = if (collisionShape == AbstractVoxelShape.EMPTY) null else collisionShape,
                 outlineShape = if (outlineShape == AbstractVoxelShape.EMPTY) null else outlineShape,

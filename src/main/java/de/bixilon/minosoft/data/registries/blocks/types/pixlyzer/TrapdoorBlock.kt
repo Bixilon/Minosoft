@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.handler.entity.Climbable
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.Companion.getFacing
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries

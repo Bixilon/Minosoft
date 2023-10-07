@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,35 +13,23 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
-import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import java.util.*
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.enums.AliasableEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class Halves(
-    vararg val aliases: Any,
-) {
+    vararg names: String,
+) : AliasableEnum {
     UPPER("top"),
     LOWER("bottom"),
     DOUBLE,
     ;
 
-    companion object : BlockPropertiesSerializer {
-        private val NAME_MAP: Map<Any, Halves>
+    override val names: Array<String> = names.unsafeCast()
 
-        init {
-            val names: MutableMap<Any, Halves> = mutableMapOf()
-
-            for (value in values()) {
-                names[value.name.lowercase(Locale.getDefault())] = value
-                for (alias in value.aliases) {
-                    names[alias] = value
-                }
-            }
-
-            NAME_MAP = names
-        }
-
-        override fun deserialize(value: Any): Halves {
-            return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
-        }
+    companion object : ValuesEnum<Halves> {
+        override val VALUES = values()
+        override val NAME_MAP = EnumUtil.getEnumValues(VALUES)
     }
 }

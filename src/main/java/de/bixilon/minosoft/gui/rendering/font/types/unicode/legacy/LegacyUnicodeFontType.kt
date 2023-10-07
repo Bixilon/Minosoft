@@ -79,7 +79,7 @@ class LegacyUnicodeFontType(
         }
 
         private fun tryLoadPage(pageId: Int, textureFile: ResourceLocation, chars: Array<UnicodeCodeRenderer?>, sizes: InputStream, assets: AssetsManager, textures: StaticTextureArray) {
-            if (textureFile !in assets) {
+            if (textureFile !in assets) { // TODO: cache assets manger
                 // file not present, skip entire page
                 sizes.skip(PAGE_SIZE.toLong())
                 return

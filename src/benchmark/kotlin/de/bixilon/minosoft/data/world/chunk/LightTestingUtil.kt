@@ -37,6 +37,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.versions.Versions
 import org.objenesis.ObjenesisStd
 import org.testng.annotations.Test
 import kotlin.reflect.jvm.javaField
@@ -108,7 +109,7 @@ object LightTestingUtil {
     }
 
     fun createBlock(name: String, luminance: Int, lightProperties: LightProperties): Block {
-        val block = TestBlock(minosoft(name), BlockSettings())
+        val block = TestBlock(minosoft(name), BlockSettings(Versions.AUTOMATIC))
         val state = AdvancedBlockState(block, properties = emptyMap(), collisionShape = AbstractVoxelShape.EMPTY, outlineShape = AbstractVoxelShape.EMPTY, luminance = luminance, lightProperties = lightProperties, solidRenderer = true)
         block::states.forceSet(SimpleStateManager(state))
 

@@ -13,6 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
-typealias BlockVariant = Map<BlockProperties, Any>
+typealias BlockVariant = Map<BlockProperty<*>, Any>

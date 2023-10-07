@@ -15,27 +15,36 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.variant
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 interface VariantBlockModel : DirectBlockModel {
 
     companion object {
 
-        private fun parseVariant(variant: String): BlockVariant {
-            val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
+        private fun parseVariant(block: Block, variant: String): BlockVariant {
+            val properties: MutableMap<BlockProperty<*>, Any> = mutableMapOf()
             for (pair in variant.split(',')) {
                 val (key, rawValue) = pair.split('=', limit = 2)
 
-                val (property, value) = BlockProperties.parseProperty(key, rawValue)
-                properties[property] = value
+                try {
+                    val (property, value) = BlockProperties.parseProperty(block, key, rawValue)
+                    properties[property] = value
+                } catch (error: Throwable) {
+                    Log.log(LogMessageType.LOADING, LogLevels.WARN) { error }
+                }
             }
 
             return properties
         }
 
-        fun deserialize(loader: BlockLoader, data: JsonObject): VariantBlockModel? {
+        fun deserialize(loader: BlockLoader, block: Block, data: JsonObject): VariantBlockModel? {
             if (data.isEmpty()) return null
 
             val variants: MutableMap<BlockVariant, BlockStateApply> = linkedMapOf()
@@ -43,11 +52,11 @@ interface VariantBlockModel : DirectBlockModel {
 
             for ((variant, entry) in data) {
                 val apply = BlockStateApply.deserialize(loader, entry) ?: continue
-                if (variant == "" || variant == "normal") {
+                if (data.size == 1 && (variant == "" || variant == "normal")) {
                     // no further conditions
                     return SingleVariantBlockModel(apply)
                 }
-                variants[parseVariant(variant)] = apply
+                variants[parseVariant(block, variant)] = apply
             }
 
             if (variants.isEmpty()) return null

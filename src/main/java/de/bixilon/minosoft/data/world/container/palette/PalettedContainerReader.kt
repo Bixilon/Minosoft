@@ -23,7 +23,7 @@ object PalettedContainerReader {
     fun <T> read(buffer: PlayInByteBuffer, registry: AbstractRegistry<T?>, paletteFactory: PaletteFactory): PalettedContainer<T> {
         val bits = buffer.readUnsignedByte()
 
-        val palette = paletteFactory.createPalette(registry, bits)
+        val palette = paletteFactory.createPalette(registry, bits, buffer.versionId)
         palette.read(buffer)
 
         val paletteData = PaletteData.create(buffer.versionId, palette.bits, paletteFactory.containerSize)

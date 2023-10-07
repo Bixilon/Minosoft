@@ -12,6 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.tab
 
+import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDataUpdate
+import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
+import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
+import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -19,6 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
 class LegacyTabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val items: MutableMap<String, Int?> = mutableMapOf()
@@ -31,14 +36,32 @@ class LegacyTabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readVarInt()
         }
         if (buffer.readBoolean()) {
-            items[name] = ping // update latency or add
-        } else {
             items[name] = null // remove
+        } else {
+            items[name] = ping // update latency or add
         }
     }
 
     override fun handle(connection: PlayConnection) {
-        TODO("Can not handle tab packet!")
+        for ((name, ping) in items) {
+            val uuid = UUID.nameUUIDFromBytes(name.encodeNetwork()) // TODO: map with players (if possible)
+
+            if (ping == null) {
+                connection.tabList.remove(uuid)
+                continue
+            }
+
+            var item = connection.tabList.uuid[uuid]
+
+            if (item == null) {
+                item = PlayerAdditional(name)
+
+                connection.tabList.uuid[uuid] = item
+                connection.tabList.name[name] = item
+            }
+            item.ping = ping
+            connection.events.fire(TabListEntryChangeEvent(connection, mapOf(uuid to AdditionalDataUpdate(ping = ping))))
+        }
     }
 
     override fun log(reducedLog: Boolean) {

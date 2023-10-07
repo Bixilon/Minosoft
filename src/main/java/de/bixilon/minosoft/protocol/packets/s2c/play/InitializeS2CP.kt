@@ -174,7 +174,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         connection.world.hardcore = isHardcore
 
-        registries?.let { connection.registries.update(it) }
+        registries?.let { connection.registries.update(connection.version, it) }
         connection.world.dimension = dimension ?: connection.registries.dimension[dimensionName]?.properties ?: throw NullPointerException("Can not find dimension: $dimensionName")
         connection.world.name = world
 

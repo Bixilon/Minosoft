@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries.pixlyzer
 
+import de.bixilon.minosoft.data.registries.blocks.factory.VerifyIntegratedBlockRegistry
 import de.bixilon.minosoft.data.registries.versions.registries.RegistryLoadingTest
 import de.bixilon.minosoft.test.ITUtil
 import org.testng.annotations.Test
@@ -23,5 +24,9 @@ abstract class PixLyzerLoadingTest(version: String) : RegistryLoadingTest(versio
     @Test(priority = 100000)
     open fun loadRegistries() {
         this._registries = ITUtil.loadPixlyzerData(version)
+    }
+
+    fun testBlockIntegrated() {
+        VerifyIntegratedBlockRegistry.verify(registries, version)
     }
 }

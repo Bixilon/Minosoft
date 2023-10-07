@@ -13,11 +13,10 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var joint: String = "rollable"
@@ -33,11 +32,11 @@ class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
 
     override fun updateNBT(nbt: Map<String, Any>) {
-        nbt["joint"]?.nullCast<String>()?.let { joint = it }
-        nbt["name"]?.nullCast<String>()?.let { name = ResourceLocation.ofPath(it) }
-        nbt["pool"]?.nullCast<String>()?.let { pool = ResourceLocation.ofPath(it) }
-        nbt["finalState"]?.nullCast<String>()?.let { finalState = ResourceLocation.ofPath(it) }
-        nbt["target"]?.nullCast<String>()?.let { target = ResourceLocation.ofPath(it) }
+        nbt["joint"]?.let { joint = it.toString() }
+        nbt["name"]?.let { name = it.toResourceLocation() }
+        nbt["pool"]?.let { pool = it.toResourceLocation() }
+        nbt["finalState"]?.let { finalState = it.toResourceLocation() }
+        nbt["target"]?.let { target = it.toResourceLocation() }
     }
 
     companion object : BlockEntityFactory<JigsawBlockEntity> {

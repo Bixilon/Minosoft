@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.blocks.state.manager
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 
 class PropertyStateManager(
-    val properties: Map<BlockProperties, Array<Any>>,
+    val properties: Map<BlockProperty<*>, Array<Any>>,
     val states: Set<BlockState>,
     override val default: BlockState,
 ) : BlockStateManager {

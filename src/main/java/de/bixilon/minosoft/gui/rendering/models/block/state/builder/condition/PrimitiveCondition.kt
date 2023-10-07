@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
 class PrimitiveCondition private constructor(val matches: Boolean) : BuilderCondition {
 
-    override fun matches(properties: Map<BlockProperties, Any>) = matches
+    override fun matches(properties: Map<BlockProperty<*>, Any>) = matches
 
 
     companion object {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.properties
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 
 enum class SensorPhases {
     INACTIVE,
@@ -23,12 +22,8 @@ enum class SensorPhases {
     COOLDOWN,
     ;
 
-    companion object : BlockPropertiesSerializer, ValuesEnum<SensorPhases> {
+    companion object : ValuesEnum<SensorPhases> {
         override val VALUES = values()
         override val NAME_MAP: Map<String, SensorPhases> = EnumUtil.getEnumValues(VALUES)
-
-        override fun deserialize(value: Any): SensorPhases {
-            return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
-        }
     }
 }

@@ -81,8 +81,8 @@ class MovementPacketSender(
         val sendRotation = rotation != this.rotation
 
         val packet = when {
-            sendPosition && sendRotation -> PositionRotationC2SP(position, rotation, onGround)
-            sendPosition -> PositionC2SP(position, onGround)
+            sendPosition && sendRotation -> PositionRotationC2SP(position, physics.eyeY, rotation, onGround)
+            sendPosition -> PositionC2SP(position, physics.eyeY, onGround)
             sendRotation -> RotationC2SP(rotation, onGround)
             onGround != this.onGround -> GroundChangeC2SP(onGround)
             else -> null
@@ -118,6 +118,10 @@ class MovementPacketSender(
         }
         connection.sendPacket(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
         sendSprinting(player.isSprinting)
+    }
+
+    fun sendPositionRotation() {
+        connection.sendPacket(PositionRotationC2SP(physics.position, physics.eyeY, physics.rotation, physics.onGround))
     }
 
     override fun tick() {

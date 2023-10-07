@@ -29,7 +29,7 @@ class EntityAttributes(
 
 
     fun getOrCreate(type: AttributeType, base: Double? = null): AttributeContainer {
-        return attributes.synchronizedGetOrPut(type) { AttributeContainer(base ?: fallback[type] ?: 1.0) }
+        return attributes.synchronizedGetOrPut(type) { AttributeContainer(base ?: fallback[type] ?: type.fallback) }
     }
 
     fun update(attributes: Map<AttributeType, AttributeContainerUpdate>) {

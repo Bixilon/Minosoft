@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items
+package de.bixilon.minosoft.data.registries.item.items.pixlyzer
 
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactories
 import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.DurableItem
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
@@ -45,7 +47,9 @@ open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registri
             val className = data["class"]?.toString()
             var factory = PixLyzerItemFactories[className]
             if (factory == null) {
-                Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Item for class $className not found, defaulting..." }
+                if (className != null) {
+                    Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Item for class $className not found, defaulting..." }
+                }
                 // ToDo: This item class got renamed or is not yet implemented
                 factory = if (data["food_properties"] != null) {
                     PixLyzerFoodItem // ToDo: Remove this edge case

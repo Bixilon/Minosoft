@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.entities.wawla.EntityWawlaProvider
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.ChatComponentUtil.removeTrailingNewlines
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -54,7 +55,7 @@ class EntityWawlaElement(wawla: WawlaHUDElement, private val target: EntityTarge
                 return TextElement(guiRenderer, name, background = null, properties = TextRenderProperties(scale = 1.2f))
             }
         }
-        return createNameElement(target.entity.type.translationKey)
+        return createNameElement(target.entity.type.translationKey, ChatComponent.of(target.entity.type.identifier))
     }
 
     private fun createMod(): TextElement? {

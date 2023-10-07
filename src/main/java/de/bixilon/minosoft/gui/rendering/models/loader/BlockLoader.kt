@@ -21,9 +21,13 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelFixer.fixPrefix
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.model
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class BlockLoader(private val loader: ModelLoader) {
     private val cache: MutableMap<ResourceLocation, BlockModel> = HashMap(loader.context.connection.registries.block.size)
@@ -31,9 +35,13 @@ class BlockLoader(private val loader: ModelLoader) {
     val version = loader.context.connection.version
 
     fun loadBlock(name: ResourceLocation): BlockModel? {
-        val file = name.model("block/")
+        val file = name.blockModel()
         cache[file]?.let { return it }
-        val data = assets.getOrNull(file)?.readJsonObject() ?: return null
+        val data = assets.getOrNull(file)?.readJsonObject()
+        if (data == null) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find block model $name" }
+            return null
+        }
 
         val parent = data["parent"]?.toString()?.toResourceLocation()?.let { loadBlock(it) }
 
@@ -47,7 +55,7 @@ class BlockLoader(private val loader: ModelLoader) {
         val file = (if (block is CustomModel) block.getModelName(version) else block.identifier)?.blockState() ?: return null
         val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
-        return DirectBlockModel.deserialize(this, data)
+        return DirectBlockModel.deserialize(this, block, data)
     }
 
     fun load(latch: AbstractLatch?) {
@@ -60,16 +68,25 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun bake(latch: AbstractLatch?) {
+        val context = loader.context
         for (block in loader.context.connection.registries.block) {
             val prototype = block.model.nullCast<BlockModelPrototype>() ?: continue
             block.model = null
 
-            prototype.bake(block)
+            prototype.bake(context, block)
         }
     }
 
     fun cleanup() {
         this.cache.clear()
+    }
+
+    fun fixTexturePath(name: ResourceLocation): ResourceLocation {
+        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, 4, "blocks/", "block/"))
+    }
+
+    private fun ResourceLocation.blockModel(): ResourceLocation {
+        return this.prefix("block/").model()
     }
 
 

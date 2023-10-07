@@ -27,12 +27,12 @@ class LavaFluidModel : FluidModel {
     override val transparency = TextureTransparencies.OPAQUE// TODO: from texture
 
     override fun load(context: RenderContext) {
-        still = context.textures.staticTextures.createTexture(STILL)
-        flowing = context.textures.staticTextures.createTexture(FLOWING)
+        still = context.textures.staticTextures.createTexture(context.models.block.fixTexturePath(STILL).texture())
+        flowing = context.textures.staticTextures.createTexture(context.models.block.fixTexturePath(FLOWING).texture())
     }
 
     companion object {
-        val STILL = minecraft("block/lava_still").texture()
-        val FLOWING = minecraft("block/lava_flow").texture()
+        private val STILL = minecraft("block/lava_still")
+        private val FLOWING = minecraft("block/lava_flow")
     }
 }

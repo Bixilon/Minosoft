@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.builder.condition
 
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
 interface BuilderCondition {
 
-    fun matches(properties: Map<BlockProperties, Any>): Boolean
+    fun matches(properties: Map<BlockProperty<*>, Any>): Boolean
 }

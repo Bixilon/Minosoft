@@ -1787,7 +1787,8 @@
   },
   "340": {
     "name": "1.12.2",
-    "packets": 336
+    "packets": 336,
+    "type": "release"
   },
   "339": {
     "name": "1.12.2-pre2",
@@ -1795,7 +1796,8 @@
   },
   "338": {
     "name": "1.12.1",
-    "packets": 336
+    "packets": 336,
+    "type": "release"
   },
   "337": {
     "name": "1.12.1-pre1",

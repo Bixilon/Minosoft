@@ -15,17 +15,23 @@ package de.bixilon.minosoft.data.world.container.palette.palettes
 
 import de.bixilon.kutil.math.simple.IntMath.binaryBase
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_2
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-class RegistryPalette<T>(private val registry: AbstractRegistry<T?>) : Palette<T> {
-    override val bits = registry.size.binaryBase
+class RegistryPalette<T>(
+    private val registry: AbstractRegistry<T?>,
+    override val bits: Int = registry.size.binaryBase,
+) : Palette<T> {
 
     override val isEmpty: Boolean
         get() = false
 
-    override fun read(buffer: PlayInByteBuffer) {}
+    override fun read(buffer: PlayInByteBuffer) {
+        if (buffer.versionId <= V_1_12_2) { // TODO: find out exact version
+            buffer.readVarInt() // no data
+        }
+    }
 
-    @Suppress("UNCHECKED_CAST")
     override fun getOrNull(id: Int): T? {
         return registry.getOrNull(id)
     }

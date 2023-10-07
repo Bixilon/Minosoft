@@ -51,6 +51,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -60,7 +61,7 @@ open class PixLyzerBlock(
     identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Block(identifier, BlockSettings(soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] })), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, OutlinedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock, WaterloggableBlock, CollidableBlock, ToolRequirement, BlockWithItem<Item> {
+) : Block(identifier, BlockSettings(Versions.AUTOMATIC, soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] })), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, OutlinedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock, WaterloggableBlock, CollidableBlock, ToolRequirement, BlockWithItem<Item> {
     override val randomOffset: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
 
     override val friction = data["friction"]?.toFloat() ?: FrictionBlock.DEFAULT_FRICTION

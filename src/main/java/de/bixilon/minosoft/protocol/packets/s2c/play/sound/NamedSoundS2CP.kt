@@ -33,7 +33,7 @@ class NamedSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val pitch: Float
     lateinit var position: Vec3d
         private set
-    lateinit var category: SoundCategories
+    var category: SoundCategories? = null
         private set
     var seed: Long = 0L
         private set

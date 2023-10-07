@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.wawla
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -52,8 +53,8 @@ abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawl
         this.size = size
     }
 
-    protected fun createNameElement(translationKey: ResourceLocation?): TextElement {
-        val name = wawla.context.connection.language.forceTranslate(translationKey)
+    protected fun createNameElement(translationKey: ResourceLocation?, fallback: ChatComponent): TextElement {
+        val name = wawla.context.connection.language.translate(translationKey) ?: fallback
         name.setFallbackColor(ChatColors.WHITE)
         return TextElement(guiRenderer, name, background = null, properties = TextRenderProperties(scale = 1.25f))
     }
