@@ -64,5 +64,12 @@ class InitializeS2CPTest {
         assertEquals(packet.dimensionName, OverworldEffects.identifier)
         assertNull(packet.registries)
     }
+
+    fun vanilla_1_7_10() {
+        val packet = PacketReadingTestUtil.read("initialize/vanilla_1_7_10", "1.7.10", constructor = ::InitializeS2CP)
+        assertEquals(packet.gamemode, Gamemodes.CREATIVE)
+        assertEquals(packet.dimension?.effects, OverworldEffects.identifier)
+        assertNull(packet.registries)
+    }
 }
 
