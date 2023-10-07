@@ -58,7 +58,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
     internal operator fun set(id: Int, state: BlockState) {
         val previous = idMap.put(id, state)
         if (previous != null) {
-            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Block $state just replaced $previous (id=$id)" }
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Block state $state just replaced $previous (id=$id)" }
         }
     }
 

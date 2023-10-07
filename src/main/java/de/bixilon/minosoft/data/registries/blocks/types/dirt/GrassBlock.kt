@@ -16,12 +16,16 @@ package de.bixilon.minosoft.data.registries.blocks.types.dirt
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
+import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class GrassBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SnowyBlock(identifier, settings), FullOpaqueBlock, FlatteningRenamedModel {
+open class GrassBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SnowyBlock(identifier, settings), FullOpaqueBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item> {
+    override val item: Item = this::item.inject(identifier)
     override val hardness get() = 0.6f
     override val legacyModelName get() = minecraft("grass")
 

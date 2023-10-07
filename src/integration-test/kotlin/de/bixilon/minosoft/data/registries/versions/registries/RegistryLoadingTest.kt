@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_3
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 import org.testng.Assert.assertEquals
@@ -57,7 +57,7 @@ abstract class RegistryLoadingTest(val versionName: String) {
     }
 
     fun biome() {
-        if (version > V_1_19_3) return // biomes are datapack only in those versions -> empty registry
+        if (version >= V_1_17) throw SkipException("Biomes are datapack only")
 
         assertNotNull(registries.biome[minecraft("plains")]?.identifier)
     }

@@ -83,7 +83,7 @@ class BlockRegistry(
         block.updateStates(states, default, properties.mapValues { it.value.toTypedArray() })
     }
 
-    fun flattened(block: Block, data: JsonObject, registries: Registries) {
+    fun flattened(block: Block, data: JsonObject, registries: Registries, addBlockStates: Boolean) {
         val properties: MutableMap<BlockProperty<*>, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
@@ -92,7 +92,9 @@ class BlockRegistry(
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
 
             states += state
-            registries.blockState[stateId.toInt()] = state
+            if (addBlockStates) {
+                registries.blockState[stateId.toInt()] = state
+            }
 
             if (state !is PropertyBlockState) continue
 
@@ -120,7 +122,7 @@ class BlockRegistry(
         }
 
         if (flattened) {
-            flattened(block, data, registries)
+            flattened(block, data, registries, true)
         } else {
             legacy(block, data, registries)
         }
