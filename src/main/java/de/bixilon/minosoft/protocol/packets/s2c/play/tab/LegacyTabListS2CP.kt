@@ -12,7 +12,9 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.tab
 
+import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDataUpdate
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
+import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -34,9 +36,9 @@ class LegacyTabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readVarInt()
         }
         if (buffer.readBoolean()) {
-            items[name] = ping // update latency or add
-        } else {
             items[name] = null // remove
+        } else {
+            items[name] = ping // update latency or add
         }
     }
 
@@ -58,6 +60,7 @@ class LegacyTabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 connection.tabList.name[name] = item
             }
             item.ping = ping
+            connection.events.fire(TabListEntryChangeEvent(connection, mapOf(uuid to AdditionalDataUpdate(ping = ping))))
         }
     }
 
