@@ -142,7 +142,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     }
 
     companion object {
-        private val ATLAS = minosoft("hud/hotbar/hunger")
+        val ATLAS = minosoft("hud/hotbar/hunger")
         const val MAX_HUNGER = 20
         private const val HUNGER_CONTAINERS = MAX_HUNGER / 2
         private val HUNGER_SIZE = Vec2i(8, 9)

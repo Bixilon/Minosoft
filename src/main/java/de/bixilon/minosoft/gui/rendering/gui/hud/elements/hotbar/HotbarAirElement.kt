@@ -105,7 +105,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
     }
 
     companion object {
-        private val ATLAS = minecraft("hud/hotbar/air")
+        val ATLAS = minecraft("hud/hotbar/air")
         private val BUBBLE_SIZE = Vec2i(8, 9)
         private const val FULL_AIR = 300
         private const val MAX_BUBBLES = 10

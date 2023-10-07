@@ -253,6 +253,10 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_TAB),
         )
 
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(TabListAtlas.ATLAS)
+        }
+
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<TabListElement> {
             return LayoutedGUIElement(TabListElement(guiRenderer)).apply { enabled = false }
         }

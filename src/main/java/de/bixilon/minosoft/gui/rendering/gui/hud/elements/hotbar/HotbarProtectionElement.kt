@@ -92,7 +92,7 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
 
     companion object {
-        private val ATLAS = minecraft("hud/hotbar/protection")
+        val ATLAS = minecraft("hud/hotbar/protection")
         private val ARMOR_SIZE = Vec2i(8, 9)
         private val SIZE = Vec2(10 * ARMOR_SIZE.x, ARMOR_SIZE.y)
     }

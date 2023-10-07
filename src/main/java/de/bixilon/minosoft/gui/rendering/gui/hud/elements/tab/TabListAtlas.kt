@@ -37,7 +37,7 @@ class TabListAtlas(val atlas: Atlas?) {
     }
 
 
-    private companion object {
+    companion object {
         val ATLAS = minecraft("hud/tab")
     }
 }

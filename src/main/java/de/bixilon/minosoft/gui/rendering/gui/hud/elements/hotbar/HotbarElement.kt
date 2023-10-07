@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTextElemen
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.fade.FadingTimes
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.health.HeartAtlas
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
@@ -199,6 +200,15 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         override val identifier: ResourceLocation = "minosoft:hotbar".toResourceLocation()
         private const val HOVER_TEXT_OFFSET = 15
         private const val ITEM_NAME_OFFSET = 5
+
+
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(HotbarAirElement.ATLAS)
+            gui.atlas.load(HeartAtlas.ATLAS)
+            gui.atlas.load(HotbarBaseElement.ATLAS)
+            gui.atlas.load(HotbarProtectionElement.ATLAS)
+            gui.atlas.load(HotbarHungerElement.ATLAS)
+        }
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<HotbarElement> {
             return LayoutedGUIElement(HotbarElement(guiRenderer))

@@ -73,7 +73,7 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
     }
 
     companion object {
-        val ATLAS = minecraft("gui/hotbar/hotbar")
+        val ATLAS = minecraft("hud/hotbar/hotbar")
 
         private val HOTBAR_BASE_SIZE = Vec2(182, 22)
         private const val FRAME_SIZE = 24

@@ -166,7 +166,7 @@ open class SwitchElement(
         }
     }
 
-    private companion object {
+    companion object {
         val ATLAS = minosoft("elements/switch")
         val CLICK_SOUND = "minecraft:ui.button.click".toResourceLocation()
         const val TEXT_MARGIN = 5

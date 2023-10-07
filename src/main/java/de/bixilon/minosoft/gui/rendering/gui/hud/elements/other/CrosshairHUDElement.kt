@@ -109,6 +109,10 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         const val CROSSHAIR_SIZE = 16
         override val identifier = minosoft("crosshair")
 
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(ATLAS)
+        }
+
 
         override fun build(guiRenderer: GUIRenderer): CrosshairHUDElement {
             return CrosshairHUDElement(guiRenderer)

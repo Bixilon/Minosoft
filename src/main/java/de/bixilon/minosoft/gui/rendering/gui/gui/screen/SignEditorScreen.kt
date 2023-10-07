@@ -229,6 +229,7 @@ class SignEditorScreen(
         private val BACKGROUND_SIZE = Vec2(24, 12) * BACKGROUND_SCALE
 
         fun register(guiRenderer: GUIRenderer) {
+            guiRenderer.atlas.load(ATLAS)
             guiRenderer.connection.events.listen<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.position, it.side)) }
         }
     }

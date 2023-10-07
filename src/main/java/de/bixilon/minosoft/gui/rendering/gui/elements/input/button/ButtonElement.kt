@@ -31,7 +31,7 @@ open class ButtonElement(
         onSubmit()
     }
 
-    private companion object {
+    companion object {
         val ATLAS = minecraft("elements/button")
     }
 }
