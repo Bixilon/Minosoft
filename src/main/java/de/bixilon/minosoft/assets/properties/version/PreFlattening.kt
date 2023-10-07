@@ -31,7 +31,7 @@ object PreFlattening {
 
         val json: MutableJsonObject = synchronizedMapOf()
 
-        val worker = UnconditionalWorker()
+        val worker = UnconditionalWorker() // TODO: kutil 1.24 add error handler
         for ((type, data) in MinosoftMeta.root) {
             worker += add@{ json[type] = data.load(profile, version) ?: return@add }
         }

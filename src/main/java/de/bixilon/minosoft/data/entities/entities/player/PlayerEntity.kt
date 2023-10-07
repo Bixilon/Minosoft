@@ -31,6 +31,8 @@ import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -41,6 +43,7 @@ import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerMo
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W12A
 import java.util.*
 
 abstract class PlayerEntity(
@@ -62,6 +65,9 @@ abstract class PlayerEntity(
         get() = pose?.let { getDimensions(it) } ?: Vec2(type.width, type.height)
 
     override fun getDimensions(pose: Poses): Vec2? {
+        if (pose == Poses.SNEAKING) {
+            return if (connection.version < V_19W12A) SNEAKING_LEGACY else SNEAKING
+        }
         return DIMENSIONS[pose]
     }
 
@@ -161,7 +167,9 @@ abstract class PlayerEntity(
         }
     }
 
-    companion object {
+    companion object : Identified {
+        override val identifier = minecraft("player")
+
         private val ABSORPTION_HEARTS_DATA = EntityDataField("PLAYER_ABSORPTION_HEARTS")
         private val SCORE_DATA = EntityDataField("PLAYER_SCORE")
         private val SKIN_PARTS_DATA = EntityDataField("PLAYER_SKIN_PARTS_FLAGS")
@@ -170,13 +178,15 @@ abstract class PlayerEntity(
         private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
         private val LAST_DEATH_POSITION_DATA = EntityDataField("PLAYER_LAST_DEATH_POSITION")
 
+        private val SNEAKING = Vec2(0.6f, 1.5f)
+        private val SNEAKING_LEGACY = Vec2(0.6f, 1.65f)
+
         private val DIMENSIONS: Map<Poses, Vec2> = EnumMap(mapOf(
             Poses.STANDING to Vec2(0.6f, 1.8f),
             Poses.SLEEPING to Vec2(0.2f, 0.2f),
             Poses.ELYTRA_FLYING to Vec2(0.6f, 0.6f),
             Poses.SWIMMING to Vec2(0.6f, 0.6f),
             Poses.SPIN_ATTACK to Vec2(0.6f, 0.6f),
-            Poses.SNEAKING to Vec2(0.6f, 1.5f), // ToDo: This changed at some time
             Poses.DYING to Vec2(0.2f, 0.2f),
         ))
     }

@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.data.registries.effects.attributes.integrated.IntegratedAttributeModifiers
@@ -42,7 +41,7 @@ class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
     val keyManagement: SignatureKeyManagement,
-) : PlayerEntity(connection, connection.registries.entityType[RemotePlayerEntity.identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, PlayerAdditional(account.username, ping = 0, properties = account.properties)) {
+) : PlayerEntity(connection, connection.registries.entityType[identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, PlayerAdditional(account.username, ping = 0, properties = account.properties)) {
     var healthCondition by observed(HealthCondition())
     var experienceCondition by observed(ExperienceCondition())
     var compass by observed(CompassPosition())
