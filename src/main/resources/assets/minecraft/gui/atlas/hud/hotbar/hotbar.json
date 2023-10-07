@@ -88,8 +88,8 @@
   "frame": {
     "0": {
       "texture": "gui/widgets",
-      "start": [0, 0],
-      "end": [24, 23]
+      "start": [0, 22],
+      "end": [24, 46]
     },
     "18": {
       "texture": "gui/sprites/hud/hotbar_selection",
