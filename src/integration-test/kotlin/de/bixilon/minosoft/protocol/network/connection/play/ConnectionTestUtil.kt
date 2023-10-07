@@ -22,6 +22,7 @@ import de.bixilon.minosoft.config.profile.ProfileTestUtil.createProfiles
 import de.bixilon.minosoft.data.accounts.types.test.TestAccount
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
+import de.bixilon.minosoft.data.language.lang.LanguageList
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.WorldTestUtil.createWorld
 import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
@@ -47,6 +48,7 @@ object ConnectionTestUtil {
 
     fun createConnection(worldSize: Int = 0, light: Boolean = false, version: String? = null): PlayConnection {
         val connection = IT.OBJENESIS.newInstance(PlayConnection::class.java)
+        connection::language.forceSet(LanguageList(mutableListOf()))
         val version = if (version == null) IT.VERSION else Versions[version] ?: throw IllegalArgumentException("Can not find version: $version")
         connection::sequence.forceSet(AtomicInteger(1))
         connection::account.forceSet(TestAccount)
