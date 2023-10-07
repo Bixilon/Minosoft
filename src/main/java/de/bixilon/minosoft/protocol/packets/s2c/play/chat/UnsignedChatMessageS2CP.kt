@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class UnsignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val text: ChatComponent = buffer.readChatComponent()
+    val text: ChatComponent = buffer.readNbtChatComponent()
     val type = buffer.readRegistryItem(buffer.connection.registries.messageType)
     val parameters: Map<ChatParameter, ChatComponent> = mutableMapOf<ChatParameter, ChatComponent>().apply {
         buffer.readChatMessageParameters(this)

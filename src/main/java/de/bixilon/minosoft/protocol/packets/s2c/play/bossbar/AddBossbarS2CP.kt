@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.bossbar.BossbarFlags
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarAddEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -27,9 +27,9 @@ import java.util.*
 
 class AddBossbarS2CP(
     val uuid: UUID,
-    buffer: InByteBuffer,
+    buffer: PlayInByteBuffer,
 ) : BossbarS2CP {
-    val title = buffer.readChatComponent()
+    val title = buffer.readNbtChatComponent()
     val value = buffer.readFloat()
     val color = BossbarColors[buffer.readVarInt()]
     val notches = BossbarNotches[buffer.readVarInt()]

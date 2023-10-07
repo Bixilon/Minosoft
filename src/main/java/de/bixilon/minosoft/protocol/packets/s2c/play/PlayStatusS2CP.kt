@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class PlayStatusS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val motd = if (buffer.versionId >= ProtocolVersions.V_23W07A) buffer.readChatComponent() else buffer.readOptional { buffer.readChatComponent() }
+    val motd = if (buffer.versionId >= ProtocolVersions.V_23W07A) buffer.readNbtChatComponent() else buffer.readOptional { buffer.readNbtChatComponent() }
     val favicon = if (buffer.versionId >= ProtocolVersions.V_23W07A) buffer.readOptional { buffer.readByteArray() } else buffer.readOptional { buffer.readString().toFavicon() }
     val previewsChat = if (buffer.versionId < ProtocolVersions.V_22W42A) buffer.readBoolean() else false
     val forcesSecureChat = if (buffer.versionId >= ProtocolVersions.V_1_19_1_RC2) buffer.readBoolean() else null

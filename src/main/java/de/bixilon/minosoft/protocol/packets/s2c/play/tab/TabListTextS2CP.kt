@@ -21,8 +21,8 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class TabListTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val header: ChatComponent = buffer.readChatComponent()
-    val footer: ChatComponent = buffer.readChatComponent()
+    val header: ChatComponent = buffer.readNbtChatComponent()
+    val footer: ChatComponent = buffer.readNbtChatComponent()
 
     override fun handle(connection: PlayConnection) {
         connection.tabList.header = header

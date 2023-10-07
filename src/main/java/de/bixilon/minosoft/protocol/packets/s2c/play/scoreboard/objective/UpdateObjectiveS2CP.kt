@@ -34,7 +34,7 @@ class UpdateObjectiveS2CP(
 
     init {
         if (buffer.versionId >= ProtocolVersions.V_14W04A) { // ToDo
-            this._displayName = buffer.readChatComponent()
+            this._displayName = buffer.readNbtChatComponent()
         }
         if (buffer.versionId >= ProtocolVersions.V_14W08A) {
             when {

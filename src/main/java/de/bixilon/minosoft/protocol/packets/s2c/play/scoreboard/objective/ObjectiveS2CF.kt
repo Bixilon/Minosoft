@@ -24,7 +24,7 @@ object ObjectiveS2CF : PlayPacketFactory {
     override fun create(buffer: PlayInByteBuffer): ObjectiveS2CP {
         val objective = buffer.readString()
         val displayName = if (buffer.versionId < ProtocolVersions.V_14W04A) { // ToDo
-            buffer.readChatComponent()
+            buffer.readNbtChatComponent()
         } else {
             null
         }

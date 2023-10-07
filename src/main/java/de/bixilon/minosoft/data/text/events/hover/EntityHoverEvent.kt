@@ -19,6 +19,8 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
 import java.util.*
@@ -48,7 +50,10 @@ data class EntityHoverEvent(
                 type = it.toResourceLocation()
             }
 
-            return EntityHoverEvent(json["id"].toString().toUUID(), type, ChatComponent.of(json["name"]))
+            val rawUUID = json["id"]
+            val uuid = if (rawUUID is IntArray) InByteBuffer(OutByteBuffer().apply { writeBareIntArray(rawUUID) }.toArray()).readUUID() else rawUUID.toString().toUUID()
+
+            return EntityHoverEvent(uuid, type, ChatComponent.of(json["name"]))
         }
     }
 }

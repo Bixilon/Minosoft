@@ -107,6 +107,14 @@ class PlayInByteBuffer : InByteBuffer {
         return ChatComponent.of(string, connection.language, null, restricted = true)
     }
 
+    fun readNbtChatComponent(): ChatComponent {
+        if (versionId < ProtocolVersions.V_23W40A) {
+            return readChatComponent()
+        }
+        val nbt = readNBT()
+        return ChatComponent.of(nbt, connection.language, null, restricted = true)
+    }
+
     fun readParticleData(): ParticleData {
         val type = connection.registries.particleType[readVarInt()]
         return readParticleData(type)
@@ -333,8 +341,8 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readChatMessageParameters(parameters: MutableMap<ChatParameter, ChatComponent>) {
-        parameters[ChatParameter.SENDER] = readChatComponent()
-        readOptional { readChatComponent() }?.let { parameters[ChatParameter.TARGET] = it }
+        parameters[ChatParameter.SENDER] = readNbtChatComponent()
+        readOptional { readNbtChatComponent() }?.let { parameters[ChatParameter.TARGET] = it }
     }
 
     fun readSoundPitch(): Float {

@@ -39,7 +39,7 @@ class ResourcepackS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         if (buffer.versionId >= ProtocolVersions.V_21W15A) {
-            promptText = buffer.readOptional { buffer.readChatComponent() }
+            promptText = buffer.readOptional { buffer.readNbtChatComponent() }
         }
     }
 

@@ -35,7 +35,7 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         buffer.versionId < V_1_14 -> buffer.readLegacyRegistryItem(buffer.connection.registries.containerType)!! // TODO: version completely guessed
         else -> buffer.readRegistryItem(buffer.connection.registries.containerType)
     }
-    val title: ChatComponent = buffer.readChatComponent()
+    val title: ChatComponent = buffer.readNbtChatComponent()
     val slotCount: Int = if (buffer.versionId <= V_19W02A) buffer.readUnsignedByte() else 0 // ToDo: This is completely guessed, it is not present in 1.16.5 (unchecked)
     val hasTitle: Boolean = if (buffer.versionId > V_14W03B && buffer.versionId <= V_1_8_9) buffer.readBoolean() else true // TODO: upper version (1.8) is probably worng. it changed between 1.7.10..1.8
     var entityId: Int? = if ((buffer.versionId >= V_19W02A && containerType.identifier == DefaultInventoryTypes.HORSE) || buffer.versionId < V_14W03B) {

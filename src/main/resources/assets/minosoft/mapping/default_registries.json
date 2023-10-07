@@ -627,6 +627,50 @@
       "minecraft:limited_crafting": {
         "id": 12
       }
+    },
+    "916": {
+      "minecraft:bed_break": {
+        "id": 0
+      },
+      "minecraft:rain_start": {
+        "id": 1
+      },
+      "minecraft:rain_stop": {
+        "id": 2
+      },
+      "minecraft:gamemode_change": {
+        "id": 3
+      },
+      "minecraft:win_game": {
+        "id": 4
+      },
+      "minecraft:hide_demo_messages": {
+        "id": 5
+      },
+      "minecraft:arrow_player_hit": {
+        "id": 6
+      },
+      "minecraft:rain_gradient_set": {
+        "id": 7
+      },
+      "minecraft:thunder_gradient_set": {
+        "id": 8
+      },
+      "minecraft:pufferfish_sting": {
+        "id": 9
+      },
+      "minecraft:elder_guardian_effect": {
+        "id": 10
+      },
+      "minecraft:immediate_respawn": {
+        "id": 11
+      },
+      "minecraft:limited_crafting": {
+        "id": 12
+      },
+      "minecraft:receive_chunks": {
+        "id": 13
+      }
     }
   },
   "minecraft:world_events": {

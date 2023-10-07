@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val reason: ChatComponent = buffer.readChatComponent()
+    val reason: ChatComponent = if (buffer.connection.network.state == ProtocolStates.LOGIN) buffer.readChatComponent() else buffer.readNbtChatComponent()
 
     override fun handle(connection: PlayConnection) {
         if (!connection.network.connected) {

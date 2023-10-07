@@ -32,7 +32,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val text: ChatComponent = buffer.readChatComponent()
+    val text: ChatComponent = buffer.readNbtChatComponent()
     var type: ChatMessageType = buffer.connection.registries.messageType[DefaultMessageTypes.CHAT]!!
         private set
     var sender: UUID? = null

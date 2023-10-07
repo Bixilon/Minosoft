@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarTitleSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -23,9 +23,9 @@ import java.util.*
 
 class TitleBossbarS2CP(
     val uuid: UUID,
-    buffer: InByteBuffer,
+    buffer: PlayInByteBuffer,
 ) : BossbarS2CP {
-    val title = buffer.readChatComponent()
+    val title = buffer.readNbtChatComponent()
 
     override fun handle(connection: PlayConnection) {
         val bossbar = connection.bossbarManager.bossbars[uuid] ?: return

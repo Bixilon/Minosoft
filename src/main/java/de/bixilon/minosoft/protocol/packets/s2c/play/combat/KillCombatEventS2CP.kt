@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class KillCombatEventS2CP(buffer: PlayInByteBuffer) : CombatEventS2CP {
     val deadEntityId = buffer.readVarInt()
     val killerEntityId = if (buffer.versionId >= V_1_20_PRE3) -1 else buffer.readInt()
-    val message = buffer.readChatComponent()
+    val message = buffer.readNbtChatComponent()
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Combat event kill (deadEntityId=$deadEntityId, killerEntityId=$killerEntityId, message=$message )" }

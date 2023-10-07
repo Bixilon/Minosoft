@@ -1,4 +1,9 @@
 {
+  "916": {
+    "name": "23w40a",
+    "protocol_id": 1073741978,
+    "packets": 910
+  },
   "915": {
     "name": "1.20.2",
     "protocol_id": 764,

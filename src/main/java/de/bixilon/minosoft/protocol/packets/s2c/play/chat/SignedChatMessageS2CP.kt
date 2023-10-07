@@ -98,7 +98,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val message = readChatComponent().message
         if (versionId >= ProtocolVersions.V_1_19_1_PRE5 && versionId < ProtocolVersions.V_22W42A) {
-            readOptional { readChatComponent() } // formatted text
+            readOptional { readNbtChatComponent() } // formatted text
         }
 
         val sent = readInstant()
@@ -106,7 +106,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val lastSeen = readArray { if (versionId >= ProtocolVersions.V_22W42A) readIndexedLastSeenMessage() else readLastSeenMessage() }
 
         parameters[ChatParameter.CONTENT] = TextComponent(message)
-        val unsigned = readOptional { readChatComponent() }
+        val unsigned = readOptional { readNbtChatComponent() }
         var filter: Filter? = null
         if (versionId >= ProtocolVersions.V_1_19_1_RC3) {
             filter = ChatFilter[readVarInt()].reader.invoke(this)

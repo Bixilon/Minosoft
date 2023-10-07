@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class TitleTextS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
-    val text = buffer.readChatComponent()
+    val text = buffer.readNbtChatComponent()
 
     override fun handle(connection: PlayConnection) {
         connection.events.fire(TitleSetEvent(connection, this))
