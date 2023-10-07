@@ -40,7 +40,7 @@ open class ProgressElement(
             // ToDo: Animate
         }
     protected val emptyImage = AtlasImageElement(guiRenderer, emptyAtlasElement)
-    protected lateinit var progressImage: ImageElement
+    protected var progressImage: ImageElement? = null
 
 
     constructor(guiRenderer: GUIRenderer, atlasElements: Array<AtlasElement?>, progress: Float = 0.0f) : this(guiRenderer, atlasElements.getOrNull(0), atlasElements.getOrNull(1), progress)
@@ -52,7 +52,7 @@ open class ProgressElement(
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         emptyImage.render(offset, consumer, options)
-        progressImage.render(offset, consumer, options)
+        progressImage?.render(offset, consumer, options)
     }
 
     override fun forceSilentApply() {

@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.atlas.textures.AtlasTextureManager
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import java.util.*
 
 class AtlasLoader(val context: RenderContext) {
     private val raw: MutableMap<ResourceLocation, Map<String, RawAtlasElement>> = HashMap()
@@ -38,24 +37,24 @@ class AtlasLoader(val context: RenderContext) {
     }
 
     fun loadElement(data: JsonObject, packFormat: Int): RawAtlasElement? {
-        val sorted = TreeMap<Int, JsonObject> { a, b -> (b - a) }
-
-        for ((key, value) in data) {
-            sorted[key.toInt()] = value.unsafeCast()
-        }
-
-        for ((format, data) in sorted) {
+        var previous: JsonObject? = null
+        var previousFormat = -1
+        for ((format, data) in data) {
+            val format = format.toInt()
             if (format > packFormat) continue
-            return loadElement(data)
+            if (format < previousFormat) continue
+
+            previousFormat = format
+            previous = data.unsafeCast()
         }
-        return null
+        return previous?.let { loadElement(it) }
     }
 
     fun load(name: ResourceLocation, data: JsonObject) {
         val elements: MutableMap<String, RawAtlasElement> = hashMapOf()
 
         for ((id, element) in data) {
-            elements[id] = loadElement(element.unsafeCast(), 0) ?: continue
+            elements[id] = loadElement(element.unsafeCast(), context.models.packFormat) ?: continue
         }
 
         raw[name] = elements
