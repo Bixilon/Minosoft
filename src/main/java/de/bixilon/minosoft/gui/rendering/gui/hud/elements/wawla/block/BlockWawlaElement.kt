@@ -17,6 +17,7 @@ import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.registries.blocks.wawla.BlockWawlaProvider
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.ChatComponentUtil.removeTrailingNewlines
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -40,7 +41,7 @@ class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : Wawla
     }
 
     private fun createName(): TextElement {
-        return createNameElement(target.state.block.translationKey)
+        return createNameElement(target.state.block.translationKey, ChatComponent.of(target.state.block.identifier))
     }
 
     private fun createMod(): TextElement? {
