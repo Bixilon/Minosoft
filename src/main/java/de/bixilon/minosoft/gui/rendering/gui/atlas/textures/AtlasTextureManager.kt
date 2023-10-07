@@ -40,7 +40,7 @@ class AtlasTextureManager(private val context: RenderContext) {
 
         val realStart = start * scale
         val realEnd = end * scale
-        val size = (realEnd + 1) - realStart
+        val size = realEnd - realStart
 
         val target = request(size)
 

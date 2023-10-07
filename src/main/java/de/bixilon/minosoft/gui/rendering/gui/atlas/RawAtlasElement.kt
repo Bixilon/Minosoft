@@ -36,7 +36,7 @@ class RawAtlasElement(
 
     fun load(textures: AtlasTextureManager): AtlasElement {
         val (texture, uvStart, uvEnd) = textures.add(texture, assets, start, end, resolution)
-        val size = (end + 1) - start
+        val size = end - start
 
 
         return AtlasElement(texture, uvStart, uvEnd, size, slots, areas)
