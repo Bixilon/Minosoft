@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.FLATTENING_VERSION
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -31,7 +32,7 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
     val data1: Byte = buffer.readByte()
     val data2: Byte = buffer.readByte()
-    val block: Block = buffer.readRegistryItem(buffer.connection.registries.block)
+    val block: Block = if (buffer.versionId < FLATTENING_VERSION) buffer.readRegistryItem(buffer.connection.registries.blockState)!!.block else buffer.readRegistryItem(buffer.connection.registries.block)
 
     override fun handle(connection: PlayConnection) {
         val blockEntity = connection.world.getOrPutBlockEntity(position) ?: return
