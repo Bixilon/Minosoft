@@ -17,15 +17,15 @@ import de.bixilon.kutil.cast.CollectionCast.asAnyMap
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.event.events.damage.*
 import de.bixilon.minosoft.data.registries.entities.DefaultEntityFactories
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -58,7 +58,7 @@ object EntityEvents : DefaultFactory<EntityEvent<*>>(
     }
 
     fun load() {
-        val json = Minosoft.MINOSOFT_ASSETS_MANAGER[FILE].readJsonObject().toResourceLocationMap()
+        val json: Map<ResourceLocation, Any> = Minosoft.MINOSOFT_ASSETS_MANAGER[FILE].readJson()
         for ((name, data) in json) {
             val clazz = DefaultEntityFactories.ABSTRACT_ENTITY_DATA_CLASSES[name]?.java ?: DefaultEntityFactories[name]?.javaClass // TODO: This is the companion class
             if (clazz == null) {

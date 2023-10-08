@@ -46,6 +46,7 @@ object Jackson {
         )
         .registerModule(JavaTimeModule())
         .registerModule(ResourceLocationSerializer)
+        .registerModule(AccountDeserializer)
         .registerModule(RGBColorSerializer)
         .registerModule(ChatComponentColorSerializer)
         .registerModule(Vec2Serializer)

@@ -14,28 +14,17 @@
 package de.bixilon.minosoft.data.accounts
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
-import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
-import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
-import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 import java.util.*
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes(
-    JsonSubTypes.Type(value = MojangAccount::class, name = "minosoft:mojang_account"),
-    JsonSubTypes.Type(value = OfflineAccount::class, name = "minosoft:offline_account"),
-    JsonSubTypes.Type(value = MicrosoftAccount::class, name = "minosoft:microsoft_account"),
-)
 abstract class Account(
     val username: String,
 ) {

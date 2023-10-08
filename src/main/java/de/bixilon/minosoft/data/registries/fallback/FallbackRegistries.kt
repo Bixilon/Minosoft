@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.fallback
 
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityObjectType
@@ -34,7 +34,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
-import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -77,7 +76,7 @@ object FallbackRegistries {
         check(!initialized) { "Already initialized!" }
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading default registries..." }
 
-        val enumJson = Minosoft.MINOSOFT_ASSETS_MANAGER[ENUM_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
+        val enumJson: Map<ResourceLocation, Any> = Minosoft.MINOSOFT_ASSETS_MANAGER[ENUM_RESOURCE_LOCATION].readJson()
 
         EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("equipment_slots")].asJsonObject())
         HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("hand_equipment_slots")].asJsonObject())
@@ -92,7 +91,7 @@ object FallbackRegistries {
         ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation.of("entity_actions")].asJsonObject())
 
 
-        val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER[REGISTRIES_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
+        val registriesJson: Map<ResourceLocation, Any> = Minosoft.MINOSOFT_ASSETS_MANAGER[REGISTRIES_RESOURCE_LOCATION].readJson()
 
         DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation.of("default_channels")].asJsonObject(), PluginChannel)
 

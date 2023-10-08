@@ -11,20 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.json
+package de.bixilon.minosoft.data.accounts.types
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
+import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
+import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 
-object ResourceLocationJsonMap {
-
-    fun Map<*, *>.toResourceLocationMap(): Map<ResourceLocation, Any> {
-        val ret: MutableMap<ResourceLocation, Any> = mutableMapOf()
-
-        for ((key, value) in this) {
-            ret[ResourceLocation.of(key.unsafeCast<String>())] = value.unsafeCast<Any>()
-        }
-
-        return ret
-    }
+object AccountTypes {
+    val types = mutableMapOf(
+        MicrosoftAccount.identifier to MicrosoftAccount::class,
+        MojangAccount.identifier to MojangAccount::class,
+        OfflineAccount.identifier to OfflineAccount::class,
+    )
 }
