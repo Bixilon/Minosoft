@@ -73,10 +73,10 @@ class SectionOcclusion(
 
         if (x > 0) trace(regions, x - 1, y, z, nextId)
         if (x < ProtocolDefinition.SECTION_MAX_X) trace(regions, x + 1, y, z, nextId)
-        if (y > 0) trace(regions, x, y - 1, z, nextId)
-        if (y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, x, y + 1, z, nextId)
         if (z > 0) trace(regions, x, y, z - 1, nextId)
         if (z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, x, y, z + 1, nextId)
+        if (y > 0) trace(regions, x, y - 1, z, nextId)
+        if (y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, x, y + 1, z, nextId)
     }
 
     private fun floodFill(): ShortArray {
