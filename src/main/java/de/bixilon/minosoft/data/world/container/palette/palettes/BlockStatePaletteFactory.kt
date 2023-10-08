@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.world.container.palette.palettes
 
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W46A
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.FLATTENING_VERSION
 
 object BlockStatePaletteFactory : PaletteFactory {
     override val edgeBits get() = 4
@@ -25,7 +25,7 @@ object BlockStatePaletteFactory : PaletteFactory {
             1, 2, 3, 4 -> return ArrayPalette(registry, 4)
             5, 6, 7, 8 -> return ArrayPalette(registry, bits)
         }
-        if (version <= V_17W46A) return RegistryPalette(registry, 13) // minecraft uses 13 bits to encode the blocks (8 bits id + 4 bits meta + 1 magic bit, thanks)
+        if (version < FLATTENING_VERSION) return RegistryPalette(registry, 13) // minecraft uses 13 bits to encode the blocks (8 bits id + 4 bits meta + 1 magic bit, thanks)
 
         return RegistryPalette(registry) // flattened
     }

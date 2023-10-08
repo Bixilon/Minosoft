@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.data.registries.statistics.StatisticUnits
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.FLATTENING_VERSION
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -29,7 +29,7 @@ class StatisticsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val statistics: MutableMap<Statistic, MutableMap<Any, Int>> = mutableMapOf()
 
         for (i in 0 until buffer.readVarInt()) {
-            if (buffer.versionId < V_17W47A) { // ToDo: See https://wiki.vg/index.php?title=Protocol&oldid=14204
+            if (buffer.versionId < FLATTENING_VERSION) { // ToDo: See https://wiki.vg/index.php?title=Protocol&oldid=14204
                 val name = buffer.readResourceLocation()
                 val value = buffer.readVarInt()
             } else {

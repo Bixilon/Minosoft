@@ -14,8 +14,8 @@ package de.bixilon.minosoft.protocol.packets.c2s.common
 
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.FLATTENING_VERSION
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W46A
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -30,7 +30,7 @@ class ChannelC2SP(
     constructor(channel: ResourceLocation, buffer: OutByteBuffer) : this(channel, buffer.toArray())
 
     override fun write(buffer: PlayOutByteBuffer) {
-        if (buffer.versionId < V_17W46A) {
+        if (buffer.versionId <= FLATTENING_VERSION) {
             buffer.writeLegacyResourceLocation(channel)
         } else {
             buffer.writeResourceLocation(channel)

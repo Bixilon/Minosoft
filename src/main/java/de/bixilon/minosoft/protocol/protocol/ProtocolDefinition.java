@@ -30,6 +30,7 @@ public final class ProtocolDefinition {
     public static final float SOUND_PITCH_DIVIDER = 100.0F / 63.0F;
 
 
+    public static final int FLATTENING_VERSION = ProtocolVersions.V_17W47A;
     public static final int QUERY_PROTOCOL_VERSION_ID = -1;
 
     public static final char TEXT_COMPONENT_FORMATTING_PREFIX = '§';
