@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.dirt
+package de.bixilon.minosoft.data.registries.blocks.types.building.dirt
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.primitives.BooleanP
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.blocks.types.snow.AbstractSnowBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.snow.AbstractSnowBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel

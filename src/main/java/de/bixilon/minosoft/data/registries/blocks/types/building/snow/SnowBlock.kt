@@ -11,10 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.dirt
+package de.bixilon.minosoft.data.registries.blocks.types.building.snow
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
@@ -24,15 +25,15 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class GrassBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SnowyBlock(identifier, settings), FullOpaqueBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item> {
+class SnowBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FullOpaqueBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, AbstractSnowBlock {
     override val item: Item = this::item.inject(identifier)
-    override val hardness get() = 0.6f
-    override val legacyModelName get() = minecraft("grass")
+    override val hardness get() = 0.2f
+    override val legacyModelName get() = minecraft("snow")
 
 
-    companion object : BlockFactory<GrassBlock> {
-        override val identifier = minecraft("grass_block")
+    companion object : BlockFactory<SnowBlock> {
+        override val identifier = minecraft("snow_block")
 
-        override fun build(registries: Registries, settings: BlockSettings) = GrassBlock(settings = settings)
+        override fun build(registries: Registries, settings: BlockSettings) = SnowBlock(settings = settings)
     }
 }

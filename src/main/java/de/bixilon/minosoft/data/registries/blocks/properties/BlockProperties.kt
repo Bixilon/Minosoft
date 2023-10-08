@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.registries.blocks.properties.primitives.BooleanP
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.IntProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.blocks.types.dirt.SnowyBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.SnowyBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.snow.SnowLayerBlock
 
 @Deprecated("Fallback data")
 object BlockProperties {

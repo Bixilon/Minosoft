@@ -47,7 +47,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return 1.0f
     }
 
-    open class White(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class White(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.WHITE
 
         companion object : BlockFactory<White> {
@@ -57,7 +57,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Orange(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Orange(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.ORANGE
 
         companion object : BlockFactory<Orange> {
@@ -67,7 +67,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Magenta(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Magenta(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.MAGENTA
 
         companion object : BlockFactory<Magenta> {
@@ -77,7 +77,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class LightBlue(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class LightBlue(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.LIGHT_BLUE
 
         companion object : BlockFactory<LightBlue> {
@@ -87,7 +87,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Yellow(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Yellow(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.YELLOW
 
         companion object : BlockFactory<Yellow> {
@@ -97,7 +97,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Lime(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Lime(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.LIME
 
         companion object : BlockFactory<Lime> {
@@ -107,7 +107,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Pink(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Pink(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.PINK
 
         companion object : BlockFactory<Pink> {
@@ -117,7 +117,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Gray(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Gray(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.GRAY
 
         companion object : BlockFactory<Gray> {
@@ -127,7 +127,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class LightGray(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class LightGray(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.LIGHT_GRAY
 
         companion object : BlockFactory<LightGray> {
@@ -137,7 +137,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Cyan(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Cyan(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.CYAN
 
         companion object : BlockFactory<Cyan> {
@@ -147,7 +147,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Purple(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Purple(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.PURPLE
 
         companion object : BlockFactory<Purple> {
@@ -157,7 +157,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Blue(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Blue(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.BLUE
 
         companion object : BlockFactory<Blue> {
@@ -167,7 +167,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Brown(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Brown(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.BROWN
 
         companion object : BlockFactory<Brown> {
@@ -177,7 +177,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Green(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Green(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.GREEN
 
         companion object : BlockFactory<Green> {
@@ -187,7 +187,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Red(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Red(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.RED
 
         companion object : BlockFactory<Red> {
@@ -197,7 +197,7 @@ abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Black(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
+    open class Black(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : WoolBlock(identifier, settings) {
         override val color: DyeColors get() = DyeColors.BLACK
 
         companion object : BlockFactory<Black> {

@@ -20,16 +20,17 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.bee.HoneyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock
-import de.bixilon.minosoft.data.registries.blocks.types.dirt.GrassBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.LavaFluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumnBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterFluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.SlimeBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebBlock
-import de.bixilon.minosoft.data.registries.blocks.types.snow.SnowBlock
-import de.bixilon.minosoft.data.registries.blocks.types.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.stone.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.wood.*
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
@@ -72,6 +73,7 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     FloweringAzalea.Leaves,
 
     SnowBlock, SnowLayerBlock,
+    FernBlock.DeadBush, FernBlock.Grass, FernBlock.Fern,
 ) {
 
     fun build(name: ResourceLocation, registries: Registries, settings: BlockSettings): Block? {
