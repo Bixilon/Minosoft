@@ -133,7 +133,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
         return true
     }
 
-    private class HungerAtlas(val atlas: Atlas?) {
+    private class HungerAtlas(atlas: Atlas?) {
         private val container = arrayOf(atlas["container"], atlas["container_hunger"])
         private val saturation = arrayOf(atlas["container_saturation_half"], atlas["container_saturation_full"])
         private val hunger = arrayOf(arrayOf(atlas["full"], atlas["half"]), arrayOf(atlas["full_hunger"], atlas["half_hunger"]))
