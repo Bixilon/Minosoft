@@ -50,6 +50,7 @@ import javax.crypto.Cipher
 class NettyClient(
     val connection: Connection,
 ) : SimpleChannelInboundHandler<Any>(), ClientNetwork {
+    private var address: ServerAddress? = null
     override var connected by observed(false)
         private set
     override var state by observed(ProtocolStates.HANDSHAKE)
@@ -92,6 +93,7 @@ class NettyClient(
         }
 
     override fun connect(address: ServerAddress, native: Boolean) {
+        this.address = address
         state = ProtocolStates.HANDSHAKE
         val natives = if (native) TransportNatives.get() else NioNatives
         val bootstrap = Bootstrap()
@@ -162,7 +164,7 @@ class NettyClient(
     }
 
     override fun channelInactive(context: ChannelHandlerContext) {
-        Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Connection closed" }
+        Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Connection closed ($address)" }
         connected = false
     }
 
