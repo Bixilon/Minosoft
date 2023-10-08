@@ -11,11 +11,7 @@ The script asks you for a version of minecraft, you enter it (can be a snapshot)
 3. Adjust the `javaPath` in the file (edit with an editor). If Java 8 is your default JRE, just insert `java`.
 4. Run the script with `python3 server_wrapper.py`. You can pass the parameter `download-all` and it will create an offline cache for all minecraft versions (latest - first)
 
-## Mappings Generator
+## Assets Properties Generator
 
-This data generates the jar assets hash for every version
-
-#### Installation / Usage
-
-1. Download the script
-2. Run the script with `python3 version_mappings_generator.py` and wait for the process to complete. Currently, some versions will fail, because it is difficult to generate the blocks.json. Feel free to make a Pull Request :): ['1.13-pre6', '1.13-pre5', '17w50a', '17w49b', '17w49a', '17w48a', '17w47b', '17w47a']
+A tool to create the `assets_properties.json` resource.
+It automatically fetches the minecraft version index and the pixlyzer index. It then combines them, stores all hashes of files that minosoft needs to work. It might also start the minosoft assets properties generator to generate the jar assets hash.
