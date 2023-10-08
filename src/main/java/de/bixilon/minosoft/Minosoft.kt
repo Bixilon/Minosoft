@@ -82,7 +82,7 @@ object Minosoft {
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
 
-        KUtil.initUtilClasses()
+        KUtil.initBootClasses()
         KUtil.init()
         ModLoader.initModLoading()
         ModLoader.load(LoadingPhases.PRE_BOOT)
@@ -134,6 +134,7 @@ object Minosoft {
         BOOT_LATCH.await()
         if (ErosCrashReport.alreadyCrashed) return
         val end = nanos()
+        KUtil.initPlayClasses()
         Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
         GlobalEventMaster.fire(FinishBootEvent())
         DefaultThreadPool += { ModLoader.load(LoadingPhases.POST_BOOT) }

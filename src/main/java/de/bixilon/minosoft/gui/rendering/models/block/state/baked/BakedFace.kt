@@ -59,13 +59,17 @@ class BakedFace(
 
         val mesh = mesh.mesh(texture)
 
+        val uv = floatArrayOf(0.0f, 0.0f)
+
         for (index in 0 until mesh.order.size step 2) {
             val vertexOffset = mesh.order[index] * 3
             val uvOffset = mesh.order[index + 1] * 2
+            uv[0] = this.uv[uvOffset]
+            uv[1] = this.uv[uvOffset + 1]
 
             mesh.addVertex(
                 x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
-                uv = floatArrayOf(uv[uvOffset], uv[uvOffset + 1]),
+                uv = uv,
                 texture = this.texture,
                 shaderTextureId = textureId,
                 lightTint = lightTint,

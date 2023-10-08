@@ -41,8 +41,11 @@ import de.bixilon.kutil.time.Cooldown
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactories
+import de.bixilon.minosoft.data.registries.effects.IntegratedStatusEffects
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.factory.ItemFactories
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
@@ -57,6 +60,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.versions.Versions
+import de.bixilon.minosoft.recipes.RecipeFactories
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
@@ -272,7 +276,7 @@ object KUtil {
     }
 
 
-    fun initUtilClasses() {
+    fun initBootClasses() {
         DefaultThreadPool += { GlobalEventMaster::class.java.forceInit() }
         DefaultThreadPool += { ShutdownManager::class.java.forceInit() }
         DefaultThreadPool += { Jackson::class.java.forceInit() }
@@ -281,13 +285,21 @@ object KUtil {
         DefaultThreadPool += { TaskScheduler::class.java.forceInit() }
         DefaultThreadPool += { SystemInformation::class.java.forceInit() }
         DefaultThreadPool += { StatusConnection::class.java.forceInit() }
-        DefaultThreadPool += { PlayConnection::class.java.forceInit() }
         DefaultThreadPool += { NettyClient::class.java.forceInit() }
         DefaultThreadPool += { SimpleChannelInboundHandler::class.java.forceInit() }
         DefaultThreadPool += { SSLContext.getDefault() }
         DefaultThreadPool += { DefaultPackets::class.java.forceInit() }
         DefaultThreadPool += { DefaultPacketMapping::class.java.forceInit() }
+    }
+
+
+    fun initPlayClasses() {
+        DefaultThreadPool += { PlayConnection::class.java.forceInit() }
         DefaultThreadPool += { GLM::class.java.forceInit() } // whole glm
+        DefaultThreadPool += { ItemFactories::class.java.forceInit() }
+        DefaultThreadPool += { BlockFactories::class.java.forceInit() }
+        DefaultThreadPool += { RecipeFactories::class.java.forceInit() }
+        DefaultThreadPool += { IntegratedStatusEffects::class.java.forceInit() }
     }
 
     fun ByteArray.withLengthPrefix(): ByteArray {

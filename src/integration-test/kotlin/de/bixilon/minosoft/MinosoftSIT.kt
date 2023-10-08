@@ -34,7 +34,8 @@ internal object MinosoftSIT {
     @BeforeSuite
     fun setup() {
         Log.ASYNC_LOGGING = false
-        KUtil.initUtilClasses()
+        KUtil.initBootClasses()
+        KUtil.initPlayClasses()
         disableGC()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
         initAssetsManager()

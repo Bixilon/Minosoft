@@ -70,8 +70,13 @@ object FaceCulling {
     }
 
     private fun FaceProperties.getSideArea(target: FaceProperties): Float {
-        val width = minOf(target.end.x, end.x) - maxOf(start.x, target.start.x)
-        val height = minOf(target.end.y, end.y) - maxOf(start.y, target.start.y)
+        val start = start.array
+        val targetStart = target.start.array
+        val end = end.array
+        val targetEnd = target.end.array
+
+        val width = minOf(targetEnd[0], end[0]) - maxOf(start[0], targetStart[0])
+        val height = minOf(targetEnd[1], end[1]) - maxOf(start[1], targetStart[1])
 
         return width * height
     }
