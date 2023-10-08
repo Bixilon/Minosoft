@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.language
 import de.bixilon.kutil.exception.ExceptionUtil
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.language.lang.Language
 import de.bixilon.minosoft.data.language.lang.LanguageData
@@ -31,7 +30,9 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import java.io.BufferedReader
 import java.io.FileNotFoundException
+import java.io.InputStreamReader
 
 object LanguageUtil {
     const val FALLBACK_LANGUAGE = "en_us"
@@ -56,10 +57,11 @@ object LanguageUtil {
         return data
     }
 
-    fun loadLanguage(lines: Sequence<String>): LanguageData {
+    fun loadLanguage(lines: BufferedReader): LanguageData {
         val data: LanguageData = HashMap()
 
-        for (line in lines) {
+        while (true) {
+            val line = lines.readLine() ?: break
             if (line.isBlank() || line.startsWith("#")) {
                 continue
             }
@@ -87,7 +89,7 @@ object LanguageUtil {
         val languages: MutableList<Language> = mutableListOf()
 
         for (asset in assets) {
-            val data = if (json) loadJsonLanguage(asset.readJsonObject()) else loadLanguage(asset.readAsString().lineSequence())
+            val data = if (json) loadJsonLanguage(asset.readJsonObject()) else loadLanguage(BufferedReader(InputStreamReader(asset, Charsets.UTF_8)))
             languages += Language(language, data)
         }
 
