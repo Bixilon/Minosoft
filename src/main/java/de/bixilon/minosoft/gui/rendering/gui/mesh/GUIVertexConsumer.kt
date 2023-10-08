@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
-import de.bixilon.minosoft.gui.rendering.gui.atlas.TexturePart
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
@@ -30,6 +30,11 @@ interface GUIVertexConsumer {
         addVertex(Vec2(position), texture, uv, tint, options)
     }
 
+    fun addQuad(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2 = UV_START, uvEnd: Vec2 = UV_END, tint: RGBColor, options: GUIVertexOptions?) {
+        val uvStart = texture?.renderData?.transformUV(uvStart) ?: uvStart
+        val uvEnd = texture?.renderData?.transformUV(uvEnd) ?: uvEnd
+        addQuad(start, end, texture as ShaderIdentifiable?, uvStart, uvEnd, tint, options)
+    }
     fun addQuad(start: Vec2, end: Vec2, texture: ShaderIdentifiable?, uvStart: Vec2 = UV_START, uvEnd: Vec2 = UV_END, tint: RGBColor, options: GUIVertexOptions?) {
         val positions = arrayOf(
             start,

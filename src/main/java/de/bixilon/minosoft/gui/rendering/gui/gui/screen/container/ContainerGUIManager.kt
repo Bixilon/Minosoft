@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory.InventoryScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory.LocalInventoryScreen
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerOpenEvent
@@ -63,6 +64,12 @@ object ContainerGUIManager {
     }
 
     fun register(guiRenderer: GUIRenderer) {
+        guiRenderer.atlas.load(InventoryScreen.ATLAS)
+
+        for (factory in ContainerGUIFactories) {
+            factory.register(guiRenderer)
+        }
+
         registerLocalContainerEvent(guiRenderer)
 
         guiRenderer.connection.events.listen<ContainerOpenEvent> { open(guiRenderer, it.container) }

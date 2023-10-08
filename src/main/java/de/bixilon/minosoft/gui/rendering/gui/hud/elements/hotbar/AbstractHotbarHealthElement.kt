@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,7 +55,7 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
         cacheUpToDate = false
     }
 
-    protected fun drawCanisters(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, atlasElement: AtlasElement) {
+    protected fun drawCanisters(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, atlasElement: AtlasElement?) {
         for (heart in 0 until totalMaxHearts) {
             val row = heart / HEARTS_PER_ROW
             val column = heart % HEARTS_PER_ROW

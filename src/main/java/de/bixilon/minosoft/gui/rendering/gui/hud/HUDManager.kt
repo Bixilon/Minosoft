@@ -54,7 +54,7 @@ class HUDManager(
 
     private var values: Collection<HUDElement> = emptyList()
 
-    fun registerElement(hudBuilder: HUDBuilder<*>) {
+    fun register(hudBuilder: HUDBuilder<*>) {
         val hudElement = hudBuilder.build(guiRenderer)
         hudElements[hudBuilder.identifier] = hudElement
 
@@ -64,13 +64,18 @@ class HUDManager(
         context.input.bindings.register(toggleKeyBindingName, toggleKeyBinding, pressed = hudBuilder.DEFAULT_ENABLED) { hudElement.enabled = it }
     }
 
-    private fun registerDefaultElements() {
-        val latch = SimpleLatch(DEFAULT_ELEMENTS.size + 1)
+    private fun registerDefaults() {
+        for (builder in DEFAULT_ELEMENTS) {
+            builder.register(guiRenderer)
+        }
+    }
+
+    private fun buildDefaults() {
+        val latch = SimpleLatch(DEFAULT_ELEMENTS.size)
 
         for (builder in DEFAULT_ELEMENTS) {
-            context.runAsync { registerElement(builder); latch.dec() }
+            context.runAsync { register(builder); latch.dec() }
         }
-        latch.dec()
         latch.await()
     }
 
@@ -86,7 +91,7 @@ class HUDManager(
     }
 
     override fun init() {
-        registerDefaultElements()
+        registerDefaults()
 
         for (element in this.hudElements.toSynchronizedMap().values) {
             element.init()
@@ -100,6 +105,8 @@ class HUDManager(
     }
 
     override fun postInit() {
+        buildDefaults()
+
         for (element in this.hudElements.toSynchronizedMap().values) {
             element.postInit()
             if (element is LayoutedGUIElement<*>) {

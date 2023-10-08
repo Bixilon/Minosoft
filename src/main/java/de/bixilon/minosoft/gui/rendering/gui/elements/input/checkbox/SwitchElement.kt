@@ -16,7 +16,9 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.input.checkbox
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
@@ -39,12 +41,13 @@ open class SwitchElement(
     var onChange: (state: Boolean) -> Unit,
 ) : AbstractCheckboxElement(guiRenderer) {
     protected val textElement = TextElement(guiRenderer, text, background = null).apply { this.parent = this@SwitchElement }
-    private val disabledAtlas = guiRenderer.atlasManager["minosoft:switch_disabled"]
-    private val normalAtlas = guiRenderer.atlasManager["minosoft:switch_normal"]
-    private val hoveredAtlas = guiRenderer.atlasManager["minosoft:switch_hovered"]
+    private val atlas = guiRenderer.atlas[ATLAS]
+    private val disabledAtlas = atlas["disabled"]
+    private val normalAtlas = atlas["normal"]
+    private val hoveredAtlas = atlas["hovered"]
 
-    private val onStateAtlas = guiRenderer.atlasManager["minosoft:switch_state_on"]
-    private val offStateAtlas = guiRenderer.atlasManager["minosoft:switch_state_off"]
+    private val onStateAtlas = atlas["state_on"]
+    private val offStateAtlas = atlas["state_off"]
 
     var state: Boolean = state
         set(value) {
@@ -163,7 +166,8 @@ open class SwitchElement(
         }
     }
 
-    private companion object {
+    companion object {
+        val ATLAS = minosoft("elements/switch")
         val CLICK_SOUND = "minecraft:ui.button.click".toResourceLocation()
         const val TEXT_MARGIN = 5
         val SIZE = Vec2(30, 20)

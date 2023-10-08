@@ -82,7 +82,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     }
 
 
-    override fun init() {
+    override fun postInit() {
         layout[Vec2i(0, 0)] = initLeft()
         layout[Vec2i(2, 0)] = initRight()
 

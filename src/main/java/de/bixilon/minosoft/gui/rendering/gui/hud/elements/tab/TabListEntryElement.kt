@@ -92,16 +92,7 @@ class TabListEntryElement(
 
     override fun forceSilentApply() {
         // ToDo (Performance): If something changed, should we just prepare the changed
-        pingElement = AtlasImageElement(
-            guiRenderer, tabList.pingBarsAtlasElements[when {
-                ping < 0 -> 0
-                ping < 150 -> 5
-                ping < 300 -> 4
-                ping < 600 -> 3
-                ping < 1000 -> 2
-                else -> 1
-            }]
-        )
+        pingElement = AtlasImageElement(guiRenderer, tabList.atlas.getPing(ping))
         nameElement.prefMaxSize = Vec2(maxOf(0.0f, maxSize.x - pingElement.size.x - skinElement.size.x - INNER_MARGIN), HEIGHT)
 
         nameElement.text = displayName

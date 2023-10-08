@@ -1,0 +1,10 @@
+{
+  "front": {
+    "0": {
+      "texture": "entity/signs/oak",
+      "resolution": [64, 32],
+      "start": [2, 2],
+      "end": [26, 14]
+    }
+  }
+}

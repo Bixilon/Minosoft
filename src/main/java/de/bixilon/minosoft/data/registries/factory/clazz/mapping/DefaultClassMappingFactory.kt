@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.factory.clazz.mapping
 import kotlin.reflect.KClass
 import kotlin.reflect.full.superclasses
 
-open class DefaultClassMappingFactory<T : ClassMappingFactory<*>>(vararg factories: T) {
+open class DefaultClassMappingFactory<T : ClassMappingFactory<*>>(vararg factories: T) : Iterable<T> {
     private val factoryMap: Map<KClass<*>, T>
 
     init {
@@ -46,5 +46,9 @@ open class DefaultClassMappingFactory<T : ClassMappingFactory<*>>(vararg factori
             clazz = clazz.superclasses.firstOrNull() ?: break
         }
         return null
+    }
+
+    override fun iterator(): Iterator<T> {
+        return factoryMap.values.iterator()
     }
 }

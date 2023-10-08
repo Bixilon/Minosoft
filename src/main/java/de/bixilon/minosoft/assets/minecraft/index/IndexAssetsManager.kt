@@ -22,9 +22,12 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.error.AssetCorruptedError
 import de.bixilon.minosoft.assets.error.AssetNotFoundError
 import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsManager
+import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
+import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
 import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
@@ -49,11 +52,13 @@ class IndexAssetsManager(
     private val assetsVersion: String,
     private val indexHash: String,
     private val types: Set<IndexAssetsType>,
+    packFormat: Int,
 ) : MinecraftAssetsManager {
     private val verify: Boolean = profile.verify
     private val assets: MutableMap<ResourceLocation, AssetsProperty> = synchronizedMapOf()
     override var loaded: Boolean = false
         private set
+    override val properties = AssetsManagerProperties(PackProperties(format = packFormat))
 
     private fun readAssetsIndex(): Map<String, Any> {
         return FileAssetsUtil.readOrNull(indexHash, FileAssetsTypes.GAME, verify = verify)?.let { ByteArrayInputStream(it).readJsonObject() } ?: downloadAssetsIndex()
@@ -142,7 +147,7 @@ class IndexAssetsManager(
         return FileAssetsUtil.readOrNull(property.hash, type = property.type.type, verify = verify)?.let { ByteArrayInputStream(it) }
     }
 
-    override fun contains(path: ResourceLocation): Boolean {
-        return path in assets
+    override fun getAssetsManager(path: ResourceLocation): AssetsManager? {
+        return if (path in assets) this else null
     }
 }

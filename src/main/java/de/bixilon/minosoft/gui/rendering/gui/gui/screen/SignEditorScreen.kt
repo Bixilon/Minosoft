@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
 import de.bixilon.minosoft.data.entities.block.sign.SignSides
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.SignBlock
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -33,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.checkbox.SwitchElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
@@ -42,7 +44,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -57,7 +59,7 @@ class SignEditorScreen(
 ) : Screen(guiRenderer), AbstractLayout<Element> {
     private val headerElement = TextElement(guiRenderer, "Edit sign message", background = null, properties = TextRenderProperties(scale = 3.0f), parent = this)
     private val positionElement = TextElement(guiRenderer, "at $blockPosition", background = null, parent = this)
-    private val backgroundElement = ImageElement(guiRenderer, getTexture(), uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
+    private val backgroundElement = getFront()
     private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", SIGN_MAX_CHARS, properties = TEXT_PROPERTIES, background = null, cutAtSize = true, parent = this) }
     private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
     private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.connection.profiles.gui.sign.limitLength, parent = this) { guiRenderer.connection.profiles.gui.sign.limitLength = it; forceSilentApply() }
@@ -73,12 +75,17 @@ class SignEditorScreen(
         forceSilentApply()
     }
 
-    private fun getTexture(): Texture? {
+    private fun getFallbackFront(): AtlasImageElement? {
+        val atlas = guiRenderer.atlas[ATLAS]?.get("front") ?: return null
+        return AtlasImageElement(guiRenderer, atlas, size = BACKGROUND_SIZE)
+    }
+
+    private fun getFront(): Element? {
         if (blockState?.block !is SignBlock) {
-            return guiRenderer.atlasManager["minecraft:sign_front"]?.texture
+            return getFallbackFront()
         }
-        // TODO return blockState.model?.nullCast<BakedBlockStateModel>()?.faces?.firstOrNull()?.firstOrNull()?.texture ?: guiRenderer.atlasManager["minecraft:sign_front"]?.texture
-        return null
+        val texture = (blockState.model ?: blockState.block.model).nullCast<BakedModel>()?.faces?.firstOrNull()?.firstOrNull()?.texture ?: return getFallbackFront() // TODO: test
+        return ImageElement(guiRenderer, texture, uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
     }
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -96,7 +103,7 @@ class SignEditorScreen(
         offset.y += positionElement.size.y
 
         offset.y += size.y / 12
-        backgroundElement.render(offset + HorizontalAlignments.CENTER.getOffset(size, backgroundElement.size), consumer, options)
+        backgroundElement?.render(offset + HorizontalAlignments.CENTER.getOffset(size, backgroundElement.size), consumer, options)
 
         offset.y += (1.8f * BACKGROUND_SCALE).toInt()
         for (line in lines) {
@@ -212,6 +219,7 @@ class SignEditorScreen(
     }
 
     companion object {
+        private val ATLAS = minecraft("block/sign")
         private val TEXT_PROPERTIES = TextRenderProperties(scale = 2.0f, allowNewLine = false)
         private val SIGN_UV_START = Vec2(0.5f / 16.0f, 1.0f / 32.0f)
         private val SIGN_UV_END = Vec2(6.5f / 16.0f, 7.0f / 32.0f)
@@ -221,6 +229,7 @@ class SignEditorScreen(
         private val BACKGROUND_SIZE = Vec2(24, 12) * BACKGROUND_SCALE
 
         fun register(guiRenderer: GUIRenderer) {
+            guiRenderer.atlas.load(ATLAS)
             guiRenderer.connection.events.listen<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.position, it.side)) }
         }
     }

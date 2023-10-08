@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -63,15 +62,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     override val layoutOffset: Vec2
         get() = Vec2((guiRenderer.scaledSize.x - super.size.x) / 2, 20)
 
-    private val atlasManager = guiRenderer.atlasManager
-    val pingBarsAtlasElements: Array<AtlasElement> = arrayOf(
-        atlasManager["minecraft:tab_list_ping_0"]!!,
-        atlasManager["minecraft:tab_list_ping_1"]!!,
-        atlasManager["minecraft:tab_list_ping_2"]!!,
-        atlasManager["minecraft:tab_list_ping_3"]!!,
-        atlasManager["minecraft:tab_list_ping_4"]!!,
-        atlasManager["minecraft:tab_list_ping_5"]!!,
-    )
+    val atlas = TabListAtlas(guiRenderer)
 
     init {
         super.prefMaxSize = Vec2(-1, -1)
@@ -225,7 +216,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
     }
 
 
-    override fun init() {
+    override fun postInit() {
         val connection = context.connection
         connection.tabList::header.observe(this) { header.text = it }
         connection.tabList::footer.observe(this) { footer.text = it }
@@ -261,6 +252,10 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_TAB),
         )
+
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(TabListAtlas.ATLAS)
+        }
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<TabListElement> {
             return LayoutedGUIElement(TabListElement(guiRenderer)).apply { enabled = false }

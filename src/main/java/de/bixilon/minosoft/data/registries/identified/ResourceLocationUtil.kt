@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.identified
 
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ResourceLocationUtil {
 
@@ -37,5 +38,22 @@ object ResourceLocationUtil {
 
             throw IllegalArgumentException("Namespace is illegal: $namespace")
         }
+    }
+
+
+    fun ResourceLocation.extend(prefix: String? = null, suffix: String? = null): ResourceLocation {
+        if (prefix == null && suffix == null) return this
+        var path = ""
+
+        if (prefix != null && !this.path.startsWith(prefix)) {
+            path += prefix
+        }
+        path += this.path
+
+        if (suffix != null && !path.endsWith(suffix)) {
+            path += suffix
+        }
+
+        return "$namespace:$path".toResourceLocation()
     }
 }

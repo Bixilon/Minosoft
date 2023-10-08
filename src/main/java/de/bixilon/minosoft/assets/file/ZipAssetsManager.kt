@@ -61,7 +61,7 @@ class ZipAssetsManager(
         }
     }
 
-    override fun contains(path: ResourceLocation): Boolean {
-        return path in assets
+    override fun getAssetsManager(path: ResourceLocation): AssetsManager? {
+        return if (path in assets) this else null
     }
 }

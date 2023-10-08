@@ -16,7 +16,10 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.container.types.EnchantingContainer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIFactory
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.LabeledContainerScreen
@@ -24,11 +27,10 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import kotlin.reflect.KClass
 
-class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingContainer) : LabeledContainerScreen<EnchantingContainer>(guiRenderer, container, guiRenderer.atlasManager["minecraft:enchanting_container".toResourceLocation()]) {
-    private val cards: Array<EnchantmentButtonElement> = Array(EnchantingContainer.ENCHANTING_OPTIONS) { EnchantmentButtonElement(guiRenderer, this, guiRenderer.atlasManager["minecraft:level_requirement_${it}"], guiRenderer.atlasManager["minecraft:level_requirement_${it}_disabled"], it) }
+class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingContainer, val atlas: Atlas? = guiRenderer.atlas[ATLAS]) : LabeledContainerScreen<EnchantingContainer>(guiRenderer, container, atlas["container"]) {
+    private val cards: Array<EnchantmentButtonElement> = Array(EnchantingContainer.ENCHANTING_OPTIONS) { EnchantmentButtonElement(guiRenderer, this, atlas["level_${it + 1}"], atlas["level_${it + 1}_disabled"], it) }
     private val cardAreas = Array(EnchantingContainer.ENCHANTING_OPTIONS) { atlasElement?.areas?.get("card_$it") }
 
 
@@ -73,10 +75,15 @@ class EnchantingContainerScreen(guiRenderer: GUIRenderer, container: EnchantingC
     }
 
     companion object : ContainerGUIFactory<EnchantingContainerScreen, EnchantingContainer> {
+        private val ATLAS = minecraft("container/enchanting")
         override val clazz: KClass<EnchantingContainer> = EnchantingContainer::class
 
-        override fun build(guiRenderer: GUIRenderer, container: EnchantingContainer): EnchantingContainerScreen {
-            return EnchantingContainerScreen(guiRenderer, container)
+        override fun register(gui: GUIRenderer) {
+            gui.atlas.load(ATLAS)
+        }
+
+        override fun build(gui: GUIRenderer, container: EnchantingContainer): EnchantingContainerScreen {
+            return EnchantingContainerScreen(gui, container)
         }
     }
 }

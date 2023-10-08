@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
@@ -24,12 +24,12 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isGreater
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 
 abstract class ContainerScreen<C : Container>(
     guiRenderer: GUIRenderer,
     val container: C,
-    items: Int2ObjectOpenHashMap<AtlasSlot>,
+    items: Int2ObjectMap<AtlasArea>,
 ) : Screen(guiRenderer), AbstractLayout<Element> {
     protected open val containerElement = ContainerItemsElement(guiRenderer, container, items).apply { parent = this@ContainerScreen }
     override var activeElement: Element? = null

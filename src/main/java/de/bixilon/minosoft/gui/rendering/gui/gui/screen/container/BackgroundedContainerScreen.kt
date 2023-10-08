@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,20 +16,21 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasArea
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
-import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.isSmaller
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 abstract class BackgroundedContainerScreen<C : Container>(
     guiRenderer: GUIRenderer,
     container: C,
     protected val atlasElement: AtlasElement?,
-    items: Int2ObjectOpenHashMap<AtlasSlot> = atlasElement?.slots ?: Int2ObjectOpenHashMap(),
+    items: Int2ObjectMap<AtlasArea> = atlasElement?.slots ?: Int2ObjectOpenHashMap(),
 ) : ContainerScreen<C>(guiRenderer, container, items) {
     protected val containerBackground = AtlasImageElement(guiRenderer, atlasElement)
     override val customRenderer: Boolean get() = true

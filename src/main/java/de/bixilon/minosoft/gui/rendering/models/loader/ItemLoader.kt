@@ -36,7 +36,7 @@ class ItemLoader(private val loader: ModelLoader) {
     val version = loader.context.connection.version
 
     fun loadItem(name: ResourceLocation): ItemModel? {
-        val file = name.itemModel()
+        val file = name.model()
         cache[file]?.let { return it }
         val data = assets.getOrNull(file)?.readJsonObject()
         if (data == null) {
@@ -52,7 +52,7 @@ class ItemLoader(private val loader: ModelLoader) {
     }
 
     private fun loadItem(item: Item): ItemModel? {
-        val file = (if (item is CustomModel) item.getModelName(version) else item.identifier) ?: return null
+        val file = (if (item is CustomModel) item.getModelName(version) else item.identifier.itemModel()) ?: return null
 
         return loadItem(file)
     }

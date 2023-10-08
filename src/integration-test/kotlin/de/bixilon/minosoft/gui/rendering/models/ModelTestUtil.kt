@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.MemoryAssetsManager
+import de.bixilon.minosoft.assets.TestAssetsManager.box
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
@@ -43,7 +44,7 @@ object ModelTestUtil {
         for ((name, value) in files) {
             assets.push(name.toResourceLocation().model(), value)
         }
-        this.block::assets.forceSet(assets)
+        this.block::assets.forceSet(assets.box())
 
         return assets
     }

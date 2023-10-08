@@ -1,0 +1,258 @@
+{
+  "pink_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 0],
+      "end": [182, 5]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/pink_background",
+      "resolution": [182, 5]
+    }
+  },
+  "pink_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 5],
+      "end": [182, 10]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/pink_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "blue_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 10],
+      "end": [182, 15]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/blue_background",
+      "resolution": [182, 5]
+    }
+  },
+  "blue_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 15],
+      "end": [182, 20]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/blue_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "red_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 20],
+      "end": [182, 25]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/red_background",
+      "resolution": [182, 5]
+    }
+  },
+  "red_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 25],
+      "end": [182, 30]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/red_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "green_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 30],
+      "end": [182, 35]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/green_background",
+      "resolution": [182, 5]
+    }
+  },
+  "green_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 35],
+      "end": [182, 40]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/green_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "yellow_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 40],
+      "end": [182, 45]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/yellow_background",
+      "resolution": [182, 5]
+    }
+  },
+  "yellow_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 45],
+      "end": [182, 50]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/yellow_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "purple_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 50],
+      "end": [182, 55]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/purple_background",
+      "resolution": [182, 5]
+    }
+  },
+  "purple_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 55],
+      "end": [182, 60]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/purple_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "white_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 60],
+      "end": [182, 65]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/white_background",
+      "resolution": [182, 5]
+    }
+  },
+  "white_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 65],
+      "end": [182, 70]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/white_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "notches_6_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 80],
+      "end": [182, 85]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/notched_6_background",
+      "resolution": [182, 5]
+    }
+  },
+  "notches_6_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 85],
+      "end": [182, 90]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/notched_6_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "notches_10_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 90],
+      "end": [182, 95]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/notched_10_background",
+      "resolution": [182, 5]
+    }
+  },
+  "notches_10_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 95],
+      "end": [182, 100]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/notched_10_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "notches_12_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 100],
+      "end": [182, 105]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/notched_12_background",
+      "resolution": [182, 5]
+    }
+  },
+  "notches_12_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 105],
+      "end": [182, 110]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/notched_12_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "notches_20_empty": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 110],
+      "end": [182, 115]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/notched_20_background",
+      "resolution": [182, 5]
+    }
+  },
+  "notches_20_full": {
+    "0": {
+      "texture": "gui/bars",
+      "start": [0, 115],
+      "end": [182, 120]
+    },
+    "18": {
+      "texture": "gui/sprites/boss_bar/notched_20_progress",
+      "resolution": [182, 5]
+    }
+  },
+  "minecraft:wither_bar_empty": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 74],
+      "end": [182, 79]
+    }
+  },
+  "minecraft:wither_bar_full": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 79],
+      "end": [182, 84]
+    }
+  }
+}

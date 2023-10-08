@@ -27,6 +27,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.checkbox.SwitchElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.CreditsScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.SignEditorScreen
@@ -67,6 +69,8 @@ class GUIManager(
         SignEditorScreen.register(guiRenderer)
         RespawnMenu.register(guiRenderer)
         CreditsScreen.register(guiRenderer)
+        guiRenderer.atlas.load(SwitchElement.ATLAS)
+        guiRenderer.atlas.load(ButtonElement.ATLAS)
     }
 
     override fun postInit() {

@@ -23,7 +23,8 @@ interface StaticTextureArray : TextureArray {
     val animator: SpriteAnimator
     val state: TextureArrayStates
 
-    fun get(resourceLocation: ResourceLocation): Texture?
+    operator fun get(resourceLocation: ResourceLocation): Texture?
+    operator fun plusAssign(texture: Texture) = pushTexture(texture)
 
     fun pushTexture(texture: Texture)
     fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, properties: Boolean = true, default: (mipmaps: Boolean) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture

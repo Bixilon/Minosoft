@@ -1,0 +1,13 @@
+{
+  "crosshair": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 0],
+      "end": [16, 16]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/crosshair",
+      "resolution": [15, 15]
+    }
+  }
+}

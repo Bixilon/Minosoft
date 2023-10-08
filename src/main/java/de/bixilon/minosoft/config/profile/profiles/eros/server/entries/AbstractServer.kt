@@ -20,8 +20,10 @@ import de.bixilon.minosoft.protocol.versions.Version
 interface AbstractServer {
     val address: String
     val name: ChatComponent
+
     val queryVersion: Boolean
     val profiles: MutableMap<ResourceLocation, String>
     val forcedVersion: Version?
+
     var faviconHash: String?
 }

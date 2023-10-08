@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,7 +40,7 @@ open class ProgressElement(
             // ToDo: Animate
         }
     protected val emptyImage = AtlasImageElement(guiRenderer, emptyAtlasElement)
-    protected lateinit var progressImage: ImageElement
+    protected var progressImage: ImageElement? = null
 
 
     constructor(guiRenderer: GUIRenderer, atlasElements: Array<AtlasElement?>, progress: Float = 0.0f) : this(guiRenderer, atlasElements.getOrNull(0), atlasElements.getOrNull(1), progress)
@@ -52,13 +52,15 @@ open class ProgressElement(
 
     override fun forceRender(offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         emptyImage.render(offset, consumer, options)
-        progressImage.render(offset, consumer, options)
+        progressImage?.render(offset, consumer, options)
     }
 
     override fun forceSilentApply() {
-        val emptyAtlasElement = emptyAtlasElement ?: return
-        val fullAtlasElement = fullAtlasElement ?: return
-        progressImage = ImageElement(guiRenderer, fullAtlasElement.texture, uvStart = fullAtlasElement.uvStart, uvEnd = Vec2(interpolateLinear(progress, fullAtlasElement.uvStart.x, fullAtlasElement.uvEnd.x), fullAtlasElement.uvEnd.y), size = Vec2((fullAtlasElement.size.x * progress), emptyAtlasElement.size.y))
+        val full = fullAtlasElement ?: return
+
+        val uvEnd = Vec2(interpolateLinear(progress, full.uvStart.x, full.uvEnd.x), full.uvEnd.y)
+        val size = this.size
+        progressImage = ImageElement(guiRenderer, full.texture, uvStart = full.uvStart, uvEnd = uvEnd, size = Vec2((size.x * progress), size.y))
 
         cacheUpToDate = false
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,9 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory
 
 import de.bixilon.minosoft.data.container.types.PlayerInventory
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.BackgroundedContainerScreen
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class InventoryScreen(
     guiRenderer: GUIRenderer,
@@ -24,5 +25,10 @@ open class InventoryScreen(
 ) : BackgroundedContainerScreen<PlayerInventory>(
     guiRenderer,
     container,
-    guiRenderer.atlasManager["minecraft:inventory_base".toResourceLocation()],
-)
+    guiRenderer.atlas[ATLAS]["container"],
+) {
+
+    companion object {
+        val ATLAS = minecraft("container/inventory")
+    }
+}

@@ -106,7 +106,7 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
         times = DEFAULT_TIMES
     }
 
-    override fun init() {
+    override fun postInit() {
         val connection = context.connection
 
         connection.events.listen<TitleResetEvent> {

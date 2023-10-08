@@ -1,0 +1,24 @@
+{
+  "bubble": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [16, 18],
+      "end": [25, 27]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/air",
+      "resolution": [9, 9]
+    }
+  },
+  "popping": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [25, 18],
+      "end": [34, 27]
+    },
+    "18": {
+      "texture": "gui/sprites/hud/air_bursting",
+      "resolution": [9, 9]
+    }
+  }
+}

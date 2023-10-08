@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,10 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.effects.other.OtherEffect
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas
+import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
@@ -31,33 +34,8 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     private val profile = guiRenderer.connection.profiles.gui
     private val hungerProfile = profile.hud.hotbar.hunger
     private var ticks = 0
-    private val atlasManager = guiRenderer.atlasManager
 
-
-    private val normalHungerContainer = atlasManager["minecraft:normal_hunger_container"]!!
-    private val hungerHungerContainer = atlasManager["minecraft:hunger_hunger_container"]!!
-
-    /**
-     * [full|half]
-     */
-    private val saturationHungerContainer = arrayOf(
-        atlasManager["minosoft:saturation_hunger_container"]!!,
-        atlasManager["minosoft:half_saturation_hunger_container"]!!,
-    )
-
-    /**
-     * [normal|hunger][full|half]
-     */
-    private val hungerElements = arrayOf(
-        arrayOf(
-            atlasManager["minecraft:normal_hunger"]!!,
-            atlasManager["minecraft:half_normal_hunger"]!!,
-        ),
-        arrayOf(
-            atlasManager["minecraft:hunger_hunger"]!!,
-            atlasManager["minecraft:half_hunger_hunger"]!!,
-        )
-    )
+    private val atlas = HungerAtlas(guiRenderer.atlas[ATLAS])
 
     private var hungerEffect = false
     private var animate = true
@@ -90,39 +68,34 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
 
             if (hungerProfile.saturationBar) {
                 val container = when {
-                    hungerEffect -> hungerHungerContainer
+                    hungerEffect -> atlas.getContainer(true)
                     saturationLeft == 1 -> {
                         saturationLeft -= 1
-                        saturationHungerContainer[1]
+                        atlas.getSaturationContainer(true)
                     }
+
                     saturationLeft > 1 -> {
                         saturationLeft -= 2
-                        saturationHungerContainer[0]
+                        atlas.getSaturationContainer(false)
                     }
-                    else -> normalHungerContainer
+
+                    else -> atlas.getContainer(false)
                 }
                 AtlasImageElement(guiRenderer, container).render(hungerOffset, consumer, options)
-            }
-
-
-            val selectArray: Array<*> = if (hungerEffect) {
-                hungerElements[1]
-            } else {
-                hungerElements[0]
             }
 
             if (hungerLeft <= 0) {
                 continue
             }
 
-            val hungerElement: AtlasElement
+            val hungerElement: AtlasElement?
 
             if (hungerLeft == 1) {
                 hungerLeft--
-                hungerElement = selectArray[1] as AtlasElement
+                hungerElement = atlas.getHunger(true, hungerEffect)
             } else {
                 hungerLeft -= 2
-                hungerElement = selectArray[0] as AtlasElement
+                hungerElement = atlas.getHunger(false, hungerEffect)
             }
 
             AtlasImageElement(guiRenderer, hungerElement).render(hungerOffset, consumer, options)
@@ -160,7 +133,18 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
         return true
     }
 
+    private class HungerAtlas(atlas: Atlas?) {
+        private val container = arrayOf(atlas["container"], atlas["container_hunger"])
+        private val saturation = arrayOf(atlas["container_saturation_half"], atlas["container_saturation_full"])
+        private val hunger = arrayOf(arrayOf(atlas["full"], atlas["half"]), arrayOf(atlas["full_hunger"], atlas["half_hunger"]))
+
+        fun getHunger(half: Boolean, hunger: Boolean): AtlasElement? = this.hunger[if (hunger) 1 else 0][if (half) 1 else 0]
+        fun getContainer(hunger: Boolean): AtlasElement? = container[if (hunger) 1 else 0]
+        fun getSaturationContainer(half: Boolean): AtlasElement? = saturation[if (half) 0 else 1]
+    }
+
     companion object {
+        val ATLAS = minosoft("hud/hotbar/hunger")
         const val MAX_HUNGER = 20
         private const val HUNGER_CONTAINERS = MAX_HUNGER / 2
         private val HUNGER_SIZE = Vec2i(8, 9)

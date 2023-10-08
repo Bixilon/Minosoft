@@ -1,0 +1,68 @@
+{
+  "ping_5": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 16],
+      "end": [10, 23]
+    },
+    "18": {
+      "texture": "gui/sprites/icon/ping_5",
+      "resolution": [10, 8]
+    }
+  },
+  "ping_4": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 24],
+      "end": [10, 31]
+    },
+    "18": {
+      "texture": "gui/sprites/icon/ping_4",
+      "resolution": [10, 8]
+    }
+  },
+  "ping_3": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 32],
+      "end": [10, 39]
+    },
+    "18": {
+      "texture": "gui/sprites/icon/ping_3",
+      "resolution": [10, 8]
+    }
+  },
+  "ping_2": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 40],
+      "end": [10, 47]
+    },
+    "18": {
+      "texture": "gui/sprites/icon/ping_2",
+      "resolution": [10, 8]
+    }
+  },
+  "ping_1": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 48],
+      "end": [10, 55]
+    },
+    "18": {
+      "texture": "gui/sprites/icon/ping_1",
+      "resolution": [10, 8]
+    }
+  },
+  "ping_0": {
+    "0": {
+      "texture": "gui/icons",
+      "start": [0, 56],
+      "end": [10, 63]
+    },
+    "18": {
+      "texture": "gui/sprites/icon/unrechable",
+      "resolution": [10, 8]
+    }
+  }
+}
