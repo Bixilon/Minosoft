@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.dirt.SnowyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.snow.SnowLayerBlock
 
 @Deprecated("Fallback data")
 object BlockProperties {
@@ -63,7 +64,7 @@ object BlockProperties {
     val MULTIPART_UP = EnumProperty("up", MultipartDirections).register()
     val MULTIPART_DOWN = EnumProperty("down", MultipartDirections).register()
 
-    val SNOW_LAYERS = IntProperty("layers").register()
+    val SNOW_LAYERS = SnowLayerBlock.LAYERS.register()
     val FENCE_IN_WALL = BooleanProperty("in_wall").register()
     val SCAFFOLDING_BOTTOM = BooleanProperty("bottom").register()
     val TRIPWIRE_DISARMED = BooleanProperty("disarmed").register()

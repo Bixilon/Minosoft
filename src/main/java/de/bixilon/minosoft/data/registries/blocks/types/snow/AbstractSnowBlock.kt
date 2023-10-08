@@ -11,18 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed
+package de.bixilon.minosoft.data.registries.blocks.types.snow
 
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-
-/**
- * The collision shape does not change under any circumstances
- */
-interface StatelessCollidable : FixedCollidable {
-    val collisionShape: AbstractVoxelShape
-
-    override fun getCollisionShape(state: BlockState): AbstractVoxelShape {
-        return collisionShape
-    }
-}
+interface AbstractSnowBlock

@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.CollisionContext
+import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
@@ -25,7 +27,9 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
  */
 interface FixedCollidable : CollidableBlock {
 
-    fun getCollisionShape(blockState: BlockState): AbstractVoxelShape?
+    fun getCollisionShape(state: BlockState): AbstractVoxelShape? {
+        return state.nullCast<AdvancedBlockState>()?.collisionShape
+    }
 
     override fun getCollisionShape(context: CollisionContext, blockPosition: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
         return getCollisionShape(state)

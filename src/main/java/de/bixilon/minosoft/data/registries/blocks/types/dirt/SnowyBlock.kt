@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.data.registries.blocks.types.dirt
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.BooleanProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.snow.AbstractSnowBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
@@ -52,7 +52,7 @@ abstract class SnowyBlock(identifier: ResourceLocation, settings: BlockSettings)
 
         override fun pick(neighbours: Array<BlockState?>): BlockRender? {
             val above = neighbours[Directions.O_UP] ?: return normal
-            if (above.block == MinecraftBlocks.SNOW || above.block == MinecraftBlocks.SNOW_BLOCK) return snowy
+            if (above.block is AbstractSnowBlock) return snowy
 
             return normal
         }

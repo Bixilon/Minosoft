@@ -29,8 +29,8 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape.Compa
 class BlockStateSettings(
     val properties: Map<BlockProperty<*>, Any>?,
     val luminance: Int,
-    val collisionShape: AbstractVoxelShape?,
-    val outlineShape: AbstractVoxelShape?,
+    var collisionShape: AbstractVoxelShape?,
+    var outlineShape: AbstractVoxelShape?,
     val lightProperties: LightProperties,
     @Deprecated("pixlyzer") val solidRenderer: Boolean,
 ) {

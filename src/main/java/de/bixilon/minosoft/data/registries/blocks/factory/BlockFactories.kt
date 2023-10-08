@@ -28,6 +28,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterFluidBl
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.SlimeBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebBlock
+import de.bixilon.minosoft.data.registries.blocks.types.snow.SnowBlock
+import de.bixilon.minosoft.data.registries.blocks.types.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.stone.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.wood.*
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
@@ -68,6 +70,8 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     Cherry.Leaves,
     Azalea.Leaves,
     FloweringAzalea.Leaves,
+
+    SnowBlock, SnowLayerBlock,
 ) {
 
     fun build(name: ResourceLocation, registries: Registries, settings: BlockSettings): Block? {
