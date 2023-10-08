@@ -11,7 +11,7 @@ Versions before the minecraft netty rewrite (1.7; 13w41b) are currently not supp
 |------------|-------|----------------------------------------------------------------------------------------------|
 | 1.20.x     | ✅     | Works great [#111](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/111)                  |
 | 1.19.x     | ✅     | signature not 100% implemented [#83](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/83) |
-| 1.18.x     | ✅     | best version supported                                                                       |
+| **1.18.x** | ✅     | lts, best version supported                                                                  |
 | 1.17.x     | ✅     |                                                                                              |
 | **1.16.x** | ✅     | lts                                                                                          |
 | 1.15.x     | ✅     | eol                                                                                          |
@@ -22,7 +22,7 @@ Versions before the minecraft netty rewrite (1.7; 13w41b) are currently not supp
 | 1.10.x     | ✅     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
 | 1.9.x      | ✅     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
 | **1.8.x**  | ✅     | lts, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
-| 1.7.x      | ✅     | eol, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
+| **1.7.x**  | ✅     | lts, pre flattening  [#26](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/26)           |
 
 Versions marked as "eol" are end of life. That means that they are not high priority in minosoft, but their support will never get removed.  
 Versions marked with "lts" are long term supported. They (and the latest one) will always be high priority supported.
@@ -37,10 +37,3 @@ Also it is quite heavy to implement them. They might work, but are not supported
 Snapshots are technically supported, but only the latest one should be used as reference, all previous ones might fail
 or not even work.
 It is **not** recommended using them (and honestly: who cares about those versions?).
-
-## Pre flattening < 1.13
-
-Pre flattening versions work a lot different.
-
-- names of 1.13
-- 
