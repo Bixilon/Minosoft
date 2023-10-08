@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.terminal.cli
 
+import com.sun.jna.LastErrorException
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
@@ -84,9 +85,9 @@ object CLI {
                 line = readLine().trimWhitespaces().replace("\n", "").replace("\r", "")
                 terminal.flush()
             } catch (exception: EndOfFileException) {
-                Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { exception.printStackTrace() }
-                Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "End of file error in cli thread. Disabling cli." }
-                break
+                eol(exception); break
+            } catch (exception: LastErrorException) {
+                eol(exception); break
             } catch (exception: UserInterruptException) {
                 ShutdownManager.shutdown(reason = AbstractShutdownReason.DEFAULT)
                 break
@@ -98,6 +99,11 @@ object CLI {
 
             processLine(line)
         }
+    }
+
+    private fun eol(exception: Throwable) {
+        Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { exception.printStackTrace() }
+        Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "End of file error in cli thread. Disabling cli." }
     }
 
     private fun processLine(line: String) {
