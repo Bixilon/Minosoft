@@ -25,7 +25,7 @@ object FaceCulling {
         if (neighbour == null) return false
         if (properties == null) return false
 
-        val model = neighbour.model ?: return false
+        val model = neighbour.model ?: neighbour.block.model ?: return false
         val neighbourProperties = model.getProperties(direction) ?: return false // not touching side
 
 
