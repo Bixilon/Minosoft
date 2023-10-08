@@ -19,6 +19,6 @@ import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 object OptionalChatComponentEntityDataType : EntityDataType<ChatComponent> {
 
     override fun read(buffer: PlayInByteBuffer): ChatComponent? {
-        return buffer.readOptional { buffer.readChatComponent() }
+        return buffer.readOptional { buffer.readNbtChatComponent() }
     }
 }
