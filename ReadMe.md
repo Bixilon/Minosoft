@@ -111,7 +111,7 @@ If you want to get notified when cool new features arrive or other interesting s
 
 ### Linux, Windows, macOS
 
-The latest x64 and arm64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions)
+The latest x64 and arm64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions/?ref=gitlab.bixilon.de)
 
 
 #### Arch
@@ -130,6 +130,6 @@ Thanks to @jugendhacker you can get minosoft directly from the arch user reposit
 
 - [gitlab.bixilon.de](https://gitlab.bixilon.de/bixilon/minosoft/) (Main repository)
 - [GitLab](https://gitlab.com/Bixilon/minosoft)
-- [GitHub](https://github.com/Bixilon/Minosoft/)
+- [GitHub](https://github.com/Bixilon/Minosoft/?ref=gitlab.bixilon.de)
 
 This project/readme is work in progress, things may change over time.
