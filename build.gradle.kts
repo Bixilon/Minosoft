@@ -30,7 +30,7 @@ plugins {
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.2.0"
-    id("com.github.ben-manes.versions") version "0.48.0"
+    id("com.github.ben-manes.versions") version "0.49.0"
 }
 
 fun getProperty(name: String): String {
@@ -338,7 +338,7 @@ dependencies {
     implementation("org.jline", "jline", "3.23.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
     implementation("com.github.oshi", "oshi-core", "6.4.6")
-    implementation("com.github.luben", "zstd-jni", "1.5.5-5", classifier = zstdNatives)
+    implementation("com.github.luben", "zstd-jni", "1.5.5-6", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.13.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
