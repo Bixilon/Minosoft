@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.models.loader
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.collections.iterator.async.AsyncIterator.Companion.async
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -30,7 +32,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class BlockLoader(private val loader: ModelLoader) {
-    private val cache: MutableMap<ResourceLocation, BlockModel> = HashMap(loader.context.connection.registries.block.size)
+    private val cache: MutableMap<ResourceLocation, BlockModel> = LockMap(HashMap(loader.context.connection.registries.block.size))
     val assets = loader.context.connection.assetsManager
     val version = loader.context.connection.version
 
@@ -59,11 +61,11 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun load(latch: AbstractLatch?) {
-        for (block in loader.context.connection.registries.block) {
-            val model = loadState(block) ?: continue
+        loader.context.connection.registries.block.async {
+            val model = loadState(it) ?: return@async
 
             val prototype = model.load(loader.context.textures)
-            block.model = prototype
+            it.model = prototype
         }
     }
 
