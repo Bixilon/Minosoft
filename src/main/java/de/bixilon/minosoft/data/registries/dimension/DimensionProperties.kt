@@ -28,7 +28,7 @@ import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 data class DimensionProperties(
     //   val piglinSafe: Boolean = false,
     //   val natural: Boolean = true,
-    val ambientLight: AmbientLight = AmbientLight(),
+    val ambientLight: AmbientLight = AmbientLight.DEFAULT,
     //   val respawnAnchorWorks: Boolean = false,
     val light: Boolean = true,
     val skyLight: Boolean = true,
@@ -59,16 +59,15 @@ data class DimensionProperties(
 
     companion object {
         const val DEFAULT_HEIGHT = 256
-        const val DEFAULT_MAX_Y = DEFAULT_HEIGHT - 1
 
         fun deserialize(identifier: ResourceLocation? = null, data: Map<String, Any>): DimensionProperties {
             return DimensionProperties(
                 //piglinSafe = data["piglin_safe"]?.toBoolean() ?: false,
                 //natural = data["natural"]?.toBoolean() ?: false,
-                ambientLight = AmbientLight(data["ambient_light"]?.toFloat() ?: 0.0f),
+                ambientLight = data["ambient_light"]?.toFloat()?.let { AmbientLight(it) } ?: AmbientLight.DEFAULT,
                 //infiniBurn = ResourceLocation(data["infiniburn"].nullCast<String>() ?: "infiniburn_overworld"),
                 //respawnAnchorWorks = data["respawn_anchor_works"]?.toBoolean() ?: false,
-                skyLight = data["has_skylight", "has_sky_light"]?.toBoolean() ?: false,
+                skyLight = data["has_skylight", "has_sky_light"]?.toBoolean() ?: true,
                 //bedWorks = data["bed_works"]?.toBoolean() ?: false,
                 effects = data["effects"].nullCast<String>()?.let { DefaultDimensionEffects[it.toResourceLocation()] } ?: identifier?.let { DefaultDimensionEffects[it] } ?: OverworldEffects,
                 //hasRaids = data["has_raids"]?.toBoolean() ?: false,
@@ -77,7 +76,7 @@ data class DimensionProperties(
                 minY = data["min_y"]?.toInt() ?: 0,
                 //hasCeiling = data["has_ceiling"]?.toBoolean() ?: false,
                 ultraWarm = data["ultrawarm"]?.toBoolean() ?: false,
-                height = data["height"]?.toInt() ?: DEFAULT_MAX_Y,
+                height = data["height"]?.toInt() ?: DEFAULT_HEIGHT,
                 supports3DBiomes = data["supports_3d_biomes"]?.toBoolean() ?: true,
             )
         }

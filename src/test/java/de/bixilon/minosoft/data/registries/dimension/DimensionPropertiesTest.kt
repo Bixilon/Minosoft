@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -37,5 +37,20 @@ class DimensionPropertiesTest {
         assertEquals(2, properties.sections)
         assertEquals(0, properties.maxSection)
         assertEquals(15, properties.maxY)
+    }
+
+    @Test
+    fun `legacy dimension`() {
+        val properties = DimensionProperties()
+        assertEquals(16, properties.sections)
+        assertEquals(0, properties.minSection)
+        assertEquals(15, properties.maxSection)
+        assertEquals(255, properties.maxY)
+    }
+
+    @Test
+    fun `default of deserialization`() {
+        val properties = DimensionProperties.deserialize(null, emptyMap())
+        assertEquals(properties, DimensionProperties())
     }
 }

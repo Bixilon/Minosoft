@@ -33,4 +33,8 @@ class AmbientLight(val base: Float = 0.0f) {
     override fun toString(): String {
         return base.toString()
     }
+
+    companion object {
+        val DEFAULT = AmbientLight()
+    }
 }
