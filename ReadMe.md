@@ -5,7 +5,7 @@
 <img src="https://img.shields.io/badge/license-GPLv3-brightgreen?style=for-the-badge">
 
 Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
-(This is not a classical clone of minecraft, it completely re implements it!)
+(This is not a classical clone of minecraft, it completely re implements it!)  
 (This software is not affiliated with Mojang AB, the original developer of Minecraft)
 
 <h2>Notice: I am *not* responsible for anti cheat banned accounts, this project is heavily in development!</h2>
@@ -13,7 +13,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 ## Feature overview
 
 - Rendering
-- Connect with any version to any server  (1.7 - 1.20.1)
+- Connect with any version to any server  (1.7 - 1.20.2)
 - [Bleeding edge performance (e.g. incredible start time)](/doc/Performance.md)
 - Free (as far as we consider original minecraft as free) and open source
 - Easy use of multiple accounts
@@ -76,8 +76,8 @@ I always try to add support for the newest version of minecraft. Mostly it is pr
 
 ### Supported versions
 
-Almost all versions (and snapshots!) between 1.7 and the latest one (1.20.1 as of writing this) are supported.  
-I plan to maintain Minosoft to at least version 1.20, so stay tuned, also support for older protocols will not be dropped as newer protocols are added. It is still recommended using the latest stable version.  
+Almost all versions (and snapshots!) between 1.7 and the latest one (1.20.2 as of writing this) are supported.  
+I plan to maintain Minosoft to at least version 1.20, so stay tuned, and support for older protocols will not be dropped as newer protocols are added. It is still recommended using the latest stable version.  
 See [Version support](/doc/VersionSupport.md) for more details.
 
 ## Modding
@@ -101,7 +101,9 @@ See [Credits](Credits.md).
 
 No clue. Don't wait for it :)
 
-Background: I invested thousands of hours in this project to make it work. It is currently not really playable yet, but I am hardly working on it. A release normally means, that it is stable, has few (known) bugs and won't change that much in the near future. All those "requirements" are currently not fulfilled at all. There are a ton of bugs, issues, part of the core code changes frequently and Minosoft is still missing soooo many features. The current goal is to be able to play bedwars with this client, you can find the tracking issue [here](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/42).
+I invested many thousands of hours in this project to make it "work". A lot of vanillas features are actually implemented, but soo much is missing.
+A release normally means, that it is stable, has few (known) bugs and won't change that much in the near future.
+All those "requirements" are currently not fulfilled at all. It is just way to alpha atm. The current goal always was to play bedwars with this client and it actually worked on hypixel ([#42](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/42)).
 
 If you want to get notified when cool new features arrive or other interesting stuff happens were, feel free to subscribe to [@MinosoftDevNews](https://t.me/MinosoftDevNews).
 
