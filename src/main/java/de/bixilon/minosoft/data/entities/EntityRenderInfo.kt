@@ -30,6 +30,10 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
     private var position1 = Vec3d(entity.physics.position)
     private var defaultAABB = entity.defaultAABB
 
+
+    private var eyeHeight0 = 0.0f
+    private var eyeHeight1 = entity.eyeHeight
+
     var position: Vec3d = position1
         private set
     var eyePosition: Vec3d = position
@@ -49,14 +53,16 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
     private fun interpolatePosition(delta: Float) {
         val position1 = this.position1
+        val eyeHeight1 = this.eyeHeight1
 
-        if (position.isEqual(position1)) {
+        if (position.isEqual(position1) && eyeHeight0 == eyeHeight1) {
             interpolateAABB(false)
             return
         }
 
         position = Vec3dUtil.interpolateLinear(delta.toDouble(), position0, position1)
-        eyePosition = position.addedY(entity.eyeHeight.toDouble())
+
+        eyePosition = position.addedY(interpolateLinear(delta, eyeHeight0, eyeHeight1).toDouble())
 
         interpolateAABB(true)
     }
@@ -100,8 +106,17 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
         rotation1 = entityRotation
     }
 
+    private fun tickEyeHeight() {
+        val eyeHeight = entity.eyeHeight
+        if (eyeHeight0 == eyeHeight && eyeHeight1 == eyeHeight) return
+
+        eyeHeight0 = eyeHeight1
+        eyeHeight1 = eyeHeight
+    }
+
     override fun tick() {
         tickPosition()
+        tickEyeHeight()
         tickRotation()
     }
 
