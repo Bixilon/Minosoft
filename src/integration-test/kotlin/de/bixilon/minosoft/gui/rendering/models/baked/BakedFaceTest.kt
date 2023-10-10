@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked
 
-import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.test.IT.OBJENESIS
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.collections.floats.FragmentedArrayFloatList
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -41,7 +41,7 @@ class BakedFaceTest {
         mesh::quadType.forceSet(PrimitiveTypes.QUAD)
         mesh::order.forceSet(SingleChunkMesh.QUAD_ORDER)
 
-        mesh.data = HeapArrayFloatList(1000)
+        mesh.data = FragmentedArrayFloatList(1000) // TODO: kutil 1.24
 
         mesh::initialCacheSize.forceSet(1000)
 
