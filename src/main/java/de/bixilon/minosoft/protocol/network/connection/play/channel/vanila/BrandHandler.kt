@@ -52,7 +52,7 @@ object BrandHandler {
     ) : PlayChannelHandler {
 
         override fun handle(buffer: PlayInByteBuffer) {
-            connection.serverInfo.brand = buffer.readString(if (buffer.versionId < ProtocolDefinition.FLATTENING_VERSION) buffer.readVarInt() else buffer.bytesLeft)
+            connection.serverInfo.brand = buffer.readString(if (buffer.versionId >= ProtocolDefinition.FLATTENING_VERSION) buffer.readVarInt() else buffer.bytesLeft)
         }
     }
 }
