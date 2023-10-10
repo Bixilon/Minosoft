@@ -42,6 +42,10 @@ abstract class LegacyLoadingTest(version: String) : RegistryLoadingTest(version)
         assertEquals(registries.biome[1].identifier, minecraft("plains"))
     }
 
+    fun particleType() {
+        assertEquals(registries.particleType[38].identifier, minecraft("blockdust"))
+    }
+
     fun enchantmentId() {
         assertEquals(registries.enchantment[16].identifier, minecraft("sharpness"))
     }

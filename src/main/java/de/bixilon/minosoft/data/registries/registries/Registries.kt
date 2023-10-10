@@ -68,14 +68,10 @@ import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.MutableMap
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.iterator
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 
@@ -195,7 +191,7 @@ class Registries(
         worker += WorkerTask(this::motif) { motif.update(pixlyzerData["motives"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::soundEvent) { soundEvent.update(pixlyzerData["sound_events"]?.toJsonObject(), version, null) }
         worker += WorkerTask(this::soundGroup, dependencies = arrayOf(this::soundEvent)) { soundGroup.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
-        worker += WorkerTask(this::particleType) { particleType.update(pixlyzerData["particles"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::particleType) { particleType.update(pixlyzerData["particles", "particle_type"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::material) { material.update(pixlyzerData["materials"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::enchantment) { enchantment.update(pixlyzerData["enchantments"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::statusEffect) { statusEffect.update(pixlyzerData["status_effects"]?.toJsonObject(), version, this) }
