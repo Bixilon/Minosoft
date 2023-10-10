@@ -170,15 +170,11 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun ChunkReadingData.readChunkData() {
-        if (readingData.buffer.versionId < V_21W37A) {
-            val chunkData = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, action == ChunkAction.CREATE, dimension.skyLight)
-            if (chunkData == null) {
-                action = ChunkAction.UNLOAD
-            } else {
-                this@ChunkS2CP.prototype.update(chunkData)
-            }
+        val chunkData = if (readingData.buffer.versionId < V_21W37A) ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, action == ChunkAction.CREATE, dimension.skyLight) else ChunkUtil.readPaletteChunk(buffer, dimension, null, complete = true, skylight = false)
+        if (chunkData == null) {
+            action = ChunkAction.UNLOAD
         } else {
-            this@ChunkS2CP.prototype.update(ChunkUtil.readPaletteChunk(buffer, dimension, null, complete = true, skylight = false))
+            this@ChunkS2CP.prototype.update(chunkData)
         }
     }
 
