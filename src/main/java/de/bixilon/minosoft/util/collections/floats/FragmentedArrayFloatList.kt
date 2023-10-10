@@ -51,9 +51,9 @@ class FragmentedArrayFloatList(
     }
 
     private fun grow(size: Int): FloatBuffer {
-        checkFinished()
+        if (finished) throw IllegalStateException()
         if (limit - this.size >= size) {
-            return this.incomplete.first()
+            return this.incomplete[0]
         }
         val grow = if (nextGrowStep < size) {
             (size / nextGrowStep + 1) * nextGrowStep
@@ -74,6 +74,27 @@ class FragmentedArrayFloatList(
         val buffer = grow(1)
         buffer.put(value)
         size += 1
+        tryPush(buffer)
+        invalidateOutput()
+    }
+
+    fun add(value1: Float, value2: Float) {
+        var buffer = grow(2)
+        buffer.put(value1); if (tryPush(buffer)) buffer = grow(1)
+        buffer.put(value2)
+
+        size += 2
+        tryPush(buffer)
+        invalidateOutput()
+    }
+
+    fun add(value1: Float, value2: Float, value3: Float) {
+        var buffer = grow(3)
+        buffer.put(value1); if (tryPush(buffer)) buffer = grow(2)
+        buffer.put(value2); if (tryPush(buffer)) buffer = grow(1)
+        buffer.put(value3)
+
+        size += 3
         tryPush(buffer)
         invalidateOutput()
     }

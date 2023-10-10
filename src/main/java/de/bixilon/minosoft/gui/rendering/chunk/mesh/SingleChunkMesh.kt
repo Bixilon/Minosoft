@@ -32,19 +32,18 @@ class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         val transformedUV = texture.renderData.transformUV(uv).array
         data.add(position)
         data.add(transformedUV)
-        data.add(texture.renderData.shaderTextureId.buffer())
-        data.add(((light shl 24) or tintColor).buffer())
+        data.add(
+            texture.renderData.shaderTextureId.buffer(),
+            (((light shl 24) or tintColor).buffer())
+        )
     }
 
     fun addVertex(x: Float, y: Float, z: Float, uv: FloatArray, texture: Texture, shaderTextureId: Float, lightTint: Float) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.renderData.transformUV(uv)
-        data.add(x)
-        data.add(y)
-        data.add(z)
+        data.add(x, y, z)
         data.add(transformedUV)
-        data.add(shaderTextureId)
-        data.add(lightTint)
+        data.add(shaderTextureId, lightTint)
     }
 
     override fun compareTo(other: SingleChunkMesh): Int {
