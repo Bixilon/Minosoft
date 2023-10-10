@@ -58,7 +58,7 @@ class SignBlockEntityRenderer(
         return rotation * 22.5f
     }
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, temp: FloatArray): Boolean {
         val block = this.blockState.block
         if (block is StandingSignBlock) {
             renderStandingText(offset, mesh, light[SELF_LIGHT_INDEX].toInt())

@@ -44,7 +44,7 @@ class BakedFace(
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: FloatArray, mesh: ChunkMesh, light: ByteArray, tints: IntArray?) {
+    fun render(offset: FloatArray, mesh: ChunkMesh, light: ByteArray, tints: IntArray?, temp: FloatArray) {
         val tint = color(tints?.getOrNull(tintIndex) ?: 0)
         val lightTint = ((light[lightIndex].toInt() shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
@@ -52,9 +52,11 @@ class BakedFace(
 
         val mesh = mesh.mesh(texture)
 
-        val uv = floatArrayOf(0.0f, 0.0f)
+        val uv = temp
 
-        for (index in 0 until mesh.order.size step 2) {
+        var index = 0
+        val size = mesh.order.size
+        while (index < size) {
             val vertexOffset = mesh.order[index] * 3
             val uvOffset = mesh.order[index + 1] * 2
             uv[0] = this.uv[uvOffset]
@@ -67,6 +69,7 @@ class BakedFace(
                 shaderTextureId = textureId,
                 lightTint = lightTint,
             )
+            index += 2
         }
     }
 
@@ -76,5 +79,9 @@ class BakedFace(
             TextureTransparencies.TRANSPARENT -> transparentMesh
             TextureTransparencies.TRANSLUCENT -> translucentMesh
         }!!
+    }
+
+    fun IntArray.getOrNull(index: Int): Int? {
+        return if (index >= 0 && index < size) get(index) else null
     }
 }

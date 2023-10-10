@@ -37,8 +37,8 @@ interface PickedBlockRender : BlockRender {
         default?.render(gui, offset, consumer, options, size, stack)
     }
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        return pick(neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints) ?: false
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, temp: FloatArray): Boolean {
+        return pick(neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints, temp) ?: false
     }
 
     override fun getProperties(direction: Directions): SideProperties? {
