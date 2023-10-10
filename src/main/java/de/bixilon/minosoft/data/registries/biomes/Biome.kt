@@ -28,11 +28,11 @@ data class Biome(
     override val identifier: ResourceLocation,
     val temperature: Float,
     val downfall: Float,
-    val skyColor: RGBColor?,
+    val skyColor: RGBColor? = null,
     val fogColor: RGBColor? = null,
-    val waterColor: RGBColor?,
-    val waterFogColor: RGBColor?,
-    val precipitation: BiomePrecipitation?,
+    val waterColor: RGBColor? = null,
+    val waterFogColor: RGBColor? = null,
+    val precipitation: BiomePrecipitation? = null,
 ) : RegistryItem() {
     val grassColorModifier = GrassColorModifiers.BIOME_MAP[identifier]
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
