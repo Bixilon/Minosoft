@@ -43,21 +43,30 @@ object TextureUtil {
         }!!
     }
 
+    private fun InputStream.readTexture1(): TextureData {
+        val decoder = PNGDecoder(this)
+        val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
+        decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
 
-    /**
-     * Other way of reading a texture if the first (preferred one) method does not work
-     * Only happens to some weird textures (seen in PureBDCraft)
-     * Ignores the alpha channel
-     */
+        return TextureData(Vec2i(decoder.width, decoder.height), data)
+    }
+
     private fun InputStream.readTexture2(): TextureData {
         val image: BufferedImage = ImageIO.read(this)
-        val rgb = image.getRGB(0, 0, image.width, image.height, null, 0, image.width)
 
         val byteOutput = ByteArrayOutputStream()
         val dataOutput = DataOutputStream(byteOutput)
 
-        for (color in rgb) {
-            dataOutput.writeInt((color shl 8) or 0xFF)
+        val samples = if (image.raster.numBands == 3) intArrayOf(0, 1, 2) else intArrayOf(0, 0, 0)
+
+        for (y in 0 until image.height) {
+            for (x in 0 until image.width) {
+                dataOutput.writeByte(image.raster.getSample(x, y, samples[0]))
+                dataOutput.writeByte(image.raster.getSample(x, y, samples[1]))
+                dataOutput.writeByte(image.raster.getSample(x, y, samples[2]))
+                val alpha = image.alphaRaster?.getSample(x, y, 0) ?: 0xFF
+                dataOutput.writeByte(alpha)
+            }
         }
 
         val buffer = MemoryUtil.memAlloc(byteOutput.size())
@@ -68,11 +77,7 @@ object TextureUtil {
 
     fun InputStream.readTexture(): TextureData {
         return try {
-            val decoder = PNGDecoder(this)
-            val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
-            decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
-
-            TextureData(Vec2i(decoder.width, decoder.height), data)
+            readTexture1()
         } catch (exception: Throwable) {
             this.reset()
             readTexture2()

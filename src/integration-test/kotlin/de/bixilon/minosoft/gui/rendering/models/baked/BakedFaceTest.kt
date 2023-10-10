@@ -18,6 +18,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -56,7 +57,7 @@ class BakedFaceTest {
     }
 
     fun mixed() {
-        val face = BakedFace(floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f), floatArrayOf(-1f, -2f, -3f, -4f, -5f, -6f, -7f, -8f), 1.0f, -1, null, texture())
+        val face = BakedFace(floatArrayOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f), floatArrayOf(-1f, -2f, -3f, -4f, -5f, -6f, -7f, -8f), Shades.UP, -1, null, texture())
 
         val mesh = mesh()
 
@@ -78,7 +79,7 @@ class BakedFaceTest {
     }
 
     fun blockSouth() {
-        val face = BakedFace(floatArrayOf(0f, 0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f, 0f, 0f, 1f), floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f), 1.0f, -1, null, texture())
+        val face = BakedFace(floatArrayOf(0f, 0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f, 0f, 0f, 1f), floatArrayOf(0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f), Shades.UP, -1, null, texture())
 
         val mesh = mesh()
 

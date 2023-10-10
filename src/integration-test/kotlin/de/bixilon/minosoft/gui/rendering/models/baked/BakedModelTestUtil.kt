@@ -63,7 +63,7 @@ object BakedModelTestUtil {
 
         vertices?.let { assertMatches(face.positions, it, "Vertices mismatch") }
         uv?.let { if (!face.uv.contentEquals(it)) throw AssertionError("UV mismatch, expected [${uv[0]}|${uv[1]}], but got [${face.uv[0]}|${face.uv[1]}]") } // printing the first element is fine, it is always clockwise
-        shade?.let { Assert.assertEquals(face.shade, it, "Shade mismatch") }
+        shade?.let { Assert.assertEquals(face.shade.shade, it, "Shade mismatch") }
         texture?.toResourceLocation()?.texture()?.let { Assert.assertEquals(face.texture, it, "Texture mismatch") }
     }
 

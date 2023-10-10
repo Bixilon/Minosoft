@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.world.chunk.manager
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
@@ -438,7 +437,7 @@ class ChunkManagerTest {
 
     fun noiseBiomeCache() {
         val manager = create()
-        val biome = Biome(minosoft("test"), 0.0f, 0.0f, null, null, null, null, BiomePrecipitation.NONE)
+        val biome = Biome(minosoft("test"), 0.0f, 0.0f, null, null, null, null, null)
         manager.world.cacheBiomeAccessor = NoiseBiomeAccessor(manager.world.connection, 0L)
         val source = SpatialBiomeArray(Array(1024) { biome })
         val matrix = manager.createMatrix(source)

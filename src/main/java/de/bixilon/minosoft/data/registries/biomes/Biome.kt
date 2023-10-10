@@ -70,7 +70,7 @@ data class Biome(
                 fogColor = fogColor,
                 waterColor = waterColor,
                 waterFogColor = waterFogColor,
-                precipitation = data["precipitation"]?.let { BiomePrecipitation[it] },
+                precipitation = data["precipitation"]?.let { if (it is Int) BiomePrecipitation.getOrNull(it - 1) else BiomePrecipitation[it] },
             )
         }
     }

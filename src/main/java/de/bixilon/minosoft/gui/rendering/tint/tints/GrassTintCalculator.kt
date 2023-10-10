@@ -50,7 +50,7 @@ class GrassTintCalculator : TintProvider {
 
     fun getBlockColor(biome: Biome?): Int {
         if (biome == null) {
-            return getColor(127, 127)
+            return getColor(127, 255)
         }
         val color = getColor(biome.colorMapPixelIndex)
 
