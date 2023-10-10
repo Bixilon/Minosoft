@@ -13,24 +13,22 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.shade
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades.Companion.shade
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
+import de.bixilon.minosoft.gui.rendering.tint.TintUtil
 
 class BakedFace(
     val positions: FaceVertexData,
     val uv: FaceVertexData,
-    val shade: Float,
+    val shade: Shades,
     val tintIndex: Int,
     cull: Directions?,
     val texture: Texture,
@@ -42,13 +40,8 @@ class BakedFace(
     constructor(positions: FaceVertexData, uv: FaceVertexData, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, direction.shade, tintIndex, if (properties == null) null else direction, texture, properties)
 
     private fun color(tint: Int): Int {
-        val color = Vec3(this.shade)
-        if (tint > 0) {
-            color.r *= (tint shr 16) / RGBColor.COLOR_FLOAT_DIVIDER
-            color.g *= ((tint shr 8) and 0xFF) / RGBColor.COLOR_FLOAT_DIVIDER
-            color.b *= (tint and 0xFF) / RGBColor.COLOR_FLOAT_DIVIDER
-        }
-        return color.rgb
+        if (tint <= 0) return shade.color
+        return TintUtil.calculateTint(tint, shade)
     }
 
     fun render(offset: FloatArray, mesh: ChunkMesh, light: ByteArray, tints: IntArray?) {

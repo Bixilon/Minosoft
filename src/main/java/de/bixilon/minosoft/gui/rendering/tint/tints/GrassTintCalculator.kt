@@ -11,9 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint
+package de.bixilon.minosoft.gui.rendering.tint.tints
 
-import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
+import de.bixilon.kutil.exception.ExceptionUtil
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -22,13 +22,14 @@ import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GrassTintCalculator : TintProvider {
     private lateinit var colorMap: IntArray
 
     fun init(assetsManager: AssetsManager) {
-        colorMap = ignoreAll { assetsManager["minecraft:colormap/grass".toResourceLocation().texture()].readRGBArray() } ?: IntArray(256)
+        colorMap = ExceptionUtil.ignoreAll { assetsManager["minecraft:colormap/grass".toResourceLocation().texture()].readRGBArray() } ?: IntArray(256)
     }
 
     inline fun getColor(downfall: Int, temperature: Int): Int {

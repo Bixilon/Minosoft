@@ -97,13 +97,4 @@ object BakingUtil {
 
         return target
     }
-
-
-    val Directions.shade: Float
-        get() = when (this) {
-            Directions.UP -> 1.0f
-            Directions.DOWN -> 0.5f
-            Directions.NORTH, Directions.SOUTH -> 0.8f
-            Directions.WEST, Directions.EAST -> 0.6f
-        }
 }

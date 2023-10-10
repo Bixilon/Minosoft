@@ -11,23 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint
+package de.bixilon.minosoft.gui.rendering.tint.tints
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
-class StaticTintProvider(val block: Int, val item: Int = block, val particle: Int = block) : TintProvider {
+object WaterTintProvider : TintProvider {
 
+    // cauldron
     override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        return this.block
+        return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
     }
 
-    override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {
-        return this.item
-    }
-
-    override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
-        return this.particle
+    override fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, x: Int, y: Int, z: Int): Int {
+        return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
     }
 }

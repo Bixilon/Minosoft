@@ -11,20 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint
+package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.direction.Directions
 
-object WaterTintProvider : TintProvider {
+enum class Shades(val shade: Float) {
+    DOWN(0.5f),
+    UP(1.0f),
+    X(0.6f),
+    Z(0.8f),
+    ;
 
-    // cauldron
-    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
+    val color = color()
+
+
+    private fun color(): Int {
+        val int = (shade * 255).toInt()
+
+        return (int shl 16) or (int shl 8) or int
     }
 
-    override fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, x: Int, y: Int, z: Int): Int {
-        return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
+    companion object {
+
+
+        val Directions.shade: Shades
+            get() = when (this) {
+                Directions.DOWN -> DOWN
+                Directions.UP -> UP
+                Directions.NORTH, Directions.SOUTH -> Z
+                Directions.WEST, Directions.EAST -> X
+            }
     }
 }

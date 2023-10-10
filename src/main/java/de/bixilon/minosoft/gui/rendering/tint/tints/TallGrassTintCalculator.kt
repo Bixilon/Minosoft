@@ -11,20 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint
+package de.bixilon.minosoft.gui.rendering.tint.tints
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
-class SugarCaneTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
+class TallGrassTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
 
-    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        return grassTintCalculator.getBlockColor(blockState, biome, x, y, z, tintIndex)
+    fun getColor(blockState: BlockState, biome: Biome?): Int {
+        return grassTintCalculator.getBlockColor(biome) // TODO: check for top/bottom
     }
 
-    override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {
-        return Colors.WHITE
+    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+        return getColor(blockState, biome)
+    }
+
+    override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
+        return getColor(blockState, biome)
     }
 }
