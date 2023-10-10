@@ -35,16 +35,16 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
     private val config = context.connection.profiles.rendering.overlay.weather
     private val rain = context.textures.staticTextures.createTexture(RAIN)
     private val snow = context.textures.staticTextures.createTexture(SNOW)
-    private val precipitation get() = context.connection.player.physics.positionInfo.biome?.precipitation ?: BiomePrecipitation.NONE
+    private val precipitation get() = context.connection.player.physics.positionInfo.biome?.precipitation
     override val render: Boolean
         get() = world.dimension.effects.weather && world.weather.raining && when (precipitation) { // ToDo: Check if exposed to the sky
-            BiomePrecipitation.NONE -> false
+            null -> false
             BiomePrecipitation.RAIN -> config.rain
             BiomePrecipitation.SNOW -> config.snow
         }
     private val texture: Texture?
         get() = when (precipitation) {
-            BiomePrecipitation.NONE -> null
+            null -> null
             BiomePrecipitation.RAIN -> rain
             BiomePrecipitation.SNOW -> snow
         }

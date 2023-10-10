@@ -54,7 +54,7 @@ class GrassTintCalculator : TintProvider {
         val color = getColor(biome.colorMapPixelIndex)
 
         return when (biome.grassColorModifier) {
-            GrassColorModifiers.NONE -> color
+            null -> color
             GrassColorModifiers.SWAMP -> 0x6A7039 // ToDo: Biome noise is applied here
             GrassColorModifiers.DARK_FOREST -> (color and 0xFEFEFE) + 0x28340A shr 1
         }

@@ -32,9 +32,9 @@ data class Biome(
     val fogColor: RGBColor? = null,
     val waterColor: RGBColor?,
     val waterFogColor: RGBColor?,
-    val precipitation: BiomePrecipitation,
+    val precipitation: BiomePrecipitation?,
 ) : RegistryItem() {
-    val grassColorModifier = GrassColorModifiers.BIOME_MAP[identifier] ?: GrassColorModifiers.NONE
+    val grassColorModifier = GrassColorModifiers.BIOME_MAP[identifier]
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
     val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
     val colorMapPixelIndex = downfallColorMapCoordinate shl 8 or temperatureColorMapCoordinate
@@ -70,7 +70,7 @@ data class Biome(
                 fogColor = fogColor,
                 waterColor = waterColor,
                 waterFogColor = waterFogColor,
-                precipitation = data["precipitation"]?.let { BiomePrecipitation[it] } ?: BiomePrecipitation.NONE,
+                precipitation = data["precipitation"]?.let { BiomePrecipitation[it] },
             )
         }
     }

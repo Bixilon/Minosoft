@@ -59,6 +59,8 @@ abstract class RegistryLoadingTest(val versionName: String) {
     fun biome() {
         if (version >= V_1_17) throw SkipException("Biomes are datapack only")
 
-        assertNotNull(registries.biome[minecraft("plains")]?.identifier)
+        val plains = registries.biome[minecraft("plains")]!!
+        assertEquals(plains.temperature, 0.8f)
+        assertEquals(plains.downfall, 0.4f)
     }
 }
