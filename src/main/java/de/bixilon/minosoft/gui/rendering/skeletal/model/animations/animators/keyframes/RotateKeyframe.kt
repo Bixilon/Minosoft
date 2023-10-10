@@ -11,11 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.model.textures
+package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
 
-data class SkeletalTexture(
-    val resolution: Vec2i,
-    val load: Boolean = true,
-)
+data class RotateKeyframe(
+    val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
+    val keyframes: Map<Float, Vec3>,
+) : SkeletalKeyframe {
+    override val type get() = TYPE
+
+    companion object {
+        const val TYPE = "rotate"
+    }
+}

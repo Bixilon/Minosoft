@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,25 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.instance
+package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes
 
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
+import de.bixilon.kotlinglm.vec3.Vec3
 
-class SkeletalAnimationInstance(
-    var animation: SkeletalAnimation,
-) {
-    var time = 0.0f
-    var lastFrame = -1L
+data class TranslateKeyframe(
+    val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
+    val keyframes: Map<Float, Vec3>,
+) : SkeletalKeyframe {
+    override val type get() = TYPE
 
-    fun draw(time: Long) {
-        if (lastFrame > 0L) {
-            val delta = time - lastFrame
-            this.time += delta / 1000.0f
-        }
-        lastFrame = time
-    }
-
-    fun canClear(): Boolean {
-        return animation.canClear(time)
+    companion object {
+        const val TYPE = "translate"
     }
 }

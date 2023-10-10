@@ -59,7 +59,7 @@ class SkeletalManager(
     }
 
     private companion object {
-        private const val TRANSFORMS = 32
+        private const val TRANSFORMS = 128
         private const val MAT4_SIZE = 4 * 4
     }
 }

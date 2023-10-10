@@ -11,11 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.model.textures
+package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
-data class SkeletalTexture(
-    val resolution: Vec2i,
-    val load: Boolean = true,
-)
+data class TintKeyframe(
+    val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
+    val channel: ColorChannel = ColorChannel.RGB,
+    val keyframes: Map<Float, RGBColor>,
+) : SkeletalKeyframe {
+    override val type get() = TYPE
+
+
+    enum class ColorChannel {
+        RGB,
+        // TODO: hsv?
+        ;
+    }
+
+    companion object {
+        const val TYPE = "tint"
+    }
+}

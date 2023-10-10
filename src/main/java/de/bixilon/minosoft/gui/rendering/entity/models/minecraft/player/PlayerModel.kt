@@ -24,8 +24,8 @@ import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.SkeletalEntityModel
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
-import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
+import de.bixilon.minosoft.gui.rendering.skeletal.model.legacy.animations.SkeletalAnimation
+import de.bixilon.minosoft.gui.rendering.skeletal.model.legacy.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState

@@ -13,38 +13,47 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model
 
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
+import de.bixilon.minosoft.gui.rendering.skeletal.bake.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.bake.SkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
-import de.bixilon.minosoft.gui.rendering.skeletal.model.meta.SkeletalMeta
-import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
-import de.bixilon.minosoft.gui.rendering.skeletal.model.resolution.SkeletalResolution
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
+import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 
 data class SkeletalModel(
-    val meta: SkeletalMeta = SkeletalMeta(),
-    val name: String = "empty",
-    val resolution: SkeletalResolution = SkeletalResolution(),
-    val elements: List<SkeletalElement> = emptyList(),
-    val outliner: List<SkeletalOutliner> = emptyList(),
-    val textures: List<SkeletalTexture> = emptyList(),
-    val animations: List<SkeletalAnimation> = emptyList(),
+    val elements: Map<String, SkeletalElement>,
+    val textures: Map<ResourceLocation, SkeletalTexture>,
+    val animations: Map<ResourceLocation, SkeletalAnimation>,
 ) {
+    val loadedTextures: MutableMap<ResourceLocation, SkeletalTextureInstance> = mutableMapOf()
 
-    fun bake(context: RenderContext, textureOverride: Map<Int, ShaderTexture>): BakedSkeletalModel {
-        val textures: Int2ObjectOpenHashMap<ShaderTexture> = Int2ObjectOpenHashMap()
-        for (entry in this.textures) {
-            val override = textureOverride[entry.id]
-            if (override != null) {
-                textures[entry.id] = override
-                continue
-            }
-            val texture = context.textures.staticTextures.createTexture(entry.resourceLocation)
-            textures[entry.id] = texture
+    fun load(context: RenderContext) {
+        for ((name, properties) in this.textures) {
+            if (!properties.load) continue
+            context.textures.staticTextures.createTexture(name.texture())
         }
-        return BakedSkeletalModel(this, textures)
+    }
+
+    fun bake(context: RenderContext, override: Map<ResourceLocation, ShaderTexture>): BakedSkeletalModel {
+        val mesh = SkeletalMesh(context, 1000)
+
+        val textures: MutableMap<ResourceLocation, SkeletalTextureInstance> = this.loadedTextures.toMutableMap()
+
+        for ((name, texture) in override) {
+            textures[name]?.texture = texture
+        }
+
+        val baked: MutableMap<String, SkeletalTransform> = mutableMapOf()
+
+        for ((name, element) in elements) {
+            baked[name] = element.bake(mesh, textures) ?: continue
+        }
+
+        return BakedSkeletalModel(mesh, baked)
     }
 }
