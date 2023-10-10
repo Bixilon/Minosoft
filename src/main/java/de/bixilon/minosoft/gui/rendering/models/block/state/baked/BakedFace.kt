@@ -37,7 +37,7 @@ class BakedFace(
     private val lightIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
 
 
-    constructor(positions: FaceVertexData, uv: FaceVertexData, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, direction.shade, tintIndex, if (properties == null) null else direction, texture, properties)
+    constructor(positions: FaceVertexData, uv: FaceVertexData, shade: Boolean, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, if (shade) direction.shade else Shades.NONE, tintIndex, if (properties == null) null else direction, texture, properties)
 
     private fun color(tint: Int): Int {
         if (tint <= 0) return shade.color

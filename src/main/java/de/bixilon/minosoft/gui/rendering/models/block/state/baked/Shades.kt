@@ -32,6 +32,7 @@ enum class Shades(val shade: Float) {
     }
 
     companion object {
+        val NONE = UP
 
 
         val Directions.shade: Shades
