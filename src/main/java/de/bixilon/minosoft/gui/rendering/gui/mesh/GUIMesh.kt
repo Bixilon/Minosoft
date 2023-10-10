@@ -21,11 +21,12 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.util.collections.floats.FragmentedArrayFloatList
 
 class GUIMesh(
-        context: RenderContext,
-        val halfSize: Vec2,
-        data: AbstractFloatList,
+    context: RenderContext,
+    val halfSize: Vec2,
+    data: FragmentedArrayFloatList,
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
 

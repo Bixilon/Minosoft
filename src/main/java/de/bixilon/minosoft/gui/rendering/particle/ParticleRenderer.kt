@@ -39,7 +39,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
-import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
+import de.bixilon.minosoft.util.collections.floats.FragmentedArrayFloatList
 
 
 class ParticleRenderer(
@@ -53,8 +53,8 @@ class ParticleRenderer(
     private val translucentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, false) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    private var transparentMesh = ParticleMesh(context, BufferedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
-    private var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    private var transparentMesh = ParticleMesh(context, FragmentedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    private var translucentMesh = ParticleMesh(context, FragmentedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
 
     private val particlesLock = SimpleLock()
     private var particles: MutableList<Particle> = mutableListOf()

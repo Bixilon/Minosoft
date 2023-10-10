@@ -16,12 +16,11 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
-import de.bixilon.minosoft.util.collections.floats.FloatListUtil
+import de.bixilon.minosoft.util.collections.floats.FragmentedArrayFloatList
 
 abstract class Mesh(
     val context: RenderContext,
@@ -29,15 +28,15 @@ abstract class Mesh(
     val quadType: PrimitiveTypes = context.system.quadType,
     var initialCacheSize: Int = 10000,
     val clearOnLoad: Boolean = true,
-    data: AbstractFloatList? = null,
+    data: FragmentedArrayFloatList? = null,
     val onDemand: Boolean = false,
 ) : AbstractVertexConsumer {
     override val order = context.system.quadOrder
-    private var _data: AbstractFloatList? = data ?: if (onDemand) null else FloatListUtil.direct(initialCacheSize)
-    var data: AbstractFloatList
+    private var _data: FragmentedArrayFloatList? = data ?: if (onDemand) null else FragmentedArrayFloatList(initialCacheSize)
+    var data: FragmentedArrayFloatList
         get() {
             if (_data == null && onDemand) {
-                _data = FloatListUtil.direct(initialCacheSize)
+                _data = FragmentedArrayFloatList(initialCacheSize)
             }
             return _data.unsafeCast()
         }
