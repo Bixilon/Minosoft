@@ -15,7 +15,7 @@ package de.bixilon.minosoft.assets.minecraft
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W32A
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W48A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_15_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_2_RC1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_4_PRE1
@@ -32,14 +32,15 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W32A
 import de.bixilon.minosoft.protocol.versions.Version
 
 object MinecraftAssetsVersion {
+    const val FLATTENING = 4
     const val LATEST_PACK_FORMAT = 18
 
     val Version.packFormat: Int
         get() = when {
             versionId < V_15W31A -> 1
             versionId < V_16W32A -> 2
-            versionId < V_18W48A -> 3
-            versionId < V_1_15_PRE1 -> 4
+            versionId < V_17W47A -> 3 // corrected: it was 17w48a but they forgot to increment it
+            versionId < V_1_15_PRE1 -> FLATTENING
             versionId < V_1_16_2_RC1 -> 5 // TODO: That should be lower, walls changed earlier
             versionId < V_20W45A -> 6
             versionId < V_21W39A -> 7
