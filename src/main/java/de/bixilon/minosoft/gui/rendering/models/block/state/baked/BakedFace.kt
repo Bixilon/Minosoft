@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades.Companion.shade
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintUtil
@@ -36,10 +35,6 @@ class BakedFace(
     val properties: FaceProperties? = null,
 ) {
     private val lightIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
-
-    init {
-        check(texture.state == TextureStates.LOADED)
-    }
 
 
     constructor(positions: FaceVertexData, uv: FaceVertexData, shade: Boolean, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, if (shade) direction.shade else Shades.NONE, tintIndex, if (properties == null) null else direction, texture, properties)
