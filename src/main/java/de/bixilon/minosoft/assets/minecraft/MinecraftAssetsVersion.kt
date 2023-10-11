@@ -29,11 +29,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W14A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W17A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W31A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W32A
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W40A
 import de.bixilon.minosoft.protocol.versions.Version
 
 object MinecraftAssetsVersion {
-    const val LATEST_PACK_FORMAT = 19
+    const val LATEST_PACK_FORMAT = 18
 
     val Version.packFormat: Int
         get() = when {
@@ -53,7 +52,6 @@ object MinecraftAssetsVersion {
             versionId < V_23W31A -> 15
             versionId < V_23W32A -> 16
             versionId < V_1_20_2_PRE2 -> 17
-            versionId < V_23W40A -> 18
             else -> LATEST_PACK_FORMAT
         }
 
