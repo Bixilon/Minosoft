@@ -19,7 +19,6 @@ import de.bixilon.minosoft.assets.resource.ResourceAssetsManager
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.io.FileNotFoundException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -27,7 +26,11 @@ import java.nio.charset.StandardCharsets
 object ResourcesAssetsUtil {
 
     fun create(clazz: Class<*>, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX): AssetsManager {
-        val rootResources = clazz.classLoader.getResource(prefix) ?: throw FileNotFoundException("Can not find assets root for $clazz")
+        val rootResources = clazz.classLoader.getResource(prefix) ?: clazz.classLoader.getResource("$prefix/.assets")
+        if (rootResources == null) {
+            Log.log(LogMessageType.OTHER, LogLevels.FATAL) { "Can not find \"$prefix\" assets root for $clazz" }
+            return ResourceAssetsManager(clazz, prefix)
+        }
 
         return when (rootResources.protocol) {
             "file" -> DirectoryAssetsManager(rootResources.path.removeSuffix("/").removeSuffix(prefix), canUnload, prefix) // Read them directly from the folder
