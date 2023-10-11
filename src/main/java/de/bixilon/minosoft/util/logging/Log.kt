@@ -200,4 +200,6 @@ object Log {
             Thread.sleep(1)
         }
     }
+
+    fun init() = Unit
 }

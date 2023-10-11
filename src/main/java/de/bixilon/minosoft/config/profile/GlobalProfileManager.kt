@@ -124,12 +124,10 @@ object GlobalProfileManager {
         }
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profiles..." }
         loadSelectedProfiles()
-        val innerLatch = latch.child(1)
+        val innerLatch = latch.child(DEFAULT_MANAGERS.size)
         for ((namespace, manager) in DEFAULT_MANAGERS) {
-            innerLatch.inc()
-            DefaultThreadPool += { manager.load(selectedProfiles[namespace]);innerLatch.dec() }
+            DefaultThreadPool += { manager.load(selectedProfiles[namespace]); innerLatch.dec() }
         }
-        innerLatch.dec()
         innerLatch.await()
 
         loading = false

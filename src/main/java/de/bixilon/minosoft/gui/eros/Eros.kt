@@ -18,7 +18,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.stage.Window
@@ -58,22 +58,20 @@ object Eros {
 
 
     init {
-        GlobalEventMaster.register(CallbackEventListener.of<FinishBootEvent> {
-            if (skipErosStartup) {
-                return@of
-            }
+        GlobalEventMaster.listen<FinishBootEvent> {
+            if (skipErosStartup) return@listen
             start()
-        })
+        }
 
-        GlobalEventMaster.register(CallbackEventListener.of<ErosProfileSelectEvent> {
+        GlobalEventMaster.listen<ErosProfileSelectEvent> {
             if (skipErosStartup || !this::mainErosController.isInitialized) {
-                return@of
+                return@listen
             }
             JavaFXUtil.runLater {
                 this.mainErosController.stage.close()
                 start()
             }
-        })
+        }
     }
 
     fun start() {

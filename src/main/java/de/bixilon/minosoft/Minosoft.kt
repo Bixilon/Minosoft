@@ -77,7 +77,6 @@ object Minosoft {
 
 
     private fun preBoot(args: Array<String>) {
-        Log::class.java.forceInit()
         async(ThreadPool.Priorities.HIGHEST) { Jackson.init(); MinosoftPropertiesLoader.init() }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
@@ -101,8 +100,8 @@ object Minosoft {
     private fun boot() {
         val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() })
 
-        taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER + 2, executor = VersionLoader::load)
-        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHER + 1, dependencies = arrayOf(BootTasks.VERSIONS), executor = GlobalProfileManager::initialize)
+        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHER, executor = GlobalProfileManager::initialize)
+        taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER, executor = VersionLoader::load)
         taskWorker += WorkerTask(identifier = BootTasks.FILE_WATCHER, priority = ThreadPool.HIGH, optional = true, executor = this::startFileWatcherService)
 
         taskWorker += WorkerTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
@@ -152,6 +151,7 @@ object Minosoft {
     @JvmStatic
     fun main(args: Array<String>) {
         val start = nanos()
+        Log.init()
 
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Pre booting..." }
         preBoot(args)
