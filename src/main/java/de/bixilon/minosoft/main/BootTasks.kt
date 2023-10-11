@@ -20,7 +20,6 @@ enum class BootTasks {
     ASSETS_PROPERTIES,
     DEFAULT_REGISTRIES,
     LAN_SERVERS,
-    JAVAFX,
     FILE_WATCHER,
     YGGDRASIL,
     STARTUP_PROGRESS,
@@ -29,5 +28,8 @@ enum class BootTasks {
     MODS,
 
     DATA_FIXER,
+
+    JAVAFX,
+    EROS,
     ;
 }

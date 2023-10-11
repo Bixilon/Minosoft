@@ -14,20 +14,30 @@
 package de.bixilon.minosoft.gui.eros
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
+import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.forceInit
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import javafx.stage.Window
 
 object Eros {
     private val TITLE = "minosoft:eros_window_title".toResourceLocation()
     private val LAYOUT = "minosoft:eros/main/main.fxml".toResourceLocation()
 
+    private val latch = SimpleLatch(2)
+
     lateinit var mainErosController: MainErosController
+
 
     var skipErosStartup = false
 
@@ -75,11 +85,23 @@ object Eros {
     }
 
     fun start() {
+        if (latch.count >= 1) return
+        latch.await()
+        mainErosController.stage.show()
+        initialized = true
+        visible = true
+        Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Eros up!" }
+    }
+
+    fun preload() {
+        latch.dec()
         JavaFXUtil.openModalAsync<MainErosController>(TITLE, LAYOUT) {
             mainErosController = it
-            it.stage.show()
-            initialized = true
-            visible = true
+            catchAll { it.stage.forceInit() }
+            latch.dec()
+            if (Minosoft.BOOT_LATCH.count == 0) {
+                start()
+            }
         }
     }
 }

@@ -112,11 +112,7 @@ object Minosoft {
         taskWorker += WorkerTask(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
 
         if (!RunConfiguration.DISABLE_EROS) {
-            taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.HIGHER) { javafx.scene.text.Font.getDefault() } })
-
-            taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(BOOT_LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
-
-            Eros::class.java.forceInit()
+            javafx(taskWorker)
         }
         if (RunConfiguration.DISABLE_EROS && !RunConfiguration.DISABLE_RENDERING) {
             // eros is disabled, but rendering not, force initialize the desktop, otherwise eros will do so
@@ -146,6 +142,15 @@ object Minosoft {
         }
 
         RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }
+    }
+
+    private fun javafx(taskWorker: TaskWorker) {
+        taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.HIGHER) { javafx.scene.text.Font.getDefault() } })
+
+        taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(BOOT_LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
+        taskWorker += WorkerTask(identifier = BootTasks.EROS, dependencies = arrayOf(BootTasks.JAVAFX, BootTasks.PROFILES, BootTasks.MODS, BootTasks.VERSIONS, BootTasks.LANGUAGE_FILES), executor = { DefaultThreadPool += { Eros.preload() } })
+
+        Eros::class.java.forceInit()
     }
 
     @JvmStatic

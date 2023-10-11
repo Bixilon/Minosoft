@@ -29,6 +29,7 @@ import de.bixilon.minosoft.util.crash.freeze.FreezeDumpUtil
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.application.HostServices
 import javafx.application.Platform
+import javafx.beans.property.BooleanPropertyBase
 import javafx.css.StyleableProperty
 import javafx.fxml.FXMLLoader
 import javafx.scene.*
@@ -44,11 +45,14 @@ import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 import javafx.stage.Stage
+import javafx.stage.Window
 import java.io.File
 import kotlin.reflect.jvm.javaField
 
 object JavaFXUtil {
     private const val DEFAULT_STYLE = "resource:minosoft:eros/style.css"
+    private val SHOWING_FIELD = Window::class.java.getDeclaredField("showing").apply { isAccessible = true }
+    private val MARK_INVALID_METHOD = BooleanPropertyBase::class.java.getDeclaredMethod("markInvalid").apply { isAccessible = true }
     private val stages = StageList()
     lateinit var JAVA_FX_THREAD: Thread
     lateinit var MINOSOFT_LOGO: Image
@@ -235,5 +239,10 @@ object JavaFXUtil {
         }
 
         return loader
+    }
+
+    fun Window.forceInit() {
+        val showing = SHOWING_FIELD.get(this)
+        MARK_INVALID_METHOD.invoke(showing)
     }
 }
