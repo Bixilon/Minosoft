@@ -97,15 +97,13 @@ object Minosoft {
 
         val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() })
 
-        taskWorker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.HIGH, executor = CLI::startThread)
-
-        taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGH, executor = VersionLoader::load)
-        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGH, dependencies = arrayOf(BootTasks.VERSIONS), executor = GlobalProfileManager::initialize)
+        taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER + 2, executor = VersionLoader::load)
+        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHER + 1, dependencies = arrayOf(BootTasks.VERSIONS), executor = GlobalProfileManager::initialize)
         taskWorker += WorkerTask(identifier = BootTasks.FILE_WATCHER, priority = ThreadPool.HIGH, optional = true, executor = this::startFileWatcherService)
 
         taskWorker += WorkerTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
-        taskWorker += WorkerTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.PROFILES), executor = AssetsVersionProperties::load)
-        taskWorker += WorkerTask(identifier = BootTasks.DEFAULT_REGISTRIES, dependencies = arrayOf(BootTasks.PROFILES), executor = { MinosoftMeta.load(); FallbackTags.load(); FallbackRegistries.load(); EntityEvents.load() })
+        taskWorker += WorkerTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = AssetsVersionProperties::load)
+        taskWorker += WorkerTask(identifier = BootTasks.DEFAULT_REGISTRIES, executor = { MinosoftMeta.load(); FallbackTags.load(); FallbackRegistries.load(); EntityEvents.load() })
 
 
         taskWorker += WorkerTask(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
@@ -126,6 +124,7 @@ object Minosoft {
         taskWorker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { OVERRIDE_ASSETS_MANAGER.load(it) })
         taskWorker += WorkerTask(identifier = BootTasks.MODS, executor = { ModLoader.load(LoadingPhases.BOOT, it) })
         taskWorker += WorkerTask(identifier = BootTasks.DATA_FIXER, executor = { DataFixer.load() })
+        taskWorker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.LOW, executor = CLI::startThread)
 
 
         taskWorker.work(BOOT_LATCH)
