@@ -238,6 +238,9 @@ class AudioPlayer(
             calculateAvailableSources()
             while (!enabled) {
                 Thread.sleep(1L)
+                if (connection.wasConnected || connection.error != null) {
+                    break
+                }
             }
             Thread.sleep(1L)
         }
@@ -256,9 +259,9 @@ class AudioPlayer(
 
         Log.log(LogMessageType.AUDIO, LogLevels.VERBOSE) { "Destroying OpenAL context..." }
 
-        alcSetThreadContext(MemoryUtil.NULL)
         alcDestroyContext(context)
         alcCloseDevice(device)
+        alcSetThreadContext(MemoryUtil.NULL)
 
         Log.log(LogMessageType.AUDIO, LogLevels.INFO) { "Unloaded OpenAL!" }
     }
