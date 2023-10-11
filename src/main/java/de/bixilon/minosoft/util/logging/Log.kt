@@ -112,7 +112,7 @@ object Log {
     }
 
 
-    private fun skipLogging(type: LogMessageType, level: LogLevels): Boolean {
+    fun skipLogging(type: LogMessageType, level: LogLevels): Boolean {
         if (RunConfiguration.VERBOSE_LOGGING) {
             return false
         }
@@ -166,18 +166,18 @@ object Log {
     }
 
     @JvmStatic
-    fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any?) {
+    inline fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any?) {
         contract {
             callsInPlace(messageBuilder, InvocationKind.AT_MOST_ONCE)
         }
         if (skipLogging(type, level)) {
             return
         }
-        log(type, level, additionalPrefix, messageBuilder())
+        log(type, level, additionalPrefix, messageBuilder.invoke())
     }
 
     @JvmStatic
-    fun log(type: LogMessageType, level: LogLevels, messageBuilder: () -> Any?) {
+    inline fun log(type: LogMessageType, level: LogLevels, messageBuilder: () -> Any?) {
         contract {
             callsInPlace(messageBuilder, InvocationKind.AT_MOST_ONCE)
         }
