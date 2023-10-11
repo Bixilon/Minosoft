@@ -38,8 +38,7 @@ class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         )
     }
 
-    fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, shaderTextureId: Float, lightTint: Float) {
-        data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
+    inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, shaderTextureId: Float, lightTint: Float) {
         data.add(
             x, y, z,
             u, v,
