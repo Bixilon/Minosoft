@@ -65,7 +65,6 @@ class SolidSectionMesher(
         val entities: MutableList<BlockEntityRenderer<*>> = ArrayList()
 
         val position = BlockPosition()
-        val temp = FloatArray(2)
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
         val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
 
@@ -148,10 +147,10 @@ class SolidSectionMesher(
 
 
                     val tints = tints.getAverageBlockTint(chunk, neighbourChunks, state, x, y, z)
-                    var rendered = model.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints, temp)
+                    var rendered = model.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints)
 
                     if (entity is BlockRender) {
-                        rendered = entity.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints, temp) || rendered
+                        rendered = entity.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints) || rendered
                     }
 
                     if (offset != null) {

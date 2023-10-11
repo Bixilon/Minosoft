@@ -45,7 +45,7 @@ class BakedModel(
 
     override fun getParticleTexture(random: Random?, position: Vec3i) = particle
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, temp: FloatArray): Boolean {
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         var rendered = false
 
         for ((directionIndex, faces) in faces.withIndex()) {
@@ -56,7 +56,7 @@ class BakedModel(
                 if (FaceCulling.canCull(state, face.properties, direction, neighbour)) {
                     continue
                 }
-                face.render(offset, mesh, light, tints, temp)
+                face.render(offset, mesh, light, tints)
 
                 rendered = true
             }

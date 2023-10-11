@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades.Companion.shade
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintUtil
@@ -36,6 +37,10 @@ class BakedFace(
 ) {
     private val lightIndex = cull?.ordinal ?: SELF_LIGHT_INDEX
 
+    init {
+        check(texture.state == TextureStates.LOADED)
+    }
+
 
     constructor(positions: FaceVertexData, uv: FaceVertexData, shade: Boolean, tintIndex: Int, texture: Texture, direction: Directions, properties: FaceProperties?) : this(positions, uv, if (shade) direction.shade else Shades.NONE, tintIndex, if (properties == null) null else direction, texture, properties)
 
@@ -44,7 +49,7 @@ class BakedFace(
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: FloatArray, mesh: ChunkMesh, light: ByteArray, tints: IntArray?, temp: FloatArray) {
+    fun render(offset: FloatArray, mesh: ChunkMesh, light: ByteArray, tints: IntArray?) {
         val tint = color(tints?.getOrNull(tintIndex) ?: 0)
         val lightTint = ((light[lightIndex].toInt() shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
@@ -52,20 +57,16 @@ class BakedFace(
 
         val mesh = mesh.mesh(texture)
 
-        val uv = temp
-
         var index = 0
         val size = mesh.order.size
         while (index < size) {
             val vertexOffset = mesh.order[index] * 3
             val uvOffset = mesh.order[index + 1] * 2
-            uv[0] = this.uv[uvOffset]
-            uv[1] = this.uv[uvOffset + 1]
 
             mesh.addVertex(
                 x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
-                uv = uv,
-                texture = this.texture,
+                u = this.uv[uvOffset],
+                v = this.uv[uvOffset + 1],
                 shaderTextureId = textureId,
                 lightTint = lightTint,
             )

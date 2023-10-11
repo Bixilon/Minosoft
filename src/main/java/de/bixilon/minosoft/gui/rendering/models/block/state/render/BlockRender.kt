@@ -26,7 +26,7 @@ import java.util.*
 interface BlockRender : ItemRender {
     fun getParticleTexture(random: Random?, position: Vec3i): Texture? = null
 
-    fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, temp: FloatArray): Boolean
+    fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean
 
     fun getProperties(direction: Directions): SideProperties? = null
 }

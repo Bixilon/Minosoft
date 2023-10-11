@@ -61,7 +61,7 @@ class BakedFaceTest {
 
         val mesh = mesh()
 
-        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null, FloatArray(2))
+        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null)
 
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()
@@ -83,7 +83,7 @@ class BakedFaceTest {
 
         val mesh = mesh()
 
-        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null, FloatArray(2))
+        face.render(floatArrayOf(0.0f, 0.0f, 0.0f), mesh, byteArrayOf(0, 0, 0, 0, 0, 0, 0), null)
 
         val texture = 0.buffer()
         val lightTint = 0xFFFFFF.buffer()

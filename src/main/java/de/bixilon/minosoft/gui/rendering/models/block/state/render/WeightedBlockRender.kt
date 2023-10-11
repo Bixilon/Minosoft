@@ -61,8 +61,8 @@ class WeightedBlockRender(
         return getModel(random, position).getParticleTexture(random, position)
     }
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, temp: FloatArray): Boolean {
-        return getModel(random, position).render(position, offset, mesh, random, state, neighbours, light, tints, temp)
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+        return getModel(random, position).render(position, offset, mesh, random, state, neighbours, light, tints)
     }
 
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {

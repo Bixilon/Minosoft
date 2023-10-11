@@ -168,6 +168,14 @@ data class SingleBlockStateApply(
                 uv = uv.pushRight(2, getTextureRotation(direction, rotatedX))
             }
 
+            val vec = Vec2(0, uv)
+            for (ofs in 0 until 4) {
+                vec.ofs = ofs * 2
+                val transformed = texture.transformUV(vec)
+                uv[ofs * 2 + 0] = transformed.x
+                uv[ofs * 2 + 1] = transformed.y
+            }
+
             val faceProperties = if (rotation == null && this@SingleBlockStateApply.rotation == null) positions.properties(rotatedXY, texture) else null
             val bakedFace = BakedFace(positions, uv, this.shade, face.tintIndex, texture, rotatedXY, faceProperties)
 

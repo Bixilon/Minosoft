@@ -99,6 +99,21 @@ class FragmentedArrayFloatList(
         invalidateOutput()
     }
 
+    fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float, value6: Float, value7: Float) {
+        var buffer = grow(7)
+        buffer.put(value1); if (tryPush(buffer)) buffer = grow(6)
+        buffer.put(value2); if (tryPush(buffer)) buffer = grow(5)
+        buffer.put(value3); if (tryPush(buffer)) buffer = grow(4)
+        buffer.put(value4); if (tryPush(buffer)) buffer = grow(3)
+        buffer.put(value5); if (tryPush(buffer)) buffer = grow(2)
+        buffer.put(value6); if (tryPush(buffer)) buffer = grow(1)
+        buffer.put(value7)
+
+        size += 7
+        tryPush(buffer)
+        invalidateOutput()
+    }
+
     private fun tryPush(fragment: FloatBuffer): Boolean {
         if (fragment.position() != fragment.limit()) {
             return false
