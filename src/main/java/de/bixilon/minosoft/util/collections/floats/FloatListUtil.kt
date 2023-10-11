@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util.collections.floats
 
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
-import de.bixilon.kutil.exception.ExceptionUtil
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.FloatBuffer
@@ -22,7 +22,7 @@ import java.nio.FloatBuffer
 object FloatListUtil {
     const val PREFER_FRAGMENTED = true
 
-    val FLOAT_PUT_METHOD = ExceptionUtil.catchAll { FloatBuffer::class.java.getMethod("put", Int::class.java, FloatBuffer::class.java, Int::class.java, Int::class.java) }
+    val FLOAT_PUT_METHOD = catchAll { FloatBuffer::class.java.getMethod("put", Int::class.java, FloatBuffer::class.java, Int::class.java, Int::class.java) }
     const val DEFAULT_INITIAL_SIZE = 1000
 
     fun direct(initialSize: Int = DEFAULT_INITIAL_SIZE): AbstractFloatList {

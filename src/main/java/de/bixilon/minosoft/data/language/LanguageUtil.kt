@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.language
 
-import de.bixilon.kutil.exception.ExceptionUtil
+import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
@@ -109,7 +109,7 @@ object LanguageUtil {
 
 
         if (name != FALLBACK_LANGUAGE) {
-            ExceptionUtil.tryCatch(FileNotFoundException::class.java, executor = { languages += loadLanguage(name, assetsManager, json, path) ?: return@tryCatch })
+            tryCatch(FileNotFoundException::class.java, executor = { languages += loadLanguage(name, assetsManager, json, path) ?: return@tryCatch })
         }
         loadLanguage(FALLBACK_LANGUAGE, assetsManager, json, path)?.let { languages += it }
 

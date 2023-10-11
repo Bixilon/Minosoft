@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.assets.util
 
+import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.bixilon.kutil.buffer.BufferDefinition
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -60,6 +61,16 @@ object InputStreamUtil {
     inline fun <reified T> InputStream.readJson(close: Boolean = true): T {
         try {
             return Jackson.MAPPER.readValue(this)
+        } finally {
+            if (close) {
+                this.close()
+            }
+        }
+    }
+
+    inline fun <reified T> InputStream.readJson(close: Boolean = true, type: JavaType): T {
+        try {
+            return Jackson.MAPPER.readValue(this, type)
         } finally {
             if (close) {
                 this.close()

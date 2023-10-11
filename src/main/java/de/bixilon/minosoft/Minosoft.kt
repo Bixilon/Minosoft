@@ -18,10 +18,10 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
-import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.CallbackLatch
+import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
@@ -62,6 +62,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -74,27 +75,30 @@ object Minosoft {
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val BOOT_LATCH = CallbackLatch(1)
 
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val start = nanos()
+
+    private fun preBoot(args: Array<String>) {
         Log::class.java.forceInit()
-        ShutdownManager.addHook { Log.ASYNC_LOGGING = false; catchAll { Log.await() } }
+        async(ThreadPool.Priorities.HIGHEST) { Jackson.init(); MinosoftPropertiesLoader.init() }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
 
+        val latch = SimpleLatch(2)
+        DefaultThreadPool += { MINOSOFT_ASSETS_MANAGER.load(); MinosoftPropertiesLoader.load(); latch.dec() }
+        DefaultThreadPool += { ModLoader.initModLoading(); latch.dec() }
+
         KUtil.initBootClasses()
         KUtil.init()
-        ModLoader.initModLoading()
+
+        latch.await()
         ModLoader.load(LoadingPhases.PRE_BOOT)
         ModLoader.await(LoadingPhases.PRE_BOOT)
-
-        MINOSOFT_ASSETS_MANAGER.load()
 
         if (PlatformInfo.OS == OSTypes.MAC) {
             checkMacOS()
         }
-        MinosoftPropertiesLoader.load()
+    }
 
+    private fun boot() {
         val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() })
 
         taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER + 2, executor = VersionLoader::load)
@@ -128,13 +132,14 @@ object Minosoft {
 
 
         taskWorker.work(BOOT_LATCH)
-
-        BOOT_LATCH.dec() // remove initial count
+        BOOT_LATCH.dec() // initial count
         BOOT_LATCH.await()
+    }
+
+    private fun postBoot() {
         if (ErosCrashReport.alreadyCrashed) return
-        val end = nanos()
+
         KUtil.initPlayClasses()
-        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
         GlobalEventMaster.fire(FinishBootEvent())
         DefaultThreadPool += { ModLoader.load(LoadingPhases.POST_BOOT) }
         if (RunConfiguration.DISABLE_EROS) {
@@ -142,6 +147,23 @@ object Minosoft {
         }
 
         RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }
+    }
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val start = nanos()
+
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Pre booting..." }
+        preBoot(args)
+
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Booting..." }
+        boot()
+
+        val delta = nanos() - start
+        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Minosoft boot sequence finished in ${delta.formatNanos()}!" }
+
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Post booting..." }
+        postBoot()
     }
 
     private fun startFileWatcherService(latch: AbstractLatch) {

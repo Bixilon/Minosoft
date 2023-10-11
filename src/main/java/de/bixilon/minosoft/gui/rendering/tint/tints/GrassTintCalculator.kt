@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints
 
-import de.bixilon.kutil.exception.ExceptionUtil
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -29,7 +29,7 @@ class GrassTintCalculator : TintProvider {
     private lateinit var colorMap: IntArray
 
     fun init(assetsManager: AssetsManager) {
-        colorMap = ExceptionUtil.ignoreAll { assetsManager["minecraft:colormap/grass".toResourceLocation().texture()].readRGBArray() } ?: IntArray(256)
+        colorMap = ignoreAll { assetsManager["minecraft:colormap/grass".toResourceLocation().texture()].readRGBArray() } ?: IntArray(256)
     }
 
     inline fun getColor(downfall: Int, temperature: Int): Int {

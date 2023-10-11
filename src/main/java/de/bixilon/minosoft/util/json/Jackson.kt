@@ -61,4 +61,6 @@ object Jackson {
 
 
     val JSON_MAP_TYPE: MapType = MAPPER.typeFactory.constructMapType(HashMap::class.java, Any::class.java, Any::class.java)
+
+    fun init() = Unit
 }

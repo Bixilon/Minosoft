@@ -279,7 +279,6 @@ object KUtil {
     fun initBootClasses() {
         DefaultThreadPool += { GlobalEventMaster::class.java.forceInit() }
         DefaultThreadPool += { ShutdownManager::class.java.forceInit() }
-        DefaultThreadPool += { Jackson::class.java.forceInit() }
         DefaultThreadPool += { URLProtocolStreamHandlers::class.java.forceInit() }
         DefaultThreadPool += { MicrosoftOAuthUtils::class.java.forceInit() }
         DefaultThreadPool += { TaskScheduler::class.java.forceInit() }

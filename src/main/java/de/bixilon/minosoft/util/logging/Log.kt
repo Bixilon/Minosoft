@@ -13,6 +13,8 @@
 package de.bixilon.minosoft.util.logging
 
 import de.bixilon.kutil.ansi.ANSI
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileSelectEvent
@@ -62,6 +64,7 @@ object Log {
         }, "Log").start()
 
         GlobalEventMaster.register(CallbackEventListener.of<OtherProfileSelectEvent> { this.levels = it.profile.log.levels })
+        ShutdownManager.addHook { ASYNC_LOGGING = false; catchAll { await() } }
     }
 
     private fun QueuedMessage.print() {

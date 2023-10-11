@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.loader
 
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
@@ -29,7 +28,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
-import kotlin.reflect.jvm.javaField
 
 
 object ModLoader {
@@ -58,7 +56,7 @@ object ModLoader {
     }
 
     fun initModLoading() {
-        DefaultThreadPool += { createDirectories() }
+        createDirectories()
     }
 
 
@@ -239,6 +237,7 @@ object ModLoader {
     }
 
 
-    private val ASSETS_MANAGER_FIELD = ModMain::assets.javaField!!.apply { isAccessible = true }
-    private val LOGGER_FIELD = ModMain::logger.javaField!!.apply { isAccessible = true }
+    private val MOD_MAIN = ModMain::class.java
+    private val ASSETS_MANAGER_FIELD = MOD_MAIN.getDeclaredField("assets").apply { isAccessible = true }
+    private val LOGGER_FIELD = MOD_MAIN.getDeclaredField("logger").apply { isAccessible = true }
 }
