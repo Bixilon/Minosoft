@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.versions.Version
 
 object RegistriesFixer {
 
@@ -32,13 +33,14 @@ object RegistriesFixer {
             if (it.state != RegistriesLoadEvent.States.POST) {
                 return@listen
             }
-            it.registries.fixBlockEntities()
+            it.registries.fixBlockEntities(it.connection.version)
             it.registries.fixPlayerSpeed()
         }
     }
 
-    private fun Registries.fixFlowerPot() {
+    private fun Registries.fixFlowerPot(version: Version) {
         // add minecraft:flower_pot as block entity, even if it's not a real entity, but we need it for setting the flower type (in earlier versions of the game)
+        if (version.flattened) return
         val flowerPot = block[FlowerPotBlockEntity] ?: return
         blockEntityType[FlowerPotBlockEntity] = BlockEntityType(FlowerPotBlockEntity.identifier, setOf(flowerPot), FlowerPotBlockEntity)
     }
@@ -48,7 +50,7 @@ object RegistriesFixer {
         entityType[PlayerEntity]?.attributes?.unsafeCast<MutableMap<AttributeType, Double>>()?.put(MinecraftAttributes.MOVEMENT_SPEED, 0.1f.toDouble())
     }
 
-    private fun Registries.fixBlockEntities() {
-        this.fixFlowerPot()
+    private fun Registries.fixBlockEntities(version: Version) {
+        this.fixFlowerPot(version)
     }
 }
