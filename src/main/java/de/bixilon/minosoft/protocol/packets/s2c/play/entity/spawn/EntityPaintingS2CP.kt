@@ -16,7 +16,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting
-import de.bixilon.minosoft.datafixer.rls.MotifFixer.fixMotif
+import de.bixilon.minosoft.datafixer.rls.MotifFixer
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -40,7 +40,7 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         val motif = if (buffer.versionId < ProtocolVersions.V_18W02A) {
-            buffer.connection.registries.motif[buffer.readResourceLocation().fixMotif()]!!
+            buffer.readLegacyRegistryItem(buffer.connection.registries.motif, MotifFixer)!!
         } else {
             buffer.readRegistryItem(buffer.connection.registries.motif)
         }

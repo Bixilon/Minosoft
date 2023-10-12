@@ -14,10 +14,7 @@
 package de.bixilon.minosoft.datafixer
 
 import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
-import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer
-import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer
-import de.bixilon.minosoft.datafixer.rls.MotifFixer
-import de.bixilon.minosoft.datafixer.rls.RegistryFixer
+import de.bixilon.minosoft.datafixer.rls.*
 
 object DataFixer {
     val fixer = listOf(
@@ -27,6 +24,7 @@ object DataFixer {
         EntityAttributeFixer,
         RegistryFixer,
         MotifFixer,
+        ContainerTypeFixer,
     )
 
 

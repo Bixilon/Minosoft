@@ -179,7 +179,7 @@ class Registries(
 
         // id stuff
         // id resource location stuff
-        worker += WorkerTask(this::containerType) { containerType.update(pixlyzerData["container_types"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::containerType) { containerType.update(pixlyzerData["container_types", "container_type"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::gameEvent) { gameEvent.update(pixlyzerData["game_events"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::worldEvent) { worldEvent.update(pixlyzerData["world_events"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::argumentType) { argumentType.update(pixlyzerData["argument_type"]?.toJsonObject(), version, this) }

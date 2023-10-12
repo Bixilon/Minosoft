@@ -11,22 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.types.generic
+package de.bixilon.minosoft.data.container.types.generic.legacy
 
+import de.bixilon.minosoft.data.container.types.generic.Generic9x3Container
+import de.bixilon.minosoft.data.container.types.generic.GenericContainer
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class Generic9x3Container(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : GenericContainer(3, connection, type, title) {
 
-    companion object : ContainerFactory<Generic9x3Container> {
-        override val identifier: ResourceLocation = "minecraft:generic_9x3".toResourceLocation()
+object ShulkerBoxContainer : ContainerFactory<GenericContainer> {
+    override val identifier = minecraft("shulker_box")
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): Generic9x3Container {
-            return Generic9x3Container(connection, type, title)
-        }
+    override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): GenericContainer {
+        return Generic9x3Container(connection, type, title)
     }
 }

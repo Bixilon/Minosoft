@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.container.DefaultInventoryTypes
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.datafixer.rls.ContainerTypeFixer
 import de.bixilon.minosoft.modding.event.events.container.ContainerOpenEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -32,7 +33,7 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = if (buffer.versionId <= V_1_14) buffer.readUnsignedByte() else buffer.readVarInt()  // ToDo: This is completely guessed, it has changed between 1.13 and 1.14, same as #L38
     val containerType: ContainerType = when {
         buffer.versionId < V_14W03B -> buffer.connection.registries.containerType[buffer.readUnsignedByte()]
-        buffer.versionId < V_1_14 -> buffer.readLegacyRegistryItem(buffer.connection.registries.containerType)!! // TODO: version completely guessed
+        buffer.versionId < V_1_14 -> buffer.readLegacyRegistryItem(buffer.connection.registries.containerType, ContainerTypeFixer)!! // TODO: version completely guessed
         else -> buffer.readRegistryItem(buffer.connection.registries.containerType)
     }
     val title: ChatComponent = buffer.readNbtChatComponent()
@@ -50,7 +51,7 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             return
         }
         val title = if (hasTitle) title else null
-        val container = containerType.factory.build(connection, containerType, title)
+        val container = containerType.factory.build(connection, containerType, title, slotCount)
 
         connection.player.items.incomplete.remove(containerId)?.let {
             for ((slot, stack) in it.slots) {

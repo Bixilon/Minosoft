@@ -33,6 +33,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -272,7 +273,7 @@ class PlayInByteBuffer : InByteBuffer {
         return registry[readVarInt()]
     }
 
-    fun <T : RegistryItem> readLegacyRegistryItem(registry: Registry<T>): T? {
+    fun <T : RegistryItem> readLegacyRegistryItem(registry: Registry<T>, fixer: ResourceLocationFixer? = null): T? {
         return registry[readResourceLocation()]
     }
 

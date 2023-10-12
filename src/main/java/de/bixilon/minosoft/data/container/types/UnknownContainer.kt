@@ -32,7 +32,7 @@ class UnknownContainer(
     companion object : ContainerFactory<Container> {
         override val identifier: ResourceLocation = minecraft("container")
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): Container {
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): Container {
             return UnknownContainer(connection, type, title)
         }
     }

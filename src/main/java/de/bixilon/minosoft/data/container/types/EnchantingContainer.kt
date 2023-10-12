@@ -123,7 +123,7 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
             PassiveInventorySection(ENCHANTING_SLOTS),
         )
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): EnchantingContainer {
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): EnchantingContainer {
             return EnchantingContainer(connection, type, title)
         }
     }

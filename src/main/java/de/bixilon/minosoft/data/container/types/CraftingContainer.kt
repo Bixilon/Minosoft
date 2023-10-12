@@ -62,7 +62,7 @@ class CraftingContainer(connection: PlayConnection, type: ContainerType, title: 
         )
 
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): CraftingContainer {
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): CraftingContainer {
             return CraftingContainer(connection, type, title)
         }
     }

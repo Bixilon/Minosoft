@@ -11,11 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container
+package de.bixilon.minosoft.datafixer.rls
 
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
-@Deprecated("Will be removed")
-object DefaultInventoryTypes {
-    val HORSE = "minecraft:horse".toResourceLocation()
+object ContainerTypeFixer : ResourceLocationFixer(minosoft("container_type")) {
+
+    fun ResourceLocation.fixContainerType() = fix(this)
 }

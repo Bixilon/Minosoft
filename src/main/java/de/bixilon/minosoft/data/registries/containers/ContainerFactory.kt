@@ -20,5 +20,5 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface ContainerFactory<T : Container> : Identified {
 
-    fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent? = null): T
+    fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent? = null, slots: Int): T
 }

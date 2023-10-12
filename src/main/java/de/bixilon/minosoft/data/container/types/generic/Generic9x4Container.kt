@@ -25,7 +25,7 @@ class Generic9x4Container(connection: PlayConnection, type: ContainerType, title
     companion object : ContainerFactory<Generic9x4Container> {
         override val identifier: ResourceLocation = "minecraft:generic_9x4".toResourceLocation()
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): Generic9x4Container {
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): Generic9x4Container {
             return Generic9x4Container(connection, type, title)
         }
     }

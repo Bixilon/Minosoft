@@ -25,7 +25,7 @@ class SmokerContainer(connection: PlayConnection, type: ContainerType, title: Ch
     companion object : ContainerFactory<SmokerContainer> {
         override val identifier: ResourceLocation = "minecraft:smoker".toResourceLocation()
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): SmokerContainer {
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): SmokerContainer {
             return SmokerContainer(connection, type, title)
         }
     }

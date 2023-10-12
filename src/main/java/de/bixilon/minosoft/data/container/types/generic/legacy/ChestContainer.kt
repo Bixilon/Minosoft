@@ -11,22 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.types.generic
+package de.bixilon.minosoft.data.container.types.generic.legacy
 
+import de.bixilon.minosoft.data.container.types.generic.*
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class Generic9x3Container(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : GenericContainer(3, connection, type, title) {
 
-    companion object : ContainerFactory<Generic9x3Container> {
-        override val identifier: ResourceLocation = "minecraft:generic_9x3".toResourceLocation()
+object ChestContainer : ContainerFactory<GenericContainer> {
+    override val identifier = minecraft("chest")
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): Generic9x3Container {
-            return Generic9x3Container(connection, type, title)
+    override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): GenericContainer {
+        val factory = when (slots) {
+            9 -> Generic9x1Container
+            18 -> Generic9x2Container
+            27 -> Generic9x3Container
+            36 -> Generic9x4Container
+            45 -> Generic9x5Container
+            54 -> Generic9x6Container
+            else -> throw IllegalArgumentException("Invalid slot count for chest $slots")
         }
+        return factory.build(connection, type, title, slots)
     }
 }

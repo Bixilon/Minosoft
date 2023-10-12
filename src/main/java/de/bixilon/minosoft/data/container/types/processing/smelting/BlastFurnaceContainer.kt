@@ -25,7 +25,7 @@ class BlastFurnaceContainer(connection: PlayConnection, type: ContainerType, tit
     companion object : ContainerFactory<BlastFurnaceContainer> {
         override val identifier: ResourceLocation = "minecraft:blast_furnace".toResourceLocation()
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): BlastFurnaceContainer {
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): BlastFurnaceContainer {
             return BlastFurnaceContainer(connection, type, title)
         }
     }

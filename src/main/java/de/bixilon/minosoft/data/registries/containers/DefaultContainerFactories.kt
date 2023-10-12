@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,8 @@ import de.bixilon.minosoft.data.container.types.CraftingContainer
 import de.bixilon.minosoft.data.container.types.EnchantingContainer
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.container.types.generic.*
+import de.bixilon.minosoft.data.container.types.generic.legacy.ChestContainer
+import de.bixilon.minosoft.data.container.types.generic.legacy.ShulkerBoxContainer
 import de.bixilon.minosoft.data.container.types.processing.smelting.BlastFurnaceContainer
 import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceContainer
 import de.bixilon.minosoft.data.container.types.processing.smelting.SmokerContainer
@@ -25,18 +27,12 @@ import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 object DefaultContainerFactories : DefaultFactory<ContainerFactory<*>>(
     PlayerInventory,
 
-    Generic9x1Container,
-    Generic9x2Container,
-    Generic9x3Container,
-    Generic9x4Container,
-    Generic9x5Container,
-    Generic9x6Container,
+    ChestContainer, ShulkerBoxContainer,
+    Generic9x1Container, Generic9x2Container, Generic9x3Container, Generic9x4Container, Generic9x5Container, Generic9x6Container,
 
     CraftingContainer,
 
-    BlastFurnaceContainer,
-    FurnaceContainer,
-    SmokerContainer,
+    BlastFurnaceContainer, FurnaceContainer, SmokerContainer,
 
     EnchantingContainer,
 )
