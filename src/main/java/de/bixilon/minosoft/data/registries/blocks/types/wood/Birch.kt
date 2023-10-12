@@ -18,10 +18,15 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
+import de.bixilon.minosoft.gui.rendering.tint.tints.StaticTintProvider
 
 interface Birch {
 
     class Leaves(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : LeavesBlock(identifier, settings), Birch {
+        override val tintProvider = StaticTintProvider(0x80A755)
+
+        override fun initTint(manager: TintManager) = Unit
 
         companion object : BlockFactory<Leaves> {
             override val identifier = minecraft("birch_leaves")

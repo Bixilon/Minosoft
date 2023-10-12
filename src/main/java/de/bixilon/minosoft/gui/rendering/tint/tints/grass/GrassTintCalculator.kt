@@ -11,15 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint.tints
+package de.bixilon.minosoft.gui.rendering.tint.tints.grass
 
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.GrassColorModifiers
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
@@ -66,7 +66,7 @@ class GrassTintCalculator : TintProvider {
     }
 
     override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
-        if (blockState.block.identifier == MinecraftBlocks.GRASS_BLOCK) {
+        if (blockState.block is GrassBlock) { // dirt particles
             return Colors.WHITE
         }
         return getBlockColor(biome)

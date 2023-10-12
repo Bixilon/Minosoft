@@ -11,21 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint.tints
+package de.bixilon.minosoft.gui.rendering.tint.tints.fluid
 
-import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
-object StemTintCalculator : TintProvider {
+object WaterTintProvider : TintProvider {
 
+    // cauldron
     override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        if (blockState !is PropertyBlockState) return -1
-        val age = blockState.properties[BlockProperties.AGE]?.toInt() ?: return -1
+        return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
+    }
 
-        return ((age * 32) shl 16) or ((0xFF - age * 8) shl 8) or (age * 4)
+    override fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, x: Int, y: Int, z: Int): Int {
+        return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
     }
 }

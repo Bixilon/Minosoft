@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
-import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -33,7 +32,6 @@ abstract class Item(
     override val translationKey: ResourceLocation = identifier.translation("item")
 
     open var model: ItemRender? = null
-    var tintProvider: TintProvider? = null
 
     override fun toString(): String {
         return identifier.toString()

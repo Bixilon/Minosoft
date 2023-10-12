@@ -14,21 +14,23 @@
 package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.types.building.plants.DoublePlant
+import de.bixilon.minosoft.data.registries.blocks.types.legacy.LegacyBlock
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.tint.tints.*
+import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
+import de.bixilon.minosoft.gui.rendering.tint.tints.StaticTintProvider
+import de.bixilon.minosoft.gui.rendering.tint.tints.fluid.WaterTintProvider
+import de.bixilon.minosoft.gui.rendering.tint.tints.plants.StemTintCalculator
+import de.bixilon.minosoft.gui.rendering.tint.tints.plants.SugarCaneTintCalculator
+import de.bixilon.minosoft.gui.rendering.tint.tints.redstone.RedstoneWireTintCalculator
 
 @Deprecated("directly in integrated registries")
 object DefaultTints {
 
     fun init(manager: TintManager) {
-        manager.applyTo(setOf(MinecraftBlocks.GRASS_BLOCK, MinecraftBlocks.FERN, MinecraftBlocks.GRASS, MinecraftBlocks.POTTED_FERN), manager.grassTintCalculator)
-        manager.applyTo(setOf(MinecraftBlocks.LARGE_FERN, MinecraftBlocks.TALL_GRASS, DoublePlant.UpperFlowerBlock.identifier), TallGrassTintCalculator(manager.grassTintCalculator)) // TODO: upper flower block should only tint if using grass or fern
-        manager.applyTo(setOf(MinecraftBlocks.SPRUCE_LEAVES), StaticTintProvider(0x619961))
-        manager.applyTo(setOf(MinecraftBlocks.BIRCH_LEAVES), StaticTintProvider(0x80A755))
-        manager.applyTo(setOf(MinecraftBlocks.OAK_LEAVES, MinecraftBlocks.JUNGLE_LEAVES, MinecraftBlocks.ACACIA_LEAVES, MinecraftBlocks.DARK_OAK_LEAVES, MinecraftBlocks.VINE), manager.foliageTintCalculator)
+        manager.applyTo(setOf(MinecraftBlocks.POTTED_FERN), manager.grassTintCalculator)
         manager.applyTo(setOf(MinecraftBlocks.REDSTONE_WIRE), RedstoneWireTintCalculator)
-        manager.applyTo(setOf(MinecraftBlocks.WATER_CAULDRON, MinecraftBlocks.CAULDRON, MinecraftBlocks.WATER), WaterTintProvider)
+        manager.applyTo(setOf(MinecraftBlocks.WATER_CAULDRON, MinecraftBlocks.CAULDRON), WaterTintProvider)
         manager.applyTo(setOf(MinecraftBlocks.SUGAR_CANE), SugarCaneTintCalculator(manager.grassTintCalculator))
         manager.applyTo(setOf(MinecraftBlocks.ATTACHED_MELON_STEM, MinecraftBlocks.ATTACHED_PUMPKIN_STEM), StaticTintProvider(0xE0C71C))
         manager.applyTo(setOf(MinecraftBlocks.MELON_STEM, MinecraftBlocks.PUMPKIN_STEM), StemTintCalculator)
@@ -37,8 +39,17 @@ object DefaultTints {
 
     private fun TintManager.applyTo(names: Set<ResourceLocation>, provider: TintProvider) {
         for (name in names) {
-            connection.registries.block[name]?.tintProvider = provider
-            connection.registries.item[name]?.tintProvider = provider
+            when (val block = connection.registries.block[name]) {
+                is LegacyBlock -> block.tintProvider = provider
+                is PixLyzerBlock -> block.tintProvider = provider
+                null -> Unit
+                else -> throw IllegalArgumentException("$name should set its tint itself!")
+            }
+            when (val item = connection.registries.item[name]) {
+                is PixLyzerItem -> item.tintProvider = provider
+                null -> Unit
+                else -> throw IllegalArgumentException("$name should set its tint itself!")
+            }
         }
     }
 }

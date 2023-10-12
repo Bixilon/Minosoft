@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
-import de.bixilon.minosoft.gui.rendering.tint.tints.WaterTintProvider
+import de.bixilon.minosoft.gui.rendering.tint.tints.fluid.WaterTintProvider
 
 class WaterFluidModel : FluidModel {
     override val tint: TintProvider = WaterTintProvider

@@ -23,11 +23,14 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTinted
 
-open class GrassBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SnowyBlock(identifier, settings), FullOpaqueBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item> {
+open class GrassBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SnowyBlock(identifier, settings), FullOpaqueBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, GrassTinted {
     override val item: Item = this::item.inject(identifier)
     override val hardness get() = 0.6f
     override val legacyModelName get() = minecraft("grass")
+    override val tintProvider: TintProvider? = null
 
 
     companion object : BlockFactory<GrassBlock> {

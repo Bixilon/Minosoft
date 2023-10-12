@@ -25,17 +25,20 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Item(resourceLocation), DurableItem, StackableItem {
+open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Item(resourceLocation), DurableItem, StackableItem, TintedBlock {
     override val rarity: Rarities = data["rarity"]?.toInt()?.let { Rarities[it] } ?: Rarities.COMMON
     override val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
     override val maxDurability: Int = data["max_damage"]?.toInt() ?: 1
     val isFireResistant: Boolean = data["is_fire_resistant"]?.toBoolean() ?: false
     override val translationKey: ResourceLocation = data["translation_key"]?.toResourceLocation() ?: super.translationKey
+    override var tintProvider: TintProvider? = null
 
 
     companion object : ResourceLocationCodec<Item>, PixLyzerItemFactory<Item>, MultiClassFactory<Item> {

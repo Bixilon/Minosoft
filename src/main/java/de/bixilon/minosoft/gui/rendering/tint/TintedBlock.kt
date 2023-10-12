@@ -11,21 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint.tints
+package de.bixilon.minosoft.gui.rendering.tint
 
-import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+interface TintedBlock {
+    val tintProvider: TintProvider?
 
-object WaterTintProvider : TintProvider {
-
-    // cauldron
-    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
-    }
-
-    override fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, x: Int, y: Int, z: Int): Int {
-        return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
-    }
+    fun initTint(manager: TintManager) = Unit
 }

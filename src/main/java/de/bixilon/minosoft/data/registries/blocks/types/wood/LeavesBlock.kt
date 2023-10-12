@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.wood
 
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
@@ -34,11 +35,19 @@ import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
 import de.bixilon.minosoft.data.registries.item.items.tool.sword.SwordItem
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.CustomBlockCulling
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, BlockStateBuilder, ToolRequirement, CustomDiggingBlock, WaterloggableBlock, BlockWithItem<Item>, LightedBlock {
+abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, BlockStateBuilder, ToolRequirement, CustomDiggingBlock, WaterloggableBlock, BlockWithItem<Item>, LightedBlock, TintedBlock {
     override val hardness get() = 0.2f
     override val item: Item = this::item.inject(identifier)
+    override val tintProvider: TintProvider? = null
+
+    override fun initTint(manager: TintManager) {
+        this::tintProvider.forceSet(manager.foliageTintCalculator)
+    }
 
     override fun buildState(settings: BlockStateSettings): BlockState {
         return PropertyBlockState(this, settings)

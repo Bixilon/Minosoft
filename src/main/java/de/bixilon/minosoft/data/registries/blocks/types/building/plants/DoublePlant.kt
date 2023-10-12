@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.building.plants
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.EnumProperty
@@ -39,6 +40,10 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.PickedBlockRender
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
+import de.bixilon.minosoft.gui.rendering.tint.tints.grass.TallGrassTintCalculator
 import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, FullOutlinedBlock, RandomOffsetBlock, InstantBreakableBlock, ModelChooser, DoubleSizeBlock {
@@ -93,7 +98,12 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         }
     }
 
-    open class TallGrass(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : DoublePlant(identifier, settings) {
+    open class TallGrass(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : DoublePlant(identifier, settings), TintedBlock {
+        override val tintProvider: TintProvider? = null
+
+        override fun initTint(manager: TintManager) {
+            this::tintProvider.forceSet(TallGrassTintCalculator(manager.grassTintCalculator))
+        }
 
         companion object : BlockFactory<TallGrass> {
             override val identifier = minecraft("tall_grass")
@@ -102,8 +112,13 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         }
     }
 
-    open class LargeFern(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : DoublePlant(identifier, settings), FlatteningRenamedModel {
+    open class LargeFern(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : DoublePlant(identifier, settings), FlatteningRenamedModel, TintedBlock {
         override val legacyModelName get() = minecraft("double_fern")
+        override val tintProvider: TintProvider? = null
+
+        override fun initTint(manager: TintManager) {
+            this::tintProvider.forceSet(TallGrassTintCalculator(manager.grassTintCalculator))
+        }
 
         companion object : BlockFactory<LargeFern> {
             override val identifier = minecraft("large_fern")
@@ -132,10 +147,15 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         }
     }
 
-    class UpperFlowerBlock(settings: BlockSettings) : DoublePlant(Companion.identifier, settings) {
+    class UpperFlowerBlock(settings: BlockSettings) : DoublePlant(Companion.identifier, settings), TintedBlock {
+        override val tintProvider: TintProvider? = null
 
         init {
             model = Model()
+        }
+
+        override fun initTint(manager: TintManager) {
+            this::tintProvider.forceSet(TallGrassTintCalculator(manager.grassTintCalculator)) // TODO: only tint if lower block is tinted
         }
 
         private class Model : PickedBlockRender {

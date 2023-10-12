@@ -48,6 +48,8 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -61,13 +63,14 @@ open class PixLyzerBlock(
     identifier: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Block(identifier, BlockSettings(Versions.AUTOMATIC, soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] })), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, OutlinedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock, WaterloggableBlock, CollidableBlock, ToolRequirement, BlockWithItem<Item> {
+) : Block(identifier, BlockSettings(Versions.AUTOMATIC, soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroup[it] })), FrictionBlock, JumpBlock, VelocityBlock, RandomOffsetBlock, OutlinedBlock, BlockStateBuilder, ReplaceableBlock, PotentialFullOpaqueBlock, WaterloggableBlock, CollidableBlock, ToolRequirement, BlockWithItem<Item>, TintedBlock {
     override val randomOffset: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
 
     override val friction = data["friction"]?.toFloat() ?: FrictionBlock.DEFAULT_FRICTION
     override val velocity = data["velocity_multiplier"]?.toFloat() ?: 1.0f // ToDo: They exist since ~1.15
 
     override val jumpBoost = data["jump_velocity_multiplier"]?.toFloat() ?: 1.0f
+    override var tintProvider: TintProvider? = null
 
     override var hardness: Float = 0.0f
     val requiresTool: Boolean

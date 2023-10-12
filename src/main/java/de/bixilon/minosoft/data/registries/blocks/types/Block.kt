@@ -30,7 +30,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.Pushi
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
-import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import kotlin.reflect.jvm.javaField
 
 abstract class Block(
@@ -43,9 +42,6 @@ abstract class Block(
     var model: BlockRender? = null
 
     override val translationKey: ResourceLocation = settings.translationKey ?: identifier.translation("block")
-
-    @Deprecated("Interface")
-    var tintProvider: TintProvider? = null
 
     val soundGroup = settings.soundGroup
 

@@ -11,21 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint.tints
+package de.bixilon.minosoft.gui.rendering.tint.tints.grass
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.text.formatting.color.Colors
-import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
-class SugarCaneTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
+interface GrassTinted : TintedBlock {
 
-    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        return grassTintCalculator.getBlockColor(blockState, biome, x, y, z, tintIndex)
-    }
-
-    override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {
-        return Colors.WHITE
+    override fun initTint(manager: TintManager) {
+        this::class.java.getDeclaredField("tintProvider").forceSet(this, manager.grassTintCalculator)
     }
 }

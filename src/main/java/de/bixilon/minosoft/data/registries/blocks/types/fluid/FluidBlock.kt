@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.fluid
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
@@ -29,14 +30,24 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.versions.Version
 import java.util.*
 
-abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FluidHolder, OutlinedBlock, LightedBlock, RandomDisplayTickable, CustomModel {
+abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FluidHolder, OutlinedBlock, LightedBlock, RandomDisplayTickable, CustomModel, TintedBlock {
     override val hardness: Float get() = Broken("Fluid is kind of unbreakable?")
     override val modelName: ResourceLocation? get() = null
+
+    override val tintProvider: TintProvider?
+        get() = fluid.nullCast<TintedBlock>()?.tintProvider
+
+    override fun initTint(manager: TintManager) {
+        fluid.nullCast<TintedBlock>()?.initTint(manager)
+    }
 
     override fun getOutlineShape(connection: PlayConnection, blockState: BlockState): VoxelShape {
         return VoxelShape(AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(blockState), 1.0f)))

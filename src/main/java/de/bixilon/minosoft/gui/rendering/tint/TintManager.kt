@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.gui.rendering.tint.tints.FoliageTintCalculator
-import de.bixilon.minosoft.gui.rendering.tint.tints.GrassTintCalculator
+import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTintCalculator
+import de.bixilon.minosoft.gui.rendering.tint.tints.plants.FoliageTintCalculator
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class TintManager(val connection: PlayConnection) {
@@ -35,44 +35,34 @@ class TintManager(val connection: PlayConnection) {
         grassTintCalculator.init(assetsManager)
         foliageTintCalculator.init(assetsManager)
 
+        for (block in connection.registries.block) {
+            if (block !is TintedBlock) continue
+            block.initTint(this)
+        }
+        for (item in connection.registries.item) {
+            if (item !is TintedBlock) continue
+            item.initTint(this)
+        }
+
         DefaultTints.init(this)
     }
 
-    private fun getAverageBlockTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, tintProvider: TintProvider, x: Int, y: Int, z: Int): IntArray {
-        // ToDo: biome blending?
-        val inChunkX = x and 0x0F
-        val inChunkZ = z and 0x0F
-        val biome = chunk.getBiome(inChunkX, y, inChunkZ)
+    fun getBlockTint(state: BlockState, biome: Biome?, x: Int, y: Int, z: Int): IntArray? {
+        if (state.block !is TintedBlock) return null
+        val tintProvider = state.block.tintProvider ?: return null
         val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
 
         for (tintIndex in tints.indices) {
-            tints[tintIndex] = tintProvider.getBlockColor(blockState, biome, x, y, z, tintIndex)
+            tints[tintIndex] = tintProvider.getBlockColor(state, biome, x, y, z, tintIndex)
         }
         return tints
     }
 
-    fun getAverageBlockTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, x: Int, y: Int, z: Int): IntArray? {
-        return getAverageBlockTint(chunk, neighbours, blockState, blockState.block.tintProvider ?: return null, x, y, z)
-    }
-
-    fun getAverageBlockTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, fluid: Fluid, x: Int, y: Int, z: Int): IntArray? {
-        return getAverageBlockTint(chunk, neighbours, blockState, fluid.model?.tint ?: return null, x, y, z)
-    }
-
-    fun getBlockTint(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): IntArray? {
-        val tintProvider = blockState.block.tintProvider ?: return null
-        val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
-
-        for (tintIndex in tints.indices) {
-            tints[tintIndex] = tintProvider.getBlockColor(blockState, biome, x, y, z, tintIndex)
-        }
-        return tints
-    }
-
-    fun getParticleTint(blockState: BlockState, x: Int, y: Int, z: Int): Int? {
-        val tintProvider = blockState.block.tintProvider ?: return null
+    fun getParticleTint(state: BlockState, x: Int, y: Int, z: Int): Int? {
+        if (state.block !is TintedBlock) return null
+        val tintProvider = state.block.tintProvider ?: return null
         val biome = connection.world.getBiome(x, y, z)
-        return tintProvider.getParticleColor(blockState, biome, x, y, z)
+        return tintProvider.getParticleColor(state, biome, x, y, z)
     }
 
     fun getParticleTint(blockState: BlockState, position: Vec3i): Int? {
@@ -89,6 +79,7 @@ class TintManager(val connection: PlayConnection) {
     }
 
     fun getItemTint(stack: ItemStack): IntArray? {
+        if (stack.item.item !is TintedBlock) return null
         val tintProvider = stack.item.item.tintProvider ?: return null
         val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
 

@@ -33,6 +33,8 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.WaterFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
+import de.bixilon.minosoft.gui.rendering.tint.tints.fluid.WaterTintProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.physics.entities.EntityPhysics
@@ -44,8 +46,9 @@ import de.bixilon.minosoft.physics.parts.input.InputPhysics.applyMovementInput
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resourceLocation), FluidEnterHandler, FluidCollisionHandler {
+class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resourceLocation), FluidEnterHandler, FluidCollisionHandler, TintedBlock {
     override val priority: Int get() = 0
+    override val tintProvider get() = WaterTintProvider
 
     override fun getVelocityMultiplier(connection: PlayConnection) = 0.014
 

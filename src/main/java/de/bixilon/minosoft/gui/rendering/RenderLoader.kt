@@ -22,6 +22,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
+import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
@@ -62,8 +63,6 @@ object RenderLoader {
 
         camera.init()
 
-        tints.init(connection.assetsManager)
-
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.labTime()})..." }
 
@@ -73,6 +72,7 @@ object RenderLoader {
         // Init stage
         val initLatch = ParentLatch(1, renderLatch)
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.labTime()})..." }
+        initLatch.inc(); runAsync { tints.init(connection.assetsManager); initLatch.dec() }
         textures.dynamicTextures.upload(initLatch)
         textures.initializeSkins(connection)
         textures.loadDefaultTextures()

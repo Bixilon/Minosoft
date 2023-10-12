@@ -22,6 +22,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -30,8 +32,9 @@ open class LegacyBlock(
     version: Version,
     registries: Registries,
     data: Map<String, Any>,
-) : Block(identifier, BlockSettings(version)), FullBlock, BlockStateBuilder, CustomModel {
+) : Block(identifier, BlockSettings(version)), FullBlock, BlockStateBuilder, CustomModel, TintedBlock {
     override var hardness: Float = 0.0f
+    override var tintProvider: TintProvider? = null
 
     override val modelName: ResourceLocation? = data["model"]?.toResourceLocation() ?: identifier
 

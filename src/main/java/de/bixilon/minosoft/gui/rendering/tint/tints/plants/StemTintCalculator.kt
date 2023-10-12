@@ -11,23 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.tint.tints
+package de.bixilon.minosoft.gui.rendering.tint.tints.plants
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 
-class TallGrassTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
-
-    fun getColor(blockState: BlockState, biome: Biome?): Int {
-        return grassTintCalculator.getBlockColor(biome) // TODO: check for top/bottom
-    }
+object StemTintCalculator : TintProvider {
 
     override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        return getColor(blockState, biome)
-    }
+        if (blockState !is PropertyBlockState) return -1
+        val age = blockState.properties[BlockProperties.AGE]?.toInt() ?: return -1
 
-    override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
-        return getColor(blockState, biome)
+        return ((age * 32) shl 16) or ((0xFF - age * 8) shl 8) or (age * 4)
     }
 }

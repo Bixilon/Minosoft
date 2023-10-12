@@ -29,6 +29,8 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTinted
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, OutlinedBlock, RandomOffsetBlock, InstantBreakableBlock {
@@ -50,8 +52,9 @@ abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Grass(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FernBlock(identifier, settings), FlatteningRenamedModel {
+    open class Grass(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FernBlock(identifier, settings), FlatteningRenamedModel, GrassTinted {
         override val legacyModelName get() = minecraft("tall_grass")
+        override val tintProvider: TintProvider? = null
 
         companion object : BlockFactory<Grass> {
             override val identifier = minecraft("grass")
@@ -60,7 +63,8 @@ abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) 
         }
     }
 
-    open class Fern(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FernBlock(identifier, settings) {
+    open class Fern(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FernBlock(identifier, settings), GrassTinted {
+        override val tintProvider: TintProvider? = null
 
         companion object : BlockFactory<Fern> {
             override val identifier = minecraft("fern")

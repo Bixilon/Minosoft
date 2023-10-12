@@ -146,7 +146,7 @@ class SolidSectionMesher(
                     }
 
 
-                    val tints = tints.getAverageBlockTint(chunk, neighbourChunks, state, x, y, z)
+                    val tints = tints.getBlockTint(state, chunk.getBiome(position.x and 0x0F, y, position.z and 0x0F), x, y, z)
                     var rendered = model.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints)
 
                     if (entity is BlockRender) {
