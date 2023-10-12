@@ -24,7 +24,7 @@ import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-object MinecraftRegistryFixer {
+object RegistriesFixer {
 
 
     fun register(connection: PlayConnection) {

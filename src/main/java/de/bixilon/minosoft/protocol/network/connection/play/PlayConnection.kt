@@ -38,7 +38,7 @@ import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
-import de.bixilon.minosoft.data.registries.fixer.MinecraftRegistryFixer
+import de.bixilon.minosoft.data.registries.fixer.RegistriesFixer
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -124,7 +124,7 @@ class PlayConnection(
             error.report()
             errored = true
         }
-        MinecraftRegistryFixer.register(this)
+        RegistriesFixer.register(this)
         DefaultChannelHandlers.register(this)
 
         network::connected.observe(this) {
