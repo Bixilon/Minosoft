@@ -188,7 +188,7 @@ class Registries(
 
         worker += WorkerTask(this::entityType) { entityType.update(pixlyzerData["entities"]?.toJsonObject(), version, this) }
 
-        worker += WorkerTask(this::motif) { motif.update(pixlyzerData["motives"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::motif) { motif.update(pixlyzerData["motives", "motif"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::soundEvent) { soundEvent.update(pixlyzerData["sound_events"]?.toJsonObject(), version, null) }
         worker += WorkerTask(this::soundGroup, dependencies = arrayOf(this::soundEvent)) { soundGroup.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
         worker += WorkerTask(this::particleType) { particleType.update(pixlyzerData["particles", "particle_type"]?.toJsonObject(), version, this) }

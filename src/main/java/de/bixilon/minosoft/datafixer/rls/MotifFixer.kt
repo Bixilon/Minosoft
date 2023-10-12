@@ -11,28 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer
+package de.bixilon.minosoft.datafixer.rls
 
-import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
-import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer
-import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer
-import de.bixilon.minosoft.datafixer.rls.MotifFixer
-import de.bixilon.minosoft.datafixer.rls.RegistryFixer
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
-object DataFixer {
-    val fixer = listOf(
-        EntityDataTypesFixer,
+object MotifFixer : ResourceLocationFixer(minosoft("motif")) {
 
-        BlockEntityFixer,
-        EntityAttributeFixer,
-        RegistryFixer,
-        MotifFixer,
-    )
-
-
-    fun load() {
-        for (fixer in this.fixer) {
-            fixer.load()
-        }
-    }
+    fun ResourceLocation.fixMotif() = fix(this)
 }

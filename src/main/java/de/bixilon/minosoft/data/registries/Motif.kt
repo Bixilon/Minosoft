@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -29,11 +29,13 @@ data class Motif(
     }
 
     companion object : ResourceLocationCodec<Motif> {
+        const val DEFAULT_SIZE = 16
+
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Motif {
             return Motif(
                 identifier = resourceLocation,
-                width = data["width"].unsafeCast(),
-                height = data["height"].unsafeCast(),
+                width = data["width"]?.toInt() ?: DEFAULT_SIZE,
+                height = data["height"]?.toInt() ?: DEFAULT_SIZE,
             )
         }
     }
