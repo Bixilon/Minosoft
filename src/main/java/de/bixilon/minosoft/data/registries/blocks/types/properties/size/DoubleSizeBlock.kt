@@ -11,21 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.properties.offset
+package de.bixilon.minosoft.data.registries.blocks.types.properties.size
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
-
-interface RandomOffsetBlock : OffsetBlock {
-    val randomOffset: RandomOffsetTypes? // TODO: make non nullable
-
-
-    override fun offsetShape(position: Vec3i): Vec3 {
-        val offset = this.randomOffset ?: return Vec3.EMPTY_INSTANCE
-        return position.getWorldOffset(offset)
-    }
-
-    override fun offsetModel(position: Vec3i): Vec3 = offsetShape(position)
-}
+interface DoubleSizeBlock : MultiSizeBlock

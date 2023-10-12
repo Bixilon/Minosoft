@@ -25,7 +25,7 @@ import de.bixilon.minosoft.camera.target.targets.GenericTarget
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.shapes.voxel.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -101,7 +101,7 @@ class TargetHandler(
             return null
         }
         var shape = state.block.getOutlineShape(camera.connection, state) ?: return null
-        state.block.nullCast<RandomOffsetBlock>()?.offsetShape(blockPosition)?.let { shape += it }
+        state.block.nullCast<OffsetBlock>()?.offsetShape(blockPosition)?.let { shape += it }
 
         shape += blockPosition
 

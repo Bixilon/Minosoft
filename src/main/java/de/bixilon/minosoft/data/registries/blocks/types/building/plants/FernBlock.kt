@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.Inst
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
-import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.FullOutlinedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -31,7 +31,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, FullOutlinedBlock, RandomOffsetBlock, InstantBreakableBlock {
+abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, OutlinedBlock, RandomOffsetBlock, InstantBreakableBlock {
     override val randomOffset get() = RandomOffsetTypes.XYZ
     override val item: Item = this::item.inject(identifier)
 
@@ -39,7 +39,6 @@ abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) 
 
     companion object {
         private val SHAPE = VoxelShape(0.125, 0.0, 0.125, 0.875, 0.8125, 0.875)
-
     }
 
     open class DeadBush(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : FernBlock(identifier, settings) {

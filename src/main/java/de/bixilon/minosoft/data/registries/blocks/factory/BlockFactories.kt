@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.bee.HoneyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.plants.DoublePlant
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
@@ -74,6 +75,7 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
 
     SnowBlock, SnowLayerBlock,
     FernBlock.DeadBush, FernBlock.Grass, FernBlock.Fern,
+    DoublePlant.Sunflower, DoublePlant.Lilac, DoublePlant.TallGrass, DoublePlant.LargeFern, DoublePlant.RoseBush, DoublePlant.Peony, DoublePlant.UpperFlowerBlock,
 ) {
 
     fun build(name: ResourceLocation, registries: Registries, settings: BlockSettings): Block? {

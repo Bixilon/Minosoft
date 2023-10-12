@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
@@ -138,7 +138,7 @@ class SolidSectionMesher(
                     }
 
                     var offset: Vec3? = null
-                    if (state.block is RandomOffsetBlock) {
+                    if (state.block is OffsetBlock) {
                         offset = state.block.offsetModel(position)
                         floatOffset[0] += offset.x
                         floatOffset[1] += offset.y

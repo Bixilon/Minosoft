@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.registries.blocks.types.building.plants.DoublePlant
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.tint.tints.*
 
@@ -22,7 +23,7 @@ object DefaultTints {
 
     fun init(manager: TintManager) {
         manager.applyTo(setOf(MinecraftBlocks.GRASS_BLOCK, MinecraftBlocks.FERN, MinecraftBlocks.GRASS, MinecraftBlocks.POTTED_FERN), manager.grassTintCalculator)
-        manager.applyTo(setOf(MinecraftBlocks.LARGE_FERN, MinecraftBlocks.TALL_GRASS), TallGrassTintCalculator(manager.grassTintCalculator))
+        manager.applyTo(setOf(MinecraftBlocks.LARGE_FERN, MinecraftBlocks.TALL_GRASS, DoublePlant.UpperFlowerBlock.identifier), TallGrassTintCalculator(manager.grassTintCalculator)) // TODO: upper flower block should only tint if using grass or fern
         manager.applyTo(setOf(MinecraftBlocks.SPRUCE_LEAVES), StaticTintProvider(0x619961))
         manager.applyTo(setOf(MinecraftBlocks.BIRCH_LEAVES), StaticTintProvider(0x80A755))
         manager.applyTo(setOf(MinecraftBlocks.OAK_LEAVES, MinecraftBlocks.JUNGLE_LEAVES, MinecraftBlocks.ACACIA_LEAVES, MinecraftBlocks.DARK_OAK_LEAVES, MinecraftBlocks.VINE), manager.foliageTintCalculator)

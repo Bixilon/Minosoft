@@ -50,7 +50,7 @@ abstract class SnowyBlock(identifier: ResourceLocation, settings: BlockSettings)
     ) : PickedBlockRender {
         override val default: BlockRender? get() = normal
 
-        override fun pick(neighbours: Array<BlockState?>): BlockRender? {
+        override fun pick(state: BlockState, neighbours: Array<BlockState?>): BlockRender? {
             val above = neighbours[Directions.O_UP] ?: return normal
             if (above.block is AbstractSnowBlock) return snowy
 

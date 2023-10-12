@@ -30,7 +30,7 @@ import java.util.*
 interface PickedBlockRender : BlockRender {
     val default: BlockRender?
 
-    fun pick(neighbours: Array<BlockState?>): BlockRender?
+    fun pick(state: BlockState, neighbours: Array<BlockState?>): BlockRender?
 
 
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
@@ -38,7 +38,7 @@ interface PickedBlockRender : BlockRender {
     }
 
     override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        return pick(neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints) ?: false
+        return pick(state, neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints) ?: false
     }
 
     override fun getProperties(direction: Directions): SideProperties? {
