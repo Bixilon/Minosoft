@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumn
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
+import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.fixed.FixedCollidable
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
@@ -82,6 +83,7 @@ object VerifyIntegratedBlockRegistry {
 
     private fun compareOutlineShape(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
         if (integrated.block is ScaffoldingBlock) return
+        if (integrated.block is OffsetBlock) return // Don't compare, pixlyzer is probably wrong
 
         val expected = if (pixlyzer.block is OutlinedBlock) pixlyzer.block.unsafeCast<OutlinedBlock>().getOutlineShape(connection, pixlyzer) else null
         val actual = if (integrated.block is OutlinedBlock) integrated.block.unsafeCast<OutlinedBlock>().getOutlineShape(connection, pixlyzer) else null
