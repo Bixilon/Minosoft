@@ -28,4 +28,10 @@ class IntProperty(
 
         return value
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is IntProperty) return false
+        if (other.name != name) return false
+        return other.range == range
+    }
 }

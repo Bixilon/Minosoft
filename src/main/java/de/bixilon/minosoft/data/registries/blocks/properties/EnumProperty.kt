@@ -29,4 +29,11 @@ class EnumProperty<T : Enum<*>>(
 
         return value
     }
+
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is EnumProperty<*>) return false
+        if (other.name != name) return false
+        return other.values == values && allowed == other.allowed
+    }
 }

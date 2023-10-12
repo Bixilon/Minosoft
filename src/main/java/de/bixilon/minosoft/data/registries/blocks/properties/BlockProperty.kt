@@ -23,4 +23,13 @@ abstract class BlockProperty<T>(
     }
 
     abstract fun parse(value: Any): T
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is BlockProperty<*>) return false
+        return other.name == name
+    }
 }

@@ -21,4 +21,9 @@ class BooleanProperty(name: String) : BlockProperty<Boolean>(name) {
     override fun parse(value: Any): Boolean {
         return value.toBoolean()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is BooleanProperty) return false
+        return other.name == name
+    }
 }
