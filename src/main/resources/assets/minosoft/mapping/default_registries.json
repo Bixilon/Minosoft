@@ -67,8 +67,11 @@
       "minecraft:wither_skull": {
         "id": 66
       },
-      "minecraft:llama_spit": {
+      "minecraft:shulker_bullet": {
         "id": 67
+      },
+      "minecraft:llama_spit": {
+        "id": 68
       },
       "minecraft:falling_block": {
         "id": 70
@@ -82,6 +85,9 @@
       "minecraft:potion": {
         "id": 73
       },
+      "minecraft:falling_dragon_egg": {
+        "id": 74
+      },
       "minecraft:experience_bottle": {
         "id": 75
       },
@@ -91,13 +97,19 @@
       "minecraft:leash_knot": {
         "id": 77
       },
-      "minecraft:evoker_fangs": {
+      "minecraft:armor_stand": {
         "id": 78
+      },
+      "minecraft:evoker_fangs": {
+        "id": 79
       },
       "minecraft:fishing_bobber": {
         "id": 90
       },
       "minecraft:spectral_arrow": {
+        "id": 91
+      },
+      "minecraft:tipped_arrow": {
         "id": 91
       },
       "minecraft:dragon_fireball": {

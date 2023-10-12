@@ -57,6 +57,7 @@
       "FLOAT",
       "STRING",
       "ITEM_STACK",
+      "VEC3I",
       "ROTATION"
     ],
     "57": [

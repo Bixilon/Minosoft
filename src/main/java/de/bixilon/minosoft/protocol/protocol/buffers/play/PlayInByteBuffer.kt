@@ -188,18 +188,14 @@ class PlayInByteBuffer : InByteBuffer {
                 data[index] = type.type.read(this)
                 item = readUnsignedByte()
             }
-        } else {
-            var index = readUnsignedByte()
-            while (index != 0xFF) {
-                val id: Int = if (versionId < V_1_9_1_PRE1) {
-                    readUnsignedByte()
-                } else {
-                    readVarInt()
-                }
-                val type = connection.registries.entityDataTypes[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
-                data[index] = type.type.read(this)
-                index = readUnsignedByte()
-            }
+            return data
+        }
+        var index = readUnsignedByte()
+        while (index != 0xFF) {
+            val id: Int = if (versionId < V_1_9_1_PRE1) readUnsignedByte() else readVarInt()
+            val type = connection.registries.entityDataTypes[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
+            data[index] = type.type.read(this)
+            index = readUnsignedByte()
         }
         return data
     }
