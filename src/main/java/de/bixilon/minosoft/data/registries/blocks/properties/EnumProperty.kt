@@ -17,8 +17,8 @@ import de.bixilon.kutil.enums.ValuesEnum
 
 class EnumProperty<T : Enum<*>>(
     name: String,
-    private val values: ValuesEnum<T>,
-    private val allowed: Set<T>? = null,
+    val values: ValuesEnum<T>,
+    val allowed: Set<T>? = null,
 ) : BlockProperty<T>(name) {
 
     override fun parse(value: Any): T {
@@ -35,5 +35,9 @@ class EnumProperty<T : Enum<*>>(
         if (other !is EnumProperty<*>) return false
         if (other.name != name) return false
         return other.values == values && allowed == other.allowed
+    }
+
+    override fun iterator(): Iterator<T> {
+        return allowed?.iterator() ?: values.iterator()
     }
 }

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.SnowyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
+import java.util.*
 
 @Deprecated("Fallback data")
 object BlockProperties {
@@ -117,6 +118,7 @@ object BlockProperties {
 
     val AXIS = EnumProperty("axis", Axes).register()
     val FACING = EnumProperty("facing", Directions).register()
+    val FACING_HORIZONTAL = EnumProperty("facing", Directions, EnumSet.of(Directions.NORTH, Directions.SOUTH, Directions.WEST, Directions.EAST))
     val ROTATION = IntProperty("rotation").register()
     val ORIENTATION = EnumProperty("orientation", Orientations).register()
 

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.properties.list
 
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import java.util.*
 
 class MapPropertyList : BlockPropertyList {
     private var properties: MutableMap<String, BlockProperty<*>> = HashMap(0, 0.1f)
@@ -32,5 +33,31 @@ class MapPropertyList : BlockPropertyList {
     fun shrink(): BlockPropertyList {
         if (properties.isEmpty()) return EmptyPropertyList
         return this
+    }
+
+    private fun unpack(iterator: Stack<BlockProperty<*>>, map: Map<BlockProperty<*>, Any>, entries: MutableList<Map<BlockProperty<*>, Any>>) {
+        if (iterator.size == 0) {
+            entries += map
+            return
+        }
+        val property = iterator.pop()
+        for (value in property) {
+            val map = map.toMutableMap()
+            map[property] = value!!
+
+            unpack(iterator, map, entries)
+        }
+        iterator.push(property)
+    }
+
+    override fun unpack(): List<Map<BlockProperty<*>, Any>> {
+        val entries: MutableList<Map<BlockProperty<*>, Any>> = mutableListOf()
+        val stack = Stack<BlockProperty<*>>()
+        for (property in this.properties.values) {
+            stack.push(property)
+        }
+        unpack(stack, emptyMap(), entries)
+
+        return entries
     }
 }

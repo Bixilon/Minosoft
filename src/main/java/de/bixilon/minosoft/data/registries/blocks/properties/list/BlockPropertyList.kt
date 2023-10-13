@@ -18,8 +18,10 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 interface BlockPropertyList {
     operator fun get(name: String): BlockProperty<*>?
 
+    fun unpack(): List<Map<BlockProperty<*>, Any>>
 
     companion object {
+
         fun of(vararg properties: BlockProperty<*>): BlockPropertyList {
             if (properties.isEmpty()) return EmptyPropertyList
 

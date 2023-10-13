@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties.list
 
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+
 object EmptyPropertyList : BlockPropertyList {
     override fun get(name: String) = null
+
+    override fun unpack(): List<Map<BlockProperty<*>, Any>> = emptyList()
 }

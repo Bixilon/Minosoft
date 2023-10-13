@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.properties
 
 abstract class BlockProperty<T>(
     val name: String,
-) {
+) : Iterable<T> {
 
     override fun toString(): String {
         return name

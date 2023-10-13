@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties.primitives
 
+import de.bixilon.kutil.collections.iterator.EmptyIterator.emptyIterator
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
@@ -33,5 +34,9 @@ class IntProperty(
         if (other !is IntProperty) return false
         if (other.name != name) return false
         return other.range == range
+    }
+
+    override fun iterator(): Iterator<Int> {
+        return range?.iterator() ?: emptyIterator()
     }
 }

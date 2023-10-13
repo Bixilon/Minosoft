@@ -17,6 +17,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 
 class BooleanProperty(name: String) : BlockProperty<Boolean>(name) {
+    val values get() = VALUES
 
     override fun parse(value: Any): Boolean {
         return value.toBoolean()
@@ -25,5 +26,13 @@ class BooleanProperty(name: String) : BlockProperty<Boolean>(name) {
     override fun equals(other: Any?): Boolean {
         if (other !is BooleanProperty) return false
         return other.name == name
+    }
+
+    override fun iterator(): Iterator<Boolean> {
+        return values.iterator()
+    }
+
+    companion object {
+        val VALUES = booleanArrayOf(false, true)
     }
 }
