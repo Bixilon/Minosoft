@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWit
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
+import de.bixilon.minosoft.data.world.chunk.update.WorldUpdateEvent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
@@ -38,6 +39,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class BlockOutlineRenderer(
@@ -71,6 +73,12 @@ class BlockOutlineRenderer(
         this.profile::collisions.observe(this) { reload = true }
         this.profile::outlineColor.observe(this) { reload = true }
         this.profile::collisionColor.observe(this) { reload = true }
+
+        connection.events.listen<WorldUpdateEvent> {
+            if (connection.version.flattened) return@listen
+            // neighbour blocks might change other properties
+            reload = true
+        }
     }
 
     private fun draw() {
