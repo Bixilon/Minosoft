@@ -39,7 +39,7 @@ abstract class KeyHandler {
 
     fun release() {
         if (!isPressed) return
-        val task = this.task ?: Broken()
+        val task = this.task ?: Broken("Not pressed!")
         TaskScheduler -= task
         this.task = null
         this.isPressed = false

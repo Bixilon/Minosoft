@@ -48,7 +48,12 @@ import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequir
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
@@ -79,8 +84,30 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         return AdvancedBlockState(this, settings.properties, 0, shape, shape, settings.lightProperties, settings.solidRenderer)
     }
 
-    fun cycleOpen(connection: PlayConnection, position: BlockPosition, state: BlockState) {
+    private fun legacyCycleOpen(chunk: Chunk, inChunk: InChunkPosition, state: BlockState) {
+        chunk.apply(ChunkLocalBlockUpdate.LocalUpdate(inChunk, state.withProperties(OPEN to !state[OPEN])))
+    }
 
+    fun cycleOpen(connection: PlayConnection, position: BlockPosition, state: BlockState) {
+        // TODO: move that to DoubleSizeBlock?
+
+        val chunk = connection.world.chunks[position.chunkPosition] ?: return
+
+        val inChunk = position.inChunkPosition
+        val top = isTop(state, connection)
+
+        val otherPosition = inChunk + if (top) Directions.DOWN else Directions.UP
+        val otherState = chunk[otherPosition] ?: return
+        if (otherState.block !is DoorBlock) return
+
+
+        if (!connection.version.flattened) return legacyCycleOpen(chunk, if (top) otherPosition else inChunk, if (top) otherState else state)
+
+        val nextOpen = !state[OPEN]
+        chunk.apply(listOf(
+            ChunkLocalBlockUpdate.LocalUpdate(inChunk, state.withProperties(OPEN to nextOpen)),
+            ChunkLocalBlockUpdate.LocalUpdate(otherPosition, otherState.withProperties(OPEN to nextOpen)),
+        ))
     }
 
     private fun getShape(hinge: Sides, open: Boolean, facing: Directions): VoxelShape {
