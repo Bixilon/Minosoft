@@ -156,7 +156,7 @@ object VerifyIntegratedBlockRegistry {
                 continue
             }
             val parsed = PixLyzerBlock.deserialize(registries, identifier, value).unsafeCast<PixLyzerBlock>()
-            registries.block.flattened(parsed, value, registries, false)
+            registries.block.flattened(parsed, integrated.properties, value, registries, false)
             parsed.postInit(registries)
             parsed.inject(registries)
 

@@ -21,6 +21,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactories
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
+import de.bixilon.minosoft.data.registries.blocks.properties.list.BlockPropertyList
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -51,7 +52,7 @@ class BlockRegistry(
         if (statesData == null) {
             // block has only a single state
             if (id == null) throw IllegalArgumentException("Missing id (block=$block)!")
-            val settings = BlockStateSettings.of(block, registries, data)
+            val settings = BlockStateSettings.of(block, block.properties, registries, data)
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
             block.updateStates(setOf(state), state, emptyMap())
             registries.blockState[id, meta] = state
@@ -63,7 +64,7 @@ class BlockRegistry(
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
         for (stateJson in statesData) {
-            val settings = BlockStateSettings.of(block, registries, stateJson.unsafeCast())
+            val settings = BlockStateSettings.of(block, block.properties, registries, stateJson.unsafeCast())
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
 
             states += state
@@ -83,12 +84,12 @@ class BlockRegistry(
         block.updateStates(states, default, properties.mapValues { it.value.toTypedArray() })
     }
 
-    fun flattened(block: Block, data: JsonObject, registries: Registries, addBlockStates: Boolean) {
+    fun flattened(block: Block, list: BlockPropertyList?, data: JsonObject, registries: Registries, addBlockStates: Boolean) {
         val properties: MutableMap<BlockProperty<*>, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
         for ((stateId, stateJson) in data["states"].asAnyMap()) {
-            val settings = BlockStateSettings.of(block, registries, stateJson.unsafeCast())
+            val settings = BlockStateSettings.of(block, list, registries, stateJson.unsafeCast())
             val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
 
             states += state
@@ -122,7 +123,7 @@ class BlockRegistry(
         }
 
         if (flattened) {
-            flattened(block, data, registries, true)
+            flattened(block, block.properties, data, registries, true)
         } else {
             legacy(block, data, registries)
         }
