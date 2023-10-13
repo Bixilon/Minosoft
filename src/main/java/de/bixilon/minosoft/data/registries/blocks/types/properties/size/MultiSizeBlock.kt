@@ -13,4 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.properties.size
 
-interface MultiSizeBlock
+import de.bixilon.minosoft.data.registries.blocks.handler.entity.BlockBreakHandler
+import de.bixilon.minosoft.data.registries.blocks.handler.entity.BlockPlaceHandler
+
+/**
+ * Something that just exist in multiple blocks (e.g. doors or beds)
+ */
+interface MultiSizeBlock : BlockBreakHandler, BlockPlaceHandler

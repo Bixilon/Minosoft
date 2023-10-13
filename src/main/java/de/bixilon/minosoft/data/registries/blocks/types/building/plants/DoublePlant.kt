@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.building.plants
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
@@ -44,6 +45,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.TallGrassTintCalculator
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, FullOutlinedBlock, RandomOffsetBlock, InstantBreakableBlock, ModelChooser, DoubleSizeBlock {
@@ -53,6 +55,21 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
     override fun register(version: Version, list: MapPropertyList) {
         super<Block>.register(version, list)
         list += HALF
+    }
+
+    override fun isTop(state: BlockState, connection: PlayConnection): Boolean {
+        if (connection.version.flattened) return super.isTop(state, connection)
+        return state.block is UpperFlowerBlock
+    }
+
+    override fun getTop(state: BlockState, connection: PlayConnection): BlockState {
+        if (connection.version.flattened) return super.getTop(state, connection)
+        return connection.registries.block[UpperFlowerBlock]!!.states.default
+    }
+
+    override fun getBottom(state: BlockState, connection: PlayConnection): BlockState {
+        if (connection.version.flattened) return super.getTop(state, connection)
+        Broken("Not enough information to get bottom!")
     }
 
     override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
