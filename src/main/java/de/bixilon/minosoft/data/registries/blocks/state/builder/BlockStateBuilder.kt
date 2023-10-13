@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.data.registries.blocks.state.builder
 
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.protocol.versions.Version
 
 interface BlockStateBuilder {
 
-    fun buildState(settings: BlockStateSettings): BlockState
+    fun buildState(version: Version, settings: BlockStateSettings): BlockState
 }

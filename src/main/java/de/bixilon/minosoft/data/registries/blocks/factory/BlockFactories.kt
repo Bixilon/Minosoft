@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.bee.HoneyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.DoublePlant
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowBlock
@@ -61,17 +62,18 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
 
     PowderSnowBlock,
 
+    DoorBlock.IronDoor,
 
-    Oak.Leaves,
-    Spruce.Leaves,
-    Birch.Leaves,
-    Jungle.Leaves,
-    Acacia.Leaves,
-    DarkOak.Leaves,
-    Mangrove.Leaves,
-    Cherry.Leaves,
-    Azalea.Leaves,
-    FloweringAzalea.Leaves,
+    Oak.Leaves, Oak.Door,
+    Spruce.Leaves, Spruce.Door,
+    Birch.Leaves, Birch.Door,
+    Jungle.Leaves, Jungle.Door,
+    Acacia.Leaves, Acacia.Door,
+    DarkOak.Leaves, DarkOak.Door,
+    Mangrove.Leaves, Mangrove.Door,
+    Cherry.Leaves, Cherry.Door,
+    Azalea.Leaves, Azalea.Door,
+    FloweringAzalea.Leaves, FloweringAzalea.Door,
 
     SnowBlock, SnowLayerBlock,
     FernBlock.DeadBush, FernBlock.Grass, FernBlock.Fern,

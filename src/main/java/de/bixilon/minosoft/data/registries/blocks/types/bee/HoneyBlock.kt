@@ -40,6 +40,7 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.physics.PhysicsConstants
 import de.bixilon.minosoft.physics.entities.EntityPhysics
+import de.bixilon.minosoft.protocol.versions.Version
 import kotlin.math.abs
 
 open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, JumpBlock, VelocityBlock, BeeBlock, TranslucentBlock, InstantBreakableBlock, StatelessCollidable, FullOutlinedBlock, BlockWithItem<Item>, BlockStateBuilder {
@@ -48,7 +49,7 @@ open class HoneyBlock(identifier: ResourceLocation = Companion.identifier, setti
     override val jumpBoost: Float get() = 0.5f
     override val collisionShape: AbstractVoxelShape get() = COLLISION_BOX
 
-    override fun buildState(settings: BlockStateSettings) = BlockState(this, settings)
+    override fun buildState(version: Version, settings: BlockStateSettings) = BlockState(this, settings)
 
     private fun isSliding(position: BlockPosition, physics: EntityPhysics<*>): Boolean {
         if (physics.onGround) {

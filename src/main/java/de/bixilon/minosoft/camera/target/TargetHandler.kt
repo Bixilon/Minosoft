@@ -100,7 +100,7 @@ class TargetHandler(
             // no block, continue going into that direction
             return null
         }
-        var shape = state.block.getOutlineShape(camera.connection, state) ?: return null
+        var shape = state.block.getOutlineShape(camera.connection, blockPosition, state) ?: return null
         state.block.nullCast<OffsetBlock>()?.offsetShape(blockPosition)?.let { shape += it }
 
         shape += blockPosition

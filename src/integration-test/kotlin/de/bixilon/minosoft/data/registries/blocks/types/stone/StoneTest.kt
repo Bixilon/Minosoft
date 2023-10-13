@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManag
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.test.IT.NULL_CONNECTION
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -37,11 +38,11 @@ class StoneTest : BlockTest<RockBlock.Stone>() {
     }
 
     fun testOutlineShape() {
-        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createConnection(), state))
+        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createConnection(), Vec3i.EMPTY, state))
     }
 
     fun testCollisionShape() {
-        assertEquals(AbstractVoxelShape.FULL, block.getCollisionShape(EmptyCollisionContext, Vec3i.EMPTY, state, null))
+        assertEquals(AbstractVoxelShape.FULL, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, Vec3i.EMPTY, state, null))
     }
 
     fun testStates() {

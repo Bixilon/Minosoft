@@ -19,13 +19,14 @@ import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.Colli
 import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 /**
  * A block with collisions (a player can not move through the shape)
  */
 interface CollidableBlock {
 
-    fun getCollisionShape(context: CollisionContext, blockPosition: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    fun getCollisionShape(connection: PlayConnection, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
         if (state is AdvancedBlockState) {
             return state.collisionShape
         }

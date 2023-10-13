@@ -33,13 +33,14 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shovel.ShovelRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.protocol.versions.Version
 
 class SnowLayerBlock(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Block(identifier, settings), FixedCollidable, OutlinedBlock, FlatteningRenamedModel, ShovelRequirement, BlockWithItem<Item>, AbstractSnowBlock, BlockStateBuilder {
     override val item: Item = this::item.inject(identifier)
     override val hardness get() = 0.1f
     override val legacyModelName get() = minecraft("snow_layer")
 
-    override fun buildState(settings: BlockStateSettings): BlockState {
+    override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
         val layer = settings.properties?.get(BlockProperties.SNOW_LAYERS)?.toInt() ?: return BlockState(this, settings)
 
         settings.collisionShape = VoxelShape(0.0, 0.0, 0.0, 1.0, (layer - 1) * LAYER_HEIGHT, 1.0)

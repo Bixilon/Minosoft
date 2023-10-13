@@ -49,8 +49,8 @@ abstract class FluidBlock(identifier: ResourceLocation, settings: BlockSettings)
         fluid.nullCast<TintedBlock>()?.initTint(manager)
     }
 
-    override fun getOutlineShape(connection: PlayConnection, blockState: BlockState): VoxelShape {
-        return VoxelShape(AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(blockState), 1.0f)))
+    override fun getOutlineShape(connection: PlayConnection, position: BlockPosition, state: BlockState): VoxelShape {
+        return VoxelShape(AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(state), 1.0f)))
     }
 
     override fun getLightProperties(blockState: BlockState) = LIGHT_PROPERTIES

@@ -51,7 +51,6 @@ import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
 @Deprecated("BlockFactories")
 object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     PixLyzerBlock,
-    DoorBlock,
     LeverBlock,
     NoteBlock,
     RepeaterBlock,

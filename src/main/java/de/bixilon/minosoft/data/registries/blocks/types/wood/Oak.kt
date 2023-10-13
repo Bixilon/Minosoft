@@ -15,6 +15,8 @@ package de.bixilon.minosoft.data.registries.blocks.types.wood
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
+import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -27,6 +29,16 @@ interface Oak {
             override val identifier = minecraft("oak_leaves")
 
             override fun build(registries: Registries, settings: BlockSettings) = Leaves(settings = settings)
+        }
+    }
+
+    class Door(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : DoorBlock.WoodenDoor(identifier, settings), Oak, FlatteningRenamedModel {
+        override val legacyModelName get() = minecraft("wooden_door")
+
+        companion object : BlockFactory<Door> {
+            override val identifier = minecraft("oak_door")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Door(settings = settings)
         }
     }
 }

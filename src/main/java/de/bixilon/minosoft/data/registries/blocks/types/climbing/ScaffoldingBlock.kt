@@ -36,6 +36,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.identifier, settings: BlockSettings) : Block(identifier, settings), ClimbingBlock, TransparentBlock, InstantBreakableBlock, OutlinedBlock, CollidableBlock, BlockWithItem<ClimbingItems.ScaffoldingItem> {
@@ -44,20 +45,20 @@ open class ScaffoldingBlock(identifier: ResourceLocation = ScaffoldingBlock.iden
     override fun canPushOut(entity: Entity) = false
 
 
-    override fun getOutlineShape(connection: PlayConnection, blockState: BlockState): AbstractVoxelShape? {
+    override fun getOutlineShape(connection: PlayConnection, position: BlockPosition, state: BlockState): AbstractVoxelShape? {
         if (connection.player.items.inventory[EquipmentSlots.MAIN_HAND]?.item?.item is ClimbingItems.ScaffoldingItem) {
             return AbstractVoxelShape.FULL
         }
-        return if (blockState.isBottom()) BOTTOM_OUTLINE else OUTLINE
+        return if (state.isBottom()) BOTTOM_OUTLINE else OUTLINE
     }
 
-    override fun getCollisionShape(context: CollisionContext, blockPosition: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
-        if (context.isAbove(1.0, blockPosition) && (context !is EntityCollisionContext || !context.descending)) {
+    override fun getCollisionShape(connection: PlayConnection, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+        if (context.isAbove(1.0, position) && (context !is EntityCollisionContext || !context.descending)) {
             return OUTLINE
         }
-        val distance = state[BlockProperties.DISTANCE] ?: 0
+        val distance = state[BlockProperties.DISTANCE]
 
-        if (distance == 0 || !state.isBottom() || !context.isAbove(0.0, blockPosition)) {
+        if (distance == 0 || !state.isBottom() || !context.isAbove(0.0, position)) {
             return null
         }
         return COLLISION

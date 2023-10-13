@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outlin
 import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 /**
@@ -23,9 +24,9 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
  */
 interface OutlinedBlock {
 
-    fun getOutlineShape(connection: PlayConnection, blockState: BlockState): AbstractVoxelShape? {
-        if (blockState is AdvancedBlockState) {
-            return blockState.outlineShape
+    fun getOutlineShape(connection: PlayConnection, position: BlockPosition, state: BlockState): AbstractVoxelShape? {
+        if (state is AdvancedBlockState) {
+            return state.outlineShape
         }
         return null
     }

@@ -47,7 +47,7 @@ object BlockDestroyedHandler : WorldEventHandler {
         val particleRenderer = connection.world.particleRenderer ?: return
         val type = connection.registries.particleType[BlockDustParticle] ?: return
         if (state.block !is OutlinedBlock) return
-        val shape = state.block.getOutlineShape(connection, state) ?: return
+        val shape = state.block.getOutlineShape(connection, position, state) ?: return
         val particleData = BlockParticleData(state, type)
 
         for (aabb in shape) {

@@ -19,5 +19,5 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface ReplaceableBlock {
 
-    fun canReplace(connection: PlayConnection, state: BlockState, position: BlockPosition): Boolean
+    fun canReplace(connection: PlayConnection, state: BlockState, position: BlockPosition): Boolean = true
 }

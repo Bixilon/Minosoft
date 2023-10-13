@@ -45,7 +45,7 @@ class WallOverlay(context: RenderContext) : SimpleOverlay(context) {
                 return false
             }
             val camera = context.connection.camera.entity
-            val shape = blockState.block.getCollisionShape(EntityCollisionContext(camera), position, blockState, null) ?: return false // TODO: block entity
+            val shape = blockState.block.getCollisionShape(context.connection, EntityCollisionContext(camera), position, blockState, null) ?: return false // TODO: block entity
             if (!shape.intersect(player.physics.aabb)) {
                 return false
             }

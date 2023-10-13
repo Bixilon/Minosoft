@@ -128,11 +128,11 @@ class BlockOutlineRenderer(
         }
 
 
-        target.state.block.getOutlineShape(connection, target.state)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor) }
+        target.state.block.getOutlineShape(connection, target.blockPosition, target.state)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor) }
 
 
         if (target.state.block is CollidableBlock && profile.collisions) { // TODO: block entity
-            target.state.block.getCollisionShape(EntityCollisionContext(connection.player), target.blockPosition, target.state, null)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f) }
+            target.state.block.getCollisionShape(connection, EntityCollisionContext(connection.player), target.blockPosition, target.state, null)?.let { mesh.drawVoxelShape(it, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f) }
         }
 
         this.nextMesh = mesh

@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
+import de.bixilon.minosoft.data.registries.blocks.types.properties.ReplaceableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.InstantBreakableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
@@ -48,7 +49,7 @@ import de.bixilon.minosoft.gui.rendering.tint.tints.grass.TallGrassTintCalculato
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.versions.Version
 
-abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, FullOutlinedBlock, RandomOffsetBlock, InstantBreakableBlock, ModelChooser, DoubleSizeBlock {
+abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, FullOutlinedBlock, RandomOffsetBlock, InstantBreakableBlock, ModelChooser, DoubleSizeBlock, ReplaceableBlock {
     override val randomOffset get() = RandomOffsetTypes.XYZ
     override val item: Item = this::item.inject(identifier)
 
@@ -93,7 +94,7 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
     }
 
     companion object {
-        val HALF = EnumProperty("half", Halves)
+        val HALF = EnumProperty("half", Halves, setOf(Halves.UPPER, Halves.LOWER))
     }
 
     open class Sunflower(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : DoublePlant(identifier, settings) {

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.test
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.tags.TagManager
 import org.objenesis.ObjenesisStd
@@ -25,6 +26,7 @@ object IT {
     var VERSION: Version = unsafeNull()
     var REGISTRIES: Registries = unsafeNull()
     var FALLBACK_TAGS: TagManager = unsafeNull()
+    val NULL_CONNECTION = OBJENESIS.newInstance(PlayConnection::class.java)
 
     val references: MutableList<Any> = mutableListOf()
 

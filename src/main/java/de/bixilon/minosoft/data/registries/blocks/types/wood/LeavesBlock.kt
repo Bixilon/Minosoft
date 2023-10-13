@@ -39,6 +39,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), CustomBlockCulling, FullBlock, BlockStateBuilder, ToolRequirement, CustomDiggingBlock, WaterloggableBlock, BlockWithItem<Item>, LightedBlock, TintedBlock {
     override val hardness get() = 0.2f
@@ -49,7 +50,7 @@ abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings
         this::tintProvider.forceSet(manager.foliageTintCalculator)
     }
 
-    override fun buildState(settings: BlockStateSettings): BlockState {
+    override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
         return PropertyBlockState(this, settings)
     }
 

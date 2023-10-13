@@ -31,12 +31,13 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class WoolBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), FullOpaqueBlock, BlockStateBuilder, CustomDiggingBlock, DyedBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 0.8f
 
-    override fun buildState(settings: BlockStateSettings): BlockState {
+    override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
         return BlockState(this, settings.luminance)
     }
 

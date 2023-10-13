@@ -39,7 +39,7 @@ open class LegacyBlock(
     override val modelName: ResourceLocation? = data["model"]?.toResourceLocation() ?: identifier
 
 
-    override fun buildState(settings: BlockStateSettings): BlockState {
+    override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
         return AdvancedBlockState(this, settings)
     }
 

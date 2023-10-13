@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.legacy.FlatteningRenamedModel
+import de.bixilon.minosoft.data.registries.blocks.types.properties.ReplaceableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.InstantBreakableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
@@ -29,15 +30,16 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.shears.ShearsRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.tints.grass.GrassTinted
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, OutlinedBlock, RandomOffsetBlock, InstantBreakableBlock {
+abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), ShearsRequirement, BlockWithItem<Item>, OutlinedBlock, RandomOffsetBlock, InstantBreakableBlock, ReplaceableBlock {
     override val randomOffset get() = RandomOffsetTypes.XYZ
     override val item: Item = this::item.inject(identifier)
 
-    override fun getOutlineShape(connection: PlayConnection, blockState: BlockState) = SHAPE
+    override fun getOutlineShape(connection: PlayConnection, position: BlockPosition, state: BlockState) = SHAPE
 
     companion object {
         private val SHAPE = VoxelShape(0.125, 0.0, 0.125, 0.875, 0.8125, 0.875)

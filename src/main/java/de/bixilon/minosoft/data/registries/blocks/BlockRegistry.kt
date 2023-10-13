@@ -44,7 +44,7 @@ class BlockRegistry(
 ) : Registry<Block>(parent = parent, codec = PixLyzerBlock, flattened = flattened, metaType = MetaTypes.BLOCK) {
 
 
-    private fun legacy(block: Block, data: JsonObject, registries: Registries) {
+    private fun legacy(block: Block, data: JsonObject, version: Version, registries: Registries) {
         val statesData = data["states"]?.nullCast<List<JsonObject>>()
         val id = data["id"]?.toInt()
         val meta = data["meta"]?.toInt()
@@ -53,7 +53,7 @@ class BlockRegistry(
             // block has only a single state
             if (id == null) throw IllegalArgumentException("Missing id (block=$block)!")
             val settings = BlockStateSettings.of(block, block.properties, registries, data)
-            val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
+            val state = if (block is BlockStateBuilder) block.buildState(version, settings) else AdvancedBlockState(block, settings)
             block.updateStates(setOf(state), state, emptyMap())
             registries.blockState[id, meta] = state
             return
@@ -65,7 +65,7 @@ class BlockRegistry(
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
         for (stateJson in statesData) {
             val settings = BlockStateSettings.of(block, block.properties, registries, stateJson.unsafeCast())
-            val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
+            val state = if (block is BlockStateBuilder) block.buildState(version, settings) else AdvancedBlockState(block, settings)
 
             states += state
             val id = stateJson["id"]?.toInt() ?: id ?: throw IllegalArgumentException("Missing block id: $block!")
@@ -84,13 +84,13 @@ class BlockRegistry(
         block.updateStates(states, default, properties.mapValues { it.value.toTypedArray() })
     }
 
-    fun flattened(block: Block, list: BlockPropertyList?, data: JsonObject, registries: Registries, addBlockStates: Boolean) {
+    fun flattened(block: Block, list: BlockPropertyList?, data: JsonObject, registries: Registries, version: Version, addBlockStates: Boolean) {
         val properties: MutableMap<BlockProperty<*>, MutableSet<Any>> = mutableMapOf()
 
         val states: MutableSet<BlockState> = ObjectOpenHashSet()
         for ((stateId, stateJson) in data["states"].asAnyMap()) {
             val settings = BlockStateSettings.of(block, list, registries, stateJson.unsafeCast())
-            val state = if (block is BlockStateBuilder) block.buildState(settings) else AdvancedBlockState(block, settings)
+            val state = if (block is BlockStateBuilder) block.buildState(version, settings) else AdvancedBlockState(block, settings)
 
             states += state
             if (addBlockStates) {
@@ -123,9 +123,9 @@ class BlockRegistry(
         }
 
         if (flattened) {
-            flattened(block, block.properties, data, registries, true)
+            flattened(block, block.properties, data, registries, version, true)
         } else {
-            legacy(block, data, registries)
+            legacy(block, data, version, registries)
         }
 
         return block

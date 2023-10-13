@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 /**
  * The collision box does not depend on any temporary state, it only depends on the block state
@@ -31,7 +32,7 @@ interface FixedCollidable : CollidableBlock {
         return state.nullCast<AdvancedBlockState>()?.collisionShape
     }
 
-    override fun getCollisionShape(context: CollisionContext, blockPosition: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    override fun getCollisionShape(connection: PlayConnection, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
         return getCollisionShape(state)
     }
 }

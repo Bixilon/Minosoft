@@ -40,12 +40,14 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.physics.entities.EntityPhysics
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.tags.entity.MinecraftEntityTags.isIn
 
 open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identifier, settings: BlockSettings) : Block(identifier, settings), EntityCollisionHandler, CollidableBlock, FullOutlinedBlock, OpaqueBlock, BlockStateBuilder {
     override val hardness: Float get() = 0.25f
 
-    override fun buildState(settings: BlockStateSettings) = BlockState(this, settings)
+    override fun buildState(version: Version, settings: BlockStateSettings) = BlockState(this, settings)
 
     override fun onEntityCollision(entity: Entity, physics: EntityPhysics<*>, position: Vec3i, state: BlockState) {
         if (entity is LivingEntity && physics.positionInfo.block?.block !is PowderSnowBlock) {
@@ -54,14 +56,14 @@ open class PowderSnowBlock(identifier: ResourceLocation = PowderSnowBlock.identi
         physics.slowMovement(state, SLOW)
     }
 
-    override fun getCollisionShape(context: CollisionContext, blockPosition: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
+    override fun getCollisionShape(connection: PlayConnection, context: CollisionContext, position: Vec3i, state: BlockState, blockEntity: BlockEntity?): AbstractVoxelShape? {
         if (context !is EntityCollisionContext) {
             return null
         }
         if (context.physics.fallDistance > 2.5f) {
             return FALLING_SHAPE
         }
-        if (context.entity is FallingBlockEntity || (context.entity.canWalkOnPowderSnow() && context.isAbove(1.0, blockPosition) && !context.descending)) {
+        if (context.entity is FallingBlockEntity || (context.entity.canWalkOnPowderSnow() && context.isAbove(1.0, position) && !context.descending)) {
             return AbstractVoxelShape.FULL
         }
         return null

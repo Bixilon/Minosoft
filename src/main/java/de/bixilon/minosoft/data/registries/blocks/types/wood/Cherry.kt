@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.wood
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -27,6 +28,15 @@ interface Cherry {
             override val identifier = minecraft("cherry_leaves")
 
             override fun build(registries: Registries, settings: BlockSettings) = Leaves(settings = settings)
+        }
+    }
+
+    class Door(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : DoorBlock.WoodenDoor(identifier, settings), Cherry {
+
+        companion object : BlockFactory<Door> {
+            override val identifier = minecraft("cherry_door")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Door(settings = settings)
         }
     }
 }

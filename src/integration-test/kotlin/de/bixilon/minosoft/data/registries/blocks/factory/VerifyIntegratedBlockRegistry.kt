@@ -38,6 +38,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.test.IT.NULL_CONNECTION
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 
@@ -68,8 +69,8 @@ object VerifyIntegratedBlockRegistry {
     private fun compareCollisionShape(pixlyzer: BlockState, integrated: BlockState, errors: StringBuilder) {
         if (integrated.block is OutlinedBlock && integrated.block !is FixedCollidable) return // not checkable without context
 
-        val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(EmptyCollisionContext, Vec3i.EMPTY, pixlyzer, null) else null
-        val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(EmptyCollisionContext, Vec3i.EMPTY, pixlyzer, null) else null
+        val expected = if (pixlyzer.block is CollidableBlock) pixlyzer.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, Vec3i.EMPTY, pixlyzer, null) else null
+        val actual = if (integrated.block is CollidableBlock) integrated.block.unsafeCast<CollidableBlock>().getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, Vec3i.EMPTY, pixlyzer, null) else null
 
         if (expected == actual) {
             return
@@ -85,8 +86,8 @@ object VerifyIntegratedBlockRegistry {
         if (integrated.block is ScaffoldingBlock) return
         if (integrated.block is OffsetBlock) return // Don't compare, pixlyzer is probably wrong
 
-        val expected = if (pixlyzer.block is OutlinedBlock) pixlyzer.block.unsafeCast<OutlinedBlock>().getOutlineShape(connection, pixlyzer) else null
-        val actual = if (integrated.block is OutlinedBlock) integrated.block.unsafeCast<OutlinedBlock>().getOutlineShape(connection, pixlyzer) else null
+        val expected = if (pixlyzer.block is OutlinedBlock) pixlyzer.block.unsafeCast<OutlinedBlock>().getOutlineShape(connection, Vec3i.EMPTY, pixlyzer) else null
+        val actual = if (integrated.block is OutlinedBlock) integrated.block.unsafeCast<OutlinedBlock>().getOutlineShape(connection, Vec3i.EMPTY, pixlyzer) else null
 
         if (expected == actual) {
             return
@@ -156,7 +157,7 @@ object VerifyIntegratedBlockRegistry {
                 continue
             }
             val parsed = PixLyzerBlock.deserialize(registries, identifier, value).unsafeCast<PixLyzerBlock>()
-            registries.block.flattened(parsed, integrated.properties, value, registries, false)
+            registries.block.flattened(parsed, integrated.properties, value, registries, version, false)
             parsed.postInit(registries)
             parsed.inject(registries)
 

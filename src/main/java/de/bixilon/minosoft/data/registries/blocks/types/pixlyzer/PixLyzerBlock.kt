@@ -53,6 +53,7 @@ import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -87,7 +88,7 @@ open class PixLyzerBlock(
         ITEM_FIELD.inject<RegistryItem>(data["item"])
     }
 
-    override fun buildState(settings: BlockStateSettings): BlockState {
+    override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
         return AdvancedBlockState(this, settings)
     }
 

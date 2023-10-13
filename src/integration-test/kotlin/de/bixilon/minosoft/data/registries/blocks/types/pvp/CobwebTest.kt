@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.test.IT.NULL_CONNECTION
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -41,12 +42,12 @@ class CobwebTest : BlockTest<Block>() {
 
     fun testOutlineShape() {
         if (block !is OutlinedBlock) throw AssertionError("Not shaped!")
-        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createConnection(), state))
+        assertEquals(AbstractVoxelShape.FULL, block.getOutlineShape(createConnection(), Vec3i.EMPTY, state))
     }
 
     fun testCollisionShape() {
         if (block !is CollidableBlock) return
-        assertEquals(AbstractVoxelShape.EMPTY, block.getCollisionShape(EmptyCollisionContext, Vec3i.EMPTY, state, null))
+        assertEquals(AbstractVoxelShape.EMPTY, block.getCollisionShape(NULL_CONNECTION, EmptyCollisionContext, Vec3i.EMPTY, state, null))
     }
 
     fun testStates() {

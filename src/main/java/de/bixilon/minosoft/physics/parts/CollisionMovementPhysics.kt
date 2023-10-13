@@ -55,11 +55,11 @@ object CollisionMovementPhysics {
                     inChunk.x = position.x and 0x0F
                     inChunk.z = position.z and 0x0F
 
-                    state.block.getCollisionShape(context, position, state, chunk.getBlockEntity(inChunk))
+                    state.block.getCollisionShape(connection, context, position, state, chunk.getBlockEntity(inChunk))
                 }
 
                 else -> {
-                    state.block.getCollisionShape(context, position, state, null)
+                    state.block.getCollisionShape(connection, context, position, state, null)
                 }
             } ?: continue
             shape += position

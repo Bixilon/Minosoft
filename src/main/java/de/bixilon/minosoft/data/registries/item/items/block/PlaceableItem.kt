@@ -69,7 +69,7 @@ interface PlaceableItem : ItemInteractBlockHandler {
 
         val state: BlockState = getPlacementState(connection, target, stack)
         if (state.block is CollidableBlock) {
-            val shape = state.block.getCollisionShape(EntityCollisionContext(player), placePosition, state, null)?.plus(placePosition)
+            val shape = state.block.getCollisionShape(connection, EntityCollisionContext(player), placePosition, state, null)?.plus(placePosition)
             if (shape != null && connection.world.entities.isEntityIn(shape)) {
                 return InteractionResults.INVALID
             }
@@ -84,6 +84,7 @@ interface PlaceableItem : ItemInteractBlockHandler {
             if (state.block is BlockPlaceHandler) {
                 state.block.onPlace(connection, placePosition, state, null) // TODO: block entity
             }
+            // TODO: handle ReplaceableBlock::onDestroy
         }
 
         state.block.soundGroup?.let { group ->
