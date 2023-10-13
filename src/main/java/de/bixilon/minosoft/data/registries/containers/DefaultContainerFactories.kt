@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.container.types.EnchantingContainer
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.container.types.generic.*
 import de.bixilon.minosoft.data.container.types.generic.legacy.ChestContainer
-import de.bixilon.minosoft.data.container.types.generic.legacy.ShulkerBoxContainer
 import de.bixilon.minosoft.data.container.types.processing.smelting.BlastFurnaceContainer
 import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceContainer
 import de.bixilon.minosoft.data.container.types.processing.smelting.SmokerContainer

@@ -13,20 +13,38 @@
 
 package de.bixilon.minosoft.data.container.types.generic
 
+import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.slots.SlotType
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.containers.ContainerType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-open class Generic9x3Container(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : GenericContainer(3, connection, type, title) {
 
-    companion object : ContainerFactory<Generic9x3Container> {
-        override val identifier: ResourceLocation = "minecraft:generic_9x3".toResourceLocation()
+class ShulkerBoxContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : Generic9x3Container(connection, type, title) {
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): Generic9x3Container {
-            return Generic9x3Container(connection, type, title)
+    override fun getSlotType(slotId: Int): SlotType? {
+        if (slotId in 0 until rows * SLOTS_PER_ROW) {
+            return ShulkerBoxSlotType
+        }
+        return super.getSlotType(slotId)
+    }
+
+    private object ShulkerBoxSlotType : SlotType {
+
+        override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
+            return stack.item.item.identifier == identifier // TODO: don't compare identifier
+        }
+    }
+
+    companion object : ContainerFactory<ShulkerBoxContainer> {
+        override val identifier: ResourceLocation = minecraft("shulker_box")
+
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?, slots: Int): ShulkerBoxContainer {
+            return ShulkerBoxContainer(connection, type, title)
         }
     }
 }
