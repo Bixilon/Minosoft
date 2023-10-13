@@ -63,7 +63,14 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun load(latch: AbstractLatch?) {
         loader.context.connection.registries.block.async {
-            val model = loadState(it) ?: return@async
+            val model: DirectBlockModel
+            try {
+                model = loadState(it) ?: return@async
+            } catch (error: Exception) {
+                Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Can not load block model for block $it: $error" }
+                Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { error }
+                return@async
+            }
 
             val prototype = model.load(loader.context.textures)
             it.model = prototype
