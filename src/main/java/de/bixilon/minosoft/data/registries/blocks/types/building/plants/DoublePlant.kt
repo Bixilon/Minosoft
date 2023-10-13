@@ -60,12 +60,12 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
 
     override fun isTop(state: BlockState, connection: PlayConnection): Boolean {
         if (connection.version.flattened) return super.isTop(state, connection)
-        return state.block is UpperFlowerBlock
+        return state.block is UpperBlock
     }
 
     override fun getTop(state: BlockState, connection: PlayConnection): BlockState {
         if (connection.version.flattened) return super.getTop(state, connection)
-        return connection.registries.block[UpperFlowerBlock]!!.states.default
+        return connection.registries.block[UpperBlock]!!.states.default
     }
 
     override fun getBottom(state: BlockState, connection: PlayConnection): BlockState {
@@ -89,7 +89,7 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         override val default: BlockRender? get() = top
 
         override fun pick(state: BlockState, neighbours: Array<BlockState?>): BlockRender? {
-            return if (state.block is UpperFlowerBlock) return top else bottom
+            return if (state.block is UpperBlock) return top else bottom
         }
     }
 
@@ -165,7 +165,7 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         }
     }
 
-    class UpperFlowerBlock(settings: BlockSettings) : DoublePlant(Companion.identifier, settings), TintedBlock {
+    class UpperBlock(settings: BlockSettings) : DoublePlant(Companion.identifier, settings), TintedBlock {
         override val tintProvider: TintProvider? = null
 
         init {
@@ -185,10 +185,10 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
             }
         }
 
-        companion object : BlockFactory<UpperFlowerBlock> {
-            override val identifier = minecraft("flower_upper_block")
+        companion object : BlockFactory<UpperBlock> {
+            override val identifier = minecraft("double_plant_upper")
 
-            override fun build(registries: Registries, settings: BlockSettings) = UpperFlowerBlock(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = UpperBlock(settings = settings)
         }
     }
 }
