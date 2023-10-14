@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
-import de.bixilon.minosoft.gui.rendering.skeletal.bake.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.bake.SkeletalTransform
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture

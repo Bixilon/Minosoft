@@ -30,7 +30,6 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
-import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
@@ -54,7 +53,6 @@ class EntityRenderer(
     val profile = connection.profiles.entity
     val visibilityGraph = context.camera.visibilityGraph
     private val models: LockMap<Entity, EntityModel<*>> = lockMapOf()
-    private lateinit var localModel: LocalPlayerModel
     private var toUnload: MutableList<EntityModel<*>> = synchronizedListOf()
 
     var hitboxes = profile.hitbox.enabled
@@ -99,9 +97,9 @@ class EntityRenderer(
     }
 
     override fun postAsyncInit(latch: AbstractLatch) {
-        localModel = context.connection.player.createModel(this)
+        //  localModel = context.connection.player.createModel(this)
 
-        models[connection.player] = localModel
+        //  models[connection.player] = localModel
     }
 
     private fun unloadUnused() {

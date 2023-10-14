@@ -41,7 +41,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         return properties[BlockProperties.NOTE]?.toInt() ?: 0
     }
 
-    override fun setBlockActionData(data1: Byte, data2: Byte) {
+    override fun setBlockActionData(data1: Int, data2: Int) {
         instrument = when (data1.toInt()) {
             0 -> Instruments.HARP
             1 -> Instruments.BASS

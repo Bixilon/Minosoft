@@ -17,8 +17,8 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
-import de.bixilon.minosoft.gui.rendering.skeletal.bake.SkeletalBakeContext
-import de.bixilon.minosoft.gui.rendering.skeletal.bake.SkeletalTransform
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 

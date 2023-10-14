@@ -19,11 +19,10 @@ import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class EndGatewayBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
 
-    override fun setBlockActionData(data1: Byte, data2: Byte) {
+    override fun setBlockActionData(data1: Int, data2: Int) {
         // just emits the beacon like beam
     }
 

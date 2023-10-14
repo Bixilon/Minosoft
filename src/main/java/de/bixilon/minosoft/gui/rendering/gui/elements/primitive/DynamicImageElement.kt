@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 open class DynamicImageElement(
@@ -82,7 +82,7 @@ open class DynamicImageElement(
         this.parent = parent
     }
 
-    private fun getAvailableTexture(): ShaderIdentifiable {
+    private fun getAvailableTexture(): ShaderTexture {
         val texture = texture ?: return context.textures.whiteTexture.texture
         if (texture.state != DynamicTextureState.LOADED) {
             return context.textures.whiteTexture.texture

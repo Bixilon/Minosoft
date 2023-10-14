@@ -18,16 +18,15 @@ import de.bixilon.kutil.time.DateUtil
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityRendererRegister
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class SingleChestRenderer(
     val entity: StorageBlockEntity,
@@ -38,44 +37,45 @@ class SingleChestRenderer(
     light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    SkeletalInstance(context, model, (blockPosition - context.camera.offset.offset).toVec3, blockState.getFacing().rotatedMatrix),
+    model.createInstance(context, (blockPosition - context.camera.offset.offset).toVec3, blockState.getFacing().rotatedMatrix),
     light,
 ) {
 
     companion object {
-        val SINGLE_MODEL = "minecraft:block/entities/single_chest".toResourceLocation().bbModel()
+        val SINGLE_MODEL = minecraft("block/entities/single_chest").bbModel()
+        private val named = minecraft("chest")
 
-        fun register(context: RenderContext, modelLoader: ModelLoader, textureName: ResourceLocation, model: ResourceLocation) {
-            val texture = context.textures.staticTextures.createTexture(textureName)
-            modelLoader.entities.loadModel(model, SINGLE_MODEL, mutableMapOf(0 to texture))
+        fun register(loader: ModelLoader, name: ResourceLocation, texture: ResourceLocation) {
+            val texture = loader.context.textures.staticTextures.createTexture(texture)
+            loader.skeletal.register(name, SINGLE_MODEL, mapOf(named to texture))
         }
     }
 
     object NormalChest : EntityRendererRegister {
-        val MODEL = "minecraft:models/block/entities/single_chest".toResourceLocation()
-        val TEXTURE = "minecraft:entity/chest/normal".toResourceLocation().texture()
-        val TEXTURE_CHRISTMAS = "minecraft:entity/chest/christmas".toResourceLocation().texture()
+        val NAME = minecraft("block/entities/single_chest")
+        val TEXTURE = minecraft("entity/chest/normal").texture()
+        val TEXTURE_CHRISTMAS = minecraft("entity/chest/christmas").texture()
 
-        override fun register(context: RenderContext, modelLoader: ModelLoader) {
-            register(context, modelLoader, if (DateUtil.christmas) TEXTURE_CHRISTMAS else TEXTURE, MODEL)
+        override fun register(loader: ModelLoader) {
+            register(loader, NAME, if (DateUtil.christmas) TEXTURE_CHRISTMAS else TEXTURE)
         }
     }
 
     object TrappedChest : EntityRendererRegister {
-        val MODEL = "minecraft:models/block/entities/trapped_chest".toResourceLocation()
-        val TEXTURE = "minecraft:entity/chest/trapped".toResourceLocation().texture()
+        val NAME = minecraft("block/entities/trapped_chest")
+        val TEXTURE = minecraft("entity/chest/trapped").texture()
 
-        override fun register(context: RenderContext, modelLoader: ModelLoader) {
-            register(context, modelLoader, TEXTURE, MODEL)
+        override fun register(loader: ModelLoader) {
+            register(loader, NAME, TEXTURE)
         }
     }
 
     object EnderChest : EntityRendererRegister {
-        val MODEL = "minecraft:models/block/entities/ender_chest".toResourceLocation()
-        val TEXTURE = "minecraft:entity/chest/ender".toResourceLocation().texture()
+        val NAME = minecraft("block/entities/ender_chest")
+        val TEXTURE = minecraft("entity/chest/ender").texture()
 
-        override fun register(context: RenderContext, modelLoader: ModelLoader) {
-            register(context, modelLoader, TEXTURE, MODEL)
+        override fun register(loader: ModelLoader) {
+            register(loader, NAME, TEXTURE)
         }
     }
 }

@@ -18,16 +18,15 @@ import de.bixilon.kutil.time.DateUtil
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityRendererRegister
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class DoubleChestRenderer(
     val entity: StorageBlockEntity,
@@ -38,40 +37,41 @@ class DoubleChestRenderer(
     light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    SkeletalInstance(context, model, (blockPosition - context.camera.offset.offset).toVec3, (blockState.getFacing()).rotatedMatrix),
+    model.createInstance(context, (blockPosition - context.camera.offset.offset).toVec3, (blockState.getFacing()).rotatedMatrix),
     light,
 ) {
 
     companion object {
-        val DOUBLE_MODEL = "minecraft:block/entities/double_chest".toResourceLocation().bbModel()
+        val DOUBLE_MODEL = minecraft("block/entities/double_chest").bbModel()
+        private val named = arrayOf(minecraft("left"), minecraft("right"))
 
-        fun register(context: RenderContext, modelLoader: ModelLoader, textureName1: ResourceLocation, textureName2: ResourceLocation, model: ResourceLocation) {
-            val texture1 = context.textures.staticTextures.createTexture(textureName1)
-            val texture2 = context.textures.staticTextures.createTexture(textureName2)
-            modelLoader.entities.loadModel(model, DOUBLE_MODEL, mutableMapOf(0 to texture1, 1 to texture2))
+        private fun register(loader: ModelLoader, name: ResourceLocation, textures: Array<ResourceLocation>) {
+            if (textures.size != 2) throw IllegalStateException("Textures must be left and right!")
+            val static = loader.context.textures.staticTextures
+            val override = mapOf(
+                named[0] to static.createTexture(textures[0]),
+                named[1] to static.createTexture(textures[1]),
+            )
+            loader.skeletal.register(name, DOUBLE_MODEL, override)
         }
     }
 
     object NormalChest : EntityRendererRegister {
-        val MODEL = "minecraft:models/block/entities/double_chest".toResourceLocation()
-        val TEXTURE1 = "minecraft:entity/chest/normal_left".toResourceLocation().texture()
-        val TEXTURE2 = "minecraft:entity/chest/normal_right".toResourceLocation().texture()
-        val TEXTURE_CHRISTMAS1 = "minecraft:entity/chest/christmas_left".toResourceLocation().texture()
-        val TEXTURE_CHRISTMAS2 = "minecraft:entity/chest/christmas_right".toResourceLocation().texture()
+        val NAME = minecraft("block/entities/double_chest")
+        private val textures = arrayOf(minecraft("entity/chest/normal_left").texture(), minecraft("entity/chest/normal_right").texture())
+        private val christmas = arrayOf(minecraft("entity/chest/christmas_left").texture(), minecraft("entity/chest/christmas_right").texture())
 
-        override fun register(context: RenderContext, modelLoader: ModelLoader) {
-            val christmas = DateUtil.christmas
-            register(context, modelLoader, if (christmas) TEXTURE_CHRISTMAS1 else TEXTURE1, if (christmas) TEXTURE_CHRISTMAS2 else TEXTURE2, MODEL)
+        override fun register(loader: ModelLoader) {
+            register(loader, NAME, if (DateUtil.christmas) christmas else textures)
         }
     }
 
     object TrappedChest : EntityRendererRegister {
-        val MODEL = "minecraft:models/block/entities/double_trapped_chest".toResourceLocation()
-        val TEXTURE1 = "minecraft:entity/chest/trapped_left".toResourceLocation().texture()
-        val TEXTURE2 = "minecraft:entity/chest/trapped_right".toResourceLocation().texture()
+        val NAME = minecraft("block/entities/double_trapped_chest")
+        private val textures = arrayOf(minecraft("entity/chest/trapped_left").texture(), minecraft("entity/chest/trapped_right").texture())
 
-        override fun register(context: RenderContext, modelLoader: ModelLoader) {
-            register(context, modelLoader, TEXTURE1, TEXTURE2, MODEL)
+        override fun register(loader: ModelLoader) {
+            register(loader, NAME, textures)
         }
     }
 }

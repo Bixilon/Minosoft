@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.bake
+package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
@@ -40,6 +40,6 @@ data class BakedSkeletalModel(
     }
 
     fun createInstance(context: RenderContext, position: Vec3, transform: Mat4 = Mat4()): SkeletalInstance {
-
+        TODO()
     }
 }

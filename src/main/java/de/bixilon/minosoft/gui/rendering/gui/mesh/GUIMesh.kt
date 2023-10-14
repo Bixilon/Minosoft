@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.util.collections.floats.FragmentedArrayFloatList
@@ -30,7 +31,7 @@ class GUIMesh(
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
 
-    override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         addVertex(data, halfSize, position, texture ?: whiteTexture.texture, uv, tint, options)
     }
 

@@ -23,11 +23,11 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class TrappedChestBlockEntity(connection: PlayConnection) : ChestBlockEntity(connection) {
 
     override fun getSingleModel(): ResourceLocation {
-        return SingleChestRenderer.TrappedChest.MODEL
+        return SingleChestRenderer.TrappedChest.NAME
     }
 
     override fun getDoubleModel(): ResourceLocation {
-        return DoubleChestRenderer.TrappedChest.MODEL
+        return DoubleChestRenderer.TrappedChest.NAME
     }
 
     companion object : BlockEntityFactory<TrappedChestBlockEntity> {

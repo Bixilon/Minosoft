@@ -11,20 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.instance
+package de.bixilon.minosoft.gui.rendering.models.loader
 
-import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
-class SkeletalInstance(
-    val model: BakedSkeletalModel,
-) {
+class SkeletalLoader(private val loader: ModelLoader) {
 
-    fun draw(light: Int = 0xFF) {
+    fun load(latch: AbstractLatch?) {
+    }
+
+    fun bake(latch: AbstractLatch?) {
+    }
+
+    fun cleanup() {
+    }
+
+    operator fun get(name: ResourceLocation): BakedSkeletalModel? {
         TODO()
     }
 
-    fun draw(shader: Shader? = null) {
+    fun register(name: ResourceLocation, template: ResourceLocation = name, override: Map<ResourceLocation, ShaderTexture>) {
         TODO()
     }
 }

@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.bake
+package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation

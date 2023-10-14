@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.entities.entities.player
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -37,9 +36,6 @@ import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
-import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -54,12 +50,6 @@ abstract class PlayerEntity(
     rotation: EntityRotation = EntityRotation.EMPTY,
     val additional: PlayerAdditional,
 ) : LivingEntity(connection, entityType, data, position, rotation) {
-
-    protected var _model: PlayerModel?
-        get() = super.model.nullCast()
-        set(value) {
-            super.model = value
-        }
 
     override val dimensions: Vec2
         get() = pose?.let { getDimensions(it) } ?: Vec2(type.width, type.height)
@@ -145,10 +135,6 @@ abstract class PlayerEntity(
             return ChatColors.RED
         }
 
-    override fun createModel(renderer: EntityRenderer): EntityModel<PlayerEntity>? {
-        return PlayerModel(renderer, this).apply { this@PlayerEntity.model = this }
-    }
-
     override fun createPhysics(): PlayerPhysics<*> {
         return PlayerPhysics(this)
     }
@@ -156,7 +142,6 @@ abstract class PlayerEntity(
 
     fun swingHand(hand: Hands) {
         val arm = hand.getArm(mainArm)
-        _model?.swingArm(arm)
     }
 
     override fun handleAnimation(animation: EntityAnimations) {

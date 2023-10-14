@@ -30,8 +30,8 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         buffer.readBlockPosition()
     }
-    val data1: Byte = buffer.readByte()
-    val data2: Byte = buffer.readByte()
+    val data1 = buffer.readByte().toInt()
+    val data2 = buffer.readByte().toInt()
     val block: Block = if (buffer.versionId < FLATTENING_VERSION) buffer.readRegistryItem(buffer.connection.registries.blockState)!!.block else buffer.readRegistryItem(buffer.connection.registries.block)
 
     override fun handle(connection: PlayConnection) {

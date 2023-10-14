@@ -17,13 +17,12 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class BellBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
     var shakingDirection: Directions = Directions.NORTH
         private set
 
-    override fun setBlockActionData(data1: Byte, data2: Byte) {
+    override fun setBlockActionData(data1: Int, data2: Int) {
         shakingDirection = Directions[data2.toInt()]
     }
 

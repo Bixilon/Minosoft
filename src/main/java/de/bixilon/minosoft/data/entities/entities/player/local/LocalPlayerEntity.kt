@@ -27,8 +27,6 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.data.registries.effects.attributes.integrated.IntegratedAttributeModifiers
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
@@ -108,10 +106,6 @@ class LocalPlayerEntity(
 
     override val usingHand: Hands?
         get() = using?.hand
-
-    override fun createModel(renderer: EntityRenderer): LocalPlayerModel {
-        return LocalPlayerModel(renderer, this).apply { this@LocalPlayerEntity.model = this }
-    }
 
     override fun createPhysics() = LocalPlayerPhysics(this)
     override fun physics(): LocalPlayerPhysics = super.physics().unsafeCast()

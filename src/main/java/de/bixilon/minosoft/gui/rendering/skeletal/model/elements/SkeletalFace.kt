@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.block.legacy.ModelBakeUtil
-import de.bixilon.minosoft.gui.rendering.skeletal.bake.SkeletalBakeContext
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 

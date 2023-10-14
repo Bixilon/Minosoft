@@ -89,7 +89,7 @@ abstract class Mesh(
     }
 
 
-    fun addXQuad(start: Vec2, x: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    inline fun addXQuad(start: Vec2, x: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
         val positions = arrayOf(
             Vec3(x, start.x, start.y),
             Vec3(x, start.x, end.y),
@@ -99,7 +99,7 @@ abstract class Mesh(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    fun addYQuad(start: Vec2, y: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    inline fun addYQuad(start: Vec2, y: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
         val positions = arrayOf(
             Vec3(start.x, y, end.y),
             Vec3(end.x, y, end.y),
@@ -109,7 +109,7 @@ abstract class Mesh(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    fun addZQuad(start: Vec2, z: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    inline fun addZQuad(start: Vec2, z: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
         val positions = arrayOf(
             Vec3(start.x, start.y, z),
             Vec3(start.x, end.y, z),
@@ -119,7 +119,7 @@ abstract class Mesh(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    fun addQuad(positions: Array<Vec3>, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    inline fun addQuad(positions: Array<Vec3>, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
         val texturePositions = arrayOf(
             uvStart,
             Vec2(uvStart.x, uvEnd.y),

@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProp
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 
@@ -31,7 +31,7 @@ class WorldGUIConsumer(val mesh: SingleChunkMesh, val transform: Mat4, val light
     private val whiteTexture = mesh.context.textures.whiteTexture
     override val order: IntArray get() = mesh.order
 
-    override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         val transformed = transform.fastTimes(position.x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)
         mesh.addVertex(transformed, uv, (texture as Texture?) ?: whiteTexture.texture, tint.rgb, light)
     }

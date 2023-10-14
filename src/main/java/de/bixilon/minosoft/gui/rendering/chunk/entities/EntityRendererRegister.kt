@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities
 
-import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 
 interface EntityRendererRegister {
 
-    fun register(context: RenderContext, modelLoader: ModelLoader) = Unit
+    fun register(loader: ModelLoader) = Unit
 }

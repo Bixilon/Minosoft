@@ -26,19 +26,16 @@ abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
 ) : BlockEntityRenderer<E> {
 
     override fun draw(context: RenderContext) {
-        skeletal?.light = light
-        skeletal?.draw()
+        skeletal?.draw(light)
     }
 
-    fun open() {
-        val skeletal = this.skeletal ?: return
-        skeletal.clearAnimation()
-        skeletal.playAnimation("animation.chest.opening")
+    @Deprecated("refactor")
+    fun playOpen() {
+        TODO()
     }
 
-    fun close() {
-        val skeletal = this.skeletal ?: return
-        skeletal.clearAnimation()
-        skeletal.playAnimation("animation.chest.closing")
+    @Deprecated("refactor")
+    fun playClose() {
+        TODO()
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,30 +22,39 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.Storage
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection), BlockActionEntity {
-    protected var blockEntityRenderer: StorageBlockEntityRenderer<*>? = null
+    protected var storageRenderer: StorageBlockEntityRenderer<*>? = null
     override var renderer: BlockEntityRenderer<out BlockEntity>?
-        get() = blockEntityRenderer
+        get() = storageRenderer
         set(value) {
-            blockEntityRenderer = value?.unsafeCast()
+            storageRenderer = value?.unsafeCast()
         }
 
-    var playersLookingIntoStorage: Int = 0
+    var viewing: Int = 0
         private set
 
-    val closed: Boolean get() = playersLookingIntoStorage <= 0
+    val closed: Boolean get() = viewing <= 0
 
-    override fun setBlockActionData(data1: Byte, data2: Byte) {
-        val closed = closed
-        playersLookingIntoStorage = data2.toInt()
+    override fun setBlockActionData(data1: Int, data2: Int) {
+        val viewing = data2 and 0xFF // unsigned
+        if (this.viewing == viewing) return
+        val previous = this.viewing
+        this.viewing = viewing
 
-        if (this.closed == closed) {
-            // state has not changed
-            return
+        when {
+            viewing == 0 -> onClose()
+            previous == 0 -> onOpen()
+            else -> onViewingChange(viewing)
         }
-        if (playersLookingIntoStorage <= 0) {
-            blockEntityRenderer?.close()
-        } else {
-            blockEntityRenderer?.open()
-        }
+    }
+
+    protected open fun onViewingChange(viewing: Int) = Unit
+
+    protected fun onOpen() {
+        storageRenderer?.playOpen()
+
+    }
+
+    protected fun onClose() {
+        storageRenderer?.playClose()
     }
 }

@@ -31,23 +31,23 @@ open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
     override fun createRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*>? {
         val type: ChestTypes = blockState[BlockProperties.CHEST_TYPE]
         if (type == ChestTypes.SINGLE) {
-            return SingleChestRenderer(this, context, blockState, blockPosition, context.models.entities.skeletal[getSingleModel()] ?: return null, light)
+            return SingleChestRenderer(this, context, blockState, blockPosition, context.models.skeletal[getSingleModel()] ?: return null, light)
         }
 
         if (type == ChestTypes.LEFT) {
             // only left chest will be rendered (the model is the double chest), reduces drawing overhead
-            return DoubleChestRenderer(this, context, blockState, blockPosition, context.models.entities.skeletal[getDoubleModel()] ?: return null, light)
+            return DoubleChestRenderer(this, context, blockState, blockPosition, context.models.skeletal[getDoubleModel()] ?: return null, light)
         }
 
         return null
     }
 
     protected open fun getSingleModel(): ResourceLocation {
-        return SingleChestRenderer.NormalChest.MODEL
+        return SingleChestRenderer.NormalChest.NAME
     }
 
     protected open fun getDoubleModel(): ResourceLocation {
-        return DoubleChestRenderer.NormalChest.MODEL
+        return DoubleChestRenderer.NormalChest.NAME
     }
 
     companion object : BlockEntityFactory<ChestBlockEntity> {
