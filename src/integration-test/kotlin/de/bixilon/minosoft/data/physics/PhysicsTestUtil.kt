@@ -36,19 +36,23 @@ import de.bixilon.minosoft.util.KUtil.matches
 import de.bixilon.minosoft.util.KUtil.startInit
 import org.testng.Assert
 import java.util.*
+import kotlin.reflect.jvm.javaField
 
 object PhysicsTestUtil {
     const val MATCH_EXACTLY = true
     val VALUE_MARGIN = if (MATCH_EXACTLY) 0.0 else DoubleUtil.DEFAULT_MARGIN
 
+    private val PLAYER_ATTRIBUTES = LocalPlayerEntity::attributes.javaField!!
+    private val CONNECTION_PLAYER = PlayConnection::player.javaField!!
+    private val CONNECTION_CAMERA = PlayConnection::camera.javaField!!
 
-    fun createPlayer(connection: PlayConnection = createConnection()): LocalPlayerEntity {
-        connection.world.dimension::skyLight.forceSet(false)
+
+    fun createPlayer(connection: PlayConnection = createConnection(light = false)): LocalPlayerEntity {
         val player = LocalPlayerEntity(connection.account, connection, SignatureKeyManagement(connection, connection.account))
-        player::attributes.forceSet(EntityAttributes(player.type.attributes))
+        PLAYER_ATTRIBUTES.forceSet(player, EntityAttributes(player.type.attributes))
         player.startInit()
-        connection::player.forceSet(player)
-        connection::camera.forceSet(ConnectionCamera(connection))
+        CONNECTION_PLAYER.forceSet(connection, player)
+        CONNECTION_CAMERA.forceSet(connection, ConnectionCamera(connection))
         connection.camera.init()
         connection.world.entities.remove(0)
         connection.world.entities.add(0, null, player)
