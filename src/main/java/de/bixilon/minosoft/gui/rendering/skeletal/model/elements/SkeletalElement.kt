@@ -25,8 +25,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 data class SkeletalElement(
     val from: Vec3,
     val to: Vec3,
-    val origin: Vec3 = (from - to) / 2.0f,
-    val rotation: Vec3 = Vec3.EMPTY,
+    val offset: Vec3 = Vec3.EMPTY,
+    val rotation: SkeletalRotation? = null,
     val inflate: Float = 0.0f,
     val transparency: Boolean = true,
     val enabled: Boolean = true,
@@ -36,10 +36,14 @@ data class SkeletalElement(
     val children: Map<String, SkeletalElement>,
 ) {
 
-    fun bake(mesh: SkeletalMesh, textures: Map<ResourceLocation, SkeletalTextureInstance>, transforms: Map<String, BakedSkeletalTransform>) {
+    init {
+        this.rotation?.apply(from, to)
+    }
+
+    fun bake(mesh: SkeletalMesh, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
         if (!enabled) return
 
-        val context = SkeletalBakeContext(transforms = transforms, textures = textures, consumer = mesh)
+        val context = SkeletalBakeContext(transform = transform, textures = textures, consumer = mesh)
         return bake(context)
     }
 
@@ -47,8 +51,8 @@ data class SkeletalElement(
         if (!enabled) return
         val context = context.copy(this)
 
-        val transform = context.transform?.id ?: 0
 
+        val transform = context.transform.id
 
         for ((direction, face) in faces) {
             face.bake(context, direction, this, transform)

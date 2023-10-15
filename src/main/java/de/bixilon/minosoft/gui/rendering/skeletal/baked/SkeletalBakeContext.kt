@@ -14,33 +14,34 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
+import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalRotation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 data class SkeletalBakeContext(
     val offset: Vec3 = Vec3.EMPTY,
-    val rotation: Vec3 = Vec3.EMPTY,
     val inflate: Float = 0.0f,
     val transparency: Boolean = true,
     val texture: ResourceLocation? = null,
-    val transform: BakedSkeletalTransform? = null,
+    val transform: BakedSkeletalTransform,
+    val rotations: List<SkeletalRotation> = emptyList(),
 
-    val transforms: Map<String, BakedSkeletalTransform>,
     val textures: Map<ResourceLocation, SkeletalTextureInstance>,
     val consumer: SkeletalVertexConsumer,
 ) {
 
     fun copy(element: SkeletalElement): SkeletalBakeContext {
-        val offset = this.offset + element.origin
-        val rotation = this.rotation + element.rotation
+        val offset = this.offset + (element.offset / 16.0f)
         val inflate = this.inflate + element.inflate
         val transparency = this.transparency && element.transparency
         val texture = element.texture ?: texture
-        val transform = element.transform?.let { transforms[element.transform] } ?: transform
+        val rotations = if (element.rotation != null) this.rotations.extend(element.rotation) else this.rotations
+        val transform = element.transform?.let { transform.children[element.transform] ?: throw IllegalArgumentException("Can not find transform ${element.transform}") } ?: transform
 
-        return copy(offset = offset, rotation = rotation, inflate = inflate, transparency = transparency, texture = texture, transform = transform)
+        return copy(offset = offset, inflate = inflate, transparency = transparency, texture = texture, transform = transform, rotations = rotations)
     }
 }

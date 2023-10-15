@@ -3,7 +3,11 @@
     "body": {
       "from": [-8, 0, -8],
       "to": [8, 16, 8],
-      "rotation": [-180, 0, 270],
+      "rotation": {
+        "value": [-180, 0, 270],
+        "origin": [0, 8, 0],
+        "rescale": false
+      },
       "texture": "minosoft:dummy_texture",
       "transform": "body",
       "faces": {
@@ -17,7 +21,7 @@
       "children": {
         "head1": {
           "transform": "head",
-          "origin": [0, 5, 0],
+          "offset": [0, 5, 0],
           "from": [-5, 0, -5],
           "to": [5, 10, 5],
           "faces": {
@@ -30,7 +34,7 @@
         },
         "head2": {
           "transform": "head",
-          "origin": [0, 6, 0],
+          "offset": [0, 6, 0],
           "from": [-5, 0, -5],
           "to": [5, 10, 5],
           "faces": {

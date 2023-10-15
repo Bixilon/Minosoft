@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
 import de.bixilon.minosoft.gui.rendering.skeletal.model.transforms.SkeletalTransform
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import java.util.concurrent.atomic.AtomicInteger
 
 data class SkeletalModel(
@@ -58,9 +60,10 @@ data class SkeletalModel(
         for ((name, transform) in this.transforms) {
             transforms[name] = transform.bake(AtomicInteger(1))
         }
+        val baseTransform = BakedSkeletalTransform(0, Vec3.EMPTY, transforms)
 
         for ((name, element) in elements) {
-            element.bake(mesh, textures, transforms)
+            element.bake(mesh, textures, baseTransform)
         }
 
         return BakedSkeletalModel(mesh, transforms)

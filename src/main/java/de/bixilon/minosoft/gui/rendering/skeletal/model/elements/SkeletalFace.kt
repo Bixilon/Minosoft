@@ -30,16 +30,17 @@ data class SkeletalFace(
 ) {
 
     fun bake(context: SkeletalBakeContext, direction: Directions, element: SkeletalElement, transform: Int) {
-        val positions = direction.getPositions(context.offset + (element.from / 16.0f - context.inflate), context.offset + (element.to / 16.0f + context.inflate))
+        val positions = direction.getPositions(context.offset + element.from - context.inflate, context.offset + element.to + context.inflate)
 
         val texture = context.textures[texture ?: context.texture ?: throw IllegalStateException("element has no texture set!")] ?: throw IllegalStateException("Texture not found!")
 
         val texturePositions = ModelBakeUtil.getTextureCoordinates(uv.start / texture.properties.resolution, uv.end / texture.properties.resolution)
 
-        val origin = element.origin / 16.0f
 
-        element.rotation.let {
-            val rad = -GLM.radians(it)
+        for (rotation in context.rotations) {
+            val origin = rotation._origin / 16.0f
+
+            val rad = -GLM.radians(rotation.value)
             for ((index, position) in positions.withIndex()) {
                 val out = Vec3(position)
                 out.rotateAssign(rad[0], Axes.X, origin, false)
