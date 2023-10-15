@@ -28,9 +28,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLoc
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
 open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Item(resourceLocation), DurableItem, StackableItem, TintedBlock {
     override val rarity: Rarities = data["rarity"]?.toInt()?.let { Rarities[it] } ?: Rarities.COMMON
@@ -50,10 +47,6 @@ open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registri
             val className = data["class"]?.toString()
             var factory = PixLyzerItemFactories[className]
             if (factory == null) {
-                if (className != null) {
-                    Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Item for class $className not found, defaulting..." }
-                }
-                // ToDo: This item class got renamed or is not yet implemented
                 factory = if (data["food_properties"] != null) {
                     PixLyzerFoodItem // ToDo: Remove this edge case
                 } else {
