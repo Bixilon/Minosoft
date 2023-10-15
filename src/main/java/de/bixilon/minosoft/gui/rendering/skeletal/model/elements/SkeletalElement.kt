@@ -36,10 +36,6 @@ data class SkeletalElement(
     val children: Map<String, SkeletalElement>,
 ) {
 
-    init {
-        this.rotation?.apply(from, to)
-    }
-
     fun bake(mesh: SkeletalMesh, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
         if (!enabled) return
 

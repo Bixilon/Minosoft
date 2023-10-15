@@ -13,9 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 data class SkeletalRotation(
@@ -23,11 +21,11 @@ data class SkeletalRotation(
     val origin: Vec3? = null,
     val rescale: Boolean = false,
 ) {
-    @JsonIgnore
-    var _origin: Vec3 = unsafeNull()
 
-    fun apply(from: Vec3, to: Vec3) {
-        this._origin = (to - from) / 2.0f
+    fun apply(offset: Vec3, from: Vec3, to: Vec3): SkeletalRotation {
+        val origin = (this.origin ?: ((to - from) / 2.0f)) + offset
+
+        return SkeletalRotation(value, origin, rescale)
     }
 
     companion object {

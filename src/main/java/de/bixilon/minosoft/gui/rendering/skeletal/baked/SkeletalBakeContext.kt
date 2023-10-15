@@ -39,7 +39,7 @@ data class SkeletalBakeContext(
         val inflate = this.inflate + element.inflate
         val transparency = this.transparency && element.transparency
         val texture = element.texture ?: texture
-        val rotations = if (element.rotation != null) this.rotations.extend(element.rotation) else this.rotations
+        val rotations = if (element.rotation != null) this.rotations.extend(element.rotation.apply(offset, element.from, element.to)) else this.rotations
         val transform = element.transform?.let { transform.children[element.transform] ?: throw IllegalArgumentException("Can not find transform ${element.transform}") } ?: transform
 
         return copy(offset = offset, inflate = inflate, transparency = transparency, texture = texture, transform = transform, rotations = rotations)
