@@ -13,27 +13,53 @@
 
 package de.bixilon.minosoft.gui.rendering.models.loader
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
 class SkeletalLoader(private val loader: ModelLoader) {
+    private val registered: SynchronizedMap<ResourceLocation, RegisteredModel> = synchronizedMapOf()
+    private val baked: MutableMap<ResourceLocation, BakedSkeletalModel> = HashMap()
 
     fun load(latch: AbstractLatch?) {
+        val templates: MutableMap<ResourceLocation, SkeletalModel> = HashMap(this.registered.size, 0.1f)
+
+        for ((name, registered) in this.registered) {
+            val template = templates.getOrPut(registered.template) { loader.context.connection.assetsManager[registered.template].readJson() }
+
+            template.load(loader.context, registered.override.keys)
+            registered.model = template
+        }
     }
 
     fun bake(latch: AbstractLatch?) {
+        for ((name, registered) in this.registered) {
+            val baked = registered.model!!.bake(loader.context, registered.override)
+            this.baked[name] = baked
+        }
     }
 
     fun cleanup() {
+        this.registered.clear()
     }
 
     operator fun get(name: ResourceLocation): BakedSkeletalModel? {
-        TODO()
+        return this.baked[name]
     }
 
     fun register(name: ResourceLocation, template: ResourceLocation = name, override: Map<ResourceLocation, ShaderTexture>) {
-        TODO()
+        val previous = this.registered.put(name, RegisteredModel(template, override))
+        if (previous != null) throw IllegalArgumentException("A model with the name $name was already registered!")
     }
+
+    private data class RegisteredModel(
+        val template: ResourceLocation,
+        val override: Map<ResourceLocation, ShaderTexture>,
+        var model: SkeletalModel? = null,
+    )
 }

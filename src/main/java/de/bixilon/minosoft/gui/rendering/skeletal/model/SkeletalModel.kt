@@ -32,10 +32,12 @@ data class SkeletalModel(
 ) {
     val loadedTextures: MutableMap<ResourceLocation, SkeletalTextureInstance> = mutableMapOf()
 
-    fun load(context: RenderContext) {
+    fun load(context: RenderContext, skip: Set<ResourceLocation>) {
         for ((name, properties) in this.textures) {
-            if (!properties.load) continue
-            context.textures.staticTextures.createTexture(name.texture())
+            if (name in skip) continue
+            val file = name.texture()
+            if (file in skip) continue
+            context.textures.staticTextures.createTexture(file)
         }
     }
 

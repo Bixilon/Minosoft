@@ -17,5 +17,4 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 
 data class SkeletalTexture(
     val resolution: Vec2i,
-    val load: Boolean = true,
 )
