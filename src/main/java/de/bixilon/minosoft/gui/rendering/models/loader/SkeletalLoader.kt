@@ -29,7 +29,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
     private val baked: MutableMap<ResourceLocation, BakedSkeletalModel> = HashMap()
 
     fun load(latch: AbstractLatch?) {
-        val templates: MutableMap<ResourceLocation, SkeletalModel> = HashMap(this.registered.size, 0.0f)
+        val templates: MutableMap<ResourceLocation, SkeletalModel> = HashMap(this.registered.size, 0.1f)
 
         for ((name, registered) in this.registered) {
             val template = templates.getOrPut(registered.template) { loader.context.connection.assetsManager[registered.template].readJson() }
@@ -70,6 +70,10 @@ class SkeletalLoader(private val loader: ModelLoader) {
         @Deprecated(".sModel()")
         fun ResourceLocation.bbModel(): ResourceLocation {
             return this.extend(prefix = "models/", suffix = ".bbmodel")
+        }
+
+        fun ResourceLocation.sModel(): ResourceLocation {
+            return this.extend(prefix = "models/", suffix = ".smodel")
         }
     }
 }

@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityRendererRegister
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
-import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.bbModel
+import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
@@ -42,7 +42,7 @@ class SingleChestRenderer(
 ) {
 
     companion object {
-        val SINGLE_MODEL = minecraft("block/entities/single_chest").bbModel()
+        val SINGLE_MODEL = minecraft("block/entities/single_chest").sModel()
         private val named = minecraft("chest")
 
         fun register(loader: ModelLoader, name: ResourceLocation, texture: ResourceLocation) {

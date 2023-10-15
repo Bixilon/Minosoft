@@ -24,7 +24,7 @@ data class SkeletalTransform(
 
     fun bake(id: AtomicInteger): BakedSkeletalTransform {
         val usedId = id.getAndIncrement()
-        val pivot = pivot / 16
+        val pivot = pivot / 16.0f
 
 
         val transforms: MutableMap<String, BakedSkeletalTransform> = mutableMapOf()

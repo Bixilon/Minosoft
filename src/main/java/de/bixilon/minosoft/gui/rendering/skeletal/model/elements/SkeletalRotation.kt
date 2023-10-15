@@ -30,10 +30,6 @@ data class SkeletalRotation(
         this._origin = (to - from) / 2.0f
     }
 
-    operator fun plus(other: SkeletalRotation): SkeletalRotation {
-        return SkeletalRotation(this.value + other.value, _origin)
-    }
-
     companion object {
         val EMPTY = SkeletalRotation(Vec3.EMPTY, Vec3.EMPTY, false)
     }
