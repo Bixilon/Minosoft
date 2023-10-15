@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.models.loader
 
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.time.TimeUtil.nanos
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -33,21 +35,29 @@ class ModelLoader(
 
 
     fun load(latch: AbstractLatch) {
+        val start = nanos()
+
         DefaultEntityModels.load(this, latch)
         fluids.load(latch)
         block.load(latch)
         item.load(latch)
         skeletal.load(latch)
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all models!" }
+        val time = nanos() - start
+
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all models in ${time.formatNanos()}!" }
     }
 
     fun bake(latch: AbstractLatch) {
+        val start = nanos()
+
         block.bake(latch)
         item.bake(latch)
         skeletal.bake(latch)
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models!" }
+        val time = nanos() - start
+
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models in ${time.formatNanos()}!" }
     }
 
     fun cleanup() {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
@@ -30,10 +31,14 @@ class RenderTestLoader {
         val latch = SimpleLatch(1)
         connection::assetsManager.forceSet(AssetsLoader.create(connection.profiles.resources, connection.version, latch))
         connection.assetsManager.load(latch)
+        connection::error.forceSet(DataObserver(null))
         RenderTestUtil.rendering = Rendering(connection)
         RenderTestUtil.rendering.start(latch, audio = false)
         latch.dec()
-        latch.await()
+        while (latch.count > 0) {
+            Thread.sleep(10)
+            connection.error?.let { throw it }
+        }
         val context = RenderTestUtil.rendering.context
         assertTrue(context.window is DummyWindow)
         assertTrue(context.system is DummyRenderSystem)

@@ -15,10 +15,9 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 open class DummyGUIVertexConsumer : GUIVertexConsumer {
     override val order: IntArray get() = OpenGLRenderSystem.QUAD_ORDER
@@ -32,7 +31,7 @@ open class DummyGUIVertexConsumer : GUIVertexConsumer {
         TODO("Not yet implemented")
     }
 
-    override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         TODO("Not yet implemented")
     }
 

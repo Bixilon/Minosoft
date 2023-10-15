@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.loader
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -45,7 +46,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
     }
 
     fun cleanup() {
-        this.registered.clear()
+        this::registered.forceSet(null)
     }
 
     operator fun get(name: ResourceLocation): BakedSkeletalModel? {
