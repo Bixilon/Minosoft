@@ -17,18 +17,21 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalTransform
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.transforms.SkeletalTransform
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import java.util.concurrent.atomic.AtomicInteger
 
 data class SkeletalModel(
     val elements: Map<String, SkeletalElement>,
     val textures: Map<ResourceLocation, SkeletalTexture>,
     val animations: Map<ResourceLocation, SkeletalAnimation>,
+    val transforms: Map<String, SkeletalTransform>,
 ) {
     val loadedTextures: MutableMap<ResourceLocation, SkeletalTextureInstance> = mutableMapOf()
 
@@ -50,12 +53,16 @@ data class SkeletalModel(
             textures[name]?.texture = texture
         }
 
-        val baked: MutableMap<String, SkeletalTransform> = mutableMapOf()
+        val transforms: MutableMap<String, BakedSkeletalTransform> = mutableMapOf()
 
-        for ((name, element) in elements) {
-            baked[name] = element.bake(mesh, textures) ?: continue
+        for ((name, transform) in this.transforms) {
+            transforms[name] = transform.bake(AtomicInteger(1))
         }
 
-        return BakedSkeletalModel(mesh, baked)
+        for ((name, element) in elements) {
+            element.bake(mesh, textures, transforms)
+        }
+
+        return BakedSkeletalModel(mesh, transforms)
     }
 }

@@ -71,9 +71,5 @@ class ModelLoader(
         fun ResourceLocation.model(): ResourceLocation {
             return this.extend(prefix = "models/", suffix = ".json")
         }
-
-        fun ResourceLocation.bbModel(): ResourceLocation {
-            return this.extend(prefix = "models/", suffix = ".bbmodel")
-        }
     }
 }

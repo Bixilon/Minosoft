@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityRendererRegister
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
-import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader.Companion.bbModel
+import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3

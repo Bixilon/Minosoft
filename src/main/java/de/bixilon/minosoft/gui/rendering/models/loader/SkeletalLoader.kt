@@ -19,6 +19,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
@@ -28,7 +29,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
     private val baked: MutableMap<ResourceLocation, BakedSkeletalModel> = HashMap()
 
     fun load(latch: AbstractLatch?) {
-        val templates: MutableMap<ResourceLocation, SkeletalModel> = HashMap(this.registered.size, 0.1f)
+        val templates: MutableMap<ResourceLocation, SkeletalModel> = HashMap(this.registered.size, 0.0f)
 
         for ((name, registered) in this.registered) {
             val template = templates.getOrPut(registered.template) { loader.context.connection.assetsManager[registered.template].readJson() }
@@ -63,4 +64,12 @@ class SkeletalLoader(private val loader: ModelLoader) {
         val override: Map<ResourceLocation, ShaderTexture>,
         var model: SkeletalModel? = null,
     )
+
+    companion object {
+
+        @Deprecated(".sModel()")
+        fun ResourceLocation.bbModel(): ResourceLocation {
+            return this.extend(prefix = "models/", suffix = ".bbmodel")
+        }
+    }
 }

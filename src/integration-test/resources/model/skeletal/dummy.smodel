@@ -5,7 +5,7 @@
       "to": [8, 16, 8],
       "rotation": [-180, 0, 270],
       "texture": "minosoft:dummy_texture",
-      "transform": false,
+      "transform": "body",
       "faces": {
         "down": {"uv": [0, 0, 16, 16]},
         "up": {"uv": [0, 0, 16, 16]},
@@ -15,8 +15,8 @@
         "east": {"uv": [0, 0, 16, 16], "texture": "minosoft:second_texture"}
       },
       "children": {
-        "head": {
-          "pivot": [0, 16, 0],
+        "head1": {
+          "transform": "head",
           "origin": [0, 5, 0],
           "from": [-5, 0, -5],
           "to": [5, 10, 5],
@@ -27,6 +27,29 @@
             "west": {"uv": [0, 0, 16, 16]},
             "east": {"uv": [0, 0, 16, 16]}
           }
+        },
+        "head2": {
+          "transform": "head",
+          "origin": [0, 6, 0],
+          "from": [-5, 0, -5],
+          "to": [5, 10, 5],
+          "faces": {
+            "up": {"uv": [0, 0, 16, 16]},
+            "north": {"uv": [0, 0, 16, 16]},
+            "south": {"uv": [0, 0, 16, 16]},
+            "west": {"uv": [0, 0, 16, 16]},
+            "east": {"uv": [0, 0, 16, 16]}
+          }
+        }
+      }
+    }
+  },
+  "transforms": {
+    "body": {
+      "pivot": [0, 8, 0],
+      "children": {
+        "head": {
+          "pivot": [0, 16, 0]
         }
       }
     }
@@ -45,7 +68,7 @@
       "length": 0.3,
       "animators": [
         {
-          "element": "body.head",
+          "element": "head",
           "keyframes": [
             {
               "type": "rotate",

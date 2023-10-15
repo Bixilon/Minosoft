@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
 data class BakedSkeletalModel(
     val mesh: SkeletalMesh,
-    val transforms: MutableMap<String, SkeletalTransform>,
+    val transforms: MutableMap<String, BakedSkeletalTransform>,
     // TODO: animations
 ) {
     private var state = SkeletalModelStates.DECLARED

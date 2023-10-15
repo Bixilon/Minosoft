@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import java.util.concurrent.atomic.AtomicInteger
 
 data class SkeletalBakeContext(
     val offset: Vec3 = Vec3.EMPTY,
@@ -27,19 +26,21 @@ data class SkeletalBakeContext(
     val inflate: Float = 0.0f,
     val transparency: Boolean = true,
     val texture: ResourceLocation? = null,
+    val transform: BakedSkeletalTransform? = null,
 
+    val transforms: Map<String, BakedSkeletalTransform>,
     val textures: Map<ResourceLocation, SkeletalTextureInstance>,
-    val transform: AtomicInteger = AtomicInteger(),
     val consumer: SkeletalVertexConsumer,
 ) {
 
     fun copy(element: SkeletalElement): SkeletalBakeContext {
-        val offset = this.offset + element.pivot
+        val offset = this.offset + element.origin
         val rotation = this.rotation + element.rotation
         val inflate = this.inflate + element.inflate
         val transparency = this.transparency && element.transparency
         val texture = element.texture ?: texture
+        val transform = element.transform?.let { transforms[element.transform] } ?: transform
 
-        return copy(offset = offset, rotation = rotation, inflate = inflate, transparency = transparency, texture = texture)
+        return copy(offset = offset, rotation = rotation, inflate = inflate, transparency = transparency, texture = texture, transform = transform)
     }
 }
