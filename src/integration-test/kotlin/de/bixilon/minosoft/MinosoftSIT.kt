@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.datafixer.DataFixer
 import de.bixilon.minosoft.protocol.versions.VersionLoader
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
 import de.bixilon.minosoft.util.KUtil
@@ -34,6 +35,7 @@ internal object MinosoftSIT {
     @BeforeSuite
     fun setup() {
         Log.ASYNC_LOGGING = false
+        RunConfiguration.VERBOSE_LOGGING = true
         KUtil.initBootClasses()
         KUtil.initPlayClasses()
         disableGC()
