@@ -55,9 +55,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import kotlin.reflect.jvm.javaField
 
 open class PixLyzerBlock(
@@ -129,11 +126,7 @@ open class PixLyzerBlock(
             check(registries != null) { "Registries is null!" }
 
             val className = data["class"].toString()
-            var factory = PixLyzerBlockFactories[className]
-            if (factory == null) {
-                Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Block for class $className not found, defaulting..." }
-                factory = PixLyzerBlock
-            }
+            val factory = PixLyzerBlockFactories[className] ?: PixLyzerBlock
 
             return factory.build(resourceLocation, registries, data)
         }
