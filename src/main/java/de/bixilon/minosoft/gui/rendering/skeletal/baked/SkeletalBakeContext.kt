@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalRotation
@@ -35,7 +36,7 @@ data class SkeletalBakeContext(
 ) {
 
     fun copy(element: SkeletalElement): SkeletalBakeContext {
-        val offset = this.offset + (element.offset / 16.0f)
+        val offset = this.offset + (element.offset / BLOCK_SIZE)
         val inflate = this.inflate + element.inflate
         val transparency = this.transparency && element.transparency
         val texture = element.texture ?: texture

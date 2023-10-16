@@ -25,12 +25,17 @@ class TransformInstance(
     var value = Mat4()
 
     fun pack(buffer: FloatBuffer) {
-        pack(buffer, value)
+        pack(buffer, Mat4())
     }
 
     private fun pack(buffer: FloatBuffer, parent: Mat4) {
-        val value = parent * value
+        val value = value * parent
         val offset = this.id * Mat4.length
-        buffer.put(value.array, offset, Mat4.length)
+        for (index in 0 until Mat4.length) {
+            buffer.put(offset + index, value.array[index])
+        }
+        for ((name, child) in children) {
+            child.pack(buffer, value)
+        }
     }
 }

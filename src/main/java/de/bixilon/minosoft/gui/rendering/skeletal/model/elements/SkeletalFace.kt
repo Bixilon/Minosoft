@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.block.legacy.ModelBakeUtil
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
@@ -30,7 +31,7 @@ data class SkeletalFace(
 ) {
 
     fun bake(context: SkeletalBakeContext, direction: Directions, element: SkeletalElement, transform: Int) {
-        val positions = direction.getPositions(context.offset + element.from - context.inflate, context.offset + element.to + context.inflate)
+        val positions = direction.getPositions(context.offset + (element.from - context.inflate) / BLOCK_SIZE, context.offset + (element.to + context.inflate) / BLOCK_SIZE)
 
         val texture = context.textures[texture ?: context.texture ?: throw IllegalStateException("element has no texture set!")] ?: throw IllegalStateException("Texture not found!")
 

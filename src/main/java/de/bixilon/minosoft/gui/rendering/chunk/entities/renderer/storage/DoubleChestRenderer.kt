@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 
 class DoubleChestRenderer(
     val entity: StorageBlockEntity,
@@ -37,9 +36,13 @@ class DoubleChestRenderer(
     light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    model.createInstance(context, (blockPosition - context.camera.offset.offset).toVec3, (blockState.getFacing()).rotation),
+    model.createInstance(context),
     light,
 ) {
+
+    init {
+        skeletal?.update(blockPosition, blockState.getFacing())
+    }
 
     companion object {
         val DOUBLE_MODEL = minecraft("block/entities/double_chest").bbModel()

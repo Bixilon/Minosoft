@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 
 class SingleChestRenderer(
     val entity: StorageBlockEntity,
@@ -37,9 +36,12 @@ class SingleChestRenderer(
     light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    model.createInstance(context, (blockPosition - context.camera.offset.offset).toVec3, blockState.getFacing().rotation),
+    model.createInstance(context),
     light,
 ) {
+    init {
+        skeletal?.update(blockPosition, blockState.getFacing())
+    }
 
     companion object {
         val SINGLE_MODEL = minecraft("block/entities/single_chest").sModel()

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
@@ -40,12 +39,9 @@ data class BakedSkeletalModel(
     }
 
 
-    fun createInstance(context: RenderContext, position: Vec3, rotation: Vec3): SkeletalInstance {
+    fun createInstance(context: RenderContext): SkeletalInstance {
         val transforms = this.transform.instance()
 
-        val instance = SkeletalInstance(context, this, transforms)
-        instance.update(position, rotation)
-
-        return instance
+        return SkeletalInstance(context, this, transforms)
     }
 }

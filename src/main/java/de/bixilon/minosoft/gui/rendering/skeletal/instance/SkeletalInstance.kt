@@ -15,6 +15,9 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -42,9 +45,19 @@ class SkeletalInstance(
 
     fun update(position: Vec3, rotation: Vec3) {
         val matrix = Mat4()
-            .translateAssign(Vec3(position - context.camera.offset.offset))
+            .translateAssign(position)
             .rotateRadAssign(rotation)
 
         transform.value = matrix
+    }
+
+    fun update(position: Vec3d, rotation: Vec3) {
+        update(Vec3(position - context.camera.offset.offset), rotation)
+    }
+
+    fun update(position: Vec3i, direction: Directions) {
+        val position = Vec3(position - context.camera.offset.offset)
+        position.x -= 0.5f; position.z -= 0.5f
+        update(position, direction.rotation)
     }
 }
