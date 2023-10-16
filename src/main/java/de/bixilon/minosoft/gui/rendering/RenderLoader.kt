@@ -104,6 +104,7 @@ object RenderLoader {
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Baking models (after ${stopwatch.labTime()})..." }
         font.postInit(renderLatch)
         models.bake(renderLatch)
+        models.upload()
         models.cleanup()
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }

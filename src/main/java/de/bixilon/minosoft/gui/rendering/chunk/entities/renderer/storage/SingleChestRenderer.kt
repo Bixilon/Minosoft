@@ -37,7 +37,7 @@ class SingleChestRenderer(
     light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    model.createInstance(context, (blockPosition - context.camera.offset.offset).toVec3, blockState.getFacing().rotatedMatrix),
+    model.createInstance(context, (blockPosition - context.camera.offset.offset).toVec3, blockState.getFacing().rotation),
     light,
 ) {
 

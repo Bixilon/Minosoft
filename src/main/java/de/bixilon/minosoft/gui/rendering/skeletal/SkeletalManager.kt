@@ -46,20 +46,15 @@ class SkeletalManager(
     fun draw(instance: SkeletalInstance, light: Int) {
         prepareDraw()
         shader.light = light
-        // val transforms = instance.calculateTransforms()
-        // var stride = 0
-        // for (transform in transforms) {
-        //     for (float in transform.array) {
-        //         uniformBuffer.buffer.put(stride++, float)
-        //     }
-        // }
-        // uniformBuffer.upload(0 until (transforms.size * MAT4_SIZE))
+
+        instance.transform.pack(uniformBuffer.buffer)
+        uniformBuffer.upload(0 until instance.model.transformCount * MAT4_SIZE)
 
         instance.model.mesh.draw()
     }
 
-    private companion object {
+    companion object {
         private const val TRANSFORMS = 128
-        private const val MAT4_SIZE = 4 * 4
+        const val MAT4_SIZE = 4 * 4
     }
 }

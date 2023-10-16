@@ -15,40 +15,23 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
+import java.nio.FloatBuffer
 
-class SkeletalInstance(
-    val context: RenderContext,
-    val model: BakedSkeletalModel,
-    val transform: TransformInstance,
+class TransformInstance(
+    val id: Int,
+    val pivot: Vec3,
+    val children: Map<String, TransformInstance>,
 ) {
-    var light = 0xFF
+    var value = Mat4()
 
-    fun draw() {
-        context.skeletal.draw(this, light)
+    fun pack(buffer: FloatBuffer) {
+        pack(buffer, value)
     }
 
-    fun draw(light: Int) {
-        this.light = light
-        context.skeletal.draw(this, light)
-    }
-
-    fun draw(shader: Shader) {
-        TODO()
-    }
-
-    fun update(position: Vec3, rotation: Vec3) {
-        val matrix = Mat4()
-            .translateAssign(Vec3(position - context.camera.offset.offset))
-        // .rotateAssign((EntityRotation.HALF_CIRCLE_DEGREE - yaw).rad, Y_ROTATION_VECTOR)
-
-        transform.value = matrix
-    }
-
-
-    companion object {
-        private val Y_ROTATION_VECTOR = Vec3(0, 1, 0)
+    private fun pack(buffer: FloatBuffer, parent: Mat4) {
+        val value = parent * value
+        val offset = this.id * SkeletalManager.MAT4_SIZE
+        buffer.put(value.array, offset, SkeletalManager.MAT4_SIZE)
     }
 }

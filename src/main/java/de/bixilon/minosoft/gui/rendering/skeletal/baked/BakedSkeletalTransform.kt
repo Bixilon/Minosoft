@@ -14,9 +14,21 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 
 data class BakedSkeletalTransform(
     val id: Int,
     val pivot: Vec3,
     val children: Map<String, BakedSkeletalTransform>,
-)
+) {
+
+    fun instance(): TransformInstance {
+        val children: MutableMap<String, TransformInstance> = mutableMapOf()
+
+        for ((name, child) in this.children) {
+            children[name] = child.instance()
+        }
+
+        return TransformInstance(id, pivot, children)
+    }
+}

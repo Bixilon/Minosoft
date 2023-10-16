@@ -60,6 +60,10 @@ class ModelLoader(
         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models in ${time.formatNanos()}!" }
     }
 
+    fun upload() {
+        skeletal.upload()
+    }
+
     fun cleanup() {
         block.cleanup()
         item.cleanup()

@@ -64,8 +64,9 @@ data class SkeletalModel(
 
         val transforms: MutableMap<String, BakedSkeletalTransform> = mutableMapOf()
 
+        val transformId = AtomicInteger(1)
         for ((name, transform) in this.transforms) {
-            transforms[name] = transform.bake(AtomicInteger(1))
+            transforms[name] = transform.bake(transformId)
         }
         val baseTransform = BakedSkeletalTransform(0, Vec3.EMPTY, transforms)
 
@@ -73,6 +74,6 @@ data class SkeletalModel(
             element.bake(mesh, textures, baseTransform)
         }
 
-        return BakedSkeletalModel(mesh, transforms)
+        return BakedSkeletalModel(mesh, baseTransform, transformId.get())
     }
 }

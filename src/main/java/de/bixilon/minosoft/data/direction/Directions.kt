@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.direction
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -46,7 +45,7 @@ enum class Directions(
     val vectord = Vec3d(vector)
 
     val axis: Axes = unsafeNull()
-    val rotatedMatrix: Mat4 = unsafeNull()
+    val rotation: Vec3 = unsafeNull()
     val inverted: Directions = unsafeNull()
 
     private fun invert(): Directions {
@@ -170,14 +169,13 @@ enum class Directions(
             return minDirection
         }
 
-
         init {
-            val rotationMatrix = Directions::rotatedMatrix.javaField!!
+            val rotation = Directions::rotation.javaField!!
             val inverted = Directions::inverted.javaField!!
             val axis = Directions::axis.javaField!!
             for (direction in VALUES) {
                 inverted.forceSet(direction, direction.invert())
-                rotationMatrix.forceSet(direction, DirectionUtil.rotateMatrix(direction))
+                rotation.forceSet(direction, DirectionUtil.getRotation(direction))
                 axis.forceSet(direction, Axes[direction])
             }
             NAME_MAP.unsafeCast<MutableMap<String, Directions>>()["bottom"] = DOWN

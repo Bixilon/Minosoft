@@ -46,6 +46,12 @@ class SkeletalLoader(private val loader: ModelLoader) {
         }
     }
 
+    fun upload() {
+        for ((name, baked) in this.baked) {
+            baked.load()
+        }
+    }
+
     fun cleanup() {
         this::registered.forceSet(null)
     }

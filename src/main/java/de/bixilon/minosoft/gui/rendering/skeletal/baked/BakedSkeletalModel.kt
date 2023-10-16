@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
@@ -21,7 +20,8 @@ import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
 data class BakedSkeletalModel(
     val mesh: SkeletalMesh,
-    val transforms: MutableMap<String, BakedSkeletalTransform>,
+    val transform: BakedSkeletalTransform,
+    val transformCount: Int,
     // TODO: animations
 ) {
     private var state = SkeletalModelStates.DECLARED
@@ -39,7 +39,13 @@ data class BakedSkeletalModel(
         state = SkeletalModelStates.UNLOADED
     }
 
-    fun createInstance(context: RenderContext, position: Vec3, transform: Mat4 = Mat4()): SkeletalInstance {
-        TODO()
+
+    fun createInstance(context: RenderContext, position: Vec3, rotation: Vec3): SkeletalInstance {
+        val transforms = this.transform.instance()
+
+        val instance = SkeletalInstance(context, this, transforms)
+        instance.update(position, rotation)
+
+        return instance
     }
 }
