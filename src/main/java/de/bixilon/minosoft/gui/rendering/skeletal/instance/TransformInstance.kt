@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import java.nio.FloatBuffer
 
 class TransformInstance(
@@ -31,7 +30,7 @@ class TransformInstance(
 
     private fun pack(buffer: FloatBuffer, parent: Mat4) {
         val value = parent * value
-        val offset = this.id * SkeletalManager.MAT4_SIZE
-        buffer.put(value.array, offset, SkeletalManager.MAT4_SIZE)
+        val offset = this.id * Mat4.length
+        buffer.put(value.array, offset, Mat4.length)
     }
 }

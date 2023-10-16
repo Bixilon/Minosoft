@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal
 
+import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
@@ -21,7 +22,7 @@ import org.lwjgl.system.MemoryUtil.memAllocFloat
 class SkeletalManager(
     val context: RenderContext,
 ) {
-    private val uniformBuffer = context.system.createFloatUniformBuffer(memAllocFloat(TRANSFORMS * MAT4_SIZE))
+    private val uniformBuffer = context.system.createFloatUniformBuffer(memAllocFloat(TRANSFORMS * Mat4.length))
     val shader = context.system.createShader(minosoft("skeletal")) { SkeletalShader(it, uniformBuffer) }
 
     fun init() {
@@ -48,13 +49,12 @@ class SkeletalManager(
         shader.light = light
 
         instance.transform.pack(uniformBuffer.buffer)
-        uniformBuffer.upload(0 until instance.model.transformCount * MAT4_SIZE)
+        uniformBuffer.upload(0 until instance.model.transformCount * Mat4.length)
 
         instance.model.mesh.draw()
     }
 
     companion object {
         private const val TRANSFORMS = 128
-        const val MAT4_SIZE = 4 * 4
     }
 }
