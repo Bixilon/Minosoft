@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
 
-class BakedSkeletalTransform(
+data class BakedSkeletalTransform(
     val id: Int,
     val pivot: Vec3,
     val children: Map<String, BakedSkeletalTransform>,

@@ -42,7 +42,8 @@ data class SkeletalModel(
             if (name in skip) continue
             val file = name.texture()
             if (file in skip) continue
-            context.textures.staticTextures.createTexture(file)
+            val texture = context.textures.staticTextures.createTexture(file)
+            this.loadedTextures[name] = SkeletalTextureInstance(properties, texture)
         }
     }
 
@@ -52,7 +53,13 @@ data class SkeletalModel(
         val textures: MutableMap<ResourceLocation, SkeletalTextureInstance> = this.loadedTextures.toMutableMap()
 
         for ((name, texture) in override) {
-            textures[name]?.texture = texture
+            val instance = textures[name]
+            if (instance != null) {
+                instance.texture = texture
+            } else {
+                val properties = this.textures[name] ?: continue
+                textures[name] = SkeletalTextureInstance(properties, texture)
+            }
         }
 
         val transforms: MutableMap<String, BakedSkeletalTransform> = mutableMapOf()

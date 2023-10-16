@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.loader
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
@@ -74,5 +76,15 @@ class SkeletalLoaderTest {
 
         assertEquals(raw.elements.size, 1)
         assertEquals(raw.elements["body"]!!.children["head1"]!!.transform, "head")
+    }
+
+    fun `bake dummy model`() {
+        val loader = createLoader()
+        loader.loadDummyModel()
+        loader.bake(SimpleLatch(0))
+        val baked = loader[dummyModel]!!
+
+
+        assertEquals(baked.transforms, mapOf("body" to BakedSkeletalTransform(1, Vec3(0.0, 0.5, 0.0), mapOf("head" to BakedSkeletalTransform(2, Vec3(0.0, 1.0, 0.0), emptyMap())))))
     }
 }
