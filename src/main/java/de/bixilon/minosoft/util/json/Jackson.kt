@@ -24,6 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.bixilon.minosoft.util.json.vec.Vec2Serializer
+import de.bixilon.minosoft.util.json.vec.Vec2iSerializer
 import de.bixilon.minosoft.util.json.vec.Vec3Serializer
 import de.bixilon.minosoft.util.json.vec.Vec4Serializer
 
@@ -49,7 +50,9 @@ object Jackson {
         .registerModule(AccountDeserializer)
         .registerModule(RGBColorSerializer)
         .registerModule(ChatComponentColorSerializer)
+        .registerModule(FaceUVDeserializer)
         .registerModule(Vec2Serializer)
+        .registerModule(Vec2iSerializer)
         .registerModule(Vec3Serializer)
         .registerModule(Vec4Serializer)
         .setDefaultMergeable(true)

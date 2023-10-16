@@ -33,7 +33,7 @@ data class SkeletalElement(
     val texture: ResourceLocation? = null,
     val transform: String? = null,
     val faces: Map<Directions, SkeletalFace>,
-    val children: Map<String, SkeletalElement>,
+    val children: Map<String, SkeletalElement> = emptyMap(),
 ) {
 
     fun bake(mesh: SkeletalMesh, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {

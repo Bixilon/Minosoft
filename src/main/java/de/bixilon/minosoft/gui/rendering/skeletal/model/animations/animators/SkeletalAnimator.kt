@@ -16,6 +16,6 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
 
 data class SkeletalAnimator(
-    val element: String,
+    val transform: String,
     val keyframes: List<SkeletalKeyframe>,
 )

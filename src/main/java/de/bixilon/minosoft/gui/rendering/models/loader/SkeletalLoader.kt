@@ -54,7 +54,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
         return this.baked[name]
     }
 
-    fun register(name: ResourceLocation, template: ResourceLocation = name, override: Map<ResourceLocation, ShaderTexture>) {
+    fun register(name: ResourceLocation, template: ResourceLocation = name, override: Map<ResourceLocation, ShaderTexture> = emptyMap()) {
         val previous = this.registered.put(name, RegisteredModel(template, override))
         if (previous != null) throw IllegalArgumentException("A model with the name $name was already registered!")
     }

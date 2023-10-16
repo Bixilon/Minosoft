@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 data class SkeletalTransform(
     val pivot: Vec3,
-    val children: Map<String, SkeletalTransform>,
+    val children: Map<String, SkeletalTransform> = emptyMap(),
 ) {
 
     fun bake(id: AtomicInteger): BakedSkeletalTransform {

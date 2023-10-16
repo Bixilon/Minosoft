@@ -38,7 +38,7 @@ data class SkeletalFace(
 
 
         for (rotation in context.rotations) {
-            val origin = rotation._origin / 16.0f
+            val origin = rotation.origin!! / 16.0f
 
             val rad = -GLM.radians(rotation.value)
             for ((index, position) in positions.withIndex()) {

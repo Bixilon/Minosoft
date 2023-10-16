@@ -24,6 +24,7 @@ data class FaceUV(
 ) {
     constructor(u1: Float, v1: Float, u2: Float, v2: Float) : this(Vec2(u1, v1), Vec2(u2, v2))
     constructor(u1: Int, v1: Int, u2: Int, v2: Int) : this(u1 / BLOCK_SIZE, v1 / BLOCK_SIZE, u2 / BLOCK_SIZE, v2 / BLOCK_SIZE)
+    constructor(array: FloatArray) : this(array[0], array[1], array[2], array[3])
 
 
     fun toArray(direction: Directions, rotation: Int): FloatArray {
