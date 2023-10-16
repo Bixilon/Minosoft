@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sin
@@ -43,7 +44,7 @@ class SunScatterRenderer(
     private fun calculateMatrix(skyMatrix: Mat4) {
         val matrix = Mat4(skyMatrix)
 
-        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3(0, 0, 1))
+        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3.Z)
 
         this.matrix = matrix
     }
@@ -64,7 +65,7 @@ class SunScatterRenderer(
 
     private fun calculateSunPosition(): Vec3 {
         val matrix = Mat4()
-        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3(0, 0, 1))
+        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3.Z)
 
         val barePosition = Vec4(1.0f, 0.128f, 0.0f, 1.0f)
 

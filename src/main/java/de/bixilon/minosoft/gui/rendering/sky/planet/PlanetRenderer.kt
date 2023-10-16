@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
 
 abstract class PlanetRenderer(
     protected val sky: SkyRenderer,
@@ -77,7 +78,7 @@ abstract class PlanetRenderer(
         val matrix = Mat4(base)
 
 
-        matrix.rotateAssign(calculateAngle().rad, Vec3(0, 0, 1))
+        matrix.rotateAssign(calculateAngle().rad, Vec3.Z)
 
         matrix.translateAssign(Vec3(0.0f, -modifier, 0.0f)) // moves the planet closer to the player (appears bigger)
 

@@ -32,6 +32,9 @@ import kotlin.math.sin
 
 object Vec3Util {
     private val EMPTY_INSTANCE = Vec3.EMPTY
+    private val X = Vec3(1, 0, 0)
+    private val Y = Vec3(0, 1, 0)
+    private val Z = Vec3(0, 0, 1)
 
     val Vec3.Companion.MIN: Vec3
         get() = Vec3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
@@ -54,6 +57,10 @@ object Vec3Util {
 
     val Vec3.blockPosition: Vec3i
         get() = this.floor
+
+    val Vec3.Companion.X: Vec3 get() = Vec3Util.X
+    val Vec3.Companion.Y: Vec3 get() = Vec3Util.X
+    val Vec3.Companion.Z: Vec3 get() = Vec3Util.Z
 
 
     val Vec3.rad: Vec3 get() = Vec3(x.rad, y.rad, z.rad)

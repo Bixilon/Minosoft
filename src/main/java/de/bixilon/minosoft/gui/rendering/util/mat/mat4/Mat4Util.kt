@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,22 +16,25 @@ package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.X
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Y
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
 
 object Mat4Util {
 
     fun Mat4.rotateDegreesAssign(rotation: Vec3): Mat4 {
-        if (rotation.x != 0.0f) {
-            rotateAssign(rotation.x.rad, Vec3(1, 0, 0))
-        }
-        if (rotation.y != 0.0f) {
-            rotateAssign(rotation.y.rad, Vec3(0, 1, 0))
-        }
-        if (rotation.z != 0.0f) {
-            rotateAssign(rotation.z.rad, Vec3(0, 0, 1))
-        }
+        if (rotation.x != 0.0f) rotateAssign(rotation.x.rad, Vec3.X)
+        if (rotation.y != 0.0f) rotateAssign(rotation.y.rad, Vec3.Y)
+        if (rotation.z != 0.0f) rotateAssign(rotation.z.rad, Vec3.Z)
         return this
     }
 
+    fun Mat4.rotateRadAssign(rotation: Vec3): Mat4 {
+        if (rotation.x != 0.0f) rotateAssign(rotation.x, Vec3.X)
+        if (rotation.y != 0.0f) rotateAssign(rotation.y, Vec3.Y)
+        if (rotation.z != 0.0f) rotateAssign(rotation.z, Vec3.Z)
+        return this
+    }
 
     operator fun Mat4.times(vec3: Vec3): Vec3 {
         return this.times(vec3, vec3)

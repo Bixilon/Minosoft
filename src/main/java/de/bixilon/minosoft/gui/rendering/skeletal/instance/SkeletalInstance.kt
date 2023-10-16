@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 
 class SkeletalInstance(
     val context: RenderContext,
@@ -42,13 +43,8 @@ class SkeletalInstance(
     fun update(position: Vec3, rotation: Vec3) {
         val matrix = Mat4()
             .translateAssign(Vec3(position - context.camera.offset.offset))
-        // .rotateAssign((EntityRotation.HALF_CIRCLE_DEGREE - yaw).rad, Y_ROTATION_VECTOR)
+            .rotateRadAssign(rotation)
 
         transform.value = matrix
-    }
-
-
-    companion object {
-        private val Y_ROTATION_VECTOR = Vec3(0, 1, 0)
     }
 }
