@@ -79,7 +79,7 @@ class GUIRenderer(
     }
 
     private fun updateResolution(windowSize: Vec2 = Vec2(context.window.size), scale: Float = profile.scale, systemScale: Vec2 = context.window.systemScale) {
-        scaledSize = Vec2(windowSize.scale(systemScale, scale))
+        scaledSize = Vec2(windowSize.scale(systemScale, scale)) + 0.01f
         halfSize = scaledSize / 2.0f
         resolutionUpdate = true
 
