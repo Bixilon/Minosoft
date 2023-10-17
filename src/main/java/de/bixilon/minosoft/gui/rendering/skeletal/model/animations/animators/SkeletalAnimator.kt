@@ -31,7 +31,7 @@ data class SkeletalAnimator(
         if (split.size == 1 && split[0] == "base") return transform
 
         for (name in split) {
-            transform = transform.children[name] ?: throw IllegalStateException("Animation is referencing unknown transform!")
+            transform = transform.children[name] ?: throw IllegalStateException("Animation is referencing unknown transform: $name")
         }
         return transform
     }

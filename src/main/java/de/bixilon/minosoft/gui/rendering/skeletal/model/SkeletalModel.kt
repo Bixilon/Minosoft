@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
+import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
@@ -47,9 +48,7 @@ data class SkeletalModel(
         }
     }
 
-    fun bake(context: RenderContext, override: Map<ResourceLocation, ShaderTexture>): BakedSkeletalModel {
-        val mesh = SkeletalMesh(context, 1000)
-
+    private fun buildTextures(override: Map<ResourceLocation, ShaderTexture>): Map<ResourceLocation, SkeletalTextureInstance> {
         val textures: MutableMap<ResourceLocation, SkeletalTextureInstance> = this.loadedTextures.toMutableMap()
 
         for ((name, texture) in override) {
@@ -62,6 +61,10 @@ data class SkeletalModel(
             }
         }
 
+        return textures
+    }
+
+    private fun buildTransforms(): Pair<BakedSkeletalTransform, Int> {
         val transforms: MutableMap<String, BakedSkeletalTransform> = mutableMapOf()
 
         val transformId = AtomicInteger(1)
@@ -70,10 +73,22 @@ data class SkeletalModel(
         }
         val baseTransform = BakedSkeletalTransform(0, Vec3.EMPTY, transforms)
 
-        for ((name, element) in elements) {
-            element.bake(mesh, textures, baseTransform)
-        }
+        return Pair(baseTransform, transformId.get())
+    }
 
-        return BakedSkeletalModel(mesh, baseTransform, transformId.get(), animations)
+    private fun buildElements(consumer: SkeletalVertexConsumer, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
+        for ((name, element) in elements) {
+            element.bake(consumer, textures, transform)
+        }
+    }
+
+    fun bake(context: RenderContext, override: Map<ResourceLocation, ShaderTexture>): BakedSkeletalModel {
+        val mesh = SkeletalMesh(context, 1000)
+
+        val textures = buildTextures(override)
+        val (transform, count) = buildTransforms()
+        buildElements(mesh, textures, transform)
+
+        return BakedSkeletalModel(mesh, transform, count, animations)
     }
 }
