@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators
 
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeAnimator
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
@@ -21,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.key
 data class SkeletalAnimator(
     val transform: String,
     val loop: AnimationLoops,
-    val length: Float,
     val keyframes: List<SkeletalKeyframe>,
 ) {
     private val split = transform.split(".", "/").toTypedArray()
@@ -39,6 +40,12 @@ data class SkeletalAnimator(
     fun instance(instance: SkeletalInstance): KeyframeAnimator {
         val transform = instance.getTransform()
 
-        return KeyframeAnimator(transform, loop, length, keyframes)
+        val instances: Array<KeyframeInstance?> = arrayOfNulls(this.keyframes.size)
+
+        for ((index, keyframe) in this.keyframes.withIndex()) {
+            instances[index] = keyframe.instance()
+        }
+
+        return KeyframeAnimator(transform, loop, instances.cast())
     }
 }

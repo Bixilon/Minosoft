@@ -56,35 +56,33 @@
     }
   },
   "animations": {
-    "open": {
-      "loop": "hold",
-      "length": 0.3,
-      "animators": [
-        {
-          "transform": "base.lid",
-          "keyframes": [
-            {
-              "type": "rotate",
-              "interpolation": "sine",
-              "keyframes": {
-                "0.0": [0, 0, 0],
-                "0.3": [-90, 0, 0]
-              }
+    "open": [
+      {
+        "transform": "lid",
+        "loop": "hold",
+        "length": 0.3,
+        "keyframes": [
+          {
+            "type": "rotate",
+            "interpolation": "sine",
+            "data": {
+              "0.0": [0, 0, 0],
+              "0.3": [-90, 0, 0]
             }
-          ]
-        }
-      ]
-    },
+          }
+        ]
+      }
+    ],
     "close": [
       {
-        "transform": "base.lid",
+        "transform": "lid",
         "loop": "hold",
         "length": 0.5,
         "keyframes": [
           {
             "type": "rotate",
             "interpolation": "sine",
-            "keyframes": {
+            "data": {
               "0.0": [-90, 0, 0],
               "0.5": [0, 0, 0]
             }

@@ -71,12 +71,11 @@
       {
         "transform": "head",
         "loop": "hold",
-        "length": 0.3,
         "keyframes": [
           {
             "type": "rotate",
             "interpolation": "sine",
-            "keyframes": {
+            "data": {
               "0.0": [0, 0, 0],
               "0.3": [-90, 0, 0]
             }

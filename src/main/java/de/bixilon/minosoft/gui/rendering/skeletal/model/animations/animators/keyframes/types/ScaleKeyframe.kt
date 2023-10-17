@@ -11,25 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes
+package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types
 
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
+import java.util.*
 
-data class TintKeyframe(
+data class ScaleKeyframe(
     val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
-    val channel: ColorChannel = ColorChannel.RGB,
-    val keyframes: Map<Float, RGBColor>,
+    val data: TreeMap<Float, Vec3>,
 ) : SkeletalKeyframe {
     override val type get() = TYPE
 
-
-    enum class ColorChannel {
-        RGB,
-        // TODO: hsv?
-        ;
+    override fun instance(): KeyframeInstance {
+        TODO("Not yet implemented")
     }
 
     companion object {
-        const val TYPE = "tint"
+        const val TYPE = "scale"
     }
 }

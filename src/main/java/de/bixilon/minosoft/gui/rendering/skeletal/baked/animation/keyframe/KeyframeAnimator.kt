@@ -15,11 +15,9 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
 
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
 
 class KeyframeAnimator(
     val transform: TransformInstance,
     val loop: AnimationLoops,
-    val length: Float,
-    val keyframes: List<SkeletalKeyframe>,
+    val keyframes: Array<KeyframeInstance>,
 )

@@ -11,17 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes
+package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
+import java.util.*
 
-data class RotateKeyframe(
+data class TranslateKeyframe(
     val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
-    val keyframes: Map<Float, Vec3>,
+    val data: TreeMap<Float, Vec3>,
 ) : SkeletalKeyframe {
     override val type get() = TYPE
 
+    override fun instance(): KeyframeInstance {
+        TODO("Not yet implemented")
+    }
+
     companion object {
-        const val TYPE = "rotate"
+        const val TYPE = "translate"
     }
 }

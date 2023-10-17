@@ -21,6 +21,9 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Y
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
 
 object Mat4Util {
+    private val empty = Mat4()
+
+    val Mat4.Companion.EMPTY_INSTANCE get() = empty
 
     fun Mat4.rotateDegreesAssign(rotation: Vec3): Mat4 {
         if (rotation.x != 0.0f) rotateAssign(rotation.x.rad, Vec3.X)

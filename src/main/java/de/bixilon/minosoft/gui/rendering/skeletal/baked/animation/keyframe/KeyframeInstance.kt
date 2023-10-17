@@ -11,17 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes
+package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.mat4x4.Mat4
 
-data class ScaleKeyframe(
-    val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
-    val keyframes: Map<Float, Vec3>,
-) : SkeletalKeyframe {
-    override val type get() = TYPE
+interface KeyframeInstance {
 
-    companion object {
-        const val TYPE = "scale"
-    }
+    fun transform(time: Float, matrix: Mat4)
 }

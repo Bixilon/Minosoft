@@ -51,7 +51,7 @@ class SkeletalInstance(
             .translateAssign(position)
             .rotateRadAssign(rotation)
 
-        transform.value = matrix
+        transform.value(matrix)
     }
 
     fun update(position: Vec3d, rotation: Vec3) {
@@ -60,7 +60,7 @@ class SkeletalInstance(
 
     fun update(position: Vec3i, direction: Directions) {
         val position = Vec3(position - context.camera.offset.offset)
-        position.x -= 0.5f; position.z -= 0.5f
+        position.x -= 0.5f; position.z -= 0.5f // models origin is the center of block origin
         update(position, direction.rotation)
     }
 }

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.EMPTY_INSTANCE
 import java.nio.FloatBuffer
 
 class TransformInstance(
@@ -22,10 +23,18 @@ class TransformInstance(
     val pivot: Vec3,
     val children: Map<String, TransformInstance>,
 ) {
-    var value = Mat4()
+    val value = Mat4()
 
     fun pack(buffer: FloatBuffer) {
         pack(buffer, Mat4())
+    }
+
+    fun reset() {
+        this.value(Mat4.EMPTY_INSTANCE)
+
+        for ((name, child) in children) {
+            child.reset()
+        }
     }
 
     private fun pack(buffer: FloatBuffer, parent: Mat4) {

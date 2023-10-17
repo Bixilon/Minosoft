@@ -44,6 +44,11 @@ class AnimationManager(val instance: SkeletalInstance) {
         draw(delta / 1000.0f)
     }
 
+    fun reset() {
+        // TODO: clear all animations
+        instance.transform.reset()
+    }
+
     fun draw(delta: Float) {
         // TODO
     }
