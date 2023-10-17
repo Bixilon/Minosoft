@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger
 data class SkeletalModel(
     val elements: Map<String, SkeletalElement>,
     val textures: Map<ResourceLocation, SkeletalTexture>,
-    val animations: Map<ResourceLocation, SkeletalAnimation>,
+    val animations: Map<String, SkeletalAnimation>,
     val transforms: Map<String, SkeletalTransform>,
 ) {
     val loadedTextures: MutableMap<ResourceLocation, SkeletalTextureInstance> = mutableMapOf()
@@ -74,6 +74,6 @@ data class SkeletalModel(
             element.bake(mesh, textures, baseTransform)
         }
 
-        return BakedSkeletalModel(mesh, baseTransform, transformId.get())
+        return BakedSkeletalModel(mesh, baseTransform, transformId.get(), animations)
     }
 }

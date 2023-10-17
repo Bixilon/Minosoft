@@ -16,12 +16,13 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 
 data class BakedSkeletalModel(
     val mesh: SkeletalMesh,
     val transform: BakedSkeletalTransform,
     val transformCount: Int,
-    // TODO: animations
+    val animations: Map<String, SkeletalAnimation>,
 ) {
     private var state = SkeletalModelStates.DECLARED
 

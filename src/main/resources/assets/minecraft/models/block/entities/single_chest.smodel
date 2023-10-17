@@ -75,24 +75,22 @@
         }
       ]
     },
-    "close": {
-      "loop": "hold",
-      "length": 0.5,
-      "animators": [
-        {
-          "transform": "base.lid",
-          "keyframes": [
-            {
-              "type": "rotate",
-              "interpolation": "sine",
-              "keyframes": {
-                "0.0": [-90, 0, 0],
-                "0.5": [0, 0, 0]
-              }
+    "close": [
+      {
+        "transform": "base.lid",
+        "loop": "hold",
+        "length": 0.5,
+        "keyframes": [
+          {
+            "type": "rotate",
+            "interpolation": "sine",
+            "keyframes": {
+              "0.0": [-90, 0, 0],
+              "0.5": [0, 0, 0]
             }
-          ]
-        }
-      ]
-    }
+          }
+        ]
+      }
+    ]
   }
 }

@@ -28,9 +28,12 @@ class SkeletalInstance(
     val model: BakedSkeletalModel,
     val transform: TransformInstance,
 ) {
+    val animation = AnimationManager(this)
     var light = 0xFF
 
+
     fun draw() {
+        animation.draw()
         context.skeletal.draw(this, light)
     }
 

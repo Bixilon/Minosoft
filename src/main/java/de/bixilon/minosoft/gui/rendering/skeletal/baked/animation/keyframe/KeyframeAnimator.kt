@@ -11,34 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators
+package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
 
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeAnimator
-import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
 
-data class SkeletalAnimator(
-    val transform: String,
+class KeyframeAnimator(
+    val transform: TransformInstance,
     val loop: AnimationLoops,
     val length: Float,
     val keyframes: List<SkeletalKeyframe>,
-) {
-    private val split = transform.split(".", "/").toTypedArray()
-
-    private fun SkeletalInstance.getTransform(): TransformInstance {
-        var transform = this.transform
-        if (split.size == 1 && split[0] == "base") return transform
-
-        for (name in split) {
-            transform = transform.children[name] ?: throw IllegalStateException("Animation is referencing unknown transform!")
-        }
-        return transform
-    }
-
-    fun instance(instance: SkeletalInstance): KeyframeAnimator {
-        val transform = instance.getTransform()
-
-        return KeyframeAnimator(transform, loop, length, keyframes)
-    }
-}
+)
