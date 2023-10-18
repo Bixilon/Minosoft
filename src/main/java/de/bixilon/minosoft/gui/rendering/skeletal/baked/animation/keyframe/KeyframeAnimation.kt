@@ -18,8 +18,21 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AbstractAnimat
 class KeyframeAnimation(
     val animators: Array<KeyframeAnimator>,
 ) : AbstractAnimation {
+    private var time = 0.0f
+
 
     override fun draw(delta: Float): Boolean {
-        TODO("Not yet implemented")
+        time += delta
+        var stop = true
+
+        for (animator in this.animators) {
+            if (!animator.draw(this.time)) {
+                stop = false
+            }
+        }
+        if (stop) return true
+
+
+        return false
     }
 }

@@ -70,10 +70,10 @@
     "open": [
       {
         "transform": "head",
-        "loop": "hold",
         "keyframes": [
           {
             "type": "rotate",
+            "loop": "hold",
             "interpolation": "sine",
             "data": {
               "0.0": [0, 0, 0],

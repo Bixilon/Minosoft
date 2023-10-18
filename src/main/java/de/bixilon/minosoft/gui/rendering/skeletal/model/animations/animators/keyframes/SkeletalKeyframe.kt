@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.ke
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.RotateKeyframe
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.ScaleKeyframe
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.TintKeyframe
@@ -31,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.key
 
 interface SkeletalKeyframe {
     val type: String
+    val loop: AnimationLoops
 
     fun instance(): KeyframeInstance
 }

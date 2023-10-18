@@ -15,12 +15,14 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.ke
 
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
 import java.util.*
 
 data class TintKeyframe(
     val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
+    override val loop: AnimationLoops,
     val channel: ColorChannel = ColorChannel.RGB,
     val data: TreeMap<Float, RGBColor>,
 ) : SkeletalKeyframe {

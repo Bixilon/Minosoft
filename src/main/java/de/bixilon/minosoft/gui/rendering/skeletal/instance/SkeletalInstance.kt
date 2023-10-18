@@ -60,7 +60,7 @@ class SkeletalInstance(
 
     fun update(position: Vec3i, direction: Directions) {
         val position = Vec3(position - context.camera.offset.offset)
-        position.x -= 0.5f; position.z -= 0.5f // models origin is the center of block origin
+        position.x += 0.5f; position.z += 0.5f // models origin is the center of block origin
         update(position, direction.rotation)
     }
 }

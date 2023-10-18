@@ -15,12 +15,14 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.ke
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
 import java.util.*
 
 data class RotateKeyframe(
     val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
+    override val loop: AnimationLoops,
     val data: TreeMap<Float, Vec3>,
 ) : SkeletalKeyframe {
     override val type get() = TYPE

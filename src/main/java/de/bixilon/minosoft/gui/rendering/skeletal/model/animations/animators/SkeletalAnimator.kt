@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.key
 
 data class SkeletalAnimator(
     val transform: String,
-    val loop: AnimationLoops,
     val keyframes: List<SkeletalKeyframe>,
 ) {
     private val split = transform.split(".", "/").toTypedArray()
@@ -46,6 +45,6 @@ data class SkeletalAnimator(
             instances[index] = keyframe.instance()
         }
 
-        return KeyframeAnimator(transform, loop, instances.cast())
+        return KeyframeAnimator(transform, instances.cast())
     }
 }

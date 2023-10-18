@@ -59,11 +59,11 @@
     "open": [
       {
         "transform": "lid",
-        "loop": "hold",
         "length": 0.3,
         "keyframes": [
           {
             "type": "rotate",
+            "loop": "hold",
             "interpolation": "sine",
             "data": {
               "0.0": [0, 0, 0],
@@ -76,11 +76,11 @@
     "close": [
       {
         "transform": "lid",
-        "loop": "hold",
         "length": 0.5,
         "keyframes": [
           {
             "type": "rotate",
+            "loop": "hold",
             "interpolation": "sine",
             "data": {
               "0.0": [-90, 0, 0],

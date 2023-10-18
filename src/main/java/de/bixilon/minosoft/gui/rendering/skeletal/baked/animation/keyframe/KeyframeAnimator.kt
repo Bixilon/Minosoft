@@ -14,10 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
 
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 
 class KeyframeAnimator(
     val transform: TransformInstance,
-    val loop: AnimationLoops,
     val keyframes: Array<KeyframeInstance>,
-)
+) {
+
+    fun draw(time: Float): Boolean {
+
+
+        return false
+    }
+}
