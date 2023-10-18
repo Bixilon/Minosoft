@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.Vec3KeyframeInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
@@ -27,8 +28,11 @@ data class TranslateKeyframe(
 ) : SkeletalKeyframe {
     override val type get() = TYPE
 
-    override fun instance(): KeyframeInstance {
-        TODO("Not yet implemented")
+    override fun instance() = object : Vec3KeyframeInstance(data, loop, interpolation) {
+        override fun apply(value: Vec3, transform: TransformInstance) {
+            transform.value
+                .translateAssign(value)
+        }
     }
 
     companion object {

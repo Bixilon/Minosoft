@@ -30,9 +30,7 @@ class KeyframeAnimation(
                 stop = false
             }
         }
-        if (stop) return true
 
-
-        return false
+        return stop
     }
 }

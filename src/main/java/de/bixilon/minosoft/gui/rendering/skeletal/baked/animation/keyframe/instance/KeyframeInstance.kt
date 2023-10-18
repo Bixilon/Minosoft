@@ -11,11 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
+package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 
-interface KeyframeInstance {
+abstract class KeyframeInstance<T>(
+    private val data: Map<Float, T>,
+    private val loop: AnimationLoops,
+) {
+    private var current: T? = null
+    private var currentTime = 0.0f
+    private var next: T? = null
+    private var nextTime = 0.0f
 
-    fun transform(time: Float, matrix: Mat4)
+
+    abstract fun interpolate(delta: Float, previous: T, next: T): T
+    abstract fun apply(value: T, transform: TransformInstance)
+
+    fun transform(time: Float, transform: TransformInstance): Boolean {
+        TODO()
+    }
 }

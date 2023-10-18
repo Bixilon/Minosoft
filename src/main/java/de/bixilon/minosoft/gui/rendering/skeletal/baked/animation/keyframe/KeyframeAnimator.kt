@@ -13,16 +13,23 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
 
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 
 class KeyframeAnimator(
     val transform: TransformInstance,
-    val keyframes: Array<KeyframeInstance>,
+    val keyframes: Array<KeyframeInstance<*>>,
 ) {
 
     fun draw(time: Float): Boolean {
+        var stop = true
 
+        for (frame in keyframes) {
+            if (!frame.transform(time, transform)) {
+                stop = false
+            }
+        }
 
-        return false
+        return stop
     }
 }

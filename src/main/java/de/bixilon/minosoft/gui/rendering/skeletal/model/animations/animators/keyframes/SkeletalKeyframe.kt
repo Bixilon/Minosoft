@@ -15,17 +15,15 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.ke
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.RotateKeyframe
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.ScaleKeyframe
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.TintKeyframe
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types.TranslateKeyframe
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
     JsonSubTypes.Type(value = RotateKeyframe::class, name = RotateKeyframe.TYPE),
-    JsonSubTypes.Type(value = TintKeyframe::class, name = TintKeyframe.TYPE),
     JsonSubTypes.Type(value = TranslateKeyframe::class, name = TranslateKeyframe.TYPE),
     JsonSubTypes.Type(value = ScaleKeyframe::class, name = ScaleKeyframe.TYPE),
 )
@@ -34,5 +32,5 @@ interface SkeletalKeyframe {
     val type: String
     val loop: AnimationLoops
 
-    fun instance(): KeyframeInstance
+    fun instance(): KeyframeInstance<*>
 }

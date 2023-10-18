@@ -11,35 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.types
+package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance
 
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.KeyframeInstance
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.SkeletalKeyframe
-import java.util.*
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
 
-data class TintKeyframe(
-    val interpolation: KeyframeInterpolation = KeyframeInterpolation.NONE,
-    override val loop: AnimationLoops,
-    val channel: ColorChannel = ColorChannel.RGB,
-    val data: TreeMap<Float, RGBColor>,
-) : SkeletalKeyframe {
-    override val type get() = TYPE
+abstract class Vec3KeyframeInstance(
+    data: Map<Float, Vec3>,
+    loop: AnimationLoops,
+    val interpolation: KeyframeInterpolation,
+) : KeyframeInstance<Vec3>(data, loop) {
 
 
-    override fun instance(): KeyframeInstance {
-        TODO("Not yet implemented")
-    }
-
-    enum class ColorChannel {
-        RGB,
-        // TODO: hsv?
-        ;
-    }
-
-    companion object {
-        const val TYPE = "tint"
+    override fun interpolate(delta: Float, previous: Vec3, next: Vec3) = when (interpolation) {
+        KeyframeInterpolation.NONE -> if (delta >= 1.0f) next else previous
+        KeyframeInterpolation.LINEAR -> interpolateLinear(delta, previous, next)
+        KeyframeInterpolation.SINE -> interpolateSine(delta, previous, next)
     }
 }
