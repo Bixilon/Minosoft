@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.get
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityRendererRegister
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
@@ -39,8 +40,13 @@ class SingleChestRenderer(
     model.createInstance(context),
     light,
 ) {
+
     init {
-        skeletal?.update(blockPosition, blockState.getFacing())
+        update(blockPosition, state, light)
+    }
+
+    override fun update(position: BlockPosition, state: BlockState, light: Int) {
+        skeletal?.update(position, state.getFacing())
     }
 
     companion object {

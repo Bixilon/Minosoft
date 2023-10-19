@@ -22,12 +22,12 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class MeshedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    override fun getRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): MeshedEntityRenderer<*> {
+    override fun getRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): MeshedEntityRenderer<*> {
         var renderer = this.renderer
-        if (renderer is MeshedEntityRenderer && renderer.blockState == blockState) {
+        if (renderer is MeshedEntityRenderer && renderer.state == state) {
             return renderer
         }
-        renderer = createMeshedRenderer(context, blockState, blockPosition)
+        renderer = createMeshedRenderer(context, state, position)
         this.renderer = renderer
         return renderer
     }

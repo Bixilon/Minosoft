@@ -48,18 +48,19 @@ import java.util.*
 class SignBlockEntityRenderer(
     val sign: SignBlockEntity,
     val context: RenderContext,
-    override val blockState: BlockState,
+    override var state: BlockState,
 ) : MeshedEntityRenderer<SignBlockEntity> {
     override val enabled: Boolean get() = false
 
     private fun getRotation(): Float {
-        if (blockState !is PropertyBlockState) return 0.0f
-        val rotation = blockState.properties[BlockProperties.ROTATION]?.toFloat() ?: return 0.0f
+        val state = this.state
+        if (state !is PropertyBlockState) return 0.0f
+        val rotation = state.properties[BlockProperties.ROTATION]?.toFloat() ?: return 0.0f
         return rotation * 22.5f
     }
 
     override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        val block = this.blockState.block
+        val block = this.state.block
         if (block is StandingSignBlock) {
             renderStandingText(offset, mesh, light[SELF_LIGHT_INDEX].toInt())
         } else if (block is WallSignBlock) {
@@ -97,7 +98,7 @@ class SignBlockEntityRenderer(
     }
 
     private fun renderWallText(position: FloatArray, mesh: ChunkMesh, light: Int) {
-        val yRotation = -when (val rotation = this.blockState.getFacing()) {
+        val yRotation = -when (val rotation = this.state.getFacing()) {
             Directions.SOUTH -> 0.0f
             Directions.EAST -> 90.0f
             Directions.NORTH -> 180.0f

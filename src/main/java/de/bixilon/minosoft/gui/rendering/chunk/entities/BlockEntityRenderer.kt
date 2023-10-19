@@ -15,12 +15,13 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 
 interface BlockEntityRenderer<E : BlockEntity> {
     val enabled: Boolean get() = true
 
-    val blockState: BlockState
+    var state: BlockState
     var light: Int
         get() = 0
         set(value) = Unit
@@ -29,4 +30,9 @@ interface BlockEntityRenderer<E : BlockEntity> {
 
     fun unload() = Unit
     fun load() = Unit
+
+    fun update(position: BlockPosition, state: BlockState, light: Int) {
+        this.light = light
+        this.state = state
+    }
 }

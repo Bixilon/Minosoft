@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
 abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
-    override val blockState: BlockState,
+    override var state: BlockState,
     protected val skeletal: SkeletalInstance?,
     override var light: Int,
 ) : BlockEntityRenderer<E> {
