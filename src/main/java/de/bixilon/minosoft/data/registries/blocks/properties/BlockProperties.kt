@@ -172,8 +172,8 @@ object BlockProperties {
         return Pair(property, property.parse(value)!!)
     }
 
+    @Deprecated("not block specific")
     private fun parseProperty(group: String, value: Any): Pair<BlockProperty<*>, Any> {
-        // TODO: block.properties
         val properties = PROPERTIES[group] ?: throw IllegalArgumentException("Can not find group: $group, expected value $value")
 
         var property: BlockProperty<*>? = null

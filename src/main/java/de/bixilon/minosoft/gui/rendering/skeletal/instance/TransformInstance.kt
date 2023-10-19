@@ -25,9 +25,6 @@ class TransformInstance(
 ) {
     val value = Mat4()
 
-    fun pack(buffer: FloatBuffer) {
-        pack(buffer, Mat4())
-    }
 
     fun reset() {
         this.value(Mat4.EMPTY_INSTANCE)
@@ -37,8 +34,8 @@ class TransformInstance(
         }
     }
 
-    private fun pack(buffer: FloatBuffer, parent: Mat4) {
-        val value = value * parent
+    fun pack(buffer: FloatBuffer, parent: Mat4) {
+        val value = parent * value
         val offset = this.id * Mat4.length
         for (index in 0 until Mat4.length) {
             buffer.put(offset + index, value.array[index])

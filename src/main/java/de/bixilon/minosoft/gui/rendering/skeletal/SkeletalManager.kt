@@ -48,7 +48,7 @@ class SkeletalManager(
         prepareDraw()
         shader.light = light
 
-        instance.transform.pack(uniformBuffer.buffer)
+        instance.transform.pack(uniformBuffer.buffer, instance.position)
         uniformBuffer.upload(0 until instance.model.transformCount * Mat4.length)
 
         instance.model.mesh.draw()

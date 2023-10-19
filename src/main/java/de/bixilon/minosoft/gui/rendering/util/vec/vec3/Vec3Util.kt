@@ -59,7 +59,7 @@ object Vec3Util {
         get() = this.floor
 
     val Vec3.Companion.X: Vec3 get() = Vec3Util.X
-    val Vec3.Companion.Y: Vec3 get() = Vec3Util.X
+    val Vec3.Companion.Y: Vec3 get() = Vec3Util.Y
     val Vec3.Companion.Z: Vec3 get() = Vec3Util.Z
 
 

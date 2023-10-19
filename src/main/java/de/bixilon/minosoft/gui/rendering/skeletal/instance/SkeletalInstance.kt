@@ -29,6 +29,7 @@ class SkeletalInstance(
     val transform: TransformInstance,
 ) {
     val animation = AnimationManager(this)
+    var position = Mat4()
     var light = 0xFF
 
 
@@ -47,11 +48,9 @@ class SkeletalInstance(
     }
 
     fun update(position: Vec3, rotation: Vec3) {
-        val matrix = Mat4()
+        this.position = Mat4()
             .translateAssign(position)
             .rotateRadAssign(rotation)
-
-        transform.value(matrix)
     }
 
     fun update(position: Vec3d, rotation: Vec3) {
