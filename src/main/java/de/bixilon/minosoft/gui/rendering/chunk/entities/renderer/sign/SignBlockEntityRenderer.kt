@@ -56,7 +56,7 @@ class SignBlockEntityRenderer(
         val state = this.state
         if (state !is PropertyBlockState) return 0.0f
         val rotation = state.properties[BlockProperties.ROTATION]?.toFloat() ?: return 0.0f
-        return rotation * 22.5f
+        return rotation * ROTATION_STEP
     }
 
     override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
@@ -125,6 +125,7 @@ class SignBlockEntityRenderer(
         private const val Z_OFFSET = 0.01f
         private const val X_OFFSET = PIXEL_SCALE * 6
         private const val Y_OFFSET = 0.04f
+        private const val ROTATION_STEP = 22.5f
         const val SIGN_MAX_WIDTH = 90 // 15x the char W. W has a width of 5sp
         val MAX_SIZE = Vec2(SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale, TEXT_PROPERTIES.lineHeight)
     }

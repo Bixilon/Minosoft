@@ -11,30 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage
+package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest
 
-import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
+import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.StorageBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
-abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
-    override var state: BlockState,
-    protected val skeletal: SkeletalInstance?,
-) : BlockEntityRenderer<E> {
+abstract class ChestRenderer(
+    state: BlockState,
+    skeletal: SkeletalInstance?,
+    blockPosition: BlockPosition,
+    light: Int,
+) : StorageBlockEntityRenderer<ChestBlockEntity>(state, skeletal) {
 
-    override fun draw(context: RenderContext) {
-        skeletal?.draw()
+    init {
+        update(blockPosition, state, light)
     }
 
-    @Deprecated("refactor")
-    fun playOpen() {
-        skeletal?.animation?.play("open")
-    }
-
-    @Deprecated("refactor")
-    fun playClose() {
-        skeletal?.animation?.play("close")
+    override fun update(position: BlockPosition, state: BlockState, light: Int) {
+        skeletal?.update(position, state.getFacing())
     }
 }

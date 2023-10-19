@@ -11,79 +11,61 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage
+package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.time.DateUtil
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityRendererRegister
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
-import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
+import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 
-class SingleChestRenderer(
+class DoubleChestRenderer(
     val entity: StorageBlockEntity,
     context: RenderContext,
-    blockState: BlockState,
-    blockPosition: Vec3i,
+    state: BlockState,
+    position: Vec3i,
     model: BakedSkeletalModel,
     light: Int,
-) : StorageBlockEntityRenderer<StorageBlockEntity>(
-    blockState,
-    model.createInstance(context),
-    light,
-) {
-
-    init {
-        update(blockPosition, state, light)
-    }
-
-    override fun update(position: BlockPosition, state: BlockState, light: Int) {
-        skeletal?.update(position, state.getFacing())
-    }
+) : ChestRenderer(state, model.createInstance(context), position, light) {
 
     companion object {
-        val SINGLE_MODEL = minecraft("block/entities/single_chest").sModel()
-        private val named = minecraft("chest")
+        val DOUBLE_MODEL = minecraft("block/entities/double_chest").bbModel()
+        private val named = arrayOf(minecraft("left"), minecraft("right"))
 
-        fun register(loader: ModelLoader, name: ResourceLocation, texture: ResourceLocation) {
-            val texture = loader.context.textures.staticTextures.createTexture(texture)
-            loader.skeletal.register(name, SINGLE_MODEL, mapOf(named to texture))
+        private fun register(loader: ModelLoader, name: ResourceLocation, textures: Array<ResourceLocation>) {
+            if (textures.size != 2) throw IllegalStateException("Textures must be left and right!")
+            val static = loader.context.textures.staticTextures
+            val override = mapOf(
+                named[0] to static.createTexture(textures[0]),
+                named[1] to static.createTexture(textures[1]),
+            )
+            loader.skeletal.register(name, DOUBLE_MODEL, override)
         }
     }
 
     object NormalChest : EntityRendererRegister {
-        val NAME = minecraft("block/entities/single_chest")
-        val TEXTURE = minecraft("entity/chest/normal").texture()
-        val TEXTURE_CHRISTMAS = minecraft("entity/chest/christmas").texture()
+        val NAME = minecraft("block/entities/double_chest")
+        private val textures = arrayOf(minecraft("entity/chest/normal_left").texture(), minecraft("entity/chest/normal_right").texture())
+        private val christmas = arrayOf(minecraft("entity/chest/christmas_left").texture(), minecraft("entity/chest/christmas_right").texture())
 
         override fun register(loader: ModelLoader) {
-            register(loader, NAME, if (DateUtil.christmas) TEXTURE_CHRISTMAS else TEXTURE)
+            register(loader, NAME, if (DateUtil.christmas) christmas else textures)
         }
     }
 
     object TrappedChest : EntityRendererRegister {
-        val NAME = minecraft("block/entities/trapped_chest")
-        val TEXTURE = minecraft("entity/chest/trapped").texture()
+        val NAME = minecraft("block/entities/double_trapped_chest")
+        private val textures = arrayOf(minecraft("entity/chest/trapped_left").texture(), minecraft("entity/chest/trapped_right").texture())
 
         override fun register(loader: ModelLoader) {
-            register(loader, NAME, TEXTURE)
-        }
-    }
-
-    object EnderChest : EntityRendererRegister {
-        val NAME = minecraft("block/entities/ender_chest")
-        val TEXTURE = minecraft("entity/chest/ender").texture()
-
-        override fun register(loader: ModelLoader) {
-            register(loader, NAME, TEXTURE)
+            register(loader, NAME, textures)
         }
     }
 }

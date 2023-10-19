@@ -22,8 +22,8 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.DoubleChestRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.SingleChestRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.DoubleChestRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {

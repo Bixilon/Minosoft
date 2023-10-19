@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.DoubleChestRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.SingleChestRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.DoubleChestRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.SingleChestRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
