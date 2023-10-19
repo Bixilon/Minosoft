@@ -1,4 +1,18 @@
 {
+  "918": {
+    "name": "23w42a",
+    "protocol_id": 1073741980,
+    "packets": {
+      "c2s": {
+        "play": ["confirm_teleport", "block_nbt", "difficulty", "message_acknowledgement", "command", "signed_chat_message", "session_data", "next_chunk_batch", "client_action", "settings", "command_suggestions", "reconfigure", "container_button", "container_click", "close_container", "channel", "book", "entity_nbt", "entity_interact", "generate_structure", "heartbeat", "lock_difficulty", "position", "position_rotation", "rotation", "ground_change", "move_vehicle", "steer_boat", "item_pick", "ping", "crafting_recipe", "toggle_fly", "player_action", "entity_action", "vehicle_input", "pong", "displayed_recipe", "recipe_book", "anvil_item_name", "resourcepack", "advancement_tab", "trade", "beacon_effect", "hotbar_slot", "command_block", "minecart_command_block", "item_stack_create", "jigsaw_block", "structure_block", "sign_text", "swing_arm", "entity_spectate", "block_interact", "use_item"],
+        "configuration": ["settings", "channel", "ready", "heartbeat", "pong", "resourcepack"]
+      },
+      "s2c": {
+        "play": ["bundle", "entity_object_spawn", "entity_experience_orb", "entity_animation", "statistics", "block_break", "block_break_animation", "block_data", "block_action", "block", "bossbar", "difficulty", "chunk_batch_done", "chunk_batch_start", "chunk_biome", "clear_title", "command_suggestions", "commands", "close_container", "crafter_slot_lock", "container_items", "container_properties", "container_item", "item_cooldown", "chat_suggestions", "channel", "entity_damage", "hide_message", "kick", "unsigned_chat_message", "entity_event", "explosion", "unload_chunk", "game_event", "open_entity_container", "damage_tilt", "initialize_world_border", "heartbeat", "chunk", "world_event", "particle", "chunk_light", "initialize", "map", "villager_trades", "relative_move", "movement_rotation", "rotation", "move_vehicle", "book", "open_container", "sign_editor", "ping", "pong", "crafting_recipe", "player_abilities", "signed_chat_message", "end_combat_event", "enter_combat_event", "kill_combat_event", "tab_list_remove", "tab_list", "player_face", "position_rotation", "unlock_recipes", "entity_destroy", "entity_remove_effect", "resourcepack", "respawn", "head_rotation", "blocks", "advancement_tab", "play_status", "hotbar_text", "center_world_border", "interpolate_world_border", "size_world_border", "warn_time_world_border", "warn_blocks_world_border", "camera", "hotbar_slot", "chunk_center", "view_distance", "compass_position", "objective_position", "entity_data", "entity_attach", "velocity", "entity_equipment", "experience", "health", "objective", "entity_passenger", "teams", "scoreboard_score", "simulation_distance", "subtitle", "time", "title_text", "title_times", "entity_sound", "sound_event", "reconfigure", "stop_sound", "chat_message", "tab_list_text", "nbt_response", "entity_collect", "teleport", "advancements", "entity_attributes", "entity_effect", "recipes", "tags"],
+        "configuration": ["channel", "kick",  "ready", "heartbeat", "ping", "registries", "resourcepack", "features", "tags"]
+      }
+    }
+  },
   "917": {
     "name": "23w41a",
     "protocol_id": 1073741979,

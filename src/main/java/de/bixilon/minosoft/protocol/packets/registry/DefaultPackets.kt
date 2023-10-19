@@ -312,6 +312,7 @@ object DefaultPackets {
             registerPlay("container_item", ::ContainerItemS2CP, threadSafe = false)
             registerPlay("container_items", ::ContainerItemsS2CP, threadSafe = false)
             registerPlay("container_properties", ::ContainerPropertiesS2CP, threadSafe = false)
+            registerPlay("crafter_slot_lock", ::CrafterSlotLockS2CP, threadSafe = false)
             registerPlay("open_container", ::OpenContainerS2CP, threadSafe = false)
             registerPlay("open_entity_container", ::OpenEntityContainerS2CP, threadSafe = false)
 
