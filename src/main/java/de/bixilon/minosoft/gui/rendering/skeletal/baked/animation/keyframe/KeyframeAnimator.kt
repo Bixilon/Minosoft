@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
 
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.NOT_OVER
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 
 class KeyframeAnimator(
@@ -22,14 +24,14 @@ class KeyframeAnimator(
 ) {
 
     fun draw(time: Float): Boolean {
-        var stop = true
+        var over = OVER
 
         for (frame in keyframes) {
-            if (!frame.transform(time, transform)) {
-                stop = false
+            if (frame.transform(time, transform) == NOT_OVER) {
+                over = NOT_OVER
             }
         }
 
-        return stop
+        return over
     }
 }

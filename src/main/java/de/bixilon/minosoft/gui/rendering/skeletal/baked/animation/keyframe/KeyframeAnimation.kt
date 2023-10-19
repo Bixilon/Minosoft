@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe
 
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AbstractAnimation
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.NOT_OVER
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 
 class KeyframeAnimation(
     val animators: Array<KeyframeAnimator>,
@@ -23,14 +25,14 @@ class KeyframeAnimation(
 
     override fun draw(delta: Float): Boolean {
         time += delta
-        var stop = true
+        var over = OVER
 
         for (animator in this.animators) {
-            if (!animator.draw(this.time)) {
-                stop = false
+            if (animator.draw(this.time) == NOT_OVER) {
+                over = NOT_OVER
             }
         }
 
-        return stop
+        return over
     }
 }
