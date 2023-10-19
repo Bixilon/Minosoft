@@ -11,14 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol
+package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_13W41B
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_2
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W42A
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-object VersionSupport {
-    const val MINIMUM_VERSION = V_13W41B
-    const val LATEST_VERSION = V_23W42A
-    const val LATEST_RELEASE = V_1_20_2
+class CrafterSlotLockS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val slot = buffer.readVarInt()
+    val containerId = buffer.readVarInt()
+    val locked = buffer.readBoolean()
+
+
+    override fun log(reducedLog: Boolean) {
+        Log.log(LogMessageType.NETWORK_IN, LogLevels.VERBOSE) { "Crafter slot lock (slot=$slot, containerId=$containerId, locked=$locked)" }
+    }
 }

@@ -18,13 +18,14 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W42A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val reason: ChatComponent = if (buffer.connection.network.state == ProtocolStates.LOGIN) buffer.readChatComponent() else buffer.readNbtChatComponent()
+    val reason: ChatComponent = if (buffer.connection.network.state == ProtocolStates.LOGIN && buffer.versionId >= V_23W42A) buffer.readChatComponent() else buffer.readNbtChatComponent()
 
     override fun handle(connection: PlayConnection) {
         if (!connection.network.connected) {
