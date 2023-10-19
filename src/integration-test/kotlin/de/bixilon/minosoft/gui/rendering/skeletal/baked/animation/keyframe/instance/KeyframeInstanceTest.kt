@@ -15,11 +15,14 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.inst
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.NOT_OVER
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import it.unimi.dsi.fastutil.floats.FloatArrayList
-import org.testng.Assert.*
+import org.testng.Assert.assertEquals
+import org.testng.Assert.assertFalse
 import org.testng.annotations.Test
 
 @Test(groups = ["skeletal", "rendering"])
@@ -51,7 +54,7 @@ class KeyframeInstanceTest {
             0.5f,
             1.25f,
             2.5f,
-            5.0f,
+            // 5.0f,
         ))
     }
 
@@ -76,7 +79,7 @@ class KeyframeInstanceTest {
             2.5f,
             5.0f,
             7.5f,
-            10.0f
+            // 10.0f
         ))
     }
 
@@ -129,6 +132,7 @@ class KeyframeInstanceTest {
             6.0f,
             7.0f,
             7.0f,
+            7.0f,
         ))
     }
 
@@ -142,8 +146,10 @@ class KeyframeInstanceTest {
             instance.transform(0.0f),
             instance.transform(1.0f),
             instance.transform(2.0f),
+
             instance.transform(3.0f),
             instance.transform(4.0f),
+
             instance.transform(5.0f),
             instance.transform(5.5f),
         )
@@ -152,10 +158,12 @@ class KeyframeInstanceTest {
         assertEquals(instance.entries, FloatArrayList.of(
             0.0f,
             2.5f,
-            5.0f,
             0.0f,
+
             2.5f,
-            5.0f,
+            0.0f,
+
+            2.5f,
             3.75f,
         ))
     }
@@ -175,9 +183,11 @@ class KeyframeInstanceTest {
             instance.transform(3.0f),
             instance.transform(3.5f),
             instance.transform(4.0f),
+
             instance.transform(5.0f),
             instance.transform(5.5f),
             instance.transform(6.0f),
+
             instance.transform(9.0f),
         )
         over.assertNotOver()
@@ -186,9 +196,10 @@ class KeyframeInstanceTest {
             0.0f,
             2.5f,
             5.0f,
-            3.5f,
             7.0f,
+            3.5f,
             0.0f,
+
             2.5f,
             3.75f,
             5.0f,
@@ -215,7 +226,6 @@ class KeyframeInstanceTest {
         assertEquals(instance.entries, FloatArrayList.of(
             0.0f,
             2.5f,
-            5.0f,
         ))
     }
 
@@ -229,13 +239,13 @@ class KeyframeInstanceTest {
         if (this.isEmpty()) throw IllegalArgumentException("Empty!")
         for ((index, entry) in this.withIndex()) {
             if (index + 1 == this.size) break
-            assertFalse(entry)
+            assertEquals(entry, NOT_OVER, "Expected animation to not be over yet at $index")
         }
-        assertTrue(this.last())
+        assertEquals(this.last(), OVER, "Expected animation to be over!")
     }
 
 
-    private class Instance(loop: AnimationLoops, data: Map<Float, Float>) : KeyframeInstance<Float>(data, loop) {
+    private class Instance(loop: AnimationLoops, data: Map<Float, Float>) : KeyframeInstance<Float>(data.toSortedMap(), loop) {
         val entries = FloatArrayList()
 
         override fun apply(value: Float, transform: TransformInstance) {

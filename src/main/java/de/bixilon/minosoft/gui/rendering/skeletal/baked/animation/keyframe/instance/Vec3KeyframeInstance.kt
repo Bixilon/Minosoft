@@ -18,9 +18,10 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.Ani
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.keyframes.KeyframeInterpolation
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
+import java.util.*
 
 abstract class Vec3KeyframeInstance(
-    data: Map<Float, Vec3>,
+    data: TreeMap<Float, Vec3>,
     loop: AnimationLoops,
     val interpolation: KeyframeInterpolation,
 ) : KeyframeInstance<Vec3>(data, loop) {
