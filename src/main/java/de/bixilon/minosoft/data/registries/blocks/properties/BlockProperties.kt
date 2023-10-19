@@ -146,6 +146,7 @@ object BlockProperties {
     val FLOWER_AMOUNT = IntProperty("flower_amount").register()
 
     val CRACKED = BooleanProperty("cracked").register()
+    val CRAFTING = BooleanProperty("crafting").register()
 
 
     @Deprecated("should not exist")
