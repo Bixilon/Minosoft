@@ -29,6 +29,10 @@ data class RotateKeyframe(
 ) : SkeletalKeyframe {
     override val type get() = TYPE
 
+    init {
+        if (data.size < 2) throw IllegalArgumentException("Must have at least 2 keyframes!")
+    }
+
     override fun instance() = object : Vec3KeyframeInstance(data, loop, interpolation) {
         override fun apply(value: Vec3, transform: TransformInstance) {
             transform.value
