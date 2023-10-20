@@ -53,12 +53,9 @@ class BakedFace(
         val mesh = mesh.mesh(texture)
         mesh.data.ensureSize(SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX * (mesh.order.size / 2))
 
-        var index = 0
-        val size = mesh.order.size
-        while (index < size) {
-            val vertexOffset = mesh.order[index] * 3
-            val uvOffset = mesh.order[index + 1] * 2
-
+        mesh.order.iterate { position, uv ->
+            val vertexOffset = position * 3
+            val uvOffset = uv * 2
             mesh.addVertex(
                 x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
                 u = this.uv[uvOffset],
@@ -66,7 +63,6 @@ class BakedFace(
                 shaderTextureId = textureId,
                 lightTint = lightTint,
             )
-            index += 2
         }
     }
 

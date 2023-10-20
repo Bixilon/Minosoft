@@ -23,13 +23,14 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProp
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 
 class WorldGUIConsumer(val mesh: SingleChunkMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
     private val whiteTexture = mesh.context.textures.whiteTexture
-    override val order: IntArray get() = mesh.order
+    override val order: RenderOrder get() = mesh.order
 
     override fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         val transformed = transform.fastTimes(position.x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)
@@ -53,9 +54,7 @@ class WorldGUIConsumer(val mesh: SingleChunkMesh, val transform: Mat4, val light
             Vec2(uvStart.x, uvEnd.y),
         )
 
-        for (index in 0 until order.size step 2) {
-            addVertex(positions[order[index]], texture, texturePositions[order[index + 1]], tint, options)
-        }
+        order.iterate { position, uv -> addVertex(positions[position], texture, texturePositions[uv], tint, options) }
     }
 
     override fun addCache(cache: GUIMeshCache) {

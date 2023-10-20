@@ -126,10 +126,7 @@ abstract class Mesh(
             uvEnd,
             Vec2(uvEnd.x, uvStart.y),
         )
-
-        for (index in 0 until order.size step 2) {
-            vertexConsumer.invoke(positions[order[index]], texturePositions[order[index + 1]])
-        }
+        order.iterate { position, uv -> vertexConsumer.invoke(positions[position], texturePositions[uv]) }
     }
 
     enum class MeshStates {

@@ -80,7 +80,7 @@ class DummyRenderSystem(
     override var clearColor: RGBColor = Colors.TRANSPARENT
     override var quadType: PrimitiveTypes = PrimitiveTypes.QUAD
 
-    override var quadOrder: IntArray = if (quadType == PrimitiveTypes.QUAD) OpenGLRenderSystem.QUAD_ORDER else OpenGLRenderSystem.TRIANGLE_ORDER
+    override var quadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) OpenGLRenderSystem.QUAD_ORDER else OpenGLRenderSystem.TRIANGLE_ORDER
 
     override fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer {
         TODO("Not yet implemented")

@@ -69,7 +69,7 @@ class OpenGLRenderSystem(
     } else {
         PrimitiveTypes.TRIANGLE
     }
-    override var quadOrder: IntArray = if (quadType == PrimitiveTypes.QUAD) QUAD_ORDER else TRIANGLE_ORDER
+    override var quadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) QUAD_ORDER else TRIANGLE_ORDER
     var boundVao = -1
     var boundBuffer = -1
     var uniformBufferBindingIndex = 0
@@ -328,7 +328,7 @@ class OpenGLRenderSystem(
     }
 
     companion object {
-        val TRIANGLE_ORDER = intArrayOf(
+        val TRIANGLE_ORDER = RenderOrder(intArrayOf(
             // TOOD: they are all rotated 90° wrong, fix this for triangle and quad order
             0, 1,
             3, 2,
@@ -336,13 +336,13 @@ class OpenGLRenderSystem(
             2, 3,
             1, 0,
             0, 1,
-        )
-        val QUAD_ORDER = intArrayOf(
+        ))
+        val QUAD_ORDER = RenderOrder(intArrayOf(
             0, 1,
             3, 2,
             2, 3,
             1, 0,
-        )
+        ))
 
         private val RenderingCapabilities.gl: Int
             get() {

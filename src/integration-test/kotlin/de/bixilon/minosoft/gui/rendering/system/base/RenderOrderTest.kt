@@ -11,19 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.block.legacy
+package de.bixilon.minosoft.gui.rendering.system.base
 
-import de.bixilon.kotlinglm.vec2.Vec2
+import org.testng.Assert.assertEquals
+import org.testng.annotations.Test
 
-@Deprecated("legacy")
-object ModelBakeUtil {
+@Test(groups = ["rendering"])
+class RenderOrderTest {
 
-    fun getTextureCoordinates(uvStart: Vec2, uvEnd: Vec2): Array<Vec2> {
-        return arrayOf(
-            Vec2(uvEnd.x, uvStart.y),
-            uvStart,
-            Vec2(uvStart.x, uvEnd.y),
-            uvEnd,
-        )
+    fun `simple iteration`() {
+        val order = RenderOrder(intArrayOf(0, 9, 1, 8, 2, 7, 3, 6))
+
+        val result: MutableList<Int> = mutableListOf()
+        order.iterate { position, uv -> result += position; result += uv }
+
+        assertEquals(result, listOf(0, 9, 1, 8, 2, 7, 3, 6))
+    }
+
+    fun `reverse iteration`() {
+        val order = RenderOrder(intArrayOf(0, 9, 1, 8, 2, 7, 3, 6))
+
+        val result: MutableList<Int> = mutableListOf()
+        order.iterateReverse { position, uv -> result += position; result += uv }
+
+        assertEquals(result, listOf(0, 9, 3, 6, 2, 7, 1, 8))
     }
 }

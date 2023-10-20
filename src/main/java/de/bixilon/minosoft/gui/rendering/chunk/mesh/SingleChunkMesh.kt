@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -62,19 +63,19 @@ class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
     }
 
     companion object {
-        val TRIANGLE_ORDER = intArrayOf(
+        val TRIANGLE_ORDER = RenderOrder(intArrayOf(
             0, 0,
             3, 3,
             2, 2,
             2, 2,
             1, 1,
             0, 0,
-        )
-        val QUAD_ORDER = intArrayOf(
+        ))
+        val QUAD_ORDER = RenderOrder(intArrayOf(
             0, 0,
             3, 3,
             2, 2,
             1, 1,
-        )
+        ))
     }
 }

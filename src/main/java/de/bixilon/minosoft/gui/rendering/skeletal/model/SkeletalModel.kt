@@ -33,8 +33,8 @@ import java.util.concurrent.atomic.AtomicInteger
 data class SkeletalModel(
     val elements: Map<String, SkeletalElement>,
     val textures: Map<ResourceLocation, SkeletalTexture>,
-    val animations: Map<String, SkeletalAnimation>,
-    val transforms: Map<String, SkeletalTransform>,
+    val animations: Map<String, SkeletalAnimation> = emptyMap(),
+    val transforms: Map<String, SkeletalTransform> = emptyMap(),
 ) {
     val loadedTextures: MutableMap<ResourceLocation, SkeletalTextureInstance> = mutableMapOf()
 

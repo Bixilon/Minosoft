@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
 import de.bixilon.kotlinglm.GLM
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
-import de.bixilon.minosoft.gui.rendering.models.block.legacy.ModelBakeUtil
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 
@@ -29,12 +29,21 @@ data class SkeletalFace(
     val texture: ResourceLocation? = null,
 ) {
 
+    private fun getTexturePositions(uvStart: Vec2, uvEnd: Vec2): Array<Vec2> {
+        return arrayOf(
+            Vec2(uvEnd.x, uvStart.y),
+            uvStart,
+            Vec2(uvStart.x, uvEnd.y),
+            uvEnd,
+        )
+    }
+
     fun bake(context: SkeletalBakeContext, direction: Directions, element: SkeletalElement, transform: Int) {
         val positions = direction.getPositions(context.offset + (element.from - context.inflate) / BLOCK_SIZE, context.offset + (element.to + context.inflate) / BLOCK_SIZE)
 
         val texture = context.textures[texture ?: context.texture ?: throw IllegalStateException("Element has no texture set!")] ?: throw IllegalStateException("Texture not found!")
 
-        val texturePositions = ModelBakeUtil.getTextureCoordinates(uv.start / texture.properties.resolution, uv.end / texture.properties.resolution)
+        val texturePositions = getTexturePositions(uv.start / texture.properties.resolution, uv.end / texture.properties.resolution)
 
 
         for (rotation in context.rotations) {

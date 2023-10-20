@@ -44,15 +44,4 @@ class RenderTestLoader {
         assertTrue(context.system is DummyRenderSystem)
         RenderTestUtil.context = context
     }
-
-    /*
-        fun loadModels() {
-            val latch = SimpleLatch(1)
-            RenderTestUtil.context.models.load(latch)
-            RenderTestUtil.context.models.entities.skeletal.clear()
-            RenderTestUtil.context.models.bake(latch)
-            latch.dec()
-            latch.await()
-        }
-     */
 }

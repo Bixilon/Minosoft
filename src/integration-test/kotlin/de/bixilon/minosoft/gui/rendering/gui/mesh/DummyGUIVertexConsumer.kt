@@ -15,12 +15,13 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 
 open class DummyGUIVertexConsumer : GUIVertexConsumer {
-    override val order: IntArray get() = OpenGLRenderSystem.QUAD_ORDER
+    override val order: RenderOrder get() = OpenGLRenderSystem.QUAD_ORDER
     var char = 0
 
     override fun addCache(cache: GUIMeshCache) {

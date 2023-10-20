@@ -102,7 +102,7 @@ interface RenderSystem {
     var clearColor: RGBColor
 
     var quadType: PrimitiveTypes
-    var quadOrder: IntArray
+    var quadOrder: RenderOrder
 
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 

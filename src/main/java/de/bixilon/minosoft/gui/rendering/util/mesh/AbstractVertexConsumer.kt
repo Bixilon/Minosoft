@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
+import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
+
 interface AbstractVertexConsumer {
-    val order: IntArray
+    val order: RenderOrder
 }
