@@ -19,29 +19,30 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AbstractAnimat
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 
 class AnimationManager(val instance: SkeletalInstance) {
-    private val playing: MutableList<AbstractAnimation> = mutableListOf()
+    private val playing: MutableMap<String, AbstractAnimation> = mutableMapOf()
     private val lock = SimpleLock()
     private var lastDraw = -1L
 
 
     fun play(animation: AbstractAnimation) {
-        // TODO: don't play animations twice, reset them?
         lock.lock()
-        playing += animation
+        playing[animation.name] = animation
         lock.unlock()
     }
 
     fun play(name: String) {
         val animation = instance.model.animations[name] ?: throw IllegalArgumentException("Can not find animation $name!")
-        play(animation.instance(instance))
+        play(animation.instance(name, instance))
     }
 
     fun stop(animation: AbstractAnimation) {
-        // TODO
+        stop(animation.name)
     }
 
     fun stop(name: String) {
-        // TODO
+        lock.lock()
+        playing -= name
+        lock.unlock()
     }
 
 
@@ -63,7 +64,7 @@ class AnimationManager(val instance: SkeletalInstance) {
         lock.lock()
         val iterator = playing.iterator()
 
-        for (animation in iterator) {
+        for ((name, animation) in iterator) {
             val over = animation.draw(delta)
             if (over == OVER) {
                 iterator.remove()

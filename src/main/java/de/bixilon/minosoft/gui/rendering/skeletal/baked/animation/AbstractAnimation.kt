@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.baked.animation
 
 interface AbstractAnimation {
+    val name: String
 
     fun draw(delta: Float): Boolean
 }

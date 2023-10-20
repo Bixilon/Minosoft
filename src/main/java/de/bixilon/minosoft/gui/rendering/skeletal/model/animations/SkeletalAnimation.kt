@@ -22,12 +22,12 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animators.Ske
 
 class SkeletalAnimation(@JsonValue val animators: List<SkeletalAnimator>) {
 
-    fun instance(instance: SkeletalInstance): KeyframeAnimation {
+    fun instance(name: String, instance: SkeletalInstance): KeyframeAnimation {
         val array: Array<KeyframeAnimator?> = arrayOfNulls(this.animators.size)
 
         for ((index, animator) in this.animators.withIndex()) {
             array[index] = animator.instance(instance)
         }
-        return KeyframeAnimation(array.cast())
+        return KeyframeAnimation(name, array.cast())
     }
 }

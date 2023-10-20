@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.insta
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 
 class KeyframeAnimation(
+    override val name: String,
     val animators: Array<KeyframeAnimator>,
 ) : AbstractAnimation {
     private var time = 0.0f
