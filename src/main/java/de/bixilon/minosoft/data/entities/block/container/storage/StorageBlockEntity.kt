@@ -50,11 +50,11 @@ abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEn
     protected open fun onViewingChange(viewing: Int) = Unit
 
     protected fun onOpen() {
-        storageRenderer?.playOpen()
+        storageRenderer?.open()
 
     }
 
     protected fun onClose() {
-        storageRenderer?.playClose()
+        storageRenderer?.close()
     }
 }

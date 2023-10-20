@@ -26,6 +26,7 @@ abstract class ChestRenderer(
     blockPosition: BlockPosition,
     light: Int,
 ) : StorageBlockEntityRenderer<ChestBlockEntity>(state, skeletal) {
+    val animation = skeletal?.let { ChestAnimation(it) }
 
     init {
         update(blockPosition, state, light)
@@ -33,5 +34,13 @@ abstract class ChestRenderer(
 
     override fun update(position: BlockPosition, state: BlockState, light: Int) {
         skeletal?.update(position, state.getFacing())
+    }
+
+    override fun open() {
+        animation?.open()
+    }
+
+    override fun close() {
+        animation?.close()
     }
 }

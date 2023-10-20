@@ -11,23 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage
+package de.bixilon.minosoft.gui.rendering.skeletal
 
-import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
-abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
-    override var state: BlockState,
-    protected val skeletal: SkeletalInstance?,
-) : BlockEntityRenderer<E> {
+class DummySkeletalConsumer : SkeletalVertexConsumer {
+    override val order: IntArray
+        get() = TODO("Not yet implemented")
 
-    override fun draw(context: RenderContext) {
-        skeletal?.draw()
+    override fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float) {
+        TODO("Not yet implemented")
     }
 
-    open fun open() = Unit
-    open fun close() = Unit
+    override fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int) {
+        TODO("Not yet implemented")
+    }
 }
