@@ -102,7 +102,9 @@ interface RenderSystem {
     var clearColor: RGBColor
 
     var quadType: PrimitiveTypes
+
     var quadOrder: RenderOrder
+    @Deprecated("legacy") var legacyQuadOrder: RenderOrder
 
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 

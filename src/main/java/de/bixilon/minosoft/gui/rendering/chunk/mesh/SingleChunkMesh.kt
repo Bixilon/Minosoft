@@ -17,8 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -26,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, WorldMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand), Comparable<SingleChunkMesh> {
     var distance: Float = 0.0f // Used for sorting
 
-    override val order = if (quadType == PrimitiveTypes.QUAD) QUAD_ORDER else TRIANGLE_ORDER
+    override val order = context.system.quadOrder
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: Texture, tintColor: Int, light: Int) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
@@ -60,22 +58,5 @@ class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
         val lightTint: Int,
     ) {
         companion object : MeshStruct(WorldMeshStruct::class)
-    }
-
-    companion object {
-        val TRIANGLE_ORDER = RenderOrder(intArrayOf(
-            0, 0,
-            3, 3,
-            2, 2,
-            2, 2,
-            1, 1,
-            0, 0,
-        ))
-        val QUAD_ORDER = RenderOrder(intArrayOf(
-            0, 0,
-            3, 3,
-            2, 2,
-            1, 1,
-        ))
     }
 }

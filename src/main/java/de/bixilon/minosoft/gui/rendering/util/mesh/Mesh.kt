@@ -31,7 +31,7 @@ abstract class Mesh(
     data: FragmentedArrayFloatList? = null,
     val onDemand: Boolean = false,
 ) : AbstractVertexConsumer {
-    override val order = context.system.quadOrder
+    override val order = context.system.legacyQuadOrder
     private var _data: FragmentedArrayFloatList? = data ?: if (onDemand) null else FragmentedArrayFloatList(initialCacheSize)
     var data: FragmentedArrayFloatList
         get() {
