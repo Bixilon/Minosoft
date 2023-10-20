@@ -33,18 +33,25 @@ class SkeletalInstance(
     var light = 0xFF
 
 
-    fun draw() {
-        animation.draw()
-        context.skeletal.draw(this, light)
-    }
-
     fun draw(light: Int) {
         this.light = light
-        context.skeletal.draw(this, light)
+        draw()
+    }
+
+    fun draw() {
+        animation.draw()
+
+        context.system.reset()
+        val shader = context.skeletal.shader
+        shader.use()
+        shader.light = light
+        draw(shader)
     }
 
     fun draw(shader: Shader) {
-        TODO()
+        shader.use()
+        context.skeletal.upload(this)
+        model.mesh.draw()
     }
 
     fun update(position: Vec3, rotation: Vec3) {

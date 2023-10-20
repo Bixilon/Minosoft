@@ -16,9 +16,9 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
@@ -35,7 +35,7 @@ data class SkeletalElement(
     val children: Map<String, SkeletalElement> = emptyMap(),
 ) {
 
-    fun bake(consumer: SkeletalVertexConsumer, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
+    fun bake(consumer: SkeletalConsumer, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
         if (!enabled) return
 
         val context = SkeletalBakeContext(transform = transform, textures = textures, consumer = consumer)

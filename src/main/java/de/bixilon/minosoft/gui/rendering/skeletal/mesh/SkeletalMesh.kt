@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal
+package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
@@ -21,20 +21,23 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize), SkeletalVertexConsumer {
+class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize), SkeletalConsumer {
 
-    override fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture) {
-        val transformedUV = texture.transformUV(uv)
-        data.add(position)
-        data.add(transformedUV.array)
-        data.add(transform.buffer(), texture.shaderId.buffer())
-    }
-
-    @Deprecated("Pretty rendering specific")
-    override fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float) {
+    private fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float) {
         data.add(position)
         data.add(transformedUV.array)
         data.add(transform, textureShaderId)
+    }
+
+    override fun addQuad(positions: Array<Vec3>, uv: Array<Vec2>, transform: Int, texture: ShaderTexture) {
+        val transform = transform.buffer()
+        val textureShaderId = texture.shaderId.buffer()
+
+        for (index in 0 until order.size step 2) {
+            val indexPosition = positions[order[index]].array
+            val transformedUV = texture.transformUV(uv[order[index + 1]])
+            addVertex(indexPosition, transformedUV, transform, textureShaderId)
+        }
     }
 
 

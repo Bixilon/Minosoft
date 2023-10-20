@@ -22,7 +22,7 @@ import org.lwjgl.system.MemoryUtil.memAllocFloat
 class SkeletalManager(
     val context: RenderContext,
 ) {
-    private val uniformBuffer = context.system.createFloatUniformBuffer(memAllocFloat(TRANSFORMS * Mat4.length))
+    private val uniformBuffer = context.system.createFloatUniformBuffer(memAllocFloat(MAX_TRANSFORMS * Mat4.length))
     val shader = context.system.createShader(minosoft("skeletal")) { SkeletalShader(it, uniformBuffer) }
 
     fun init() {
@@ -30,31 +30,24 @@ class SkeletalManager(
     }
 
     fun postInit() {
-        shader.native.defines["TRANSFORMS"] = TRANSFORMS
+        shader.native.defines["TRANSFORMS"] = MAX_TRANSFORMS
         shader.load()
         shader.light = 0xFF
     }
 
-    private fun prepareDraw() {
-        if (context.system.shader == shader.native) {
-            // probably already prepared
-            return
-        }
-        context.system.reset()
-        shader.use()
+    fun upload(instance: SkeletalInstance) {
+        instance.transform.pack(uniformBuffer.buffer, instance.position)
+        uniformBuffer.upload(0 until instance.model.transformCount * Mat4.length)
     }
 
     fun draw(instance: SkeletalInstance, light: Int) {
-        prepareDraw()
         shader.light = light
 
-        instance.transform.pack(uniformBuffer.buffer, instance.position)
-        uniformBuffer.upload(0 until instance.model.transformCount * Mat4.length)
 
         instance.model.mesh.draw()
     }
 
     companion object {
-        private const val TRANSFORMS = 128
+        private const val MAX_TRANSFORMS = 128
     }
 }

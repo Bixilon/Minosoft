@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
-import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalRotation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
@@ -31,7 +31,7 @@ data class SkeletalBakeContext(
     val rotations: List<SkeletalRotation> = emptyList(),
 
     val textures: Map<ResourceLocation, SkeletalTextureInstance>,
-    val consumer: SkeletalVertexConsumer,
+    val consumer: SkeletalConsumer,
 ) {
 
     fun copy(element: SkeletalElement): SkeletalBakeContext {

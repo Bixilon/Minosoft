@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Compa
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.block.legacy.ModelBakeUtil
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
-import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 
 data class SkeletalFace(
@@ -51,14 +50,6 @@ data class SkeletalFace(
             }
         }
 
-
-        val transform = transform.buffer()
-        val textureShaderId = texture.texture.shaderId.buffer()
-
-        for (index in 0 until context.consumer.order.size step 2) {
-            val indexPosition = positions[context.consumer.order[index]].array
-            val transformedUV = texture.texture.transformUV(texturePositions[context.consumer.order[index + 1]])
-            context.consumer.addVertex(indexPosition, transformedUV, transform, textureShaderId)
-        }
+        context.consumer.addQuad(positions, texturePositions, transform, texture.texture)
     }
 }

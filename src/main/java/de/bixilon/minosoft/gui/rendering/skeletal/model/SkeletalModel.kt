@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
-import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalConsumer
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
@@ -76,7 +76,7 @@ data class SkeletalModel(
         return Pair(baseTransform, transformId.get())
     }
 
-    private fun buildElements(consumer: SkeletalVertexConsumer, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
+    private fun buildElements(consumer: SkeletalConsumer, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
         for ((name, element) in elements) {
             element.bake(consumer, textures, transform)
         }

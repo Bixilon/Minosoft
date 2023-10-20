@@ -11,14 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal
+package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.AbstractVertexConsumer
 
-interface SkeletalVertexConsumer : AbstractVertexConsumer {
+interface SkeletalConsumer {
 
-    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture)
-    fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float)
+    fun addQuad(positions: Array<Vec3>, uv: Array<Vec2>, transform: Int, texture: ShaderTexture)
 }
