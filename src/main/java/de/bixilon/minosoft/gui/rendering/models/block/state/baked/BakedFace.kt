@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
@@ -54,8 +56,8 @@ class BakedFace(
         mesh.data.ensureSize(SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX * (mesh.order.size / 2))
 
         mesh.order.iterate { position, uv ->
-            val vertexOffset = position * 3
-            val uvOffset = uv * 2
+            val vertexOffset = position * Vec3.length
+            val uvOffset = uv * Vec2.length
             mesh.addVertex(
                 x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
                 u = this.uv[uvOffset],

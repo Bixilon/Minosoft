@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
@@ -26,13 +26,13 @@ class SingleChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: B
 
     override val order = context.system.quadOrder
 
-    fun addVertex(position: FloatArray, uv: Vec2, texture: Texture, tintColor: Int, light: Int) {
+    fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, light: Int) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
-        val transformedUV = texture.renderData.transformUV(uv).array
+        val transformedUV = texture.transformUV(uv).array
         data.add(position)
         data.add(transformedUV)
         data.add(
-            texture.renderData.shaderTextureId.buffer(),
+            texture.shaderId.buffer(),
             (((light shl 24) or tintColor).buffer())
         )
     }

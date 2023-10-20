@@ -34,7 +34,7 @@ class WorldGUIConsumer(val mesh: SingleChunkMesh, val transform: Mat4, val light
 
     override fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         val transformed = transform.fastTimes(position.x / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION)
-        mesh.addVertex(transformed, uv, (texture as Texture?) ?: whiteTexture.texture, tint.rgb, light)
+        mesh.addVertex(transformed, uv, texture ?: whiteTexture.texture, tint.rgb, light)
     }
 
     override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
@@ -32,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -59,6 +61,10 @@ class OpenGLTextureArray(
 
     private val texturesByResolution = Array<MutableList<Texture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
     private val lastTextureId = IntArray(TEXTURE_RESOLUTION_ID_MAP.size)
+
+    init {
+        context.system.unsafeCast<OpenGLRenderSystem>().textureBindingIndex += TEXTURE_RESOLUTION_ID_MAP.size
+    }
 
     override fun get(resourceLocation: ResourceLocation): Texture? {
         return this.namedTextures[resourceLocation]

@@ -75,6 +75,7 @@ class OpenGLRenderSystem(
     var boundVao = -1
     var boundBuffer = -1
     var uniformBufferBindingIndex = 0
+    var textureBindingIndex = 0
 
     override var shader: NativeShader? = null
         set(value) {
