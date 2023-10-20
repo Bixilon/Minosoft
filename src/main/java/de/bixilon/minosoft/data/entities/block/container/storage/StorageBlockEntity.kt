@@ -51,7 +51,6 @@ abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEn
 
     protected fun onOpen() {
         storageRenderer?.open()
-
     }
 
     protected fun onClose() {

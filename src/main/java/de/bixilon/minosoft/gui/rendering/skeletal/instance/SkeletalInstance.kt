@@ -39,6 +39,7 @@ class SkeletalInstance(
     }
 
     fun draw() {
+        transform.reset()
         animation.draw()
 
         context.system.reset()

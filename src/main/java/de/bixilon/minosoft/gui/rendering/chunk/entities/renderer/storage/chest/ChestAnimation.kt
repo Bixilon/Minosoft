@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.insta
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
 
 class ChestAnimation(
     private val instance: SkeletalInstance,
@@ -56,12 +57,15 @@ class ChestAnimation(
     private fun transform() {
         val rotation = interpolateSine(this.progress, BASE, OPEN)
         transform.value
-            .translateAssign(-transform.pivot)
-            .rotateRadAssign(rotation)
             .translateAssign(transform.pivot)
+            .rotateRadAssign(rotation)
+            .translateAssign(-transform.pivot)
     }
 
     fun open() {
+        if (progress <= 0.0f) {
+            instance.animation.play(this)
+        }
         opening = true
     }
 
@@ -77,7 +81,7 @@ class ChestAnimation(
         const val OPENING_TIME = 0.5f
         const val CLOSING_TIME = 0.3f
 
-        private val BASE = Vec3(0.0f, 0.0f, 0.0f)
-        private val OPEN = Vec3(-90.0f, 0.0f, 0.0f)
+        private val BASE = Vec3(0.0f, 0.0f, 0.0f).rad
+        private val OPEN = Vec3(-90.0f, 0.0f, 0.0f).rad
     }
 }

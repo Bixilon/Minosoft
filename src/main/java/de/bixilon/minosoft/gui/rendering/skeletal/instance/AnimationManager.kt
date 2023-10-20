@@ -50,7 +50,7 @@ class AnimationManager(val instance: SkeletalInstance) {
         val nanos = nanos()
         val delta = if (lastDraw < 0) 0L else nanos - lastDraw
         this.lastDraw = nanos
-        draw(delta / 1000.0f)
+        draw(delta / 100000 / 10000.0f)
     }
 
     fun reset() {
