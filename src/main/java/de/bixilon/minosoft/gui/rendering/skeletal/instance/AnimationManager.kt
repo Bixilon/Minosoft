@@ -13,15 +13,22 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AbstractAnimation
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 
 class AnimationManager(val instance: SkeletalInstance) {
+    private val playing: MutableList<AbstractAnimation> = mutableListOf()
+    private val lock = SimpleLock()
     private var lastDraw = -1L
 
 
     fun play(animation: AbstractAnimation) {
         // TODO: don't play animations twice, reset them?
+        lock.lock()
+        playing += animation
+        lock.unlock()
     }
 
     fun play(name: String) {
@@ -46,11 +53,22 @@ class AnimationManager(val instance: SkeletalInstance) {
     }
 
     fun reset() {
-        // TODO: clear all animations
+        lock.lock()
+        playing.clear()
         instance.transform.reset()
+        lock.unlock()
     }
 
     fun draw(delta: Float) {
-        // TODO
+        lock.lock()
+        val iterator = playing.iterator()
+
+        for (animation in iterator) {
+            val over = animation.draw(delta)
+            if (over == OVER) {
+                iterator.remove()
+            }
+        }
+        lock.unlock()
     }
 }
