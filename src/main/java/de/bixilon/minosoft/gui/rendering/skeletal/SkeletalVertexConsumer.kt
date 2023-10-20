@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.AbstractVertexConsumer
 
 interface SkeletalVertexConsumer : AbstractVertexConsumer {
 
-    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int)
-    fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float)
+    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture)
+    fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float)
 }

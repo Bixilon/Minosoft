@@ -28,7 +28,6 @@ data class SkeletalElement(
     val offset: Vec3 = Vec3.EMPTY,
     val rotation: SkeletalRotation? = null,
     val inflate: Float = 0.0f,
-    val transparency: Boolean = true,
     val enabled: Boolean = true,
     val texture: ResourceLocation? = null,
     val transform: String? = null,

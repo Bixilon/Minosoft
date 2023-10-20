@@ -17,7 +17,6 @@ out vec4 foutColor;
 
 #include "minosoft:animation/header_fragment"
 
-flat in uint finFlags;
 
 #include "minosoft:texture"
 #include "minosoft:alpha"
@@ -31,8 +30,5 @@ flat in uint finFlags;
 
 void main() {
     run_animation();
-
-    if ((finFlags & 0x01u) == 0u) {
-        foutColor.a = 1.0f;
-    }
+    run_animation();
 }

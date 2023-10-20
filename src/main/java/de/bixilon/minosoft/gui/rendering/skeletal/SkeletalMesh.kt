@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,22 +23,18 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize), SkeletalVertexConsumer {
 
-    override fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int) {
+    override fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture) {
         val transformedUV = texture.transformUV(uv)
         data.add(position)
         data.add(transformedUV.array)
-        data.add(transform.buffer())
-        data.add(texture.shaderId.buffer())
-        data.add(flags.buffer())
+        data.add(transform.buffer(), texture.shaderId.buffer())
     }
 
     @Deprecated("Pretty rendering specific")
-    override fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float) {
+    override fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float) {
         data.add(position)
         data.add(transformedUV.array)
-        data.add(transform)
-        data.add(textureShaderId)
-        data.add(flags)
+        data.add(transform, textureShaderId)
     }
 
 
@@ -47,7 +43,6 @@ class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context
         val uv: Vec2,
         val transform: Int,
         val indexLayerAnimation: Int,
-        val flags: Int,
     ) {
         companion object : MeshStruct(SkeletalMeshStruct::class)
     }

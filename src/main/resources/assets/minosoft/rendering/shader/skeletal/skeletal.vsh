@@ -17,11 +17,9 @@ layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
 layout (location = 2) in float vinTransform;
 layout (location = 3) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
-layout (location = 4) in float vinFlags;
 
 #include "minosoft:animation/header_vertex"
 
-flat out uint finFlags;
 
 uniform mat4 uViewProjectionMatrix;
 
@@ -42,7 +40,6 @@ void main() {
     gl_Position = uViewProjectionMatrix * position;
     finTintColor = getLight(uLight & 0xFFu);
     finFragmentPosition = position.xyz;
-    finFlags = floatBitsToUint(vinFlags);
 
     run_animation();
 }

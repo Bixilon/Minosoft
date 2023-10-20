@@ -33,13 +33,13 @@ data class SkeletalFace(
     fun bake(context: SkeletalBakeContext, direction: Directions, element: SkeletalElement, transform: Int) {
         val positions = direction.getPositions(context.offset + (element.from - context.inflate) / BLOCK_SIZE, context.offset + (element.to + context.inflate) / BLOCK_SIZE)
 
-        val texture = context.textures[texture ?: context.texture ?: throw IllegalStateException("element has no texture set!")] ?: throw IllegalStateException("Texture not found!")
+        val texture = context.textures[texture ?: context.texture ?: throw IllegalStateException("Element has no texture set!")] ?: throw IllegalStateException("Texture not found!")
 
         val texturePositions = ModelBakeUtil.getTextureCoordinates(uv.start / texture.properties.resolution, uv.end / texture.properties.resolution)
 
 
         for (rotation in context.rotations) {
-            val origin = rotation.origin!! / 16.0f
+            val origin = rotation.origin!! / BLOCK_SIZE
 
             val rad = -GLM.radians(rotation.value)
             for ((index, position) in positions.withIndex()) {
@@ -51,19 +51,14 @@ data class SkeletalFace(
             }
         }
 
-        var flags = 0
-        if (context.transparency) {
-            flags = flags or 0x01
-        }
 
         val transform = transform.buffer()
         val textureShaderId = texture.texture.shaderId.buffer()
-        val floatFlags = flags.buffer()
 
         for (index in 0 until context.consumer.order.size step 2) {
             val indexPosition = positions[context.consumer.order[index]].array
             val transformedUV = texture.texture.transformUV(texturePositions[context.consumer.order[index + 1]])
-            context.consumer.addVertex(indexPosition, transformedUV, transform, textureShaderId, floatFlags)
+            context.consumer.addVertex(indexPosition, transformedUV, transform, textureShaderId)
         }
     }
 }

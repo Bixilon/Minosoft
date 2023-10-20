@@ -20,11 +20,11 @@ class DummySkeletalConsumer : SkeletalVertexConsumer {
     override val order: IntArray
         get() = TODO("Not yet implemented")
 
-    override fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float) {
+    override fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float) {
         TODO("Not yet implemented")
     }
 
-    override fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int) {
+    override fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture) {
         TODO("Not yet implemented")
     }
 }

@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 data class SkeletalBakeContext(
     val offset: Vec3 = Vec3.EMPTY,
     val inflate: Float = 0.0f,
-    val transparency: Boolean = true,
     val texture: ResourceLocation? = null,
     val transform: BakedSkeletalTransform,
     val rotations: List<SkeletalRotation> = emptyList(),
@@ -38,11 +37,10 @@ data class SkeletalBakeContext(
     fun copy(element: SkeletalElement): SkeletalBakeContext {
         val offset = this.offset + (element.offset / BLOCK_SIZE)
         val inflate = this.inflate + element.inflate
-        val transparency = this.transparency && element.transparency
         val texture = element.texture ?: texture
         val rotations = if (element.rotation != null) this.rotations.extend(element.rotation.apply(offset, element.from, element.to)) else this.rotations
         val transform = element.transform?.let { transform.children[element.transform] ?: throw IllegalArgumentException("Can not find transform ${element.transform}") } ?: transform
 
-        return copy(offset = offset, inflate = inflate, transparency = transparency, texture = texture, transform = transform, rotations = rotations)
+        return copy(offset = offset, inflate = inflate, texture = texture, transform = transform, rotations = rotations)
     }
 }
