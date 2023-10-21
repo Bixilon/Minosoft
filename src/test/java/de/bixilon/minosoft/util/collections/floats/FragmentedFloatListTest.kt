@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util.collections.floats
 
 import de.bixilon.kutil.collections.primitive.floats.AbstractFloatList
 import org.junit.jupiter.api.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class FragmentedFloatListTest : DirectFloatListTest() {
@@ -52,5 +53,36 @@ class FragmentedFloatListTest : DirectFloatListTest() {
         }
         assertEquals(14, list.complete.size)
         assertEquals(0, list.incomplete.size)
+    }
+
+    @Test
+    fun `batch adding 7 floats`() {
+        val list = FragmentedArrayFloatList(1)
+        for (i in 0 until 100) {
+            val offset = i * 7.0f
+            list.add(offset + 0, offset + 1, offset + 2, offset + 3, offset + 4, offset + 5, offset + 6)
+        }
+        assertEquals(list.size, 700)
+        val expected = FloatArray(700) { it.toFloat() }
+        println(expected.contentToString())
+        val array = list.toArray()
+        println(array.contentToString())
+        assertContentEquals(expected, array)
+    }
+
+    @Test
+    fun `batch adding float array`() {
+        val list = FragmentedArrayFloatList(1)
+        for (i in 0 until 100) {
+            val offset = i * 7.0f
+            val a = floatArrayOf(offset + 0, offset + 1, offset + 2, offset + 3, offset + 4, offset + 5, offset + 6)
+            list += a
+        }
+        assertEquals(list.size, 700)
+        val expected = FloatArray(700) { it.toFloat() }
+        println(expected.contentToString())
+        val array = list.toArray()
+        println(array.contentToString())
+        assertContentEquals(expected, array)
     }
 }
