@@ -88,7 +88,7 @@ class FragmentedArrayFloatList(
             return buffer
         }
         if (left == 0) return buffer
-        return grow(left)
+        return this.incomplete.firstOrNull() ?: grow(left)
     }
 
     fun add(value1: Float, value2: Float) {

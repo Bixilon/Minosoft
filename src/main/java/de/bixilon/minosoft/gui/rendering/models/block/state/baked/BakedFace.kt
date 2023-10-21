@@ -53,7 +53,7 @@ class BakedFace(
 
 
         val mesh = mesh.mesh(texture)
-        mesh.data.ensureSize(SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX * (mesh.order.size / 2))
+        mesh.data.ensureSize(SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX * mesh.order.size)
 
         mesh.order.iterate { position, uv ->
             val vertexOffset = position * Vec3.length

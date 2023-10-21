@@ -64,9 +64,21 @@ class FragmentedFloatListTest : DirectFloatListTest() {
         }
         assertEquals(list.size, 700)
         val expected = FloatArray(700) { it.toFloat() }
-        println(expected.contentToString())
         val array = list.toArray()
-        println(array.contentToString())
+        assertContentEquals(expected, array)
+    }
+
+    @Test
+    fun `batch adding 7 floats and ensuring size`() {
+        val list = FragmentedArrayFloatList(100)
+        for (i in 0 until 100) {
+            list.ensureSize(21)
+            val offset = i * 7.0f
+            list.add(offset + 0, offset + 1, offset + 2, offset + 3, offset + 4, offset + 5, offset + 6)
+        }
+        assertEquals(list.size, 700)
+        val expected = FloatArray(700) { it.toFloat() }
+        val array = list.toArray()
         assertContentEquals(expected, array)
     }
 
@@ -75,14 +87,11 @@ class FragmentedFloatListTest : DirectFloatListTest() {
         val list = FragmentedArrayFloatList(1)
         for (i in 0 until 100) {
             val offset = i * 7.0f
-            val a = floatArrayOf(offset + 0, offset + 1, offset + 2, offset + 3, offset + 4, offset + 5, offset + 6)
-            list += a
+            list += floatArrayOf(offset + 0, offset + 1, offset + 2, offset + 3, offset + 4, offset + 5, offset + 6)
         }
         assertEquals(list.size, 700)
         val expected = FloatArray(700) { it.toFloat() }
-        println(expected.contentToString())
         val array = list.toArray()
-        println(array.contentToString())
         assertContentEquals(expected, array)
     }
 }
