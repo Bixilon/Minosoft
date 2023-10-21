@@ -17,6 +17,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.DoubleChestRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.SingleChestRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker.ShulkerBoxRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -24,12 +25,11 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 object DefaultEntityModels {
     val MODELS = listOf(
-        SingleChestRenderer.NormalChest,
-        SingleChestRenderer.TrappedChest,
-        SingleChestRenderer.EnderChest,
+        SingleChestRenderer.NormalChest, SingleChestRenderer.TrappedChest, SingleChestRenderer.EnderChest,
 
-        DoubleChestRenderer.NormalChest,
-        DoubleChestRenderer.TrappedChest,
+        DoubleChestRenderer.NormalChest, DoubleChestRenderer.TrappedChest,
+
+        ShulkerBoxRenderer,
     )
 
 

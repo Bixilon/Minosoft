@@ -34,8 +34,13 @@ abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEn
 
     val closed: Boolean get() = viewing <= 0
 
-    override fun setBlockActionData(data1: Int, data2: Int) {
-        val viewing = data2 and 0xFF // unsigned
+    override fun setBlockActionData(type: Int, data: Int) {
+        when (type) {
+            1 -> setViewing(data and 0xFF)
+        }
+    }
+
+    protected fun setViewing(viewing: Int) {
         if (this.viewing == viewing) return
         val previous = this.viewing
         this.viewing = viewing

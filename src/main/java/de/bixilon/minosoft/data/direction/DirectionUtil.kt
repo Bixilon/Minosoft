@@ -13,11 +13,8 @@
 
 package de.bixilon.minosoft.data.direction
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.array.ArrayUtil
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
 
 object DirectionUtil {
 
@@ -37,18 +34,5 @@ object DirectionUtil {
         if (count < 0) count += Directions.SIZE_SIDES
 
         return Directions.INDEXED[1][ArrayUtil.modifyArrayIndex(index.y + count, Directions.SIZE_SIDES)]
-    }
-
-    fun getRotation(direction: Directions): Vec3 {
-        // north is the base direction
-        // TODO: verify
-        return when (direction) {
-            Directions.NORTH -> Vec3.EMPTY
-            Directions.SOUTH -> Vec3(0, 180, 0)
-            Directions.WEST -> Vec3(0, 90, 0)
-            Directions.EAST -> Vec3(0, 270, 0)
-            Directions.UP -> Vec3(0, 0, 90)
-            Directions.DOWN -> Vec3(0, 0, 270)
-        }.rad
     }
 }

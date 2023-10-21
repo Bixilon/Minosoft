@@ -41,8 +41,8 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         return properties[BlockProperties.NOTE]?.toInt() ?: 0
     }
 
-    override fun setBlockActionData(data1: Int, data2: Int) {
-        instrument = when (data1.toInt()) {
+    override fun setBlockActionData(type: Int, data: Int) {
+        instrument = when (type.toInt()) {
             0 -> Instruments.HARP
             1 -> Instruments.BASS
             2 -> Instruments.SNARE
@@ -51,7 +51,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
             else -> null
         }
 
-        pitch = data2.toInt()
+        pitch = data.toInt()
 
         showParticleNextTick = true
         // ToDo: Play sound?

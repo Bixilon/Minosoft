@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest
+package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.primitive.FloatUtil.matches
@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.NOT_OVER
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
+import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.test.IT
@@ -28,18 +29,15 @@ import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["skeletal", "block_entity_rendering"])
-class ChestAnimationTest {
-    private val progress = ChestAnimation::class.java.getDeclaredField("progress").apply { isAccessible = true }
+class OpenCloseAnimationTest {
 
-    private fun ChestAnimation.getProgress(): Float = progress.getFloat(this)
-
-    private fun create(): ChestAnimation {
+    private fun create(): Animation {
         val mesh = IT.OBJENESIS.newInstance(SkeletalMesh::class.java)
         val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
-        val model = BakedSkeletalModel(mesh, BakedSkeletalTransform(0, Vec3.EMPTY, mapOf("lid" to BakedSkeletalTransform(1, Vec3.EMPTY, emptyMap()))), 1, emptyMap())
+        val model = BakedSkeletalModel(mesh, BakedSkeletalTransform(0, Vec3.EMPTY, emptyMap()), 1, emptyMap())
         val instance = model.createInstance(context)
 
-        return ChestAnimation(instance)
+        return Animation(instance)
     }
 
     fun `create animation`() {
@@ -84,5 +82,19 @@ class ChestAnimationTest {
         assertEquals(animation.getProgress(), 0.0f)
     }
 
-    // TODO: test transforming
+    private class Animation(
+        instance: SkeletalInstance,
+    ) : OpenCloseAnimation(instance) {
+        override val transform = instance.transform
+
+        override val name get() = "dummy"
+
+        override val closingDuration get() = 0.3f
+        override val openingDuration get() = 0.4f
+
+
+        override fun transform() = Unit
+
+        fun getProgress() = this.progress
+    }
 }

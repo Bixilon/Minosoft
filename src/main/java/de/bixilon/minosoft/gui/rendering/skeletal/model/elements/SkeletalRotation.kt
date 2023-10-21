@@ -23,7 +23,7 @@ data class SkeletalRotation(
 ) {
 
     fun apply(offset: Vec3, from: Vec3, to: Vec3): SkeletalRotation {
-        val origin = (this.origin ?: ((to - from) / 2.0f)) + offset
+        val origin = (this.origin ?: ((to + from) / 2.0f)) + offset
 
         return SkeletalRotation(value, origin, rescale)
     }

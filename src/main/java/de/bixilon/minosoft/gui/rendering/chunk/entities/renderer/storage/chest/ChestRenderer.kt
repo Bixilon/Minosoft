@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest
 
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.StorageBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
 
 abstract class ChestRenderer(
     state: BlockState,
@@ -33,7 +36,8 @@ abstract class ChestRenderer(
     }
 
     override fun update(position: BlockPosition, state: BlockState, light: Int) {
-        skeletal?.update(position, state.getFacing())
+        val rotation = ROTATION[state.getFacing().ordinal - Directions.SIDE_OFFSET]
+        skeletal?.update(position, rotation)
         skeletal?.light = light
     }
 
@@ -43,5 +47,14 @@ abstract class ChestRenderer(
 
     override fun close() {
         animation?.close()
+    }
+
+    private companion object {
+        val ROTATION = arrayOf(
+            Vec3(0, 0, 0).rad,
+            Vec3(0, 180, 0).rad,
+            Vec3(0, 90, 0).rad,
+            Vec3(0, 270, 0).rad,
+        )
     }
 }

@@ -25,5 +25,5 @@ object DebugOptions {
 
     const val LOG_RAW_CHAT = false
 
-    const val FORCE_CHEST_ANIMATION = true
+    const val FORCE_CHEST_ANIMATION = false
 }

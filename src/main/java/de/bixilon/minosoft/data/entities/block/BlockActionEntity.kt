@@ -14,5 +14,5 @@
 package de.bixilon.minosoft.data.entities.block
 
 interface BlockActionEntity {
-    fun setBlockActionData(data1: Int, data2: Int)
+    fun setBlockActionData(type: Int, data: Int)
 }

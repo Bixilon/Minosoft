@@ -29,9 +29,9 @@ open class PistonBlockEntity(connection: PlayConnection) : BlockEntity(connectio
     var direction: Directions = Directions.NORTH
         private set
 
-    override fun setBlockActionData(data1: Int, data2: Int) {
-        state = PistonStates[data1.toInt()]
-        direction = Directions[data2.toInt()]
+    override fun setBlockActionData(type: Int, data: Int) {
+        state = PistonStates[type.toInt()]
+        direction = Directions[data.toInt()]
     }
 
     companion object : BlockEntityFactory<PistonBlockEntity> {

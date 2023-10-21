@@ -22,8 +22,8 @@ class BellBlockEntity(connection: PlayConnection) : BlockEntity(connection), Blo
     var shakingDirection: Directions = Directions.NORTH
         private set
 
-    override fun setBlockActionData(data1: Int, data2: Int) {
-        shakingDirection = Directions[data2.toInt()]
+    override fun setBlockActionData(type: Int, data: Int) {
+        shakingDirection = Directions[data.toInt()]
     }
 
     companion object : BlockEntityFactory<BellBlockEntity> {

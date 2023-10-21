@@ -48,7 +48,7 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
         flameParticleType?.let { connection.world += FlameParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
     }
 
-    override fun setBlockActionData(data1: Int, data2: Int) {
+    override fun setBlockActionData(type: Int, data: Int) {
         // ToDo
     }
 

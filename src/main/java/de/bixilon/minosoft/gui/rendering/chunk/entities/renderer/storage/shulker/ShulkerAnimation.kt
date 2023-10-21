@@ -11,29 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest
+package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.OpenCloseAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
 
-class ChestAnimation(
+class ShulkerAnimation(
     instance: SkeletalInstance,
 ) : OpenCloseAnimation(instance) {
     override val transform = instance.transform.children[TRANSFORM]!!
 
     override val name get() = NAME
 
-    override val closingDuration get() = 0.3f
-    override val openingDuration get() = 0.4f
-
+    override val closingDuration get() = 0.5f
+    override val openingDuration get() = 0.5f
 
     override fun transform() {
-        val rotation = interpolateSine(this.progress, BASE, OPEN)
+        val rotation = interpolateLinear(this.progress, ROTATION_CLOSED, ROTATION_OPENED)
+        val translation = interpolateLinear(this.progress, TRANSLATION_CLOSED, TRANSLATION_OPENED)
         transform.value
+            .translateAssign(translation)
             .translateAssign(transform.pivot)
             .rotateRadAssign(rotation)
             .translateAssign(-transform.pivot)
@@ -42,9 +43,12 @@ class ChestAnimation(
 
     companion object {
         const val TRANSFORM = "lid"
-        const val NAME = "chest"
+        const val NAME = "shulker"
 
-        private val BASE = Vec3(0.0f, 0.0f, 0.0f).rad
-        private val OPEN = Vec3(90.0f, 0.0f, 0.0f).rad
+        private val ROTATION_CLOSED = Vec3(0.0f, 0.0f, 0.0f).rad
+        private val ROTATION_OPENED = Vec3(0.0f, 270.0f, 0.0f).rad
+
+        private val TRANSLATION_CLOSED = Vec3(0.0f, 0.0f, 0.0f)
+        private val TRANSLATION_OPENED = Vec3(0.0f, 0.5f, 0.0f)
     }
 }

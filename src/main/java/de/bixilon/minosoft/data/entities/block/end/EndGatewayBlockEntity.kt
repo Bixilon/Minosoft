@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class EndGatewayBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
 
-    override fun setBlockActionData(data1: Int, data2: Int) {
+    override fun setBlockActionData(type: Int, data: Int) {
         // just emits the beacon like beam
     }
 

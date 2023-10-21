@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
 
-    override fun setBlockActionData(data1: Int, data2: Int) {
+    override fun setBlockActionData(type: Int, data: Int) {
         // no data used, just recalculates the beam
     }
 

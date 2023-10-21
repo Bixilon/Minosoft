@@ -45,7 +45,6 @@ enum class Directions(
     val vectord = Vec3d(vector)
 
     val axis: Axes = unsafeNull()
-    val rotation: Vec3 = unsafeNull()
     val inverted: Directions = unsafeNull()
 
     private fun invert(): Directions {
@@ -157,12 +156,10 @@ enum class Directions(
         }
 
         init {
-            val rotation = Directions::rotation.javaField!!
             val inverted = Directions::inverted.javaField!!
             val axis = Directions::axis.javaField!!
             for (direction in VALUES) {
                 inverted.forceSet(direction, direction.invert())
-                rotation.forceSet(direction, DirectionUtil.getRotation(direction))
                 axis.forceSet(direction, Axes[direction])
             }
             NAME_MAP.unsafeCast<MutableMap<String, Directions>>()["bottom"] = DOWN
