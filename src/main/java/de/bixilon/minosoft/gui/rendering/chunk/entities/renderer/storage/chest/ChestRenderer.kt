@@ -34,6 +34,7 @@ abstract class ChestRenderer(
 
     override fun update(position: BlockPosition, state: BlockState, light: Int) {
         skeletal?.update(position, state.getFacing())
+        skeletal?.light = light
     }
 
     override fun open() {

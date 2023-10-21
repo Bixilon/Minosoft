@@ -22,9 +22,6 @@ interface BlockEntityRenderer<E : BlockEntity> {
     val enabled: Boolean get() = true
 
     var state: BlockState
-    var light: Int
-        get() = 0
-        set(value) = Unit
 
     fun draw(context: RenderContext) = Unit
 
@@ -32,7 +29,6 @@ interface BlockEntityRenderer<E : BlockEntity> {
     fun load() = Unit
 
     fun update(position: BlockPosition, state: BlockState, light: Int) {
-        this.light = light
         this.state = state
     }
 }

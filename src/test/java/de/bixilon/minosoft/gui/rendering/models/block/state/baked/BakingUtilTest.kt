@@ -16,10 +16,11 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.pushRight
+import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
-class BakingUtilTest {
+class CuboidUtilTest {
     val from = Vec3(1, 2, 3)
     val to = Vec3(6, 5, 4)
 
@@ -27,7 +28,7 @@ class BakingUtilTest {
     @Test
     fun positionsDown() {
         assertContentEquals(
-            BakingUtil.positions(Directions.DOWN, from, to),
+            CuboidUtil.positions(Directions.DOWN, from, to),
             floatArrayOf(1.0f, 2.0f, 3.0f, 1.0f, 2.0f, 4.0f, 6.0f, 2.0f, 4.0f, 6.0f, 2.0f, 3.0f)
         )
     }
@@ -35,7 +36,7 @@ class BakingUtilTest {
     @Test
     fun positionsUp() {
         assertContentEquals(
-            BakingUtil.positions(Directions.UP, from, to),
+            CuboidUtil.positions(Directions.UP, from, to),
             floatArrayOf(1.0f, 5.0f, 3.0f, 6.0f, 5.0f, 3.0f, 6.0f, 5.0f, 4.0f, 1.0f, 5.0f, 4.0f)
         )
     }
@@ -43,7 +44,7 @@ class BakingUtilTest {
     @Test
     fun positionsNorth() {
         assertContentEquals(
-            BakingUtil.positions(Directions.NORTH, from, to),
+            CuboidUtil.positions(Directions.NORTH, from, to),
             floatArrayOf(1.0f, 2.0f, 3.0f, 6.0f, 2.0f, 3.0f, 6.0f, 5.0f, 3.0f, 1.0f, 5.0f, 3.0f)
         )
     }
@@ -51,7 +52,7 @@ class BakingUtilTest {
     @Test
     fun positionsSouth() {
         assertContentEquals(
-            BakingUtil.positions(Directions.SOUTH, from, to),
+            CuboidUtil.positions(Directions.SOUTH, from, to),
             floatArrayOf(1.0f, 2.0f, 4.0f, 1.0f, 5.0f, 4.0f, 6.0f, 5.0f, 4.0f, 6.0f, 2.0f, 4.0f)
         )
     }
@@ -59,7 +60,7 @@ class BakingUtilTest {
     @Test
     fun positionsWest() {
         assertContentEquals(
-            BakingUtil.positions(Directions.WEST, from, to),
+            CuboidUtil.positions(Directions.WEST, from, to),
             floatArrayOf(1.0f, 2.0f, 3.0f, 1.0f, 5.0f, 3.0f, 1.0f, 5.0f, 4.0f, 1.0f, 2.0f, 4.0f)
         )
     }
@@ -67,7 +68,7 @@ class BakingUtilTest {
     @Test
     fun positionsEast() {
         assertContentEquals(
-            BakingUtil.positions(Directions.EAST, from, to),
+            CuboidUtil.positions(Directions.EAST, from, to),
             floatArrayOf(6.0f, 2.0f, 3.0f, 6.0f, 2.0f, 4.0f, 6.0f, 5.0f, 4.0f, 6.0f, 5.0f, 3.0f)
         )
     }

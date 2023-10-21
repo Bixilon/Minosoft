@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
+import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 
@@ -39,7 +40,9 @@ data class SkeletalFace(
     }
 
     fun bake(context: SkeletalBakeContext, direction: Directions, element: SkeletalElement, transform: Int) {
-        val positions = direction.getPositions(context.offset + (element.from - context.inflate) / BLOCK_SIZE, context.offset + (element.to + context.inflate) / BLOCK_SIZE)
+        val from = context.offset + (element.from - context.inflate) / BLOCK_SIZE
+        val to = context.offset + (element.to + context.inflate) / BLOCK_SIZE
+        val positions = CuboidUtil.positions(direction, from, to)
 
         val texture = context.textures[texture ?: context.texture ?: throw IllegalStateException("Element has no texture set!")] ?: throw IllegalStateException("Texture not found!")
 
@@ -50,12 +53,12 @@ data class SkeletalFace(
             val origin = rotation.origin!! / BLOCK_SIZE
 
             val rad = -GLM.radians(rotation.value)
-            for ((index, position) in positions.withIndex()) {
-                val out = Vec3(position)
-                out.rotateAssign(rad[0], Axes.X, origin, false)
-                out.rotateAssign(rad[1], Axes.Y, origin, false)
-                out.rotateAssign(rad[2], Axes.Z, origin, false)
-                positions[index] = out
+            val vec = Vec3(0, positions)
+            for (i in 0 until 4) {
+                vec.ofs = i * Vec3.length
+                vec.rotateAssign(rad[0], Axes.X, origin, false)
+                vec.rotateAssign(rad[1], Axes.Y, origin, false)
+                vec.rotateAssign(rad[2], Axes.Z, origin, false)
             }
         }
 

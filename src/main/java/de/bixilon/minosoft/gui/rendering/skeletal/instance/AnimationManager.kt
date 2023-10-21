@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.time.TimeUtil.nanos
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.AbstractAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.animation.keyframe.instance.KeyframeInstance.Companion.OVER
 
@@ -47,10 +47,10 @@ class AnimationManager(val instance: SkeletalInstance) {
 
 
     fun draw() {
-        val nanos = nanos()
-        val delta = if (lastDraw < 0) 0L else nanos - lastDraw
-        this.lastDraw = nanos
-        draw(delta / 100000 / 10000.0f)
+        val millis = millis()
+        val delta = if (lastDraw < 0) 0L else millis - lastDraw
+        this.lastDraw = millis
+        draw(delta / 1000.0f)
     }
 
     fun reset() {

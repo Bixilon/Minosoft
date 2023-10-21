@@ -78,7 +78,7 @@ class ChestAnimation(
         const val TRANSFORM = "lid"
         const val NAME = "chest"
 
-        const val OPENING_TIME = 0.5f
+        const val OPENING_TIME = 0.4f
         const val CLOSING_TIME = 0.3f
 
         private val BASE = Vec3(0.0f, 0.0f, 0.0f).rad

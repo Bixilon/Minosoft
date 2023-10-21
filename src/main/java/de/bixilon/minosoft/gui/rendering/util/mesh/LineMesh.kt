@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
@@ -80,9 +81,11 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         data.ensureSize(6 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         val offset = context.camera.offset.offset
         for (direction in Directions.VALUES) {
-            val positions = direction.getPositions(Vec3(aabb.min - offset), Vec3(aabb.max - offset))
+            val from = Vec3(aabb.min - offset)
+            val to = Vec3(aabb.max - offset)
+            val positions = CuboidUtil.positions(direction, from, to)
 
-            order.iterate { position, uv -> addVertex(positions[position], color) }
+            order.iterate { position, uv -> addVertex(positions, position * Vec3.length, color) }
         }
     }
 

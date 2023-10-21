@@ -13,28 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.array.ArrayUtil.cast
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
 object BakingUtil {
-
-    fun positions(direction: Directions, from: Vec3, to: Vec3): FaceVertexData {
-        return when (direction) {
-            // @formatter:off
-            Directions.DOWN ->  floatArrayOf(from.x, from.y, from.z, /**/  from.x, from.y, to.z,    /**/  to.x,   from.y, to.z,   /**/  to.x,   from.y, from.z )
-            Directions.UP ->    floatArrayOf(from.x, to.y, from.z,   /**/  to.x,   to.y,   from.z,  /**/  to.x,   to.y,   to.z,   /**/  from.x, to.y,   to.z   )
-            Directions.NORTH -> floatArrayOf(from.x, from.y, from.z, /**/  to.x,   from.y, from.z,  /**/  to.x,   to.y,   from.z, /**/  from.x, to.y,   from.z )
-            Directions.SOUTH -> floatArrayOf(from.x, from.y, to.z,   /**/  from.x, to.y,   to.z,    /**/  to.x,   to.y,   to.z,   /**/  to.x,   from.y, to.z   )
-            Directions.WEST ->  floatArrayOf(from.x, from.y, from.z, /**/  from.x, to.y,   from.z,  /**/  from.x, to.y,   to.z,   /**/  from.x, from.y, to.z   )
-            Directions.EAST ->  floatArrayOf(to.x,   from.y, from.z, /**/  to.x,   from.y, to.z,    /**/  to.x,   to.y,   to.z,   /**/  to.x,   to.y,   from.z )
-            // @formatter:on
-        }
-    }
 
     inline fun <reified T> Array<MutableList<T>>.compact(): Array<Array<T>> {
         val array: Array<Array<T>?> = arrayOfNulls(size)

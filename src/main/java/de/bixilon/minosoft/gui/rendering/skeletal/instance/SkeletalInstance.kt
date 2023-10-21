@@ -33,15 +33,7 @@ class SkeletalInstance(
     var light = 0xFF
 
 
-    fun draw(light: Int) {
-        this.light = light
-        draw()
-    }
-
     fun draw() {
-        transform.reset()
-        animation.draw()
-
         context.system.reset()
         val shader = context.skeletal.shader
         shader.use()
@@ -51,6 +43,9 @@ class SkeletalInstance(
 
     fun draw(shader: Shader) {
         shader.use()
+
+        transform.reset()
+        animation.draw()
         context.skeletal.upload(this)
         model.mesh.draw()
     }

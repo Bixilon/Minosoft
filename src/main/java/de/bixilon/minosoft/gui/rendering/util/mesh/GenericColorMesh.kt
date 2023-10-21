@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 
@@ -30,6 +31,13 @@ open class GenericColorMesh(context: RenderContext, primitiveType: PrimitiveType
     fun addVertex(position: Vec3, color: Float) {
         data.add(position.array)
         data.add(color)
+    }
+
+    fun addVertex(position: FaceVertexData, offset: Int, color: RGBColor?) {
+        data.add(
+            position[offset + 0], position[offset + 1], position[offset + 2],
+            (color ?: ChatColors.WHITE).rgba.buffer(),
+        )
     }
 
     data class GenericColorMeshStruct(
