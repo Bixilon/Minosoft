@@ -27,7 +27,6 @@ import org.testng.annotations.Test
 class RenderTestLoader {
 
     fun init() {
-        return
         val connection = createConnection(5)
         val latch = SimpleLatch(1)
         connection::assetsManager.forceSet(AssetsLoader.create(connection.profiles.resources, connection.version, latch))
