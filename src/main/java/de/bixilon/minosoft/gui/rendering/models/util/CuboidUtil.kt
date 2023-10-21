@@ -13,9 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.models.util
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
+import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 
 object CuboidUtil {
 
@@ -30,5 +35,51 @@ object CuboidUtil {
             Directions.EAST ->  floatArrayOf(to  .x, from.y, from.z,   to  .x, from.y, to  .z,   to  .x, to  .y, to  .z,   to  .x, to  .y, from.z)
             // @formatter:on
         }
+    }
+
+    fun cubeUV(offset: Vec2i, from: Vec3, to: Vec3, direction: Directions): FaceUV {
+        val cube = Vec3i(to - from)
+
+        val uv = Vec2i(offset)
+        val size = when (direction.axis) {
+            Axes.Y -> Vec2i(cube.x, cube.z)
+            Axes.Z -> Vec2i(cube.x, cube.y)
+            Axes.X -> Vec2i(cube.z, cube.y)
+        }
+
+        when (direction) {
+            Directions.DOWN -> {
+                uv.x += cube.z
+            }
+
+            Directions.UP -> {
+                uv.x += cube.z + cube.x
+                // flip y coordinate
+                uv.y += cube.z
+                size.y = -cube.z
+            }
+
+            Directions.NORTH -> {
+                uv.x += cube.z + cube.x + cube.z
+                uv.y += cube.z
+            }
+
+            Directions.SOUTH -> {
+                uv.x += cube.z
+                uv.y += cube.z
+            }
+
+            Directions.WEST -> {
+                uv.x += cube.z + cube.x
+                uv.y += cube.z
+            }
+
+            Directions.EAST -> {
+                uv.y += cube.z
+            }
+        }
+
+
+        return FaceUV(Vec2(uv.x, uv.y), Vec2(uv.x + size.x, uv.y + size.y))
     }
 }

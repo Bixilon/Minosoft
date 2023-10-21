@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -30,6 +31,7 @@ data class SkeletalElement(
     val inflate: Float = 0.0f,
     val enabled: Boolean = true,
     val texture: ResourceLocation? = null,
+    val uv: Vec2i? = null,
     val transform: String? = null,
     val faces: Map<Directions, SkeletalFace>,
     val children: Map<String, SkeletalElement> = emptyMap(),

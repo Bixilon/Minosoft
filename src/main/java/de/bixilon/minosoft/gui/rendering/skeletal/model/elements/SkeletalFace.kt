@@ -26,9 +26,10 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 
 data class SkeletalFace(
-    val uv: FaceUV,
+    val uv: FaceUV? = null,
     val texture: ResourceLocation? = null,
 ) {
+
 
     fun bake(context: SkeletalBakeContext, direction: Directions, element: SkeletalElement, transform: Int) {
         val from = context.offset + (element.from - context.inflate) / BLOCK_SIZE
@@ -38,7 +39,9 @@ data class SkeletalFace(
         val texture = context.textures[texture ?: context.texture ?: throw IllegalStateException("Element has no texture set!")] ?: throw IllegalStateException("Texture not found!")
 
         // TODO: why flip on x?
-        val uv = FaceUV(
+        val uv = this.uv ?: CuboidUtil.cubeUV(element.uv!!, element.from, element.to, direction)
+
+        val uvData = FaceUV(
             texture.texture.transformUV(Vec2(uv.end.x, uv.start.y) / texture.properties.resolution),
             texture.texture.transformUV(Vec2(uv.start.x, uv.end.y) / texture.properties.resolution),
         ).toArray(direction, 0)
@@ -57,6 +60,6 @@ data class SkeletalFace(
             }
         }
 
-        context.consumer.addQuad(positions, uv, transform, texture.texture)
+        context.consumer.addQuad(positions, uvData, transform, texture.texture)
     }
 }
