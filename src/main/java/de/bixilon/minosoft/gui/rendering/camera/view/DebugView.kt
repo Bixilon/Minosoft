@@ -41,9 +41,11 @@ class DebugView(private val camera: Camera) : CameraView {
         var speedMultiplier = 10
         if (input.sprint) {
             speedMultiplier *= 3
-        }
-        if (input.sprint) {
-            speedMultiplier *= 2
+            if (input.sneak) {
+                speedMultiplier *= 3
+            }
+        } else if (input.sneak) {
+            speedMultiplier /= 3
         }
 
         val movement = Vec3d.EMPTY

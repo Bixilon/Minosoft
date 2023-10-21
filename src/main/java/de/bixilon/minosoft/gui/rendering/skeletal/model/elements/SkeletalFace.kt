@@ -30,15 +30,6 @@ data class SkeletalFace(
     val texture: ResourceLocation? = null,
 ) {
 
-    private fun getTexturePositions(uvStart: Vec2, uvEnd: Vec2): Array<Vec2> {
-        return arrayOf(
-            Vec2(uvEnd.x, uvStart.y),
-            uvStart,
-            Vec2(uvStart.x, uvEnd.y),
-            uvEnd,
-        )
-    }
-
     fun bake(context: SkeletalBakeContext, direction: Directions, element: SkeletalElement, transform: Int) {
         val from = context.offset + (element.from - context.inflate) / BLOCK_SIZE
         val to = context.offset + (element.to + context.inflate) / BLOCK_SIZE
@@ -46,9 +37,10 @@ data class SkeletalFace(
 
         val texture = context.textures[texture ?: context.texture ?: throw IllegalStateException("Element has no texture set!")] ?: throw IllegalStateException("Texture not found!")
 
+        // TODO: why flip on x?
         val uv = FaceUV(
-            texture.texture.transformUV(uv.start / texture.properties.resolution),
-            texture.texture.transformUV(uv.end / texture.properties.resolution),
+            texture.texture.transformUV(Vec2(uv.end.x, uv.start.y) / texture.properties.resolution),
+            texture.texture.transformUV(Vec2(uv.start.x, uv.end.y) / texture.properties.resolution),
         ).toArray(direction, 0)
 
 

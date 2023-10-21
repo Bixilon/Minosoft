@@ -82,6 +82,6 @@ class ChestAnimation(
         const val CLOSING_TIME = 0.3f
 
         private val BASE = Vec3(0.0f, 0.0f, 0.0f).rad
-        private val OPEN = Vec3(-90.0f, 0.0f, 0.0f).rad
+        private val OPEN = Vec3(90.0f, 0.0f, 0.0f).rad
     }
 }

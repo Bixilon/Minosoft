@@ -22,7 +22,7 @@ object CuboidUtil {
     fun positions(direction: Directions, from: Vec3, to: Vec3): FaceVertexData {
         return when (direction) {
             // @formatter:off
-            Directions.DOWN ->  floatArrayOf(from.x, from.y, from.z,   from.x, from.y, to.z,     to  .x, from.y, to  .z,   to  .x, from.y, from.z)
+            Directions.DOWN ->  floatArrayOf(from.x, from.y, from.z,   from.x, from.y, to  .z,   to  .x, from.y, to  .z,   to  .x, from.y, from.z)
             Directions.UP ->    floatArrayOf(from.x, to  .y, from.z,   to  .x, to  .y, from.z,   to  .x, to  .y, to  .z,   from.x, to  .y, to  .z)
             Directions.NORTH -> floatArrayOf(from.x, from.y, from.z,   to  .x, from.y, from.z,   to  .x, to  .y, from.z,   from.x, to  .y, from.z)
             Directions.SOUTH -> floatArrayOf(from.x, from.y, to  .z,   from.x, to  .y, to  .z,   to  .x, to  .y, to  .z,   to  .x, from.y, to  .z)
