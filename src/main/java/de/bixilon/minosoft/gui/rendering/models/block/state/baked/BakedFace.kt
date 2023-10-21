@@ -51,7 +51,7 @@ class BakedFace(
 
 
         val mesh = mesh.mesh(texture)
-        mesh.data.ensureSize(SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX * (mesh.order.size / 2))
+        mesh.data.ensureSize(SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX * mesh.order.size)
 
         var index = 0
         val size = mesh.order.size
