@@ -47,14 +47,18 @@ class FragmentedArrayFloatList(
         if (needed == 0) {
             return
         }
-        grow(needed)
+        tryGrow(needed)
     }
 
-    private fun grow(size: Int): FloatBuffer {
+    private fun tryGrow(size: Int): FloatBuffer {
         if (finished) throw IllegalStateException()
         if (limit - this.size >= size) {
             return this.incomplete[0]
         }
+        return grow(size)
+    }
+
+    private fun grow(size: Int): FloatBuffer {
         val grow = if (nextGrowStep < size) {
             (size / nextGrowStep + 1) * nextGrowStep
         } else {
@@ -71,58 +75,63 @@ class FragmentedArrayFloatList(
     }
 
     override fun add(value: Float) {
-        val buffer = grow(1)
+        val buffer = tryGrow(1)
         buffer.put(value)
         size += 1
         tryPush(buffer)
         invalidateOutput()
     }
 
+    private fun batchAdd(value: Float, buffer: FloatBuffer, left: Int): FloatBuffer {
+        buffer.put(value)
+        if (!tryPush(buffer)) {
+            return buffer
+        }
+        if (left == 0) return buffer
+        return grow(left)
+    }
+
     fun add(value1: Float, value2: Float) {
-        var buffer = grow(2)
-        buffer.put(value1); if (tryPush(buffer)) buffer = grow(1)
-        buffer.put(value2)
+        var buffer = tryGrow(1)
+        buffer = batchAdd(value1, buffer, 1)
+        batchAdd(value2, buffer, 0)
 
         size += 2
-        tryPush(buffer)
         invalidateOutput()
     }
 
     fun add(value1: Float, value2: Float, value3: Float) {
-        var buffer = grow(3)
-        buffer.put(value1); if (tryPush(buffer)) buffer = grow(2)
-        buffer.put(value2); if (tryPush(buffer)) buffer = grow(1)
-        buffer.put(value3)
+        var buffer = tryGrow(1)
+        buffer = batchAdd(value1, buffer, 2)
+        buffer = batchAdd(value2, buffer, 1)
+        batchAdd(value3, buffer, 0)
 
         size += 3
-        tryPush(buffer)
         invalidateOutput()
     }
 
     fun add(value1: Float, value2: Float, value3: Float, value4: Float) {
-        var buffer = grow(4)
-        buffer.put(value1); if (tryPush(buffer)) buffer = grow(3)
-        buffer.put(value2); if (tryPush(buffer)) buffer = grow(2)
-        buffer.put(value3); if (tryPush(buffer)) buffer = grow(1)
-        buffer.put(value4)
+        var buffer = tryGrow(1)
+        buffer = batchAdd(value1, buffer, 3)
+        buffer = batchAdd(value2, buffer, 2)
+        buffer = batchAdd(value3, buffer, 1)
+        batchAdd(value4, buffer, 0)
 
         size += 4
-        tryPush(buffer)
         invalidateOutput()
     }
 
     fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float, value6: Float, value7: Float) {
-        var buffer = grow(7)
-        buffer.put(value1); if (tryPush(buffer)) buffer = grow(6)
-        buffer.put(value2); if (tryPush(buffer)) buffer = grow(5)
-        buffer.put(value3); if (tryPush(buffer)) buffer = grow(4)
-        buffer.put(value4); if (tryPush(buffer)) buffer = grow(3)
-        buffer.put(value5); if (tryPush(buffer)) buffer = grow(2)
-        buffer.put(value6); if (tryPush(buffer)) buffer = grow(1)
-        buffer.put(value7)
+        var buffer = tryGrow(1)
+        buffer = batchAdd(value1, buffer, 6)
+        buffer = batchAdd(value2, buffer, 5)
+        buffer = batchAdd(value3, buffer, 4)
+        buffer = batchAdd(value4, buffer, 3)
+        buffer = batchAdd(value5, buffer, 2)
+        buffer = batchAdd(value6, buffer, 1)
+        batchAdd(value7, buffer, 0)
 
         size += 7
-        tryPush(buffer)
         invalidateOutput()
     }
 
@@ -159,7 +168,7 @@ class FragmentedArrayFloatList(
         }
         size += offset
         val length = array.size - offset
-        val next = grow(length)
+        val next = tryGrow(length)
         next.put(array, offset, length)
         size += length
         next.position(length)
@@ -191,7 +200,7 @@ class FragmentedArrayFloatList(
         }
         size += offset
         val length = position - offset
-        val next = grow(length)
+        val next = tryGrow(length)
         buffer.copy(offset, next, 0, length)
         next.position(length)
         size += length
