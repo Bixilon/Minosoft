@@ -46,7 +46,10 @@ data class SkeletalFace(
 
         val texture = context.textures[texture ?: context.texture ?: throw IllegalStateException("Element has no texture set!")] ?: throw IllegalStateException("Texture not found!")
 
-        val texturePositions = getTexturePositions(uv.start / texture.properties.resolution, uv.end / texture.properties.resolution)
+        val uv = FaceUV(
+            texture.texture.transformUV(uv.start / texture.properties.resolution),
+            texture.texture.transformUV(uv.end / texture.properties.resolution),
+        ).toArray(direction, 0)
 
 
         for (rotation in context.rotations) {
@@ -62,6 +65,6 @@ data class SkeletalFace(
             }
         }
 
-        context.consumer.addQuad(positions, texturePositions, transform, texture.texture)
+        context.consumer.addQuad(positions, uv, transform, texture.texture)
     }
 }

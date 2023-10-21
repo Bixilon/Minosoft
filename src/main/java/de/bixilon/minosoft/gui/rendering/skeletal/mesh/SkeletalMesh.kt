@@ -25,21 +25,20 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize), SkeletalConsumer {
     override val order = context.system.quadOrder
 
-    private fun addVertex(position: FloatArray, offset: Int, transformedUV: Vec2, transform: Float, textureShaderId: Float) {
+    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: FaceVertexData, uvOffset: Int, transform: Float, textureShaderId: Float) {
         data.add(
-            position[offset + 0], position[offset + 1], position[offset + 2],
+            position[positionOffset + 0], position[positionOffset + 1], position[positionOffset + 2],
+            uv[uvOffset + 0], uv[uvOffset + 1],
+            transform, textureShaderId
         )
-        data.add(transformedUV.array)
-        data.add(transform, textureShaderId)
     }
 
-    override fun addQuad(positions: FaceVertexData, uv: Array<Vec2>, transform: Int, texture: ShaderTexture) {
+    override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, texture: ShaderTexture) {
         val transform = transform.buffer()
         val textureShaderId = texture.shaderId.buffer()
 
         order.iterate { position, uvIndex ->
-            val transformedUV = texture.transformUV(uv[uvIndex])
-            addVertex(positions, position * Vec3.length, transformedUV, transform, textureShaderId)
+            addVertex(positions, position * Vec3.length, uv, uvIndex * Vec2.length, transform, textureShaderId)
         }
     }
 
