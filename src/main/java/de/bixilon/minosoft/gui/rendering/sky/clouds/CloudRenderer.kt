@@ -253,7 +253,7 @@ class CloudRenderer(
 
     private object CloudRenderLayer : RenderLayer {
         override val settings = RenderSettings(faceCulling = false)
-        override val priority get() = 3000
+        override val priority get() = -1
     }
 
     companion object : RendererBuilder<CloudRenderer> {
