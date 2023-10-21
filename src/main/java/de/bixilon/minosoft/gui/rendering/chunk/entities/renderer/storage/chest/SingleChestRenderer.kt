@@ -36,7 +36,7 @@ class SingleChestRenderer(
 ) : ChestRenderer(state, model.createInstance(context), position, light) {
 
     companion object {
-        val SINGLE_MODEL = minecraft("block/entities/single_chest").sModel()
+        val SINGLE_MODEL = minecraft("block/entities/chest/single").sModel()
         private val named = minecraft("chest")
 
         fun register(loader: ModelLoader, name: ResourceLocation, texture: ResourceLocation) {
@@ -46,7 +46,7 @@ class SingleChestRenderer(
     }
 
     object NormalChest : EntityRendererRegister {
-        val NAME = minecraft("block/entities/single_chest")
+        val NAME = minecraft("block/entities/chest/single")
         val TEXTURE = minecraft("entity/chest/normal").texture()
         val TEXTURE_CHRISTMAS = minecraft("entity/chest/christmas").texture()
 
@@ -56,7 +56,7 @@ class SingleChestRenderer(
     }
 
     object TrappedChest : EntityRendererRegister {
-        val NAME = minecraft("block/entities/trapped_chest")
+        val NAME = minecraft("block/entities/chest/trapped")
         val TEXTURE = minecraft("entity/chest/trapped").texture()
 
         override fun register(loader: ModelLoader) {
@@ -65,7 +65,7 @@ class SingleChestRenderer(
     }
 
     object EnderChest : EntityRendererRegister {
-        val NAME = minecraft("block/entities/ender_chest")
+        val NAME = minecraft("block/entities/chest/ender")
         val TEXTURE = minecraft("entity/chest/ender").texture()
 
         override fun register(loader: ModelLoader) {

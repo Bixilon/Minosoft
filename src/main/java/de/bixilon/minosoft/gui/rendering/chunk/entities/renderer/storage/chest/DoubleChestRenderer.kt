@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityRendererRegister
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
-import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.bbModel
+import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 
@@ -36,36 +36,58 @@ class DoubleChestRenderer(
 ) : ChestRenderer(state, model.createInstance(context), position, light) {
 
     companion object {
-        val DOUBLE_MODEL = minecraft("block/entities/double_chest").bbModel()
-        private val named = arrayOf(minecraft("left"), minecraft("right"))
+        private val MODEL = minecraft("block/entities/chest/double").sModel()
+        private val MODEL_5 = minecraft("block/entities/chest/double_5").sModel()
 
-        private fun register(loader: ModelLoader, name: ResourceLocation, textures: Array<ResourceLocation>) {
+        private val TEXTURE = minecraft("chest")
+        private val TEXTURE_5 = arrayOf(minecraft("left"), minecraft("right"))
+
+        private fun register(loader: ModelLoader, name: ResourceLocation, texture: ResourceLocation) {
+            val static = loader.context.textures.staticTextures
+            val override = mapOf(TEXTURE to static.createTexture(texture))
+            loader.skeletal.register(name, MODEL, override)
+        }
+
+        private fun register5(loader: ModelLoader, name: ResourceLocation, textures: Array<ResourceLocation>) {
             if (textures.size != 2) throw IllegalStateException("Textures must be left and right!")
             val static = loader.context.textures.staticTextures
             val override = mapOf(
-                named[0] to static.createTexture(textures[0]),
-                named[1] to static.createTexture(textures[1]),
+                TEXTURE_5[0] to static.createTexture(textures[0]),
+                TEXTURE_5[1] to static.createTexture(textures[1]),
             )
-            loader.skeletal.register(name, DOUBLE_MODEL, override)
+            loader.skeletal.register(name, MODEL_5, override)
         }
     }
 
     object NormalChest : EntityRendererRegister {
-        val NAME = minecraft("block/entities/double_chest")
-        private val textures = arrayOf(minecraft("entity/chest/normal_left").texture(), minecraft("entity/chest/normal_right").texture())
-        private val christmas = arrayOf(minecraft("entity/chest/christmas_left").texture(), minecraft("entity/chest/christmas_right").texture())
+        val NAME = minecraft("block/entities/chest/double")
+        private val TEXTURE = minecraft("entity/chest/normal_double").texture()
+        private val TEXTURE_5 = arrayOf(minecraft("entity/chest/normal_left").texture(), minecraft("entity/chest/normal_right").texture())
+        private val CHRISTMAS = minecraft("entity/chest/christmas_double").texture()
+        private val CHRISTMAS_5 = arrayOf(minecraft("entity/chest/christmas_left").texture(), minecraft("entity/chest/christmas_right").texture())
 
         override fun register(loader: ModelLoader) {
-            register(loader, NAME, if (DateUtil.christmas) christmas else textures)
+            val christmas = DateUtil.christmas
+
+            if (loader.packFormat < 5) {
+                register(loader, NAME, if (christmas) CHRISTMAS else TEXTURE)
+            } else {
+                register5(loader, NAME, if (christmas) CHRISTMAS_5 else TEXTURE_5)
+            }
         }
     }
 
     object TrappedChest : EntityRendererRegister {
-        val NAME = minecraft("block/entities/double_trapped_chest")
-        private val textures = arrayOf(minecraft("entity/chest/trapped_left").texture(), minecraft("entity/chest/trapped_right").texture())
+        val NAME = minecraft("block/entities/chest/double_trapped")
+        private val TEXTURE = minecraft("entity/chest/trapped_double").texture()
+        private val TEXTURE_5 = arrayOf(minecraft("entity/chest/trapped_left").texture(), minecraft("entity/chest/trapped_right").texture())
 
         override fun register(loader: ModelLoader) {
-            register(loader, NAME, textures)
+            if (loader.packFormat < 5) {
+                register(loader, NAME, TEXTURE)
+            } else {
+                register5(loader, NAME, TEXTURE_5)
+            }
         }
     }
 }

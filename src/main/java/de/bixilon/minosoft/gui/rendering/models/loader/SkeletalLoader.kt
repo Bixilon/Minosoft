@@ -23,9 +23,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.exten
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
 class SkeletalLoader(private val loader: ModelLoader) {
     private val registered: SynchronizedMap<ResourceLocation, RegisteredModel> = synchronizedMapOf()
@@ -64,10 +61,6 @@ class SkeletalLoader(private val loader: ModelLoader) {
     }
 
     fun register(name: ResourceLocation, template: ResourceLocation = name, override: Map<ResourceLocation, ShaderTexture> = emptyMap()) {
-        if (template.path.endsWith(".bbmodel")) {
-            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Trying to load bbmodel $template!" }
-            return // TODO: port double chest renderer to smodel
-        }
         val previous = this.registered.put(name, RegisteredModel(template, override))
         if (previous != null) throw IllegalArgumentException("A model with the name $name was already registered!")
     }
@@ -79,11 +72,6 @@ class SkeletalLoader(private val loader: ModelLoader) {
     )
 
     companion object {
-
-        @Deprecated(".sModel()")
-        fun ResourceLocation.bbModel(): ResourceLocation {
-            return this.extend(prefix = "models/", suffix = ".bbmodel")
-        }
 
         fun ResourceLocation.sModel(): ResourceLocation {
             return this.extend(prefix = "models/", suffix = ".smodel")
