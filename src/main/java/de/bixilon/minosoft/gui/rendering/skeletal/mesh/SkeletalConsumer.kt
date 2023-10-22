@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
 interface SkeletalConsumer {
 
-    fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, texture: ShaderTexture)
+    fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture)
 }

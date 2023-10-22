@@ -25,20 +25,35 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize), SkeletalConsumer {
     override val order = context.system.quadOrder
 
-    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: FaceVertexData, uvOffset: Int, transform: Float, textureShaderId: Float) {
+    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: FaceVertexData, uvOffset: Int, transform: Float, normal: Float, textureShaderId: Float) {
         data.add(
             position[positionOffset + 0], position[positionOffset + 1], position[positionOffset + 2],
             uv[uvOffset + 0], uv[uvOffset + 1],
-            transform, textureShaderId
+            transform, normal,
         )
+        data.add(textureShaderId)
     }
 
-    override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, texture: ShaderTexture) {
+    private fun encodePart(part: Float): Int {
+        val unsigned = (part + 1.0f) / 2.0f // remove negative sign
+        return (unsigned * 15.0f).toInt() and 0x0F
+    }
+
+    private fun encodeNormal(normal: Vec3): Int {
+        val x = encodePart(normal.x)
+        val y = encodePart(normal.y)
+        val z = encodePart(normal.z)
+
+        return (y shl 8) or (z shl 4) or (x)
+    }
+
+    override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture) {
         val transform = transform.buffer()
         val textureShaderId = texture.shaderId.buffer()
+        val normal = encodeNormal(normal).buffer()
 
         order.iterate { position, uvIndex ->
-            addVertex(positions, position * Vec3.length, uv, uvIndex * Vec2.length, transform, textureShaderId)
+            addVertex(positions, position * Vec3.length, uv, uvIndex * Vec2.length, transform, normal, textureShaderId)
         }
     }
 
@@ -47,6 +62,7 @@ class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context
         val position: Vec3,
         val uv: Vec2,
         val transform: Int,
+        val normal: Int,
         val indexLayerAnimation: Int,
     ) {
         companion object : MeshStruct(SkeletalMeshStruct::class)

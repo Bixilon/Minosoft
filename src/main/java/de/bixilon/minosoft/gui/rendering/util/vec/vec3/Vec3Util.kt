@@ -91,6 +91,20 @@ object Vec3Util {
         this += origin
     }
 
+    fun Vec3.rotateAssign(rad: Vec3, origin: Vec3, rescale: Boolean) {
+        this -= origin
+        rotateAssign(rad.x, Axes.X, rescale)
+        rotateAssign(rad.y, Axes.Y, rescale)
+        rotateAssign(rad.z, Axes.Z, rescale)
+        this += origin
+    }
+
+    fun Vec3.rotateAssign(rad: Vec3) {
+        rotateAssign(rad.x, Axes.X, false)
+        rotateAssign(rad.y, Axes.Y, false)
+        rotateAssign(rad.z, Axes.Z, false)
+    }
+
     operator fun Vec3.get(axis: Axes): Float {
         return when (axis) {
             Axes.X -> x

@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
@@ -47,19 +46,24 @@ data class SkeletalFace(
         ).toArray(direction, 0)
 
 
+        val normal = Vec3(direction.vector)
+
         for (rotation in context.rotations) {
             val origin = rotation.origin!! / BLOCK_SIZE
 
             val rad = -GLM.radians(rotation.value)
             val vec = Vec3(0, positions)
+            normal.rotateAssign(rad)
+
             for (i in 0 until 4) {
                 vec.ofs = i * Vec3.length
-                vec.rotateAssign(rad[0], Axes.X, origin, false)
-                vec.rotateAssign(rad[1], Axes.Y, origin, false)
-                vec.rotateAssign(rad[2], Axes.Z, origin, false)
+                vec.rotateAssign(rad, origin, false)
             }
         }
 
-        context.consumer.addQuad(positions, uvData, transform, texture.texture)
+        normal.normalizeAssign()
+
+
+        context.consumer.addQuad(positions, uvData, transform, normal, texture.texture)
     }
 }

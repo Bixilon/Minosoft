@@ -72,4 +72,7 @@ class AnimationManager(val instance: SkeletalInstance) {
         }
         lock.unlock()
     }
+
+    fun isPlaying(animation: AbstractAnimation) = animation.name in playing
+    fun isPlaying(name: String) = name in playing
 }

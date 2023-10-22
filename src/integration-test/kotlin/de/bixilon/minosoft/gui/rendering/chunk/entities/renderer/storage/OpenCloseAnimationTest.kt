@@ -24,8 +24,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.test.IT
-import org.testng.Assert.assertEquals
-import org.testng.Assert.assertTrue
+import org.testng.Assert.*
 import org.testng.annotations.Test
 
 @Test(groups = ["skeletal", "block_entity_rendering"])
@@ -46,12 +45,13 @@ class OpenCloseAnimationTest {
 
     fun `correct playing and over state`() {
         val animation = create()
-        // TODO: assert not playing
+        assertFalse(animation.getInstance().animation.isPlaying(animation))
         animation.open()
-        // TODO: assert playing
+        assertTrue(animation.getInstance().animation.isPlaying(animation))
         animation.close()
-        // TODO: assert playing
+        assertTrue(animation.getInstance().animation.isPlaying(animation))
         assertEquals(animation.draw(0.3f), OVER)
+        // assertFalse(animation.getInstance().animation.isPlaying(animation)) // animation is drawn directly, that is part of the animation manager
     }
 
     fun animation() {
@@ -97,5 +97,8 @@ class OpenCloseAnimationTest {
 
         @JvmName("getProgress2")
         fun getProgress() = this.progress
+
+        @JvmName("getInstance2")
+        fun getInstance() = this.instance
     }
 }
