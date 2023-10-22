@@ -90,11 +90,12 @@ class OpenCloseAnimationTest {
         override val name get() = "dummy"
 
         override val closingDuration get() = 0.3f
-        override val openingDuration get() = 0.4f
+        override val openingDuration get() = 0.5f
 
 
         override fun transform() = Unit
 
+        @JvmName("getProgress2")
         fun getProgress() = this.progress
     }
 }
