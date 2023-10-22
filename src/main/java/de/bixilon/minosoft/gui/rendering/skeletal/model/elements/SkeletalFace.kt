@@ -66,4 +66,8 @@ data class SkeletalFace(
 
         context.consumer.addQuad(positions, uvData, transform, normal, texture.texture)
     }
+
+    companion object {
+        val DEFAULT = SkeletalFace()
+    }
 }

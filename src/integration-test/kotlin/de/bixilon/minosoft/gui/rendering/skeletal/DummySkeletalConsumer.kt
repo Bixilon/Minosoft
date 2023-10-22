@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
 class DummySkeletalConsumer : SkeletalConsumer {
 
-    override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, texture: ShaderTexture) {
+    override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture) {
         TODO("Not yet implemented")
     }
 }

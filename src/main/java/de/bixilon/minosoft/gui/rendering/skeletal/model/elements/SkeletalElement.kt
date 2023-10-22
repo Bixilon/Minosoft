@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalConsumer
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.util.json.SkeletalFaceDeserializer
 
 data class SkeletalElement(
     val from: Vec3,
@@ -33,6 +35,7 @@ data class SkeletalElement(
     val texture: ResourceLocation? = null,
     val uv: Vec2i? = null,
     val transform: String? = null,
+    @JsonDeserialize(using = SkeletalFaceDeserializer::class)
     val faces: Map<Directions, SkeletalFace>,
     val children: Map<String, SkeletalElement> = emptyMap(),
 ) {
