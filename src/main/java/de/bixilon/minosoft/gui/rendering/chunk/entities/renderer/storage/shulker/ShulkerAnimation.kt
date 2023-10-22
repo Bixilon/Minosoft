@@ -37,7 +37,7 @@ class ShulkerAnimation(
             .translateAssign(translation)
             .translateAssign(transform.pivot)
             .rotateRadAssign(rotation)
-            .translateAssign(-transform.pivot)
+            .translateAssign(transform.nPivot)
     }
 
 

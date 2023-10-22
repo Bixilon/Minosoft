@@ -24,6 +24,7 @@ class SkeletalManager(
 ) {
     private val uniformBuffer = context.system.createFloatUniformBuffer(memAllocFloat(MAX_TRANSFORMS * Mat4.length))
     val shader = context.system.createShader(minosoft("skeletal")) { SkeletalShader(it, uniformBuffer) }
+    private val temp = Mat4()
 
     fun init() {
         uniformBuffer.init()
@@ -36,8 +37,8 @@ class SkeletalManager(
     }
 
     fun upload(instance: SkeletalInstance) {
-        instance.transform.pack(uniformBuffer.buffer, instance.position, Mat4())
-        uniformBuffer.upload(0 until instance.model.transformCount * Mat4.length)
+        instance.transform.pack(uniformBuffer.buffer, instance.position, temp)
+        uniformBuffer.upload(0, instance.model.transformCount * Mat4.length)
     }
 
     fun draw(instance: SkeletalInstance, light: Int) {

@@ -13,12 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 
+import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.X
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Y
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
 
 object Mat4Util {
     private val empty = Mat4()
@@ -26,16 +24,16 @@ object Mat4Util {
     val Mat4.Companion.EMPTY_INSTANCE get() = empty
 
     fun Mat4.rotateDegreesAssign(rotation: Vec3): Mat4 {
-        if (rotation.x != 0.0f) rotateAssign(rotation.x.rad, Vec3.X)
-        if (rotation.y != 0.0f) rotateAssign(rotation.y.rad, Vec3.Y)
-        if (rotation.z != 0.0f) rotateAssign(rotation.z.rad, Vec3.Z)
+        if (rotation.x != 0.0f) rotateX(this, rotation.x.rad)
+        if (rotation.y != 0.0f) rotateY(this, rotation.y.rad)
+        if (rotation.z != 0.0f) rotateZ(this, rotation.z.rad)
         return this
     }
 
     fun Mat4.rotateRadAssign(rotation: Vec3): Mat4 {
-        if (rotation.x != 0.0f) rotateAssign(rotation.x, Vec3.X)
-        if (rotation.y != 0.0f) rotateAssign(rotation.y, Vec3.Y)
-        if (rotation.z != 0.0f) rotateAssign(rotation.z, Vec3.Z)
+        if (rotation.x != 0.0f) rotateX(this, rotation.x)
+        if (rotation.y != 0.0f) rotateY(this, rotation.y)
+        if (rotation.z != 0.0f) rotateZ(this, rotation.z)
         return this
     }
 
@@ -53,9 +51,123 @@ object Mat4Util {
 
     fun Mat4.reset() {
         val array = this.array
-        array[0] = 1.0f; array[1] = 0.0f;array[2] = 0.0f;array[3] = 0.0f
-        array[4] = 0.0f; array[5] = 1.0f;array[6] = 0.0f;array[7] = 0.0f
-        array[8] = 0.0f; array[9] = 0.0f;array[10] = 1.0f;array[11] = 0.0f
-        array[12] = 0.0f; array[13] = 0.0f;array[14] = 0.0f;array[15] = 1.0f
+        System.arraycopy(empty.array, 0, array, 0, Mat4.length)
+    }
+
+    fun rotateX(m: Mat4, angle: Float) {
+        val c = GLM.cos(angle)
+        val s = GLM.sin(angle)
+
+        val dot = angle * angle
+        val inv = GLM.inverseSqrt(dot)
+
+        val aX = angle * inv
+
+        val tempX = (1f - c) * aX
+
+        val rotate00 = c + tempX * aX
+
+        val rotate12 = s * aX
+        val rotate11 = c
+
+        val rotate21 = -s * aX
+
+        m[0, 0] = m[0, 0] * rotate00
+        m[0, 1] = m[0, 1] * rotate00
+        m[0, 2] = m[0, 2] * rotate00
+        m[0, 3] = m[0, 3] * rotate00
+
+        val res1x = m[1, 0] * rotate11 + m[2, 0] * rotate12
+        val res1y = m[1, 1] * rotate11 + m[2, 1] * rotate12
+        val res1z = m[1, 2] * rotate11 + m[2, 2] * rotate12
+        val res1w = m[1, 3] * rotate11 + m[2, 3] * rotate12
+
+        m[2, 0] = m[1, 0] * rotate21 + m[2, 0] * c
+        m[2, 1] = m[1, 1] * rotate21 + m[2, 1] * c
+        m[2, 2] = m[1, 2] * rotate21 + m[2, 2] * c
+        m[2, 3] = m[1, 3] * rotate21 + m[2, 3] * c
+
+        m[1, 0] = res1x
+        m[1, 1] = res1y
+        m[1, 2] = res1z
+        m[1, 3] = res1w
+    }
+
+    fun rotateY(m: Mat4, angle: Float) {
+        val c = GLM.cos(angle)
+        val s = GLM.sin(angle)
+
+        val dot = angle * angle
+        val inv = GLM.inverseSqrt(dot)
+
+        val aY = angle * inv
+
+        val tempY = (1f - c) * aY
+
+        val rotate02 = -s * aY
+
+        val rotate11 = c + tempY * aY
+
+        val rotate20 = s * aY
+
+
+        val res0x = m[0, 0] * c + m[2, 0] * rotate02
+        val res0y = m[0, 1] * c + m[2, 1] * rotate02
+        val res0z = m[0, 2] * c + m[2, 2] * rotate02
+        val res0w = m[0, 3] * c + m[2, 3] * rotate02
+
+        m[1, 0] = m[1, 0] * rotate11
+        m[1, 1] = m[1, 1] * rotate11
+        m[1, 2] = m[1, 2] * rotate11
+        m[1, 3] = m[1, 3] * rotate11
+
+        m[2, 0] = m[0, 0] * rotate20 + m[2, 0] * c
+        m[2, 1] = m[0, 1] * rotate20 + m[2, 1] * c
+        m[2, 2] = m[0, 2] * rotate20 + m[2, 2] * c
+        m[2, 3] = m[0, 3] * rotate20 + m[2, 3] * c
+
+        m[0, 0] = res0x
+        m[0, 1] = res0y
+        m[0, 2] = res0z
+        m[0, 3] = res0w
+    }
+
+    fun rotateZ(m: Mat4, angle: Float) {
+        val c = GLM.cos(angle)
+        val s = GLM.sin(angle)
+
+        val dot = angle * angle
+        val inv = GLM.inverseSqrt(dot)
+
+        val aZ = angle * inv
+
+        val tempZ = (1f - c) * aZ
+
+        val rotate01 = s * aZ
+
+        val rotate10 = -s * aZ
+
+        val rotate22 = c + tempZ * aZ
+
+
+        val res0x = m[0, 0] * c + m[1, 0] * rotate01
+        val res0y = m[0, 1] * c + m[1, 1] * rotate01
+        val res0z = m[0, 2] * c + m[1, 2] * rotate01
+        val res0w = m[0, 3] * c + m[1, 3] * rotate01
+
+        m[1, 0] = m[0, 0] * rotate10 + m[1, 0] * c
+        m[1, 1] = m[0, 1] * rotate10 + m[1, 1] * c
+        m[1, 2] = m[0, 2] * rotate10 + m[1, 2] * c
+        m[1, 3] = m[0, 3] * rotate10 + m[1, 3] * c
+
+        m[2, 0] = m[2, 0] * rotate22
+        m[2, 1] = m[2, 1] * rotate22
+        m[2, 2] = m[2, 2] * rotate22
+        m[2, 3] = m[2, 3] * rotate22
+
+        m[0, 0] = res0x
+        m[0, 1] = res0y
+        m[0, 2] = res0z
+        m[0, 3] = res0w
     }
 }

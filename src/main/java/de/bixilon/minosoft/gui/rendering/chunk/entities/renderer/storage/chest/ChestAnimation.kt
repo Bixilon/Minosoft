@@ -36,7 +36,7 @@ class ChestAnimation(
         transform.value
             .translateAssign(transform.pivot)
             .rotateRadAssign(rotation)
-            .translateAssign(-transform.pivot)
+            .translateAssign(transform.nPivot)
     }
 
 

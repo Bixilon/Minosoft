@@ -36,7 +36,7 @@ data class RotateKeyframe(
     override fun instance() = object : Vec3KeyframeInstance(data, loop, interpolation) {
         override fun apply(value: Vec3, transform: TransformInstance) {
             transform.value
-                .translateAssign(-transform.pivot)
+                .translateAssign(transform.nPivot)
                 .rotateRadAssign(value)
                 .translateAssign(transform.pivot)
         }

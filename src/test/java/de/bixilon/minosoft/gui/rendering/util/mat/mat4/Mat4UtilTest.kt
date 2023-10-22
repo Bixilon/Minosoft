@@ -11,38 +11,37 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.instance
+package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
-import java.nio.FloatBuffer
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
-class TransformInstance(
-    val id: Int,
-    val pivot: Vec3,
-    val children: Map<String, TransformInstance>,
-) {
-    val nPivot = -pivot
-    val value = Mat4()
+class Mat4UtilTest {
 
+    @Test
+    fun `custom rotateX`() {
+        val expected = Mat4().rotateAssign(12.0f.rad, Vec3(1, 0, 0))
+        val actual = Mat4().apply { Mat4Util.rotateX(this, 12.0f.rad) }
 
-    fun reset() {
-        this.value.reset()
-
-        for ((name, child) in children) {
-            child.reset()
-        }
+        assertEquals(expected, actual)
     }
 
-    fun pack(buffer: FloatBuffer, parent: Mat4, temp: Mat4) {
-        parent.times(value, temp)
-        val offset = this.id * Mat4.length
-        for (index in 0 until Mat4.length) {
-            buffer.put(offset + index, temp.array[index])
-        }
-        for ((name, child) in children) {
-            child.pack(buffer, temp, temp)
-        }
+    @Test
+    fun `custom rotateY`() {
+        val expected = Mat4().rotateAssign(12.0f.rad, Vec3(0, 1, 0))
+        val actual = Mat4().apply { Mat4Util.rotateY(this, 12.0f.rad) }
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `custom rotateZ`() {
+        val expected = Mat4().rotateAssign(12.0f.rad, Vec3(0, 0, 1))
+        val actual = Mat4().apply { Mat4Util.rotateZ(this, 12.0f.rad) }
+
+        assertEquals(expected, actual)
     }
 }
