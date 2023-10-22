@@ -19,10 +19,25 @@ Entity rendering is a quite hard topic.
 
 ## Model designing
 
-### Block entities
-
-Block entity models (e.g. chests) are always `facing`=`north` by default.
-
 ### Entities
 
 Entities are always designed without any rotation (i.e. `yaw`=`0`)
+
+## Things to consider
+
+- name rendering (without culling and visible through walls) (and scoreboard objective)
+- hitbox rendering
+- entity model itself
+    - player with arms, legs, ...
+    - has animations, ...
+    - different poses (sneaking, etc)
+- yaw vs head yaw
+- "features"
+    - armor (and armor trims)
+    - elytra
+    - stuck arrows (and bee stingers)
+    - cape
+    - shoulder entities (parrots)
+    - held item
+- light (shade and lightmap)
+- 

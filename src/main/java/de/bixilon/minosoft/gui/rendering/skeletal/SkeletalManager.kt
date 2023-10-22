@@ -36,7 +36,7 @@ class SkeletalManager(
     }
 
     fun upload(instance: SkeletalInstance) {
-        instance.transform.pack(uniformBuffer.buffer, instance.position)
+        instance.transform.pack(uniformBuffer.buffer, instance.position, Mat4())
         uniformBuffer.upload(0 until instance.model.transformCount * Mat4.length)
     }
 

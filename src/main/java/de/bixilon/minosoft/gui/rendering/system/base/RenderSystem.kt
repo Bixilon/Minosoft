@@ -72,7 +72,7 @@ interface RenderSystem {
         this.depth = settings.depth
         this.depthMask = settings.depthMask
         this.clearColor = settings.clearColor
-        shader = null
+        // shader = null
         polygonOffset(settings.polygonOffsetFactor, settings.polygonOffsetUnit)
     }
 

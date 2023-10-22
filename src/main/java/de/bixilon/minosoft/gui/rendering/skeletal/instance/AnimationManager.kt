@@ -61,6 +61,7 @@ class AnimationManager(val instance: SkeletalInstance) {
     }
 
     fun draw(delta: Float) {
+        if (playing.isEmpty()) return
         lock.lock()
         val iterator = playing.iterator()
 

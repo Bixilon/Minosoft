@@ -50,4 +50,12 @@ object Mat4Util {
         res[2] = this[0, 2] * array[0] + this[1, 2] * array[1] + this[2, 2] * array[2] + this[3, 2]
         return res
     }
+
+    fun Mat4.reset() {
+        val array = this.array
+        array[0] = 1.0f; array[1] = 0.0f;array[2] = 0.0f;array[3] = 0.0f
+        array[4] = 0.0f; array[5] = 1.0f;array[6] = 0.0f;array[7] = 0.0f
+        array[8] = 0.0f; array[9] = 0.0f;array[10] = 1.0f;array[11] = 0.0f
+        array[12] = 0.0f; array[13] = 0.0f;array[14] = 0.0f;array[15] = 1.0f
+    }
 }

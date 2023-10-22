@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.concurrent.lock.thread.ThreadMissmatchException
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
@@ -47,6 +46,7 @@ import org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT
 import org.lwjgl.opengl.GL43.glDebugMessageCallback
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
+import java.util.*
 
 class OpenGLRenderSystem(
     private val context: RenderContext,
@@ -54,7 +54,7 @@ class OpenGLRenderSystem(
     private var thread: Thread? = null
     override val nativeShaders: MutableSet<NativeShader> = mutableSetOf()
     override val shaders: MutableSet<Shader> = mutableSetOf()
-    private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
+    private val capabilities: EnumSet<RenderingCapabilities> = EnumSet.noneOf(RenderingCapabilities::class.java)
     override lateinit var vendor: OpenGLVendor
         private set
     override var active: Boolean = false

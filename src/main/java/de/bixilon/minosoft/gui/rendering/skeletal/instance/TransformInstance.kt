@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.EMPTY_INSTANCE
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import java.nio.FloatBuffer
 
 class TransformInstance(
@@ -27,21 +27,21 @@ class TransformInstance(
 
 
     fun reset() {
-        this.value(Mat4.EMPTY_INSTANCE)
+        this.value.reset()
 
         for ((name, child) in children) {
             child.reset()
         }
     }
 
-    fun pack(buffer: FloatBuffer, parent: Mat4) {
-        val value = parent * value
+    fun pack(buffer: FloatBuffer, parent: Mat4, temp: Mat4) {
+        parent.times(value, temp)
         val offset = this.id * Mat4.length
         for (index in 0 until Mat4.length) {
-            buffer.put(offset + index, value.array[index])
+            buffer.put(offset + index, temp.array[index])
         }
         for ((name, child) in children) {
-            child.pack(buffer, value)
+            child.pack(buffer, temp, temp)
         }
     }
 }
