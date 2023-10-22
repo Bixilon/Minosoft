@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulke
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.colors.DyeColors
 import de.bixilon.minosoft.data.entities.block.container.storage.ShulkerBoxBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -59,9 +60,13 @@ class ShulkerBoxRenderer(
     }
 
     companion object : EntityRendererRegister {
-        val MODEL = minecraft("block/entities/shulker_box").sModel()
+        val TEMPLATE = minecraft("block/entities/shulker_box").sModel()
+        val NAME = minecraft("block/entities/shulker_box")
+        val NAME_COLOR = Array(DyeColors.VALUES.size) { minecraft("entity/shulker/shulker_box/${DyeColors[it].name.lowercase()}") }
+
         private val named = minecraft("shulker")
         private val texture = minecraft("entity/shulker/shulker").texture()
+        private val colored = Array(DyeColors.VALUES.size) { minecraft("entity/shulker/shulker_${DyeColors[it].name.lowercase()}").texture() }
 
         private val ROTATIONS = arrayOf(
             Vec3(180, 0, 0).rad,
@@ -74,7 +79,12 @@ class ShulkerBoxRenderer(
 
         override fun register(loader: ModelLoader) {
             val texture = loader.context.textures.staticTextures.createTexture(texture)
-            loader.skeletal.register(MODEL, override = mapOf(this.named to texture))
+            loader.skeletal.register(NAME, TEMPLATE, override = mapOf(this.named to texture))
+
+            for (color in DyeColors) {
+                val texture = loader.context.textures.staticTextures.createTexture(colored[color.ordinal])
+                loader.skeletal.register(NAME_COLOR[color.ordinal], TEMPLATE, override = mapOf(this.named to texture))
+            }
         }
     }
 }
