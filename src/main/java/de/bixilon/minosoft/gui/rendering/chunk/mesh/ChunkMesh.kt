@@ -32,7 +32,7 @@ class ChunkMesh(
     var translucentMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 3000 else 10000, onDemand = true)
     var transparentMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 3000 else 20000, onDemand = true)
     var textMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 5000 else 50000, onDemand = true)
-    var blockEntities: List<BlockEntityRenderer<*>>? = null
+    var blockEntities: ArrayList<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling
     val minPosition = Vec3i(16)

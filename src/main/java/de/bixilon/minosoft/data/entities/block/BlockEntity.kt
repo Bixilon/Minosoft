@@ -29,7 +29,7 @@ abstract class BlockEntity(
 
     open fun updateNBT(nbt: JsonObject) = Unit
 
-    open fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
+    open fun tick(connection: PlayConnection, state: BlockState, position: Vec3i, random: Random) = Unit
 
     open fun getRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? {
         if (this.renderer?.state != state) {

@@ -57,7 +57,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         // ToDo: Play sound?
     }
 
-    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+    override fun tick(connection: PlayConnection, state: BlockState, position: Vec3i, random: Random) {
         if (!showParticleNextTick) {
             return
         }
@@ -65,7 +65,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
 
 
         noteParticleType?.let {
-            connection.world += NoteParticle(connection, blockPosition.toVec3d + Vec3d(0.5, 1.2, 0.5), blockState.getNote() / 24.0f, it.default())
+            connection.world += NoteParticle(connection, position.toVec3d + Vec3d(0.5, 1.2, 0.5), state.getNote() / 24.0f, it.default())
         }
     }
 

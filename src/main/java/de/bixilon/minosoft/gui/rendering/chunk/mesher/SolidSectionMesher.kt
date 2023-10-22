@@ -62,7 +62,7 @@ class SolidSectionMesher(
         val isHighestSection = sectionHeight == chunk.maxSection
         val blocks = section.blocks
         val sectionLight = section.light
-        val entities: MutableList<BlockEntityRenderer<*>> = ArrayList()
+        val entities: ArrayList<BlockEntityRenderer<*>> = ArrayList(section.blockEntities.count)
 
         val position = BlockPosition()
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)

@@ -59,8 +59,8 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
         // ToDo: {MaxNearbyEntities: 6s, RequiredPlayerRange: 16s, SpawnCount: 4s, x: -80, y: 4, SpawnData: {id: "minecraft:zombie"}, z: 212, id: "minecraft:mob_spawner", MaxSpawnDelay: 800s, SpawnRange: 4s, Delay: 0s, MinSpawnDelay: 200s}
     }
 
-    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        spawnParticles(blockPosition, random)
+    override fun tick(connection: PlayConnection, state: BlockState, position: Vec3i, random: Random) {
+        spawnParticles(position, random)
     }
 
     companion object : BlockEntityFactory<MobSpawnerBlockEntity> {

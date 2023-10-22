@@ -46,16 +46,21 @@ class ChunkSection(
         if (blockEntities.isEmpty) {
             return
         }
+        val offset = Vec3i.of(chunkPosition, sectionHeight)
+        val position = Vec3i()
+
         acquire()
         val min = blockEntities.minPosition
         val max = blockEntities.maxPosition
         for (y in min.y..max.y) {
+            position.y = offset.y + y
             for (z in min.z..max.z) {
+                position.z = offset.z + z
                 for (x in min.x..max.x) {
                     val index = getIndex(x, y, z)
                     val entity = blockEntities[index] ?: continue
                     val state = blocks[index] ?: continue
-                    val position = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
+                    position.x = offset.x + x
                     entity.tick(connection, state, position, random)
                 }
             }
