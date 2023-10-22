@@ -35,7 +35,7 @@ class ChunkSection(
     val sectionHeight: Int,
     var blocks: BlockSectionDataProvider = BlockSectionDataProvider(),
     var biomes: SectionDataProvider<Biome> = SectionDataProvider(checkSize = false),
-    var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(checkSize = false),
+    var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(checkSize = true),
     chunk: Chunk? = null
 ) {
     val chunk: Chunk = chunk ?: unsafeNull()
