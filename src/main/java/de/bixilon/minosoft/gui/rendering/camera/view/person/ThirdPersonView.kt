@@ -59,7 +59,7 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
         val target = camera.context.connection.camera.target.raycastBlock(position, (-front).toVec3d).first
         val distance = target?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
 
-        this.eyePosition = position + (-front * distance)
+        this.eyePosition = if (distance <= 0.0) position else position + (-front * (distance - MIN_MARGIN))
     }
 
     override fun onAttach(previous: CameraView?) {
@@ -71,6 +71,7 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
     }
 
     companion object {
+        const val MIN_MARGIN = 0.05
         const val MAX_DISTANCE = 3.0
     }
 }
