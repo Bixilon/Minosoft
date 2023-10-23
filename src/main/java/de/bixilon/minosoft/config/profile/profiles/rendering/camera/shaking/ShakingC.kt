@@ -23,7 +23,8 @@ class ShakingC(profile: RenderingProfile) {
      */
     var enabled by BooleanDelegate(profile, true)
 
-    var amplifier by FloatDelegate(profile, 1.0f, "", ranges = arrayOf(0.1f..2.0f))
+    var speed by FloatDelegate(profile, 1.0f, "", ranges = arrayOf(0.1f..2.0f))
+    var intensity by FloatDelegate(profile, 1.0f, "", ranges = arrayOf(0.1f..2.0f))
 
     /**
      * Shake the camera while walking
