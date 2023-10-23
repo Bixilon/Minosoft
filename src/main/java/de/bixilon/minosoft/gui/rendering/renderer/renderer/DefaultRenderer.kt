@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.border.WorldBorderRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.chunk.ChunkBorderRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.outline.BlockOutlineRenderer
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
@@ -31,7 +31,7 @@ object DefaultRenderer {
         BlockOutlineRenderer,
         ParticleRenderer,
 
-        EntityRenderer,
+        EntitiesRenderer,
         CloudRenderer,
         ChunkBorderRenderer,
         WorldBorderRenderer,

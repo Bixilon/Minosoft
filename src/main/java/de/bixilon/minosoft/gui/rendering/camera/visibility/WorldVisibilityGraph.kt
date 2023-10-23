@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.view
+package de.bixilon.minosoft.gui.rendering.camera.visibility
 
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec2.Vec2i

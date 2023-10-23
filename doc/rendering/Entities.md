@@ -40,4 +40,27 @@ Entities are always designed without any rotation (i.e. `yaw`=`0`)
     - shoulder entities (parrots)
     - held item
 - light (shade and lightmap)
-- 
+
+## General
+
+- render layers (opaque -> transparent -> translucent -> ...) (but face culling enabled)
+  - sort in layers after distance (or -distance)
+  - there are also invisible renderers (like AreaEffectCloud is just emitting particles)
+- update all models async (with their visibility, etc)
+- queue for unloading and loading meshes before draw (better while async preparing to save time. Maybe port that system to block entities)
+- Loop over all visible entity renderers and work on the entity layer as needed
+- update visible and not visible
+  - entity name is also visible through walls, rest not
+  - also with frustum (no need to update renderers that are out of the frustum)
+- option to turn on/off "features"
+- how to register entity models?
+  - loop over all entity (and block entity) types and register?
+
+## Hitboxes
+
+- Create line mesh with default aabb
+  - interpolate aabb if size changes (e.g. changing pose for players)
+  - how about rendering velocity or view?
+- Store offset and rotation as uniform
+- Make hitbox a default feature of entity renderer
+- draw as opaque

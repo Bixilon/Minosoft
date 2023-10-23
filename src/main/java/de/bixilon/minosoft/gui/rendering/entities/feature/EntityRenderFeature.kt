@@ -11,9 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entity.models
+package de.bixilon.minosoft.gui.rendering.entities.feature
 
-interface DamageableModel {
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
-    fun onDamage()
+abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) {
+    var enabled = true
+    open val priority: Int get() = 0
+
+    open fun updateVisibility(occluded: Boolean, visible: Boolean): Boolean {
+        val enabled = !occluded && visible
+        if (this.enabled == enabled) return false
+        this.enabled = enabled
+        return true
+    }
+
+    open fun update(millis: Long) = Unit
+    open fun unload() = Unit
+
+    abstract fun draw()
 }

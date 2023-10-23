@@ -18,10 +18,10 @@ import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.gui.rendering.camera.Camera
-import de.bixilon.minosoft.gui.rendering.chunk.light.RenderLight
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
+import de.bixilon.minosoft.gui.rendering.light.RenderLight
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
 import de.bixilon.minosoft.gui.rendering.shader.ShaderManager

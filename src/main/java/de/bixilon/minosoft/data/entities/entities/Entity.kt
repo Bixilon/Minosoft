@@ -32,9 +32,9 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.entity.models.DummyModel
-import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
+import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.DummyEntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -85,7 +85,7 @@ abstract class Entity(
 
     var lastTickTime = -1L
 
-    open var model: EntityModel<*>? = null
+    open var renderer: EntityRenderer<*>? = null
 
     open val physics: EntityPhysics<*> = unsafeNull()
 
@@ -229,13 +229,8 @@ abstract class Entity(
 
     open fun onAttack(attacker: Entity) = true
 
-    open fun createModel(renderer: EntityRenderer): EntityModel<*>? {
-        return DummyModel(renderer, this).apply { this@Entity.model = this }
-    }
-
-    open fun createPhysics(): EntityPhysics<*> {
-        return EntityPhysics(this)
-    }
+    open fun createRenderer(renderer: EntitiesRenderer): EntityRenderer<*>? = DummyEntityRenderer(renderer, this)
+    open fun createPhysics(): EntityPhysics<*> = EntityPhysics(this)
 
     open fun physics(): EntityPhysics<*> = physics.unsafeCast()
 

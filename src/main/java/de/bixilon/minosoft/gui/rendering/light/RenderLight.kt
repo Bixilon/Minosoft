@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.light
+package de.bixilon.minosoft.gui.rendering.light
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.config.DebugOptions
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderingStates
-import de.bixilon.minosoft.gui.rendering.chunk.light.debug.LightmapDebugWindow
+import de.bixilon.minosoft.gui.rendering.light.debug.LightmapDebugWindow
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 

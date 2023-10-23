@@ -11,30 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entity.hitbox
+package de.bixilon.minosoft.gui.rendering.entities.hitbox
 
-import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 data class HitboxData(
+    val aabb: AABB,
     val color: RGBColor,
-    val velocity: Vec3d?,
+    val velocity: Vec3?,
     val rotation: EntityRotation,
-) {
-
-    companion object {
-
-        fun of(entity: Entity): HitboxData? {
-            val color = entity.hitboxColor ?: return null
-            var velocity: Vec3d? = entity.physics.velocity
-            if (velocity!!.length2() < 0.003) {
-                velocity = null
-            }
-            val rotation = entity.renderInfo.rotation
-
-            return HitboxData(color, velocity, rotation)
-        }
-    }
-}
+)

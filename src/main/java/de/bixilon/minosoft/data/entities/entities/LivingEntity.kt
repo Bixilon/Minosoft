@@ -98,9 +98,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
             else -> super.hitboxColor
         }
 
-    override fun createPhysics(): LivingEntityPhysics<*> {
-        return LivingEntityPhysics(this)
-    }
+    override fun createPhysics(): LivingEntityPhysics<*> = LivingEntityPhysics(this)
 
     override fun tick() {
         super.tick()

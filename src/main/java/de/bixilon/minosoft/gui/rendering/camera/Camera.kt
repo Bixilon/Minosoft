@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
 import de.bixilon.minosoft.gui.rendering.camera.view.ViewManager
-import de.bixilon.minosoft.gui.rendering.chunk.view.WorldVisibilityGraph
+import de.bixilon.minosoft.gui.rendering.camera.visibility.WorldVisibilityGraph
 
 class Camera(
     val context: RenderContext,

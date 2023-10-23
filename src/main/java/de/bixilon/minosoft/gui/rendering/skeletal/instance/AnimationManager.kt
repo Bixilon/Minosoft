@@ -46,8 +46,7 @@ class AnimationManager(val instance: SkeletalInstance) {
     }
 
 
-    fun draw() {
-        val millis = millis()
+    fun draw(millis: Long = millis()) {
         val delta = if (lastDraw < 0) 0L else millis - lastDraw
         this.lastDraw = millis
         draw(delta / 1000.0f)

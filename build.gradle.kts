@@ -228,7 +228,8 @@ testing {
                         options {
                             val options = this as TestNGOptions
                             options.preserveOrder = true
-                            // options.excludeGroups("models", "mesher", "chunk", "input", "font", "command", "registry", "biome", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "block", "physics", "light", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "chunk_renderer", "rendering")
+                            // options.excludeGroups("models", "mesher", "chunk", "input", "font", "command", "registry", "biome", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "block", "physics", "light", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "chunk_renderer", "rendering", "texture", "atlas", "gui")
+                            options.excludeGroups("models", "mesher", "chunk", "input", "font", "command", "registry", "biome", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "block", "physics", "light", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "chunk_renderer", "texture", "atlas", "gui")
                         }
                     }
                 }

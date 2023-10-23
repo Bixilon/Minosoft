@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,18 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entity
+package de.bixilon.minosoft.gui.rendering.light.updater
 
-import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
+import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 
-interface ModelUpdater : Drawable {
+interface LightmapUpdater {
 
-    fun checkUpdate(): Boolean = false
-
-    fun prepareAsync() = Unit
-    fun prepare() = Unit
-
-    fun unload() = Unit
-
-    fun reset() = Unit
+    fun update(force: Boolean, buffer: LightmapBuffer)
 }

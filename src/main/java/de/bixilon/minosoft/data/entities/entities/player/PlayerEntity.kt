@@ -135,9 +135,7 @@ abstract class PlayerEntity(
             return ChatColors.RED
         }
 
-    override fun createPhysics(): PlayerPhysics<*> {
-        return PlayerPhysics(this)
-    }
+    override fun createPhysics(): PlayerPhysics<*> = PlayerPhysics(this)
 
 
     fun swingHand(hand: Hands) {

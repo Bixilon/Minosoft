@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.light.debug
+package de.bixilon.minosoft.gui.rendering.light.debug
 
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
-import de.bixilon.minosoft.gui.rendering.chunk.light.Lightmap
+import de.bixilon.minosoft.gui.rendering.light.Lightmap
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import javafx.fxml.FXML
 import javafx.scene.canvas.Canvas

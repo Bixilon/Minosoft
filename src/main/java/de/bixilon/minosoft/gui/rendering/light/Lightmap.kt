@@ -11,14 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.light
+package de.bixilon.minosoft.gui.rendering.light
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.DebugOptions
-import de.bixilon.minosoft.gui.rendering.chunk.light.updater.DebugLightUpdater
-import de.bixilon.minosoft.gui.rendering.chunk.light.updater.FullbrightLightUpdater
-import de.bixilon.minosoft.gui.rendering.chunk.light.updater.LightmapUpdater
-import de.bixilon.minosoft.gui.rendering.chunk.light.updater.normal.NormalLightmapUpdater
+import de.bixilon.minosoft.gui.rendering.light.updater.DebugLightUpdater
+import de.bixilon.minosoft.gui.rendering.light.updater.FullbrightLightUpdater
+import de.bixilon.minosoft.gui.rendering.light.updater.LightmapUpdater
+import de.bixilon.minosoft.gui.rendering.light.updater.normal.NormalLightmapUpdater
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 

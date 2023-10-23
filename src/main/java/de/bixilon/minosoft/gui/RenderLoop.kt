@@ -102,6 +102,9 @@ class RenderLoop(
             context.input.draw(deltaFrameTime)
             context.camera.draw()
 
+            val state = context.connection.registries.block["chest"]!!.states.default
+            context.connection.world[4, -60, 1] = state
+
             // handle opengl context tasks, but limit it per frame
             context.queue.timeWork(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
 

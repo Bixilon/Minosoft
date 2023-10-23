@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.light.updater.normal
+package de.bixilon.minosoft.gui.rendering.light.updater.normal
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.math.MathConstants.PIf
@@ -22,8 +22,8 @@ import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
-import de.bixilon.minosoft.gui.rendering.chunk.light.LightmapBuffer
-import de.bixilon.minosoft.gui.rendering.chunk.light.updater.LightmapUpdater
+import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
+import de.bixilon.minosoft.gui.rendering.light.updater.LightmapUpdater
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify

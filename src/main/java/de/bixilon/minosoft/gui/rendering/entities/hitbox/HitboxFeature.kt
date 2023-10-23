@@ -11,16 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal
+package de.bixilon.minosoft.gui.rendering.entities.hitbox
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
-import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalConsumer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
-class DummySkeletalConsumer : SkeletalConsumer {
+class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer) {
 
-    override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture) {
+    override fun draw() {
         TODO("Not yet implemented")
     }
 }

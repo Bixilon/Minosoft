@@ -11,16 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.shader.types
+package de.bixilon.minosoft.gui.rendering.camera.visibility
 
-import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
-import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
-import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
-
-interface LightShader : AbstractShader {
-    val lightmap: LightmapBuffer
-
-    fun lightmap(name: String = "uLightMapBuffer", buffer: LightmapBuffer = native.context.light.map.buffer): ShaderUniform<LightmapBuffer> {
-        return uniform(name, buffer) { native, name, value -> value.use(native, name) }
-    }
-}
+typealias VisibilityGraph = Array<Array<BooleanArray?>?>
