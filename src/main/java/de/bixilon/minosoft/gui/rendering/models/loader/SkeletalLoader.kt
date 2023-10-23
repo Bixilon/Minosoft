@@ -23,6 +23,9 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.exten
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class SkeletalLoader(private val loader: ModelLoader) {
     private val registered: SynchronizedMap<ResourceLocation, RegisteredModel> = synchronizedMapOf()
@@ -32,7 +35,15 @@ class SkeletalLoader(private val loader: ModelLoader) {
         val templates: MutableMap<ResourceLocation, SkeletalModel> = HashMap(this.registered.size, 0.1f)
 
         for ((name, registered) in this.registered) {
-            val template = templates.getOrPut(registered.template) { loader.context.connection.assetsManager[registered.template].readJson() }
+            var template = templates[registered.template]
+            if (template == null) {
+                template = loader.context.connection.assetsManager.getOrNull(registered.template)?.readJson()
+                if (template == null) {
+                    Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find skeletal model ${registered.template}" }
+                    continue
+                }
+                templates[registered.template] = template
+            }
 
             template.load(loader.context, registered.override.keys)
             registered.model = template
@@ -41,7 +52,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
 
     fun bake(latch: AbstractLatch?) {
         for ((name, registered) in this.registered) {
-            val baked = registered.model!!.bake(loader.context, registered.override)
+            val baked = registered.model?.bake(loader.context, registered.override) ?: continue
             this.baked[name] = baked
         }
     }
