@@ -24,12 +24,14 @@ interface ClientNetwork {
 
     var state: ProtocolStates
     var receive: Boolean
-    var compressionThreshold: Int
+    val compressionThreshold: Int
 
     fun connect(address: ServerAddress, native: Boolean)
     fun disconnect()
+    fun detach()
 
     fun setupEncryption(encrypt: Cipher, decrypt: Cipher)
+    fun setupCompression(threshold: Int)
 
     fun pauseSending(pause: Boolean)
 

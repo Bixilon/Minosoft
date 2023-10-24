@@ -55,37 +55,12 @@ class NettyClient(
         private set
     override var state by observed(ProtocolStates.HANDSHAKE)
     override var compressionThreshold = -1
-        set(value) {
-            field = value
-            val channel = channel ?: return
-            val pipeline = channel.pipeline()
-            if (value < 0) {
-                // disable
-                if (pipeline.get(PacketDeflater.NAME) != null) {
-                    channel.pipeline().remove(PacketDeflater.NAME)
-                }
-                if (pipeline.get(PacketInflater.NAME) != null) {
-                    channel.pipeline().remove(PacketInflater.NAME)
-                }
-            } else {
-                // enable or update
-                val inflater = channel.pipeline()[PacketInflater.NAME]?.nullCast<PacketInflater>()
-                if (inflater == null) {
-                    channel.pipeline().addAfter(LengthDecoder.NAME, PacketInflater.NAME, PacketInflater(connection.version!!.maxPacketLength))
-                }
-                val deflater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
-                if (deflater != null) {
-                    deflater.threshold = value
-                } else {
-                    channel.pipeline().addAfter(LengthEncoder.NAME, PacketDeflater.NAME, PacketDeflater(value))
-                }
-            }
-        }
     override var encrypted: Boolean = false
         private set
     private var channel: Channel? = null
     private val packetQueue: MutableList<C2SPacket> = mutableListOf() // Used for pause sending
     private var sendingPaused = false
+    private var detached = false
     override var receive = true
         set(value) {
             channel?.config()?.isAutoRead = value
@@ -119,12 +94,43 @@ class NettyClient(
         encrypted = true
     }
 
+    override fun setupCompression(threshold: Int) {
+        val channel = channel ?: return
+        val pipeline = channel.pipeline()
+        if (threshold < 0) {
+            // disable
+            if (pipeline.get(PacketDeflater.NAME) != null) {
+                channel.pipeline().remove(PacketDeflater.NAME)
+            }
+            if (pipeline.get(PacketInflater.NAME) != null) {
+                channel.pipeline().remove(PacketInflater.NAME)
+            }
+        } else {
+            // enable or update
+            val inflater = channel.pipeline()[PacketInflater.NAME]?.nullCast<PacketInflater>()
+            if (inflater == null) {
+                channel.pipeline().addAfter(LengthDecoder.NAME, PacketInflater.NAME, PacketInflater(connection.version!!.maxPacketLength))
+            }
+            val deflater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
+            if (deflater != null) {
+                deflater.threshold = threshold
+            } else {
+                channel.pipeline().addAfter(LengthEncoder.NAME, PacketDeflater.NAME, PacketDeflater(threshold))
+            }
+        }
+    }
+
     override fun disconnect() {
         channel?.close()
         encrypted = false
         channel = null
         compressionThreshold = -1
         connected = false
+    }
+
+    override fun detach() {
+        detached = true
+        channel?.close()
     }
 
     override fun pauseSending(pause: Boolean) {
@@ -139,11 +145,12 @@ class NettyClient(
     }
 
     override fun send(packet: C2SPacket) {
-        val channel = getChannel() ?: return
+        if (detached) return
         if (sendingPaused) {
             packetQueue += packet
             return
         }
+        val channel = getChannel() ?: return
 
         packet.log((connection.nullCast<PlayConnection>()?.profiles?.other ?: OtherProfileManager.selected).log.reducedProtocolLog)
         channel.writeAndFlush(packet)
@@ -165,6 +172,7 @@ class NettyClient(
 
     override fun channelInactive(context: ChannelHandlerContext) {
         Log.log(LogMessageType.NETWORK, LogLevels.VERBOSE) { "Connection closed ($address)" }
+        if (detached) return
         connected = false
     }
 
