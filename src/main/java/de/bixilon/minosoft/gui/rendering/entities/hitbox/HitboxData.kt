@@ -14,13 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.entities.hitbox
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
 
 data class HitboxData(
-    val aabb: AABB,
-    val color: RGBColor,
-    val velocity: Vec3?,
-    val rotation: EntityRotation,
-)
+    var color: RGBColor = ChatColors.WHITE,
+    var velocity: Vec3 = Vec3.EMPTY_INSTANCE,
+) {
+
+    fun update(entity: Entity) {
+
+    }
+}

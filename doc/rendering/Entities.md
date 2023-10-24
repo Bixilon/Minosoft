@@ -44,26 +44,36 @@ Entities are always designed without any rotation (i.e. `yaw`=`0`)
 ## General
 
 - render layers (opaque -> transparent -> translucent -> ...) (but face culling enabled)
-  - sort in layers after distance (or -distance)
-  - there are also invisible renderers (like AreaEffectCloud is just emitting particles)
+    - sort in layers after distance (or -distance)
+    - there are also invisible renderers (like AreaEffectCloud is just emitting particles)
 - update all models async (with their visibility, etc)
 - queue for unloading and loading meshes before draw (better while async preparing to save time. Maybe port that system to block entities)
 - Loop over all visible entity renderers and work on the entity layer as needed
 - update visible and not visible
-  - entity name is also visible through walls, rest not
-  - also with frustum (no need to update renderers that are out of the frustum)
+    - entity name is also visible through walls, rest not
+    - also with frustum (no need to update renderers that are out of the frustum)
+    - -> handle occlusion differently from visibility
 - option to turn on/off "features"
 - how to register entity models?
-  - loop over all entity (and block entity) types and register?
+    - loop over all entity (and block entity) types and register?
+- store entities in octree like structure
+    - ways faster collisions with them -> physics
+    - way faster getInRadius -> particles, maybe entities in the future
 
 ## Hitboxes
 
 - Create line mesh with default aabb
-  - interpolate aabb if size changes (e.g. changing pose for players)
-  - how about rendering velocity or view?
+    - interpolate
+        - aabb (not at all, taken from renderInfo)
+        - color: 0.5s
+        - velocity (ticks)
+        - direction (taken from renderInfo)
+        - eye height (taken from renderInfo)
+    - they must alight with the matrix handler -> mustn't be a frame too late/early
 - Store offset and rotation as uniform
 - Make hitbox a default feature of entity renderer
-- draw as opaque
+- highest priority (enables cheap gpu clipping)
+- dynamic enabling and disabling (hitbox manager, keybinding)
 
 ## Tests
 

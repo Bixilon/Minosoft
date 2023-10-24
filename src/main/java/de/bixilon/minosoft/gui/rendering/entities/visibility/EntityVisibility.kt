@@ -19,6 +19,5 @@ class EntityVisibility(val renderer: EntityRenderer<*>) {
     val visible: Boolean = true
 
     fun update(force: Boolean) {
-        TODO()
     }
 }
