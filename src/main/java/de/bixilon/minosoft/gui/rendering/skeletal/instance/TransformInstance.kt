@@ -23,6 +23,7 @@ class TransformInstance(
     val pivot: Vec3,
     val children: Map<String, TransformInstance>,
 ) {
+    private val array = children.values.toTypedArray()
     val nPivot = -pivot
     val value = Mat4()
 
@@ -30,7 +31,7 @@ class TransformInstance(
     fun reset() {
         this.value.reset()
 
-        for ((name, child) in children) {
+        for (child in array) {
             child.reset()
         }
     }
@@ -41,7 +42,7 @@ class TransformInstance(
         for (index in 0 until Mat4.length) {
             buffer.put(offset + index, temp.array[index])
         }
-        for ((name, child) in children) {
+        for (child in array) {
             child.pack(buffer, temp, temp)
         }
     }
