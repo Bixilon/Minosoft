@@ -61,6 +61,7 @@ class EntitiesRenderer(
             if (reset) it.reset()
             visibility.update(it)
             it.update(millis)
+            visibility.collect(it)
         }
         this.reset = false
         this.visibility.finish()

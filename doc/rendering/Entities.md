@@ -64,3 +64,8 @@ Entities are always designed without any rotation (i.e. `yaw`=`0`)
 - Store offset and rotation as uniform
 - Make hitbox a default feature of entity renderer
 - draw as opaque
+
+## Tests
+
+- hitbox (data, loading, unloading)
+- collect visible meshes (with sorting, priority type and distance)

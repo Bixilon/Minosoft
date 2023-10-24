@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.visibility
 
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
@@ -26,28 +27,40 @@ class VisibilityManager(val renderer: EntitiesRenderer) : Iterable<EntityRenderF
         private set
 
     private val count = AtomicInteger()
+    private val visible: ArrayList<EntityRenderFeature> = ArrayList(1000)
+    private val lock = SimpleLock()
 
     fun init() {
         renderer.connection.events.listen<VisibilityGraphChangeEvent> { update = true }
     }
 
     fun reset() {
+        this.visible.clear()
         count.set(0)
     }
 
     fun update(renderer: EntityRenderer<*>) {
         renderer.visibility.update(this.update)
-        if (renderer.visibility.visible) {
-            count.incrementAndGet()
+    }
+
+    fun collect(renderer: EntityRenderer<*>) {
+        if (!renderer.visibility.visible) return
+        count.incrementAndGet()
+        lock.lock()
+        for (feature in renderer.features) {
+            if (!feature.enabled) continue
+            this.visible += feature
         }
+        lock.unlock()
     }
 
     fun finish() {
+        this.visible.sort() // TODO: Optimize it (pre create array, just work with array?)
         this.update = false
         size = count.get()
     }
 
     override fun iterator(): Iterator<EntityRenderFeature> {
-        TODO()
+        return this.visible.iterator()
     }
 }

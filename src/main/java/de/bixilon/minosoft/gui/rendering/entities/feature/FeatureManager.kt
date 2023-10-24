@@ -15,23 +15,34 @@ package de.bixilon.minosoft.gui.rendering.entities.feature
 
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
-class FeatureManager(val renderer: EntityRenderer<*>) {
+class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFeature> {
+    private val features: ArrayList<EntityRenderFeature> = ArrayList(10)
 
 
     operator fun plusAssign(feature: EntityRenderFeature) = register(feature)
     fun register(feature: EntityRenderFeature) {
-        TODO()
+        this.features += feature
     }
 
     fun update(millis: Long) {
-        TODO()
+        for (feature in features) {
+            feature.update(millis)
+        }
     }
 
     fun unload() {
-        TODO()
+        for (feature in features) {
+            feature.unload()
+        }
     }
 
     fun reset() {
-        TODO()
+        for (feature in features) {
+            feature.reset()
+        }
+    }
+
+    override fun iterator(): Iterator<EntityRenderFeature> {
+        return features.iterator()
     }
 }

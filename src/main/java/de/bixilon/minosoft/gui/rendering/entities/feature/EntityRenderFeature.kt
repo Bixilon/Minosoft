@@ -15,9 +15,10 @@ package de.bixilon.minosoft.gui.rendering.entities.feature
 
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
-abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) {
+abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable<EntityRenderFeature> {
     var enabled = true
     open val priority: Int get() = 0
+    val sort = this::class.java.hashCode()
 
     open fun updateVisibility(occluded: Boolean, visible: Boolean): Boolean {
         val enabled = !occluded && visible
@@ -26,8 +27,20 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) {
         return true
     }
 
+    open fun reset() = Unit
     open fun update(millis: Long) = Unit
     open fun unload() = Unit
 
     abstract fun draw()
+
+    open fun compareByDistance(other: EntityRenderFeature): Int = 0
+
+    override fun compareTo(other: EntityRenderFeature): Int {
+        var compare = priority.compareTo(other.priority)
+        if (compare != 0) return compare
+        compare = sort.compareTo(other.sort) // dirty sort by type (that makes using of shaders, etc way "faster")
+        if (compare != 0) return compare
+
+        return compareByDistance(other)
+    }
 }
