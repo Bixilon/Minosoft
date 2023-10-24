@@ -31,8 +31,8 @@ class GUIMesh(
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
 
-    override fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        addVertex(data, halfSize, position, texture ?: whiteTexture.texture, uv, tint, options)
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
+        addVertex(data, halfSize, x, y, texture ?: whiteTexture.texture, u, v, tint, options)
     }
 
     override fun addCache(cache: GUIMeshCache) {
@@ -43,7 +43,7 @@ class GUIMesh(
         val position: Vec2,
         val uv: Vec2,
         val indexLayerAnimation: Int,
-            val tintColor: RGBColor,
+        val tintColor: RGBColor,
     ) {
         companion object : MeshStruct(GUIMeshStruct::class)
     }
@@ -58,8 +58,11 @@ class GUIMesh(
             return res
         }
 
-        fun addVertex(data: AbstractFloatList, halfSize: Vec2, position: Vec2, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-            val outPosition = transformPosition(position, halfSize)
+        fun addVertex(data: AbstractFloatList, halfSize: Vec2, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
+            val x = x / halfSize.x - 1.0f
+            val y = 1.0f - y / halfSize.y
+
+
             var color = tint.rgba
 
             if (options != null) {
@@ -73,8 +76,10 @@ class GUIMesh(
                 }
             }
 
-            data.add(outPosition.array)
-            data.add(uv.array)
+            data.add(x)
+            data.add(y)
+            data.add(u)
+            data.add(v)
             data.add(texture.shaderId.buffer())
             data.add(color.buffer())
         }

@@ -65,7 +65,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
         }
 
     @Deprecated("Warning: Should not be directly accessed!")
-    open val cache = GUIMeshCache(guiRenderer.halfSize, context.system.legacyQuadOrder, context, initialCacheSize)
+    open val cache = GUIMeshCache(guiRenderer.halfSize, context.system.quadOrder, context, initialCacheSize)
 
     private var previousMaxSize = Vec2.EMPTY
 

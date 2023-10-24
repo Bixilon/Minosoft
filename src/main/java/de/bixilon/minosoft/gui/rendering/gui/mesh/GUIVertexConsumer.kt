@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FormattingProperties
@@ -25,26 +26,23 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 interface GUIVertexConsumer {
     val order: RenderOrder
 
-    fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?)
+    fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) = addVertex(position.x, position.y, texture, uv.x, uv.y, tint, options)
+    fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?)
 
     fun addQuad(start: Vec2, end: Vec2, texture: ShaderTexture?, uvStart: Vec2 = UV_START, uvEnd: Vec2 = UV_END, tint: RGBColor, options: GUIVertexOptions?) {
-        val uvStart = texture?.transformUV(uvStart) ?: uvStart
-        val uvEnd = texture?.transformUV(uvEnd) ?: uvEnd
+        val start = start.array
+        val end = end.array
+        val uvStart = (texture?.transformUV(uvStart) ?: uvStart).array
+        val uvEnd = (texture?.transformUV(uvEnd) ?: uvEnd).array
 
-        val positions = arrayOf(
-            start,
-            Vec2(end.x, start.y),
-            end,
-            Vec2(start.x, end.y),
-        )
-        val texturePositions = arrayOf(
-            Vec2(uvEnd.x, uvStart.y),
-            uvStart,
-            Vec2(uvStart.x, uvEnd.y),
-            uvEnd,
-        )
-
-        order.iterate { position, uv -> addVertex(positions[position], texture, texturePositions[uv], tint, options) }
+        order.iterate { position, uv ->
+            addVertex(
+                if (position == 0 || position == 3) start[0] else end[0], if (position <= 1) start[1] else end[1],
+                texture,
+                if (uv == 0 || uv == 3) uvStart[0] else uvEnd[0], if (uv <= 1) uvStart[1] else uvEnd[1],
+                tint, options,
+            )
+        }
     }
 
     fun addQuad(start: Vec2, end: Vec2, texture: TexturePart, tint: RGBColor, options: GUIVertexOptions?) {
@@ -59,20 +57,27 @@ interface GUIVertexConsumer {
     fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
         val topOffset = if (italic) (end.y - start.y) / FontProperties.CHAR_BASE_HEIGHT * FormattingProperties.ITALIC_OFFSET else 0.0f
 
-        val positions = arrayOf(
-            Vec2(start.x + topOffset, start.y),
-            Vec2(end.x + topOffset, start.y),
-            end,
-            Vec2(start.x, end.y),
-        )
-        val texturePositions = arrayOf(
-            Vec2(uvEnd.x, uvStart.y),
-            uvStart,
-            Vec2(uvStart.x, uvEnd.y),
-            uvEnd,
-        )
 
-        order.iterate { position, uv -> addVertex(positions[position], texture, texturePositions[uv], tint, options) }
+        val start = start.array
+        val end = end.array
+        val uvStart = (texture?.transformUV(uvStart) ?: uvStart).array
+        val uvEnd = (texture?.transformUV(uvEnd) ?: uvEnd).array
+
+        order.iterate { position, uv ->
+            val x = when (position) {
+                0 -> start[0] + topOffset
+                1 -> end[0] + topOffset
+                2 -> end[0]
+                3 -> start[0]
+                else -> Broken()
+            }
+            addVertex(
+                x, if (position <= 1) start[1] else end[1],
+                texture,
+                if (uv == 0 || uv == 3) uvStart[0] else uvEnd[0], if (uv <= 1) uvStart[1] else uvEnd[1],
+                tint, options,
+            )
+        }
     }
 
     fun addCache(cache: GUIMeshCache)
