@@ -30,6 +30,8 @@ class GUIMesh(
     data: FragmentedArrayFloatList,
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
+    override val order = context.system.quadOrder
+
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
         addVertex(data, halfSize, x, y, texture ?: whiteTexture.texture, u, v, tint, options)
