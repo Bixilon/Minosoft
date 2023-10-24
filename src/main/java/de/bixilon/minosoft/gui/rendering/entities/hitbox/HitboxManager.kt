@@ -37,8 +37,7 @@ class HitboxManager(private val renderer: EntitiesRenderer) {
         renderer.context.input.bindings.register(TOGGLE, KeyBinding(
             KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
             KeyActions.STICKY to setOf(KeyCodes.KEY_B),
-        ), pressed = enabled
-        ) {
+        ), pressed = enabled) {
             profile.enabled = it
             renderer.connection.util.sendDebugMessage("Entity hit boxes: ${it.format()}")
             enabled = it

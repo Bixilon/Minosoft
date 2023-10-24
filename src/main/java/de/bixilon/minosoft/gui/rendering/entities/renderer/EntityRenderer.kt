@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 
 abstract class EntityRenderer<E : Entity>(
     val renderer: EntitiesRenderer,
-    val entity: Entity,
+    val entity: E,
 ) {
     val features = FeatureManager(this)
     val visibility = EntityVisibility(this)

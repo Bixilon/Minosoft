@@ -36,6 +36,9 @@ import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -136,7 +139,7 @@ abstract class PlayerEntity(
         }
 
     override fun createPhysics(): PlayerPhysics<*> = PlayerPhysics(this)
-
+    override fun createRenderer(renderer: EntitiesRenderer): EntityRenderer<*> = PlayerRenderer(renderer, this)
 
     fun swingHand(hand: Hands) {
         val arm = hand.getArm(mainArm)

@@ -27,6 +27,9 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.data.registries.effects.attributes.integrated.IntegratedAttributeModifiers
+import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.player.LocalPlayerRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
@@ -109,4 +112,6 @@ class LocalPlayerEntity(
 
     override fun createPhysics() = LocalPlayerPhysics(this)
     override fun physics(): LocalPlayerPhysics = super.physics().unsafeCast()
+
+    override fun createRenderer(renderer: EntitiesRenderer): EntityRenderer<*> = LocalPlayerRenderer(renderer, this)
 }

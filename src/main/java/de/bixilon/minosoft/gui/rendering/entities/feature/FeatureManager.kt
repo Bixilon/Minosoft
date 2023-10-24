@@ -24,6 +24,11 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
         this.features += feature
     }
 
+    operator fun minusAssign(feature: EntityRenderFeature) = remove(feature)
+    fun remove(feature: EntityRenderFeature) {
+        this.features -= feature
+    }
+
     fun update(millis: Long) {
         for (feature in features) {
             feature.update(millis)
