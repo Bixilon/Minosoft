@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
@@ -35,6 +36,7 @@ class EntityRendererManagerTest {
     private fun create(): EntityRendererManager {
         val connection = createConnection()
         val renderer = IT.OBJENESIS.newInstance(EntitiesRenderer::class.java)
+        renderer::queue.forceSet(Queue())
         renderer::connection.forceSet(connection)
         return EntityRendererManager(renderer)
     }

@@ -32,7 +32,7 @@ open class DummyGUIVertexConsumer : GUIVertexConsumer {
         TODO("Not yet implemented")
     }
 
-    override fun addVertex(position: Vec2, texture: ShaderTexture?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
         TODO("Not yet implemented")
     }
 
