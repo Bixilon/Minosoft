@@ -53,6 +53,7 @@ class NormalLightmapUpdater(
     override fun update(force: Boolean, buffer: LightmapBuffer) {
         val dimension = connection.world.dimension
         val skylight = dimension.skyLight && dimension.effects.daylightCycle
+        val millis = millis()
 
         if (!force || !this.force) {
             if (!skylight) {
@@ -61,17 +62,17 @@ class NormalLightmapUpdater(
             }
         }
         if (skylight) {
-            updateBlockSky(dimension, buffer)
+            updateBlockSky(dimension, buffer, millis)
         } else {
-            updateBlock(dimension, buffer)
+            updateBlock(dimension, buffer, millis)
         }
 
         this.force = false
     }
 
-    private fun updateBlock(dimension: DimensionProperties, buffer: LightmapBuffer) {
+    private fun updateBlock(dimension: DimensionProperties, buffer: LightmapBuffer, millis: Long) {
         val gamma = profile.gamma
-        val nightVision = getNightVisionStrength()
+        val nightVision = getNightVisionStrength(millis)
 
         for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             var color = calculateBlock(dimension.ambientLight[block])
@@ -80,7 +81,7 @@ class NormalLightmapUpdater(
         }
     }
 
-    private fun updateBlockSky(dimension: DimensionProperties, buffer: LightmapBuffer) {
+    private fun updateBlockSky(dimension: DimensionProperties, buffer: LightmapBuffer, millis: Long) {
         val time = connection.world.time
         val weather = connection.world.weather
 
@@ -88,7 +89,7 @@ class NormalLightmapUpdater(
         val blockColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateBlock(dimension.ambientLight[it]) }
 
         val gamma = profile.gamma
-        val nightVision = getNightVisionStrength()
+        val nightVision = getNightVisionStrength(millis)
 
         for (sky in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
@@ -105,7 +106,7 @@ class NormalLightmapUpdater(
     }
 
     private fun calculateDayBase(brightness: Float, progress: Float): Vec3 {
-        val base = Vec3(0.98f)
+        val base = DAY_BASE
 
         return interpolateLinear((abs(progress - 0.5f) * 2.0f), base, base * 0.9f) * brightness
     }
@@ -118,7 +119,7 @@ class NormalLightmapUpdater(
     }
 
     private fun calculateNightBase(brightness: Float, progress: Float, time: WorldTime): Vec3 {
-        val max = Vec3(0.10f, 0.10f, 0.30f)
+        val max = NIGHT_MAX
 
         return interpolateLinear((abs(progress - 0.6f) + 0.4f), max * 0.1f, max) * brightness * time.moonPhase.light
     }
@@ -133,7 +134,7 @@ class NormalLightmapUpdater(
     private fun calculateThunder(base: Vec3, brightness: Float, thunder: Float): Vec3 {
         val baseBrightness = base.length()
 
-        var color = interpolateLinear(baseBrightness, Vec3(0.55f, 0.35f, 0.58f), Vec3(0.65f, 0.4f, 0.7f)) * baseBrightness * brightness * 0.3f
+        var color = interpolateLinear(baseBrightness, THUNDER_BASE, THUNDER_BRIGHT) * baseBrightness * brightness * 0.3f
 
         skyRenderer?.let { color = interpolateLinear(brightness * 5.0f + 0.5f, color, it.box.calculateLightingStrike(color)) }
         return interpolateLinear(thunder, base, color)
@@ -142,7 +143,7 @@ class NormalLightmapUpdater(
     private fun calculateRain(base: Vec3, brightness: Float, rain: Float): Vec3 {
         val baseBrightness = base.length()
 
-        val color = interpolateLinear(baseBrightness, Vec3(0.4f, 0.4f, 0.8f), Vec3(0.5f, 0.5f, 0.9f)) * baseBrightness * brightness * 0.4f
+        val color = interpolateLinear(baseBrightness, RAIN_BASE, RAIN_BRIGHT) * baseBrightness * brightness * 0.4f
 
         return interpolateLinear(rain, base, color)
     }
@@ -206,14 +207,13 @@ class NormalLightmapUpdater(
         return interpolateLinear(gamma, color, color modify { 1.0f - (1.0f - it).pow(4) })
     }
 
-    private fun getNightVisionStrength(): Float {
+    private fun getNightVisionStrength(millis: Long): Float {
         val nightVision = connection.player.effects[VisionEffect.NightVision] ?: return 0.0f
-        val time = millis()
         val end = nightVision.end
-        if (time > end) {
+        if (millis > end) {
             return 0.0f
         }
-        val remaining = end - time
+        val remaining = end - millis
         if (remaining > 8000) {
             return 1.0f
         }
@@ -227,5 +227,14 @@ class NormalLightmapUpdater(
 
     private fun Vec3.clamp(): Vec3 {
         return clamp(0.0f, 1.0f)
+    }
+
+    private companion object {
+        val DAY_BASE = Vec3(0.98f)
+        val NIGHT_MAX = Vec3(0.10f, 0.10f, 0.30f)
+        val THUNDER_BASE = Vec3(0.55f, 0.35f, 0.58f)
+        val THUNDER_BRIGHT = Vec3(0.65f, 0.4f, 0.7f)
+        val RAIN_BASE = Vec3(0.4f, 0.4f, 0.8f)
+        val RAIN_BRIGHT = Vec3(0.5f, 0.5f, 0.9f)
     }
 }

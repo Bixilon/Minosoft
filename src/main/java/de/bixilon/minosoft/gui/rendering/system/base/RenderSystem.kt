@@ -44,6 +44,8 @@ interface RenderSystem {
     fun init()
     fun destroy()
 
+    fun reset() = set(RenderSettings.DEFAULT)
+
     fun reset(
         depthTest: Boolean = RenderSettings.DEFAULT.depthTest,
         blending: Boolean = RenderSettings.DEFAULT.blending,
@@ -59,8 +61,16 @@ interface RenderSystem {
         polygonOffsetFactor: Float = RenderSettings.DEFAULT.polygonOffsetFactor,
         polygonOffsetUnit: Float = RenderSettings.DEFAULT.polygonOffsetUnit,
     ) {
-        val settings = RenderSettings(depthTest, blending, faceCulling, polygonOffset, depthMask, sourceRGB, destinationRGB, sourceAlpha, destinationAlpha, depth, clearColor, polygonOffsetFactor, polygonOffsetUnit)
-        this.set(settings)
+        setBlendFunction(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha)
+        this[RenderingCapabilities.DEPTH_TEST] = depthTest
+        this[RenderingCapabilities.BLENDING] = blending
+        this[RenderingCapabilities.FACE_CULLING] = faceCulling
+        this[RenderingCapabilities.POLYGON_OFFSET] = polygonOffset
+        this.depth = depth
+        this.depthMask = depthMask
+        this.clearColor = clearColor
+        // shader = null
+        polygonOffset(polygonOffsetFactor, polygonOffsetUnit)
     }
 
     fun set(settings: RenderSettings) {
