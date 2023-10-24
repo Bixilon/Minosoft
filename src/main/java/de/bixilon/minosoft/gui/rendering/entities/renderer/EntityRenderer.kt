@@ -26,6 +26,7 @@ abstract class EntityRenderer<E : Entity>(
 ) {
     val features = FeatureManager(this)
     val visibility = EntityVisibility(this)
+    val info = entity.renderInfo
 
     val hitbox = HitboxFeature(this).register()
 

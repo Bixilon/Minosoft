@@ -33,7 +33,12 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable
 
     abstract fun draw()
 
-    open fun compareByDistance(other: EntityRenderFeature): Int = 0
+    open fun compareByDistance(other: EntityRenderFeature): Int {
+        // TODO: optimize, cache
+        val a = (renderer.info.eyePosition - renderer.renderer.context.camera.view.view.eyePosition).length2()
+        val b = (renderer.info.eyePosition - renderer.renderer.context.camera.view.view.eyePosition).length2()
+        return a.compareTo(b)
+    }
 
     override fun compareTo(other: EntityRenderFeature): Int {
         var compare = priority.compareTo(other.priority)
