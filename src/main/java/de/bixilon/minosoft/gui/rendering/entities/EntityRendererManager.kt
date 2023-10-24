@@ -83,5 +83,4 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
         ConcurrentIterator(renderers.unsafe.values.spliterator(), priority = ThreadPool.HIGHER).iterate(executor)
         lock.release()
     }
-
 }
