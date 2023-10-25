@@ -27,7 +27,6 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.dot
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -115,24 +114,20 @@ class Frustum(
     }
 
 
-    private fun containsRegion(min: Vec3, max: Vec3): Boolean {
-        if (!RenderConstants.FRUSTUM_CULLING_ENABLED) {
-            return true
-        }
+    private fun containsRegion(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): Boolean {
+        if (!RenderConstants.FRUSTUM_CULLING_ENABLED) return true
         val (normals, planes) = this.data
-        val minArray = min.array
-        val maxArray = max.array
 
         for (i in 0 until Planes.SIZE) {
             val plane = planes[i].array
-            if (plane.dot(minArray[0], minArray[1], minArray[2]) < 0.0f
-                && plane.dot(maxArray[0], maxArray[1], maxArray[2]) < 0.0f // check max as 2nd, likely to be false
-                && plane.dot(maxArray[0], minArray[1], minArray[2]) < 0.0f
-                && plane.dot(minArray[0], maxArray[1], minArray[2]) < 0.0f
-                && plane.dot(maxArray[0], maxArray[1], minArray[2]) < 0.0f
-                && plane.dot(minArray[0], minArray[1], maxArray[2]) < 0.0f
-                && plane.dot(maxArray[0], minArray[1], maxArray[2]) < 0.0f
-                && plane.dot(minArray[0], maxArray[1], maxArray[2]) < 0.0f
+            if (plane.dot(minX, minY, minZ) < 0.0f
+                && plane.dot(maxX, maxY, maxZ) < 0.0f // check max as 2nd, likely to be false
+                && plane.dot(maxX, minY, minZ) < 0.0f
+                && plane.dot(minX, maxY, minZ) < 0.0f
+                && plane.dot(maxX, maxY, minZ) < 0.0f
+                && plane.dot(minX, minY, maxZ) < 0.0f
+                && plane.dot(maxX, minY, maxZ) < 0.0f
+                && plane.dot(minX, maxY, maxZ) < 0.0f
             ) {
                 return false
             }
@@ -140,35 +135,47 @@ class Frustum(
 
         for (i in 0 until 8) {
             val normal = normals[i].array
-            if (normal[0] >= min.x) return true
-            if (normal[0] <= max.x) return true
+            if (normal[0] >= minX) return true
+            if (normal[0] <= maxX) return true
 
-            if (normal[1] >= min.y) return true
-            if (normal[1] <= max.y) return true
+            if (normal[1] >= minY) return true
+            if (normal[1] <= maxY) return true
 
-            if (normal[2] >= min.z) return true
-            if (normal[2] <= max.z) return true
+            if (normal[2] >= minZ) return true
+            if (normal[2] <= maxZ) return true
         }
 
         return false
     }
 
+    private fun containsRegion(min: Vec3, max: Vec3): Boolean {
+        return containsRegion(min.x, min.y, min.z, max.x, max.y, max.z)
+    }
+
     fun containsChunkSection(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
         val offset = camera.offset.offset
-        val base = Vec3i.of(chunkPosition, sectionHeight)
-        base -= offset
-        val min = Vec3(base.x.toFloat() + minPosition.x, base.y.toFloat() + minPosition.y, base.z.toFloat() + minPosition.z)
-        val max = Vec3(base.x + maxPosition.x + 1.0f, base.y + maxPosition.y + 1.0f, base.z + maxPosition.z + 1.0f)
-        return containsRegion(min, max)
+        val baseX = (chunkPosition.x shl 4 - offset.x).toFloat()
+        val baseY = (sectionHeight shl 4 - offset.y).toFloat()
+        val baseZ = (chunkPosition.y shl 4 - offset.z).toFloat()
+        return containsRegion(
+            baseX + minPosition.x, baseY + minPosition.y, baseZ + minPosition.z,
+            baseX + maxPosition.x + 1.0f, baseY + maxPosition.y + 1.0f, baseZ + maxPosition.z + 1.0f,
+        )
     }
 
     fun containsChunk(chunkPosition: Vec2i): Boolean {
         val dimension = world.dimension
         val offset = camera.offset.offset
-        val minY = dimension.minY - offset.y
-        val maxY = dimension.maxY - offset.y
-        val base = Vec2i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X - offset.x, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z - offset.z)
-        return containsRegion(Vec3(base.x, minY, base.y), Vec3(base.x + ProtocolDefinition.SECTION_WIDTH_X, maxY, base.y + ProtocolDefinition.SECTION_WIDTH_Z))
+        val baseX = (chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X - offset.x).toFloat()
+        val baseZ = (chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z - offset.z).toFloat()
+
+        val minY = (dimension.minY - offset.y).toFloat()
+        val maxY = (dimension.maxY - offset.y).toFloat()
+
+        return containsRegion(
+            baseX, minY, baseZ,
+            baseX + ProtocolDefinition.SECTION_WIDTH_X, maxY, baseZ + ProtocolDefinition.SECTION_WIDTH_Z,
+        )
     }
 
     fun containsRegion(min: Vec3i, max: Vec3i): Boolean {
