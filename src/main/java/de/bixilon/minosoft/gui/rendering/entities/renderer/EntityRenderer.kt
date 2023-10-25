@@ -24,6 +24,7 @@ abstract class EntityRenderer<E : Entity>(
     val renderer: EntitiesRenderer,
     val entity: E,
 ) {
+    private var update = 0L
     val features = FeatureManager(this)
     val visibility = EntityVisibility(this)
     val info = entity.renderInfo
@@ -36,8 +37,10 @@ abstract class EntityRenderer<E : Entity>(
     }
 
     open fun update(millis: Long) {
+        val delta = if (this.update <= 0L) 0.0f else ((millis - update) / 1000.0f)
         entity.draw(millis)
-        features.update(millis)
+        features.update(millis, delta)
+        this.update = millis
     }
 
     open fun unload() {

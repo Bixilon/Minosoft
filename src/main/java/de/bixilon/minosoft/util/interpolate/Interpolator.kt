@@ -11,20 +11,37 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.hitbox
+package de.bixilon.minosoft.util.interpolate
 
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
-
-data class HitboxData(
-    var color: RGBColor = ChatColors.WHITE,
-    var velocity: Vec3 = Vec3.EMPTY_INSTANCE,
+class Interpolator<T>(
+    var initial: T,
+    var function: InterpolateFunction<T>,
 ) {
+    var value = initial
 
-    fun update(entity: Entity) {
+    var value0 = initial
+    var value1 = initial
+    var delta = 0.0f
+    var identical = false
 
+
+    fun push(value: T) {
+        value0 = value1
+        value1 = value
+        this.identical = value0 == value1
+        delta = 0.0f
+        this.value = value0
+    }
+
+    fun add(delta: Float) {
+        if (this.delta >= 1.0f) return
+        this.delta += delta
+        if (this.identical) return
+
+        value = function.interpolate(this.delta, value0, value1)
+    }
+
+    fun add(seconds: Float, step: Float) {
+        add(seconds / step)
     }
 }

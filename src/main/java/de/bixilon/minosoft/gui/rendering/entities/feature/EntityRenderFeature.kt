@@ -28,7 +28,7 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable
     }
 
     open fun reset() = Unit
-    open fun update(millis: Long) = Unit
+    open fun update(millis: Long, delta: Float) = Unit
     open fun unload() = Unit
 
     abstract fun draw()

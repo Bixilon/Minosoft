@@ -18,11 +18,15 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.interpolate.Interpolator
 
 class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer) {
     private val manager = renderer.renderer.hitbox
@@ -32,22 +36,21 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
     private var eyePosition = Vec3.EMPTY
     private var rotation = EntityRotation.EMPTY
 
-    private val data = HitboxData()
-    private var data0 = HitboxData()
-    private var data1 = HitboxData()
+    private var color = Interpolator(renderer.entity.hitboxColor ?: ChatColors.WHITE, ColorUtil::interpolateRGB)
+    private var velocity = Interpolator(Vec3.EMPTY, Vec3Util::interpolateLinear)
 
 
     override fun reset() {
         unload()
     }
 
-    override fun update(millis: Long) {
+    override fun update(millis: Long, delta: Float) {
         if (!manager.enabled) return unload()
         if (!enabled) return unload()
 
         val offset = renderer.renderer.context.camera.offset.offset
 
-        val update = updateRenderInfo(offset) or interpolate(millis)
+        val update = updateRenderInfo(offset) or interpolate(delta)
 
         if (this.mesh != null && !update) return
 
@@ -76,24 +79,35 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
         return changes > 0
     }
 
-    private fun interpolate(millis: Long): Boolean {
-        // TODO: interpolate color in 5 ticks and velocity per tick
-        return false
+    private fun interpolate(delta: Float): Boolean {
+        if (color.delta >= 1.0f) {
+            this.color.push(renderer.entity.hitboxColor ?: ChatColors.WHITE)
+        }
+        this.color.add(delta, 0.3f)
+        if (velocity.delta >= 1.0f) {
+            this.velocity.push(Vec3(renderer.entity.physics.velocity))
+        }
+        this.velocity.add(delta, ProtocolDefinition.TICK_TIMEf / 1000.0f)
+
+
+        return !this.color.identical || !this.velocity.identical
     }
 
     private fun updateMesh() {
         unload()
         val mesh = LineMesh(renderer.renderer.context)
 
+        val color = color.value
         if (manager.profile.lazy) {
-            mesh.drawLazyAABB(aabb, data.color)
+            mesh.drawLazyAABB(aabb, color)
         } else {
-            mesh.drawAABB(aabb, color = data.color)
+            mesh.drawAABB(aabb, color = color)
         }
 
         val center = Vec3(aabb.center)
-        if (data.velocity.length2() > 0.003f) {
-            mesh.drawLine(center, center + data.velocity * 15.0f, color = ChatColors.YELLOW)
+        val velocity = velocity.value
+        if (velocity.length2() > 0.003f) {
+            mesh.drawLine(center, center + velocity * 5.0f, color = ChatColors.YELLOW)
         }
 
         mesh.drawLine(eyePosition, eyePosition + rotation.front * 5.0f, color = ChatColors.BLUE)

@@ -25,9 +25,9 @@ class SkeletalFeature(
 
     constructor(renderer: EntityRenderer<*>, model: BakedSkeletalModel) : this(renderer, model.createInstance(renderer.renderer.context))
 
-    override fun update(millis: Long) {
+    override fun update(millis: Long, delta: Float) {
         instance.transform.reset()
-        instance.animation.draw(millis)
+        instance.animation.draw(delta)
     }
 
     override fun draw() {

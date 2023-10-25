@@ -29,9 +29,9 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
         this.features -= feature
     }
 
-    fun update(millis: Long) {
+    fun update(millis: Long, delta: Float) {
         for (feature in features) {
-            feature.update(millis)
+            feature.update(millis, delta)
         }
     }
 
