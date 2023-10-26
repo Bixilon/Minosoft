@@ -22,6 +22,7 @@ import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.entities.factory.EntityModelFactory
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
+import de.bixilon.minosoft.gui.rendering.entities.renderer.DummyEntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -49,7 +50,11 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
     fun add(entity: Entity) {
         try {
             renderers.lock.lock()
-            val renderer = if (entity is EntityModelFactory<*>) entity.create(this.renderer) else entity.type.modelFactory?.nullCast<RegisteredEntityModelFactory<Entity>>()?.create(this.renderer, entity) ?: return
+            val renderer = when {
+                entity is EntityModelFactory<*> -> entity.create(this.renderer)
+                entity.type.modelFactory != null -> entity.type.modelFactory?.nullCast<RegisteredEntityModelFactory<Entity>>()?.create(this.renderer, entity)
+                else -> DummyEntityRenderer(this.renderer, entity)
+            } ?: return
             entity.renderer?.let { onReplace(it) }
             this.renderers.unsafe.put(entity, renderer)?.let { onReplace(it) }
         } finally {
