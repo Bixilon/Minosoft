@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
 import de.bixilon.minosoft.gui.rendering.entities.hitbox.HitboxFeature
-import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityVisibility
 
 abstract class EntityRenderer<E : Entity>(
     val renderer: EntitiesRenderer,
@@ -26,10 +25,13 @@ abstract class EntityRenderer<E : Entity>(
 ) {
     private var update = 0L
     val features = FeatureManager(this)
-    val visibility = EntityVisibility(this)
     val info = entity.renderInfo
 
     val hitbox = HitboxFeature(this).register()
+
+
+    var visible = true
+        private set
 
     fun <T : EntityRenderFeature> T.register(): T {
         features += this
@@ -49,5 +51,10 @@ abstract class EntityRenderer<E : Entity>(
 
     open fun reset() {
         features.reset()
+    }
+
+    open fun updateVisibility(occluded: Boolean, visible: Boolean) {
+        this.visible = visible
+        features.updateVisibility(occluded)
     }
 }

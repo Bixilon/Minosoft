@@ -188,6 +188,8 @@ class Frustum(
         return containsRegion(Vec3(aabb.min - offset), Vec3(aabb.max - offset))
     }
 
+    operator fun contains(aabb: AABB) = containsAABB(aabb)
+
     private data class FrustumData(val normals: Array<Vec3>, val planes: Array<Vec4>)
 
     private enum class Planes {

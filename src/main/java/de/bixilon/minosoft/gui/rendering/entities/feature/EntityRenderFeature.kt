@@ -17,14 +17,12 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
 abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable<EntityRenderFeature> {
     var enabled = true
+    var visible = true
     open val priority: Int get() = 0
     val sort = this::class.java.hashCode()
 
-    open fun updateVisibility(occluded: Boolean, visible: Boolean): Boolean {
-        val enabled = !occluded && visible
-        if (this.enabled == enabled) return false
-        this.enabled = enabled
-        return true
+    open fun updateVisibility(occluded: Boolean) {
+        this.visible = !occluded
     }
 
     open fun reset() = Unit

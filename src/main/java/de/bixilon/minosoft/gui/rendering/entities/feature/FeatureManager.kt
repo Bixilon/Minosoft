@@ -47,6 +47,13 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
         }
     }
 
+    fun updateVisibility(occluded: Boolean) {
+        for (feature in features) {
+            feature.updateVisibility(occluded)
+        }
+    }
+
+
     override fun iterator(): Iterator<EntityRenderFeature> {
         return features.iterator()
     }

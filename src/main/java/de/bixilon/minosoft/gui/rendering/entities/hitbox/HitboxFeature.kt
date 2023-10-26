@@ -47,6 +47,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
     override fun update(millis: Long, delta: Float) {
         if (!manager.enabled) return unload()
         if (!enabled) return unload()
+        if (!visible) return
 
         val offset = renderer.renderer.context.camera.offset.offset
 
@@ -84,10 +85,11 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
             this.color.push(renderer.entity.hitboxColor ?: ChatColors.WHITE)
         }
         this.color.add(delta, 0.3f)
+
         if (velocity.delta >= 1.0f) {
             this.velocity.push(Vec3(renderer.entity.physics.velocity))
         }
-        this.velocity.add(delta, ProtocolDefinition.TICK_TIMEf / 1000.0f)
+        this.velocity.add(delta, ProtocolDefinition.TICK_TIME / 1000.0f)
 
 
         return !this.color.identical || !this.velocity.identical

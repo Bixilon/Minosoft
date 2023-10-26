@@ -121,7 +121,7 @@ class WorldVisibilityGraph(
         return this.graph.getOrNull(x)?.getOrNull(y)
     }
 
-    fun isAABBVisible(aabb: AABB): Boolean {
+    fun isAABBOccluded(aabb: AABB): Boolean {
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
             return frustum.containsAABB(aabb)
         }
@@ -146,9 +146,11 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (!visible) {
-            return false
-        }
+        return !visible
+    }
+
+    fun isAABBVisible(aabb: AABB): Boolean {
+        if (isAABBOccluded(aabb)) return false
 
         return frustum.containsAABB(aabb)
     }

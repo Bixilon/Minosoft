@@ -29,6 +29,8 @@ class VisibilityManager(val renderer: EntitiesRenderer) : Iterable<EntityRenderF
     private val count = AtomicInteger()
     private val visible: ArrayList<EntityRenderFeature> = ArrayList(1000)
     private val lock = SimpleLock()
+    private val graph = renderer.context.camera.visibilityGraph
+    private val frustum = renderer.context.camera.matrixHandler.frustum
 
     fun init() {
         renderer.connection.events.listen<VisibilityGraphChangeEvent> { update = true }
@@ -40,15 +42,23 @@ class VisibilityManager(val renderer: EntitiesRenderer) : Iterable<EntityRenderF
     }
 
     fun update(renderer: EntityRenderer<*>) {
-        renderer.visibility.update(this.update)
+        // TODO: check render distance (and maybe entity distance)
+        val aabb = renderer.entity.renderInfo.cameraAABB
+        val visible = aabb in frustum
+        if (!visible) {
+            // TODO: renderer/features: renderOccluded -> occlusion culling is faster than frustum culling
+            return renderer.updateVisibility(true, true)
+        }
+        val occluded = graph.isAABBOccluded(aabb)
+        renderer.updateVisibility(occluded, true)
     }
 
     fun collect(renderer: EntityRenderer<*>) {
-        if (!renderer.visibility.visible) return
+        if (!renderer.visible) return
         count.incrementAndGet()
         lock.lock()
         for (feature in renderer.features) {
-            if (!feature.enabled) continue
+            if (!feature.enabled || !feature.visible) continue
             this.visible += feature
         }
         lock.unlock()
