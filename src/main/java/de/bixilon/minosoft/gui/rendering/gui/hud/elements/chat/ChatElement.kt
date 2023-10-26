@@ -172,9 +172,12 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     private fun submit() {
         val value = input.value
+        if (value.isBlank()) {
+            return guiRenderer.gui.pop()
+        }
         input.submit()
         input.value = ""
-        if (history.lastOrNull() != value && value.isNotBlank()) {
+        if (history.lastOrNull() != value) {
             // ToDo: Improve history
             history += value
         }

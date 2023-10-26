@@ -48,7 +48,7 @@ class SkeletalMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context
     }
 
     override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture) {
-        val transformNormal = ((transform shl 12) or encodeNormal(normal)).toFloat()
+        val transformNormal = ((transform shl 12) or encodeNormal(normal)).buffer()
         val textureShaderId = texture.shaderId.buffer()
 
         order.iterate { position, uvIndex ->
