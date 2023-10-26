@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util.interpolate
 
+@Deprecated("Kutil 1.24")
 fun interface InterpolateFunction<T> {
 
     fun interpolate(delta: Float, value0: T, value1: T): T

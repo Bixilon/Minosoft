@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util.interpolate
 
+@Deprecated("Kutil 1.24")
 class Interpolator<T>(
     var initial: T,
     var function: InterpolateFunction<T>,
