@@ -32,6 +32,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fixEntityAttribute
+import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
@@ -54,6 +55,7 @@ data class EntityType(
     val attributes: Map<AttributeType, Double>,
     val factory: EntityFactory<out Entity>,
     val spawnEgg: SpawnEggItem?,
+    var modelFactory: RegisteredEntityModelFactory<*>? = null,
 ) : RegistryItem(), Translatable {
 
     override fun toString(): String {

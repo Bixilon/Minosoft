@@ -11,15 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.renderer
+package de.bixilon.minosoft.gui.rendering.entities.factory
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
-import de.bixilon.minosoft.gui.rendering.entities.factory.EntityModelFactory
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
-class DummyEntityRenderer(renderer: EntitiesRenderer, entity: Entity) : EntityRenderer<Entity>(renderer, entity) {
+fun interface EntityModelFactory<E : Entity> {
 
-    companion object : EntityModelFactory<Entity> {
-        override fun create(renderer: EntitiesRenderer, entity: Entity) = DummyEntityRenderer(renderer, entity)
-    }
+    fun create(renderer: EntitiesRenderer): EntityRenderer<E>
 }

@@ -14,7 +14,30 @@
 package de.bixilon.minosoft.gui.rendering.entities.renderer.player
 
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
+import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 
-open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity)
+open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity) {
+
+
+    companion object : RegisteredEntityModelFactory<PlayerEntity>, Identified {
+        override val identifier get() = PlayerEntity.identifier
+        private val WIDE = minecraft("entities/player/wide").sModel()
+        private val SLIM = minecraft("entities/player/slim").sModel()
+
+        private val SKIN = minecraft("skin")
+
+        override fun create(renderer: EntitiesRenderer, entity: PlayerEntity) = PlayerRenderer(renderer, entity)
+
+        override fun register(loader: ModelLoader) {
+            val override = mapOf(SKIN to loader.context.textures.debugTexture) // no texture
+            loader.skeletal.register(WIDE, override = override)
+            loader.skeletal.register(SLIM, override = override)
+        }
+    }
+}

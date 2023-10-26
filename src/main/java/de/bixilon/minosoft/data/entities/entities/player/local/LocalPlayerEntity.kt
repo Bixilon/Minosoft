@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditi
 import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.data.registries.effects.attributes.integrated.IntegratedAttributeModifiers
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
-import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.factory.EntityModelFactory
 import de.bixilon.minosoft.gui.rendering.entities.renderer.player.LocalPlayerRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
@@ -42,7 +42,7 @@ class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
     val keyManagement: SignatureKeyManagement,
-) : PlayerEntity(connection, connection.registries.entityType[identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, PlayerAdditional(account.username, ping = 0, properties = account.properties)) {
+) : PlayerEntity(connection, connection.registries.entityType[identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, PlayerAdditional(account.username, ping = 0, properties = account.properties)), EntityModelFactory<LocalPlayerEntity> {
     var healthCondition by observed(HealthCondition())
     var experienceCondition by observed(ExperienceCondition())
     var compass by observed(CompassPosition())
@@ -112,6 +112,5 @@ class LocalPlayerEntity(
 
     override fun createPhysics() = LocalPlayerPhysics(this)
     override fun physics(): LocalPlayerPhysics = super.physics().unsafeCast()
-
-    override fun createRenderer(renderer: EntitiesRenderer): EntityRenderer<*> = LocalPlayerRenderer(renderer, this)
+    override fun create(renderer: EntitiesRenderer) = LocalPlayerRenderer(renderer, this)
 }

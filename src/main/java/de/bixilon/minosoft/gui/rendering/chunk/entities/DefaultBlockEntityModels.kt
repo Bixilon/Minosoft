@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-object DefaultEntityModels {
+object DefaultBlockEntityModels {
     val MODELS = listOf(
         SingleChestRenderer.NormalChest, SingleChestRenderer.TrappedChest, SingleChestRenderer.EnderChest,
 
@@ -34,8 +34,10 @@ object DefaultEntityModels {
 
 
     fun load(loader: ModelLoader, latch: AbstractLatch?) {
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading entity models..." }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading block entity models..." }
         val innerLatch = latch.child(MODELS.size)
+
+        // TODO: map to block entities
 
         for (register in MODELS) {
             register.register(loader); innerLatch.dec()

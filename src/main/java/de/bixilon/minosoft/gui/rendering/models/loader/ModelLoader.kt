@@ -19,7 +19,8 @@ import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.DefaultEntityModels
+import de.bixilon.minosoft.gui.rendering.chunk.entities.DefaultBlockEntityModels
+import de.bixilon.minosoft.gui.rendering.entities.factory.DefaultEntityModels
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -37,6 +38,7 @@ class ModelLoader(
     fun load(latch: AbstractLatch) {
         val start = nanos()
 
+        DefaultBlockEntityModels.load(this, latch)
         DefaultEntityModels.load(this, latch)
         fluids.load(latch)
         block.load(latch)

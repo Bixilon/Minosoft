@@ -11,15 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.renderer
+package de.bixilon.minosoft.gui.rendering.entities.factory
 
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
-import de.bixilon.minosoft.gui.rendering.entities.factory.EntityModelFactory
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 
-class DummyEntityRenderer(renderer: EntitiesRenderer, entity: Entity) : EntityRenderer<Entity>(renderer, entity) {
+interface RegisteredEntityModelFactory<E : Entity> : Identified {
 
-    companion object : EntityModelFactory<Entity> {
-        override fun create(renderer: EntitiesRenderer, entity: Entity) = DummyEntityRenderer(renderer, entity)
-    }
+    fun create(renderer: EntitiesRenderer, entity: E): EntityRenderer<E>
+    fun register(loader: ModelLoader) = Unit
 }
