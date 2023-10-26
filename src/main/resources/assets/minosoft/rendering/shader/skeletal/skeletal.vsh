@@ -19,31 +19,15 @@ layout (location = 2) in float vinTransformNormal; // transform (0x7F000), norma
 layout (location = 3) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
 
 #include "minosoft:animation/header_vertex"
-
-
-uniform mat4 uViewProjectionMatrix;
-
-#include "minosoft:skeletal/buffer"
-uniform uint uLight;
+#include "minosoft:skeletal/vertex"
 
 
 #include "minosoft:animation/buffer"
-#include "minosoft:light"
-
 #include "minosoft:animation/main_vertex"
 
-#include "minosoft:skeletal/shade"
 
 
 void main() {
-    uint transformNormal = floatBitsToInt(vinTransform);
-    mat4 transform = uSkeletalTransforms[(transformNormal >> 12u) & 0x7F];
-    vec4 position = transform * vec4(vinPosition, 1.0f);
-    gl_Position = uViewProjectionMatrix * position;
-    vec3 normal = transformNormal(decodeNormal(vinNormal & 0xFFF), transform);
-
-    finTintColor = getLight(uLight & 0xFFu) * vec4(vec3(getShade(normal)), 1.0f);
-    finFragmentPosition = position.xyz;
-
+    run_skeletal(floatBitsToUint(vinTransformNormal), vinPosition);
     run_animation();
 }

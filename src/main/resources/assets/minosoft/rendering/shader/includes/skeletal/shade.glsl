@@ -11,16 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-float decodeNormal(uint data) {
+float decodeNormalPart(uint data) {
     return (data / 15.0f) * 2.0f - 1.0f;
 }
 
-vec3 decodeNormal(float normal) {
-    uint combined = floatBitsToUint(normal);
-    uint x = combined & 0x0Fu;
-    uint y = combined >> 8u & 0x0Fu;
-    uint z = combined >> 4u & 0x0Fu;
-    return vec3(decodeNormal(x), decodeNormal(y), decodeNormal(z));
+vec3 decodeNormal(uint normal) {
+    uint x = normal & 0x0Fu;
+    uint y = normal >> 8u & 0x0Fu;
+    uint z = normal >> 4u & 0x0Fu;
+    return vec3(decodeNormalPart(x), decodeNormalPart(y), decodeNormalPart(z));
 }
 
 vec3 transformNormal(vec3 normal, mat4 transform) {
@@ -29,6 +28,7 @@ vec3 transformNormal(vec3 normal, mat4 transform) {
 }
 
 float getShade(vec3 normal) {
+    // TODO: interpolate between 3 sides
     if (normal.y < -0.5f) return 0.5f;
     if (normal.y > 0.5f) return 1.0f;
     if (normal.x < -0.5f || normal.x > 0.5f) return 0.6f;

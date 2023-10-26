@@ -28,11 +28,9 @@
     }
   },
   "transforms": {
-    "head": {},
-    "right_arm": {},
-    "left_arm": {},
-    "right_leg": {},
-    "left_leg": {}
+    "head": {
+      "pivot": [0, 24, 0]
+    }
   },
   "textures": {
     "minecraft:skin": {
