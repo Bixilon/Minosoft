@@ -14,15 +14,68 @@
 package de.bixilon.minosoft.gui.rendering.entities.renderer.player
 
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
+import de.bixilon.minosoft.gui.rendering.entities.feature.SkeletalFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
+import java.util.*
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity) {
+    private var properties: PlayerProperties? = null
+    private var registered = false
+
+
+    override fun update(millis: Long) {
+        if (registered) return
+        val update = updateProperties()
+
+        val model = getModel()
+
+        val instance = model?.createInstance(renderer.context) ?: return
+        this.registered = true
+
+        this.features += SkeletalFeature(this, instance)
+    }
+
+    private fun updateProperties(): Boolean {
+        val properties = entity.additional.properties
+
+        if (this.properties == properties) return false
+        unload()
+        this.properties = properties
+        return true
+    }
+
+    open fun getSkin(): PlayerSkin? {
+        return renderer.context.textures.skins.default[UUID.randomUUID()] // TODO
+        // val properties = this.properties?.textures?.skin
+        // if(properties == null){
+        //    return renderer.context.textures.skins.getSkin(entity, properties, )
+        //}
+    }
+
+
+    open fun getModel(): BakedSkeletalModel? {
+        val skin = getSkin() ?: return null
+        val name = when (skin.model) {
+            SkinModel.WIDE -> WIDE
+            SkinModel.SLIM -> SLIM
+        }
+        return renderer.context.models.skeletal[name]
+
+
+        val properties = this.properties
+        val model = properties?.textures?.skin?.metadata?.model ?: SkinModel.WIDE // TODO: failover according
+
+    }
 
 
     companion object : RegisteredEntityModelFactory<PlayerEntity>, Identified {

@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.entities
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.iterator.async.ConcurrentIterator
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.gui.rendering.entities.factory.EntityModelFactory
+import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -46,7 +49,7 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
     fun add(entity: Entity) {
         try {
             renderers.lock.lock()
-            val renderer = entity.createRenderer(this.renderer) ?: return
+            val renderer = if (entity is EntityModelFactory<*>) entity.create(this.renderer) else entity.type.modelFactory?.nullCast<RegisteredEntityModelFactory<Entity>>()?.create(this.renderer, entity) ?: return
             entity.renderer?.let { onReplace(it) }
             this.renderers.unsafe.put(entity, renderer)?.let { onReplace(it) }
         } finally {

@@ -15,19 +15,15 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in float vinTransform;
-layout (location = 3) in float vinNormal;
-layout (location = 4) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
+layout (location = 2) in float vinTransformNormal; // transform (0x7F000), normal (0xFFF)
+layout (location = 3) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
 
 #include "minosoft:animation/header_vertex"
 
 
 uniform mat4 uViewProjectionMatrix;
 
-layout (std140) uniform uSkeletalBuffer
-{
-    mat4 uSkeletalTransforms[TRANSFORMS];
-};
+#include "minosoft:skeletal/buffer"
 uniform uint uLight;
 
 
@@ -36,37 +32,15 @@ uniform uint uLight;
 
 #include "minosoft:animation/main_vertex"
 
-float decodeNormal(uint data) {
-    return (data / 15.0f) * 2.0f - 1.0f;
-}
+#include "minosoft:skeletal/shade"
 
-vec3 decodeNormal() {
-    uint combined = floatBitsToUint(vinNormal);
-    uint x = combined & 0x0Fu;
-    uint y = combined >> 8u & 0x0Fu;
-    uint z = combined >> 4u & 0x0Fu;
-    return vec3(decodeNormal(x), decodeNormal(y), decodeNormal(z));
-}
-
-vec3 transformNormal(vec3 normal, mat4 transform) {
-    //  return normalize(mat3(transpose(inverse(transform))) * normal);
-    return mat3(transform) * normal;
-}
-
-float getShade(vec3 normal) {
-    if (normal.y < -0.5f) return 0.5f;
-    if (normal.y > 0.5f) return 1.0f;
-    if (normal.x < -0.5f || normal.x > 0.5f) return 0.6f;
-    if (normal.z < -0.5f || normal.z > 0.5f) return 0.8f;
-
-    return 1.0f;
-}
 
 void main() {
-    mat4 transform = uSkeletalTransforms[floatBitsToUint(vinTransform)];
+    uint transformNormal = floatBitsToInt(vinTransform);
+    mat4 transform = uSkeletalTransforms[(transformNormal >> 12u) & 0x7F];
     vec4 position = transform * vec4(vinPosition, 1.0f);
     gl_Position = uViewProjectionMatrix * position;
-    vec3 normal = transformNormal(decodeNormal(), transform);
+    vec3 normal = transformNormal(decodeNormal(vinNormal & 0xFFF), transform);
 
     finTintColor = getLight(uLight & 0xFFu) * vec4(vec3(getShade(normal)), 1.0f);
     finFragmentPosition = position.xyz;

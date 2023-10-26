@@ -15,11 +15,5 @@ package de.bixilon.minosoft.gui.rendering.entities.renderer
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
-import de.bixilon.minosoft.gui.rendering.entities.factory.EntityModelFactory
 
-class DummyEntityRenderer(renderer: EntitiesRenderer, entity: Entity) : EntityRenderer<Entity>(renderer, entity) {
-
-    companion object : EntityModelFactory<Entity> {
-        override fun create(renderer: EntitiesRenderer, entity: Entity) = DummyEntityRenderer(renderer, entity)
-    }
-}
+class DummyEntityRenderer(renderer: EntitiesRenderer, entity: Entity) : EntityRenderer<Entity>(renderer, entity)
