@@ -37,7 +37,7 @@ open class SkeletalFeature(
 
 
     protected open fun updatePosition() {
-        val renderInfo = renderer.entity.renderInfo
+        val renderInfo = renderer.info
         val yaw = renderInfo.rotation.yaw
         val position = renderInfo.position
 

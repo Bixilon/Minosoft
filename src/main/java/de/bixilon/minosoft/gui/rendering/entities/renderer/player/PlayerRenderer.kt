@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
-import de.bixilon.minosoft.gui.rendering.entities.feature.SkeletalFeature
+import de.bixilon.minosoft.gui.rendering.entities.model.biped.PlayerModel
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
@@ -42,12 +42,11 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         if (registered) return
         val update = updateProperties()
 
-        val model = getModel()
-
-        val instance = model?.createInstance(renderer.context) ?: return
+        val model = getModel() ?: return
         this.registered = true
 
-        this.features += SkeletalFeature(this, instance)
+
+        this.features += PlayerModel(this, model)
     }
 
     private fun updateProperties(): Boolean {

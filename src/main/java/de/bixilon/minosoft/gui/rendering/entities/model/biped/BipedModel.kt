@@ -34,5 +34,4 @@ abstract class BipedModel(renderer: EntityRenderer<*>, model: BakedSkeletalModel
             .rotateRadAssign(Vec3(-pitch.rad, 0.0f, 0.0f))
             .translateAssign(head.nPivot)
     }
-
 }
