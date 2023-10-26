@@ -47,6 +47,7 @@ class RenderLoop(
                 it == RenderingStates.PAUSED
             }
         }
+        context.profile.performance::slowRendering.observe(this) { this.slowRendering = it }
     }
 
 

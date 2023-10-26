@@ -13,25 +13,64 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
+import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalShader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 
-class SkeletalFeature(
+open class SkeletalFeature(
     renderer: EntityRenderer<*>,
     val instance: SkeletalInstance,
 ) : EntityRenderFeature(renderer) {
     private val manager = renderer.renderer.context.skeletal
+    protected open val shader: SkeletalShader = manager.shader
+
+    protected var position = Vec3d.EMPTY
+    protected var yaw = 0.0f
 
     constructor(renderer: EntityRenderer<*>, model: BakedSkeletalModel) : this(renderer, model.createInstance(renderer.renderer.context))
 
+
+    protected open fun updatePosition() {
+        val renderInfo = renderer.entity.renderInfo
+        val yaw = renderInfo.rotation.yaw
+        val position = renderInfo.position
+
+        var changes = 0
+        if (this.position != position) {
+            changes++
+            this.position = position
+        }
+        if (this.yaw != yaw) {
+            changes++
+            this.yaw = yaw
+        }
+        if (changes == 0) return
+
+        val rotation = Vec3(0.0f, (EntityRotation.HALF_CIRCLE_DEGREE - yaw).rad, 0.0f)
+        instance.update(renderInfo.position, rotation)
+    }
+
     override fun update(millis: Long, delta: Float) {
         instance.transform.reset()
+        updatePosition()
         instance.animation.draw(delta)
     }
 
     override fun draw() {
+        manager.context.system.reset(faceCulling = false)
+        shader.use()
         manager.upload(instance)
         instance.model.mesh.draw()
+    }
+
+    override fun reset() {
+        this.position = Vec3d.EMPTY
+        this.yaw = 0.0f
     }
 }
