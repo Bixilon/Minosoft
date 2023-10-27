@@ -18,6 +18,7 @@ import de.bixilon.kutil.collections.iterator.async.ConcurrentIterator
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.entities.factory.EntityModelFactory
@@ -46,15 +47,17 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
         }
     }
 
+    private fun Entity.createRenderer() = when {
+        this is EntityModelFactory<*> -> create(this@EntityRendererManager.renderer)
+        type.modelFactory != null -> type.modelFactory?.nullCast<RegisteredEntityModelFactory<Entity>>()?.create(this@EntityRendererManager.renderer, this)
+        else -> DummyEntityRenderer(this@EntityRendererManager.renderer, this)
+    }
+
     operator fun plusAssign(entity: Entity) = add(entity)
     fun add(entity: Entity) {
         try {
             renderers.lock.lock()
-            val renderer = when {
-                entity is EntityModelFactory<*> -> entity.create(this.renderer)
-                entity.type.modelFactory != null -> entity.type.modelFactory?.nullCast<RegisteredEntityModelFactory<Entity>>()?.create(this.renderer, entity)
-                else -> DummyEntityRenderer(this.renderer, entity)
-            } ?: return
+            val renderer = ignoreAll { entity.createRenderer() } ?: return
             entity.renderer?.let { onReplace(it) }
             this.renderers.unsafe.put(entity, renderer)?.let { onReplace(it) }
         } finally {

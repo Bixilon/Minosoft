@@ -41,7 +41,7 @@ class RenderLoop(
         var paused = false
         context::state.observe(this) {
             paused = if (paused) {
-                context.queue.clear()
+                // context.queue.clear() // TODO: That might cause bugs and memory leaks
                 false
             } else {
                 it == RenderingStates.PAUSED

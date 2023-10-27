@@ -251,6 +251,10 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
+        layout += AutoTextElement(guiRenderer, 20, properties = RIGHT) { "Dynamic textures ${context.textures.dynamicTextures.size.format()}/${context.textures.dynamicTextures.capacity.format()}" }
+
+        layout += LineSpacerElement(guiRenderer)
+
         context.connection.camera.target.apply {
             layout += AutoTextElement(guiRenderer, 1, properties = RIGHT) {
                 // ToDo: Tags

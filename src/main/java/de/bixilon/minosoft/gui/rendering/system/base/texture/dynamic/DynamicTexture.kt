@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,22 +13,55 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
 
-interface DynamicTexture : ShaderTexture {
-    val uuid: UUID
-    val size: Vec2i
-    val usages: AtomicInteger
+abstract class DynamicTexture(
+    val identifier: Any,
+) : ShaderTexture {
+    private val callbacks: MutableSet<DynamicStateChangeCallback> = mutableSetOf()
+    private val lock = SimpleLock()
 
-    val state: DynamicTextureState
+    var data: MipmapTextureData? = null
+    var state: DynamicTextureState = DynamicTextureState.WAITING
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            lock.acquire()
+            for (callback in callbacks) {
+                ignoreAll { callback.onDynamicTextureChange(this) }
+            }
+            lock.release()
+        }
 
+    override fun toString(): String {
+        return identifier.toString()
+    }
 
-    fun addListener(callback: DynamicStateChangeCallback)
+    override fun transformUV(end: Vec2?): Vec2 {
+        return end ?: Vec2(1.0f)  // TODO: memory
+    }
+
+    override fun transformUV(end: FloatArray?): FloatArray {
+        return end ?: floatArrayOf(1.0f, 1.0f) // TODO: memory
+    }
+
     operator fun plusAssign(callback: DynamicStateChangeCallback) = addListener(callback)
+    fun addListener(callback: DynamicStateChangeCallback) {
+        lock.lock()
+        callbacks += callback
+        lock.unlock()
+    }
 
     operator fun minusAssign(callback: DynamicStateChangeCallback) = removeListener(callback)
-    fun removeListener(callback: DynamicStateChangeCallback)
+    fun removeListener(callback: DynamicStateChangeCallback) {
+        lock.lock()
+        callbacks -= callback
+        lock.unlock()
+    }
 }

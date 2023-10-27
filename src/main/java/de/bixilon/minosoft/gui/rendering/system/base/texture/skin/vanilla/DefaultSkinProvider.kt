@@ -29,7 +29,6 @@ class DefaultSkinProvider(
     private val array: DynamicTextureArray,
     private val assets: AssetsManager,
 ) {
-    private var defaultId = 0
     private val slim: MutableMap<ResourceLocation, DynamicTexture> = mutableMapOf()
     private val wide: MutableMap<ResourceLocation, DynamicTexture> = mutableMapOf()
     private var fallback: PlayerSkin? = null
@@ -66,9 +65,7 @@ class DefaultSkinProvider(
 
     private fun load(path: ResourceLocation): DynamicTexture? {
         val data = assets.getOrNull(path)?.readTexture() ?: return null
-        val texture = array.pushBuffer(UUID(0L, defaultId++.toLong()), true) { data }
-        texture.usages.incrementAndGet()
-        return texture
+        return array.push(path, true) { data }
     }
 
     private fun ResourceLocation.skin(prefix: String): ResourceLocation {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,75 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import java.nio.ByteBuffer
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
 
-class OpenGLDynamicTexture(
-    override val uuid: UUID,
-    shaderId: Int,
-) : DynamicTexture {
-    var data: Array<ByteBuffer>? = null
-    private val callbacks: MutableSet<DynamicStateChangeCallback> = mutableSetOf()
-    private val callbackLock = SimpleLock()
-    override val usages = AtomicInteger()
-    override var state: DynamicTextureState = DynamicTextureState.WAITING
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            callbackLock.acquire()
-            for (callback in callbacks) {
-                callback.onStateChange(this, value)
-            }
-            callbackLock.release()
-        }
-    override var size: Vec2i = Vec2i.EMPTY
+class OpenGLDynamicTexture(identifier: Any, shaderId: Int) : DynamicTexture(identifier) {
 
     override var shaderId: Int = shaderId
         get() {
-            if (state == DynamicTextureState.UNLOADED) {
-                throw IllegalStateException("Texture was garbage collected!")
-            }
-            if (usages.get() == 0) {
-                throw IllegalStateException("Texture could be garbage collected every time!")
-            }
-            if (state == DynamicTextureState.LOADING) {
-                throw IllegalStateException("Texture was not loaded yet!")
-            }
+            if (state == DynamicTextureState.UNLOADED) throw IllegalStateException("Texture was unloaded!")
+            if (state == DynamicTextureState.LOADING) throw IllegalStateException("Texture was not loaded yet!")
             return field
         }
-
-    override fun toString(): String {
-        return uuid.toString()
-    }
-
-    override fun transformUV(end: Vec2?): Vec2 {
-        return end ?: Vec2(1.0f)
-    }
-
-    override fun transformUV(end: FloatArray?): FloatArray {
-        return end ?: floatArrayOf(1.0f, 1.0f)
-    }
-
-    override fun addListener(callback: DynamicStateChangeCallback) {
-        callbackLock.lock()
-        callbacks += callback
-        callbackLock.unlock()
-    }
-
-    override fun removeListener(callback: DynamicStateChangeCallback) {
-        callbackLock.lock()
-        callbacks -= callback
-        callbackLock.unlock()
-    }
 }
-

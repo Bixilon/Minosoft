@@ -32,7 +32,7 @@ class SkinManager(private val textureManager: TextureManager) {
     fun initialize(account: Account, assets: AssetsManager) {
         default = DefaultSkinProvider(this.textureManager.dynamicTextures, assets)
         default.initialize()
-        skin = getSkin(account.uuid, account.properties, fetch = true, force = true)?.apply { texture.usages.incrementAndGet() }
+        skin = getSkin(account.uuid, account.properties, fetch = true, force = true)
     }
 
     private fun getAccountProperties(uuid: UUID): PlayerProperties? {
@@ -51,7 +51,7 @@ class SkinManager(private val textureManager: TextureManager) {
 
     private fun getSkin(uuid: UUID, properties: PlayerProperties?, force: Boolean = false): PlayerSkin? {
         val texture = properties?.textures?.skin ?: return default[uuid]
-        return PlayerSkin(textureManager.dynamicTextures.pushRawArray(uuid, force) { texture.read() }, texture.metadata.model)
+        return PlayerSkin(textureManager.dynamicTextures.pushRaw(uuid, force) { texture.read() }, texture.metadata.model)
     }
 
     fun getSkin(player: PlayerEntity, properties: PlayerProperties? = null, fetch: Boolean = true, force: Boolean = false): PlayerSkin? {

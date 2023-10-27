@@ -13,26 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
-import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
-import java.util.*
 
-class DummyDynamicTextureArray : DynamicTextureArray {
-    override val size: Int = 0
+class DummyDynamicTextureArray(context: RenderContext) : DynamicTextureArray(context, 1) {
+    override fun createTexture(identifier: Any, index: Int) = DummyDynamicTexture
 
-    override fun pushBuffer(identifier: UUID, force: Boolean, data: () -> TextureData): DynamicTexture {
-        return DummyDynamicTexture
-    }
-
-    override fun upload(latch: AbstractLatch?) {
-    }
-
-    override fun activate() {
-    }
-
-    override fun use(shader: NativeShader, name: String) {
-    }
+    override fun unload() = Unit
+    override fun unsafeUse(shader: NativeShader, name: String) = Unit
+    override fun activate() = Unit
+    override fun upload() = Unit
+    override fun upload(index: Int, texture: DynamicTexture) = Unit
 }

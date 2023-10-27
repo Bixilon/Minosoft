@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,9 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
+#version 330 core
 
-fun interface DynamicStateChangeCallback {
+layout (location = 0) in vec3 vinPosition;
+layout (location = 1) in vec2 vinUV;
+layout (location = 2) in float vinTransformNormal; // transform (0x7F000), normal (0xFFF)
 
-    fun onDynamicTextureChange(texture: DynamicTexture)
+#include "minosoft:animation/header_vertex"
+#include "minosoft:skeletal/vertex"
+
+
+#include "minosoft:animation/buffer"
+#include "minosoft:animation/main_vertex"
+
+flat out bool finSkinLayer;
+
+
+void main() {
+    run_skeletal(floatBitsToUint(vinTransformNormal), vinPosition);
+    run_animation();
+    finSkinLayer = false;
 }

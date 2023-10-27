@@ -39,9 +39,7 @@ open class DynamicImageElement(
 
     var texture: DynamicTexture? = null
         set(value) {
-            field?.usages?.decrementAndGet()
             field?.removeListener(this)
-            value?.usages?.incrementAndGet()
             value?.addListener(this)
             field = value
             cacheUpToDate = false
@@ -97,11 +95,7 @@ open class DynamicImageElement(
     override fun forceSilentApply() = Unit
     override fun silentApply(): Boolean = false
 
-    protected fun finalize() {
-        texture?.usages?.decrementAndGet()
-    }
-
-    override fun onStateChange(texture: DynamicTexture, state: DynamicTextureState) {
+    override fun onDynamicTextureChange(texture: DynamicTexture) {
         if (texture === this.texture) {
             forceApply()
         }

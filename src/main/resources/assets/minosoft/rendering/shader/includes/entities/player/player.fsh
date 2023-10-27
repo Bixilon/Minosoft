@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,9 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
+#version 330 core
 
-fun interface DynamicStateChangeCallback {
+out vec4 foutColor;
 
-    fun onDynamicTextureChange(texture: DynamicTexture)
+#define FOG
+
+
+#include "minosoft:texture"
+#include "minosoft:alpha"
+#include "minosoft:fog"
+
+flat in bool finSkinLayer;
+
+uniform uint uTextureIndex;
+uniform vec3 uTextureCoordinates;
+
+void main() {
+    foutColor = getTexture(uTextureIndex, uTextureCoordinates);
+    if (finSkinLayer) {
+        if (foutColor.a < 0.5) discard;
+    }
+    foutColor.a = 1.0f;
+    set_fog();
 }
