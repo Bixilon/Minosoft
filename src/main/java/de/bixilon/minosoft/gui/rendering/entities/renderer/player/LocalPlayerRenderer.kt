@@ -20,6 +20,6 @@ import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 open class LocalPlayerRenderer(renderer: EntitiesRenderer, entity: LocalPlayerEntity) : PlayerRenderer<LocalPlayerEntity>(renderer, entity) {
 
     init {
-        renderer.context.camera.view::view.observe(this, instant = true) { hitbox.enabled = it.renderSelf }
+        renderer.context.camera.view::view.observe(this, instant = true) { hitbox.enabled = it.renderSelf; model.enabled = it.renderSelf }
     }
 }

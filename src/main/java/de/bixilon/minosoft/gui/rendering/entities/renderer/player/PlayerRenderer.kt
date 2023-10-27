@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
 import java.util.*
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity) {
+    protected val model = PlayerModel(this, getModel())
     private var properties: PlayerProperties? = null
     private var registered = false
 
@@ -42,11 +43,11 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         if (registered) return
         val update = updateProperties()
 
-        val model = getModel() ?: return
+        val model = getModel()
         this.registered = true
 
 
-        this.features += PlayerModel(this, model)
+        this.features += this.model
     }
 
     private fun updateProperties(): Boolean {
@@ -59,7 +60,8 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     }
 
     open fun getSkin(): PlayerSkin? {
-        return renderer.context.textures.skins.default[UUID.randomUUID()] // TODO
+        val skins = renderer.context.textures.skins
+        return skins.default[UUID.randomUUID()]
         // val properties = this.properties?.textures?.skin
         // if(properties == null){
         //    return renderer.context.textures.skins.getSkin(entity, properties, )
@@ -67,18 +69,13 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     }
 
 
-    open fun getModel(): BakedSkeletalModel? {
-        val skin = getSkin() ?: return null
+    private fun getModel(): BakedSkeletalModel {
+        val skin = getSkin() ?: throw IllegalArgumentException("")
         val name = when (skin.model) {
             SkinModel.WIDE -> WIDE
             SkinModel.SLIM -> SLIM
         }
-        return renderer.context.models.skeletal[name]
-
-
-        val properties = this.properties
-        val model = properties?.textures?.skin?.metadata?.model ?: SkinModel.WIDE // TODO: failover according
-
+        return renderer.context.models.skeletal[name]!!
     }
 
 

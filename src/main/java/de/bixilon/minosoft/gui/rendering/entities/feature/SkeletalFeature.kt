@@ -27,7 +27,7 @@ open class SkeletalFeature(
     renderer: EntityRenderer<*>,
     val instance: SkeletalInstance,
 ) : EntityRenderFeature(renderer) {
-    private val manager = renderer.renderer.context.skeletal
+    protected val manager = renderer.renderer.context.skeletal
     protected open val shader: SkeletalShader = manager.shader
 
     protected var position = Vec3d.EMPTY
