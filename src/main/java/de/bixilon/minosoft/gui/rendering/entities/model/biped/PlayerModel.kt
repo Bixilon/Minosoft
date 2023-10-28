@@ -16,19 +16,13 @@ package de.bixilon.minosoft.gui.rendering.entities.model.biped
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMesh
 
 open class PlayerModel(renderer: EntityRenderer<*>, model: BakedSkeletalModel) : BipedModel(renderer, model) {
-    private var mesh = model.mesh
-
-    fun updateMesh(mesh: SkeletalMesh) {
-        this.mesh = mesh
-    }
 
     override fun draw() {
-        manager.context.system.reset(faceCulling = renderer.entity is LocalPlayerEntity)
+        manager.context.system.reset(faceCulling = renderer.entity is LocalPlayerEntity) // TODO: and !renderSelf
         shader.use()
         manager.upload(instance)
-        mesh.draw()
+        instance.model.mesh.draw()
     }
 }

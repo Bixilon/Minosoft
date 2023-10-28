@@ -29,9 +29,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
 import java.util.*
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity) {
-    protected val model = PlayerModel(this, getModel())
+    protected var model = createModel()?.register()
     private var properties: PlayerProperties? = null
-    private var registered = false
 
 
     override fun update(millis: Long) {
@@ -40,14 +39,18 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     }
 
     private fun updateSkeletalModel() {
-        if (registered) return
+        if (this.model != null) return
         val update = updateProperties()
 
-        val model = getModel()
-        this.registered = true
+        val model = createModel() ?: return
 
+        this.features += model
+    }
 
-        this.features += this.model
+    protected open fun createModel(): PlayerModel? {
+        val model = getModel() ?: return null
+
+        return PlayerModel(this, model)
     }
 
     private fun updateProperties(): Boolean {
@@ -69,13 +72,13 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     }
 
 
-    private fun getModel(): BakedSkeletalModel {
-        val skin = getSkin() ?: throw IllegalArgumentException("")
+    private fun getModel(): BakedSkeletalModel? {
+        val skin = getSkin() ?: return null
         val name = when (skin.model) {
             SkinModel.WIDE -> WIDE
             SkinModel.SLIM -> SLIM
         }
-        return renderer.context.models.skeletal[name]!!
+        return renderer.context.models.skeletal[WIDE] // TODO: implement both models and use accordingly
     }
 
 

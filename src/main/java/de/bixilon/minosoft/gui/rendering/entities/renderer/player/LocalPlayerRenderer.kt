@@ -16,10 +16,17 @@ package de.bixilon.minosoft.gui.rendering.entities.renderer.player
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.model.biped.PlayerModel
 
 open class LocalPlayerRenderer(renderer: EntitiesRenderer, entity: LocalPlayerEntity) : PlayerRenderer<LocalPlayerEntity>(renderer, entity) {
 
     init {
-        renderer.context.camera.view::view.observe(this, instant = true) { hitbox.enabled = it.renderSelf; model.enabled = it.renderSelf }
+        renderer.context.camera.view::view.observe(this, instant = true) { hitbox.enabled = it.renderSelf; model?.enabled = it.renderSelf }
+    }
+
+    override fun createModel(): PlayerModel? {
+        val model = super.createModel()
+        model?.enabled = renderer.context.camera.view.view.renderSelf
+        return model
     }
 }

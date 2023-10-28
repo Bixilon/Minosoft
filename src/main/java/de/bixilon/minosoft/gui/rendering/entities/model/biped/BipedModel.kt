@@ -26,6 +26,10 @@ abstract class BipedModel(renderer: EntityRenderer<*>, model: BakedSkeletalModel
 
     override fun updatePosition() {
         super.updatePosition()
+        updateHeadPosition()
+    }
+
+    private fun updateHeadPosition() {
         val info = renderer.info
 
         val pitch = info.rotation.pitch

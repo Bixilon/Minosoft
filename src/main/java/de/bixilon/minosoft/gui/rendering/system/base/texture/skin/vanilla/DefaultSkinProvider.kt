@@ -39,7 +39,6 @@ class DefaultSkinProvider(
         }
     }
 
-
     private fun load(skin: DefaultSkin) {
         var loaded = 0
         load(skin.name.skin("slim").texture())?.let { slim[skin.name] = it; loaded++ }
@@ -65,7 +64,7 @@ class DefaultSkinProvider(
 
     private fun load(path: ResourceLocation): DynamicTexture? {
         val data = assets.getOrNull(path)?.readTexture() ?: return null
-        return array.push(path, true) { data }
+        return array.push(path, false) { data }
     }
 
     private fun ResourceLocation.skin(prefix: String): ResourceLocation {

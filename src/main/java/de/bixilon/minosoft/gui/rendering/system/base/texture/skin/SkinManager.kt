@@ -32,7 +32,7 @@ class SkinManager(private val textureManager: TextureManager) {
     fun initialize(account: Account, assets: AssetsManager) {
         default = DefaultSkinProvider(this.textureManager.dynamicTextures, assets)
         default.initialize()
-        skin = getSkin(account.uuid, account.properties, fetch = true, force = true)
+        skin = getSkin(account.uuid, account.properties, fetch = true, async = false)
     }
 
     private fun getAccountProperties(uuid: UUID): PlayerProperties? {
@@ -49,22 +49,22 @@ class SkinManager(private val textureManager: TextureManager) {
         return player.additional.properties ?: getAccountProperties(uuid) ?: if (fetch) catchAll { PlayerProperties.fetch(uuid) } else null
     }
 
-    private fun getSkin(uuid: UUID, properties: PlayerProperties?, force: Boolean = false): PlayerSkin? {
+    private fun getSkin(uuid: UUID, properties: PlayerProperties?, async: Boolean = true): PlayerSkin? {
         val texture = properties?.textures?.skin ?: return default[uuid]
-        return PlayerSkin(textureManager.dynamicTextures.pushRaw(uuid, force) { texture.read() }, texture.metadata.model)
+        return PlayerSkin(textureManager.dynamicTextures.pushRaw(uuid, async) { texture.read() }, texture.metadata.model)
     }
 
-    fun getSkin(player: PlayerEntity, properties: PlayerProperties? = null, fetch: Boolean = true, force: Boolean = false): PlayerSkin? {
+    fun getSkin(player: PlayerEntity, properties: PlayerProperties? = null, fetch: Boolean = true, async: Boolean = true): PlayerSkin? {
         if (player is LocalPlayerEntity) {
             return skin
         }
         val uuid = player.uuid ?: return default[player]
-        return getSkin(uuid, properties ?: getProperties(player, uuid, fetch), force)
+        return getSkin(uuid, properties ?: getProperties(player, uuid, fetch), async)
     }
 
-    fun getSkin(uuid: UUID?, properties: PlayerProperties? = null, fetch: Boolean = true, force: Boolean = false): PlayerSkin? {
+    fun getSkin(uuid: UUID?, properties: PlayerProperties? = null, fetch: Boolean = true, async: Boolean = true): PlayerSkin? {
         if (uuid == null) return default[null]
 
-        return getSkin(uuid, properties ?: if (fetch) catchAll { PlayerProperties.fetch(uuid) } else null, force)
+        return getSkin(uuid, properties ?: if (fetch) catchAll { PlayerProperties.fetch(uuid) } else null, async)
     }
 }
