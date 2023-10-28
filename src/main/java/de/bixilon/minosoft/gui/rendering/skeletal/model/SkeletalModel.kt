@@ -18,8 +18,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
-import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalConsumer
-import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMesh
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
@@ -76,15 +75,13 @@ data class SkeletalModel(
         return Pair(baseTransform, transformId.get())
     }
 
-    private fun buildElements(consumer: SkeletalConsumer, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
+    private fun buildElements(consumer: AbstractSkeletalMesh, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
         for ((name, element) in elements) {
-            element.bake(consumer, textures, transform)
+            element.bake(consumer, textures, transform, name)
         }
     }
 
-    fun bake(context: RenderContext, override: Map<ResourceLocation, ShaderTexture>): BakedSkeletalModel {
-        val mesh = SkeletalMesh(context, 1000)
-
+    fun bake(context: RenderContext, override: Map<ResourceLocation, ShaderTexture>, mesh: AbstractSkeletalMesh): BakedSkeletalModel {
         val textures = buildTextures(override)
         val (transform, count) = buildTransforms()
         buildElements(mesh, textures, transform)

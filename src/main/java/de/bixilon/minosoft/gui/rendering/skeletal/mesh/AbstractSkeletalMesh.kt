@@ -11,15 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.renderer.player
+package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.rendering.skeletal.shader.BaseSkeletalShader
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class PlayerShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer) {
-    var texture by uniform("uIndexLayer", 0x00, NativeShader::setUInt)
-    var light by uniform("uLight", ChatColors.WHITE) { shader, name, value -> shader.setUInt(name, value.rgb) }
-    var skinParts by uniform("uSkinParts", 0xFF, NativeShader::setUInt)
+abstract class AbstractSkeletalMesh(context: RenderContext, struct: MeshStruct, initialCacheSize: Int) : Mesh(context, struct, initialCacheSize = initialCacheSize) {
+    override val order = context.system.quadOrder
+
+    abstract fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture, path: String)
 }

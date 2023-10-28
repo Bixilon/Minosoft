@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.entities.model.biped
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
+import de.bixilon.minosoft.data.entities.entities.player.SkinParts.Companion.pack
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.entities.renderer.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -23,6 +25,12 @@ open class PlayerModel(
     model: BakedSkeletalModel,
 ) : BipedModel<PlayerRenderer<*>>(renderer, model) {
     override val shader get() = manager.playerShader
+    private var skinParts = 0xFF
+
+    init {
+        renderer.entity::skinParts.observeSet(this, instant = true) { skinParts = renderer.entity.skinParts.pack() }
+    }
+
 
     override fun draw() {
         val renderer = this.renderer.unsafeCast<PlayerRenderer<*>>()
@@ -30,6 +38,7 @@ open class PlayerModel(
         shader.use()
         shader.texture = renderer.skin?.shaderId ?: renderer.renderer.context.textures.debugTexture.shaderId
         shader.light = renderer.light.value
+        shader.skinParts = this.skinParts
         manager.upload(instance)
         instance.model.mesh.draw()
     }

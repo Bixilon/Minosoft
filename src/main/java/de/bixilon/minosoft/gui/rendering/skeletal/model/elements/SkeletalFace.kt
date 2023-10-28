@@ -30,7 +30,7 @@ data class SkeletalFace(
 ) {
 
 
-    fun bake(context: SkeletalBakeContext, direction: Directions, element: SkeletalElement, transform: Int) {
+    fun bake(context: SkeletalBakeContext, direction: Directions, element: SkeletalElement, transform: Int, path: String) {
         val from = context.offset + (element.from - context.inflate) / BLOCK_SIZE
         val to = context.offset + (element.to + context.inflate) / BLOCK_SIZE
         val positions = CuboidUtil.positions(direction, from, to)
@@ -64,7 +64,7 @@ data class SkeletalFace(
         normal.normalizeAssign()
 
 
-        context.consumer.addQuad(positions, uvData, transform, normal, texture.texture)
+        context.consumer.addQuad(positions, uvData, transform, normal, texture.texture, path)
     }
 
     companion object {

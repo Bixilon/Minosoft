@@ -15,15 +15,16 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in float vinPartTransformNormal; // part(0x380000) transform (0x7F000), normal (0xFFF)
+layout (location = 2) in float vinPartTransformNormal; // part(0x1FD0000) transform (0x7F000), normal (0xFFF)
 
 out vec3 finFragmentPosition;
 
 
 uniform uint uIndexLayer;
 uniform uint uLight;
+uniform uint uSkinParts;
 
-flat out uint finSkinLayer;
+flat out uint finAllowTransparency;
 
 flat out uint finTextureIndex;
 out vec3 finTextureCoordinates;
@@ -37,8 +38,13 @@ out vec4 finTintColor;
 
 void main() {
     uint partTransformNormal = floatBitsToUint(vinPartTransformNormal);
+    uint skinPart = (partTransformNormal >> 19u & 0xFFu);
+    if (skinPart > 0u && ((1u << (skinPart - 1u)) & uSkinParts) == 0u) {
+        finTintColor.a = 0.0f;
+        return;
+    }
+    finAllowTransparency = skinPart;
     run_skeletal(partTransformNormal, vinPosition);
-    finSkinLayer = (partTransformNormal >> 13u & 0x07u);
     vec4 light = getRGBColor(uLight & 0xFFFFFFu);
     finTintColor *= light;
 

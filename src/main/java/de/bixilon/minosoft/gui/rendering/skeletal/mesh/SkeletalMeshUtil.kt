@@ -14,10 +14,18 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
-interface SkeletalConsumer {
+object SkeletalMeshUtil {
+    private fun encodePart(part: Float): Int {
+        val unsigned = (part + 1.0f) / 2.0f // remove negative sign
+        return (unsigned * 15.0f).toInt() and 0x0F
+    }
 
-    fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture)
+    fun encodeNormal(normal: Vec3): Int {
+        val x = encodePart(normal.x)
+        val y = encodePart(normal.y)
+        val z = encodePart(normal.z)
+
+        return (y shl 8) or (z shl 4) or (x)
+    }
 }

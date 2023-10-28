@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
-import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMesh
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 
 data class BakedSkeletalModel(
-    val mesh: SkeletalMesh,
+    val mesh: AbstractSkeletalMesh,
     val transform: BakedSkeletalTransform,
     val transformCount: Int,
     val animations: Map<String, SkeletalAnimation>,

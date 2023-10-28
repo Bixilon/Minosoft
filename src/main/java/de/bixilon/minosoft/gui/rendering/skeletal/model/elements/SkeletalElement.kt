@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
-import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalConsumer
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.json.SkeletalFaceDeserializer
@@ -40,14 +40,14 @@ data class SkeletalElement(
     val children: Map<String, SkeletalElement> = emptyMap(),
 ) {
 
-    fun bake(consumer: SkeletalConsumer, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform) {
+    fun bake(consumer: AbstractSkeletalMesh, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform, path: String) {
         if (!enabled) return
 
         val context = SkeletalBakeContext(transform = transform, textures = textures, consumer = consumer)
-        return bake(context)
+        return bake(context, path)
     }
 
-    private fun bake(context: SkeletalBakeContext) {
+    private fun bake(context: SkeletalBakeContext, path: String) {
         if (!enabled) return
         val context = context.copy(this)
 
@@ -55,11 +55,11 @@ data class SkeletalElement(
         val transform = context.transform.id
 
         for ((direction, face) in faces) {
-            face.bake(context, direction, this, transform)
+            face.bake(context, direction, this, transform, path)
         }
 
         for ((name, child) in children) {
-            child.bake(context)
+            child.bake(context, "$path.$name")
         }
     }
 }

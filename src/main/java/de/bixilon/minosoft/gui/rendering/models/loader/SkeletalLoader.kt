@@ -20,7 +20,10 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.util.logging.Log
@@ -52,7 +55,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
 
     fun bake(latch: AbstractLatch?) {
         for ((name, registered) in this.registered) {
-            val baked = registered.model?.bake(loader.context, registered.override) ?: continue
+            val baked = registered.model?.bake(loader.context, registered.override, registered.mesh.invoke(loader.context)) ?: continue
             this.baked[name] = baked
         }
     }
@@ -71,8 +74,8 @@ class SkeletalLoader(private val loader: ModelLoader) {
         return this.baked[name]
     }
 
-    fun register(name: ResourceLocation, template: ResourceLocation = name, override: Map<ResourceLocation, ShaderTexture> = emptyMap()) {
-        val previous = this.registered.put(name, RegisteredModel(template, override))
+    fun register(name: ResourceLocation, template: ResourceLocation = name, override: Map<ResourceLocation, ShaderTexture> = emptyMap(), mesh: (RenderContext) -> AbstractSkeletalMesh = { SkeletalMesh(it) }) {
+        val previous = this.registered.put(name, RegisteredModel(template, override, mesh = mesh))
         if (previous != null) throw IllegalArgumentException("A model with the name $name was already registered!")
     }
 
@@ -80,6 +83,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
         val template: ResourceLocation,
         val override: Map<ResourceLocation, ShaderTexture>,
         var model: SkeletalModel? = null,
+        var mesh: (RenderContext) -> AbstractSkeletalMesh,
     )
 
     companion object {

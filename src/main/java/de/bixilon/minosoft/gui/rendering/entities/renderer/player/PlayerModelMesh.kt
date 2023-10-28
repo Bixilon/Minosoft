@@ -11,43 +11,53 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.mesh
+package de.bixilon.minosoft.gui.rendering.entities.renderer.player
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMeshUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SkeletalMesh(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMesh(context, SkeletalMeshStruct, initialCacheSize = initialCacheSize) {
+class PlayerModelMesh(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMesh(context, PlayerMeshStruct, initialCacheSize = initialCacheSize) {
+    override val order = context.system.quadOrder
 
-    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: FaceVertexData, uvOffset: Int, transformNormal: Float, textureShaderId: Float) {
+    private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: FaceVertexData, uvOffset: Int, partTransformNormal: Float) {
         data.add(
             position[positionOffset + 0], position[positionOffset + 1], position[positionOffset + 2],
+        )
+        data.add(
             uv[uvOffset + 0], uv[uvOffset + 1],
-            transformNormal,
-            textureShaderId,
+            partTransformNormal,
         )
     }
 
     override fun addQuad(positions: FaceVertexData, uv: FaceVertexData, transform: Int, normal: Vec3, texture: ShaderTexture, path: String) {
-        val transformNormal = ((transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
-        val textureShaderId = texture.shaderId.buffer()
+        val part = path.getSkinPart()?.ordinal?.inc() ?: 0x00
+        val partTransformNormal = ((part shl 19) or (transform shl 12) or SkeletalMeshUtil.encodeNormal(normal)).buffer()
 
         order.iterate { position, uvIndex ->
-            addVertex(positions, position * Vec3.length, uv, uvIndex * Vec2.length, transformNormal, textureShaderId)
+            addVertex(positions, position * Vec3.length, uv, uvIndex * Vec2.length, partTransformNormal)
         }
     }
 
+    private fun String.getSkinPart(): SkinParts? = when (this) {
+        "body.head.hat" -> SkinParts.HAT
+        // TODO
+        else -> null
+    }
 
-    data class SkeletalMeshStruct(
+
+    data class PlayerMeshStruct(
         val position: Vec3,
         val uv: Vec2,
-        val transformNormal: Int,
-        val indexLayerAnimation: Int,
+        val partTransformNormal: Int,
     ) {
-        companion object : MeshStruct(SkeletalMeshStruct::class)
+        companion object : MeshStruct(PlayerMeshStruct::class)
     }
 }

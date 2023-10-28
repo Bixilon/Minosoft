@@ -107,8 +107,8 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
 
         override fun register(loader: ModelLoader) {
             val override = mapOf(SKIN to loader.context.textures.debugTexture) // disable textures, they all dynamic
-            loader.skeletal.register(WIDE, override = override)
-            loader.skeletal.register(SLIM, override = override)
+            loader.skeletal.register(WIDE, override = override, mesh = { PlayerModelMesh(it) })
+            loader.skeletal.register(SLIM, override = override, mesh = { PlayerModelMesh(it) })
             // TODO: load with custom mesh, load custom shader
         }
     }
