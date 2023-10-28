@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.entities.renderer
 
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
 import de.bixilon.minosoft.gui.rendering.entities.hitbox.HitboxFeature
+import de.bixilon.minosoft.util.interpolate.Interpolator
 
 abstract class EntityRenderer<E : Entity>(
     val renderer: EntitiesRenderer,
@@ -29,7 +32,7 @@ abstract class EntityRenderer<E : Entity>(
 
     val hitbox = HitboxFeature(this).register()
 
-
+    val light = Interpolator(ChatColors.WHITE, ColorUtil::interpolateRGB)
     var visible = true
         private set
 
@@ -40,9 +43,26 @@ abstract class EntityRenderer<E : Entity>(
 
     open fun update(millis: Long) {
         val delta = if (this.update <= 0L) 0.0f else ((millis - update) / 1000.0f)
+        updateLight(delta)
         entity.draw(millis)
         features.update(millis, delta)
         this.update = millis
+    }
+
+    private fun getCurrentLight(): Int {
+        var light = entity.physics.positionInfo.chunk?.light?.get(entity.physics.positionInfo.inChunkPosition) ?: return 0xFF
+        if (entity.isOnFire) {
+            light = light or 0xF0
+        }
+        return light
+    }
+
+    protected open fun updateLight(delta: Float) {
+        if (this.light.delta >= 1.0f) {
+            val rgb = renderer.context.light.map.buffer[getCurrentLight()]
+            this.light.push(rgb)
+        }
+        this.light.add(delta, 0.1f)
     }
 
     open fun unload() {

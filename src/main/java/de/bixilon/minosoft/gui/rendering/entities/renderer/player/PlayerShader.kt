@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.player
 
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.skeletal.shader.BaseSkeletalShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class PlayerShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer) {
     var texture by uniform("uIndexLayer", 0x00, NativeShader::setUInt)
+    var light by uniform("uLight", ChatColors.WHITE) { shader, name, value -> shader.setUInt(name, value.rgb) }
 }

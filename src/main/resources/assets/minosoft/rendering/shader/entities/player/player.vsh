@@ -21,6 +21,7 @@ out vec3 finFragmentPosition;
 
 
 uniform uint uIndexLayer;
+uniform uint uLight;
 
 // flat out bool finSkinLayer;
 
@@ -35,6 +36,7 @@ void main() {
     uint partTransformNormal = floatBitsToUint(vinPartTransformNormal);
     run_skeletal(partTransformNormal, vinPosition);
     // finSkinLayer = (partTransformNormal >> 13u & 0x07u) > 0u;
+    finTintColor = getRGBColor(uLight);
 
     finTextureIndex = uIndexLayer >> 28u;
     finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));

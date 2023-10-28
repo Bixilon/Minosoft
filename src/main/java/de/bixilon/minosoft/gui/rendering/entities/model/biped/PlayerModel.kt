@@ -30,6 +30,7 @@ open class PlayerModel(
         manager.context.system.reset(faceCulling = renderer.entity is LocalPlayerEntity) // TODO: and !renderSelf
         shader.use()
         shader.texture = if (skin.texture.state == DynamicTextureState.LOADED) skin.texture.shaderId else 0 // TODO: use default skins if not loaded yet
+        shader.light = renderer.light.value
         manager.upload(instance)
         instance.model.mesh.draw()
     }
