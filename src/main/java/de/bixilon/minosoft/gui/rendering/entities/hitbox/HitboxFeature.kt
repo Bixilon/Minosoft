@@ -128,6 +128,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
     override fun unload() {
         val mesh = this.mesh ?: return
         this.mesh = null
+        if (mesh.state != Mesh.MeshStates.LOADED) return
         renderer.renderer.queue += { mesh.unload() }
     }
 }

@@ -11,28 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal
+package de.bixilon.minosoft.gui.rendering.skeletal.shader
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.camera.FogManager
-import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.shader.types.*
+import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
+import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
+import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-open class SkeletalShader(
+abstract class BaseSkeletalShader(
     override val native: NativeShader,
     buffer: FloatUniformBuffer,
-) : Shader(), TextureShader, AnimatedShader, LightShader, ViewProjectionShader, FogShader {
+) : Shader(), TextureShader, ViewProjectionShader, FogShader {
     override var textures: TextureManager by textureManager()
-    override val lightmap: LightmapBuffer by lightmap()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
     override var cameraPosition: Vec3 by cameraPosition()
     override var fog: FogManager by fog()
 
-    var light by uniform("uLight", 0x00, NativeShader::setUInt)
     var skeletalBuffer by uniform("uSkeletalBuffer", buffer)
+
+
+    init {
+        native.defines["TRANSFORMS"] = SkeletalManager.MAX_TRANSFORMS
+    }
 }

@@ -17,6 +17,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.model.biped.PlayerModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
 
 open class LocalPlayerRenderer(renderer: EntitiesRenderer, entity: LocalPlayerEntity) : PlayerRenderer<LocalPlayerEntity>(renderer, entity) {
 
@@ -24,9 +25,9 @@ open class LocalPlayerRenderer(renderer: EntitiesRenderer, entity: LocalPlayerEn
         renderer.context.camera.view::view.observe(this, instant = true) { hitbox.enabled = it.renderSelf; model?.enabled = it.renderSelf }
     }
 
-    override fun createModel(): PlayerModel? {
-        val model = super.createModel()
-        model?.enabled = renderer.context.camera.view.view.renderSelf
+    override fun createModel(skin: PlayerSkin): PlayerModel? {
+        val model = super.createModel(skin) ?: return null
+        model.enabled = renderer.context.camera.view.view.renderSelf
         return model
     }
 }

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.player
 
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -26,54 +26,48 @@ import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
-import java.util.*
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity) {
-    protected var model = createModel()?.register()
-    private var properties: PlayerProperties? = null
+    protected var model: PlayerModel? = null
+    private var refreshSkin = true
+
+    init {
+        entity.additional::properties.observe(this) { refreshSkin = true }
+    }
 
 
     override fun update(millis: Long) {
-        updateSkeletalModel()
+        if (refreshSkin) updateModel()
         super.update(millis)
     }
 
-    private fun updateSkeletalModel() {
-        if (this.model != null) return
-        val update = updateProperties()
+    private fun getSkin(): PlayerSkin? {
+        return renderer.context.textures.skins.getSkin(entity, fetch = false, async = true)
+    }
 
-        val model = createModel() ?: return
+    private fun updateModel() {
+        this.model?.let { this.features -= it }
+        val model = createModel()
+        this.model = model
+        this.refreshSkin = false
+        if (model == null) return
 
         this.features += model
     }
 
-    protected open fun createModel(): PlayerModel? {
-        val model = getModel() ?: return null
-
-        return PlayerModel(this, model)
-    }
-
-    private fun updateProperties(): Boolean {
-        val properties = entity.additional.properties
-
-        if (this.properties == properties) return false
-        unload()
-        this.properties = properties
-        return true
-    }
-
-    open fun getSkin(): PlayerSkin? {
-        val skins = renderer.context.textures.skins
-        return skins.default[UUID.randomUUID()]
-        // val properties = this.properties?.textures?.skin
-        // if(properties == null){
-        //    return renderer.context.textures.skins.getSkin(entity, properties, )
-        //}
-    }
-
-
-    private fun getModel(): BakedSkeletalModel? {
+    private fun createModel(): PlayerModel? {
         val skin = getSkin() ?: return null
+        return createModel(skin)
+    }
+
+    protected open fun createModel(skin: PlayerSkin): PlayerModel? {
+        val model = getModel(skin) ?: return null
+
+        return PlayerModel(this, model, skin)
+    }
+
+
+    private fun getModel(skin: PlayerSkin): BakedSkeletalModel? {
         val name = when (skin.model) {
             SkinModel.WIDE -> WIDE
             SkinModel.SLIM -> SLIM

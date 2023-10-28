@@ -15,16 +15,25 @@
 
 out vec4 foutColor;
 
-in vec2 finUV;
-flat in uint finTextureIndex;
-in vec3 finTextureCoordinates;
+#define FOG
 
 
 #include "minosoft:texture"
 #include "minosoft:alpha"
+#include "minosoft:fog"
+
+in vec4 finTintColor;
+
+// flat in bool finSkinLayer;
+
+flat in uint finTextureIndex;
+in vec3 finTextureCoordinates;
 
 void main() {
-    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates);
-    foutColor = texelColor;
-    // foutColor.a = 1.0f;
+    foutColor = getTexture(finTextureIndex, finTextureCoordinates);
+    // if (finSkinLayer) {
+    //     if (foutColor.a < 0.5) discard;
+    // }
+    foutColor.a = 1.0f;
+    set_fog();
 }

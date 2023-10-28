@@ -15,20 +15,27 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in float vinTransformNormal; // transform (0x7F000), normal (0xFFF)
+layout (location = 2) in float vinPartTransformNormal; // part(0x380000) transform (0x7F000), normal (0xFFF)
 
-#include "minosoft:animation/header_vertex"
+out vec3 finFragmentPosition;
+
+
+uniform uint uIndexLayer;
+
+// flat out bool finSkinLayer;
+
+flat out uint finTextureIndex;
+out vec3 finTextureCoordinates;
+
+out vec4 finTintColor;
+
 #include "minosoft:skeletal/vertex"
 
-
-#include "minosoft:animation/buffer"
-#include "minosoft:animation/main_vertex"
-
-flat out bool finSkinLayer;
-
-
 void main() {
-    run_skeletal(floatBitsToUint(vinTransformNormal), vinPosition);
-    run_animation();
-    finSkinLayer = false;
+    uint partTransformNormal = floatBitsToUint(vinPartTransformNormal);
+    run_skeletal(partTransformNormal, vinPosition);
+    // finSkinLayer = (partTransformNormal >> 13u & 0x07u) > 0u;
+
+    finTextureIndex = uIndexLayer >> 28u;
+    finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));
 }

@@ -18,9 +18,9 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalShader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.shader.BaseSkeletalShader
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 
 open class SkeletalFeature(
@@ -28,7 +28,7 @@ open class SkeletalFeature(
     val instance: SkeletalInstance,
 ) : EntityRenderFeature(renderer) {
     protected val manager = renderer.renderer.context.skeletal
-    protected open val shader: SkeletalShader = manager.shader
+    protected open val shader: BaseSkeletalShader get() = manager.shader
 
     protected var position = Vec3d.EMPTY
     protected var yaw = 0.0f
