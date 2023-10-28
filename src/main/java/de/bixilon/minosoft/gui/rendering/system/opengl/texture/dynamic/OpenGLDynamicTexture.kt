@@ -20,7 +20,6 @@ class OpenGLDynamicTexture(identifier: Any, shaderId: Int) : DynamicTexture(iden
 
     override var shaderId: Int = shaderId
         get() {
-            if (state == DynamicTextureState.UNLOADED) throw IllegalStateException("Texture was unloaded!")
             if (state == DynamicTextureState.LOADING) throw IllegalStateException("Texture was not loaded yet!")
             return field
         }

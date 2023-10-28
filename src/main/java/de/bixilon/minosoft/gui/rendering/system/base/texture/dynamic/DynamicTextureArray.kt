@@ -142,7 +142,7 @@ abstract class DynamicTextureArray(
         for ((index, reference) in textures.withIndex()) {
             if (reference == null) continue
             val texture = reference.get()
-            texture?.state = DynamicTextureState.UNLOADED
+            if (texture != null) continue // not gced yet, keep it for now
             textures[index] = null
         }
         lock.unlock()
