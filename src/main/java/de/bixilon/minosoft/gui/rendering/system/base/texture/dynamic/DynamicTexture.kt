@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 abstract class DynamicTexture(
     val identifier: Any,
 ) : ShaderTexture {
-    private val callbacks: MutableSet<DynamicStateChangeCallback> = mutableSetOf()
+    private val callbacks: MutableSet<DynamicTextureListener> = mutableSetOf()
     private val lock = SimpleLock()
 
     var data: MipmapTextureData? = null
@@ -33,8 +33,12 @@ abstract class DynamicTexture(
             }
             field = value
             lock.acquire()
-            for (callback in callbacks) {
-                ignoreAll { callback.onDynamicTextureChange(this) }
+            val iterator = callbacks.iterator()
+            for (callback in iterator) {
+                val remove = ignoreAll { callback.onDynamicTextureChange(this) } ?: continue
+                if (remove) {
+                    iterator.remove()
+                }
             }
             lock.release()
         }
@@ -51,15 +55,15 @@ abstract class DynamicTexture(
         return end ?: floatArrayOf(1.0f, 1.0f) // TODO: memory
     }
 
-    operator fun plusAssign(callback: DynamicStateChangeCallback) = addListener(callback)
-    fun addListener(callback: DynamicStateChangeCallback) {
+    operator fun plusAssign(callback: DynamicTextureListener) = addListener(callback)
+    fun addListener(callback: DynamicTextureListener) {
         lock.lock()
         callbacks += callback
         lock.unlock()
     }
 
-    operator fun minusAssign(callback: DynamicStateChangeCallback) = removeListener(callback)
-    fun removeListener(callback: DynamicStateChangeCallback) {
+    operator fun minusAssign(callback: DynamicTextureListener) = removeListener(callback)
+    fun removeListener(callback: DynamicTextureListener) {
         lock.lock()
         callbacks -= callback
         lock.unlock()

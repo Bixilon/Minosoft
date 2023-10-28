@@ -13,23 +13,22 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.biped
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
-import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
 
 open class PlayerModel(
-    renderer: EntityRenderer<*>,
+    renderer: PlayerRenderer<*>,
     model: BakedSkeletalModel,
-    val skin: PlayerSkin,
-) : BipedModel(renderer, model) {
+) : BipedModel<PlayerRenderer<*>>(renderer, model) {
     override val shader get() = manager.playerShader
 
     override fun draw() {
+        val renderer = this.renderer.unsafeCast<PlayerRenderer<*>>()
         manager.context.system.reset(faceCulling = renderer.entity is LocalPlayerEntity) // TODO: and !renderSelf
         shader.use()
-        shader.texture = if (skin.texture.state == DynamicTextureState.LOADED) skin.texture.shaderId else 0 // TODO: use default skins if not loaded yet
+        shader.texture = renderer.skin?.shaderId ?: renderer.renderer.context.textures.debugTexture.shaderId
         shader.light = renderer.light.value
         manager.upload(instance)
         instance.model.mesh.draw()

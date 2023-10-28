@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
+import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL43.*
@@ -40,7 +41,7 @@ class OpenGLNativeShader(
     override var loaded: Boolean = false
         private set
     override val defines: MutableMap<String, Any> = mutableMapOf()
-    private var shader = -1
+    private var handler = -1
     private val uniformLocations: Object2IntOpenHashMap<String> = Object2IntOpenHashMap()
 
     private fun load(resourceLocation: ResourceLocation, shaderType: Int): Int {
@@ -66,13 +67,13 @@ class OpenGLNativeShader(
     }
 
     override fun load() {
-        shader = glCreateProgram()
+        handler = glCreateProgram()
 
-        if (shader.toLong() == MemoryUtil.NULL) {
+        if (handler.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
         }
 
-        val programs: MutableList<Int> = mutableListOf()
+        val programs = IntArrayList(3)
 
 
         programs += load(vertex, GL_VERTEX_SHADER)
@@ -83,15 +84,15 @@ class OpenGLNativeShader(
         programs += load(fragment, GL_FRAGMENT_SHADER)
 
         for (program in programs) {
-            glAttachShader(shader, program)
+            glAttachShader(handler, program)
         }
 
-        glLinkProgram(shader)
+        glLinkProgram(handler)
 
-        glValidateProgram(shader)
+        glValidateProgram(handler)
 
-        if (glGetProgrami(shader, GL_LINK_STATUS) == GL_FALSE) {
-            throw ShaderLoadingException(getProgramInfoLog(shader))
+        if (glGetProgrami(handler, GL_LINK_STATUS) == GL_FALSE) {
+            throw ShaderLoadingException(getProgramInfoLog(handler))
         }
         for (program in programs) {
             glDeleteShader(program)
@@ -103,9 +104,9 @@ class OpenGLNativeShader(
 
     override fun unload() {
         check(loaded) { "Not loaded!" }
-        glDeleteProgram(this.shader)
+        glDeleteProgram(this.handler)
         loaded = false
-        this.shader = -1
+        this.handler = -1
         context.system.nativeShaders -= this
     }
 
@@ -117,7 +118,7 @@ class OpenGLNativeShader(
 
     private fun getUniformLocation(uniformName: String): Int {
         val location = uniformLocations.getOrPut(uniformName) {
-            val location = glGetUniformLocation(shader, uniformName)
+            val location = glGetUniformLocation(handler, uniformName)
             if (location < 0) {
                 throw IllegalArgumentException("No uniform named $uniformName in $this")
             }
@@ -192,17 +193,17 @@ class OpenGLNativeShader(
 
     override fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer) {
         val index = uniformLocations.getOrPut(uniformName) {
-            val index = glGetUniformBlockIndex(shader, uniformName)
+            val index = glGetUniformBlockIndex(handler, uniformName)
             if (index < 0) {
                 throw IllegalArgumentException("No uniform buffer called $uniformName")
             }
             return@getOrPut index
         }
-        glUniformBlockBinding(shader, index, uniformBuffer.bindingIndex)
+        glUniformBlockBinding(handler, index, uniformBuffer.bindingIndex)
     }
 
     fun unsafeUse() {
-        glUseProgram(shader)
+        glUseProgram(handler)
     }
 
     override val log: String

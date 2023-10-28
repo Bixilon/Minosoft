@@ -24,16 +24,16 @@ out vec4 foutColor;
 
 in vec4 finTintColor;
 
-// flat in bool finSkinLayer;
+flat in uint finSkinLayer;
 
 flat in uint finTextureIndex;
 in vec3 finTextureCoordinates;
 
 void main() {
-    foutColor = getTexture(finTextureIndex, finTextureCoordinates);
-    // if (finSkinLayer) {
-    //     if (foutColor.a < 0.5) discard;
-    // }
+    foutColor = getTexture(finTextureIndex, finTextureCoordinates) * finTintColor;
+    if (finSkinLayer > 0u) {
+        if (foutColor.a < 0.5f) discard;
+    }
     foutColor.a = 1.0f;
     set_fog();
 }

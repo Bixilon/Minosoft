@@ -115,7 +115,8 @@ class ChunkLight(val chunk: Chunk) {
             chunk.minSection - 1 -> bottom[index].toInt()
             chunk.maxSection + 1 -> return top[index].toInt() or SectionLight.SKY_LIGHT_MASK // top has always sky=15
             else -> chunk[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
-        }
+        } and 0xFF
+
         if (y >= heightmap[heightmapIndex]) {
             // set sky=15
             return light or SectionLight.SKY_LIGHT_MASK

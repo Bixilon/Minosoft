@@ -51,7 +51,7 @@ class SkinManager(private val textureManager: TextureManager) {
 
     private fun getSkin(uuid: UUID, properties: PlayerProperties?, async: Boolean = true): PlayerSkin? {
         val texture = properties?.textures?.skin ?: return default[uuid]
-        return PlayerSkin(textureManager.dynamicTextures.pushRaw(texture.getHash(), async) { texture.read() }, texture.metadata.model)
+        return PlayerSkin(textureManager.dynamicTextures.pushRaw(texture.getHash(), async) { texture.read() }, default[uuid]?.texture, texture.metadata.model)
     }
 
     fun getSkin(player: PlayerEntity, properties: PlayerProperties? = null, fetch: Boolean = true, async: Boolean = true): PlayerSkin? {

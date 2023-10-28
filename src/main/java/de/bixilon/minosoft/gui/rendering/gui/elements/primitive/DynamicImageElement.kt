@@ -21,8 +21,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
@@ -35,7 +35,7 @@ open class DynamicImageElement(
     size: Vec2 = Vec2.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
     parent: Element? = null,
-) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6), DynamicStateChangeCallback {
+) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6), DynamicTextureListener {
 
     var texture: DynamicTexture? = null
         set(value) {
@@ -95,9 +95,11 @@ open class DynamicImageElement(
     override fun forceSilentApply() = Unit
     override fun silentApply(): Boolean = false
 
-    override fun onDynamicTextureChange(texture: DynamicTexture) {
+    override fun onDynamicTextureChange(texture: DynamicTexture): Boolean {
         if (texture === this.texture) {
             forceApply()
+            return false
         }
+        return true
     }
 }

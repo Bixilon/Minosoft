@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
-fun interface DynamicStateChangeCallback {
+fun interface DynamicTextureListener {
 
-    fun onDynamicTextureChange(texture: DynamicTexture)
+    fun onDynamicTextureChange(texture: DynamicTexture): Boolean
 }

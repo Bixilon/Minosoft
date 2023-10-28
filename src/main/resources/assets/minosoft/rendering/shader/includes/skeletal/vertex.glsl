@@ -16,8 +16,6 @@ uniform mat4 uViewProjectionMatrix;
 #include "minosoft:skeletal/buffer"
 #include "minosoft:skeletal/shade"
 
-uniform uint uLight;
-#include "minosoft:light"
 
 void run_skeletal(uint inTransformNormal, vec3 inPosition) {
     mat4 transform = uSkeletalTransforms[(inTransformNormal >> 12u) & 0x7Fu];
@@ -25,6 +23,6 @@ void run_skeletal(uint inTransformNormal, vec3 inPosition) {
     gl_Position = uViewProjectionMatrix * position;
     vec3 normal = transformNormal(decodeNormal(inTransformNormal & 0xFFFu), transform);
 
-    finTintColor = getLight(uLight & 0xFFu) * vec4(vec3(getShade(normal)), 1.0f);
+    finTintColor = vec4(vec3(getShade(normal)), 1.0f);
     finFragmentPosition = position.xyz;
 }

@@ -58,7 +58,7 @@ class DefaultSkinProvider(
         this[skin.model][skin.name] = texture
 
         if (skin.fallback) {
-            this.fallback = PlayerSkin(texture, skin.model)
+            this.fallback = PlayerSkin(texture, texture, skin.model)
         }
     }
 
@@ -88,7 +88,7 @@ class DefaultSkinProvider(
     }
 
     operator fun get(skin: DefaultSkin, model: SkinModel): PlayerSkin? {
-        return this[model][skin.name]?.let { PlayerSkin(it, model) }
+        return this[model][skin.name]?.let { PlayerSkin(it, null, model) }
     }
 
     operator fun get(uuid: UUID?): PlayerSkin? {

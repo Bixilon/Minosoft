@@ -41,12 +41,12 @@ class GLSLShaderCode(
                 val lineReader = StringReader(line)
                 lineReader.skipWhitespaces()
 
+                val remaining = lineReader.peekRemaining() ?: continue
                 fun pushLine() {
-                    code.append(line)
+                    code.append(remaining)
                     code.append('\n')
                 }
 
-                val remaining = lineReader.peekRemaining() ?: continue
                 when {
                     remaining.startsWith("#include ") -> {
                         val reader = GLSLStringReader(remaining.removePrefix("#include "))
@@ -71,6 +71,11 @@ class GLSLShaderCode(
                             code.append('\n')
                         }
                     }
+
+                    remaining.startsWith("//") -> continue
+                    remaining.startsWith("/*") -> continue
+                    remaining.startsWith("*/") -> continue
+                    remaining.startsWith("*") -> continue
                     else -> pushLine()
                 }
             }

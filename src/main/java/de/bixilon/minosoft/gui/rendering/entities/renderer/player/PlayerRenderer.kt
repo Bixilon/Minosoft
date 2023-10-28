@@ -25,54 +25,74 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 
-open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity) {
+open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity), DynamicTextureListener {
     protected var model: PlayerModel? = null
-    private var refreshSkin = true
+    var skin: DynamicTexture? = null
+    private var refresh = true
 
     init {
-        entity.additional::properties.observe(this) { refreshSkin = true }
+        entity.additional::properties.observe(this) { refresh = true }
+        // TODO: observe entity layers?
     }
 
 
     override fun update(millis: Long) {
-        if (refreshSkin) updateModel()
+        if (refresh) updateModel()
         super.update(millis)
     }
 
-    private fun getSkin(): PlayerSkin? {
-        return renderer.context.textures.skins.getSkin(entity, fetch = false, async = true)
+    private fun setSkin(): SkinModel? {
+        val skin = renderer.context.textures.skins.getSkin(entity, fetch = false, async = true) ?: return null
+        this.skin?.removeListener(this)
+        if (skin.texture.state == DynamicTextureState.LOADED) {
+            this.skin = skin.texture
+            return skin.model
+        } else {
+            this.skin = skin.default
+            skin.texture.addListener(this)
+        }
+
+        return skin.model
     }
 
     private fun updateModel() {
         this.model?.let { this.features -= it }
         val model = createModel()
         this.model = model
-        this.refreshSkin = false
+        this.refresh = false
         if (model == null) return
 
         this.features += model
     }
 
     private fun createModel(): PlayerModel? {
-        val skin = getSkin() ?: return null
+        val skin = setSkin() ?: return null
         return createModel(skin)
     }
 
-    protected open fun createModel(skin: PlayerSkin): PlayerModel? {
+    protected open fun createModel(skin: SkinModel): PlayerModel? {
         val model = getModel(skin) ?: return null
 
-        return PlayerModel(this, model, skin)
+        return PlayerModel(this, model)
     }
 
 
-    private fun getModel(skin: PlayerSkin): BakedSkeletalModel? {
-        val name = when (skin.model) {
+    private fun getModel(skin: SkinModel): BakedSkeletalModel? {
+        val name = when (skin) {
             SkinModel.WIDE -> WIDE
             SkinModel.SLIM -> SLIM
         }
         return renderer.context.models.skeletal[WIDE] // TODO: implement both models and use accordingly
+    }
+
+    override fun onDynamicTextureChange(texture: DynamicTexture): Boolean {
+        if (texture.state != DynamicTextureState.LOADED) return false
+        this.skin = texture
+        return true
     }
 
 

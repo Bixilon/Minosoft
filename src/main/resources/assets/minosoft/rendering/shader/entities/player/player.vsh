@@ -23,7 +23,7 @@ out vec3 finFragmentPosition;
 uniform uint uIndexLayer;
 uniform uint uLight;
 
-// flat out bool finSkinLayer;
+flat out uint finSkinLayer;
 
 flat out uint finTextureIndex;
 out vec3 finTextureCoordinates;
@@ -31,12 +31,16 @@ out vec3 finTextureCoordinates;
 out vec4 finTintColor;
 
 #include "minosoft:skeletal/vertex"
+#include "minosoft:color"
+
+
 
 void main() {
     uint partTransformNormal = floatBitsToUint(vinPartTransformNormal);
     run_skeletal(partTransformNormal, vinPosition);
-    // finSkinLayer = (partTransformNormal >> 13u & 0x07u) > 0u;
-    finTintColor = getRGBColor(uLight);
+    finSkinLayer = (partTransformNormal >> 13u & 0x07u);
+    vec4 light = getRGBColor(uLight & 0xFFFFFFu);
+    finTintColor *= light;
 
     finTextureIndex = uIndexLayer >> 28u;
     finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));

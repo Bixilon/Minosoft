@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 
-abstract class BipedModel(renderer: EntityRenderer<*>, model: BakedSkeletalModel) : SkeletalFeature(renderer, model) {
+abstract class BipedModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkeletalModel) : SkeletalFeature(renderer, model) {
     val head = instance.transform.children["head"]!!
 
 

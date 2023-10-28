@@ -25,9 +25,13 @@ layout (location = 3) in float vinIndexLayerAnimation;// texture index (0xF00000
 #include "minosoft:animation/buffer"
 #include "minosoft:animation/main_vertex"
 
+uniform uint uLight;
+#include "minosoft:light"
 
 
 void main() {
     run_skeletal(floatBitsToUint(vinTransformNormal), vinPosition);
     run_animation();
+
+    finTintColor *= getLight(uLight & 0xFFu);
 }
