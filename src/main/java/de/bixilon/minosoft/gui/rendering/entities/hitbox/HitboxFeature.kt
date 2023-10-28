@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
@@ -47,6 +48,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
     override fun update(millis: Long, delta: Float) {
         if (!manager.enabled) return unload()
         if (!enabled) return unload()
+        if (!manager.profile.showInvisible && renderer.entity.isInvisible) return unload()
         if (!visible) return
 
         val offset = renderer.renderer.context.camera.offset.offset
@@ -121,6 +123,12 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
     override fun draw() {
         val mesh = this.mesh ?: return
         if (mesh.state != Mesh.MeshStates.LOADED) mesh.load()
+        val system = renderer.renderer.context.system
+        if (manager.profile.showThroughWalls) {
+            system.reset(depth = DepthFunctions.ALWAYS)
+        } else {
+            system.reset()
+        }
         manager.shader.use()
         mesh.draw()
     }
