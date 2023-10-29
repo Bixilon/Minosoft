@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -42,7 +43,9 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readVarInt()
         }
         val position: Vec3d = buffer.readVec3d()
-        val rotation = buffer.readEntityRotation() // ToDo: Is yaw/pitch swapped?
+        val pitch = buffer.readAngle() // yaw/pitch is swapped
+        val yaw = buffer.readAngle()
+        val rotation = EntityRotation(yaw, pitch)
         if (buffer.versionId >= ProtocolVersions.V_22W14A) {
             val headYaw = buffer.readAngle()
         }

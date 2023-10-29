@@ -92,10 +92,10 @@ abstract class PlayerEntity(
 
     protected open fun updateSkinParts(flags: Int) {
         for (part in SkinParts.VALUES) {
-            if (!flags.isBitMask(part.bitmask)) {
-                skinParts -= part
-            } else {
+            if (flags.isBitMask(part.bitmask)) {
                 skinParts += part
+            } else {
+                skinParts -= part
             }
         }
     }
