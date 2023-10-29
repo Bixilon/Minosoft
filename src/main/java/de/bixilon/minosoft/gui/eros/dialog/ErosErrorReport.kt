@@ -51,7 +51,7 @@ class ErosErrorReport : DialogController() {
     @FXML
     fun fatalCrash() {
         stage.close()
-        exception?.crash()
+        exception?.crash("Hard crash intended!")
     }
 
     override fun init() {
@@ -75,6 +75,7 @@ class ErosErrorReport : DialogController() {
             if (RunConfiguration.DISABLE_EROS) {
                 return
             }
+
 
             JavaFXUtil.openModalAsync<ErosErrorReport>(TITLE(this), LAYOUT) {
                 it.exception = this

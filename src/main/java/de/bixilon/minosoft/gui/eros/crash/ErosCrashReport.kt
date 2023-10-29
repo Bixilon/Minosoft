@@ -89,13 +89,13 @@ class ErosCrashReport : JavaFXWindowController() {
          * Kills all connections, closes all windows, creates and saves a crash report
          * Special: Does not use any general functions/translations/..., because when a crash happens, you can't rely on anything.
          */
-        fun Throwable?.crash(hideException: Boolean = false) {
+        fun Throwable?.crash(notes: String = "-/-") {
             if (alreadyCrashed) {
                 return
             }
             alreadyCrashed = true
             val details = try {
-                CrashReportUtil.createCrashReport(if (hideException) null else this)
+                CrashReportUtil.createCrashReport(this, notes)
             } catch (error: Throwable) {
                 error.toStackTrace()
             }
