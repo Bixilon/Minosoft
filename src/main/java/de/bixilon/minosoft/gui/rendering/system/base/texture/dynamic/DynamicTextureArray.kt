@@ -72,7 +72,11 @@ abstract class DynamicTextureArray(
         val data = creator.invoke()
 
         this.data = MipmapTextureData(data.size, data.buffer)
-        context.queue += { upload(index, this) }
+        if (Thread.currentThread() == context.thread) {
+            upload(index, this)
+        } else {
+            context.queue += { upload(index, this) }
+        }
     }
 
     fun pushRaw(identifier: Any, async: Boolean = true, creator: () -> ByteArray): DynamicTexture {
