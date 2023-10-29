@@ -124,6 +124,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         val isTop = isTop(state, connection)
         val other = connection.world[position + if (isTop) Directions.DOWN else Directions.UP]
         if (other !is PropertyBlockState || other.block !is DoorBlock) return null
+        if (isTop(other, connection) == isTop) return null  // impossible
 
 
         val top = if (isTop) state else other
