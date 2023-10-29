@@ -13,29 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.biped
 
-import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.entities.feature.SkeletalFeature
+import de.bixilon.minosoft.gui.rendering.entities.model.biped.animator.HeadPosition
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 
 abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkeletalModel) : SkeletalFeature(renderer, model) {
-    val head = instance.transform.children["head"]!!
-
+    val head = instance.transform.children["head"]?.let { HeadPosition(this, it) }
 
     override fun updatePosition() {
         super.updatePosition()
-        updateHeadPosition()
-    }
-
-    private fun updateHeadPosition() {
-        val info = renderer.info
-
-        val pitch = info.rotation.pitch
-        head.value
-            .translateAssign(head.pivot)
-            .rotateRadAssign(Vec3(-pitch.rad, 0.0f, 0.0f))
-            .translateAssign(head.nPivot)
+        head?.update()
     }
 }
