@@ -21,13 +21,13 @@ object SkeletalMeshUtil {
     private fun encodeY(part: Float): Int {
         if (part <= -1.0f) return 0
         if (part >= 1.0f) return 0x0F
-        if (part < 0.0f) return ((part + 1.0f) * 8.0f).toInt() and 0x0F
+        if (part < 0.0f) return ((part + 1.0f) * 8.0f).toInt()
         return 8 + (part * 7.0f).toInt()
     }
 
     fun encodeNormal(normal: Vec3): Int {
         val x = (abs(normal.x) * 15.0f).toInt()
-        val y = encodeY(normal.y)
+        val y = encodeY(normal.y + 0.001f) and 0x0F
         val z = (abs(normal.z) * 15.0f).toInt()
 
         return (y shl 8) or (z shl 4) or (x)
