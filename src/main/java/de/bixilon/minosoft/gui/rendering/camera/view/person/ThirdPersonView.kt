@@ -27,7 +27,10 @@ import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 
 // TODO: handle block changes
-class ThirdPersonView(override val camera: Camera) : PersonView {
+class ThirdPersonView(
+    override val camera: Camera,
+    val inverse: Boolean,
+) : PersonView {
     override val context: RenderContext get() = camera.context
 
     override var eyePosition: Vec3d = Vec3d.EMPTY
@@ -44,22 +47,22 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
     override fun onMouse(delta: Vec2d) {
         val rotation = super.handleMouse(delta) ?: return
         this.rotation = rotation
-        this.front = rotation.front
         update(eyePosition, rotation.front)
     }
 
     private fun update() {
         val entity = camera.context.connection.camera.entity
         this.rotation = entity.physics.rotation
-        this.front = rotation.front
-        update(entity.renderInfo.eyePosition, front)
+        update(entity.renderInfo.eyePosition, rotation.front)
     }
 
     private fun update(position: Vec3d, front: Vec3) {
-        val target = camera.context.connection.camera.target.raycastBlock(position, (-front).toVec3d).first
+        val target = camera.context.connection.camera.target.raycastBlock(position, -front.toVec3d).first
         val distance = target?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
 
+        val front = if (inverse) front else -front
         this.eyePosition = if (distance <= 0.0) position else position + (-front * (distance - MIN_MARGIN))
+        this.front = front
     }
 
     override fun onAttach(previous: CameraView?) {
