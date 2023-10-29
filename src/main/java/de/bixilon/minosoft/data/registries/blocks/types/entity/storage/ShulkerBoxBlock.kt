@@ -25,11 +25,16 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.property.FullBlockPropertyRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), StorageBlock<ShulkerBoxBlockEntity>, FullOpaqueBlock, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 2.0f
+
+    init {
+        this.model = FullBlockPropertyRenderer
+    }
 
     override fun createBlockEntity(connection: PlayConnection) = ShulkerBoxBlockEntity(connection)
 
