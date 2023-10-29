@@ -23,6 +23,7 @@
           "transform": "head",
           "offset": [0, 5, 0],
           "from": [-5, 0, -5],
+          "rotation": [0, 0, 180],
           "to": [5, 10, 5],
           "uv": [10, 0],
           "faces": "all"

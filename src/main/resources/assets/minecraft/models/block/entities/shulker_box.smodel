@@ -5,9 +5,7 @@
       "to": [8, 8, 8],
       "texture": "minecraft:shulker",
       "uv": [0, 28],
-      "rotation": {
-        "value": [0, 0, 180]
-      },
+      "rotation": [0, 0, 180],
       "faces": "all"
     },
     "lid": {
@@ -15,9 +13,7 @@
       "from": [-8, 4, -8],
       "to": [8, 16, 8],
       "texture": "minecraft:shulker",
-      "rotation": {
-        "value": [0, 0, 180]
-      },
+      "rotation": [0, 0, 180],
       "uv": [0, 0],
       "faces": "all"
     }

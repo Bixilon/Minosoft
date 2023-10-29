@@ -24,14 +24,14 @@ import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.json.SkeletalFaceDeserializer
+import de.bixilon.minosoft.util.json.SkeletalRotationDeserializer
 
 data class SkeletalElement(
     val from: Vec3,
     val to: Vec3,
     val offset: Vec3 = Vec3.EMPTY,
-    val rotation: SkeletalRotation? = null,
+    @JsonDeserialize(using = SkeletalRotationDeserializer::class) val rotation: SkeletalRotation? = null,
     val inflate: Float = 0.0f,
-    val enabled: Boolean = true,
     val texture: ResourceLocation? = null,
     val uv: Vec2i? = null,
     val transform: String? = null,
@@ -41,14 +41,11 @@ data class SkeletalElement(
 ) {
 
     fun bake(consumer: AbstractSkeletalMesh, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform, path: String) {
-        if (!enabled) return
-
         val context = SkeletalBakeContext(transform = transform, textures = textures, consumer = consumer)
         return bake(context, path)
     }
 
     private fun bake(context: SkeletalBakeContext, path: String) {
-        if (!enabled) return
         val context = context.copy(this)
 
 

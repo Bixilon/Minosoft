@@ -48,8 +48,7 @@ object SkeletalFaceDeserializer : StdDeserializer<Map<Directions, SkeletalFace>>
 
     override fun deserialize(parser: JsonParser, context: DeserializationContext?): Map<Directions, SkeletalFace> {
         val codec = parser.codec
-        val next = parser.currentToken
-        when (next) {
+        when (parser.currentToken) {
             JsonToken.START_OBJECT -> return codec.readValue(parser, MAP)
             JsonToken.START_ARRAY -> {
                 val directions: Array<Directions> = codec.readValue(parser, Array<Directions>::class.java)

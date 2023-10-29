@@ -49,7 +49,7 @@ data class SkeletalFace(
         val normal = Vec3(direction.vector)
 
         for (rotation in context.rotations) {
-            val origin = rotation.origin!! / BLOCK_SIZE
+            val origin = rotation.origin!!
 
             val rad = -GLM.radians(rotation.value)
             val vec = Vec3(0, positions)

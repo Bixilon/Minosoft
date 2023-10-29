@@ -1,28 +1,39 @@
 {
   "elements": {
     "body": {
-      "from": [-4, 12, -2],
-      "to": [4, 24, 2],
+      "offset": [0, 12, 0],
+      "from": [-4, 0, -2],
+      "to": [4, 12, 2],
       "texture": "minecraft:skin",
       "uv": [16, 16],
+      "rotation": [180, 0, 0],
       "faces": "all",
       "children": {
-        "head": {
-          "offset": [0, 24, 0],
+        "jacket": {
+          "from": [-4, 0, -2],
+          "to": [4, 12, 2],
+          "inflate": 0.25,
+          "uv": [16, 32],
+          "faces": "all"
+        }
+      }
+    },
+    "head": {
+      "offset": [0, 24, 0],
+      "from": [-4, 0, -4],
+      "to": [4, 8, 4],
+      "uv": [0, 0],
+      "rotation": [180, 0, 0],
+      "texture": "minecraft:skin",
+      "transform": "head",
+      "faces": "all",
+      "children": {
+        "hat": {
           "from": [-4, 0, -4],
           "to": [4, 8, 4],
-          "uv": [0, 0],
-          "transform": "head",
-          "faces": "all",
-          "children": {
-            "hat": {
-              "from": [-4, 0, -4],
-              "to": [4, 8, 4],
-              "inflate": 0.5,
-              "uv": [32, 0],
-              "faces": "all"
-            }
-          }
+          "inflate": 0.5,
+          "uv": [32, 0],
+          "faces": "all"
         }
       }
     }
