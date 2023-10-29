@@ -11,32 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity
+package de.bixilon.minosoft.data.registries.blocks.types.entity
 
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import kotlin.reflect.jvm.javaField
 
-abstract class BlockWithEntity<T : BlockEntity>(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), InteractBlockHandler {
-    val factory: BlockEntityType<T>? = null
-
-    init {
-        FACTORY_FIELD.inject<RegistryItem>(this)
-    }
+interface BlockWithEntity<T : BlockEntity> : InteractBlockHandler {
+    val blockEntity: BlockEntityType<T>?
 
     override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?) = InteractionResults.SUCCESS
-
-    private companion object {
-        val FACTORY_FIELD = BlockWithEntity<*>::factory.javaField!!
-    }
 }

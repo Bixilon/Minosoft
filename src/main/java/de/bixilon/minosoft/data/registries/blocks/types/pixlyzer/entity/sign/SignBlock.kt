@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign
 
 import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.PixLyzerBlockWithEntity
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<SignBlockEntity>(resourceLocation, registries, data)
+abstract class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<SignBlockEntity>(resourceLocation, registries, data)
 

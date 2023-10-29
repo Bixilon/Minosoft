@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class ShulkerBoxBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<ShulkerBoxBlockEntity>(resourceLocation, registries, data) {
+open class ShulkerBoxBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<ShulkerBoxBlockEntity>(resourceLocation, registries, data) {
 
     companion object : PixLyzerBlockFactory<ShulkerBoxBlock> {
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ShulkerBoxBlock {

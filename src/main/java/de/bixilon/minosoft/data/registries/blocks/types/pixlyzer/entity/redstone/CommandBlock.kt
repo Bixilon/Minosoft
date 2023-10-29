@@ -15,11 +15,11 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.redston
 
 import de.bixilon.minosoft.data.entities.block.redstone.CommandBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.PixLyzerBlockWithEntity
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class CommandBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<CommandBlockEntity>(resourceLocation, registries, data) {
+open class CommandBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<CommandBlockEntity>(resourceLocation, registries, data) {
 
     companion object : PixLyzerBlockFactory<CommandBlock> {
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CommandBlock {

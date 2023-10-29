@@ -15,11 +15,11 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.end
 
 import de.bixilon.minosoft.data.entities.block.end.EndGatewayBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.PixLyzerBlockWithEntity
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class EndGatewayBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<EndGatewayBlockEntity>(resourceLocation, registries, data) {
+open class EndGatewayBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<EndGatewayBlockEntity>(resourceLocation, registries, data) {
 
     companion object : PixLyzerBlockFactory<EndGatewayBlock> {
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EndGatewayBlock {

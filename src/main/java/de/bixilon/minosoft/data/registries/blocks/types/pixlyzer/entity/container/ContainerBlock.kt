@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container
 
 import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.PixLyzerBlockWithEntity
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-abstract class ContainerBlock<T : ContainerBlockEntity>(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<T>(resourceLocation, registries, data)
+abstract class ContainerBlock<T : ContainerBlockEntity>(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<T>(resourceLocation, registries, data)

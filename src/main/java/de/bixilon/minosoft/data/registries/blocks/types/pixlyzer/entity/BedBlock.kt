@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.handler.entity.landing.Bouncin
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class BedBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<BedBlockEntity>(resourceLocation, registries, data), BouncingHandler {
+open class BedBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BedBlockEntity>(resourceLocation, registries, data), BouncingHandler {
     override val bounceStrength: Double get() = 0.66f.toDouble()
 
     companion object : PixLyzerBlockFactory<BedBlock> {
