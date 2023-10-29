@@ -27,10 +27,10 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
-    override fun createRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*>? {
+    override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): BlockEntityRenderer<*>? {
         // TODO: remove that junk code
         val model: BakedSkeletalModel?
-        val prefix = blockState.block.identifier.path.removeSuffix("shulker_box")
+        val prefix = state.block.identifier.path.removeSuffix("shulker_box")
         if (prefix.endsWith("_")) {
             // colored
             val color = DyeColors[prefix.removeSuffix("_")]
@@ -40,7 +40,7 @@ class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
             model = context.models.skeletal[ShulkerBoxRenderer.NAME]
         }
         if (model == null) return null
-        return ShulkerBoxRenderer(this, context, blockState, blockPosition, model, light)
+        return ShulkerBoxRenderer(this, context, state, position, model, light)
     }
 
     companion object : BlockEntityFactory<ShulkerBoxBlockEntity> {

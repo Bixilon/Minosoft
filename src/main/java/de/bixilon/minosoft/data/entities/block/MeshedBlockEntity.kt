@@ -32,7 +32,7 @@ abstract class MeshedBlockEntity(connection: PlayConnection) : BlockEntity(conne
         return renderer
     }
 
-    override fun createRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*> {
+    override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): BlockEntityRenderer<*> {
         throw IllegalAccessException()
     }
 

@@ -40,5 +40,5 @@ abstract class BlockEntity(
         return this.renderer
     }
 
-    protected open fun createRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? = null
+    protected open fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? = null
 }

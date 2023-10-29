@@ -18,13 +18,16 @@ import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class EnderChestBlock(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : Block(identifier, settings), ChestBlock<EnderChestBlockEntity>, PickaxeRequirement {
+open class EnderChestBlock(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : Block(identifier, settings), ChestBlock<EnderChestBlockEntity>, PickaxeRequirement, BlockWithItem<Item> {
     override val blockEntity: BlockEntityType<EnderChestBlockEntity> = this::blockEntity.inject(this)
+    override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 22.5f
 
     companion object : BlockFactory<EnderChestBlock> {

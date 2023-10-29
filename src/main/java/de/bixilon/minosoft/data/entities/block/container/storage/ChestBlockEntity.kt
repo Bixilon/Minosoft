@@ -28,15 +28,15 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
-    override fun createRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*>? {
-        val type: ChestTypes = blockState[BlockProperties.CHEST_TYPE]
+    override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): BlockEntityRenderer<*>? {
+        val type: ChestTypes = state[BlockProperties.CHEST_TYPE]
         if (type == ChestTypes.SINGLE) {
-            return SingleChestRenderer(this, context, blockState, blockPosition, context.models.skeletal[getSingleModel()] ?: return null, light)
+            return SingleChestRenderer(this, context, state, position, context.models.skeletal[getSingleModel()] ?: return null, light)
         }
 
         if (type == ChestTypes.LEFT) {
             // only left chest will be rendered (the model is the double chest), reduces drawing overhead
-            return DoubleChestRenderer(this, context, blockState, blockPosition, context.models.skeletal[getDoubleModel()] ?: return null, light)
+            return DoubleChestRenderer(this, context, state, position, context.models.skeletal[getDoubleModel()] ?: return null, light)
         }
 
         return null

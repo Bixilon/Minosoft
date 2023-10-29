@@ -56,8 +56,10 @@ class EntityRendererManagerTest {
         val entity = renderer.createPig()
         assertEquals(renderer.size, 0)
         renderer.renderer.connection.world.entities.add(1, null, entity)
+        renderer.renderer.queue.work()
         assertEquals(renderer.size, 1)
         renderer.renderer.connection.world.entities.remove(1)
+        renderer.renderer.queue.work()
         assertEquals(renderer.size, 0)
     }
 
@@ -70,13 +72,17 @@ class EntityRendererManagerTest {
         assertEquals(renderer.size, 0)
         renderer.renderer.connection.world.entities.add(1, null, e1)
         renderer.renderer.connection.world.entities.add(2, null, e2)
+        renderer.renderer.queue.work()
         assertEquals(renderer.size, 2)
         renderer.renderer.connection.world.entities.add(3, null, e3)
+        renderer.renderer.queue.work()
         assertEquals(renderer.size, 3)
         renderer.renderer.connection.world.entities.remove(1)
+        renderer.renderer.queue.work()
         assertEquals(renderer.size, 2)
         renderer.renderer.connection.world.entities.remove(2)
         renderer.renderer.connection.world.entities.remove(3)
+        renderer.renderer.queue.work()
         assertEquals(renderer.size, 0)
     }
 }

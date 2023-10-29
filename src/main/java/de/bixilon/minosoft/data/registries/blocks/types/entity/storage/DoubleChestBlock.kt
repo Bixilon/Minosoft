@@ -32,10 +32,7 @@ interface DoubleChestBlock<T : StorageBlockEntity> : ChestBlock<T> {
         if (type == ChestTypes.SINGLE) return ChestBlock.SINGLE
         var facing = state[BlockProperties.FACING] // TODO: HORIZONTAL_FACING
 
-        if (type == ChestTypes.LEFT) {
-            facing = facing.rotateY(1)
-        }
-        // TODO: verify
+        facing = facing.rotateY(if (type == ChestTypes.LEFT) 1 else -1)
         // TODO: legacy: check if neighbour block is chest
 
         return SHAPES[facing.ordinal - Directions.SIDE_OFFSET]
