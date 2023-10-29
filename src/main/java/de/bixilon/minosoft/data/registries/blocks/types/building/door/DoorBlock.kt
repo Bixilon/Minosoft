@@ -193,6 +193,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
 
             val other = if (half == Halves.UPPER) neighbours[Directions.O_DOWN] else neighbours[Directions.O_UP]
             if (other !is PropertyBlockState || other.block !is DoorBlock) return null
+            if (other[HALF] == half) return null // double door is invalid
 
             val top = if (half == Halves.UPPER) state else other
             val bottom = if (half == Halves.UPPER) other else state
