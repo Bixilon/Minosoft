@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
-import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -44,7 +43,6 @@ class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
 
             connection.world.entities.remove(entityId)
-            connection.events.fire(EntityDestroyEvent(connection, entity))
         }
     }
 

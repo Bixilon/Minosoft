@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting
 import de.bixilon.minosoft.datafixer.rls.MotifFixer
-import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -60,8 +59,6 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         connection.world.entities.add(entityId, entityUUID, entity)
-
-        connection.events.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

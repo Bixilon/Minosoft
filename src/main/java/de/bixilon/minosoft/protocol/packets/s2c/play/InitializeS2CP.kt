@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
-import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.channel.vanila.BrandHandler.sendBrand
@@ -181,7 +180,6 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         connection.world.entities.clear(connection, local = true)
         connection.world.entities.add(entityId, null, playerEntity)
-        connection.events.fire(EntitySpawnEvent(connection, playerEntity))
         if (connection.version.versionId >= ProtocolVersions.V_19W36A && !connection.profiles.rendering.performance.fastBiomeNoise) {
             connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection, hashedSeed)
         }

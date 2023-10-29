@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
-import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -190,7 +189,6 @@ class WorldEntities : Iterable<Entity> {
         this.lock.lock()
         for (entity in this.entities) {
             if (!local && entity is LocalPlayerEntity) continue
-            connection.events.fire(EntityDestroyEvent(connection, entity))
             entityIdMap.remove(entity)?.let { idEntityMap.remove(it) }
             entityUUIDMap.remove(entity)?.let { uuidEntityMap.remove(it) }
         }
