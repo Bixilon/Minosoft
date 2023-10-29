@@ -23,8 +23,8 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 open class PlayerModel(
     renderer: PlayerRenderer<*>,
     model: BakedSkeletalModel,
-) : BipedModel<PlayerRenderer<*>>(renderer, model) {
-    override val shader get() = manager.playerShader
+) : HumanModel<PlayerRenderer<*>>(renderer, model) {
+    private val shader = manager.playerShader
     private var skinParts = 0xFF
 
     init {
@@ -35,10 +35,12 @@ open class PlayerModel(
     override fun draw() {
         val renderer = this.renderer.unsafeCast<PlayerRenderer<*>>()
         manager.context.system.reset(faceCulling = renderer.entity is LocalPlayerEntity) // TODO: and !renderSelf
+
         shader.use()
         shader.texture = renderer.skin?.shaderId ?: renderer.renderer.context.textures.debugTexture.shaderId
         shader.light = renderer.light.value
         shader.skinParts = this.skinParts
+
         manager.upload(instance)
         instance.model.mesh.draw()
     }

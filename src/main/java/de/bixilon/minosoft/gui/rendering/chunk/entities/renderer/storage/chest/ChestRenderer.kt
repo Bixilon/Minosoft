@@ -36,9 +36,9 @@ abstract class ChestRenderer(
     }
 
     override fun update(position: BlockPosition, state: BlockState, light: Int) {
+        super.update(position, state, light)
         val rotation = ROTATION[state.getFacing().ordinal - Directions.SIDE_OFFSET]
         skeletal?.update(position, rotation)
-        skeletal?.light = light
     }
 
     override fun open() {

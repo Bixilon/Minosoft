@@ -23,9 +23,10 @@ abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
     override var state: BlockState,
     protected val skeletal: SkeletalInstance?,
 ) : BlockEntityRenderer<E> {
+    override var light = 0xFF
 
     override fun draw(context: RenderContext) {
-        skeletal?.draw()
+        skeletal?.draw(light)
     }
 
     open fun open() = Unit

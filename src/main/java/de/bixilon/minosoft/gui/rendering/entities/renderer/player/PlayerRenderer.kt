@@ -38,7 +38,6 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
 
     init {
         entity.additional::properties.observe(this) { refresh = true }
-        // TODO: observe entity layers?
     }
 
 

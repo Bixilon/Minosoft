@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.shader
 
-import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.shader.types.AnimatedShader
-import de.bixilon.minosoft.gui.rendering.shader.types.LightShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-class SkeletalShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer), AnimatedShader, LightShader {
-    var light by uniform("uLight", 0xFF, NativeShader::setUInt)
-    override val lightmap: LightmapBuffer by lightmap() // TODO: remove (interpolate on cpu)
+class SkeletalShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer), AnimatedShader {
+    var light by uniform("uLight", ChatColors.WHITE) { shader, name, value -> shader.setUInt(name, value.rgb) }
 }

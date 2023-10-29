@@ -45,10 +45,10 @@ class ShulkerBoxRenderer(
     }
 
     override fun update(position: BlockPosition, state: BlockState, light: Int) {
+        super.update(position, state, light)
         val facing = state.getFacing()
         val rotation = ROTATIONS[facing.ordinal]
         skeletal?.update(position, rotation)
-        skeletal?.light = light
     }
 
     override fun open() {

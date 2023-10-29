@@ -11,26 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.entities
+package de.bixilon.minosoft.gui.rendering.skeletal.shader
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
+import de.bixilon.minosoft.gui.rendering.shader.types.AnimatedShader
+import de.bixilon.minosoft.gui.rendering.shader.types.LightShader
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-interface BlockEntityRenderer<E : BlockEntity> {
-    val enabled: Boolean get() = true
-
-    var state: BlockState
-    var light: Int
-
-    fun draw(context: RenderContext) = Unit
-
-    fun unload() = Unit
-    fun load() = Unit
-
-    fun update(position: BlockPosition, state: BlockState, light: Int) {
-        this.state = state
-        this.light = light
-    }
+class LightmapSkeletalShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer), AnimatedShader, LightShader {
+    var light by uniform("uLight", 0xFF, NativeShader::setUInt)
+    override val lightmap: LightmapBuffer by lightmap()
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,26 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.entities
+#version 330 core
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.RenderContext
+layout (location = 0) in vec3 vinPosition;
+layout (location = 1) in vec2 vinUV;
+layout (location = 2) in float vinTransformNormal; // transform (0x7F000), normal (0xFFF)
+layout (location = 3) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
 
-interface BlockEntityRenderer<E : BlockEntity> {
-    val enabled: Boolean get() = true
+#include "minosoft:animation/header_vertex"
+#include "minosoft:skeletal/vertex"
 
-    var state: BlockState
-    var light: Int
 
-    fun draw(context: RenderContext) = Unit
+#include "minosoft:animation/buffer"
+#include "minosoft:animation/main_vertex"
 
-    fun unload() = Unit
-    fun load() = Unit
 
-    fun update(position: BlockPosition, state: BlockState, light: Int) {
-        this.state = state
-        this.light = light
-    }
+#include "minosoft:color"
+
+uniform uint uLight;
+
+
+void main() {
+    run_skeletal(floatBitsToUint(vinTransformNormal), vinPosition);
+    run_animation();
+
+    finTintColor *= getRGBColor(uLight & 0xFFFFFFu);
 }

@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -30,10 +31,17 @@ class SkeletalInstance(
 ) {
     val animation = AnimationManager(this)
     var position = Mat4()
-    var light = 0xFF
 
 
-    fun draw() {
+    fun draw(light: Int) {
+        context.system.reset(faceCulling = false)
+        val shader = context.skeletal.lightmapShader
+        shader.use()
+        shader.light = light
+        draw(shader)
+    }
+
+    fun draw(light: RGBColor) {
         context.system.reset(faceCulling = false)
         val shader = context.skeletal.shader
         shader.use()

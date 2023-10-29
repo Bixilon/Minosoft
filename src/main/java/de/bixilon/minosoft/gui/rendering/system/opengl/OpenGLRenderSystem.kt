@@ -65,11 +65,7 @@ class OpenGLRenderSystem(
     var blendingDestination = BlendingFunctions.ZERO
         private set
 
-    override var quadType: PrimitiveTypes = if (context.preferQuads) {
-        PrimitiveTypes.QUAD
-    } else {
-        PrimitiveTypes.TRIANGLE
-    }
+    override var quadType: PrimitiveTypes = if (context.preferQuads) PrimitiveTypes.QUAD else PrimitiveTypes.TRIANGLE
     override var quadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.QUAD else MeshOrder.TRIANGLE
     override var legacyQuadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.LEGACY_QUAD else MeshOrder.LEGACY_TRIANGLE
     var boundVao = -1

@@ -50,6 +50,7 @@ class SignBlockEntityRenderer(
     val context: RenderContext,
     override var state: BlockState,
 ) : MeshedEntityRenderer<SignBlockEntity> {
+    override var light = 0xFF
     override val enabled: Boolean get() = false
 
     private fun getRotation(): Float {

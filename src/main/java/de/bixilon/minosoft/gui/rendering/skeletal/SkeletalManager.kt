@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.renderer.player.PlayerShader
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.shader.LightmapSkeletalShader
 import de.bixilon.minosoft.gui.rendering.skeletal.shader.SkeletalShader
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 
@@ -25,7 +26,8 @@ class SkeletalManager(
     val context: RenderContext,
 ) {
     private val uniformBuffer = context.system.createFloatUniformBuffer(memAllocFloat(MAX_TRANSFORMS * Mat4.length))
-    val shader = context.system.createShader(minosoft("skeletal")) { SkeletalShader(it, uniformBuffer) }
+    val shader = context.system.createShader(minosoft("skeletal/normal")) { SkeletalShader(it, uniformBuffer) }
+    val lightmapShader = context.system.createShader(minosoft("skeletal/lightmap")) { LightmapSkeletalShader(it, uniformBuffer) }
     private val temp = Mat4()
 
     val playerShader = context.system.createShader(minosoft("entities/player")) { PlayerShader(it, uniformBuffer) } // TODO: move somewhere else
@@ -36,20 +38,13 @@ class SkeletalManager(
 
     fun postInit() {
         shader.load()
+        lightmapShader.load()
         playerShader.load()
-        shader.light = 0xFF
     }
 
     fun upload(instance: SkeletalInstance) {
         instance.transform.pack(uniformBuffer.buffer, instance.position, temp)
         uniformBuffer.upload(0, instance.model.transformCount * Mat4.length)
-    }
-
-    fun draw(instance: SkeletalInstance, light: Int) {
-        shader.light = light
-
-
-        instance.model.mesh.draw()
     }
 
     companion object {
