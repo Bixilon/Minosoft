@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util.account
 
 import de.bixilon.kutil.uuid.UUIDUtil.trim
 import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftAPIException
+import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftNotPurchasedError
 import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftProfile
 import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 import de.bixilon.minosoft.util.account.minecraft.MinecraftTokens
@@ -36,11 +37,11 @@ object AccountUtil {
             "Authorization" to "Bearer ${token.accessToken}",
         ))
 
-        if (response.statusCode != 200) {
-            throw MinecraftAPIException(response) // 404 means that the account has not purchased minecraft
+        when (response.statusCode) {
+            404 -> throw MinecraftNotPurchasedError()
+            200 -> return Jackson.MAPPER.convertValue(response.body, MinecraftProfile::class.java)
+            else -> throw MinecraftAPIException(response)
         }
-
-        return Jackson.MAPPER.convertValue(response.body, MinecraftProfile::class.java)
     }
 
     fun joinMojangServer(accessToken: String, profile: UUID, serverId: String) {
