@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface BlockWithEntity<T : BlockEntity> : InteractBlockHandler {
 
-    fun createBlockEntity(connection: PlayConnection): BlockEntity?
+    fun createBlockEntity(connection: PlayConnection): T?
 
     override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?) = InteractionResults.SUCCESS
 }
