@@ -38,11 +38,13 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
 
     fun init() {
         renderer.connection.world.entities::entities.observeSet(this) {
-            for (entity in it.adds) {
-                this += entity
-            }
-            for (entity in it.removes) {
-                this -= entity
+            renderer.queue.add {
+                for (entity in it.adds) {
+                    this += entity
+                }
+                for (entity in it.removes) {
+                    this -= entity
+                }
             }
         }
     }
