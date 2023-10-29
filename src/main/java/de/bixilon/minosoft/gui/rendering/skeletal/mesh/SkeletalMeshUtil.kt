@@ -14,17 +14,21 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.mesh
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import kotlin.math.abs
 
 object SkeletalMeshUtil {
-    private fun encodePart(part: Float): Int {
-        val unsigned = (part + 1.0f) / 2.0f // remove negative sign
-        return (unsigned * 15.0f).toInt() and 0x0F
+
+    private fun encodeY(part: Float): Int {
+        if (part <= -1.0f) return 0
+        if (part >= 1.0f) return 0x0F
+        if (part < 0.0f) return ((part + 1.0f) * 8.0f).toInt() and 0x0F
+        return 8 + (part * 7.0f).toInt()
     }
 
     fun encodeNormal(normal: Vec3): Int {
-        val x = encodePart(normal.x)
-        val y = encodePart(normal.y)
-        val z = encodePart(normal.z)
+        val x = (abs(normal.x) * 15.0f).toInt()
+        val y = encodeY(normal.y)
+        val z = (abs(normal.z) * 15.0f).toInt()
 
         return (y shl 8) or (z shl 4) or (x)
     }

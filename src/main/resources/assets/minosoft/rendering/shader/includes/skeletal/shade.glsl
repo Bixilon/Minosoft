@@ -10,16 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+#define DEGREE_90 1.5707964f
 
 float decodeNormalPart(uint data) {
-    return (data / 15.0f) * 2.0f - 1.0f;
+    if (data <= 8u) return (data / 8.0f) - 1.0f;
+    return (data - 8u) / 7.0f;
 }
 
 vec3 decodeNormal(uint normal) {
     uint x = normal & 0x0Fu;
     uint y = normal >> 8u & 0x0Fu;
     uint z = normal >> 4u & 0x0Fu;
-    return vec3(decodeNormalPart(x), decodeNormalPart(y), decodeNormalPart(z));
+    return vec3(x / 15.0f, decodeNormalPart(y), z / 15.0f);
 }
 
 vec3 transformNormal(vec3 normal, mat4 transform) {
@@ -27,12 +29,26 @@ vec3 transformNormal(vec3 normal, mat4 transform) {
     return mat3(transform) * normal;
 }
 
-float getShade(vec3 normal) {
-    // TODO: interpolate between 3 sides
-    if (normal.y < -0.5f) return 0.5f;
-    if (normal.y > 0.5f) return 1.0f;
-    if (normal.x < -0.5f || normal.x > 0.5f) return 0.6f;
-    if (normal.z < -0.5f || normal.z > 0.5f) return 0.8f;
+float interpolateShade(float delta, float max) {
+    if (delta < 0.0f) delta = -delta;
+    if (delta <= 0.0f) return 0.0f;
+    if (delta >= 1.0f) return max;
+    return delta * max;
+}
 
-    return 1.0f;
+float getShade(vec3 normal) {
+    float aX = asin(normal.x) / DEGREE_90;
+    float aY = asin(normal.y) / DEGREE_90;
+    float aZ = asin(normal.z) / DEGREE_90;
+
+    float x = interpolateShade(aX, 0.6f);
+    float y;
+    if (normal.y < 0.0f) {
+        y = interpolateShade(-aY, 0.5f);
+    } else {
+        y = interpolateShade(aY, 1.0f);
+    }
+    float z = interpolateShade(aZ, 0.8f);
+
+    return (x + y + z);
 }
