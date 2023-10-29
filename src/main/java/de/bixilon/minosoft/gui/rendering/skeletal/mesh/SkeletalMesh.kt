@@ -50,4 +50,8 @@ class SkeletalMesh(context: RenderContext, initialCacheSize: Int = 1000) : Abstr
     ) {
         companion object : MeshStruct(SkeletalMeshStruct::class)
     }
+
+    companion object : SkeletalMeshBuilder {
+        override fun buildMesh(context: RenderContext) = SkeletalMesh(context)
+    }
 }

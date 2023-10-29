@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
 import de.bixilon.minosoft.gui.rendering.entities.model.biped.PlayerModel
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMeshBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
@@ -96,7 +98,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     }
 
 
-    companion object : RegisteredEntityModelFactory<PlayerEntity>, Identified {
+    companion object : RegisteredEntityModelFactory<PlayerEntity>, Identified, SkeletalMeshBuilder {
         override val identifier get() = PlayerEntity.identifier
         private val WIDE = minecraft("entities/player/wide").sModel()
         private val SLIM = minecraft("entities/player/slim").sModel()
@@ -104,12 +106,12 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         private val SKIN = minecraft("skin")
 
         override fun create(renderer: EntitiesRenderer, entity: PlayerEntity) = PlayerRenderer(renderer, entity)
+        override fun buildMesh(context: RenderContext) = PlayerModelMesh(context)
 
         override fun register(loader: ModelLoader) {
             val override = mapOf(SKIN to loader.context.textures.debugTexture) // disable textures, they all dynamic
-            loader.skeletal.register(WIDE, override = override, mesh = { PlayerModelMesh(it) })
-            loader.skeletal.register(SLIM, override = override, mesh = { PlayerModelMesh(it) })
-            // TODO: load with custom mesh, load custom shader
+            loader.skeletal.register(WIDE, override = override, mesh = this)
+            loader.skeletal.register(SLIM, override = override, mesh = this)
         }
     }
 }
