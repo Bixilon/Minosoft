@@ -274,7 +274,9 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun <T : RegistryItem> readLegacyRegistryItem(registry: Registry<T>, fixer: ResourceLocationFixer? = null): T? {
-        return registry[readResourceLocation()]
+        var name = readResourceLocation()
+        fixer?.fix(name)?.let { name = it }
+        return registry[name]
     }
 
     fun <T : Enum<*>> readEnum(registry: EnumRegistry<T>): T? {
