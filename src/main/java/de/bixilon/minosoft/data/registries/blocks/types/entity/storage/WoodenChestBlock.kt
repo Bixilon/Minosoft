@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.types.entity.storage
 
 import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
 import de.bixilon.minosoft.data.entities.block.container.storage.TrappedChestBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.axe.AxeRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class WoodenChestBlock<T : ChestBlockEntity>(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, AxeRequirement, DoubleChestBlock<T> {
     override val hardness: Float get() = 2.5f
@@ -32,7 +32,8 @@ abstract class WoodenChestBlock<T : ChestBlockEntity>(identifier: ResourceLocati
 
 
     open class Chest(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoodenChestBlock<ChestBlockEntity>(identifier, settings) {
-        override val blockEntity: BlockEntityType<ChestBlockEntity> = this::blockEntity.inject(this)
+
+        override fun createBlockEntity(connection: PlayConnection) = ChestBlockEntity(connection)
 
         companion object : BlockFactory<Chest> {
             override val identifier = minecraft("chest")
@@ -42,7 +43,8 @@ abstract class WoodenChestBlock<T : ChestBlockEntity>(identifier: ResourceLocati
     }
 
     open class TrappedChest(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : WoodenChestBlock<TrappedChestBlockEntity>(identifier, settings) {
-        override val blockEntity: BlockEntityType<TrappedChestBlockEntity> = this::blockEntity.inject(this)
+
+        override fun createBlockEntity(connection: PlayConnection) = TrappedChestBlockEntity(connection)
 
         companion object : BlockFactory<TrappedChest> {
             override val identifier = minecraft("trapped_chest")

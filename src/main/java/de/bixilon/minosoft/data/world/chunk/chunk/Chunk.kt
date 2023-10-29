@@ -99,7 +99,7 @@ class Chunk(
         if (block.block !is BlockWithEntity<*>) {
             return null
         }
-        blockEntity = block.block.blockEntity?.build(connection) ?: return null
+        blockEntity = block.block.createBlockEntity(connection) ?: return null
         (this.getOrPut(sectionHeight) ?: return null).blockEntities[x, inSectionHeight, z] = blockEntity
 
         return blockEntity

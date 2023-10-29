@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.types.entity.storage
 
 import de.bixilon.minosoft.data.colors.DyeColors
 import de.bixilon.minosoft.data.entities.block.container.storage.ShulkerBoxBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -26,12 +25,13 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), StorageBlock<ShulkerBoxBlockEntity>, FullOpaqueBlock, BlockWithItem<Item> {
-    override val blockEntity: BlockEntityType<ShulkerBoxBlockEntity> = this::blockEntity.inject(this)
     override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 2.0f
 
+    override fun createBlockEntity(connection: PlayConnection) = ShulkerBoxBlockEntity(connection)
 
     companion object : BlockFactory<ShulkerBoxBlock> {
         override val identifier = minecraft("shulker_box")

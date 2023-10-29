@@ -17,13 +17,13 @@ import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface BlockWithEntity<T : BlockEntity> : InteractBlockHandler {
-    val blockEntity: BlockEntityType<T>?
+
+    fun createBlockEntity(connection: PlayConnection): BlockEntity?
 
     override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?) = InteractionResults.SUCCESS
 }
