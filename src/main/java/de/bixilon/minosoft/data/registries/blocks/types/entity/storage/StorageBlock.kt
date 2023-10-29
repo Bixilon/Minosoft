@@ -11,23 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.storage
+package de.bixilon.minosoft.data.registries.blocks.types.entity.storage
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
+import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class ChestBlock<T : ChestBlockEntity>(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : StorageBlock<T>(resourceLocation, registries, data), InteractBlockHandler {
-
+interface StorageBlock<T : StorageBlockEntity> : BlockWithEntity<T>, InteractBlockHandler {
 
     override fun interact(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack?): InteractionResults {
         if (!DebugOptions.FORCE_CHEST_ANIMATION) return super.interact(connection, target, hand, stack)
@@ -36,12 +34,4 @@ open class ChestBlock<T : ChestBlockEntity>(resourceLocation: ResourceLocation, 
         entity.setBlockActionData(0, if (entity.viewing > 0) 0 else 1)
         return InteractionResults.SUCCESS
     }
-
-
-    companion object : PixLyzerBlockFactory<ChestBlock<ChestBlockEntity>> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ChestBlock<ChestBlockEntity> {
-            return ChestBlock(resourceLocation, registries, data)
-        }
-    }
 }
-
