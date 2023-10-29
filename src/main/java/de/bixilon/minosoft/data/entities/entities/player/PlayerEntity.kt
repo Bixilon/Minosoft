@@ -94,8 +94,9 @@ abstract class PlayerEntity(
         for (part in SkinParts.VALUES) {
             if (!flags.isBitMask(part.bitmask)) {
                 skinParts -= part
+            } else {
+                skinParts += part
             }
-            skinParts += part
         }
     }
 

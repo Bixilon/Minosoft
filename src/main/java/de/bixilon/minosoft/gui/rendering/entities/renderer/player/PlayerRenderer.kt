@@ -87,7 +87,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
             SkinModel.WIDE -> WIDE
             SkinModel.SLIM -> SLIM
         }
-        return renderer.context.models.skeletal[WIDE] // TODO: implement both models and use accordingly
+        return renderer.context.models.skeletal[name]
     }
 
     override fun onDynamicTextureChange(texture: DynamicTexture): Boolean {

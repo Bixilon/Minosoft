@@ -49,7 +49,10 @@ class PlayerModelMesh(context: RenderContext, initialCacheSize: Int = 1000) : Ab
     private fun String.getSkinPart(): SkinParts? = when (this) {
         "head.hat" -> SkinParts.HAT
         "body.jacket" -> SkinParts.JACKET
-        // TODO
+        "left_leg.pants" -> SkinParts.LEFT_PANTS
+        "right_leg.pants" -> SkinParts.RIGHT_PANTS
+        "left_arm.sleeve" -> SkinParts.LEFT_SLEEVE
+        "right_arm.sleeve" -> SkinParts.RIGHT_SLEEVE
         else -> null
     }
 

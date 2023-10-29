@@ -16,9 +16,12 @@ package de.bixilon.minosoft.data.registries.blocks.types.entity.storage
 import de.bixilon.minosoft.data.colors.DyeColors
 import de.bixilon.minosoft.data.entities.block.container.storage.ShulkerBoxBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.DyedBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.special.FullOpaqueBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -28,7 +31,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.property.FullBlockPropertyRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), StorageBlock<ShulkerBoxBlockEntity>, FullOpaqueBlock, BlockWithItem<Item> {
+open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), StorageBlock<ShulkerBoxBlockEntity>, FullOpaqueBlock, BlockWithItem<Item>, LightedBlock {
     override val item: Item = this::item.inject(identifier)
     override val hardness: Float get() = 2.0f
 
@@ -37,8 +40,11 @@ open class ShulkerBoxBlock(identifier: ResourceLocation, settings: BlockSettings
     }
 
     override fun createBlockEntity(connection: PlayConnection) = ShulkerBoxBlockEntity(connection)
+    override fun getLightProperties(blockState: BlockState) = LIGHT_PROPERTIES
+
 
     companion object : BlockFactory<ShulkerBoxBlock> {
+        val LIGHT_PROPERTIES = CustomLightProperties(true, true, true)
         override val identifier = minecraft("shulker_box")
 
         override fun build(registries: Registries, settings: BlockSettings) = ShulkerBoxBlock(identifier, settings = settings)

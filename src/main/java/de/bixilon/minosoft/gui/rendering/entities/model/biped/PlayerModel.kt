@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.entities.model.biped
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts.Companion.pack
-import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.entities.renderer.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 
@@ -34,7 +33,7 @@ open class PlayerModel(
 
     override fun draw() {
         val renderer = this.renderer.unsafeCast<PlayerRenderer<*>>()
-        manager.context.system.reset(faceCulling = renderer.entity is LocalPlayerEntity) // TODO: and !renderSelf
+        manager.context.system.reset(faceCulling = false) // TODO:  !renderSelf
 
         shader.use()
         shader.texture = renderer.skin?.shaderId ?: renderer.renderer.context.textures.debugTexture.shaderId
