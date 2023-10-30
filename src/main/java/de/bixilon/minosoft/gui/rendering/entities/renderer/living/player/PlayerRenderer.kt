@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.renderer.player
+package de.bixilon.minosoft.gui.rendering.entities.renderer.living.player
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
 import de.bixilon.minosoft.gui.rendering.entities.model.human.PlayerModel
-import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
@@ -31,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 
-open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity), DynamicTextureListener {
+open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity), DynamicTextureListener {
     protected var model: PlayerModel? = null
     var skin: DynamicTexture? = null
     private var refresh = true

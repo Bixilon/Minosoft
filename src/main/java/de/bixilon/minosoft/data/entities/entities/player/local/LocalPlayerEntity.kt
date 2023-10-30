@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.data.registries.effects.attributes.integrated.IntegratedAttributeModifiers
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.EntityModelFactory
-import de.bixilon.minosoft.gui.rendering.entities.renderer.player.LocalPlayerRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.LocalPlayerRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput

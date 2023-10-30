@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.factory
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
-import de.bixilon.minosoft.gui.rendering.entities.renderer.player.PlayerRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

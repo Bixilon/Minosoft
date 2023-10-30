@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.renderer.player
+package de.bixilon.minosoft.gui.rendering.entities.renderer.living.player
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity

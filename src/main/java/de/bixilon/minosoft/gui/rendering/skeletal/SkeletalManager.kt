@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.entities.renderer.player.PlayerShader
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerShader
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.shader.LightmapSkeletalShader
 import de.bixilon.minosoft.gui.rendering.skeletal.shader.SkeletalShader
