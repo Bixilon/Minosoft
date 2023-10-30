@@ -54,6 +54,12 @@ object Mat4Util {
         System.arraycopy(empty.array, 0, array, 0, Mat4.length)
     }
 
+    fun Mat4.rotateXAssign(rad:Float): Mat4 {
+        rotateX(this, rad)
+
+        return this
+    }
+
     fun rotateX(m: Mat4, angle: Float) {
         val c = GLM.cos(angle)
         val s = GLM.sin(angle)

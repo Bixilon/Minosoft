@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateXAssign
 import kotlin.math.sin
 
 class LegAnimator(
@@ -45,13 +47,14 @@ class LegAnimator(
         if (this.maxAngle == 0.0f) return
         val progress = sin((progress - 1.0f) * PIf) * this.maxAngle
 
+        val rad = progress.rad
         left.value
             .translateAssign(left.pivot)
-            .rotateDegreesAssign(Vec3(-progress, 0.0f, 0.0f))
+            .rotateXAssign(-rad)
             .translateAssign(left.nPivot)
         right.value
             .translateAssign(left.pivot)
-            .rotateDegreesAssign(Vec3(progress, 0.0f, 0.0f))
+            .rotateXAssign(rad)
             .translateAssign(left.nPivot)
     }
 

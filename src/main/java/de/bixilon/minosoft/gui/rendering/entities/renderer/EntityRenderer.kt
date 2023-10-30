@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.FLIP_ROTATION
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
@@ -52,7 +53,7 @@ abstract class EntityRenderer<E : Entity>(
         matrix.translateAssign(position)
 
         if (entity.isFlipped()) {
-            matrix.rotateDegreesAssign(Vec3(180.0f, 0.0f, 0.0f)) // TODO: verify
+            matrix.rotateDegreesAssign(FLIP_ROTATION)
         }
     }
 

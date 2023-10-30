@@ -18,6 +18,7 @@ import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts.Companion.pack
 import de.bixilon.minosoft.gui.rendering.entities.renderer.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 
 open class PlayerModel(
     renderer: PlayerRenderer<*>,

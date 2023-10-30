@@ -53,7 +53,7 @@ class EntitySpeed(val entity: Entity) {
     }
 
     private companion object {
-        const val TIME = 0.2f
+        const val TIME = 0.15f
         const val TIME_RATIO = TIME / (ProtocolDefinition.TICK_TIMEf / 1000.0f)
     }
 }

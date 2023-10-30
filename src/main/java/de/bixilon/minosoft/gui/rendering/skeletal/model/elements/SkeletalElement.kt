@@ -48,13 +48,13 @@ data class SkeletalElement(
     private fun bake(context: SkeletalBakeContext, path: String) {
         val context = context.copy(this)
 
-        for ((name, child) in children) {
-            child.bake(context, "$path.$name")
-        }
 
         val transform = context.transform.id
         for ((direction, face) in faces) {
             face.bake(context, direction, this, transform, path)
+        }
+        for ((name, child) in children) {
+            child.bake(context, "$path.$name")
         }
     }
 }

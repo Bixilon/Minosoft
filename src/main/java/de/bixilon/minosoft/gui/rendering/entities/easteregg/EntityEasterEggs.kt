@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.easteregg
 
+import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 
 object EntityEasterEggs {
     private val FLIPPED = setOf("Dinnerbone", "Grumm")
+    val FLIP_ROTATION = Vec3(0.0f, 0.0f, 180.0f.rad)
 
     fun Entity.isFlipped(): Boolean {
         var name = this.customName?.message
