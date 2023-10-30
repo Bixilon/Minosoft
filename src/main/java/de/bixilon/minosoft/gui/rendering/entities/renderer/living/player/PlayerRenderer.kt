@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living.player
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.data.registries.identified.Identified
@@ -96,6 +98,14 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         return true
     }
 
+    override fun updateMatrix(delta: Float) {
+        super.updateMatrix(delta)
+        when (entity.pose) {
+            Poses.SNEAKING -> matrix.translateAssign(SNEAKING_OFFSET) // TODO: interpolate
+            else -> Unit
+        }
+    }
+
 
     companion object : RegisteredEntityModelFactory<PlayerEntity>, Identified, SkeletalMeshBuilder {
         override val identifier get() = PlayerEntity.identifier
@@ -103,6 +113,8 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         private val SLIM = minecraft("entities/player/slim").sModel()
 
         private val SKIN = minecraft("skin")
+
+        private val SNEAKING_OFFSET = Vec3(0.0f, -0.125f, 0.0f)
 
         override fun create(renderer: EntitiesRenderer, entity: PlayerEntity) = PlayerRenderer(renderer, entity)
         override fun buildMesh(context: RenderContext) = PlayerModelMesh(context)

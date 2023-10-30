@@ -13,8 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living
 
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
 
-abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity)
+abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity) {
+
+    override fun updateMatrix(delta: Float) {
+        super.updateMatrix(delta)
+        when (entity.pose) {
+            Poses.SLEEPING -> matrix.rotateDegreesAssign(Vec3(90, 0, 0)) // TODO
+            else -> Unit
+        }
+    }
+}
