@@ -64,6 +64,7 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun load(latch: AbstractLatch?) {
         loader.context.connection.registries.block.async {
+            if (it.model != null) return@async // model already set
             val model: DirectBlockModel
             try {
                 model = loadState(it) ?: return@async
