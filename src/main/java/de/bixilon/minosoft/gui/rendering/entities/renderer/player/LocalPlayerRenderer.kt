@@ -17,7 +17,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
-import de.bixilon.minosoft.gui.rendering.entities.model.biped.PlayerModel
+import de.bixilon.minosoft.gui.rendering.entities.model.human.PlayerModel
 
 open class LocalPlayerRenderer(renderer: EntitiesRenderer, entity: LocalPlayerEntity) : PlayerRenderer<LocalPlayerEntity>(renderer, entity) {
 

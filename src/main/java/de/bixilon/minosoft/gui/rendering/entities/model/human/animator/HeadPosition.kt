@@ -11,11 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.model.biped.animator
+package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.entities.model.biped.HumanModel
+import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY

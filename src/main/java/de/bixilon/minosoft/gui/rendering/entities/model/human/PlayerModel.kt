@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.model.biped
+package de.bixilon.minosoft.gui.rendering.entities.model.human
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet

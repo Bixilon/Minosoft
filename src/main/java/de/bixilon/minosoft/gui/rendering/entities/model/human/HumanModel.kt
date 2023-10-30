@@ -11,17 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.model.biped
+package de.bixilon.minosoft.gui.rendering.entities.model.human
 
 import de.bixilon.minosoft.gui.rendering.entities.feature.SkeletalFeature
-import de.bixilon.minosoft.gui.rendering.entities.model.biped.animator.HeadPosition
-import de.bixilon.minosoft.gui.rendering.entities.model.biped.animator.LegAnimator
+import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.HeadPosition
+import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.LegAnimator
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.util.EntitySpeed
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 
 abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkeletalModel) : SkeletalFeature(renderer, model) {
     val head = instance.transform.children["head"]?.let { HeadPosition(this, it) }
     val leg = LegAnimator(this, instance.transform.children["left_leg"]!!, instance.transform.children["right_leg"]!!)
+
+    val speed = EntitySpeed(renderer.entity)
 
     override fun updatePosition() {
         super.updatePosition()
@@ -29,6 +32,7 @@ abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkelet
     }
 
     override fun update(millis: Long, delta: Float) {
+        speed.update(delta)
         super.update(millis, delta)
         leg.update(delta)
     }

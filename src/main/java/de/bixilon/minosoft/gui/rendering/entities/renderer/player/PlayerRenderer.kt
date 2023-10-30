@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
-import de.bixilon.minosoft.gui.rendering.entities.model.biped.PlayerModel
+import de.bixilon.minosoft.gui.rendering.entities.model.human.PlayerModel
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
