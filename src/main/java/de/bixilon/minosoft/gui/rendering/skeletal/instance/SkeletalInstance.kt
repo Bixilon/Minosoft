@@ -60,14 +60,15 @@ class SkeletalInstance(
 
     fun update(position: Vec3, rotation: Vec3, pivot: Vec3 = Vec3.EMPTY_INSTANCE, matrix: Mat4? = null) {
         this.matrix.reset()
-        if (matrix != null) {
-            this.matrix = this.matrix * matrix
-        }
         this.matrix
             .translateAssign(position)
             .translateAssign(pivot)
             .rotateRadAssign(rotation)
             .translateAssign(-pivot)
+
+        if (matrix != null) {
+            this.matrix = matrix * this.matrix
+        }
     }
 
     fun update(rotation: Vec3, matrix: Mat4? = null) {

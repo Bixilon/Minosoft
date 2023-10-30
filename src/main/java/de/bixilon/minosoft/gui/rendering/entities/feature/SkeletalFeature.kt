@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
@@ -36,7 +37,7 @@ open class SkeletalFeature(
 
     protected open fun updatePosition() {
         val renderInfo = renderer.info
-        val yaw = renderInfo.rotation.yaw
+        var yaw = renderInfo.rotation.yaw
         val position = renderInfo.position
 
         var changes = 0
@@ -49,7 +50,9 @@ open class SkeletalFeature(
             this.yaw = yaw
         }
         if (changes == 0) return
-
+        if (renderer.entity.isFlipped()) {
+            yaw *= -1.0f
+        }
         val rotation = Vec3(0.0f, (EntityRotation.HALF_CIRCLE_DEGREE - yaw).rad, 0.0f)
         instance.update(rotation, renderer.matrix)
     }

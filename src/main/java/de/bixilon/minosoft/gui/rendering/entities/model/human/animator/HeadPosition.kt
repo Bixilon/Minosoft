@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
@@ -31,6 +32,9 @@ class HeadPosition(
 
         val pitch = info.rotation.pitch
         this.rotation.x = -pitch.rad
+        if (model.renderer.entity.isFlipped()) {
+            this.rotation.x = -this.rotation.x // TODO: not 100% correct
+        }
         transform.value
             .translateAssign(transform.pivot)
             .rotateRadAssign(this.rotation)

@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
 import de.bixilon.minosoft.gui.rendering.entities.hitbox.HitboxFeature
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.util.interpolate.Interpolator
 
 abstract class EntityRenderer<E : Entity>(
@@ -53,7 +53,9 @@ abstract class EntityRenderer<E : Entity>(
         matrix.translateAssign(position)
 
         if (entity.isFlipped()) {
-            matrix.rotateDegreesAssign(FLIP_ROTATION)
+            matrix
+                .translateAssign(Vec3(0.0f, entity.dimensions.y + 0.2f, 0.0f))
+                .rotateRadAssign(FLIP_ROTATION)
         }
     }
 

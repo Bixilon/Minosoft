@@ -21,9 +21,11 @@ import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 
 object EntityEasterEggs {
     private val FLIPPED = setOf("Dinnerbone", "Grumm")
-    val FLIP_ROTATION = Vec3(0.0f, 0.0f, 180.0f.rad)
+    val FLIP_ROTATION = Vec3(0, 0.0f, 180.0f.rad)
+    const val FLIP_ENABLED = true
 
     fun Entity.isFlipped(): Boolean {
+        if (!FLIP_ENABLED) return false
         var name = this.customName?.message
         if (name == null && this is PlayerEntity) {
             name = additional.name
