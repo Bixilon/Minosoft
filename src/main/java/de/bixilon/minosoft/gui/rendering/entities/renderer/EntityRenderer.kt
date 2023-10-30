@@ -19,10 +19,12 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
 import de.bixilon.minosoft.gui.rendering.entities.hitbox.HitboxFeature
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
 import de.bixilon.minosoft.util.interpolate.Interpolator
 
 abstract class EntityRenderer<E : Entity>(
@@ -48,6 +50,10 @@ abstract class EntityRenderer<E : Entity>(
         val position = Vec3(entity.renderInfo.position - renderer.context.camera.offset.offset)
         matrix.reset()
         matrix.translateAssign(position)
+
+        if (entity.isFlipped()) {
+            matrix.rotateDegreesAssign(Vec3(180.0f, 0.0f, 0.0f)) // TODO: verify
+        }
     }
 
     open fun update(millis: Long) {
