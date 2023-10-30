@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.matthiasmann.twl.utils.PNGDecoder
@@ -35,7 +35,7 @@ object TextureUtil {
         return this.extend(prefix = "textures/", suffix = ".png")
     }
 
-    fun TextureTransparencies.getMesh(mesh: ChunkMesh): SingleChunkMesh {
+    fun TextureTransparencies.getMesh(mesh: ChunkMeshes): ChunkMesh {
         return when (this) {
             TextureTransparencies.OPAQUE -> mesh.opaqueMesh
             TextureTransparencies.TRANSLUCENT -> mesh.translucentMesh

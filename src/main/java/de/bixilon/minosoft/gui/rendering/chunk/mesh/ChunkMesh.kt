@@ -13,121 +13,50 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
-import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class ChunkMesh(
-    context: RenderContext,
-    val chunkPosition: Vec2i,
-    val sectionHeight: Int,
-    smallMesh: Boolean = false,
-) {
-    val center: Vec3 = Vec3(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)))
-    var opaqueMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 3000 else 100000)
-    var translucentMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 3000 else 10000, onDemand = true)
-    var transparentMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 3000 else 20000, onDemand = true)
-    var textMesh: SingleChunkMesh? = SingleChunkMesh(context, if (smallMesh) 5000 else 50000, onDemand = true)
-    var blockEntities: ArrayList<BlockEntityRenderer<*>>? = null
+class ChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, ChunkMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand), Comparable<ChunkMesh> {
+    var distance: Float = 0.0f // Used for sorting
 
-    // used for frustum culling
-    val minPosition = Vec3i(16)
-    val maxPosition = Vec3i(0)
+    override val order = context.system.quadOrder
 
-    fun finish() {
-        this.opaqueMesh?.finish()
-        this.translucentMesh?.finish()
-        this.transparentMesh?.finish()
-        this.textMesh?.finish()
+    fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, light: Int) {
+        data.ensureSize(ChunkMeshStruct.FLOATS_PER_VERTEX)
+        val transformedUV = texture.transformUV(uv).array
+        data.add(position)
+        data.add(transformedUV)
+        data.add(
+            texture.shaderId.buffer(),
+            (((light shl 24) or tintColor).buffer())
+        )
     }
 
-    @Synchronized
-    fun load() {
-        this.opaqueMesh?.load()
-        this.translucentMesh?.load()
-        this.transparentMesh?.load()
-        this.textMesh?.load()
-        val blockEntities = this.blockEntities
-        if (blockEntities != null) {
-            for (blockEntity in blockEntities) {
-                blockEntity.load()
-            }
-        }
+    inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, shaderTextureId: Float, lightTint: Float) {
+        data.add(
+            x, y, z,
+            u, v,
+            shaderTextureId, lightTint,
+        )
     }
 
-    @Synchronized
-    fun clearEmpty(): Int {
-        var meshes = 0
-
-        fun processMesh(mesh: SingleChunkMesh?): Boolean {
-            if (mesh == null) {
-                return false
-            }
-            val data = mesh.data
-            if (data.isEmpty) {
-                if (data is DirectArrayFloatList) {
-                    data.unload()
-                }
-                return true
-            }
-            meshes++
-            return false
-        }
-
-        if (processMesh(opaqueMesh)) opaqueMesh = null
-        if (processMesh(translucentMesh)) translucentMesh = null
-        if (processMesh(transparentMesh)) transparentMesh = null
-
-        if (processMesh(textMesh)) textMesh = null
-
-        blockEntities?.let {
-            if (it.isEmpty()) {
-                blockEntities = null
-            } else {
-                meshes += it.size
-            }
-        }
-        return meshes
+    override fun compareTo(other: ChunkMesh): Int {
+        if (distance < other.distance) return -1
+        if (distance > other.distance) return 1
+        return 0
     }
 
-    @Synchronized
-    fun unload() {
-        opaqueMesh?.unload()
-        translucentMesh?.unload()
-        transparentMesh?.unload()
-        textMesh?.unload()
-
-        val blockEntities = blockEntities
-        if (blockEntities != null) {
-            for (blockEntity in blockEntities) {
-                blockEntity.unload()
-            }
-        }
-    }
-
-    fun addBlock(x: Int, y: Int, z: Int) {
-        if (x < minPosition.x) {
-            minPosition.x = x
-        }
-        if (y < minPosition.y) {
-            minPosition.y = y
-        }
-        if (z < minPosition.z) {
-            minPosition.z = z
-        }
-
-        if (x > maxPosition.x) {
-            maxPosition.x = x
-        }
-        if (y > maxPosition.y) {
-            maxPosition.y = y
-        }
-        if (z > maxPosition.z) {
-            maxPosition.z = z
-        }
+    data class ChunkMeshStruct(
+        val position: Vec3,
+        val uv: Vec2,
+        val indexLayerAnimation: Int,
+        val lightTint: Int,
+    ) {
+        companion object : MeshStruct(ChunkMeshStruct::class)
     }
 }

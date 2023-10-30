@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.fluid.fluids.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import org.testng.annotations.Test
 
 @Test(groups = ["mesher"], dependsOnGroups = ["rendering", "block"], enabled = false)
@@ -31,7 +31,7 @@ class FluidSectionMesherTest {
     }
 
 
-    private fun mesh(data: Map<Vec3i, Any>): ChunkMesh {
+    private fun mesh(data: Map<Vec3i, Any>): ChunkMeshes {
         TODO()
     }
 

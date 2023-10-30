@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -26,7 +26,7 @@ import java.util.*
 interface BlockRender : ItemRender {
     fun getParticleTexture(random: Random?, position: Vec3i): Texture? = null
 
-    fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean
+    fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean
 
     fun getProperties(direction: Directions): SideProperties? = null
 }

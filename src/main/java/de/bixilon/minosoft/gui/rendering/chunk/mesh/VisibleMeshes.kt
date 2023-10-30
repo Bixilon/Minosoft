@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,17 +22,17 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.format
 
 class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMeshes? = null) {
-    val opaque: ArrayList<SingleChunkMesh> = ArrayList(previous?.opaque?.size ?: 128)
-    val translucent: ArrayList<SingleChunkMesh> = ArrayList(previous?.translucent?.size ?: 16)
-    val transparent: ArrayList<SingleChunkMesh> = ArrayList(previous?.transparent?.size ?: 128)
-    val text: ArrayList<SingleChunkMesh> = ArrayList(previous?.text?.size ?: 16)
+    val opaque: ArrayList<ChunkMesh> = ArrayList(previous?.opaque?.size ?: 128)
+    val translucent: ArrayList<ChunkMesh> = ArrayList(previous?.translucent?.size ?: 16)
+    val transparent: ArrayList<ChunkMesh> = ArrayList(previous?.transparent?.size ?: 128)
+    val text: ArrayList<ChunkMesh> = ArrayList(previous?.text?.size ?: 16)
     val blockEntities: ArrayList<BlockEntityRenderer<*>> = ArrayList(previous?.blockEntities?.size ?: 128)
 
     val sizeString: String
         get() = "${opaque.size.format()}|${translucent.size.format()}|${transparent.size.format()}|${text.size.format()}|${blockEntities.size.format()}"
 
 
-    fun addMesh(mesh: ChunkMesh) {
+    fun addMesh(mesh: ChunkMeshes) {
         val distance = (cameraPosition - mesh.center).length2()
         mesh.opaqueMesh?.let {
             it.distance = distance
@@ -66,7 +66,7 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMesh
     }
 
 
-    fun removeMesh(mesh: ChunkMesh) {
+    fun removeMesh(mesh: ChunkMeshes) {
         mesh.opaqueMesh?.let { opaque -= it }
         mesh.translucentMesh?.let { translucent -= it }
         mesh.transparentMesh?.let { transparent -= it }

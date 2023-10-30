@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
 
-class WorldGUIConsumer(val mesh: SingleChunkMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
+class WorldGUIConsumer(val mesh: ChunkMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
     private val whiteTexture = mesh.context.textures.whiteTexture
     override val order: RenderOrder get() = mesh.order
     private val uv = Vec2()

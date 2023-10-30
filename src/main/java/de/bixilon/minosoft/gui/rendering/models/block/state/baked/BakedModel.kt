@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -45,7 +45,7 @@ class BakedModel(
 
     override fun getParticleTexture(random: Random?, position: Vec3i) = particle
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         var rendered = false
 
         for ((directionIndex, faces) in faces.withIndex()) {

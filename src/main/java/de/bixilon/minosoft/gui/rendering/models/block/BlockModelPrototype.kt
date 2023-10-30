@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -31,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 import java.util.*
 
 class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?) = prototype()
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?) = prototype()
     override fun getParticleTexture(random: Random?, position: Vec3i) = prototype()
     override fun getProperties(direction: Directions) = prototype()
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = prototype()

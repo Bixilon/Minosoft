@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades.Companion.shade
@@ -46,14 +46,14 @@ class BakedFace(
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: FloatArray, mesh: ChunkMesh, light: ByteArray, tints: IntArray?) {
+    fun render(offset: FloatArray, mesh: ChunkMeshes, light: ByteArray, tints: IntArray?) {
         val tint = color(tints?.getOrNull(tintIndex) ?: 0)
         val lightTint = ((light[lightIndex].toInt() shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
 
 
         val mesh = mesh.mesh(texture)
-        mesh.data.ensureSize(SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX * mesh.order.size)
+        mesh.data.ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * mesh.order.size)
 
         mesh.order.iterate { position, uv ->
             val vertexOffset = position * Vec3.length
@@ -68,7 +68,7 @@ class BakedFace(
         }
     }
 
-    private fun ChunkMesh.mesh(texture: Texture): SingleChunkMesh {
+    private fun ChunkMeshes.mesh(texture: Texture): ChunkMesh {
         return when (texture.transparency) {
             TextureTransparencies.OPAQUE -> opaqueMesh
             TextureTransparencies.TRANSPARENT -> transparentMesh

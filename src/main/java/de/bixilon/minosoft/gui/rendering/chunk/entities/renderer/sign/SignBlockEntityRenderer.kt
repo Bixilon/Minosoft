@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.MeshedEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
@@ -60,7 +60,7 @@ class SignBlockEntityRenderer(
         return rotation * ROTATION_STEP
     }
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val block = this.state.block
         if (block is StandingSignBlock) {
             renderStandingText(offset, mesh, light[SELF_LIGHT_INDEX].toInt())
@@ -71,14 +71,14 @@ class SignBlockEntityRenderer(
         return true
     }
 
-    private fun renderText(offset: FloatArray, rotationVector: Vec3, yRotation: Float, mesh: SingleChunkMesh, light: Int) {
+    private fun renderText(offset: FloatArray, rotationVector: Vec3, yRotation: Float, mesh: ChunkMesh, light: Int) {
         val textPosition = offset.toVec3() + rotationVector
 
         var primitives = 0
         for (line in sign.lines) {
             primitives += ChatComponentRenderer.calculatePrimitiveCount(line)
         }
-        mesh.data.ensureSize(primitives * mesh.order.size * SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
+        mesh.data.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX)
 
         val alignment = context.connection.profiles.block.rendering.entities.sign.fontAlignment
 
@@ -90,7 +90,7 @@ class SignBlockEntityRenderer(
         }
     }
 
-    private fun renderStandingText(offset: FloatArray, mesh: ChunkMesh, light: Int) {
+    private fun renderStandingText(offset: FloatArray, mesh: ChunkMeshes, light: Int) {
         val yRotation = getRotation()
 
         val rotationVector = Vec3(X_OFFSET, 17.5f / BLOCK_SIZE - Y_OFFSET, 9.0f / BLOCK_SIZE + Z_OFFSET)
@@ -98,7 +98,7 @@ class SignBlockEntityRenderer(
         renderText(offset, rotationVector, yRotation, mesh.textMesh!!, light)
     }
 
-    private fun renderWallText(position: FloatArray, mesh: ChunkMesh, light: Int) {
+    private fun renderWallText(position: FloatArray, mesh: ChunkMeshes, light: Int) {
         val yRotation = -when (val rotation = this.state.getFacing()) {
             Directions.SOUTH -> 0.0f
             Directions.EAST -> 90.0f

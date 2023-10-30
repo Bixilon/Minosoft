@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
@@ -64,7 +64,7 @@ class FluidSectionMesher(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMesh) {
+    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
         val blocks = section.blocks
 
         var position: Vec3i
@@ -248,7 +248,7 @@ class FluidSectionMesher(
         }
     }
 
-    private inline fun addFluidVertices(mesh: SingleChunkMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: Texture, fluidTint: Int, fluidLight: Int) {
+    private inline fun addFluidVertices(mesh: ChunkMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: Texture, fluidTint: Int, fluidLight: Int) {
         mesh.order.iterate { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, fluidLight) }
         mesh.order.iterateReverse { position, uv -> mesh.addVertex(positions[position].array, texturePositions[uv], flowingTexture, fluidTint, fluidLight) }
     }

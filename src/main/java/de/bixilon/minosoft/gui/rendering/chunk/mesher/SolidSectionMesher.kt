@@ -36,7 +36,7 @@ import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
@@ -54,7 +54,7 @@ class SolidSectionMesher(
         profile.performance::fastBedrock.observe(this, true) { this.fastBedrock = it }
     }
 
-    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMesh) {
+    fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
         val random = if (profile.antiMoirePattern) Random(0L) else null
 
 
@@ -99,10 +99,6 @@ class SolidSectionMesher(
                     }
 
                     val entity = section.blockEntities[index]?.getRenderer(context, state, position, light[SELF_LIGHT_INDEX].toInt())
-                    if (entity != null && entity.enabled) {
-                        entities += entity
-                        mesh.addBlock(x, y, z)
-                    }
                     val blockModel = state.block.model ?: state.model
                     val model = blockModel ?: entity.nullCast<BlockRender>() ?: continue
 

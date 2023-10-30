@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
@@ -37,8 +37,8 @@ class BakedFaceTest {
         return manager.staticTextures.createTexture(texture.toResourceLocation())
     }
 
-    private fun singleMesh(): SingleChunkMesh {
-        val mesh = OBJENESIS.newInstance(SingleChunkMesh::class.java)
+    private fun singleMesh(): ChunkMesh {
+        val mesh = OBJENESIS.newInstance(ChunkMesh::class.java)
         mesh::quadType.forceSet(PrimitiveTypes.QUAD)
         mesh::order.forceSet(MeshOrder.QUAD)
 
@@ -49,8 +49,8 @@ class BakedFaceTest {
         return mesh
     }
 
-    private fun mesh(): ChunkMesh {
-        val mesh = OBJENESIS.newInstance(ChunkMesh::class.java)
+    private fun mesh(): ChunkMeshes {
+        val mesh = OBJENESIS.newInstance(ChunkMeshes::class.java)
         mesh::opaqueMesh.forceSet(singleMesh())
 
         return mesh

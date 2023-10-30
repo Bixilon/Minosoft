@@ -16,14 +16,14 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue.loading
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.maxBusyTime
 
 class MeshUnloadingQueue(
     private val renderer: ChunkRenderer,
 ) {
-    private val meshes: MutableList<ChunkMesh> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
+    private val meshes: MutableList<ChunkMeshes> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
     private val positions: MutableSet<QueuePosition> = mutableSetOf()
     private val lock = SimpleLock()
 
@@ -53,7 +53,7 @@ class MeshUnloadingQueue(
         }
     }
 
-    fun forceQueue(mesh: ChunkMesh, lock: Boolean = true) {
+    fun forceQueue(mesh: ChunkMeshes, lock: Boolean = true) {
         if (lock) lock()
 
         if (mesh.chunkPosition == renderer.connection.camera.entity.physics.positionInfo.chunkPosition) {
@@ -66,7 +66,7 @@ class MeshUnloadingQueue(
         if (lock) unlock()
     }
 
-    fun queue(mesh: ChunkMesh, lock: Boolean = true) {
+    fun queue(mesh: ChunkMeshes, lock: Boolean = true) {
         if (lock) lock()
         if (QueuePosition(mesh) in this.positions) {
             // already queued
@@ -78,7 +78,7 @@ class MeshUnloadingQueue(
         if (lock) unlock()
     }
 
-    fun forceQueue(meshes: Collection<ChunkMesh>, lock: Boolean = true) {
+    fun forceQueue(meshes: Collection<ChunkMeshes>, lock: Boolean = true) {
         if (lock) lock()
         for (mesh in meshes) {
             forceQueue(mesh, false)
@@ -86,7 +86,7 @@ class MeshUnloadingQueue(
         if (lock) unlock()
     }
 
-    fun queue(meshes: Collection<ChunkMesh>) {
+    fun queue(meshes: Collection<ChunkMeshes>) {
         lock()
         for (mesh in meshes) {
             queue(mesh, false)
