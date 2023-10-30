@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
 import kotlin.math.sin
 
-class LegAnimator(
+class ArmAnimator(
     val model: HumanModel<*>,
     val left: TransformInstance,
     val right: TransformInstance,
@@ -47,11 +47,11 @@ class LegAnimator(
 
         left.value
             .translateAssign(left.pivot)
-            .rotateDegreesAssign(Vec3(-progress, 0.0f, 0.0f))
+            .rotateDegreesAssign(Vec3(progress, 0.0f, 0.0f))
             .translateAssign(left.nPivot)
         right.value
             .translateAssign(left.pivot)
-            .rotateDegreesAssign(Vec3(progress, 0.0f, 0.0f))
+            .rotateDegreesAssign(Vec3(-progress, 0.0f, 0.0f))
             .translateAssign(left.nPivot)
     }
 
