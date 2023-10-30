@@ -42,8 +42,8 @@ class SkeletalManager(
         playerShader.load()
     }
 
-    fun upload(instance: SkeletalInstance) {
-        instance.transform.pack(uniformBuffer.buffer, instance.position, temp)
+    fun upload(instance: SkeletalInstance, matrix: Mat4) {
+        instance.transform.pack(uniformBuffer.buffer, matrix, temp)
         uniformBuffer.upload(0, instance.model.transformCount * Mat4.length)
     }
 

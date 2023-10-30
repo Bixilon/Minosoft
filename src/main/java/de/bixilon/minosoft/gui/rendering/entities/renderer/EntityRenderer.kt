@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer
 
+import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
@@ -20,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
 import de.bixilon.minosoft.gui.rendering.entities.hitbox.HitboxFeature
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.util.interpolate.Interpolator
 
 abstract class EntityRenderer<E : Entity>(
@@ -31,8 +34,8 @@ abstract class EntityRenderer<E : Entity>(
     val info = entity.renderInfo
 
     val hitbox = HitboxFeature(this).register()
-
     val light = Interpolator(ChatColors.WHITE, ColorUtil::interpolateRGB)
+    val matrix = Mat4()
     var visible = true
         private set
 
@@ -41,10 +44,17 @@ abstract class EntityRenderer<E : Entity>(
         return this
     }
 
+    open fun updateMatrix(delta: Float) {
+        val position = Vec3(entity.renderInfo.position - renderer.context.camera.offset.offset)
+        matrix.reset()
+        matrix.translateAssign(position)
+    }
+
     open fun update(millis: Long) {
         val delta = if (this.update <= 0L) 0.0f else ((millis - update) / 1000.0f)
         updateLight(delta)
         entity.draw(millis)
+        updateMatrix(delta)
         features.update(millis, delta)
         this.update = millis
     }

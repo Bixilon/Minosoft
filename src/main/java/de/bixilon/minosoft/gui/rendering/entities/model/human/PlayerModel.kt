@@ -40,7 +40,8 @@ open class PlayerModel(
         shader.light = renderer.light.value
         shader.skinParts = this.skinParts
 
-        manager.upload(instance)
+
+        manager.upload(instance, instance.matrix)
         instance.model.mesh.draw()
     }
 }

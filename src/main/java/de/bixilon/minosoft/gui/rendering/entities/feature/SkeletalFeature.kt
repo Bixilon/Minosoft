@@ -51,7 +51,7 @@ open class SkeletalFeature(
         if (changes == 0) return
 
         val rotation = Vec3(0.0f, (EntityRotation.HALF_CIRCLE_DEGREE - yaw).rad, 0.0f)
-        instance.update(renderInfo.position, rotation)
+        instance.update(rotation, renderer.matrix)
     }
 
     override fun update(millis: Long, delta: Float) {

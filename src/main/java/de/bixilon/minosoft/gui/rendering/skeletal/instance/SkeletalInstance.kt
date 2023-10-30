@@ -15,12 +15,12 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
 
@@ -30,7 +30,7 @@ class SkeletalInstance(
     val transform: TransformInstance,
 ) {
     val animation = AnimationManager(this)
-    var position = Mat4()
+    var matrix = Mat4()
 
 
     fun draw(light: Int) {
@@ -54,20 +54,24 @@ class SkeletalInstance(
 
         transform.reset()
         animation.draw()
-        context.skeletal.upload(this)
+        context.skeletal.upload(this, matrix)
         model.mesh.draw()
     }
 
-    fun update(position: Vec3, rotation: Vec3, pivot: Vec3 = Vec3.EMPTY_INSTANCE) {
-        this.position = Mat4()
+    fun update(position: Vec3, rotation: Vec3, pivot: Vec3 = Vec3.EMPTY_INSTANCE, matrix: Mat4? = null) {
+        this.matrix.reset()
+        if (matrix != null) {
+            this.matrix = this.matrix * matrix
+        }
+        this.matrix
             .translateAssign(position)
             .translateAssign(pivot)
             .rotateRadAssign(rotation)
             .translateAssign(-pivot)
     }
 
-    fun update(position: Vec3d, rotation: Vec3) {
-        update(Vec3(position - context.camera.offset.offset), rotation)
+    fun update(rotation: Vec3, matrix: Mat4? = null) {
+        update(Vec3.EMPTY_INSTANCE, rotation, matrix = matrix)
     }
 
     fun update(position: Vec3i, rotation: Vec3) {
