@@ -21,13 +21,9 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 
 object RenderUtil {
 
-    fun RenderContext.pause(pause: Boolean? = null) {
+    fun RenderContext.pause() {
         val guiRenderer = renderer[GUIRenderer]?.gui ?: return
-        if (pause == null) {
             guiRenderer.pause()
-        } else {
-            guiRenderer.pause(pause)
-        }
     }
 
     inline fun RenderContext.runAsync(crossinline runnable: () -> Unit) {

@@ -52,7 +52,6 @@ class GUIManager(
     private var orderLock = SimpleLock()
     var elementOrder: MutableList<GUIElement> = mutableListOf()
     private val context = guiRenderer.context
-    internal var paused = false
     private var lastTickTime: Long = -1L
 
     private var order: Collection<GUIElement> = emptyList()
@@ -174,20 +173,11 @@ class GUIManager(
         }
     }
 
-    fun pause(pause: Boolean = !paused) {
-        if (pause == paused) {
+    fun pause() {
+        if (elementOrder.isNotEmpty()) {
             return
         }
-
-        paused = pause
-        if (pause) {
-            if (elementOrder.isNotEmpty()) {
-                return
-            }
-            open(PauseMenu)
-        } else {
-            clear()
-        }
+        open(PauseMenu)
     }
 
     private fun runForEach(run: (element: GUIElement) -> Boolean): Boolean {

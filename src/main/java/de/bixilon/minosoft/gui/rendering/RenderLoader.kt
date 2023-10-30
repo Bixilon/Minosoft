@@ -127,7 +127,7 @@ object RenderLoader {
 
         this::state.observe(this) {
             if (it == RenderingStates.PAUSED || it == RenderingStates.SLOW || it == RenderingStates.STOPPED) {
-                pause(true)
+                pause()
             }
         }
 
