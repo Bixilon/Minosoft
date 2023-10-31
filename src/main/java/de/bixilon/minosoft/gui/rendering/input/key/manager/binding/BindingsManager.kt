@@ -20,6 +20,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.KeyActionFilter.Companion.filter
 
@@ -100,9 +101,7 @@ class BindingsManager(
         }
     }
 
-    fun onKey(code: KeyCodes, pressed: Boolean, millis: Long) {
-        val handler = input.handler.handler
-
+    fun onKey(code: KeyCodes, pressed: Boolean, handler: InputHandler?, millis: Long) {
         for ((name, state) in bindings) {
             if (handler != null && !state.binding.ignoreConsumer) {
                 continue

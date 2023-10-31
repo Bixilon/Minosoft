@@ -77,6 +77,7 @@ class InputManager(
     }
 
     private fun onKey(code: KeyCodes, change: KeyChangeTypes) {
+        val handler = this.handler.handler
         this.handler.onKey(code, change)
 
         val pressed = when (change) {
@@ -94,8 +95,7 @@ class InputManager(
             this.pressed -= code
         }
 
-        val handler = this.handler.handler
-        bindings.onKey(code, pressed, millis)
+        bindings.onKey(code, pressed, handler, millis)
 
         if (pressed) {
             times[code] = millis
