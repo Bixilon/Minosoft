@@ -32,9 +32,7 @@ object CrashReportUtil {
         "You're evil",
         "Maybe in another life.",
         "This sucks",
-        "Chill ur life",
         "Chill your life",
-        "Chill your base",
         "Damn!",
         "Developing is hard.",
         "Please don't kill me for this",
@@ -47,11 +45,13 @@ object CrashReportUtil {
         "I am #1 in bedwars swordless",
         "Der AB kam vor der CD",
         "You can't do this",
-        "Sing me a happy song!",
         "This message should not be visible...",
         "lmfao",
-        "Your fault",
         "Technoblade never dies", // In memorial to technoblade. RIP Technoblade 30.6.2022
+        "Find help at: https://www.youtube.com/watch?v=dQw4w9WgXcQ", // rick
+        "//TODO: What the hell is causing this?", // S H&R
+        "If this happens, we're in big shit.", // S H&R
+        "this is bulky, but fuck it, gotta get this shit working like yesterday", // S H&R
     )
 
 
