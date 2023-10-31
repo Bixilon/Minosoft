@@ -13,21 +13,17 @@
 
 package de.bixilon.minosoft.data.entities.block.sign
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.entities.block.MeshedBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection) {
+class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var lines: Array<ChatComponent> = Array(LINES) { ChatComponent.of("") }
     var color: RGBColor = ChatColors.BLACK
     var glowing = false
@@ -42,10 +38,6 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
             lines[i - 1] = ChatComponent.of(tag, translator = connection.language)
         }
         // TODO: update front/back text
-    }
-
-    override fun createMeshedRenderer(context: RenderContext, state: BlockState, position: Vec3i): SignBlockEntityRenderer {
-        return SignBlockEntityRenderer(this, context, state)
     }
 
     companion object : BlockEntityFactory<SignBlockEntity> {

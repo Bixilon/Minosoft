@@ -11,9 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.entities
+package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import java.util.*
 
-interface MeshedEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, BlockRender
+interface EntityBlockRender : BlockRender {
+    fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity): Boolean
+}

@@ -16,11 +16,11 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
@@ -31,7 +31,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.Wal
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.MeshedEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
@@ -41,41 +40,47 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.EntityBlockRender
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import java.util.*
 
 class SignBlockEntityRenderer(
-    val sign: SignBlockEntity,
     val context: RenderContext,
-    override var state: BlockState,
-) : MeshedEntityRenderer<SignBlockEntity> {
-    override var light = 0xFF
-    override val enabled: Boolean get() = false
+) : EntityBlockRender {
 
-    private fun getRotation(): Float {
-        val state = this.state
-        if (state !is PropertyBlockState) return 0.0f
-        val rotation = state.properties[BlockProperties.ROTATION]?.toFloat() ?: return 0.0f
+    private fun BlockState.getRotation(): Float {
+        if (this !is PropertyBlockState) return 0.0f
+        val rotation = this.properties[BlockProperties.ROTATION]?.toFloat() ?: return 0.0f
         return rotation * ROTATION_STEP
     }
 
     override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        val block = this.state.block
-        if (block is StandingSignBlock) {
-            renderStandingText(offset, mesh, light[SELF_LIGHT_INDEX].toInt())
-        } else if (block is WallSignBlock) {
-            renderWallText(offset, mesh, light[SELF_LIGHT_INDEX].toInt())
-        }
+        state.model?.render(position, offset, mesh, random, state, neighbours, light, tints) // render wood part
+        return true
+    }
+
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity): Boolean {
+        render(position, offset, mesh, random, state, neighbours, light, tints)
+        if (entity !is SignBlockEntity) return true
+        renderText(state, entity, offset, mesh, light[SELF_LIGHT_INDEX].toInt())
 
         return true
     }
 
-    private fun renderText(offset: FloatArray, rotationVector: Vec3, yRotation: Float, mesh: ChunkMesh, light: Int) {
+    private fun renderText(state: BlockState, entity: SignBlockEntity, offset: FloatArray, mesh: ChunkMeshes, light: Int) {
+        if (state.block is StandingSignBlock) {
+            renderStandingText(state.getRotation(), entity, offset, mesh, light)
+        } else if (state.block is WallSignBlock) {
+            renderWallText(state.getFacing(), entity, offset, mesh, light)
+        }
+    }
+
+    private fun renderText(offset: FloatArray, entity: SignBlockEntity, rotationVector: Vec3, yRotation: Float, mesh: ChunkMesh, light: Int) {
         val textPosition = offset.toVec3() + rotationVector
 
         var primitives = 0
-        for (line in sign.lines) {
+        for (line in entity.lines) {
             primitives += ChatComponentRenderer.calculatePrimitiveCount(line)
         }
         mesh.data.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX)
@@ -84,32 +89,23 @@ class SignBlockEntityRenderer(
 
         val properties = if (alignment == TEXT_PROPERTIES.alignment) TEXT_PROPERTIES else TEXT_PROPERTIES.copy(alignment = alignment)
 
-        for (line in sign.lines) {
+        for (line in entity.lines) {
             ChatComponentRenderer.render3dFlat(context, textPosition, properties, Vec3(0.0f, -yRotation, 0.0f), MAX_SIZE, mesh, line, light)
             textPosition.y -= 0.11f
         }
     }
 
-    private fun renderStandingText(offset: FloatArray, mesh: ChunkMeshes, light: Int) {
-        val yRotation = getRotation()
-
+    private fun renderStandingText(rotation: Float, entity: SignBlockEntity, offset: FloatArray, mesh: ChunkMeshes, light: Int) {
         val rotationVector = Vec3(X_OFFSET, 17.5f / BLOCK_SIZE - Y_OFFSET, 9.0f / BLOCK_SIZE + Z_OFFSET)
-        rotationVector.signRotate(yRotation.rad)
-        renderText(offset, rotationVector, yRotation, mesh.textMesh!!, light)
+        rotationVector.signRotate(rotation.rad)
+        renderText(offset, entity, rotationVector, rotation, mesh.textMesh!!, light)
     }
 
-    private fun renderWallText(position: FloatArray, mesh: ChunkMeshes, light: Int) {
-        val yRotation = -when (val rotation = this.state.getFacing()) {
-            Directions.SOUTH -> 0.0f
-            Directions.EAST -> 90.0f
-            Directions.NORTH -> 180.0f
-            Directions.WEST -> 270.0f
-            else -> Broken("Sign rotation: $rotation")
-        }
-
+    private fun renderWallText(facing: Directions, entity: SignBlockEntity, position: FloatArray, mesh: ChunkMeshes, light: Int) {
+        val yRotation = ROTATIONS[facing.ordinal - Directions.SIDE_OFFSET]
         val rotationVector = Vec3(X_OFFSET, 12.5f / BLOCK_SIZE - Y_OFFSET, 2.0f / BLOCK_SIZE + Z_OFFSET)
         rotationVector.signRotate(yRotation.rad)
-        renderText(position, rotationVector, yRotation, mesh.textMesh!!, light)
+        renderText(position, entity, rotationVector, yRotation, mesh.textMesh!!, light)
     }
 
     private fun Vec3.signRotate(yRotation: Float) {
@@ -129,5 +125,8 @@ class SignBlockEntityRenderer(
         private const val ROTATION_STEP = 22.5f
         const val SIGN_MAX_WIDTH = 90 // 15x the char W. W has a width of 5sp
         val MAX_SIZE = Vec2(SIGN_MAX_WIDTH * TEXT_PROPERTIES.scale, TEXT_PROPERTIES.lineHeight)
+
+
+        private val ROTATIONS = floatArrayOf(180.0f, 0.0f, 90.0f, 270.0f)
     }
 }

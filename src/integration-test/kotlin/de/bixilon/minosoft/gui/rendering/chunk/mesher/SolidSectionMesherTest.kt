@@ -20,7 +20,6 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.entities.block.MeshedBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -31,7 +30,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.MeshedEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -39,6 +38,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.EntityBlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
@@ -313,7 +313,7 @@ class SolidSectionMesherTest {
         assertEquals(queue.blocks.size, 7)
     }
     // TODO: test sign block entity rendering
-    // TODO: test skylight (w/ heightmap), correct neighbour retrieving, fast bedrock, camera offset
+    // TODO: test skylight (w/ heightmap), fast bedrock, camera offset
 
     class TestQueue {
         val blocks: MutableSet<RenderedBlock> = mutableSetOf()
@@ -409,14 +409,14 @@ class SolidSectionMesherTest {
     fun TestQueue.blockEntity(): BlockState {
         val block = object : Block(minosoft("test2"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())), BlockWithEntity<BlockEntity> {
             override val hardness get() = 0.0f
-            override fun createBlockEntity(connection: PlayConnection) = object : BlockEntity(connection) {
+            override fun createBlockEntity(connection: PlayConnection) = object : BlockEntity(connection), RenderedBlockEntity<BlockEntityRenderer<*>> {
+                override var renderer: BlockEntityRenderer<*>? = null
 
                 override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int) = object : BlockEntityRenderer<BlockEntity> {
                     override var light = 0
                     override var state = state
 
                     init {
-
                         entities.add(TestQueue.RenderedEntity(Vec3i(position), state, false)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
                     }
                 }
@@ -430,13 +430,17 @@ class SolidSectionMesherTest {
     fun TestQueue.meshedOnlyEntity(): BlockState {
         val block = object : Block(minosoft("test4"), BlockSettings.of(IT.VERSION, IT.REGISTRIES, emptyMap())), BlockWithEntity<BlockEntity> {
             override val hardness get() = 0.0f
-            override fun createBlockEntity(connection: PlayConnection) = object : MeshedBlockEntity(connection) {
+            override fun createBlockEntity(connection: PlayConnection) = object : BlockEntity(connection) {
+            }
 
-                override fun createMeshedRenderer(context: RenderContext, state: BlockState, position: Vec3i) = object : MeshedEntityRenderer<BlockEntity> {
-                    override var state: BlockState = state
-                    override var light: Int = 0xFF
+            init {
+                this.model = object : EntityBlockRender {
 
                     override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+                        Broken("This requires an entity")
+                    }
+
+                    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity): Boolean {
                         entities.add(TestQueue.RenderedEntity(Vec3i(position), state, true)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
 
                         return true
@@ -445,6 +449,7 @@ class SolidSectionMesherTest {
                     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = Broken()
                 }
             }
+
         }
         val state = BlockState(block, 0)
 

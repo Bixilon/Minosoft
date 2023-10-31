@@ -11,30 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.MeshedEntityRenderer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class MeshedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+interface RenderedBlockEntity<T : BlockEntityRenderer<*>> {
+    var renderer: T?
 
-    override fun getRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): MeshedEntityRenderer<*> {
-        var renderer = this.renderer
-        if (renderer is MeshedEntityRenderer && renderer.state == state) {
-            return renderer
+    fun getRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): T? {
+        if (this.renderer?.state != state) {
+            this.renderer = createRenderer(context, state, position, light)
+        } else {
+            this.renderer?.update(position, state, light)
         }
-        renderer = createMeshedRenderer(context, state, position)
-        this.renderer = renderer
-        return renderer
+        return this.renderer
     }
 
-    override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): BlockEntityRenderer<*> {
-        throw IllegalAccessException()
-    }
-
-    abstract fun createMeshedRenderer(context: RenderContext, state: BlockState, position: Vec3i): MeshedEntityRenderer<*>
+    fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): T?
 }

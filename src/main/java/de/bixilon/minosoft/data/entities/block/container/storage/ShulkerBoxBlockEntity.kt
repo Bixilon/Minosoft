@@ -20,14 +20,15 @@ import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker.ShulkerBoxRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
+class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection), RenderedBlockEntity<ShulkerBoxRenderer {
+    override var renderer: ShulkerBoxRenderer? = null
 
-    override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): BlockEntityRenderer<*>? {
+    override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): ShulkerBoxRenderer? {
         // TODO: remove that junk code
         val model: BakedSkeletalModel?
         val prefix = state.block.identifier.path.removeSuffix("shulker_box")
@@ -41,6 +42,16 @@ class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
         }
         if (model == null) return null
         return ShulkerBoxRenderer(this, context, state, position, model, light)
+    }
+
+    override fun onOpen() {
+        super.onOpen()
+        renderer?.open()
+    }
+
+    override fun onClose() {
+        super.onClose()
+        renderer?.close()
     }
 
     companion object : BlockEntityFactory<ShulkerBoxBlockEntity> {

@@ -13,21 +13,11 @@
 
 package de.bixilon.minosoft.data.entities.block.container.storage
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
-import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.StorageBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection), BlockActionEntity {
-    protected var storageRenderer: StorageBlockEntityRenderer<*>? = null
-    override var renderer: BlockEntityRenderer<out BlockEntity>?
-        get() = storageRenderer
-        set(value) {
-            storageRenderer = value?.unsafeCast()
-        }
 
     var viewing: Int = 0
         private set
@@ -54,11 +44,7 @@ abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEn
 
     protected open fun onViewingChange(viewing: Int) = Unit
 
-    protected fun onOpen() {
-        storageRenderer?.open()
-    }
+    protected open fun onOpen() = Unit
 
-    protected fun onClose() {
-        storageRenderer?.close()
-    }
+    protected open fun onClose() = Unit
 }
