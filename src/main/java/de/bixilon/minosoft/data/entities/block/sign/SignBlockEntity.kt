@@ -44,8 +44,8 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
         // TODO: update front/back text
     }
 
-    override fun createMeshedRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i): SignBlockEntityRenderer {
-        return SignBlockEntityRenderer(this, context, blockState)
+    override fun createMeshedRenderer(context: RenderContext, state: BlockState, position: Vec3i): SignBlockEntityRenderer {
+        return SignBlockEntityRenderer(this, context, state)
     }
 
     companion object : BlockEntityFactory<SignBlockEntity> {

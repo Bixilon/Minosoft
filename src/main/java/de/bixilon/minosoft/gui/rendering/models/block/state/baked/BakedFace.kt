@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -53,19 +51,7 @@ class BakedFace(
 
 
         val mesh = mesh.mesh(texture)
-        mesh.data.ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * mesh.order.size)
-
-        mesh.order.iterate { position, uv ->
-            val vertexOffset = position * Vec3.length
-            val uvOffset = uv * Vec2.length
-            mesh.addVertex(
-                x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
-                u = this.uv[uvOffset],
-                v = this.uv[uvOffset + 1],
-                shaderTextureId = textureId,
-                lightTint = lightTint,
-            )
-        }
+        mesh.addQuad(offset, this.positions, this.uv, textureId, lightTint)
     }
 
     private fun ChunkMeshes.mesh(texture: Texture): ChunkMesh {

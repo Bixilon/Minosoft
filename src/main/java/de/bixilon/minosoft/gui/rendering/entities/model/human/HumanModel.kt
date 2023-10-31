@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.model.human
 
-import de.bixilon.minosoft.data.entities.Poses
-import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.gui.rendering.entities.feature.SkeletalFeature
 import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.ArmAnimator
 import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.HeadPosition
@@ -29,16 +27,10 @@ abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkelet
     val arm = ArmAnimator(this, instance.transform.children["left_arm"]!!, instance.transform.children["right_arm"]!!)
 
     val speed = EntitySpeed(renderer.entity)
-    var pose = Poses.STANDING
+
     override fun updatePosition() {
         super.updatePosition()
         head?.update()
-    }
-
-    fun updatePose() {
-        val entity =renderer.entity
-        if(entity !is LivingEntity) return
-        val pose = entity.pose ?: return
     }
 
     override fun update(millis: Long, delta: Float) {

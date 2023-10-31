@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesh
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -37,11 +38,11 @@ class ChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean
         )
     }
 
-    inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, shaderTextureId: Float, lightTint: Float) {
+    inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) {
         data.add(
             x, y, z,
             u, v,
-            shaderTextureId, lightTint,
+            textureId, lightTint,
         )
     }
 
@@ -49,6 +50,22 @@ class ChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean
         if (distance < other.distance) return -1
         if (distance > other.distance) return 1
         return 0
+    }
+
+    fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) {
+        data.ensureSize(ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
+
+        order.iterate { position, uv ->
+            val vertexOffset = position * Vec3.length
+            val uvOffset = uv * Vec2.length
+            addVertex(
+                x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
+                u = uvData[uvOffset],
+                v = uvData[uvOffset + 1],
+                textureId = textureId,
+                lightTint = lightTint,
+            )
+        }
     }
 
     data class ChunkMeshStruct(

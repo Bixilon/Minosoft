@@ -36,5 +36,5 @@ abstract class MeshedBlockEntity(connection: PlayConnection) : BlockEntity(conne
         throw IllegalAccessException()
     }
 
-    abstract fun createMeshedRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i): MeshedEntityRenderer<*>
+    abstract fun createMeshedRenderer(context: RenderContext, state: BlockState, position: Vec3i): MeshedEntityRenderer<*>
 }
