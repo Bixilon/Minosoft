@@ -89,9 +89,10 @@ class SolidSectionMesher(
                     val state = blocks[index] ?: continue
                     if (state.block is FluidBlock) continue // fluids are rendered in a different renderer
 
-                    val model = state.model ?: state.block.model
-                    val blockEntity = section.blockEntities[index]?.nullCast<RenderedBlockEntity<*>>()
-                    if (model == null && blockEntity == null) continue
+                    val model = state.block.model ?: state.model
+                    val blockEntity = section.blockEntities[index]
+                    val renderedBlockEntity = blockEntity?.nullCast<RenderedBlockEntity<*>>()
+                    if (model == null && renderedBlockEntity == null) continue
 
 
                     light[SELF_LIGHT_INDEX] = section.light[index]
@@ -134,7 +135,7 @@ class SolidSectionMesher(
                     var rendered = false
                     model?.render(position, floatOffset, mesh, random, state, neighbourBlocks, light, tints, blockEntity.unsafeCast())?.let { if (it) rendered = true }
 
-                    blockEntity?.getRenderer(context, state, position, light[SELF_LIGHT_INDEX].toInt())?.let { rendered = true; entities += it }
+                    renderedBlockEntity?.getRenderer(context, state, position, light[SELF_LIGHT_INDEX].toInt())?.let { rendered = true; entities += it }
 
                     if (offset != null) {
                         floatOffset[0] -= offset.x

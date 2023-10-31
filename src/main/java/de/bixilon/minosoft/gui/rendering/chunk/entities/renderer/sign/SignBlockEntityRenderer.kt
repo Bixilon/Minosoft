@@ -40,6 +40,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
+import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
@@ -52,7 +53,7 @@ class SignBlockEntityRenderer(
     private fun BlockState.getRotation(): Float {
         if (this !is PropertyBlockState) return 0.0f
         val rotation = this.properties[BlockProperties.ROTATION]?.toFloat() ?: return 0.0f
-        return rotation * ROTATION_STEP
+        return -rotation * ROTATION_STEP
     }
 
     override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
@@ -74,8 +75,10 @@ class SignBlockEntityRenderer(
     private fun renderText(offset: FloatArray, entity: SignBlockEntity, rotationVector: Vec3, yRotation: Float, mesh: ChunkMesh, light: Int) {
         val textPosition = offset.toVec3() + rotationVector
 
+        // TODO: render back of sign
+
         var primitives = 0
-        for (line in entity.lines) {
+        for (line in entity.front.text) {
             primitives += ChatComponentRenderer.calculatePrimitiveCount(line)
         }
         mesh.data.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX)
@@ -84,7 +87,7 @@ class SignBlockEntityRenderer(
 
         val properties = if (alignment == TEXT_PROPERTIES.alignment) TEXT_PROPERTIES else TEXT_PROPERTIES.copy(alignment = alignment)
 
-        for (line in entity.lines) {
+        for (line in entity.front.text) {
             ChatComponentRenderer.render3dFlat(context, textPosition, properties, Vec3(0.0f, -yRotation, 0.0f), MAX_SIZE, mesh, line, light)
             textPosition.y -= 0.11f
         }

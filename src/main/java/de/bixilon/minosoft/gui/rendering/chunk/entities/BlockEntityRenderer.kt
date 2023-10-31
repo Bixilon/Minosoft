@@ -19,8 +19,6 @@ import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 
 interface BlockEntityRenderer<E : BlockEntity> {
-    val enabled: Boolean get() = true
-
     var state: BlockState
     var light: Int
 

@@ -73,6 +73,9 @@ class Chunk(
         val section = getOrPut(y.sectionHeight) ?: return
         val previous = section.blocks.set(x, y and 0x0F, z, state)
         if (previous == state) return
+        if (previous?.block != state?.block) {
+            this[y.sectionHeight]?.blockEntities?.set(x, y and 0x0F, z, null)
+        }
         val entity = getOrPutBlockEntity(x, y, z)
 
         if (world.dimension.light) {
@@ -92,10 +95,14 @@ class Chunk(
         val sectionHeight = y.sectionHeight
         val inSectionHeight = y.inSectionHeight
         var blockEntity = this[sectionHeight]?.blockEntities?.get(x, inSectionHeight, z)
+        val block = this[sectionHeight]?.blocks?.get(x, inSectionHeight, z) ?: return null
+        if (blockEntity != null && block !is BlockWithEntity<*>) {
+            this[sectionHeight]?.blockEntities?.set(x, inSectionHeight, z, null)
+            return null
+        }
         if (blockEntity != null) {
             return blockEntity
         }
-        val block = this[sectionHeight]?.blocks?.get(x, inSectionHeight, z) ?: return null
         if (block.block !is BlockWithEntity<*>) {
             return null
         }
@@ -143,6 +150,9 @@ class Chunk(
             section = getOrPut(sectionHeight, lock = false) ?: continue
             val previous = section.blocks.noOcclusionSet(update.position.x, update.position.y.inSectionHeight, update.position.z, update.state)
             if (previous == update.state) continue
+            if (previous?.block != update.state?.block) {
+                this[update.position.y.sectionHeight]?.blockEntities?.set(update.position.x, update.position.y and 0x0F, update.position.z, null)
+            }
             getOrPutBlockEntity(update.position)
             executed += update
             sections += section
