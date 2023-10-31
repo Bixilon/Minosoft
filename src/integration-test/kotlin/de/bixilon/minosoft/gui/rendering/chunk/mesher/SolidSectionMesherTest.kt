@@ -312,7 +312,7 @@ class SolidSectionMesherTest {
         assertEquals(queue.blocks.size, 7)
     }
     // TODO: test sign block entity rendering
-    // TODO: test skylight (w/ heightmap), fast bedrock, camera offset
+    // TODO: test skylight (w/ heightmap), fast bedrock, camera offset, block random offset
 
     class TestQueue {
         val blocks: MutableSet<RenderedBlock> = mutableSetOf()

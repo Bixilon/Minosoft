@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.ChestTypes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.WoodenChestBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -31,8 +33,10 @@ open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
     override var renderer: ChestRenderer? = null
 
     override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): ChestRenderer? {
-        val type: ChestTypes = state[BlockProperties.CHEST_TYPE]
-        if (type == ChestTypes.SINGLE) {
+        if (state.block !is WoodenChestBlock<*>) return null
+        if (state !is PropertyBlockState) return null
+        val type = state.properties[BlockProperties.CHEST_TYPE]
+        if (type == ChestTypes.SINGLE || type == null) { // TODO: type null: check neighbour blocks (<1.13)
             return SingleChestRenderer(this, context, state, position, context.models.skeletal[getSingleModel()] ?: return null, light)
         }
 
