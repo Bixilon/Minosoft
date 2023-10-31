@@ -38,7 +38,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
-import de.bixilon.minosoft.gui.rendering.models.block.state.render.EntityBlockRender
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
@@ -376,12 +375,12 @@ class SolidSectionMesherTest {
         }
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
-            override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+            override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
                 assertEquals(light.size, 7)
                 for ((index, entry) in light.withIndex()) {
                     assertEquals(required[index], entry.toInt() and 0xFF)
                 }
-                return super.render(position, offset, mesh, random, state, neighbours, light, tints)
+                return super.render(position, offset, mesh, random, state, neighbours, light, tints, entity)
             }
         }
 
@@ -394,12 +393,12 @@ class SolidSectionMesherTest {
         }
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
-            override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+            override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
                 assertEquals(neighbours.size, 6)
                 for ((index, entry) in neighbours.withIndex()) {
                     assertEquals(required[index], entry)
                 }
-                return super.render(position, offset, mesh, random, state, neighbours, light, tints)
+                return super.render(position, offset, mesh, random, state, neighbours, light, tints, entity)
             }
         }
 
@@ -434,13 +433,9 @@ class SolidSectionMesherTest {
             }
 
             init {
-                this.model = object : EntityBlockRender {
+                this.model = object : BlockRender {
 
-                    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-                        Broken("This requires an entity")
-                    }
-
-                    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity): Boolean {
+                    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
                         entities.add(TestQueue.RenderedEntity(Vec3i(position), state, true)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
 
                         return true
@@ -463,7 +458,7 @@ class SolidSectionMesherTest {
             return this.properties
         }
 
-        override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+        override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
             queue.blocks.add(TestQueue.RenderedBlock(Vec3i(position), state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
             return true
         }

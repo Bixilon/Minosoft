@@ -40,14 +40,14 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
-import de.bixilon.minosoft.gui.rendering.models.block.state.render.EntityBlockRender
+import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import java.util.*
 
 class SignBlockEntityRenderer(
     val context: RenderContext,
-) : EntityBlockRender {
+) : BlockRender {
 
     private fun BlockState.getRotation(): Float {
         if (this !is PropertyBlockState) return 0.0f
@@ -55,13 +55,8 @@ class SignBlockEntityRenderer(
         return rotation * ROTATION_STEP
     }
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        state.model?.render(position, offset, mesh, random, state, neighbours, light, tints) // render wood part
-        return true
-    }
-
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity): Boolean {
-        render(position, offset, mesh, random, state, neighbours, light, tints)
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
+        state.model?.render(position, offset, mesh, random, state, neighbours, light, tints, entity) // render wood part
         if (entity !is SignBlockEntity) return true
         renderText(state, entity, offset, mesh, light[SELF_LIGHT_INDEX].toInt())
 

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.block.state.render.property
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -25,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import java.util.*
 
 interface PropertyOnlyBlockRender : BlockRender {
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?) = false
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?) = false
 
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = Unit
 }

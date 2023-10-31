@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection), RenderedBlockEntity<ShulkerBoxRenderer {
+class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection), RenderedBlockEntity<ShulkerBoxRenderer> {
     override var renderer: ShulkerBoxRenderer? = null
 
     override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): ShulkerBoxRenderer? {

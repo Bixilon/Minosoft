@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
@@ -37,8 +38,8 @@ interface PickedBlockRender : BlockRender {
         default?.render(gui, offset, consumer, options, size, stack)
     }
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        return pick(state, neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints) ?: false
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
+        return pick(state, neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints, entity) ?: false
     }
 
     override fun getProperties(direction: Directions): SideProperties? {
