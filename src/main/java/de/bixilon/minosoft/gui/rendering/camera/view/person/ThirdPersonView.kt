@@ -57,12 +57,12 @@ class ThirdPersonView(
     }
 
     private fun update(position: Vec3d, front: Vec3) {
-        val target = camera.context.connection.camera.target.raycastBlock(position, -front.toVec3d).first
+        val front = if (inverse) -front else front
+        val target = camera.context.connection.camera.target.raycastBlock(position, front.toVec3d).first
         val distance = target?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
 
-        val front = if (inverse) front else -front
-        this.eyePosition = if (distance <= 0.0) position else position + (-front * (distance - MIN_MARGIN))
-        this.front = front
+        this.eyePosition = if (distance <= 0.0) position else position + (front * (distance - MIN_MARGIN))
+        this.front = -front
     }
 
     override fun onAttach(previous: CameraView?) {
