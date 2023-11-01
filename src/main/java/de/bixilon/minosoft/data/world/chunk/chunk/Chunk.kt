@@ -95,18 +95,18 @@ class Chunk(
         val sectionHeight = y.sectionHeight
         val inSectionHeight = y.inSectionHeight
         var blockEntity = this[sectionHeight]?.blockEntities?.get(x, inSectionHeight, z)
-        val block = this[sectionHeight]?.blocks?.get(x, inSectionHeight, z) ?: return null
-        if (blockEntity != null && block !is BlockWithEntity<*>) {
+        val state = this[sectionHeight]?.blocks?.get(x, inSectionHeight, z) ?: return null
+        if (blockEntity != null && state.block !is BlockWithEntity<*>) {
             this[sectionHeight]?.blockEntities?.set(x, inSectionHeight, z, null)
             return null
         }
         if (blockEntity != null) {
             return blockEntity
         }
-        if (block.block !is BlockWithEntity<*>) {
+        if (state.block !is BlockWithEntity<*>) {
             return null
         }
-        blockEntity = block.block.createBlockEntity(connection) ?: return null
+        blockEntity = state.block.createBlockEntity(connection) ?: return null
         (this.getOrPut(sectionHeight) ?: return null).blockEntities[x, inSectionHeight, z] = blockEntity
 
         return blockEntity
