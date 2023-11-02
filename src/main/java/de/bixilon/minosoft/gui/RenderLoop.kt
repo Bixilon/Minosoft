@@ -99,6 +99,7 @@ class RenderLoop(
 
             context.window.pollEvents()
             context.window.swapBuffers()
+            context.window.pollEvents()
 
             context.input.draw(deltaFrameTime)
             context.camera.draw()
