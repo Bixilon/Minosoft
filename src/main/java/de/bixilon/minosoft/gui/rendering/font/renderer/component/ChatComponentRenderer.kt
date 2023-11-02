@@ -52,7 +52,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
         }
 
-        fun render3dFlat(context: RenderContext, position: Vec3, properties: TextRenderProperties, rotation: Vec3, maxSize: Vec2, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
+        fun render3d(context: RenderContext, position: Vec3, properties: TextRenderProperties, rotation: Vec3, maxSize: Vec2, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
             val matrix = Mat4()
                 .translateAssign(position)
                 .rotateRadAssign(rotation)
@@ -62,12 +62,18 @@ interface ChatComponentRenderer<T : ChatComponent> {
             mesh.data.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX)
 
             val consumer = WorldGUIConsumer(mesh, matrix, light)
+            return render3d(context, properties, maxSize, consumer, text)
+        }
+
+        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2, mesh: GUIVertexConsumer, text: ChatComponent): TextRenderInfo {
+            val primitives = calculatePrimitiveCount(text)
+            mesh.ensureSize(primitives)
 
             val info = TextRenderInfo(maxSize)
             render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
             info.size.x = maxSize.x // this allows font aligning
-            render(TextOffset(), context.font, properties, info, consumer, null, text)
+            render(TextOffset(), context.font, properties, info, mesh, null, text)
 
             return info
         }

@@ -78,6 +78,10 @@ class EntitiesRenderer(
         visibility.init()
     }
 
+    override fun postInit(latch: AbstractLatch) {
+        features.postInit()
+    }
+
     private fun draw() {
         for (feature in visibility) {
             feature.draw()

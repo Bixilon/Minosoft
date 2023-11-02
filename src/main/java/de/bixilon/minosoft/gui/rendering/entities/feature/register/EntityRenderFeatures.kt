@@ -14,19 +14,26 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature.register
 
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
-import de.bixilon.minosoft.gui.rendering.entities.hitbox.HitboxManager
+import de.bixilon.minosoft.gui.rendering.entities.feature.hitbox.HitboxManager
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRegister
+import de.bixilon.minosoft.util.Initializable
 
-class EntityRenderFeatures(renderer: EntitiesRenderer) {
+class EntityRenderFeatures(renderer: EntitiesRenderer) : Initializable {
     val features: MutableList<FeatureRegister> = mutableListOf()
 
     val hitbox = HitboxManager(renderer).register()
     val player = PlayerRegister(renderer).register()
 
 
-    fun init() {
+    override fun init() {
         for (feature in features) {
             feature.init()
+        }
+    }
+
+    override fun postInit() {
+        for (feature in features) {
+            feature.postInit()
         }
     }
 

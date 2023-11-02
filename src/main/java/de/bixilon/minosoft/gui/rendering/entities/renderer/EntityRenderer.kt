@@ -25,7 +25,8 @@ import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.FLI
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
-import de.bixilon.minosoft.gui.rendering.entities.hitbox.HitboxFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.hitbox.HitboxFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.EntityNameFeature
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.util.interpolate.Interpolator
@@ -39,6 +40,7 @@ abstract class EntityRenderer<E : Entity>(
     val info = entity.renderInfo
 
     val hitbox = HitboxFeature(this).register()
+    val name = EntityNameFeature(this).register()
     val light = Interpolator(ChatColors.WHITE, ColorUtil::interpolateRGB)
     val damage = Interpolator(ChatColors.WHITE, ColorUtil::interpolateRGB) // TODO delta^2
     val matrix = Mat4()

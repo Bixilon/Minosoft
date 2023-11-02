@@ -34,6 +34,7 @@ import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -89,6 +90,7 @@ abstract class PlayerEntity(
 
     val skinParts: MutableSet<SkinParts> by observedSet(mutableSetOf())
 
+    override val name: ChatComponent? get() = additional.tabDisplayName
 
     protected open fun updateSkinParts(flags: Int) {
         for (part in SkinParts.VALUES) {

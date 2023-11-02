@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.hitbox
+package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions

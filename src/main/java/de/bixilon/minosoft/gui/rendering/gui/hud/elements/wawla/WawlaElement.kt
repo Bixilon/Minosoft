@@ -53,8 +53,8 @@ abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawl
         this.size = size
     }
 
-    protected fun createNameElement(translationKey: ResourceLocation?, fallback: ChatComponent): TextElement {
-        val name = wawla.context.connection.language.translate(translationKey) ?: fallback
+    protected fun createNameElement(text: ChatComponent?, translationKey: ResourceLocation?, fallback: ChatComponent): TextElement {
+        val name = text ?: wawla.context.connection.language.translate(translationKey) ?: fallback
         name.setFallbackColor(ChatColors.WHITE)
         return TextElement(guiRenderer, name, background = null, properties = TextRenderProperties(scale = 1.25f))
     }

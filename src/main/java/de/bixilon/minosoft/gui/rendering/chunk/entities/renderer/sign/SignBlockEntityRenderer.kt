@@ -91,7 +91,7 @@ class SignBlockEntityRenderer(
         mesh.ensureSize(text)
 
         for (line in text.text) {
-            ChatComponentRenderer.render3dFlat(context, textPosition, properties, rotation, MAX_SIZE, mesh, line, light)
+            ChatComponentRenderer.render3d(context, textPosition, properties, rotation, MAX_SIZE, mesh, line, light)
             textPosition.y -= LINE_HEIGHT
         }
     }

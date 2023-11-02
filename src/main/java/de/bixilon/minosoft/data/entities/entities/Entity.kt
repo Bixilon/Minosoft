@@ -92,6 +92,8 @@ abstract class Entity(
     var age = 0
         private set
 
+    open val name: ChatComponent? get() = customName
+
 
     open fun forceTeleport(position: Vec3d) {
         physics.forceTeleport(position)
