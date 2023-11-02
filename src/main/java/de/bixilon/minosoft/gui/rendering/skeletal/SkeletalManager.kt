@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.skeletal
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerShader
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.skeletal.shader.LightmapSkeletalShader
 import de.bixilon.minosoft.gui.rendering.skeletal.shader.SkeletalShader
@@ -25,26 +24,23 @@ import org.lwjgl.system.MemoryUtil.memAllocFloat
 class SkeletalManager(
     val context: RenderContext,
 ) {
-    private val uniformBuffer = context.system.createFloatUniformBuffer(memAllocFloat(MAX_TRANSFORMS * Mat4.length))
-    val shader = context.system.createShader(minosoft("skeletal/normal")) { SkeletalShader(it, uniformBuffer) }
-    val lightmapShader = context.system.createShader(minosoft("skeletal/lightmap")) { LightmapSkeletalShader(it, uniformBuffer) }
+    val buffer = context.system.createFloatUniformBuffer(memAllocFloat(MAX_TRANSFORMS * Mat4.length))
+    val shader = context.system.createShader(minosoft("skeletal/normal")) { SkeletalShader(it, buffer) }
+    val lightmapShader = context.system.createShader(minosoft("skeletal/lightmap")) { LightmapSkeletalShader(it, buffer) }
     private val temp = Mat4()
 
-    val playerShader = context.system.createShader(minosoft("entities/player")) { PlayerShader(it, uniformBuffer) } // TODO: move somewhere else
-
     fun init() {
-        uniformBuffer.init()
+        buffer.init()
     }
 
     fun postInit() {
         shader.load()
         lightmapShader.load()
-        playerShader.load()
     }
 
     fun upload(instance: SkeletalInstance, matrix: Mat4) {
-        instance.transform.pack(uniformBuffer.buffer, matrix, temp)
-        uniformBuffer.upload(0, instance.model.transformCount * Mat4.length)
+        instance.transform.pack(buffer.buffer, matrix, temp)
+        buffer.upload(0, instance.model.transformCount * Mat4.length)
     }
 
     companion object {

@@ -30,7 +30,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.interpolate.Interpolator
 
 class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer) {
-    private val manager = renderer.renderer.hitbox
+    private val manager = renderer.renderer.features.hitbox
     private var mesh: LineMesh? = null
 
     private var aabb = AABB.EMPTY

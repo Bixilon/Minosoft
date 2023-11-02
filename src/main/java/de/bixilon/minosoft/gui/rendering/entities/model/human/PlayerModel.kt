@@ -23,7 +23,7 @@ open class PlayerModel(
     renderer: PlayerRenderer<*>,
     model: BakedSkeletalModel,
 ) : HumanModel<PlayerRenderer<*>>(renderer, model) {
-    private val shader = manager.playerShader
+    private val shader = renderer.renderer.features.player.shader
     private var skinParts = 0xFF
 
     init {

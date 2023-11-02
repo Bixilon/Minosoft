@@ -19,16 +19,17 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.feature.register.FeatureRegister
 import de.bixilon.minosoft.util.KUtil.format
 
-class HitboxManager(private val renderer: EntitiesRenderer) {
+class HitboxManager(private val renderer: EntitiesRenderer) : FeatureRegister {
     val profile = renderer.profile.hitbox
     val shader = renderer.context.shaders.genericColorShader
 
     var enabled = profile.enabled
 
 
-    fun init() {
+    override fun init() {
         profile::enabled.observe(this) { this.enabled = it }
         registerKeybinding()
     }

@@ -18,7 +18,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.entities.hitbox.HitboxManager
+import de.bixilon.minosoft.gui.rendering.entities.feature.register.EntityRenderFeatures
 import de.bixilon.minosoft.gui.rendering.entities.visibility.VisibilityManager
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -38,7 +38,7 @@ class EntitiesRenderer(
     override val renderSystem: RenderSystem = context.system
     val profile = connection.profiles.entity
     val visibilityGraph = context.camera.visibilityGraph
-    val hitbox = HitboxManager(this)
+    val features = EntityRenderFeatures(this)
     val renderers = EntityRendererManager(this)
     val visibility = VisibilityManager(this)
     val queue = Queue()
@@ -73,7 +73,7 @@ class EntitiesRenderer(
 
     override fun init(latch: AbstractLatch) {
         context.camera.offset::offset.observe(this) { reset = true }
-        hitbox.init()
+        features.init()
         renderers.init()
         visibility.init()
     }
