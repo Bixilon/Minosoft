@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 
 interface ChatComponentRenderer<T : ChatComponent> {
 
@@ -55,7 +55,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
         fun render3dFlat(context: RenderContext, position: Vec3, properties: TextRenderProperties, rotation: Vec3, maxSize: Vec2, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
             val matrix = Mat4()
                 .translateAssign(position)
-                .rotateDegreesAssign(rotation)
+                .rotateRadAssign(rotation)
                 .translateAssign(Vec3(0, 0, -1))
 
             val primitives = calculatePrimitiveCount(text)
