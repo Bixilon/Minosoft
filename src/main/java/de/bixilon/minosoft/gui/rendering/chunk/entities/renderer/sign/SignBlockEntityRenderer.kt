@@ -100,7 +100,7 @@ class SignBlockEntityRenderer(
         val frontOffset = Vec3(STANDING_FRONT_OFFSET).apply { signRotate(rotation) }
         renderText(offset, sign.front, frontOffset, rotation, mesh, light)
         val backOffset = Vec3(STANDING_BACK_OFFSET).apply { signRotate(rotation) }
-        renderText(offset, sign.back, backOffset, rotation, mesh, light)
+        renderText(offset, sign.back, backOffset, rotation - 180.0f.rad, mesh, light)
     }
 
     private fun renderWallText(facing: Directions, sign: SignBlockEntity, offset: FloatArray, mesh: ChunkMesh, light: Int) {
@@ -137,7 +137,7 @@ class SignBlockEntityRenderer(
         const val STANDING_FRONT_DISTANCE = 9.0f / BLOCK_SIZE
         const val STANDING_BACK_DISTANCE = 7.0f / BLOCK_SIZE
         val STANDING_FRONT_OFFSET = Vec3(SIGN_BOARD_MARGIN, STANDING_BOARD_HEIGHT - SIGN_BOARD_MARGIN, STANDING_FRONT_DISTANCE + Z_OFFSET)
-        val STANDING_BACK_OFFSET = Vec3(BLOCK_SIZE - SIGN_BOARD_MARGIN, STANDING_BOARD_HEIGHT - SIGN_BOARD_MARGIN, STANDING_BACK_DISTANCE + Z_OFFSET)
+        val STANDING_BACK_OFFSET = Vec3(1.0f - SIGN_BOARD_MARGIN, STANDING_BOARD_HEIGHT - SIGN_BOARD_MARGIN, STANDING_BACK_DISTANCE - Z_OFFSET)
 
 
         val WALL_ROTATIONS = floatArrayOf(180.0f.rad, 0.0f, 90.0f.rad, 270.0f.rad)
