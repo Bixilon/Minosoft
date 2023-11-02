@@ -37,7 +37,7 @@ open class PlayerModel(
 
         shader.use()
         shader.texture = renderer.skin?.shaderId ?: renderer.renderer.context.textures.debugTexture.shaderId
-        shader.light = renderer.light.value
+        shader.tint = renderer.light.value.mix(renderer.damage.value)
         shader.skinParts = this.skinParts
 
 

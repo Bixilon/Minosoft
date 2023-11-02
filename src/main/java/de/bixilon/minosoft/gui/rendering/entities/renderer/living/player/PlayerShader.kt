@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living.player
 
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.shader.types.TintedShader
 import de.bixilon.minosoft.gui.rendering.skeletal.shader.BaseSkeletalShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-class PlayerShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer) {
+class PlayerShader(native: NativeShader, buffer: FloatUniformBuffer) : BaseSkeletalShader(native, buffer), TintedShader {
     var texture by uniform("uIndexLayer", 0x00, NativeShader::setUInt)
-    var light by uniform("uLight", ChatColors.WHITE) { shader, name, value -> shader.setUInt(name, value.rgb) }
+    override var tint by uniform("uTintColor", ChatColors.WHITE) { shader, name, value -> shader.setUInt(name, value.rgb) }
     var skinParts by uniform("uSkinParts", 0xFF, NativeShader::setUInt)
 }

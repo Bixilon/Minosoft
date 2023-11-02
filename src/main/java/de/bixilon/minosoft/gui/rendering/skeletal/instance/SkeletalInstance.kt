@@ -41,11 +41,11 @@ class SkeletalInstance(
         draw(shader)
     }
 
-    fun draw(light: RGBColor) {
+    fun draw(tint: RGBColor) {
         context.system.reset(faceCulling = false)
         val shader = context.skeletal.shader
         shader.use()
-        shader.light = light
+        shader.tint = tint
         draw(shader)
     }
 

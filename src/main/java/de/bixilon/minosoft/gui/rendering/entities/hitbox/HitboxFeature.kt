@@ -48,7 +48,6 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
     override fun update(millis: Long, delta: Float) {
         if (!manager.enabled) return unload()
         if (!enabled) return unload()
-        if (!manager.profile.showInvisible && renderer.entity.isInvisible) return unload()
         if (!visible) return
 
         val offset = renderer.renderer.context.camera.offset.offset

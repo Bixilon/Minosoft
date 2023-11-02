@@ -13,12 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.event.events.damage
 
-import de.bixilon.minosoft.data.entities.entities.LivingEntity
-import de.bixilon.minosoft.data.entities.event.EntityEvent
+fun interface DamageListener {
 
-interface DamageEvent : EntityEvent<LivingEntity> {
-
-    override fun handle(entity: LivingEntity) {
-        entity.onDamage(this)
-    }
+    fun onDamage(type: DamageEvent) // TODO: DamageType
 }

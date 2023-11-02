@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
+import de.bixilon.kutil.math.interpolation.FloatInterpolation
+
 object ColorUtil {
 
     fun mixColors(vararg colors: Int): Int {
@@ -38,7 +40,7 @@ object ColorUtil {
         return (start.toFloat() + delta * (end.toFloat() - start.toFloat())).toInt()
     }
 
-    fun interpolateRGB(delta: Float, start: RGBColor, end: RGBColor): RGBColor {
+    fun interpolateRGB(delta: Float, start: RGBColor, end: RGBColor, component: (Float, Float, Float) -> Float = FloatInterpolation::interpolateLinear): RGBColor {
         if (delta <= 0.0f) return start
         if (delta >= 1.0f) return end
 

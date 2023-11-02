@@ -11,14 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.event.events.damage
+package de.bixilon.minosoft.gui.rendering.shader.types
 
-import de.bixilon.minosoft.data.entities.entities.LivingEntity
-import de.bixilon.minosoft.data.entities.event.EntityEvent
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 
-interface DamageEvent : EntityEvent<LivingEntity> {
-
-    override fun handle(entity: LivingEntity) {
-        entity.onDamage(this)
-    }
+interface TintedShader : AbstractShader {
+    var tint: RGBColor
 }

@@ -64,7 +64,8 @@ open class SkeletalFeature(
     }
 
     override fun draw() {
-        instance.draw(renderer.light.value)
+        val tint = renderer.light.value.mix(renderer.damage.value)
+        instance.draw(tint)
     }
 
     override fun reset() {

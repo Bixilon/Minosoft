@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.container.equipment.EntityEquipment
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -22,6 +23,8 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.entities.entities.properties.StatusEffectProperty
+import de.bixilon.minosoft.data.entities.event.events.damage.DamageEvent
+import de.bixilon.minosoft.data.entities.event.events.damage.DamageListener
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -33,7 +36,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.sp
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
+abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation), DamageListener {
     private val entityEffectParticle = connection.registries.particleType[EntityEffectParticle]
     private val ambientEntityEffectParticle = connection.registries.particleType[AmbientEntityEffectParticle]
 
@@ -108,6 +111,10 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     val activelyRiding: Boolean get() = false
 
     override fun physics(): LivingEntityPhysics<*> = super.physics().unsafeCast()
+
+    override fun onDamage(type: DamageEvent) {
+        this.renderer?.nullCast<DamageListener>()?.onDamage(type)
+    }
 
     companion object {
         private val FLAGS_DATA = EntityDataField("LIVING_ENTITY_FLAGS")

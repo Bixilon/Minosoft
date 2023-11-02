@@ -28,12 +28,12 @@ layout (location = 3) in float vinIndexLayerAnimation;// texture index (0xF00000
 
 #include "minosoft:color"
 
-uniform uint uLight;
+uniform uint uTintColor;
 
 
 void main() {
     run_skeletal(floatBitsToUint(vinTransformNormal), vinPosition);
     run_animation();
 
-    finTintColor *= getRGBColor(uLight & 0xFFFFFFu);
+    finTintColor *= getRGBColor(uTintColor & 0xFFFFFFu);
 }
