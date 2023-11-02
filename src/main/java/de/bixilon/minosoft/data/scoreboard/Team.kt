@@ -41,4 +41,11 @@ data class Team(
         suffix.let { displayName += it }
         return displayName
     }
+
+    fun canSee(other: Team?): Boolean {
+        if (other == null) return false
+        if (other.name == this.name && canSeeInvisibleTeam) return true
+
+        return false
+    }
 }

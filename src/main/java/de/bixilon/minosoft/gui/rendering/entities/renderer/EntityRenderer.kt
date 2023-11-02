@@ -40,7 +40,7 @@ abstract class EntityRenderer<E : Entity>(
     val light = Interpolator(ChatColors.WHITE, ColorUtil::interpolateRGB)
     val matrix = Mat4()
     var visible = true
-        private set
+        protected set
 
     fun <T : EntityRenderFeature> T.register(): T {
         features += this
@@ -93,7 +93,7 @@ abstract class EntityRenderer<E : Entity>(
     }
 
     open fun updateVisibility(occluded: Boolean, visible: Boolean) {
-        this.visible = visible
+        this.visible = visible && !entity.isInvisible
         features.updateVisibility(occluded)
     }
 }

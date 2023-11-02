@@ -42,6 +42,21 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         entity.additional::properties.observe(this) { refresh = true }
     }
 
+    override fun updateVisibility(occluded: Boolean, visible: Boolean) {
+        if (visible) {
+            val team = renderer.connection.player.additional.team
+            if (team == null || !team.canSee(entity.additional.team)) {
+                this.visible = false
+            } else {
+                this.visible = entity.isInvisible
+            }
+        } else {
+            this.visible = false
+        }
+        this.visible = visible && !entity.isInvisible
+        features.updateVisibility(occluded)
+    }
+
 
     override fun update(millis: Long) {
         if (refresh) updateModel()
