@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRe
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 open class BillboardTextFeature(
@@ -31,6 +31,7 @@ open class BillboardTextFeature(
 ) : EntityRenderFeature(renderer) {
     private var mesh: BillboardTextMesh? = null
     private var info: TextRenderInfo? = null
+    private var matrix = Mat4()
     var text: ChatComponent? = text
         set(value) {
             if (field == value) return
@@ -40,11 +41,12 @@ open class BillboardTextFeature(
 
     override fun update(millis: Long, delta: Float) {
         if (!enabled) return unload()
-        if (this.mesh != null) return // matrix, ...?
-        val text = this.text ?: return unload()
-        if (text.length == 0) return unload()
-
-        createMesh(text)
+        if (this.mesh == null) {
+            val text = this.text ?: return unload()
+            if (text.length == 0) return unload()
+            createMesh(text)
+        }
+        updateMatrix()
     }
 
     private fun createMesh(text: ChatComponent) {
@@ -56,14 +58,21 @@ open class BillboardTextFeature(
         this.info = info
     }
 
+    private fun updateMatrix() {
+        val matrix = Mat4()
+            .translateYAssign(renderer.entity.eyeHeight + EYE_OFFSET)
+
+        // TODO: rotate with camera (billboard)
+
+        this.matrix = renderer.matrix * matrix
+    }
+
     override fun draw() {
         val mesh = this.mesh ?: return
         if (mesh.state != Mesh.MeshStates.LOADED) mesh.load()
         renderer.renderer.context.system.reset(depth = DepthFunctions.ALWAYS)
         val shader = renderer.renderer.features.text.shader
         shader.use()
-        val matrix = Mat4()
-            .translateAssign(Vec3(renderer.entity.renderInfo.position + renderer.renderer.context.camera.offset.offset) + Vec3(0, 2, 0))
         shader.matrix = matrix
         mesh.draw()
     }
@@ -82,5 +91,6 @@ open class BillboardTextFeature(
     private companion object {
         val PROPERTIES = TextRenderProperties(allowNewLine = false)
         val MAX_SIZE = Vec2(150.0f, PROPERTIES.lineHeight)
+        const val EYE_OFFSET = 0.5f
     }
 }

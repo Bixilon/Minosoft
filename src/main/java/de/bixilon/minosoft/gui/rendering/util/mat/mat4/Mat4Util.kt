@@ -54,7 +54,7 @@ object Mat4Util {
         System.arraycopy(empty.array, 0, array, 0, Mat4.length)
     }
 
-    fun Mat4.rotateXAssign(rad:Float): Mat4 {
+    fun Mat4.rotateXAssign(rad: Float): Mat4 {
         rotateX(this, rad)
 
         return this
@@ -149,5 +149,13 @@ object Mat4Util {
         m[0, 1] = res0y
         m[0, 2] = res0z
         m[0, 3] = res0w
+    }
+
+    fun Mat4.translateYAssign(vY: Float): Mat4 {
+        this[3, 0] += this[1, 0] * vY
+        this[3, 1] += this[1, 1] * vY
+        this[3, 2] += this[1, 2] * vY
+        this[3, 3] += this[1, 3] * vY
+        return this
     }
 }

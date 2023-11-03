@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import kotlin.math.abs
 
 object SkeletalMeshUtil {
+    private const val ADD = +0.001f
 
     private fun encodeY(part: Float): Int {
         if (part <= -1.0f) return 0
@@ -26,9 +27,9 @@ object SkeletalMeshUtil {
     }
 
     fun encodeNormal(normal: Vec3): Int {
-        val x = (abs(normal.x) * 15.0f).toInt()
-        val y = encodeY(normal.y + 0.001f) and 0x0F
-        val z = (abs(normal.z) * 15.0f).toInt()
+        val x = (abs(normal.x + ADD) * 15.0f).toInt() and 0x0F
+        val y = encodeY(normal.y + ADD) and 0x0F
+        val z = (abs(normal.z + ADD) * 15.0f).toInt() and 0x0F
 
         return (y shl 8) or (z shl 4) or (x)
     }

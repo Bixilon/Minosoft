@@ -45,8 +45,7 @@ void main() {
     }
     finAllowTransparency = skinPart;
     run_skeletal(partTransformNormal, vinPosition);
-    vec4 light = getRGBColor(uTintColor & 0xFFFFFFu);
-    finTintColor *= light;
+    finTintColor *= getRGBColor(uTintColor & 0xFFFFFFu);
 
     finTextureIndex = uIndexLayer >> 28u;
     finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));

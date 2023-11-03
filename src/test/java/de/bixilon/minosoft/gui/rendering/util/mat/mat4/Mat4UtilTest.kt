@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.util.mat.mat4
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -41,6 +42,14 @@ class Mat4UtilTest {
     fun `custom rotateZ`() {
         val expected = Mat4().rotateAssign(12.0f.rad, Vec3(0, 0, 1))
         val actual = Mat4().apply { Mat4Util.rotateZ(this, 12.0f.rad) }
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `custom translateYAssign`() {
+        val expected = Mat4().translateAssign(Vec3(0, 123.0f, 0))
+        val actual = Mat4().translateYAssign(123.0f)
 
         assertEquals(expected, actual)
     }

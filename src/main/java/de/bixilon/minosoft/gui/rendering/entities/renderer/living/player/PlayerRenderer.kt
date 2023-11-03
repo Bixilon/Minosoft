@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living.player
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -32,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMeshBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity), DynamicTextureListener {
     protected var model: PlayerModel? = null
@@ -116,7 +116,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     override fun updateMatrix(delta: Float) {
         super.updateMatrix(delta)
         when (entity.pose) {
-            Poses.SNEAKING -> matrix.translateAssign(SNEAKING_OFFSET) // TODO: interpolate
+            Poses.SNEAKING -> matrix.translateYAssign(SNEAKING_OFFSET) // TODO: interpolate
             else -> Unit
         }
     }
@@ -129,7 +129,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
 
         private val SKIN = minecraft("skin")
 
-        private val SNEAKING_OFFSET = Vec3(0.0f, -0.125f, 0.0f)
+        private const val SNEAKING_OFFSET = -0.125f
 
         override fun create(renderer: EntitiesRenderer, entity: PlayerEntity) = PlayerRenderer(renderer, entity)
         override fun buildMesh(context: RenderContext) = PlayerModelMesh(context)
