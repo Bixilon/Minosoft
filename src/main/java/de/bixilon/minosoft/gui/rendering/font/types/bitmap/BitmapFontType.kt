@@ -114,9 +114,10 @@ class BitmapFontType(
                 uvEnd.y -= RenderConstants.UV_ADD // this workarounds some precision loss
             }
 
-            val scaledWidth = width / (height.toFloat() / FontProperties.CHAR_BASE_HEIGHT)
+            val scale = height / FontProperties.CHAR_BASE_HEIGHT
+            val scaledWidth = width / scale
 
-            return BitmapCodeRenderer(texture, uvStart, uvEnd, scaledWidth, ascent)
+            return BitmapCodeRenderer(texture, uvStart, uvEnd, scaledWidth.toFloat(), (height / scale).toFloat(), ascent.toFloat())
         }
 
         private fun load(texture: Texture, height: Int, ascent: Int, chars: Array<IntStream>): BitmapFontType? {

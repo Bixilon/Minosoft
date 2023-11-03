@@ -13,11 +13,31 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
+
 /**
  * Font that is shifted vertically
  * See the great explanation of @Suragch at https://stackoverflow.com/questions/27631736/meaning-of-top-ascent-baseline-descent-bottom-and-leading-in-androids-font
  */
-interface AscentedCodePointRenderer : CodePointRenderer {
-    val descent: Float
-    val ascent: Float
+interface AscentedCodePointRenderer : RasterizedCodePointRenderer {
+    val ascent: Float get() = 8.0f
+    val height: Float
+
+
+    override fun calculateStart(properties: TextRenderProperties, base: Vec2, scale: Float): Vec2 {
+        val position = Vec2(base)
+        val offset = properties.charSpacing.top - (height - ascent)
+        position.y += offset * scale
+
+        return position
+    }
+
+    override fun calculateEnd(properties: TextRenderProperties, start: Vec2, scale: Float): Vec2 {
+        val position = Vec2(start)
+        position.y += (height * scale)
+        position.x += width * scale
+
+        return position
+    }
 }
