@@ -13,26 +13,25 @@
 
 #version 330 core
 
-layout (location = 0) in vec3 vinPosition;
-layout (location = 1) in vec2 vinUV;
-layout (location = 2) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
-layout (location = 3) in float vinLightTint;// Light (0xFF000000); 3 bytes color (0x00FFFFFF)
+out vec4 foutColor;
 
-#include "minosoft:animation/header_vertex"
 
-uniform mat4 uViewProjectionMatrix;
+flat in uint finTextureIndex;
+in vec3 finTextureCoordinates;
 
-#include "minosoft:animation/buffer"
-#include "minosoft:color"
-#include "minosoft:light"
+in vec4 finTintColor;
 
-#include "minosoft:animation/main_vertex"
+
+#include "minosoft:texture"
+#include "minosoft:alpha"
+#include "minosoft:fog"
 
 void main() {
-    gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
-    uint lightTint = floatBitsToUint(vinLightTint);
-    finTintColor = getRGBColor(lightTint & 0xFFFFFFu) * getLight(lightTint >> 24u);
-    finFragmentPosition = vinPosition;
+    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates, 0.0f);
+    discard_if_0(texelColor.a);
 
-    run_animation();
+    foutColor = texelColor * finTintColor;
+    set_alpha_transparent();
+
+    set_fog();
 }

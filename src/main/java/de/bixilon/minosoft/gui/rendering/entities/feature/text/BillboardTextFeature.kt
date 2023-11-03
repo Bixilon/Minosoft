@@ -13,12 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
+import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 open class BillboardTextFeature(
@@ -26,6 +30,7 @@ open class BillboardTextFeature(
     text: ChatComponent?,
 ) : EntityRenderFeature(renderer) {
     private var mesh: BillboardTextMesh? = null
+    private var info: TextRenderInfo? = null
     var text: ChatComponent? = text
         set(value) {
             if (field == value) return
@@ -35,20 +40,32 @@ open class BillboardTextFeature(
 
     override fun update(millis: Long, delta: Float) {
         if (!enabled) return unload()
+        if (this.mesh != null) return // matrix, ...?
         val text = this.text ?: return unload()
         if (text.length == 0) return unload()
 
+        createMesh(text)
     }
 
     private fun createMesh(text: ChatComponent) {
         val mesh = BillboardTextMesh(renderer.renderer.context)
-        val properties = TextRenderProperties()
-        ChatComponentRenderer.render3d(renderer.renderer.context, properties, Vec2(Int.MAX_VALUE), mesh, text)
+        val info = ChatComponentRenderer.render3d(renderer.renderer.context, PROPERTIES, MAX_SIZE, mesh, text)
+
+
+        this.mesh = mesh
+        this.info = info
     }
 
     override fun draw() {
-        // TODO: shader
-        mesh?.draw()
+        val mesh = this.mesh ?: return
+        if (mesh.state != Mesh.MeshStates.LOADED) mesh.load()
+        renderer.renderer.context.system.reset(depth = DepthFunctions.ALWAYS)
+        val shader = renderer.renderer.features.text.shader
+        shader.use()
+        val matrix = Mat4()
+            .translateAssign(Vec3(renderer.entity.renderInfo.position + renderer.renderer.context.camera.offset.offset) + Vec3(0, 2, 0))
+        shader.matrix = matrix
+        mesh.draw()
     }
 
     override fun updateVisibility(occluded: Boolean) {
@@ -57,7 +74,14 @@ open class BillboardTextFeature(
 
     override fun unload() {
         val mesh = this.mesh ?: return
+        this.mesh = null
+        this.info = null
         if (mesh.state != Mesh.MeshStates.LOADED) return
         renderer.renderer.queue += { mesh.unload() }
+    }
+
+    private companion object {
+        val PROPERTIES = TextRenderProperties(allowNewLine = false)
+        val MAX_SIZE = Vec2(150.0f, PROPERTIES.lineHeight)
     }
 }
