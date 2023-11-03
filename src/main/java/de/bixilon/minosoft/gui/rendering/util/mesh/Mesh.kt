@@ -83,8 +83,11 @@ abstract class Mesh(
     }
 
     fun unload() {
-        check(state == MeshStates.LOADED) { "Can not unload $state mesh!" }
-        buffer.unload()
+        when (state) {
+            MeshStates.LOADED -> buffer.unload()
+            MeshStates.PREPARING, MeshStates.FINISHED -> _data?.unload()
+            else -> throw IllegalStateException("Mesh is already unloaded")
+        }
         state = MeshStates.UNLOADED
     }
 
