@@ -40,7 +40,8 @@ class UnlockRecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val listed: MutableList<Recipe> = mutableListOf()
         val recipes = buffer.connection.registries.recipes
         for (i in 0 until buffer.readVarInt()) {
-            listed += recipes[if (buffer.versionId < V_17W48A) buffer.readVarInt() else buffer.readResourceLocation()] ?: continue
+            val recipe = if (buffer.versionId < V_17W48A) recipes.getOrNull(buffer.readVarInt()) else recipes[buffer.readResourceLocation()]
+            listed += recipe ?: continue
         }
         this.listed = listed
     }

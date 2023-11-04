@@ -46,7 +46,7 @@ class RecipeRegistry(
     }
 
     override fun getOrNull(id: Int): Recipe? {
-        return idValueMap[id] ?: parent?.get(id)
+        return idValueMap[id] ?: parent?.getOrNull(id)
     }
 
     override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): Recipe? {
