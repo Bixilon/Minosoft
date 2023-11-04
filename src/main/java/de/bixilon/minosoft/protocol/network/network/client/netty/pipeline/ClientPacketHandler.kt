@@ -52,7 +52,7 @@ class ClientPacketHandler(
         if (type.extra != null) {
             type.extra.onError(error, connection)
         }
-        context.fireExceptionCaught(error)
+        client.handleError(error)
     }
 
     private fun tryHandle(context: ChannelHandlerContext, type: PacketType, packet: S2CPacket) {
