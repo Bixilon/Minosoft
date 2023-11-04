@@ -212,9 +212,7 @@ class SectionLight(
 
     fun reset() {
         update = true
-        for (index in light.indices) {
-            light[index] = 0x00.toByte()
-        }
+        light.fill(0x00.toByte(), 0, light.size)
     }
 
 
@@ -228,7 +226,7 @@ class SectionLight(
         update = true
         val blocks = section.blocks
 
-        blocks.acquire()
+        blocks.lock?.acquire()
         val min = blocks.minPosition
         val max = blocks.maxPosition
 
@@ -245,7 +243,7 @@ class SectionLight(
                 }
             }
         }
-        blocks.release()
+        blocks.lock?.release()
         section.chunk.light.sky.recalculate(section.sectionHeight)
     }
 

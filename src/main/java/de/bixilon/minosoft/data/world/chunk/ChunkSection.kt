@@ -27,16 +27,17 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
+import kotlin.reflect.jvm.javaField
 
 /**
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
     val sectionHeight: Int,
-    var blocks: BlockSectionDataProvider = BlockSectionDataProvider(),
-    var biomes: SectionDataProvider<Biome> = SectionDataProvider(checkSize = false),
-    var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(checkSize = true),
-    chunk: Chunk? = null
+    chunk: Chunk? = null,
+    var blocks: BlockSectionDataProvider = BlockSectionDataProvider(chunk?.lock),
+    var biomes: SectionDataProvider<Biome> = SectionDataProvider(chunk?.lock, checkSize = false),
+    var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(chunk?.lock, checkSize = true),
 ) {
     val chunk: Chunk = chunk ?: unsafeNull()
     var light = SectionLight(this)
@@ -49,7 +50,6 @@ class ChunkSection(
         val offset = Vec3i.of(chunkPosition, sectionHeight)
         val position = Vec3i()
 
-        acquire()
         val min = blockEntities.minPosition
         val max = blockEntities.maxPosition
         for (y in min.y..max.y) {
@@ -65,31 +65,6 @@ class ChunkSection(
                 }
             }
         }
-        release()
-    }
-
-    fun acquire() {
-        blocks.acquire()
-        biomes.acquire()
-        blockEntities.acquire()
-    }
-
-    fun release() {
-        blocks.release()
-        biomes.release()
-        blockEntities.release()
-    }
-
-    fun lock() {
-        blocks.lock()
-        biomes.lock()
-        blockEntities.lock()
-    }
-
-    fun unlock() {
-        blocks.unlock()
-        biomes.unlock()
-        blockEntities.unlock()
     }
 
     fun buildBiomeCache(neighbours: Array<Chunk>, biomeAccessor: NoiseBiomeAccessor) {
@@ -113,7 +88,15 @@ class ChunkSection(
         blockEntities.clear()
     }
 
+    fun updateChunk(chunk: Chunk) {
+        CHUNK[this] = chunk
+        blocks.lock = chunk.lock
+        // biomes?
+        blockEntities.lock = chunk.lock
+    }
+
     companion object {
+        private val CHUNK = ChunkSection::chunk.javaField!!.apply { isAccessible = true }
 
         inline val Vec3i.index: Int
             get() = getIndex(x, y, z)

@@ -64,8 +64,8 @@ class SectionOcclusion(
 
         // no need to trace negative coordinates initially
         if (x < ProtocolDefinition.SECTION_MAX_X) trace(regions, x + 1, y, z, nextId)
-        if (y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, x, y + 1, z, nextId)
         if (z < ProtocolDefinition.SECTION_MAX_Z) trace(regions, x, y, z + 1, nextId)
+        if (y < ProtocolDefinition.SECTION_MAX_Y) trace(regions, x, y + 1, z, nextId)
     }
 
     private fun trace(regions: ShortArray, x: Int, y: Int, z: Int, nextId: Short) {

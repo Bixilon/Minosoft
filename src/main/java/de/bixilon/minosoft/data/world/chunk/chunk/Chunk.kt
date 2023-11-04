@@ -217,9 +217,11 @@ class Chunk(
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, random: Random) {
         if (!neighbours.complete) return
+        lock.acquire()
         for ((index, section) in sections.withIndex()) {
             section?.tick(connection, chunkPosition, index + minSection, random)
         }
+        lock.release()
     }
 
     override fun iterator(): Iterator<ChunkSection?> {

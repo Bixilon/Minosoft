@@ -58,7 +58,7 @@ class ChunkPrototype(
         val light = this.light
         for ((index, provider) in blocks.withIndex()) {
             if (provider == null) continue
-            val section = ChunkSection(index + dimension.minSection, provider)
+            val section = ChunkSection(index + dimension.minSection, null, provider)
             SECTION[provider] = section
 
             if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
@@ -73,7 +73,7 @@ class ChunkPrototype(
 
         for (section in sections) {
             if (section == null) continue
-            CHUNK[section] = chunk
+            section.updateChunk(chunk)
         }
         if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
             this.topLight?.let { chunk.light.top.update(it) }
@@ -101,7 +101,7 @@ class ChunkPrototype(
             } else {
                 section.blockEntities.clear()
             }
-            provider::section.forceSet(section)
+            SECTION.forceSet(provider, section)
 
             section.blocks = provider
             affected += sectionHeight
@@ -158,6 +158,5 @@ class ChunkPrototype(
 
     private companion object {
         private val SECTION = BlockSectionDataProvider::section.javaField!!.apply { isAccessible = true }
-        private val CHUNK = ChunkSection::chunk.javaField!!.apply { isAccessible = true }
     }
 }

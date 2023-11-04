@@ -16,19 +16,19 @@ package de.bixilon.minosoft.data.world.container
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.iterator.EmptyIterator
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 open class SectionDataProvider<T>(
+    var lock: Lock?,
     data: Array<T>? = null,
     val checkSize: Boolean = false,
     calculateInitial: Boolean = true,
 ) : Iterable<T> {
     protected var data: Array<Any?>? = data?.unsafeCast()
         private set
-    protected val lock = SimpleLock() // lock while reading (blocks writing)
     var count: Int = 0
         private set
     val isEmpty: Boolean
@@ -177,51 +177,35 @@ open class SectionDataProvider<T>(
     }
 
     open operator fun set(index: Int, value: T): T? {
-        lock()
+        lock?.lock()
         val previous = unsafeSet(index, value)
-        unlock()
+        lock?.unlock()
         return previous
-    }
-
-    fun acquire() {
-        lock.acquire()
-    }
-
-    fun release() {
-        lock.release()
-    }
-
-    fun lock() {
-        lock.lock()
-    }
-
-    fun unlock() {
-        lock.unlock()
     }
 
 
     @Suppress("UNCHECKED_CAST")
     fun setData(data: Array<T>) {
-        lock()
+        lock?.lock()
         check(data.size == ProtocolDefinition.BLOCKS_PER_SECTION) { "Size does not match!" }
         this.data = data as Array<Any?>
         recalculate()
-        unlock()
+        lock?.unlock()
     }
 
     fun copy(): SectionDataProvider<T> {
-        acquire()
-        val clone = SectionDataProvider<T>(data?.clone()?.unsafeCast())
-        release()
+        lock?.acquire()
+        val clone = SectionDataProvider<T>(null, data?.clone()?.unsafeCast())
+        lock?.release()
 
         return clone
     }
 
     fun clear() {
-        lock()
+        lock?.lock()
         this.data = null
         recalculate()
-        unlock()
+        lock?.unlock()
     }
 
     @Suppress("UNCHECKED_CAST")
