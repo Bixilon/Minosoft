@@ -20,10 +20,10 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 
 open class BlockState(
-    val block: Block,
+    @JvmField val block: Block,
     val luminance: Int,
 ) {
-    var model: BlockRender? = null
+    @JvmField var model: BlockRender? = null
 
     constructor(block: Block, settings: BlockStateSettings) : this(block, settings.luminance)
 

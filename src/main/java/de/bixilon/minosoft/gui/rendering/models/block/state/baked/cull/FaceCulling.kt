@@ -69,6 +69,16 @@ object FaceCulling {
         return area
     }
 
+    private inline fun minOf(a: Float, b: Float): Float {
+        if (a < b) return a
+        return b
+    }
+
+    private inline fun maxOf(a: Float, b: Float): Float {
+        if (a > b) return a
+        return b
+    }
+
     private fun FaceProperties.getSideArea(target: FaceProperties): Float {
         val start = start.array
         val targetStart = target.start.array

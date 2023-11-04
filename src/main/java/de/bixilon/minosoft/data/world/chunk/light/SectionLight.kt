@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SectionLight(
     val section: ChunkSection,
-    var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION), // packed (skyLight: 0xF0, blockLight: 0x0F)
+    @JvmField var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION), // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) : AbstractSectionLight() {
 
     fun onBlockChange(x: Int, y: Int, z: Int, previous: BlockState?, state: BlockState?) {
