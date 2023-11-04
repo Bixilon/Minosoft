@@ -22,12 +22,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdenti
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.util.collections.floats.FragmentedArrayFloatList
 
 class GUIMesh(
     context: RenderContext,
     val halfSize: Vec2,
-    data: FragmentedArrayFloatList,
+    data: AbstractFloatList,
 ) : Mesh(context, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
     private val whiteTexture = context.textures.whiteTexture
     override val order = context.system.quadOrder
