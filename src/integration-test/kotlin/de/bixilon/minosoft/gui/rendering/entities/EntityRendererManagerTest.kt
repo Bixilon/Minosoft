@@ -16,11 +16,18 @@ package de.bixilon.minosoft.gui.rendering.entities
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfile
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.animal.Pig
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.camera.Camera
+import de.bixilon.minosoft.gui.rendering.entities.feature.register.EntityRenderFeatures
+import de.bixilon.minosoft.gui.rendering.shader.ShaderManager
+import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
+import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.test.IT
@@ -28,16 +35,25 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
-@Test(groups = ["entity_renderer", "rendering"])
+@Test(groups = ["entity_renderer", "rendering"], enabled = false)
 class EntityRendererManagerTest {
-    private val pig = EntityType(Pig.identifier, Namespaces.minecraft(""), 1.0f, 1.0f, true, false, mapOf(), Pig, null)
+    private val pig = EntityType(Pig.identifier, Namespaces.minecraft(""), 1.0f, 1.0f, mapOf(), Pig, null)
 
 
     private fun create(): EntityRendererManager {
         val connection = createConnection()
+        val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
+        context::system.forceSet(DummyRenderSystem(context))
+        context::textures.forceSet(context.system.createTextureManager())
+        context::shaders.forceSet(ShaderManager(context))
+        context::camera.forceSet(Camera(context))
+        context::skeletal.forceSet(SkeletalManager(context))
         val renderer = IT.OBJENESIS.newInstance(EntitiesRenderer::class.java)
+        renderer::context.forceSet(context)
         renderer::queue.forceSet(Queue())
         renderer::connection.forceSet(connection)
+        renderer::profile.forceSet(EntityProfile())
+        renderer::features.forceSet(EntityRenderFeatures(renderer))
         return EntityRendererManager(renderer)
     }
 

@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
@@ -50,8 +49,6 @@ data class EntityType(
     override val translationKey: ResourceLocation?,
     val width: Float,
     val height: Float,
-    val sizeFixed: Boolean,
-    val fireImmune: Boolean,
     val attributes: Map<AttributeType, Double>,
     val factory: EntityFactory<out Entity>,
     val spawnEgg: SpawnEggItem?,
@@ -131,8 +128,6 @@ data class EntityType(
                 translationKey = data["translation_key"]?.toResourceLocation(),
                 width = data["width"].unsafeCast(),
                 height = data["height"].unsafeCast(),
-                fireImmune = data["fire_immune"]?.toBoolean() ?: false,
-                sizeFixed = data["size_fixed"]?.toBoolean() ?: false,
                 attributes = attributes,
                 factory = factory,
                 spawnEgg = registries.item[data["spawn_egg_item"]]?.nullCast(), // ToDo: Not yet in PixLyzer

@@ -132,16 +132,6 @@ object KUtil {
         }
     }
 
-    fun Set<String>.toResourceLocationList(): Set<ResourceLocation> {
-        val ret: MutableSet<ResourceLocation> = mutableSetOf()
-
-        for (resourceLocation in this) {
-            ret += resourceLocation.toResourceLocation()
-        }
-
-        return ret
-    }
-
     fun pause() {
         var setBreakPointHere = 1
     }
@@ -213,16 +203,6 @@ object KUtil {
     val Throwable.text: TextComponent
         get() = TextComponent(this::class.java.realName + ": " + this.message).color(ChatColors.DARK_RED)
 
-
-    fun <T : Identified> List<T>.asResourceLocationMap(): Map<ResourceLocation, T> {
-        val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
-
-        for (value in this) {
-            ret[value.identifier] = value
-        }
-
-        return ret
-    }
 
     fun String?.nullCompare(other: String?): Int? {
         if (this == null || other == null) {

@@ -45,8 +45,9 @@ class ChunkMesher(
             if (item.section.blocks.fluidCount > 0) {
                 fluid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
             }
-        } finally {
+        } catch (exception: Exception) {
             mesh.unload()
+            throw exception
         }
 
         return mesh

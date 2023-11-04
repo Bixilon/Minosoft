@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
@@ -22,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRe
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
@@ -59,8 +63,10 @@ open class BillboardTextFeature(
     }
 
     private fun updateMatrix() {
+        val rotation = Vec3(180.0f.rad, (EntityRotation.HALF_CIRCLE_DEGREE - renderer.entity.renderInfo.rotation.yaw).rad, 180.0f.rad)
         val matrix = Mat4()
             .translateYAssign(renderer.entity.eyeHeight + EYE_OFFSET)
+            .rotateRadAssign(rotation)
 
         // TODO: rotate with camera (billboard)
 

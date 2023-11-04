@@ -42,7 +42,7 @@ object InteractionTestUtil {
     private val TICK = KeyHandler::class.java.getDeclaredMethod("onTick").apply { isAccessible = true }
     private val RELEASE = KeyHandler::class.java.getDeclaredMethod("onRelease").apply { isAccessible = true }
 
-    private val pig = EntityType(Pig.identifier, minecraft(""), 1.0f, 1.0f, true, false, mapOf(), Pig, null)
+    private val pig = EntityType(Pig.identifier, minecraft(""), 1.0f, 1.0f, mapOf(), Pig, null)
 
     fun createConnection(): PlayConnection {
         val connection = ConnectionTestUtil.createConnection(0)

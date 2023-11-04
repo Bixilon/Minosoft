@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.transforms
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -24,7 +25,7 @@ data class SkeletalTransform(
 
     fun bake(id: AtomicInteger): BakedSkeletalTransform {
         val usedId = id.getAndIncrement()
-        val pivot = pivot / 16.0f
+        val pivot = pivot / BLOCK_SIZE
 
 
         val transforms: MutableMap<String, BakedSkeletalTransform> = mutableMapOf()

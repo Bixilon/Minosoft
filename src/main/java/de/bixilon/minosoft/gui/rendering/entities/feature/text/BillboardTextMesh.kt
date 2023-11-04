@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -33,7 +32,7 @@ class BillboardTextMesh(context: RenderContext) : Mesh(context, BillboardTextMes
     }
 
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
-        data.add(x, y, 0.0f)
+        data.add(x * SCALE, y * SCALE)
         data.add(u, v)
         data.add(texture?.shaderId?.buffer() ?: 0.0f)
         data.add(tint.rgb.buffer())
@@ -42,11 +41,15 @@ class BillboardTextMesh(context: RenderContext) : Mesh(context, BillboardTextMes
     override fun addCache(cache: GUIMeshCache) = Broken("This is not a text only consumer!")
 
     data class BillboardTextMeshStruct(
-        val position: Vec3,
+        val position: Vec2,
         val uv: Vec2,
         val indexLayerAnimation: Int,
         val lightTint: Int,
     ) {
         companion object : MeshStruct(BillboardTextMeshStruct::class)
+    }
+
+    private companion object {
+        const val SCALE = 0.03f
     }
 }

@@ -81,7 +81,7 @@ class BitmapFontTypeTest {
         assertEquals(char.width, width.toFloat(), "width mismatch")
         assertEquals(char.uvStart, uvStart, "uv start mismatch")
         assertEquals(char.uvEnd, uvEnd, "uv end mismatch")
-        height?.let { assertEquals(char.height, height) }
+        height?.let { assertEquals(char.height, height.toFloat()) }
     }
 
     fun `space size`() {
