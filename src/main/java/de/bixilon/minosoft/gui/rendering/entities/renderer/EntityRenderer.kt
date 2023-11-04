@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.renderer
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.event.events.damage.DamageEvent
 import de.bixilon.minosoft.data.entities.event.events.damage.DamageListener
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.text.EntityNameFeature
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
-import de.bixilon.minosoft.util.interpolate.Interpolator
 
 abstract class EntityRenderer<E : Entity>(
     val renderer: EntitiesRenderer,

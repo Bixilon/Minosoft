@@ -237,7 +237,7 @@ abstract class Entity(
 
 
     override fun init() {
-        Entity::class.java.getDeclaredField("physics").forceSet(this, createPhysics())
+        PHYSICS.forceSet(this, createPhysics())
         forceTeleport(initialPosition)
         forceRotate(initialRotation)
         if (!RunConfiguration.DISABLE_RENDERING) {
@@ -252,6 +252,7 @@ abstract class Entity(
 
     companion object {
         private val renderInfo = Entity::renderInfo.javaField!!.apply { isAccessible = true }
+        private val PHYSICS = Entity::class.java.getDeclaredField("physics").apply { isAccessible = true }
 
         val FLAGS_DATA = EntityDataField("ENTITY_FLAGS")
         val AIR_SUPPLY_DATA = EntityDataField("ENTITY_AIR_SUPPLY")

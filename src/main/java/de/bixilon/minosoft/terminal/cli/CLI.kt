@@ -55,9 +55,9 @@ object CLI {
     }
 
 
-    fun startThread(latch: AbstractLatch) {
-        latch.inc()
-        Thread({ latch.dec(); startLoop() }, "CLI").start()
+    fun startThread(latch: AbstractLatch?) {
+        latch?.inc()
+        Thread({ latch?.dec(); startLoop() }, "CLI").start()
     }
 
     private fun startLoop() {

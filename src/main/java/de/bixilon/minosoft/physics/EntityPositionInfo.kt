@@ -60,14 +60,16 @@ class EntityPositionInfo(
 
             val velocityPosition = Vec3i(blockPosition.x, (position.y - 0.5000001).toInt(), blockPosition.z)
 
-            val chunks = physics.entity.connection.world.chunks
-            val revision = chunks.revision
+            val world = physics.entity.connection.world
+            world.lock.acquire()
+            val revision = world.chunks.revision
 
             var chunk = if (previous.revision == revision) previous.chunk?.neighbours?.trace(chunkPosition - previous.chunkPosition) else null
 
             if (chunk == null) {
-                chunk = chunks[chunkPosition]
+                chunk = world.chunks.chunks.unsafe[chunkPosition]
             }
+            world.lock.release()
 
             val block = chunk?.get(inChunkPosition)
             val velocityBlock = chunk?.get(velocityPosition.inChunkPosition)

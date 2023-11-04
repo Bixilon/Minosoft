@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.interpolate.Interpolator
 
 class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer) {
     private val manager = renderer.renderer.features.hitbox

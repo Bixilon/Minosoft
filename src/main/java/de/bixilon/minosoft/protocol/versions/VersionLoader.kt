@@ -84,7 +84,7 @@ object VersionLoader {
         return version
     }
 
-    fun load(latch: AbstractLatch) {
+    fun load(latch: AbstractLatch?) {
         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading versions..." }
         val index: VersionIndex = Minosoft.MINOSOFT_ASSETS_MANAGER[INDEX].readJson()
 

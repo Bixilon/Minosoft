@@ -68,7 +68,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.startInit
-import de.bixilon.minosoft.util.KUtil.waitIfLess
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

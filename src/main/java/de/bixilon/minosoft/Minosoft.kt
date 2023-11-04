@@ -100,9 +100,9 @@ object Minosoft {
     private fun boot() {
         val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() })
 
-        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHER, executor = GlobalProfileManager::initialize)
         taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER, executor = VersionLoader::load)
-        taskWorker += WorkerTask(identifier = BootTasks.FILE_WATCHER, priority = ThreadPool.HIGH, optional = true, executor = this::startFileWatcherService)
+        taskWorker += WorkerTask(identifier = BootTasks.FILE_WATCHER, priority = ThreadPool.HIGHER, optional = true, executor = this::startFileWatcherService)
+        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHER, dependencies = arrayOf(BootTasks.FILE_WATCHER), executor = GlobalProfileManager::initialize)
 
         taskWorker += WorkerTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
         taskWorker += WorkerTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = AssetsVersionProperties::load)
@@ -171,13 +171,13 @@ object Minosoft {
         postBoot()
     }
 
-    private fun startFileWatcherService(latch: AbstractLatch) {
+    private fun startFileWatcherService(latch: AbstractLatch?) {
         Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "Starting file watcher service..." }
         FileWatcherService.start()
         Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "File watcher service started!" }
     }
 
-    private fun loadLanguageFiles(latch: AbstractLatch) {
+    private fun loadLanguageFiles(latch: AbstractLatch?) {
         val language = ErosProfileManager.selected.general.language
         ErosProfileManager.selected.general::language.observe(this, true) {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }

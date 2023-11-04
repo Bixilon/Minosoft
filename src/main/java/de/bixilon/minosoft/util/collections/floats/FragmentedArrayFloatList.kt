@@ -91,7 +91,7 @@ class FragmentedArrayFloatList(
         return this.incomplete.firstOrNull() ?: grow(left)
     }
 
-    fun add(value1: Float, value2: Float) {
+    override fun add(value1: Float, value2: Float) {
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 1)
         batchAdd(value2, buffer, 0)
@@ -100,7 +100,7 @@ class FragmentedArrayFloatList(
         invalidateOutput()
     }
 
-    fun add(value1: Float, value2: Float, value3: Float) {
+    override fun add(value1: Float, value2: Float, value3: Float) {
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 2)
         buffer = batchAdd(value2, buffer, 1)
@@ -110,7 +110,7 @@ class FragmentedArrayFloatList(
         invalidateOutput()
     }
 
-    fun add(value1: Float, value2: Float, value3: Float, value4: Float) {
+    override fun add(value1: Float, value2: Float, value3: Float, value4: Float) {
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 3)
         buffer = batchAdd(value2, buffer, 2)
@@ -121,7 +121,32 @@ class FragmentedArrayFloatList(
         invalidateOutput()
     }
 
-    fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float, value6: Float, value7: Float) {
+    override fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float) {
+        var buffer = tryGrow(1)
+        buffer = batchAdd(value1, buffer, 4)
+        buffer = batchAdd(value2, buffer, 3)
+        buffer = batchAdd(value3, buffer, 2)
+        buffer = batchAdd(value4, buffer, 1)
+        batchAdd(value5, buffer, 0)
+
+        size += 5
+        invalidateOutput()
+    }
+
+    override fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float, value6: Float) {
+        var buffer = tryGrow(1)
+        buffer = batchAdd(value1, buffer, 5)
+        buffer = batchAdd(value2, buffer, 4)
+        buffer = batchAdd(value3, buffer, 3)
+        buffer = batchAdd(value4, buffer, 2)
+        buffer = batchAdd(value5, buffer, 1)
+        batchAdd(value6, buffer, 0)
+
+        size += 6
+        invalidateOutput()
+    }
+
+    override fun add(value1: Float, value2: Float, value3: Float, value4: Float, value5: Float, value6: Float, value7: Float) {
         var buffer = tryGrow(1)
         buffer = batchAdd(value1, buffer, 6)
         buffer = batchAdd(value2, buffer, 5)

@@ -46,7 +46,7 @@ open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: 
         if (dead) {
             return
         }
-        if (DefaultThreadPool.isBacklog()) return // disable lagging a  bit
+        if (DefaultThreadPool.isBacklogging()) return // disable lagging a  bit
 
         connection.world.entities.getClosestInRadius(position, 2.0, WorldEntities.CHECK_CLOSEST_PLAYER)?.let { // TODO: optimize
             val y = it.physics.position.y

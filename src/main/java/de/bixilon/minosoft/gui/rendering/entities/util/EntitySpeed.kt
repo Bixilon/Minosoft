@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.entities.util
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.math.interpolation.FloatInterpolation
+import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.interpolate.Interpolator
 
 class EntitySpeed(val entity: Entity) {
     private val interpolator = Interpolator(0.0f, FloatInterpolation::interpolateLinear)
