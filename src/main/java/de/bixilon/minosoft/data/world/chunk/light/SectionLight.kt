@@ -226,7 +226,7 @@ class SectionLight(
         update = true
         val blocks = section.blocks
 
-        blocks.lock?.acquire()
+        section.chunk.lock.lock()
         val min = blocks.minPosition
         val max = blocks.maxPosition
 
@@ -243,7 +243,7 @@ class SectionLight(
                 }
             }
         }
-        blocks.lock?.release()
+        section.chunk.lock.unlock()
         section.chunk.light.sky.recalculate(section.sectionHeight)
     }
 
