@@ -18,7 +18,17 @@ import de.bixilon.minosoft.commands.nodes.LiteralNode
 object ReloadCommand : RenderingCommand {
     override var node = LiteralNode("reload", setOf("rl"))
         .addChild(LiteralNode("shaders", executor = {
-            it.connection.rendering?.context?.system?.reloadShaders() ?: throw IllegalStateException("Rendering is not loaded!")
-            it.connection.util.sendDebugMessage("Shaders reloaded!")
+            val context = it.connection.rendering?.context ?: throw IllegalStateException("Rendering is not loaded!")
+            context.queue += {
+                context.system.reloadShaders()
+                it.connection.util.sendDebugMessage("Shaders reloaded!")
+            }
+        }))
+        .addChild(LiteralNode("textures", executor = {
+            val context = it.connection.rendering?.context ?: throw IllegalStateException("Rendering is not loaded!")
+            context.queue += {
+                context.textures.reload()
+                it.connection.util.sendDebugMessage("Textures reloaded!")
+            }
         }))
 }

@@ -19,6 +19,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -64,7 +65,10 @@ open class SkeletalFeature(
     }
 
     override fun draw() {
-        val tint = renderer.light.value.mix(renderer.damage.value)
+        var tint = renderer.light.value
+        if (renderer is LivingEntityRenderer<*>) {
+            tint = tint.mix(renderer.damage.value)
+        }
         instance.draw(tint)
     }
 

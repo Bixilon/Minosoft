@@ -152,7 +152,7 @@ abstract class DynamicTextureArray(
         lock.unlock()
     }
 
-    private fun reload() {
+    fun reload() {
         unload()
         upload()
         this.reload = false

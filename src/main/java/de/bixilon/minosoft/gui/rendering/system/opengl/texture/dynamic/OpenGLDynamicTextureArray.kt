@@ -36,6 +36,7 @@ class OpenGLDynamicTextureArray(
     initialSize: Int = 32,
     val resolution: Int,
 ) : DynamicTextureArray(context, initialSize) {
+    private val empty = IntArray(resolution * resolution) { 0x00 }
     private var handle = -1
 
     override fun upload(index: Int, texture: DynamicTexture) {
@@ -49,15 +50,17 @@ class OpenGLDynamicTextureArray(
     private fun unsafeUpload(index: Int, texture: DynamicTexture) {
         val data = texture.data ?: throw IllegalArgumentException("No texture data?")
         for ((level, buffer) in data.collect().withIndex()) {
-            // glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, texture.size.x shr level, texture.size.y shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, mipmap)
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
+            if (data.size.x != resolution || data.size.y != resolution) {
+                // clear first
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, empty)
+            }
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, data.size.x shr level, data.size.y shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
         }
     }
 
     override fun upload() {
         if (handle >= 0) throw MemoryLeakException("Texture was not unloaded!")
         val textureId = OpenGLTextureUtil.createTextureArray()
-
         for (level in 0 until OpenGLTextureUtil.MAX_MIPMAP_LEVELS) {
             glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
         }
@@ -67,6 +70,7 @@ class OpenGLDynamicTextureArray(
             if (texture.data == null) continue
             unsafeUpload(index, texture)
         }
+        this.handle = textureId
 
         for (shader in shaders) {
             unsafeUse(shader)
@@ -74,7 +78,6 @@ class OpenGLDynamicTextureArray(
 
         context.textures.staticTextures.activate() // TODO: why?
 
-        this.handle = textureId
     }
 
     override fun activate() {

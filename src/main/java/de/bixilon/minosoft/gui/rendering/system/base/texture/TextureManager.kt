@@ -55,4 +55,8 @@ abstract class TextureManager {
         staticTextures.use(shader, name)
         dynamicTextures.use(shader, name)
     }
+
+    fun reload() {
+        dynamicTextures.reload()
+    }
 }
