@@ -21,6 +21,7 @@ in vec3 finTextureCoordinates;
 
 in vec4 finTintColor;
 
+#define TRANSPARENT
 
 #include "minosoft:texture"
 #include "minosoft:alpha"
@@ -31,7 +32,6 @@ void main() {
     discard_if_0(texelColor.a);
 
     foutColor = texelColor * finTintColor;
-    set_alpha_transparent();
 
     set_fog();
 }

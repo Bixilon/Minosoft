@@ -151,11 +151,26 @@ object Mat4Util {
         m[0, 3] = res0w
     }
 
+    fun Mat4.translateXAssign(vX: Float): Mat4 {
+        this[3, 0] += this[0, 0] * vX
+        this[3, 1] += this[0, 1] * vX
+        this[3, 2] += this[0, 2] * vX
+        this[3, 3] += this[0, 3] * vX
+        return this
+    }
     fun Mat4.translateYAssign(vY: Float): Mat4 {
         this[3, 0] += this[1, 0] * vY
         this[3, 1] += this[1, 1] * vY
         this[3, 2] += this[1, 2] * vY
         this[3, 3] += this[1, 3] * vY
+        return this
+    }
+
+    fun Mat4.translateZAssign(vX: Float): Mat4 {
+        this[3, 0] += this[2, 0] * vX
+        this[3, 1] += this[2, 1] * vX
+        this[3, 2] += this[2, 2] * vX
+        this[3, 3] += this[2, 3] * vX
         return this
     }
 }

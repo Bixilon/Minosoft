@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 class BillboardTextMesh(context: RenderContext) : Mesh(context, BillboardTextMeshStruct), GUIVertexConsumer {
+    override val order = context.system.quadOrder
 
     override fun ensureSize(size: Int) {
         data.ensureSize(size)
@@ -34,8 +35,8 @@ class BillboardTextMesh(context: RenderContext) : Mesh(context, BillboardTextMes
     override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
         data.add(x * SCALE, y * SCALE)
         data.add(u, v)
-        data.add(texture?.shaderId?.buffer() ?: 0.0f)
-        data.add(tint.rgb.buffer())
+        data.add((texture?.shaderId ?: context.textures.whiteTexture.texture.shaderId).buffer())
+        data.add(tint.rgba.buffer())
     }
 
     override fun addCache(cache: GUIMeshCache) = Broken("This is not a text only consumer!")
@@ -44,12 +45,12 @@ class BillboardTextMesh(context: RenderContext) : Mesh(context, BillboardTextMes
         val position: Vec2,
         val uv: Vec2,
         val indexLayerAnimation: Int,
-        val lightTint: Int,
+        val tint: RGBColor,
     ) {
         companion object : MeshStruct(BillboardTextMeshStruct::class)
     }
 
-    private companion object {
-        const val SCALE = 0.03f
+    companion object {
+        const val SCALE = 0.02f
     }
 }

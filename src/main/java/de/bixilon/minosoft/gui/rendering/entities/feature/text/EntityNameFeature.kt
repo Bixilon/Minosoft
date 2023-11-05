@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
 class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null) {
@@ -23,8 +27,24 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
     }
 
     private fun updateName() {
+        if (!isNameVisible()) {
+            this.text = null
+            return
+        }
         val name = renderer.entity.name
         if (name == this.text) return
         this.text = name
+    }
+
+    private fun isNameVisible(): Boolean {
+        if (renderer.entity is PlayerEntity) return true
+
+        val camera = renderer.renderer.connection.camera
+        val target = camera.target.target
+        if (target !is EntityTarget || target.entity !== renderer.entity) return false
+
+        val distance = camera.entity.nullCast<LocalPlayerEntity>()?.reachDistance ?: 3.0
+        if (target.distance > distance) return false
+        return true
     }
 }

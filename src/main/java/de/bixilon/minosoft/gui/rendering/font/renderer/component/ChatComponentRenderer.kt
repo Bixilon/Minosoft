@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
@@ -62,18 +64,24 @@ interface ChatComponentRenderer<T : ChatComponent> {
             mesh.data.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX)
 
             val consumer = WorldGUIConsumer(mesh, matrix, light)
-            return render3d(context, properties, maxSize, consumer, text)
+            return render3d(context, properties, maxSize, consumer, text, null)
         }
 
-        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2, mesh: GUIVertexConsumer, text: ChatComponent): TextRenderInfo {
+        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2, mesh: GUIVertexConsumer, text: ChatComponent, background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR): TextRenderInfo {
             val primitives = calculatePrimitiveCount(text)
             mesh.ensureSize(primitives)
 
             val info = TextRenderInfo(maxSize)
             render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
+            if (background != null) {
+                mesh.addQuad(Vec2(-1, 0), info.size + Vec2(1, 0), background, null)
+            }
+            val size = info.size.x
             info.size.x = maxSize.x // this allows font aligning
+
             render(TextOffset(), context.font, properties, info, mesh, null, text)
+            info.size.x = size
 
             return info
         }
