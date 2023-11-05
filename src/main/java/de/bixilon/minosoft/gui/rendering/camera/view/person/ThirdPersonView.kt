@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.CameraView
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
@@ -45,24 +44,29 @@ class ThirdPersonView(
 
 
     override fun onMouse(delta: Vec2d) {
-        val rotation = super.handleMouse(delta) ?: return
+        val rotation = super.handleMouse(delta)?.update() ?: return
         this.rotation = rotation
         update(eyePosition, rotation.front)
     }
 
     private fun update() {
         val entity = camera.context.connection.camera.entity
-        this.rotation = entity.physics.rotation
+        rotation = entity.physics.rotation.update()
         update(entity.renderInfo.eyePosition, rotation.front)
     }
 
+    private fun EntityRotation.update(): EntityRotation {
+        if (inverse) return this
+        return EntityRotation(yaw - 180.0f, -pitch)
+    }
+
     private fun update(position: Vec3d, front: Vec3) {
-        val front = if (inverse) -front else front
-        val target = camera.context.connection.camera.target.raycastBlock(position, front.toVec3d).first
+        val direction = -front
+        val target = camera.context.connection.camera.target.raycastBlock(position, Vec3d(direction)).first
         val distance = target?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
 
-        this.eyePosition = if (distance <= 0.0) position else position + (front * (distance - MIN_MARGIN))
-        this.front = -front
+        this.eyePosition = if (distance <= 0.0) position else position + (direction * (distance - MIN_MARGIN))
+        this.front = front
     }
 
     override fun onAttach(previous: CameraView?) {

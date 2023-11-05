@@ -64,6 +64,7 @@ class OpenGLDynamicTextureArray(
 
         for ((index, textureReference) in textures.withIndex()) {
             val texture = textureReference?.get() ?: continue
+            if (texture.data == null) continue
             unsafeUpload(index, texture)
         }
 
