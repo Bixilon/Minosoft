@@ -57,15 +57,23 @@ object TextureUtil {
         val byteOutput = ByteArrayOutputStream()
         val dataOutput = DataOutputStream(byteOutput)
 
-        val samples = if (image.raster.numBands == 3) intArrayOf(0, 1, 2) else intArrayOf(0, 0, 0)
+        val samples = when (image.raster.numBands) {
+            4 -> intArrayOf(0, 1, 2, 3)
+            3 -> intArrayOf(0, 1, 2)
+            else -> intArrayOf(0, 0, 0)
+        }
 
         for (y in 0 until image.height) {
             for (x in 0 until image.width) {
                 dataOutput.writeByte(image.raster.getSample(x, y, samples[0]))
                 dataOutput.writeByte(image.raster.getSample(x, y, samples[1]))
                 dataOutput.writeByte(image.raster.getSample(x, y, samples[2]))
-                val alpha = image.alphaRaster?.getSample(x, y, 0) ?: 0xFF
-                dataOutput.writeByte(alpha)
+                if (samples.size > 3) {
+                    dataOutput.writeByte(image.raster.getSample(x, y, samples[3]))
+                } else {
+                    val alpha = image.alphaRaster?.getSample(x, y, 0) ?: 0xFF
+                    dataOutput.writeByte(alpha)
+                }
             }
         }
 
