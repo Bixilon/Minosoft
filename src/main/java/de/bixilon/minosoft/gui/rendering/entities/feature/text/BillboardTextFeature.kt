@@ -46,12 +46,17 @@ open class BillboardTextFeature(
 
     override fun update(millis: Long, delta: Float) {
         if (!enabled) return unload()
+        if (!isInRenderDistance()) return unload()
         if (this.mesh == null) {
             val text = this.text ?: return unload()
             if (text.length == 0) return unload()
             createMesh(text)
         }
         updateMatrix()
+    }
+
+    protected open fun isInRenderDistance(): Boolean {
+        return renderer.distance <= (RENDER_DISTANCE * RENDER_DISTANCE)
     }
 
     private fun createMesh(text: ChatComponent) {
@@ -107,5 +112,6 @@ open class BillboardTextFeature(
         val PROPERTIES = TextRenderProperties(allowNewLine = false)
         val MAX_SIZE = Vec2(150.0f, PROPERTIES.lineHeight)
         const val EYE_OFFSET = 0.4f
+        const val RENDER_DISTANCE = 48
     }
 }

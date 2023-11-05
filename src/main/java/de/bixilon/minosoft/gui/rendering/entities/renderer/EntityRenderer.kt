@@ -37,6 +37,7 @@ abstract class EntityRenderer<E : Entity>(
     private var update = 0L
     val features = FeatureManager(this)
     val info = entity.renderInfo
+    var distance: Double = 0.0
 
     val hitbox = HitboxFeature(this).register()
     val name = EntityNameFeature(this).register()
@@ -72,6 +73,7 @@ abstract class EntityRenderer<E : Entity>(
     open fun update(millis: Long, delta: Float) {
         updateLight(delta)
         entity.draw(millis)
+        this.distance = (entity.renderInfo.eyePosition - renderer.connection.camera.entity.renderInfo.eyePosition).length2()
         updateMatrix(delta)
         features.update(millis, delta)
     }

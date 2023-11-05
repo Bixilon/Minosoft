@@ -13,7 +13,7 @@
 #define DEGREE_90 1.5707964f
 
 float decodeNormalY(uint data) {
-    if (data <= 8u) return (data / 8.0f) - 1.0f;
+    if (data < 8u) return (data / 8.0f) - 1.0f;
     return (data - 8u) / 7.0f;
 }
 
