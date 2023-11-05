@@ -30,6 +30,9 @@ import java.io.InputStream
 import javax.imageio.ImageIO
 
 object TextureUtil {
+    private val COMPONENTS_4 = intArrayOf(0, 1, 2, 3)
+    private val COMPONENTS_3 = intArrayOf(0, 1, 2)
+    private val COMPONENTS_1 = intArrayOf(0, 0, 0)
 
     fun ResourceLocation.texture(): ResourceLocation {
         return this.extend(prefix = "textures/", suffix = ".png")
@@ -58,9 +61,9 @@ object TextureUtil {
         val dataOutput = DataOutputStream(byteOutput)
 
         val samples = when (image.raster.numBands) {
-            4 -> intArrayOf(0, 1, 2, 3)
-            3 -> intArrayOf(0, 1, 2)
-            else -> intArrayOf(0, 0, 0)
+            4 -> COMPONENTS_4
+            3 -> COMPONENTS_3
+            else -> COMPONENTS_1
         }
 
         for (y in 0 until image.height) {

@@ -19,15 +19,15 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class BitmapCodeRenderer(
     override val texture: Texture,
-    override var uvStart: Vec2,
-    override var uvEnd: Vec2,
+    override val uvStart: Vec2,
+    override val uvEnd: Vec2,
     override val width: Float,
     override val height: Float,
     override val ascent: Float,
 ) : AscentedCodePointRenderer {
 
     fun updateArray() {
-        uvStart = uvStart * texture.array.uvEnd
-        uvEnd = uvEnd * texture.array.uvEnd
+        uvStart *= texture.array.uvEnd
+        uvEnd *= texture.array.uvEnd
     }
 }

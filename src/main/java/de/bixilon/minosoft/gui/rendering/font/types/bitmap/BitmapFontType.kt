@@ -38,6 +38,7 @@ import java.util.stream.IntStream
 class BitmapFontType(
     val chars: Int2ObjectOpenHashMap<CodePointRenderer>,
 ) : PostInitFontType {
+    private var postInit = false
 
     init {
         chars.trim()
@@ -48,10 +49,12 @@ class BitmapFontType(
     }
 
     override fun postInit(latch: AbstractLatch) {
+        if (postInit) return
         for (char in chars.values) {
             if (char !is BitmapCodeRenderer) continue
             char.updateArray()
         }
+        postInit = true
     }
 
 
