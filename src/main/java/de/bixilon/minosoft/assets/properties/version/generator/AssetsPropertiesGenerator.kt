@@ -17,11 +17,9 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
-import de.bixilon.minosoft.protocol.packets.registry.PacketMapping
-import de.bixilon.minosoft.protocol.protocol.PacketDirections
 import de.bixilon.minosoft.protocol.versions.Version
-import de.bixilon.minosoft.protocol.versions.VersionTypes
 import de.bixilon.minosoft.util.logging.Log
+import org.objenesis.ObjenesisStd
 import kotlin.system.exitProcess
 
 object AssetsPropertiesGenerator {
@@ -29,17 +27,19 @@ object AssetsPropertiesGenerator {
     @JvmStatic
     fun main(args: Array<String>) {
         val stream = System.out
+        System.setOut(System.err)
         Log::class.java.forceInit()
-        if (args.size != 2) {
-            throw IllegalArgumentException("Usage: application <version id> <client jar hash>")
+        Log.ASYNC_LOGGING = false
+        if (args.size != 1) {
+            throw IllegalArgumentException("Usage: application <client jar hash>")
         }
         // create profile to not make crashes (or load an actual profile)
         val profile = ResourcesProfileManager.createProfile()
         profile.verify = false
-        val (versionId, clientJarHash) = args
+        val (clientJarHash) = args
 
-        val version = Version(versionId, -1, -1, VersionTypes.APRIL_FOOL, PacketMapping(PacketDirections.SERVER_TO_CLIENT), PacketMapping(PacketDirections.CLIENT_TO_SERVER))
-        val assetsManager = JarAssetsManager("829c3804401b0727f70f73d4415e162400cbe57b", clientJarHash, profile, version)
+        val version = ObjenesisStd().newInstance(Version::class.java)
+        val assetsManager = JarAssetsManager("0000000000000000000000000000000000000000", clientJarHash, profile, version)
         try {
             assetsManager.load()
         } catch (exception: InvalidAssetException) {

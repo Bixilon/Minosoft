@@ -11,8 +11,7 @@
       "type": "object",
       "properties": {
         "index_version": {
-          "type": "string",
-          "pattern": "\\d+\\.\\d{1,2}"
+          "type": "string"
         },
         "index_hash": {
           "$ref": "#/definitions/hash"
