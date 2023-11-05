@@ -68,8 +68,8 @@ open class BillboardTextFeature(
         val matrix = Mat4()
             .translateYAssign(renderer.entity.dimensions.y + EYE_OFFSET)
             .rotateYassign((EntityRotation.HALF_CIRCLE_DEGREE - mat.yaw).rad)
-            .rotateXassign(180.0f.rad - mat.pitch.rad)
-            .translateXAssign(-width / 2.0f * BillboardTextMesh.SCALE).translateYAssign(-PROPERTIES.lineHeight * BillboardTextMesh.SCALE)
+            .rotateXassign((180.0f - mat.pitch).rad)
+            .translateXAssign(width / -2.0f * BillboardTextMesh.SCALE).translateYAssign(-PROPERTIES.lineHeight * BillboardTextMesh.SCALE)
 
         this.matrix = renderer.matrix * matrix
     }

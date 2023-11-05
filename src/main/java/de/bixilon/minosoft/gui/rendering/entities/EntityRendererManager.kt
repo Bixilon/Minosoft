@@ -61,6 +61,7 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
             renderers.lock.lock()
             val renderer = ignoreAll { entity.createRenderer() } ?: return
             entity.renderer?.let { onReplace(it) }
+            entity.renderer = renderer
             this.renderers.unsafe.put(entity, renderer)?.let { onReplace(it) }
         } finally {
             renderers.lock.unlock()

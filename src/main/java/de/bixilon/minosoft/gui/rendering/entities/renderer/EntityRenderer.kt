@@ -17,8 +17,6 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.event.events.damage.DamageEvent
-import de.bixilon.minosoft.data.entities.event.events.damage.DamageListener
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
@@ -35,7 +33,7 @@ import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 abstract class EntityRenderer<E : Entity>(
     val renderer: EntitiesRenderer,
     val entity: E,
-) : DamageListener {
+) {
     private var update = 0L
     val features = FeatureManager(this)
     val info = entity.renderInfo
@@ -43,7 +41,6 @@ abstract class EntityRenderer<E : Entity>(
     val hitbox = HitboxFeature(this).register()
     val name = EntityNameFeature(this).register()
     val light = Interpolator(ChatColors.WHITE, ColorUtil::interpolateRGB)
-    val damage = Interpolator(ChatColors.WHITE, ColorUtil::interpolateRGB) // TODO delta^2
     val matrix = Mat4()
     var visible = true
         protected set
@@ -68,15 +65,15 @@ abstract class EntityRenderer<E : Entity>(
 
     open fun update(millis: Long) {
         val delta = if (this.update <= 0L) 0.0f else ((millis - update) / 1000.0f)
+        update(millis, delta)
+        this.update = millis
+    }
+
+    open fun update(millis: Long, delta: Float) {
         updateLight(delta)
-        if (damage.delta > 1.0f) {
-            damage.push(ChatColors.WHITE)
-        }
-        damage.add(delta, 0.05f)
         entity.draw(millis)
         updateMatrix(delta)
         features.update(millis, delta)
-        this.update = millis
     }
 
     private fun getCurrentLight(): Int {
@@ -106,9 +103,5 @@ abstract class EntityRenderer<E : Entity>(
     open fun updateVisibility(occluded: Boolean, visible: Boolean) {
         this.visible = visible && !entity.isInvisible
         features.updateVisibility(occluded)
-    }
-
-    override fun onDamage(type: DamageEvent) {
-        damage.push(ChatColors.RED)
     }
 }

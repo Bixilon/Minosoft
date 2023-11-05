@@ -14,13 +14,19 @@
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.entities.event.events.damage.DamageEvent
+import de.bixilon.minosoft.data.entities.event.events.damage.DamageListener
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
 
-abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity) {
+abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer, entity: E) : EntityRenderer<E>(renderer, entity), DamageListener {
+    val damage = Interpolator(ChatColors.WHITE, ColorUtil::interpolateRGB) // TODO delta^2 or no interpolation at all?
 
     override fun updateMatrix(delta: Float) {
         super.updateMatrix(delta)
@@ -28,5 +34,17 @@ abstract class LivingEntityRenderer<E : LivingEntity>(renderer: EntitiesRenderer
             Poses.SLEEPING -> matrix.rotateDegreesAssign(Vec3(90, 0, 0)) // TODO
             else -> Unit
         }
+    }
+
+    override fun update(millis: Long, delta: Float) {
+        if (damage.delta >= 1.0f) {
+            damage.push(ChatColors.WHITE)
+        }
+        damage.add(delta, 0.1f)
+        super.update(millis, delta)
+    }
+
+    override fun onDamage(type: DamageEvent) {
+        damage.push(ChatColors.RED)
     }
 }
