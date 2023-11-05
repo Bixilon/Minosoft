@@ -14,7 +14,8 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W13A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W43A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -28,20 +29,27 @@ class JigsawBlockC2SP(
     var name: String,
     var target: String,
     var jointType: String,
+    var selectionPriority: Int,
+    var placementPriority: Int,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeBlockPosition(position)
-        if (buffer.versionId < ProtocolVersions.V_20W13A) {
+        if (buffer.versionId < V_20W13A) {
             buffer.writeString(attachmentType)
-            buffer.writeString(targetPool)
-            buffer.writeString(finalState)
         } else {
             buffer.writeString(name)
             buffer.writeString(target)
-            buffer.writeString(targetPool)
-            buffer.writeString(finalState)
+        }
+        buffer.writeString(targetPool)
+        buffer.writeString(finalState)
+
+        if (buffer.versionId >= V_20W13A) {
             buffer.writeString(jointType)
+        }
+        if (buffer.versionId >= V_23W43A) {
+            buffer.writeVarInt(selectionPriority)
+            buffer.writeVarInt(placementPriority)
         }
     }
 
