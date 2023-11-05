@@ -154,9 +154,9 @@ class Frustum(
 
     fun containsChunkSection(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
         val offset = camera.offset.offset
-        val baseX = (chunkPosition.x shl 4 - offset.x).toFloat()
-        val baseY = (sectionHeight shl 4 - offset.y).toFloat()
-        val baseZ = (chunkPosition.y shl 4 - offset.z).toFloat()
+        val baseX = ((chunkPosition.x shl 4) - offset.x).toFloat()
+        val baseY = ((sectionHeight shl 4) - offset.y).toFloat()
+        val baseZ = ((chunkPosition.y shl 4) - offset.z).toFloat()
         return containsRegion(
             baseX + minPosition.x, baseY + minPosition.y, baseZ + minPosition.z,
             baseX + maxPosition.x + 1.0f, baseY + maxPosition.y + 1.0f, baseZ + maxPosition.z + 1.0f,
