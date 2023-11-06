@@ -11,11 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.feature.register
+package de.bixilon.minosoft.gui.rendering.entities.feature.text.score
 
-import de.bixilon.minosoft.util.Initializable
+import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
+import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
+import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.feature.register.FeatureRegister
 
-interface FeatureRegister : Initializable {
+class ScoreRegister(val renderer: EntitiesRenderer) : FeatureRegister {
+    var belowName: ScoreboardObjective? = renderer.connection.scoreboard.positions[ScoreboardPositions.BELOW_NAME]
+        private set
 
-    fun update() = Unit
+
+    override fun update() {
+        belowName = renderer.connection.scoreboard.positions[ScoreboardPositions.BELOW_NAME]
+    }
+
 }

@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isF
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.FeatureManager
 import de.bixilon.minosoft.gui.rendering.entities.feature.hitbox.HitboxFeature
-import de.bixilon.minosoft.gui.rendering.entities.feature.text.EntityNameFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.name.EntityNameFeature
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign

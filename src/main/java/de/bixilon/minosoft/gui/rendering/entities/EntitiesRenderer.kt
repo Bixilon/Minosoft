@@ -55,6 +55,7 @@ class EntitiesRenderer(
     }
 
     override fun prepareDrawAsync() {
+        this.features.update()
         val millis = millis()
         this.visibility.reset()
         renderers.iterate {

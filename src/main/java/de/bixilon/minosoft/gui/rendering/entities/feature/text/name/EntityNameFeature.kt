@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.feature.text
+package de.bixilon.minosoft.gui.rendering.entities.feature.text.name
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.Mob
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
 class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null) {

@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 open class BillboardTextFeature(
     renderer: EntityRenderer<*>,
     text: ChatComponent?,
+    offset: Float = DEFAULT_OFFSET,
 ) : EntityRenderFeature(renderer) {
     override val priority: Int get() = 10000
     private var mesh: BillboardTextMesh? = null
@@ -47,6 +48,12 @@ open class BillboardTextFeature(
             if (field == value) return
             field = value
             unload()
+        }
+    var offset: Float = offset
+        set(value) {
+            if (field == value) return
+            field = value
+            unload() // TODO: just update matrix
         }
 
     override fun update(millis: Long, delta: Float) {
@@ -76,7 +83,7 @@ open class BillboardTextFeature(
         val width = this.info?.size?.x ?: return
         val mat = renderer.renderer.context.camera.view.view.rotation
         val matrix = Mat4()
-            .translateYAssign(renderer.entity.dimensions.y + EYE_OFFSET)
+            .translateYAssign(renderer.entity.dimensions.y + offset)
             .rotateYassign((EntityRotation.HALF_CIRCLE_DEGREE - mat.yaw).rad)
             .rotateXassign((180.0f - mat.pitch).rad)
             .translateXAssign(width / -2.0f * BillboardTextMesh.SCALE).translateYAssign(-PROPERTIES.lineHeight * BillboardTextMesh.SCALE)
@@ -120,7 +127,7 @@ open class BillboardTextFeature(
     companion object {
         val PROPERTIES = TextRenderProperties(allowNewLine = false)
         val MAX_SIZE = Vec2(150.0f, PROPERTIES.lineHeight)
-        const val EYE_OFFSET = 0.4f
+        const val DEFAULT_OFFSET = 0.4f
         const val RENDER_DISTANCE = 48
     }
 }

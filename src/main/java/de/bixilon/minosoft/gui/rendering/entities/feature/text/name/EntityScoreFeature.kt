@@ -11,17 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.feature.text
+package de.bixilon.minosoft.gui.rendering.entities.feature.text.name
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextMesh
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 
-class EntityScoreboardFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(renderer, null) {
+class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(renderer, null) {
+    private val manager = renderer.renderer.features.score
 
     override fun update(millis: Long, delta: Float) {
         updateScore()
@@ -49,8 +51,8 @@ class EntityScoreboardFeature(renderer: PlayerRenderer<*>) : BillboardTextFeatur
     }
 
     private fun getScore(): ChatComponent? {
-        val objective = renderer.renderer.connection.scoreboard.positions[ScoreboardPositions.BELOW_NAME] ?: return null
-        val score = objective.scores[renderer.entity.unsafeCast<PlayerEntity>().additional.name] ?: return null
+        val objective = manager.belowName ?: return null
+        val score = objective.scores[renderer.entity.unsafeCast<PlayerEntity>().additional.name] ?: return null // TODO: cache
         val text = BaseComponent()
         text += TextComponent(score.value)
         text += " "
