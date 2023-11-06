@@ -21,7 +21,7 @@ class DummyCodePointRenderer(
     override val uvStart: Vec2 = Vec2(0.1f, 0.2f),
     override val uvEnd: Vec2 = Vec2(0.6f, 0.7f),
     override val width: Float = 5.0f,
-    override val ascent: Float = 8.0f,
+    override val ascent: Float = 7.0f,
     override val height: Float = 8.0f,
 ) : AscentedCodePointRenderer {
     override val texture = DummyTexture()

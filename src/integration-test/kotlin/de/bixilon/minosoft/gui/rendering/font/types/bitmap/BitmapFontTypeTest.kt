@@ -65,7 +65,7 @@ class BitmapFontTypeTest {
         return texture
     }
 
-    private fun load(start: IntArray, end: IntArray, width: Int = 8, height: Int = 8, ascent: Int = 8, chars: Array<IntArray>): BitmapFontType {
+    private fun load(start: IntArray, end: IntArray, width: Int = 8, height: Int = 8, ascent: Int = 7, chars: Array<IntArray>): BitmapFontType {
         val texture = createTexture(start, end, width, height, chars.size)
 
         val fontType = LOAD(BitmapFontType, texture, height, ascent, chars.map { IntStream.of(*it) }.toTypedArray()) as BitmapFontType

@@ -65,7 +65,7 @@ class BitmapFontType(
         override fun build(context: RenderContext, manager: FontManager, data: JsonObject): BitmapFontType? {
             val file = data["file"]?.toString()?.let { it.toResourceLocation().texture() } ?: throw IllegalArgumentException("Missing file!")
             val height = data["height"]?.toInt() ?: 8
-            val ascent = data["ascent"]?.toInt() ?: 8
+            val ascent = data["ascent"]?.toInt() ?: 7
             val chars = data["chars"]?.listCast<String>() ?: throw IllegalArgumentException("Missing chars!")
             return load(file, height, ascent, chars, context)
         }

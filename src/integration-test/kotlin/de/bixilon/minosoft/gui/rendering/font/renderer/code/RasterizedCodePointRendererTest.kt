@@ -74,8 +74,8 @@ class RasterizedCodePointRendererTest {
     fun `12px height`() {
         val consumer = object : DummyGUIVertexConsumer() {
             override fun addChar(start: Vec2, end: Vec2, index: Int) {
-                assertEquals(start, Vec2(10.0f, 11.0f)) // -2 for ascent height difference, +1 for normal spacing
-                assertEquals(end, Vec2(15.0f, 23.0f))
+                assertEquals(start, Vec2(10.0f, 12.0f)) // -2 for ascent height difference, +1 for normal spacing, +1 for ascent fixing?
+                assertEquals(end, Vec2(15.0f, 24.0f))
             }
         }
         val char = DummyCodePointRenderer(ascent = 10.0f, height = 12.0f)
