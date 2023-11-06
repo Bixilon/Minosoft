@@ -34,7 +34,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
 
     override fun update(millis: Long, delta: Float) {
         this.delta += delta
-        if (delta >= UPDATE_INTERVAL) {
+        if (this.delta >= UPDATE_INTERVAL) {
             updateName()
             this.delta = 0.0f
         }

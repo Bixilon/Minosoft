@@ -29,7 +29,7 @@ class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(ren
 
     override fun update(millis: Long, delta: Float) {
         this.delta += delta
-        if (delta >= UPDATE_INTERVAL) {
+        if (this.delta >= UPDATE_INTERVAL) {
             updateScore()
             renderer.name.offset = if (this.text != null) NAME_OFFSET else DEFAULT_OFFSET
             this.delta = 0.0f
@@ -70,6 +70,6 @@ class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(ren
     companion object {
         const val RENDER_DISTANCE = 10
         const val UPDATE_INTERVAL = 0.5f
-        val NAME_OFFSET = DEFAULT_OFFSET + PROPERTIES.lineHeight * BillboardTextMesh.SCALE
+        val NAME_OFFSET = DEFAULT_OFFSET + (PROPERTIES.lineHeight + 1) * BillboardTextMesh.SCALE
     }
 }

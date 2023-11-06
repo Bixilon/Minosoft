@@ -50,7 +50,7 @@ abstract class WawlaElement(protected val wawla: WawlaHUDElement) : Element(wawl
             size.y += elementSize.y
         }
 
-        this.size = size
+        this._size = size
     }
 
     protected fun createNameElement(text: ChatComponent?, translationKey: ResourceLocation?, fallback: ChatComponent): TextElement {
