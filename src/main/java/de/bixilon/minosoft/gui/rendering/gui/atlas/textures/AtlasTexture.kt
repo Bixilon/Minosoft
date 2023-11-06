@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayP
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 class AtlasTexture(
@@ -42,18 +43,7 @@ class AtlasTexture(
     fun request(size: Vec2i): Vec2i? = null
 
     fun put(offset: Vec2i, source: TextureData, start: Vec2i, size: Vec2i): CodeTexturePart {
-        for (y in 0 until size.y) {
-            for (x in 0 until size.x) {
-                val sourceOffset = ((start.y + y) * source.size.x + (start.x + x)) * 4
-                val destinationOffset = ((offset.y + y) * this.size.x + (offset.x + x)) * 4
-
-                data.buffer.put(destinationOffset + 0, source.buffer.get(sourceOffset + 0))
-                data.buffer.put(destinationOffset + 1, source.buffer.get(sourceOffset + 1))
-                data.buffer.put(destinationOffset + 2, source.buffer.get(sourceOffset + 2))
-                data.buffer.put(destinationOffset + 3, source.buffer.get(sourceOffset + 3))
-            }
-        }
-
+        TextureUtil.copy(start, source, offset, this.data, size)
 
         return CodeTexturePart(this, pixel * offset, pixel * (offset + size), size)
     }

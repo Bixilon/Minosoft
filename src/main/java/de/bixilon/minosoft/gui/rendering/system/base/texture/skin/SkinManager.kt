@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.skin
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
@@ -21,7 +22,11 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.vanilla.DefaultSkinProvider
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
+import java.io.ByteArrayInputStream
 import java.util.*
 
 class SkinManager(private val textureManager: TextureManager) {
@@ -51,7 +56,7 @@ class SkinManager(private val textureManager: TextureManager) {
 
     private fun getSkin(uuid: UUID, properties: PlayerProperties?, async: Boolean = true): PlayerSkin? {
         val texture = properties?.textures?.skin ?: return default[uuid]
-        return PlayerSkin(textureManager.dynamicTextures.pushRaw(texture.getHash(), async) { texture.read() }, default[uuid]?.texture, texture.metadata.model)
+        return PlayerSkin(textureManager.dynamicTextures.push(texture.getHash(), async) { texture.read().readSkin() }, default[uuid]?.texture, texture.metadata.model)
     }
 
     fun getSkin(player: PlayerEntity, properties: PlayerProperties? = null, fetch: Boolean = true, async: Boolean = true): PlayerSkin? {
@@ -66,5 +71,21 @@ class SkinManager(private val textureManager: TextureManager) {
         if (uuid == null) return default[null]
 
         return getSkin(uuid, properties ?: if (fetch) catchAll { PlayerProperties.fetch(uuid) } else null, async)
+    }
+
+    private fun ByteArray.readSkin(): TextureData {
+        val data = ByteArrayInputStream(this).readTexture()
+        if (data.size.y != 32) return data
+
+        val next = TextureData(Vec2i(64))
+        data.buffer.rewind()
+        next.buffer.put(data.buffer)
+
+        TextureUtil.copy(Vec2i(0, 16), next, Vec2i(16, 48), next, Vec2i(16, 16)) // leg [0, 16][16,16] to left leg [16, 48]
+        TextureUtil.copy(Vec2i(40, 16), next, Vec2i(32, 48), next, Vec2i(16, 16)) // arm [40, 16] to left arm [32, 48]
+
+        // TODO: flip
+
+        return next
     }
 }

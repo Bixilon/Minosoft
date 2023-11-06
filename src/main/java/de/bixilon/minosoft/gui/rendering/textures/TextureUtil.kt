@@ -123,4 +123,18 @@ object TextureUtil {
 
         ImageIO.write(bufferedImage, "png", file)
     }
+
+    fun copy(sourceOffset: Vec2i, source: TextureData, targetOffset: Vec2i, target: TextureData, size: Vec2i) {
+        for (y in 0 until size.y) {
+            for (x in 0 until size.x) {
+                val sofs = ((sourceOffset.y + y) * source.size.x + (sourceOffset.x + x)) * 4
+                val dofs = ((targetOffset.y + y) * target.size.x + (targetOffset.x + x)) * 4
+
+                target.buffer.put(dofs + 0, source.buffer.get(sofs + 0))
+                target.buffer.put(dofs + 1, source.buffer.get(sofs + 1))
+                target.buffer.put(dofs + 2, source.buffer.get(sofs + 2))
+                target.buffer.put(dofs + 3, source.buffer.get(sofs + 3))
+            }
+        }
+    }
 }
