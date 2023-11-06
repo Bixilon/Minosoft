@@ -15,23 +15,23 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.camera.FogManager
-import de.bixilon.minosoft.gui.rendering.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
-import de.bixilon.minosoft.gui.rendering.shader.types.LightShader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
+import de.bixilon.minosoft.gui.rendering.shader.types.TintedShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class BillboardTextShader(
     override val native: NativeShader,
-) : Shader(), TextureShader, LightShader, ViewProjectionShader, FogShader {
+) : Shader(), TextureShader, ViewProjectionShader, FogShader, TintedShader {
     override var textures: TextureManager by textureManager()
-    override val lightmap: LightmapBuffer by lightmap()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
     override var cameraPosition: Vec3 by cameraPosition()
     override var fog: FogManager by fog()
     var matrix: Mat4 by uniform("uMatrix", Mat4())
+    override var tint by uniform("uTintColor", ChatColors.WHITE) { shader, name, value -> shader.setUInt(name, value.rgb) }
 }
