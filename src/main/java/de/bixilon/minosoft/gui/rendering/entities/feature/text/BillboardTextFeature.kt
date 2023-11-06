@@ -127,8 +127,8 @@ open class BillboardTextFeature(
 
     companion object {
         val PROPERTIES = TextRenderProperties(allowNewLine = false)
-        val MAX_SIZE = Vec2(150.0f, PROPERTIES.lineHeight)
-        const val DEFAULT_OFFSET = 0.4f
+        val MAX_SIZE = Vec2(300.0f, PROPERTIES.lineHeight)
+        const val DEFAULT_OFFSET = 0.25f
         const val RENDER_DISTANCE = 48
     }
 }
