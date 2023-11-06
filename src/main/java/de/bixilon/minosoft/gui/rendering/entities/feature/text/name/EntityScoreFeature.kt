@@ -23,11 +23,17 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextMesh
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 
 class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(renderer, null) {
+    private var delta = 0.0f
     private val manager = renderer.renderer.features.score
 
+
     override fun update(millis: Long, delta: Float) {
-        updateScore()
-        renderer.name.offset = if (this.text != null) NAME_OFFSET else DEFAULT_OFFSET
+        this.delta += delta
+        if (delta >= UPDATE_INTERVAL) {
+            updateScore()
+            renderer.name.offset = if (this.text != null) NAME_OFFSET else DEFAULT_OFFSET
+            this.delta = 0.0f
+        }
         super.update(millis, delta)
     }
 
@@ -63,6 +69,7 @@ class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(ren
 
     companion object {
         const val RENDER_DISTANCE = 10
+        const val UPDATE_INTERVAL = 0.5f
         val NAME_OFFSET = DEFAULT_OFFSET + PROPERTIES.lineHeight * BillboardTextMesh.SCALE
     }
 }

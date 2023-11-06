@@ -26,5 +26,4 @@ class ScoreRegister(val renderer: EntitiesRenderer) : FeatureRegister {
     override fun update() {
         belowName = renderer.connection.scoreboard.positions[ScoreboardPositions.BELOW_NAME]
     }
-
 }

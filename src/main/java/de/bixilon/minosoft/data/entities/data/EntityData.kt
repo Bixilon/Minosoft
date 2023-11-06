@@ -112,7 +112,7 @@ class EntityData(
     fun <K> observe(field: EntityDataField, watcher: (value: K?) -> Unit) {
         val index = connection.registries.getEntityDataIndex(field) ?: return // field not available
         watcherLock.lock()
-        this.watcher.getOrPut(index) { mutableSetOf() }.add(watcher.unsafeCast())
+        this.watcher.getOrPut(index) { mutableSetOf() }.add(watcher.unsafeCast()) // TODO: use weakref?
         watcherLock.unlock()
     }
 }

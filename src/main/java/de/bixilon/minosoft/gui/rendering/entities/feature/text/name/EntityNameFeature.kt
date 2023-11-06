@@ -26,9 +26,18 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeat
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
 class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null) {
+    private var delta = 0.0f
+
+    init {
+        renderer.entity.data.observe<ChatComponent?>(Entity.CUSTOM_NAME_DATA) { delta = 0.0f }
+    }
 
     override fun update(millis: Long, delta: Float) {
-        updateName()
+        this.delta += delta
+        if (delta >= UPDATE_INTERVAL) {
+            updateName()
+            this.delta = 0.0f
+        }
         super.update(millis, delta)
     }
 
@@ -76,5 +85,6 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
 
     companion object {
         const val SNEAKING_DISTANCE = 32
+        const val UPDATE_INTERVAL = 0.2f
     }
 }
