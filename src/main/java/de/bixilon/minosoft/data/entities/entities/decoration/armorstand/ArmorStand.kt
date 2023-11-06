@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.decoration.armorstand
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -75,6 +76,13 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
     val rightLegRotation: Vec3
         get() = data.get(RIGHT_LEG_ROTATION_DATA, Vec3(1.0f, 0.0f, 1.0f))
 
+    override val dimensions: Vec2
+        get() = when {
+            isMarker -> DIMENSIONS_MARKER
+            isSmall -> DIMENSIONS_SMALL
+            else -> DIMENSIONS
+        }
+
 
     companion object : EntityFactory<ArmorStand> {
         override val identifier: ResourceLocation = minecraft("armor_stand")
@@ -85,6 +93,10 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
         private val RIGHT_ARM_ROTATION_DATA = EntityDataField("ARMOR_STAND_RIGHT_ARM_ROTATION")
         private val LEFT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_LEG_ROTATION", "ARMOR_STAND_LEFT_LAG_ROTATION")
         private val RIGHT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_RIGHT_LEG_ROTATION", "ARMOR_STAND_RIGHT_LAG_ROTATION")
+
+        private val DIMENSIONS = Vec2(0.5f, 1.975f)
+        private val DIMENSIONS_MARKER = Vec2(0.0f)
+        private val DIMENSIONS_SMALL = DIMENSIONS * 0.5f
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ArmorStand {
             return ArmorStand(connection, entityType, data, position, rotation)
