@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
-import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.assets.util.AssetsOptions
@@ -31,10 +30,9 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.DeleteScreenshotDialog
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.terminal.RunConfiguration
-import java.awt.image.BufferedImage
 import java.text.SimpleDateFormat
-import javax.imageio.ImageIO
 
 
 class ScreenshotTaker(
@@ -44,7 +42,7 @@ class ScreenshotTaker(
         try {
             val width = context.window.size.x
             val height = context.window.size.y
-            val buffer = context.system.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
+            val buffer = context.system.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGB)
 
             val path = RunConfiguration.HOME_DIRECTORY.resolve("screenshots").resolve(context.connection.address.hostname)
 
@@ -60,22 +58,8 @@ class ScreenshotTaker(
 
             DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.HIGHER) {
                 try {
-                    val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-
-                    for (x in 0 until width) {
-                        for (y in 0 until height) {
-                            val index: Int = (x + width * y) * 4
-                            val red: Int = buffer[index].toInt() and 0xFF
-                            val green: Int = buffer[index + 1].toInt() and 0xFF
-                            val blue: Int = buffer[index + 2].toInt() and 0xFF
-                            bufferedImage.setRGB(x, height - (y + 1), 0xFF shl 24 or (red shl 16) or (green shl 8) or blue)
-                        }
-                    }
-
                     val file = path.resolve(filename).toFile()
-                    file.createParent()
-
-                    ImageIO.write(bufferedImage, "png", file)
+                    TextureUtil.dump(file, Vec2i(width, height), buffer, false, true)
                     var deleted = false
 
                     val component = BaseComponent()

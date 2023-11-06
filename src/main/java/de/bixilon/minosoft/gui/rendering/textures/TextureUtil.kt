@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
@@ -26,7 +27,9 @@ import org.lwjgl.system.MemoryUtil
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
+import java.io.File
 import java.io.InputStream
+import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
 object TextureUtil {
@@ -93,5 +96,31 @@ object TextureUtil {
             this.reset()
             readTexture2()
         }
+    }
+
+    fun dump(file: File, size: Vec2i, buffer: ByteBuffer, alpha: Boolean, flipY: Boolean) {
+        val bufferedImage = BufferedImage(size.x, size.y, if (alpha) BufferedImage.TYPE_INT_ARGB else BufferedImage.TYPE_INT_RGB)
+        val components = if (alpha) 4 else 3
+
+        for (x in 0 until size.x) {
+            for (y in 0 until size.y) {
+                val index: Int = (x + size.x * y) * components
+                val red: Int = buffer[index].toInt() and 0xFF
+                val green: Int = buffer[index + 1].toInt() and 0xFF
+                val blue: Int = buffer[index + 2].toInt() and 0xFF
+
+                val targetY = if (flipY) size.y - (y + 1) else y
+
+                bufferedImage.setRGB(x, targetY, 0xFF shl 24 or (red shl 16) or (green shl 8) or blue)
+                if (alpha) {
+                    val alpha = buffer[index + 3].toInt() and 0xFF
+                    bufferedImage.alphaRaster.setSample(x, targetY, 0, alpha)
+                }
+            }
+        }
+
+        file.createParent()
+
+        ImageIO.write(bufferedImage, "png", file)
     }
 }
