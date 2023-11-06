@@ -108,6 +108,10 @@ open class BillboardTextFeature(
         renderer.renderer.queue += { mesh.unload() }
     }
 
+    override fun compareByDistance(other: EntityRenderFeature): Int {
+        return -super.compareByDistance(other)
+    }
+
     private companion object {
         val PROPERTIES = TextRenderProperties(allowNewLine = false)
         val MAX_SIZE = Vec2(150.0f, PROPERTIES.lineHeight)

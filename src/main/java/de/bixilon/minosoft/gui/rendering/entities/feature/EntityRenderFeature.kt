@@ -32,7 +32,7 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable
     abstract fun draw()
 
     open fun compareByDistance(other: EntityRenderFeature): Int {
-        return other.renderer.distance.compareTo(renderer.distance)
+        return renderer.distance.compareTo(other.renderer.distance)
     }
 
     override fun compareTo(other: EntityRenderFeature): Int {
