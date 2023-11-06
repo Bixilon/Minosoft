@@ -103,7 +103,7 @@ abstract class EntityRenderer<E : Entity>(
     }
 
     open fun updateVisibility(occluded: Boolean, visible: Boolean) {
-        this.visible = visible && !entity.isInvisible
+        this.visible = visible
         features.updateVisibility(occluded)
     }
 }

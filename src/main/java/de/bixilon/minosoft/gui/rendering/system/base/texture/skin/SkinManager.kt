@@ -84,7 +84,7 @@ class SkinManager(private val textureManager: TextureManager) {
         TextureUtil.copy(Vec2i(0, 16), next, Vec2i(16, 48), next, Vec2i(16, 16)) // leg [0, 16][16,16] to left leg [16, 48]
         TextureUtil.copy(Vec2i(40, 16), next, Vec2i(32, 48), next, Vec2i(16, 16)) // arm [40, 16] to left arm [32, 48]
 
-        // TODO: flip
+        // TODO: flip every texture part
 
         return next
     }
