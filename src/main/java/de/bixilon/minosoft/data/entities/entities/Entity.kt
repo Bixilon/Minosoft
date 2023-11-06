@@ -160,7 +160,7 @@ abstract class Entity(
         get() = data.get(CUSTOM_NAME_DATA, null)
 
     @get:SynchronizedEntityData
-    val isCustomNameVisible: Boolean
+    open val isNameVisible: Boolean
         get() = data.get(CUSTOM_NAME_VISIBLE_DATA, false)
 
     @get:SynchronizedEntityData

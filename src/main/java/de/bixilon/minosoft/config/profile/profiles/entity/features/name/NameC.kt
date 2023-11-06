@@ -11,31 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.entity.hitbox
+package de.bixilon.minosoft.config.profile.profiles.entity.features.name
 
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfile
 
-class HitboxC(profile: EntityProfile) {
+class NameC(profile: EntityProfile) {
     /**
-     * Enables or disables hit-boxes for all entities
+     * Shows entity names
      */
     var enabled by BooleanDelegate(profile, true)
 
     /**
-     * Shows hit-boxes from invisible entities
+     * Shows your local player name when in 3rd person view
      */
-    var showInvisible by BooleanDelegate(profile, false)
-
-    /**
-     * If true: Shows full colored hit-boxes (aka. lazy boxes).
-     * If false: Shows just the outline of the hit-box
-     */
-    var lazy by BooleanDelegate(profile, false)
-
-    /**
-     * Disables the z-buffer when rendering
-     * => Shows the boxes through walls
-     */
-    var showThroughWalls by BooleanDelegate(profile, false)
+    var local by BooleanDelegate(profile, false)
 }

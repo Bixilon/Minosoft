@@ -14,9 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature.text
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
-import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.entities.Poses
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.entities.entities.Mob
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
 class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null) {
@@ -27,18 +32,38 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
     }
 
     private fun updateName() {
-        if (!isNameVisible()) {
-            this.text = null
-            return
-        }
-        val name = renderer.entity.name
-        if (name == this.text) return
-        this.text = name
+        this.text = getEntityName()
     }
 
-    private fun isNameVisible(): Boolean {
-        if (renderer.entity is PlayerEntity) return true
+    private fun Entity.getName(): ChatComponent? {
+        if (this.isNameVisible) return name
+        if (!isTargeted()) return null
+        return name
+    }
 
+    private fun LivingEntity.getName(): ChatComponent? {
+        val distance = if (this.pose == Poses.SNEAKING) SNEAKING_DISTANCE * SNEAKING_DISTANCE else RENDER_DISTANCE * RENDER_DISTANCE
+        if (this@EntityNameFeature.renderer.distance >= distance) return null
+        if (this.primaryPassenger != null) return null
+
+        val renderer = this@EntityNameFeature.renderer.renderer
+        val profile = renderer.profile.features.name
+        if (this === renderer.connection.camera.entity && (!renderer.context.camera.view.view.renderSelf || !profile.local)) return null
+
+        // TODO: invisibility (w/ teams)
+
+        return this.name
+    }
+
+    private fun getEntityName(): ChatComponent? {
+        return when (renderer.entity) {
+            is Mob -> renderer.entity.unsafeCast<Entity>().getName()
+            is LivingEntity -> renderer.entity.getName()
+            else -> renderer.entity.getName()
+        }
+    }
+
+    private fun isTargeted(): Boolean {
         val camera = renderer.renderer.connection.camera
         val target = camera.target.target
         if (target !is EntityTarget || target.entity !== renderer.entity) return false
@@ -46,5 +71,9 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
         val distance = camera.entity.nullCast<LocalPlayerEntity>()?.reachDistance ?: 3.0
         if (target.distance > distance) return false
         return true
+    }
+
+    companion object {
+        const val SNEAKING_DISTANCE = 32
     }
 }

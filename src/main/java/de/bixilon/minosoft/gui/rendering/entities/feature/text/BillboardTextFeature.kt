@@ -37,6 +37,11 @@ open class BillboardTextFeature(
     private var mesh: BillboardTextMesh? = null
     private var info: TextRenderInfo? = null
     private var matrix = Mat4()
+    override var enabled: Boolean
+        get() = super.enabled && mesh != null
+        set(value) {
+            super.enabled = value
+        }
     var text: ChatComponent? = text
         set(value) {
             if (field == value) return
@@ -45,7 +50,7 @@ open class BillboardTextFeature(
         }
 
     override fun update(millis: Long, delta: Float) {
-        if (!enabled) return unload()
+        if (!super.enabled) return unload()
         if (!isInRenderDistance()) return unload()
         if (this.mesh == null) {
             val text = this.text ?: return unload()
@@ -112,7 +117,7 @@ open class BillboardTextFeature(
         return -super.compareByDistance(other)
     }
 
-    private companion object {
+    companion object {
         val PROPERTIES = TextRenderProperties(allowNewLine = false)
         val MAX_SIZE = Vec2(150.0f, PROPERTIES.lineHeight)
         const val EYE_OFFSET = 0.4f

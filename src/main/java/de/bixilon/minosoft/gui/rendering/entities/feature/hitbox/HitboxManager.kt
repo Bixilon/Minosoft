@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.register.FeatureRegist
 import de.bixilon.minosoft.util.KUtil.format
 
 class HitboxManager(private val renderer: EntitiesRenderer) : FeatureRegister {
-    val profile = renderer.profile.hitbox
+    val profile = renderer.profile.features.hitbox
     val shader = renderer.context.shaders.genericColorShader
 
     var enabled = profile.enabled

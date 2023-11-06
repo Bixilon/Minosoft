@@ -90,7 +90,8 @@ abstract class PlayerEntity(
 
     val skinParts: MutableSet<SkinParts> by observedSet(mutableSetOf())
 
-    override val name: ChatComponent? get() = additional.tabDisplayName
+    override val isNameVisible get() = true
+    override val name: ChatComponent? get() = additional.tabDisplayName // minecraft does use the plain name
 
     protected open fun updateSkinParts(flags: Int) {
         for (part in SkinParts.VALUES) {

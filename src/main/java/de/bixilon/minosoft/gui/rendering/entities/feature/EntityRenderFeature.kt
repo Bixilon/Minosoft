@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
 abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable<EntityRenderFeature> {
-    var enabled = true
+    open var enabled = true
     var visible = true
     open val priority: Int get() = 0
     val sort = this::class.java.hashCode()
