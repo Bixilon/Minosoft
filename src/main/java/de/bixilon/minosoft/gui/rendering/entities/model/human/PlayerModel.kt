@@ -30,6 +30,10 @@ open class PlayerModel(
         renderer.entity::skinParts.observeSet(this, instant = true) { skinParts = renderer.entity.skinParts.pack() }
     }
 
+    override fun updateInstance() {
+        super.updateInstance()
+        instance.matrix.scaleAssign(0.9375f)
+    }
 
     override fun draw() {
         val renderer = this.renderer.unsafeCast<PlayerRenderer<*>>()

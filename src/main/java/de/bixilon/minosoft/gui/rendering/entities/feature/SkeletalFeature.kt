@@ -54,6 +54,10 @@ open class SkeletalFeature(
         if (renderer.entity.isFlipped()) {
             yaw *= -1.0f
         }
+        updateInstance()
+    }
+
+    protected open fun updateInstance() {
         val rotation = Vec3(0.0f, (EntityRotation.HALF_CIRCLE_DEGREE - yaw).rad, 0.0f)
         instance.update(rotation, renderer.matrix)
     }
