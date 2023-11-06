@@ -25,12 +25,27 @@ class EntityScoreboardFeature(renderer: PlayerRenderer<*>) : BillboardTextFeatur
 
     override fun update(millis: Long, delta: Float) {
         updateScore()
+        renderer.name.offset = if (this.text != null) NAME_OFFSET else DEFAULT_OFFSET
         super.update(millis, delta)
     }
 
     private fun updateScore() {
-        // TODO: self, offset name, render distance (10), performance
+        if (!renderScore()) {
+            this.text = null
+            return
+        }
+        // TODO: cache score (just update every x time, listen for events, ...)
         this.text = getScore()
+    }
+
+    private fun renderScore(): Boolean {
+        if (renderer.distance > RENDER_DISTANCE * RENDER_DISTANCE) return false
+        val renderer = renderer.renderer
+        val profile = renderer.profile.features.score
+        if (!profile.enabled) return false
+        if (this.renderer.entity === renderer.connection.camera.entity && (!renderer.context.camera.view.view.renderSelf || !profile.local)) return false
+
+        return true
     }
 
     private fun getScore(): ChatComponent? {
@@ -42,5 +57,10 @@ class EntityScoreboardFeature(renderer: PlayerRenderer<*>) : BillboardTextFeatur
         text += objective.displayName
 
         return text
+    }
+
+    companion object {
+        const val RENDER_DISTANCE = 10
+        val NAME_OFFSET = DEFAULT_OFFSET + PROPERTIES.lineHeight * BillboardTextMesh.SCALE
     }
 }

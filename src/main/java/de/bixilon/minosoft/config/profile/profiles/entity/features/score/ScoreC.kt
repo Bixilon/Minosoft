@@ -11,15 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.entity.features
+package de.bixilon.minosoft.config.profile.profiles.entity.features.score
 
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfile
-import de.bixilon.minosoft.config.profile.profiles.entity.features.hitbox.HitboxC
-import de.bixilon.minosoft.config.profile.profiles.entity.features.name.NameC
-import de.bixilon.minosoft.config.profile.profiles.entity.features.score.ScoreC
 
-class FeaturesC(profile: EntityProfile) {
-    val hitbox = HitboxC(profile)
-    val name = NameC(profile)
-    val score = ScoreC(profile)
+class ScoreC(profile: EntityProfile) {
+    /**
+     * Shows scores of entities
+     */
+    var enabled by BooleanDelegate(profile, true)
+
+    /**
+     * Shows your local score
+     */
+    var local by BooleanDelegate(profile, false)
 }
