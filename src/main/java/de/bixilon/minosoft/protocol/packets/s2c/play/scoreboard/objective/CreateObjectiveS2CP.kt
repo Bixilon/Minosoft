@@ -60,7 +60,7 @@ class CreateObjectiveS2CP(
     override fun handle(connection: PlayConnection) {
         val objective = ScoreboardObjective(name, displayName, unit)
 
-        connection.scoreboardManager.objectives[name] = objective
+        connection.scoreboard.objectives[name] = objective
 
         connection.events.fire(ScoreboardObjectiveCreateEvent(connection, objective))
     }

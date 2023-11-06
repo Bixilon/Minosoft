@@ -118,13 +118,13 @@ class CreateTeamS2CP(
             color = color,
             members = members.toSynchronizedSet(),
         )
-        connection.scoreboardManager.teams[name] = team
+        connection.scoreboard.teams[name] = team
 
         for (member in members) {
             connection.tabList.name[member]?.team = team
         }
 
-        connection.scoreboardManager.updateScoreTeams(team, members)
+        connection.scoreboard.updateScoreTeams(team, members)
 
         connection.events.fire(TeamCreateEvent(connection, team))
     }

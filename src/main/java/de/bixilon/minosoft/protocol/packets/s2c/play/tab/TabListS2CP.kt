@@ -77,7 +77,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 connection.tabList.uuid[uuid] = item
                 connection.tabList.name[name] = item
 
-                for (team in connection.scoreboardManager.teams.toSynchronizedMap().values) {
+                for (team in connection.scoreboard.teams.toSynchronizedMap().values) {
                     if (team.members.contains(data.name)) {
                         item.team = team
                         break

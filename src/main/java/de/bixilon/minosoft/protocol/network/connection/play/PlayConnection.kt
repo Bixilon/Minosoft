@@ -85,7 +85,7 @@ class PlayConnection(
     val registries = Registries().apply { updateFlattened(version.flattened) }
     val world = World(this)
     val tabList = TabList()
-    val scoreboardManager = ScoreboardManager(this)
+    val scoreboard = ScoreboardManager(this)
     val bossbarManager = BossbarManager()
     val util = ConnectionUtil(this)
     val ticker = ConnectionTicker(this)

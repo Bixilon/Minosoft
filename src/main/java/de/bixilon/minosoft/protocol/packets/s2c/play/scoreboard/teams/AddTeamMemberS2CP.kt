@@ -35,14 +35,14 @@ class AddTeamMemberS2CP(
 
 
     override fun handle(connection: PlayConnection) {
-        val team = connection.scoreboardManager.teams[name] ?: return
+        val team = connection.scoreboard.teams[name] ?: return
         team.members += members
 
         for (member in members) {
             connection.tabList.name[member]?.team = team
         }
 
-        connection.scoreboardManager.updateScoreTeams(team, members)
+        connection.scoreboard.updateScoreTeams(team, members)
         connection.events.fire(TeamMemberAddEvent(connection, team, members))
     }
 

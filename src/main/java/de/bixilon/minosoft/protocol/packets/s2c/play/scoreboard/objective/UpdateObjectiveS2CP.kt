@@ -58,7 +58,7 @@ class UpdateObjectiveS2CP(
     }
 
     override fun handle(connection: PlayConnection) {
-        val objective = connection.scoreboardManager.objectives[objective] ?: return
+        val objective = connection.scoreboard.objectives[objective] ?: return
 
         objective.displayName = displayName
         objective.unit = unit

@@ -35,7 +35,7 @@ class RemoveTeamMemberS2CP(
 
 
     override fun handle(connection: PlayConnection) {
-        val team = connection.scoreboardManager.teams[name] ?: return
+        val team = connection.scoreboard.teams[name] ?: return
         team.members -= members
 
         for (member in members) {
@@ -46,7 +46,7 @@ class RemoveTeamMemberS2CP(
             item.team = team
         }
 
-        connection.scoreboardManager.updateScoreTeams(team, members, true)
+        connection.scoreboard.updateScoreTeams(team, members, true)
         connection.events.fire(TeamMemberRemoveEvent(connection, team, members))
     }
 

@@ -28,8 +28,8 @@ class RemoveScoreboardScoreS2CP(
 ) : ScoreboardScoreS2CP {
 
     override fun handle(connection: PlayConnection) {
-        val objective = connection.scoreboardManager.objectives[objective] ?: let {
-            for ((_, objective) in connection.scoreboardManager.objectives.toSynchronizedMap()) {
+        val objective = connection.scoreboard.objectives[objective] ?: let {
+            for ((_, objective) in connection.scoreboard.objectives.toSynchronizedMap()) {
                 val score = objective.scores.remove(entity) ?: continue
 
                 connection.events.fire(ScoreboardScoreRemoveEvent(connection, score))

@@ -26,7 +26,7 @@ class ObjectivePositionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val name: String? = buffer.readNullString()
 
     override fun handle(connection: PlayConnection) {
-        val scoreboardManager = connection.scoreboardManager
+        val scoreboardManager = connection.scoreboard
         if (name == null) {
             scoreboardManager.positions -= position
             connection.events.fire(ObjectivePositionSetEvent(connection, position, null))

@@ -94,7 +94,7 @@ class UpdateTeamS2CP(
 
 
     override fun handle(connection: PlayConnection) {
-        val team = connection.scoreboardManager.teams[name] ?: return
+        val team = connection.scoreboard.teams[name] ?: return
 
         team.displayName = displayName
         team.prefix = prefix
