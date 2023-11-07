@@ -13,11 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature.text.name
 
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.Pig
+import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
-import org.testng.Assert.assertNull
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillbaordTextTestUtil.assertEmpty
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillbaordTextTestUtil.assertText
 import org.testng.annotations.Test
 
 @Test(groups = ["entities", "rendering"])
@@ -31,14 +38,78 @@ class EntityNameFeatureTest {
         return EntityNameFeature(renderer)
     }
 
+    private fun EntityNameFeature.customName(name: Any?) {
+        renderer.entity.data[Entity.CUSTOM_NAME_VISIBLE_DATA] = name
+    }
+
+    private fun EntityNameFeature.isNameVisible(visible: Boolean) {
+        renderer.entity.data[Entity.CUSTOM_NAME_VISIBLE_DATA] = visible
+    }
+    // TODO: hasCustomName?
+
+    private fun EntityNameFeature.isInvisible(invisible: Boolean) {
+        var flags = renderer.entity.data.get(Entity.FLAGS_DATA, 0x00)
+        flags = flags and 0x20.inv()
+        if (invisible) {
+            flags = flags or 0x20
+        }
+        renderer.entity.data[Entity.FLAGS_DATA] = flags
+    }
+
+    private fun EntityNameFeature.setTargeted(target: Boolean = true, distance: Double = 1.0) {
+        val target = if (target) EntityTarget(Vec3d(0, 0, 0), distance, Directions.DOWN, renderer.entity) else null
+        renderer.renderer.connection.camera.target::target.forceSet(DataObserver(target)))
+    }
+
     private fun EntityNameFeature.updateName() {
         updateName.invoke(this)
     }
 
 
-    fun noLabel() {
+    fun `animal without name`() {
         val name = create(Pig)
         name.updateName()
-        assertNull(name.text)
+        name.assertEmpty()
     }
+
+    fun `animal with custom name set`() {
+        val name = create(Pig)
+        name.updateName()
+        name.customName("Pepper")
+        name.assertEmpty()
+    }
+
+    fun `animal with custom name visible`() {
+        val name = create(Pig)
+        name.updateName()
+        name.customName("Pepper")
+        name.isNameVisible(true)
+        name.assertText() // TODO: verify
+    }
+
+    fun `targeted animal without custom name visible`() {
+        val name = create(Pig)
+        name.updateName()
+        name.customName("Pepper")
+        name.setTargeted()
+        name.assertText() // TODO: verify
+    }
+
+    fun `targeted but oor animal without custom name visible`() {
+        val name = create(Pig)
+        name.updateName()
+        name.customName("Pepper")
+        name.setTargeted(distance = 10.0)
+        name.assertText() // TODO: verify
+    }
+
+    fun `remote player entity`() {
+        val name = create(RemotePlayerEntity)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+
+    // TODO: mob, armor stand, player (local/remote), pig, non living (boat?)
+    // TODO: isInvisible, teams (with team nametag visibility),
 }

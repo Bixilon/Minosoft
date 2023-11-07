@@ -23,8 +23,11 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.Pig
+import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
@@ -38,6 +41,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
 import de.bixilon.minosoft.test.IT
+import java.util.*
 
 object EntityRendererTestUtil {
     val PIG = EntityType(Pig.identifier, null, 1.0f, 1.0f, mapOf(), Pig, null)
@@ -45,6 +49,7 @@ object EntityRendererTestUtil {
     fun createContext(): RenderContext {
         val connection = ConnectionTestUtil.createConnection()
         connection::scoreboard.forceSet(ScoreboardManager(connection))
+        connection::tabList.forceSet(TabList())
         val context = IT.OBJENESIS.newInstance(RenderContext::class.java)
         context::system.forceSet(DummyRenderSystem(context))
         context::textures.forceSet(context.system.createTextureManager())
@@ -72,7 +77,11 @@ object EntityRendererTestUtil {
     }
 
     fun <E : Entity> EntitiesRenderer.createEntity(factory: EntityFactory<E>): E {
-        return factory.build(connection, PIG, EntityData(connection), Vec3d(1, 1, 1), EntityRotation.EMPTY)!!
+        val uuid = UUID(1L, 1L)
+        if (factory == RemotePlayerEntity) {
+            connection.tabList.uuid[uuid] = PlayerAdditional("John")
+        }
+        return factory.build(connection, PIG, EntityData(connection), Vec3d(1, 1, 1), EntityRotation.EMPTY, uuid)!!
     }
 
     fun <E : Entity> EntitiesRenderer.create(factory: EntityFactory<E>): EntityRenderer<E> {
