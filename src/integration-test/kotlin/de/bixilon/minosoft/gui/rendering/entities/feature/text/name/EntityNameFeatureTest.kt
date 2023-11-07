@@ -21,7 +21,10 @@ import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.Pig
+import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStand
+import de.bixilon.minosoft.data.entities.entities.monster.Zombie
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
+import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
@@ -96,7 +99,7 @@ class EntityNameFeatureTest {
         name.customName("Pepper")
         name.isNameVisible(true)
         name.updateName()
-        name.assertText() // TODO: verify
+        name.assertText()
     }
 
     fun `targeted animal without custom name visible`() {
@@ -104,15 +107,24 @@ class EntityNameFeatureTest {
         name.customName("Pepper")
         name.setTargeted()
         name.updateName()
-        name.assertText() // TODO: verify
+        name.assertText()
     }
 
-    fun `targeted but oor animal without custom name visible`() {
+    fun `targeted animal with name visible`() {
+        val name = create(Pig)
+        name.customName("Pepper")
+        name.isNameVisible(true)
+        name.setTargeted()
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `targeted but out of reach animal without custom name visible`() {
         val name = create(Pig)
         name.customName("Pepper")
         name.setTargeted(distance = 10.0)
         name.updateName()
-        name.assertText() // TODO: verify
+        name.assertText()
     }
 
     fun `remote player entity`() {
@@ -138,7 +150,98 @@ class EntityNameFeatureTest {
         assertSame(name.text, text)
     }
 
+    fun `armor stand without name`() {
+        val name = create(ArmorStand)
+        name.updateName()
+        name.assertEmpty()
+    }
 
+    fun `armor stand with custom name set`() {
+        val name = create(ArmorStand)
+        name.customName("Jonny")
+        name.updateName()
+        name.assertEmpty()
+    }
+
+
+    fun `armor stand with custom visible name set`() {
+        val name = create(ArmorStand)
+        name.customName("Jonny")
+        name.isNameVisible(true)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `invisible armor stand with visible custom name set`() {
+        val name = create(ArmorStand)
+        name.customName("Jonny")
+        name.isNameVisible(true)
+        name.isInvisible(true)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `boat without name`() {
+        val name = create(Boat)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `boat with custom name`() {
+        val name = create(Boat)
+        name.customName("Titanic")
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `boat targeted and custom name set`() {
+        val name = create(Boat)
+        name.customName("Titanic")
+        name.setTargeted(true)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `boat with custom visible name`() {
+        val name = create(Boat)
+        name.customName("Titanic")
+        name.isNameVisible(true)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `zombie with custom name`() {
+        val name = create(Zombie)
+        name.customName("Notch")
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `zombie with visible name`() {
+        val name = create(Zombie)
+        name.isNameVisible(true)
+        name.updateName()
+        name.assertText() // TODO: Zombie
+    }
+
+    fun `zombie with visible custom name`() {
+        val name = create(Zombie)
+        name.customName("Notch")
+        name.isNameVisible(true)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `zombie with invisibility potion and custom name`() {
+        val name = create(Zombie)
+        name.customName("Notch")
+        name.isNameVisible(true)
+        // TODO: invis potion
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    // TODO: targeted mob, invisible zombie
     // TODO: mob, armor stand, player (local/remote), pig, non living (boat?)
     // TODO: isInvisible, teams (with team nametag visibility),
 }
