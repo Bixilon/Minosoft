@@ -244,4 +244,5 @@ class EntityNameFeatureTest {
     // TODO: targeted mob, invisible zombie
     // TODO: mob, armor stand, player (local/remote), pig, non living (boat?)
     // TODO: isInvisible, teams (with team nametag visibility),
+    // TODO: profile
 }

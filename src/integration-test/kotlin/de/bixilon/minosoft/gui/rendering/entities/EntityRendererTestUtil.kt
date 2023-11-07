@@ -33,6 +33,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
+import de.bixilon.minosoft.gui.rendering.entities.factory.DefaultEntityModels
 import de.bixilon.minosoft.gui.rendering.entities.feature.register.EntityRenderFeatures
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.light.RenderLight
@@ -81,7 +82,9 @@ object EntityRendererTestUtil {
         if (factory == RemotePlayerEntity) {
             connection.tabList.uuid[uuid] = PlayerAdditional("John")
         }
-        return factory.build(connection, PIG, EntityData(connection), Vec3d(1, 1, 1), EntityRotation.EMPTY, uuid)!!
+        val renderer = DefaultEntityModels[factory.identifier]
+        val type = PIG.copy(identifier = factory.identifier, modelFactory = renderer)
+        return factory.build(connection, type, EntityData(connection), Vec3d(1, 1, 1), EntityRotation.EMPTY, uuid)!!
     }
 
     fun <E : Entity> EntitiesRenderer.create(factory: EntityFactory<E>): EntityRenderer<E> {
