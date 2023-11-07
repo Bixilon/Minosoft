@@ -14,19 +14,20 @@ package de.bixilon.minosoft.data.scoreboard
 
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 data class Team(
     val name: String,
-    var displayName: ChatComponent,
-    var prefix: ChatComponent,
-    var suffix: ChatComponent,
-    var friendlyFire: Boolean,
-    var canSeeInvisibleTeam: Boolean,
-    var collisionRule: TeamCollisionRules,
-    var nameTagVisibility: NameTagVisibilities,
-    var color: RGBColor?,
-    val members: MutableSet<String>,
+    var displayName: ChatComponent = TextComponent(name),
+    var prefix: ChatComponent? = null,
+    var suffix: ChatComponent? = null,
+    var friendlyFire: Boolean = true,
+    var canSeeInvisibleTeam: Boolean = true,
+    var collisionRule: TeamCollisionRules = TeamCollisionRules.ALWAYS,
+    var nameTagVisibility: NameTagVisibilities = NameTagVisibilities.ALWAYS,
+    var color: RGBColor? = null,
+    val members: MutableSet<String> = mutableSetOf(),
 ) {
     override fun toString(): String {
         return name
@@ -34,11 +35,11 @@ data class Team(
 
     fun decorateName(name: ChatComponent): ChatComponent {
         val displayName = BaseComponent()
-        prefix.let { displayName += it }
+        prefix?.let { displayName += it }
         displayName += name.apply {
             color?.let { setFallbackColor(it) }
         }
-        suffix.let { displayName += it }
+        suffix?.let { displayName += it }
         return displayName
     }
 
