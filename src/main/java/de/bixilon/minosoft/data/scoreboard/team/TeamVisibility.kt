@@ -11,15 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event.events.scoreboard
+package de.bixilon.minosoft.data.scoreboard.team
 
-import de.bixilon.minosoft.data.scoreboard.team.Team
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 
-@Deprecated("Observables")
-abstract class ScoreboardTeamMemberEvent(
-    connection: PlayConnection,
-    val team: Team,
-    val members: Set<String>,
-) : PlayConnectionEvent(connection)
+data class TeamVisibility(
+    var invisibleTeam: Boolean = true,
+    var name: NameTagVisibilities = NameTagVisibilities.ALWAYS,
+)

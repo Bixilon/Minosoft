@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.entities.player.additional
 
-import de.bixilon.minosoft.data.scoreboard.Team
+import de.bixilon.minosoft.data.scoreboard.team.Team
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors

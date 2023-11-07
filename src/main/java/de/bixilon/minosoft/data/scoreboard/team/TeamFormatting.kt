@@ -11,24 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.player.additional
+package de.bixilon.minosoft.data.scoreboard.team
 
-import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.scoreboard.team.Team
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.PlayerPublicKey
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
-data class AdditionalDataUpdate(
-    var name: String? = null,
-    var ping: Int? = null,
-    var gamemode: Gamemodes? = null,
-    var hasDisplayName: Boolean? = null,
-    var displayName: ChatComponent? = null,
-    var properties: PlayerProperties? = null,
-    var team: Team? = null,
-    var removeFromTeam: Boolean = false,
-    var publicKey: PlayerPublicKey? = null,
-    var listed: Boolean? = null,
-    var remove: Boolean = false,
-)
+data class TeamFormatting(
+    var name: ChatComponent,
+    var prefix: ChatComponent? = null,
+    var suffix: ChatComponent? = null,
+    var color: RGBColor? = null,
+) {
+
+    fun decorate(name: ChatComponent): ChatComponent {
+        val displayName = BaseComponent()
+        prefix?.let { displayName += it }
+        displayName += name.apply {
+            color?.let { setFallbackColor(it) }
+        }
+        suffix?.let { displayName += it }
+        return displayName
+    }
+}

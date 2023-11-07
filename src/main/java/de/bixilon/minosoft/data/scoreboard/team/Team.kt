@@ -10,42 +10,28 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.scoreboard
+package de.bixilon.minosoft.data.scoreboard.team
 
-import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 data class Team(
     val name: String,
-    var displayName: ChatComponent = TextComponent(name),
-    var prefix: ChatComponent? = null,
-    var suffix: ChatComponent? = null,
+    val formatting: TeamFormatting = TeamFormatting(TextComponent(name)),
     var friendlyFire: Boolean = true,
-    var canSeeInvisibleTeam: Boolean = true,
-    var collisionRule: TeamCollisionRules = TeamCollisionRules.ALWAYS,
-    var nameTagVisibility: NameTagVisibilities = NameTagVisibilities.ALWAYS,
-    var color: RGBColor? = null,
+    val visibility: TeamVisibility = TeamVisibility(),
+    var collisions: TeamCollisionRules = TeamCollisionRules.ALWAYS,
     val members: MutableSet<String> = mutableSetOf(),
 ) {
     override fun toString(): String {
         return name
     }
 
-    fun decorateName(name: ChatComponent): ChatComponent {
-        val displayName = BaseComponent()
-        prefix?.let { displayName += it }
-        displayName += name.apply {
-            color?.let { setFallbackColor(it) }
-        }
-        suffix?.let { displayName += it }
-        return displayName
-    }
-
     fun canSee(other: Team?): Boolean {
+        // TODO
         if (other == null) return false
-        if (other.name == this.name && canSeeInvisibleTeam) return true
+        if (other.name == this.name && visibility.invisibleTeam) return true
+
 
         return false
     }

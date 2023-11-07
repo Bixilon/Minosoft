@@ -73,7 +73,6 @@ class EntityScoreFeatureTest {
 
     fun `name offset without score`() {
         val score = createScore()
-        score.setScore()
         score.updateScore()
         score.updateNameOffset()
         assertEquals(score.renderer.name.offset, BillboardTextFeature.DEFAULT_OFFSET)
