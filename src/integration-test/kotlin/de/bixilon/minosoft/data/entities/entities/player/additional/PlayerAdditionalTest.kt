@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.data.entities.entities.player.additional
 
 import de.bixilon.minosoft.data.scoreboard.team.Team
+import de.bixilon.minosoft.data.scoreboard.team.TeamFormatting
 import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import org.testng.Assert.assertEquals
@@ -38,25 +40,25 @@ class PlayerAdditionalTest {
 
     fun `team prefix`() {
         val additional = PlayerAdditional("Me")
-        additional.team = Team("test", prefix = TextComponent("[P]").color(ChatColors.RED))
+        additional.team = Team("test", TeamFormatting(ChatComponent.EMPTY, prefix = TextComponent("[P]").color(ChatColors.RED)))
         assertEquals(additional.tabDisplayName, BaseComponent(TextComponent("[P]").color(ChatColors.RED), TextComponent("Me")))
     }
 
     fun `team suffix`() {
         val additional = PlayerAdditional("Me")
-        additional.team = Team("test", suffix = TextComponent("[S]").color(ChatColors.BLUE))
+        additional.team = Team("test", TeamFormatting(ChatComponent.EMPTY, suffix = TextComponent("[S]").color(ChatColors.BLUE)))
         assertEquals(additional.tabDisplayName, BaseComponent(TextComponent("Me"), TextComponent("[S]").color(ChatColors.BLUE)))
     }
 
     fun `team prefix and suffix`() {
         val additional = PlayerAdditional("Me")
-        additional.team = Team("test", prefix = TextComponent("[P]").color(ChatColors.RED), suffix = TextComponent("[S]").color(ChatColors.BLUE))
+        additional.team = Team("test", TeamFormatting(ChatComponent.EMPTY, prefix = TextComponent("[P]").color(ChatColors.RED), suffix = TextComponent("[S]").color(ChatColors.BLUE)))
         assertEquals(additional.tabDisplayName, BaseComponent(TextComponent("[P]").color(ChatColors.RED), TextComponent("Me"), TextComponent("[S]").color(ChatColors.BLUE)))
     }
 
     fun `team prefix and suffix and color`() {
         val additional = PlayerAdditional("Me")
-        additional.team = Team("test", color = ChatColors.LIGHT_PURPLE, prefix = TextComponent("[P]").color(ChatColors.RED), suffix = TextComponent("[S]").color(ChatColors.BLUE))
+        additional.team = Team("test", TeamFormatting(ChatComponent.EMPTY, color = ChatColors.LIGHT_PURPLE, prefix = TextComponent("[P]").color(ChatColors.RED), suffix = TextComponent("[S]").color(ChatColors.BLUE)))
         assertEquals(additional.tabDisplayName, BaseComponent(TextComponent("[P]").color(ChatColors.RED), TextComponent("Me").color(ChatColors.LIGHT_PURPLE), TextComponent("[S]").color(ChatColors.BLUE)))
     }
 

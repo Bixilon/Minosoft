@@ -19,12 +19,14 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRenderInfo
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.properties.EntityAttachment
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -87,7 +89,7 @@ abstract class Entity(
 
     open val physics: EntityPhysics<*> = unsafeNull()
 
-    open val canRaycast: Boolean get() = false
+    open val canRaycast: Boolean get() = !isInvisible
 
     var age = 0
         private set
@@ -247,6 +249,11 @@ abstract class Entity(
 
     open fun tickRiding() {
         physics.tickRiding()
+    }
+
+    open fun isInvisible(camera: Entity): Boolean {
+        if (camera is PlayerEntity && camera.additional.gamemode == Gamemodes.SPECTATOR) return false
+        return isInvisible
     }
 
 

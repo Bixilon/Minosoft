@@ -30,6 +30,7 @@ import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManag
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
@@ -45,7 +46,7 @@ import de.bixilon.minosoft.test.IT
 import java.util.*
 
 object EntityRendererTestUtil {
-    val PIG = EntityType(Pig.identifier, null, 1.0f, 1.0f, mapOf(), Pig, null)
+    val PIG = EntityType(Pig.identifier, minosoft("key"), 1.0f, 1.0f, mapOf(), Pig, null)
 
     fun createContext(): RenderContext {
         val connection = ConnectionTestUtil.createConnection()

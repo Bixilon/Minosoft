@@ -15,12 +15,17 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text.name
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.Mob
+import de.bixilon.minosoft.data.entities.entities.decoration.ItemFrame
+import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStand
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
@@ -45,31 +50,82 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
         this.text = getEntityName()
     }
 
-    private fun Entity.getName(): ChatComponent? {
+    private fun Entity.getName(invisible: Boolean): ChatComponent? {
+        if (invisible) return null
         if (this.isNameVisible) return name
         if (!isTargeted()) return null
         return name
     }
 
-    private fun LivingEntity.getName(): ChatComponent? {
-        val distance = if (this.pose == Poses.SNEAKING) SNEAKING_DISTANCE * SNEAKING_DISTANCE else RENDER_DISTANCE * RENDER_DISTANCE
-        if (this@EntityNameFeature.renderer.distance >= distance) return null
+    private fun LivingEntity.getName(invisible: Boolean): ChatComponent? {
         if (this.primaryPassenger != null) return null
 
         val renderer = this@EntityNameFeature.renderer.renderer
         val profile = renderer.profile.features.name
         if (this === renderer.connection.camera.entity && (!renderer.context.camera.view.view.renderSelf || !profile.local)) return null
+        if (!this.isNameVisible) return null
 
-        // TODO: invisibility (w/ teams)
+        if (invisible) return null
 
         return this.name
     }
 
+    private fun ArmorStand.getName(): ChatComponent? {
+        if (!isNameVisible) return null
+
+        return customName
+    }
+
+    private fun ItemFrame.getName(): ChatComponent? {
+        if (!isTargeted()) return null
+        val item = this.item ?: return null
+
+        return item._display?._customDisplayName
+    }
+
     private fun getEntityName(): ChatComponent? {
+        val profile = renderer.renderer.profile.features.name
+        if (!profile.enabled) return null
+
+        val entity = renderer.entity
+
+        val distance = if (entity is LivingEntity && entity.pose == Poses.SNEAKING) SNEAKING_DISTANCE * SNEAKING_DISTANCE else RENDER_DISTANCE * RENDER_DISTANCE
+        if (renderer.distance >= distance) return null
+
+        val invisible = isInvisible()
+
         return when (renderer.entity) {
-            is Mob -> renderer.entity.unsafeCast<Entity>().getName()
-            is LivingEntity -> renderer.entity.getName()
-            else -> renderer.entity.getName()
+            is ItemFrame -> renderer.entity.getName()
+            is ArmorStand -> renderer.entity.getName()
+            is Mob -> renderer.entity.unsafeCast<Entity>().getName(invisible)
+            is LivingEntity -> renderer.entity.getName(invisible)
+            else -> renderer.entity.getName(invisible)
+        }
+    }
+
+    private fun isInvisible(): Boolean {
+        val camera = renderer.renderer.connection.camera.entity
+        val entity = renderer.entity
+        val invisible = entity.isInvisible(camera)
+
+        if (entity !is PlayerEntity) return invisible
+        val team = entity.additional.team ?: return invisible
+        val name = team.visibility.name
+
+        when (name) {
+            NameTagVisibilities.ALWAYS -> return invisible
+            NameTagVisibilities.NEVER -> return true
+            else -> Unit
+        }
+
+        val cTeam = camera.nullCast<PlayerEntity>()?.additional?.team ?: return invisible
+        val sameTeam = team.name == cTeam.name
+
+
+        return when (name) {
+            NameTagVisibilities.HIDE_FOR_ENEMIES -> !sameTeam || (team.visibility.invisibleTeam && invisible)
+            NameTagVisibilities.HIDE_FOR_MATES -> sameTeam || invisible
+            else -> Broken()
         }
     }
 

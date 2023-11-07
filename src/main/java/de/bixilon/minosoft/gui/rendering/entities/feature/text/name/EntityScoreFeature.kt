@@ -57,7 +57,7 @@ class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(ren
         if (!profile.enabled) return false
         if (this.renderer.entity === renderer.connection.camera.entity && (!renderer.context.camera.view.view.renderSelf || !profile.local)) return false
 
-        return true
+        return this.renderer.name.text != null
     }
 
     private fun getScore(): ChatComponent? {

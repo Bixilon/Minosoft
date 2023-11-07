@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.entities.event.events.damage.DamageListener
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
@@ -45,7 +46,8 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     val attributes = EntityAttributes(entityType.attributes)
 
 
-    override val canRaycast: Boolean get() = health > 0.0
+    override val canRaycast: Boolean get() = super.canRaycast && health > 0.0
+    override val name: ChatComponent? get() = super.name ?: connection.language.translate(type.translationKey)
 
     private fun getLivingEntityFlag(bitMask: Int): Boolean {
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)

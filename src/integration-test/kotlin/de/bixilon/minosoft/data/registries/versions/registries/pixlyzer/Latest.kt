@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries.pixlyzer
 
-import de.bixilon.minosoft.protocol.protocol.VersionSupport
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.VersionTypes
 import de.bixilon.minosoft.protocol.versions.Versions
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.SkipException
 import org.testng.annotations.Test
 
@@ -24,7 +25,13 @@ class Latest : PixLyzerLoadingTest("tba") {
 
     @Test(priority = -20)
     override fun loadVersion() {
-        val version = Versions.getById(VersionSupport.LATEST_VERSION)!!
+        val id = Versions::class.java.getDeclaredField("id").apply { isAccessible = true }.get(Versions) as Int2ObjectOpenHashMap<Version>
+        var highest = 0
+        for ((id, _) in id) {
+            if (id < highest) continue
+            highest = id
+        }
+        val version = Versions.getById(highest)!!
         if (version.type == VersionTypes.RELEASE) {
             throw SkipException("Version should already be tested!")
         }

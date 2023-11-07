@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
@@ -148,6 +149,14 @@ abstract class PlayerEntity(
             EntityAnimations.SWING_OFF_ARM -> swingHand(Hands.OFF)
             else -> super.handleAnimation(animation)
         }
+    }
+
+    override fun isInvisible(camera: Entity): Boolean {
+        if (!super.isInvisible(camera)) return false
+        if (camera !is PlayerEntity) return true
+        val team = additional.team ?: return true
+        if (team != camera.additional.team) return true
+        return !team.visibility.invisibleTeam
     }
 
     companion object : Identified {

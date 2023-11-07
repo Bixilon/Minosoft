@@ -23,9 +23,14 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.Pig
 import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStand
 import de.bixilon.minosoft.data.entities.entities.monster.Zombie
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
+import de.bixilon.minosoft.data.language.lang.Language
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
+import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
+import de.bixilon.minosoft.data.scoreboard.team.Team
+import de.bixilon.minosoft.data.scoreboard.team.TeamVisibility
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
@@ -53,7 +58,6 @@ class EntityNameFeatureTest {
     private fun EntityNameFeature.isNameVisible(visible: Boolean) {
         renderer.entity.data[Entity.CUSTOM_NAME_VISIBLE_DATA] = visible
     }
-    // TODO: hasCustomName?
 
     private fun EntityNameFeature.isInvisible(invisible: Boolean) {
         var flags = renderer.entity.data.get(Entity.FLAGS_DATA, 0x00)
@@ -62,6 +66,16 @@ class EntityNameFeatureTest {
             flags = flags or 0x20
         }
         renderer.entity.data[Entity.FLAGS_DATA] = flags
+    }
+
+    private fun EntityNameFeature.cameraTeam(same: Boolean) {
+        val team = if (same) renderer.entity.unsafeCast<PlayerEntity>().additional.team ?: throw IllegalArgumentException("Not in a team") else Team("other")
+        renderer.renderer.connection.camera.entity.unsafeCast<PlayerEntity>().additional.team = team
+    }
+
+    private fun EntityNameFeature.team(invisibles: Boolean = true, name: NameTagVisibilities = NameTagVisibilities.ALWAYS) {
+        val team = Team("own", visibility = TeamVisibility(invisibleTeam = invisibles, name = name))
+        renderer.entity.unsafeCast<PlayerEntity>().additional.team = team
     }
 
     private fun EntityNameFeature.setTargeted(target: Boolean = true, distance: Double = 1.0) {
@@ -165,6 +179,14 @@ class EntityNameFeatureTest {
         name.assertEmpty()
     }
 
+    fun `targeted armor stand with custom name set`() {
+        val name = create(ArmorStand)
+        name.customName("Jonny")
+        name.setTargeted(true)
+        name.updateName()
+        name.assertEmpty()
+    }
+
 
     fun `armor stand with custom visible name set`() {
         val name = create(ArmorStand)
@@ -199,6 +221,14 @@ class EntityNameFeatureTest {
     fun `boat targeted and custom name set`() {
         val name = create(Boat)
         name.customName("Titanic")
+        name.setTargeted(true) // TODO: a boat is somehow not targetable?
+        name.updateName()
+        //    name.assertEmpty()
+    }
+
+    fun `boat targeted and just custom name visible`() {
+        val name = create(Boat)
+        name.isNameVisible(true)
         name.setTargeted(true)
         name.updateName()
         name.assertEmpty()
@@ -222,8 +252,9 @@ class EntityNameFeatureTest {
     fun `zombie with visible name`() {
         val name = create(Zombie)
         name.isNameVisible(true)
+        name.renderer.renderer.connection.language = Language("abc", mutableMapOf("key" to "Zombie"))
         name.updateName()
-        name.assertText() // TODO: Zombie
+        name.assertText()
     }
 
     fun `zombie with visible custom name`() {
@@ -234,11 +265,18 @@ class EntityNameFeatureTest {
         name.assertText()
     }
 
-    fun `zombie with invisibility potion and custom name`() {
+    fun `zombie with invisibility and custom name`() {
         val name = create(Zombie)
         name.customName("Notch")
         name.isNameVisible(true)
-        // TODO: invis potion
+        name.isInvisible(true)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `player with invisibility`() {
+        val name = create(RemotePlayerEntity)
+        name.isInvisible(true)
         name.updateName()
         name.assertEmpty()
     }
@@ -252,9 +290,117 @@ class EntityNameFeatureTest {
         name.assertEmpty()
     }
 
-    // TODO: targeted mob, invisible zombie
-    // TODO: mob, armor stand, player (local/remote), pig, non living (boat?)
-    // TODO: isInvisible, teams (with team nametag visibility),
+    fun `camera not in team and always visible`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.ALWAYS)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `camera not in team and hide for other team`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.HIDE_FOR_ENEMIES)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `camera not in team and hide for own team`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.HIDE_FOR_MATES)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `camera not in team and never`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.NEVER)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `camera different team and always visible`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.ALWAYS)
+        name.cameraTeam(false)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `camera different team and hide for other team`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.HIDE_FOR_ENEMIES)
+        name.cameraTeam(false)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `camera different team and hide for own team`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.HIDE_FOR_MATES)
+        name.cameraTeam(false)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `camera different team and never visible`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.NEVER)
+        name.cameraTeam(false)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `same team and always visible`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.ALWAYS)
+        name.cameraTeam(true)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `same team and hide for other teams`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.HIDE_FOR_ENEMIES)
+        name.cameraTeam(true)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `same team and hide for own team`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.HIDE_FOR_MATES)
+        name.cameraTeam(true)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `same team and hide for never visible`() {
+        val name = create(RemotePlayerEntity)
+        name.team(name = NameTagVisibilities.NEVER)
+        name.cameraTeam(true)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    fun `same team and invisible`() {
+        val name = create(RemotePlayerEntity)
+        name.team(invisibles = true)
+        name.cameraTeam(true)
+        name.isInvisible(true)
+        name.updateName()
+        name.assertText()
+    }
+
+    fun `same team and invisible but invisible to mates`() {
+        val name = create(RemotePlayerEntity)
+        name.team(invisibles = false)
+        name.cameraTeam(true)
+        name.isInvisible(true)
+        name.updateName()
+        name.assertEmpty()
+    }
+
+    // TODO: item frame
     // TODO: profile
     // TODO: render distance, sneaking
 }

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
@@ -126,7 +127,7 @@ open class BillboardTextFeature(
     }
 
     companion object {
-        val PROPERTIES = TextRenderProperties(allowNewLine = false)
+        val PROPERTIES = TextRenderProperties(allowNewLine = false, shadow = false, charSpacing = CharSpacing(top = 1.0f, bottom = 1.0f))
         val MAX_SIZE = Vec2(300.0f, PROPERTIES.lineHeight)
         const val DEFAULT_OFFSET = 0.25f
         const val RENDER_DISTANCE = 48

@@ -38,6 +38,7 @@ class EntityScoreFeatureTest {
     private fun createScore(): EntityScoreFeature {
         val renderer = create().create(RemotePlayerEntity).unsafeCast<PlayerRenderer<*>>()
         renderer::score.forceSet(null) // remove
+        renderer.name.text = TextComponent("not empty")
 
         return EntityScoreFeature(renderer)
     }
@@ -83,7 +84,7 @@ class EntityScoreFeatureTest {
         score.setScore()
         score.updateScore()
         score.updateNameOffset()
-        assertEquals(score.renderer.name.offset, BillboardTextFeature.DEFAULT_OFFSET + 0.24f)
+        assertEquals(score.renderer.name.offset, BillboardTextFeature.DEFAULT_OFFSET + 0.22f)
     }
 
     fun `profile disabled`() {
@@ -100,6 +101,4 @@ class EntityScoreFeatureTest {
         score.updateScore()
         assertEquals(score.text, BaseComponent("1", " ", TextComponent("Score").color(ChatColors.LIGHT_PURPLE)))
     }
-
-    // TODO: teams, invisibility
 }
