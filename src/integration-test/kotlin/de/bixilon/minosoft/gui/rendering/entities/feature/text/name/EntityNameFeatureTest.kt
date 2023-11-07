@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.entities.entities.monster.Zombie
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillbaordTextTestUtil.assertEmpty
@@ -46,7 +47,7 @@ class EntityNameFeatureTest {
     }
 
     private fun EntityNameFeature.customName(name: Any?) {
-        renderer.entity.data[Entity.CUSTOM_NAME_DATA] = name
+        renderer.entity.data[Entity.CUSTOM_NAME_DATA] = ChatComponent.of(name)
     }
 
     private fun EntityNameFeature.isNameVisible(visible: Boolean) {
@@ -89,9 +90,10 @@ class EntityNameFeatureTest {
     fun `correct animal name`() {
         val name = create(Pig)
         val text = TextComponent("Pepper:")
+        name.isNameVisible(true)
         name.customName(text)
         name.updateName()
-        assertSame(name.text, text) // TODO: verify visibility
+        assertSame(name.text, text)
     }
 
     fun `animal with custom name visible`() {
@@ -124,7 +126,7 @@ class EntityNameFeatureTest {
         name.customName("Pepper")
         name.setTargeted(distance = 10.0)
         name.updateName()
-        name.assertText()
+        name.assertEmpty()
     }
 
     fun `remote player entity`() {
@@ -241,8 +243,18 @@ class EntityNameFeatureTest {
         name.assertEmpty()
     }
 
+    fun `profile disabled`() {
+        val name = create(Pig)
+        name.renderer.renderer.profile.features.name.enabled = false
+        name.customName("Pepper")
+        name.isNameVisible(true)
+        name.updateName()
+        name.assertEmpty()
+    }
+
     // TODO: targeted mob, invisible zombie
     // TODO: mob, armor stand, player (local/remote), pig, non living (boat?)
     // TODO: isInvisible, teams (with team nametag visibility),
     // TODO: profile
+    // TODO: render distance, sneaking
 }

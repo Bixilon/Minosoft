@@ -31,10 +31,14 @@ class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(ren
         this.delta += delta
         if (this.delta >= UPDATE_INTERVAL) {
             updateScore()
-            renderer.name.offset = if (this.text != null) NAME_OFFSET else DEFAULT_OFFSET
+            updateNameOffset()
             this.delta = 0.0f
         }
         super.update(millis, delta)
+    }
+
+    private fun updateNameOffset() {
+        renderer.name.offset = if (this.text != null) NAME_OFFSET else DEFAULT_OFFSET
     }
 
     private fun updateScore() {

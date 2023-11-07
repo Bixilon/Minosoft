@@ -16,14 +16,24 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text.name
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
+import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
+import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
+import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillbaordTextTestUtil.assertEmpty
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillbaordTextTestUtil.assertText
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
+import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["entities", "rendering"])
 class EntityScoreFeatureTest {
     private val updateScore = EntityScoreFeature::class.java.getDeclaredMethod("updateScore").apply { isAccessible = true }
+    private val updateNameOffset = EntityScoreFeature::class.java.getDeclaredMethod("updateNameOffset").apply { isAccessible = true }
 
     private fun createScore(): EntityScoreFeature {
         val renderer = create().create(RemotePlayerEntity).unsafeCast<PlayerRenderer<*>>()
@@ -36,12 +46,61 @@ class EntityScoreFeatureTest {
         updateScore.invoke(this)
     }
 
+    private fun EntityScoreFeature.updateNameOffset() {
+        updateNameOffset.invoke(this)
+    }
+
+    private fun EntityScoreFeature.setScore() {
+        val renderer = this.renderer.unsafeCast<PlayerRenderer<*>>()
+        val objective = ScoreboardObjective("name", TextComponent("Score").color(ChatColors.LIGHT_PURPLE))
+        renderer.renderer.connection.scoreboard.positions[ScoreboardPositions.BELOW_NAME] = objective
+        objective.scores[renderer.entity.additional.name] = ScoreboardScore("name", objective, null, 1)
+        renderer.renderer.features.score.update()
+    }
+
     fun `player without score`() {
         val score = createScore()
         score.updateScore()
         score.assertEmpty()
     }
 
+    fun `player with score`() {
+        val score = createScore()
+        score.setScore()
+        score.updateScore()
+        score.assertText()
+    }
 
-    // TODO: teams, invisibility, score, profile, correct text
+    fun `name offset without score`() {
+        val score = createScore()
+        score.setScore()
+        score.updateScore()
+        score.updateNameOffset()
+        assertEquals(score.renderer.name.offset, BillboardTextFeature.DEFAULT_OFFSET)
+    }
+
+    fun `name offset with score`() {
+        val score = createScore()
+        score.setScore()
+        score.updateScore()
+        score.updateNameOffset()
+        assertEquals(score.renderer.name.offset, BillboardTextFeature.DEFAULT_OFFSET + 0.24f)
+    }
+
+    fun `profile disabled`() {
+        val score = createScore()
+        score.renderer.renderer.profile.features.score.enabled = false
+        score.setScore()
+        score.updateScore()
+        score.assertEmpty()
+    }
+
+    fun `correct text`() {
+        val score = createScore()
+        score.setScore()
+        score.updateScore()
+        assertEquals(score.text, BaseComponent("1", " ", TextComponent("Score").color(ChatColors.LIGHT_PURPLE)))
+    }
+
+    // TODO: teams, invisibility
 }

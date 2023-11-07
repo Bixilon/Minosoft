@@ -23,6 +23,6 @@ object BillbaordTextTestUtil {
     fun BillboardTextFeature.assertEmpty() {
         val text = this.text ?: return
         if (text.length == 0) return
-        throw AssertionError("Text is empty but should not be!")
+        throw AssertionError("Text is not empty but should be!")
     }
 }
