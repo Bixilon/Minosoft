@@ -52,7 +52,11 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
 
     private fun Entity.getName(invisible: Boolean): ChatComponent? {
         if (invisible) return null
-        if (this.isNameVisible) return name
+        if (this.isNameVisible) {
+            var name = this.name
+            if (name == null && this is LivingEntity) name = connection.language.translate(type.translationKey) // TODO: Is that correct?
+            return name
+        }
         if (!isTargeted()) return null
         return name
     }

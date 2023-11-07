@@ -47,7 +47,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
 
 
     override val canRaycast: Boolean get() = super.canRaycast && health > 0.0
-    override val name: ChatComponent? get() = super.name ?: connection.language.translate(type.translationKey)
+    override val name: ChatComponent? get() = super.name
 
     private fun getLivingEntityFlag(bitMask: Int): Boolean {
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
