@@ -1,0 +1,104 @@
+{
+  "elements": {
+    "body": {
+      "from": [-5, 0, 6],
+      "to": [5, 16, 14],
+      "texture": "minecraft:entity/pig/pig",
+      "uv": [28, 8],
+      "rotation": {
+        "value": [-90, 0, 0],
+        "origin": [0, 14, 6]
+      },
+      "faces": "all"
+    },
+    "saddle": {
+      "from": [-5, 0, 6],
+      "to": [5, 16, 14],
+      "texture": "minecraft:entity/pig/pig_saddle",
+      "uv": [28, 8],
+      "inflate": 1.0,
+      "rotation": {
+        "value": [-90, 0, 0],
+        "origin": [0, 14, 6]
+      },
+      "faces": ["west", "east", "north"]
+    },
+    "head": {
+      "from": [-4, 8, 6],
+      "to": [4, 16, 14],
+      "uv": [0, 0],
+      "texture": "minecraft:entity/pig/pig",
+      "faces": "all",
+      "transform": "head",
+      "children": {
+        "nose": {
+          "from": [-2, 9, 14],
+          "to": [2, 12, 15],
+          "uv": [16, 16],
+          "faces": "-north"
+        }
+      }
+    },
+    "front_right": {
+      "offset": [-3, 0, 5],
+      "from": [-2, 0, -2],
+      "to": [2, 6, 2],
+      "uv": [0, 16],
+      "texture": "minecraft:entity/pig/pig",
+      "faces": "-up",
+      "transform": "front_right"
+    },
+    "front_left": {
+      "offset": [3, 0, 5],
+      "from": [-2, 0, -2],
+      "to": [2, 6, 2],
+      "uv": [0, 16],
+      "texture": "minecraft:entity/pig/pig",
+      "faces": "-up",
+      "transform": "front_left"
+    },
+    "hind_left": {
+      "offset": [3, 0, -7],
+      "from": [-2, 0, -2],
+      "to": [2, 6, 2],
+      "uv": [0, 16],
+      "texture": "minecraft:entity/pig/pig",
+      "faces": "all",
+      "transform": "hind_left"
+    },
+    "hind_right": {
+      "offset": [-3, 0, -7],
+      "from": [-2, 0, -2],
+      "to": [2, 6, 2],
+      "uv": [0, 16],
+      "texture": "minecraft:entity/pig/pig",
+      "faces": "all",
+      "transform": "hind_right"
+    }
+  },
+  "transforms": {
+    "head": {
+      "pivot": [0, 8, 6]
+    },
+    "hind_left": {
+      "pivot": [3, 0, -7]
+    },
+    "hind_right": {
+      "pivot": [-3, 0, -7]
+    },
+    "front_left": {
+      "pivot": [3, 0, 5]
+    },
+    "front_right": {
+      "pivot": [-3, 0, 5]
+    }
+  },
+  "textures": {
+    "minecraft:entity/pig/pig": {
+      "resolution": [64, 32]
+    },
+    "minecraft:entity/pig/pig_saddle": {
+      "resolution": [64, 32]
+    }
+  }
+}

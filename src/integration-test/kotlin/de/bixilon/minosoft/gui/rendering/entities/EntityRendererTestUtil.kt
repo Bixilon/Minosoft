@@ -38,6 +38,7 @@ import de.bixilon.minosoft.gui.rendering.entities.factory.DefaultEntityModels
 import de.bixilon.minosoft.gui.rendering.entities.feature.register.EntityRenderFeatures
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.light.RenderLight
+import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.shader.ShaderManager
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
@@ -61,6 +62,7 @@ object EntityRendererTestUtil {
         context::camera.forceSet(Camera(context))
         context::light.forceSet(RenderLight(context))
         context::skeletal.forceSet(SkeletalManager(context))
+        context::models.forceSet(ModelLoader(context))
 
 
         return context
