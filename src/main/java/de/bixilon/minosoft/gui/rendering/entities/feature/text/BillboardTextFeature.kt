@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -55,10 +56,9 @@ open class BillboardTextFeature(
         set(value) {
             if (field == value) return
             field = value
-            unload() // TODO: just update matrix
         }
 
-    override val layer get() = EntityLayer.TranslucentEntityLayer
+    override val layer get() = EntityLayer.Translucent
 
     override fun update(millis: Long, delta: Float) {
         if (!super.enabled) return unload()
@@ -84,9 +84,11 @@ open class BillboardTextFeature(
     }
 
     private fun updateMatrix() {
+        // TODO: update matrix only on demand (and maybe do the camera rotation somewhere else and cached)
         val width = this.info?.size?.x ?: return
         val mat = renderer.renderer.context.camera.view.view.rotation
-        val matrix = Mat4()
+        this.matrix.reset()
+        this.matrix
             .translateYAssign(renderer.entity.dimensions.y + offset)
             .rotateYassign((EntityRotation.HALF_CIRCLE_DEGREE - mat.yaw).rad)
             .rotateXassign((180.0f - mat.pitch).rad)

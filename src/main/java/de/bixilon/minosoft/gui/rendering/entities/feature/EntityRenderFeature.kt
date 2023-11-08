@@ -23,7 +23,7 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable
     open val priority: Int get() = 0
     val sort = this::class.java.hashCode()
 
-    open val layer: EntityLayer get() = EntityLayer.OpaqueEntityLayer
+    open val layer: EntityLayer get() = EntityLayer.Opaque
 
     open fun updateVisibility(occluded: Boolean) {
         this.visible = !occluded
@@ -37,7 +37,7 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable
 
     open fun compareByDistance(other: EntityRenderFeature): Int {
         val compared = renderer.distance.compareTo(other.renderer.distance)
-        if (layer === EntityLayer.TranslucentEntityLayer) return -compared // translucent is sorted the exact other way
+        if (layer === EntityLayer.Translucent) return -compared // translucent is sorted the exact other way
         return compared
     }
 

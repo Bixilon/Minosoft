@@ -53,6 +53,10 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
         }
     }
 
+    fun clear() {
+        features.clear()
+    }
+
 
     override fun iterator(): Iterator<EntityRenderFeature> {
         return features.iterator()

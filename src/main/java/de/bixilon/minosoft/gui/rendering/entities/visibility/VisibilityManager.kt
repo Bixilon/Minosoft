@@ -75,8 +75,8 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
     }
 
     operator fun get(layer: EntityLayer) = when (layer) {
-        EntityLayer.OpaqueEntityLayer -> opaque
-        EntityLayer.TranslucentEntityLayer -> translucent
+        EntityLayer.Opaque -> opaque
+        EntityLayer.Translucent -> translucent
         else -> throw IllegalStateException("Unknown entity layer: $layer")
     }
 }

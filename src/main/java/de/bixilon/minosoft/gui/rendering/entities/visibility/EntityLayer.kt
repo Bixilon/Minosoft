@@ -16,17 +16,16 @@ package de.bixilon.minosoft.gui.rendering.entities.visibility
 import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
-import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 
 interface EntityLayer : RenderLayer {
 
-    object OpaqueEntityLayer : EntityLayer {
-        override val settings = RenderSettings(faceCulling = false)
+    object Opaque : EntityLayer {
+        override val settings = OpaqueLayer.settings.copy(faceCulling = false)
         override val priority: Int get() = OpaqueLayer.priority + 1 // entities are mostly more expensive to render, let the gpu clip all fragments first
     }
 
-    object TranslucentEntityLayer : EntityLayer {
-        override val settings = RenderSettings(faceCulling = false)
+    object Translucent : EntityLayer {
+        override val settings = TranslucentLayer.settings.copy(faceCulling = false)
         override val priority: Int get() = TranslucentLayer.priority - 1 // otherwise not visible through water, etc
     }
 }
