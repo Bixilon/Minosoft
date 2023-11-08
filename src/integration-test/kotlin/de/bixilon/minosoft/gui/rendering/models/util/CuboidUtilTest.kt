@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.util
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
@@ -23,17 +24,19 @@ import org.testng.annotations.Test
 @Test(groups = ["rendering", "models"])
 class CuboidUtilTest {
 
+    private fun uv(u1: Int, v1: Int, u2: Int, v2: Int) = FaceUV(Vec2(u1, v1), Vec2(u2, v2))
+
     fun `simple uv`() {
         val from = Vec3(-7, 0, -7)
         val to = Vec3(7, 10, 7)
         val offset = Vec2i(0, 19)
 
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.DOWN), FaceUV(floatArrayOf(14f, 19f, 28f, 33f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.UP), FaceUV(floatArrayOf(28f, 33f, 42f, 19f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.NORTH), FaceUV(floatArrayOf(42f, 33f, 56f, 43f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.SOUTH), FaceUV(floatArrayOf(14f, 33f, 28f, 43f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.WEST), FaceUV(floatArrayOf(28f, 33f, 42f, 43f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.EAST), FaceUV(floatArrayOf(0f, 33f, 14f, 43f)))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.DOWN), uv(28, 33, 42, 19))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.UP), uv(14, 19, 28, 33))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.NORTH), uv(42, 33, 56, 43))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.SOUTH), uv(14, 33, 28, 43))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.EAST), uv(28, 33, 42, 43))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.WEST), uv(0, 33, 14, 43))
     }
 
     fun `not same size uv`() {
@@ -41,11 +44,25 @@ class CuboidUtilTest {
         val to = Vec3(1, 4, 1)
         val offset = Vec2i(0, 0)
 
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.DOWN), FaceUV(floatArrayOf(1f, 0f, 3f, 1f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.UP), FaceUV(floatArrayOf(3f, 1f, 5f, 0f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.NORTH), FaceUV(floatArrayOf(4f, 1f, 6f, 5f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.SOUTH), FaceUV(floatArrayOf(1f, 1f, 3f, 5f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.WEST), FaceUV(floatArrayOf(3f, 1f, 4f, 5f)))
-        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.EAST), FaceUV(floatArrayOf(0f, 1f, 1f, 5f)))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.DOWN), uv(3, 1, 5, 0))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.UP), uv(1, 0, 3, 1))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.NORTH), uv(4, 1, 6, 5))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.SOUTH), uv(1, 1, 3, 5))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.EAST), uv(3, 1, 4, 5))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.WEST), uv(0, 1, 1, 5))
+    }
+
+    fun `pig head`() {
+        val from = Vec3(-4, 8, 6)
+        val to = Vec3(4, 16, 14)
+        val offset = Vec2i(0, 0)
+
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.DOWN), uv(16, 8, 24, 0))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.UP), uv(8, 0, 16, 8))
+
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.WEST), uv(0, 8, 8, 16))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.SOUTH), uv(8, 8, 16, 16))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.EAST), uv(16, 8, 24, 16))
+        assertEquals(CuboidUtil.cubeUV(offset, from, to, Directions.NORTH), uv(24, 8, 32, 16))
     }
 }

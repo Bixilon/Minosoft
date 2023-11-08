@@ -49,14 +49,14 @@ object CuboidUtil {
 
         when (direction) {
             Directions.DOWN -> {
-                uv.x += cube.z
-            }
-
-            Directions.UP -> {
                 uv.x += cube.z + cube.x
                 // flip y coordinate
                 uv.y += cube.z
                 size.y = -cube.z
+            }
+
+            Directions.UP -> {
+                uv.x += cube.z
             }
 
             Directions.NORTH -> {
@@ -69,12 +69,12 @@ object CuboidUtil {
                 uv.y += cube.z
             }
 
-            Directions.WEST -> {
+            Directions.EAST -> {
                 uv.x += cube.z + cube.x
                 uv.y += cube.z
             }
 
-            Directions.EAST -> {
+            Directions.WEST -> {
                 uv.y += cube.z
             }
         }

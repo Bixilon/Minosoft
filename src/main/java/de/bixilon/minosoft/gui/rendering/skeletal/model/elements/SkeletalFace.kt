@@ -39,10 +39,9 @@ data class SkeletalFace(
 
         val uv = this.uv ?: CuboidUtil.cubeUV(element.uv!!, element.from, element.to, direction)
 
-        // TODO: why flip on x?
         val uvData = FaceUV(
-            texture.texture.transformUV(Vec2(uv.end.x, uv.start.y) / texture.properties.resolution),
             texture.texture.transformUV(Vec2(uv.start.x, uv.end.y) / texture.properties.resolution),
+            texture.texture.transformUV(Vec2(uv.end.x, uv.start.y) / texture.properties.resolution),
         ).toArray(direction, 0)
 
 
