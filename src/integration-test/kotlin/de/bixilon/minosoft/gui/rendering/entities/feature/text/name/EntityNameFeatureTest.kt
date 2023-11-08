@@ -34,6 +34,7 @@ import de.bixilon.minosoft.data.scoreboard.team.TeamVisibility
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
+import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillbaordTextTestUtil.assertEmpty
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillbaordTextTestUtil.assertText
 import org.testng.Assert.assertNotEquals
@@ -60,12 +61,7 @@ class EntityNameFeatureTest {
     }
 
     private fun EntityNameFeature.isInvisible(invisible: Boolean) {
-        var flags = renderer.entity.data.get(Entity.FLAGS_DATA, 0x00)
-        flags = flags and 0x20.inv()
-        if (invisible) {
-            flags = flags or 0x20
-        }
-        renderer.entity.data[Entity.FLAGS_DATA] = flags
+        renderer.entity.isInvisible(invisible)
     }
 
     private fun EntityNameFeature.cameraTeam(same: Boolean) {

@@ -94,4 +94,14 @@ object EntityRendererTestUtil {
         this.queue.work()
         return entity.renderer!!.unsafeCast()
     }
+
+
+    fun Entity.isInvisible(invisible: Boolean) {
+        var flags = data.get(Entity.FLAGS_DATA, 0x00)
+        flags = flags and 0x20.inv()
+        if (invisible) {
+            flags = flags or 0x20
+        }
+        data[Entity.FLAGS_DATA] = flags
+    }
 }
