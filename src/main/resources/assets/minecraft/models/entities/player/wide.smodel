@@ -6,7 +6,6 @@
       "to": [4, 12, 2],
       "texture": "minecraft:skin",
       "uv": [16, 16],
-      "rotation": [180, 0, 0],
       "faces": "all",
       "children": {
         "jacket": {
@@ -23,7 +22,6 @@
       "from": [-4, 0, -4],
       "to": [4, 8, 4],
       "uv": [0, 0],
-      "rotation": [180, 0, 0],
       "texture": "minecraft:skin",
       "transform": "head",
       "faces": "all",
@@ -40,8 +38,7 @@
     "left_leg": {
       "from": [-4, 0, -2],
       "to": [0, 12, 2],
-      "uv": [16, 48],
-      "rotation": [180, 0, 0],
+      "uv": [0, 16],
       "texture": "minecraft:skin",
       "transform": "left_leg",
       "faces": "all",
@@ -50,7 +47,7 @@
           "from": [-4, 0, -2],
           "to": [0, 12, 2],
           "inflate": 0.25,
-          "uv": [0, 48],
+          "uv": [0, 32],
           "faces": "all"
         }
       }
@@ -58,8 +55,7 @@
     "right_leg": {
       "from": [0, 0, -2],
       "to": [4, 12, 2],
-      "uv": [0, 16],
-      "rotation": [180, 0, 0],
+      "uv": [16, 48],
       "texture": "minecraft:skin",
       "transform": "right_leg",
       "faces": "all",
@@ -68,7 +64,7 @@
           "from": [0, 0, -2],
           "to": [4, 12, 2],
           "inflate": 0.25,
-          "uv": [0, 32],
+          "uv": [0, 48],
           "faces": "all"
         }
       }
@@ -76,8 +72,7 @@
     "left_arm": {
       "from": [-8, 12, -2],
       "to": [-4, 24, 2],
-      "uv": [32, 48],
-      "rotation": [180, 0, 0],
+      "uv": [40, 16],
       "texture": "minecraft:skin",
       "transform": "left_arm",
       "faces": "all",
@@ -86,7 +81,7 @@
           "from": [-8, 12, -2],
           "to": [-4, 24, 2],
           "inflate": 0.25,
-          "uv": [48, 48],
+          "uv": [40, 32],
           "faces": "all"
         }
       }
@@ -94,8 +89,7 @@
     "right_arm": {
       "from": [4, 12, -2],
       "to": [8, 24, 2],
-      "uv": [40, 16],
-      "rotation": [180, 0, 0],
+      "uv": [32, 48],
       "texture": "minecraft:skin",
       "transform": "right_arm",
       "faces": "all",
@@ -104,7 +98,7 @@
           "from": [4, 12, -2],
           "to": [8, 24, 2],
           "inflate": 0.25,
-          "uv": [40, 32],
+          "uv": [48, 48],
           "faces": "all"
         }
       }

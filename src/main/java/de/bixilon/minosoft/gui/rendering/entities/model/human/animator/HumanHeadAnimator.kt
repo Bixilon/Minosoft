@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
-class HeadPosition(
+class HumanHeadAnimator(
     val model: HumanModel<*>,
     val transform: TransformInstance,
 ) {
@@ -31,7 +31,7 @@ class HeadPosition(
         val info = model.renderer.info
 
         val pitch = info.rotation.pitch
-        this.rotation.x = -pitch.rad
+        this.rotation.x = pitch.rad
         if (model.renderer.entity.isFlipped()) {
             this.rotation.x = -this.rotation.x // TODO: not 100% correct
         }

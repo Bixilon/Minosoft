@@ -15,14 +15,14 @@ package de.bixilon.minosoft.gui.rendering.entities.model.human
 
 import de.bixilon.minosoft.gui.rendering.entities.feature.SkeletalFeature
 import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.ArmAnimator
-import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.HeadPosition
+import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.HumanHeadAnimator
 import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.LegAnimator
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.util.EntitySpeed
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 
 abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkeletalModel) : SkeletalFeature(renderer, model) {
-    val head = instance.transform.children["head"]?.let { HeadPosition(this, it) }
+    val head = instance.transform.children["head"]?.let { HumanHeadAnimator(this, it) }
     val leg = LegAnimator(this, instance.transform.children["left_leg"]!!, instance.transform.children["right_leg"]!!)
     val arm = ArmAnimator(this, instance.transform.children["left_arm"]!!, instance.transform.children["right_arm"]!!)
 

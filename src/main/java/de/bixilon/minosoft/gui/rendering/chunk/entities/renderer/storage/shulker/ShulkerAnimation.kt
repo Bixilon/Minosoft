@@ -46,7 +46,7 @@ class ShulkerAnimation(
         const val NAME = "shulker"
 
         private val ROTATION_CLOSED = Vec3(0.0f, 0.0f, 0.0f).rad
-        private val ROTATION_OPENED = Vec3(0.0f, 270.0f, 0.0f).rad
+        private val ROTATION_OPENED = Vec3(0.0f, -270.0f, 0.0f).rad
 
         private val TRANSLATION_CLOSED = Vec3(0.0f, 0.0f, 0.0f)
         private val TRANSLATION_OPENED = Vec3(0.0f, 0.5f, 0.0f)

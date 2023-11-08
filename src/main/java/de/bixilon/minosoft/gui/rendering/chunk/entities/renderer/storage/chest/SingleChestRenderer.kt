@@ -36,12 +36,14 @@ class SingleChestRenderer(
 ) : ChestRenderer(state, model.createInstance(context), position, light) {
 
     companion object {
-        val SINGLE_MODEL = minecraft("block/entities/chest/single").sModel()
+        val MODEL = minecraft("block/entities/chest/single").sModel()
+        val MODEL_5 = minecraft("block/entities/chest/single_5").sModel()
         private val named = minecraft("chest")
 
         fun register(loader: ModelLoader, name: ResourceLocation, texture: ResourceLocation) {
             val texture = loader.context.textures.staticTextures.createTexture(texture)
-            loader.skeletal.register(name, SINGLE_MODEL, mapOf(named to texture))
+            val model = if (loader.packFormat < 5) MODEL else MODEL_5
+            loader.skeletal.register(name, model, mapOf(named to texture))
         }
     }
 

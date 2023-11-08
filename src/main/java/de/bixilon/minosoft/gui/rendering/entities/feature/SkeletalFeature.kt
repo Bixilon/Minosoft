@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.entities.feature
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
@@ -58,7 +57,7 @@ open class SkeletalFeature(
     }
 
     protected open fun updateInstance() {
-        val rotation = Vec3(0.0f, (EntityRotation.HALF_CIRCLE_DEGREE - yaw).rad, 0.0f)
+        val rotation = Vec3(0.0f, -yaw.rad, 0.0f)
         instance.update(rotation, renderer.matrix)
     }
 
