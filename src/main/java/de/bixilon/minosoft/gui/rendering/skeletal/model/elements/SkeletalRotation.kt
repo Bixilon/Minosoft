@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 data class SkeletalRotation(
@@ -22,15 +21,6 @@ data class SkeletalRotation(
     val origin: Vec3? = null,
     val rescale: Boolean = false,
 ) {
-
-    fun apply(offset: Vec3, from: Vec3, to: Vec3): SkeletalRotation {
-        var origin = this.origin
-        if (origin == null) {
-            origin = ((to + from) / 2.0f / BLOCK_SIZE) + offset
-        }
-
-        return SkeletalRotation(value, origin, rescale)
-    }
 
     companion object {
         val EMPTY = SkeletalRotation(Vec3.EMPTY, Vec3.EMPTY, false)

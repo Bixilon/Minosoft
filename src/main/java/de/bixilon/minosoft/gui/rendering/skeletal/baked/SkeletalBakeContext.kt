@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
@@ -28,7 +27,7 @@ data class SkeletalBakeContext(
     val inflate: Float = 0.0f,
     val texture: ResourceLocation? = null,
     val transform: BakedSkeletalTransform,
-    val rotations: List<SkeletalRotation> = emptyList(),
+    val rotation: SkeletalRotation? = null,
 
     val textures: Map<ResourceLocation, SkeletalTextureInstance>,
     val consumer: AbstractSkeletalMesh,
@@ -38,9 +37,9 @@ data class SkeletalBakeContext(
         val offset = this.offset + (element.offset / BLOCK_SIZE)
         val inflate = this.inflate + element.inflate
         val texture = element.texture ?: texture
-        val rotations = if (element.rotation != null) this.rotations.extend(element.rotation.apply(offset, element.from, element.to)) else this.rotations
+        val rotation = element.rotation ?: this.rotation
         val transform = element.transform?.let { transform.children[element.transform] ?: throw IllegalArgumentException("Can not find transform ${element.transform}") } ?: transform
 
-        return copy(offset = offset, inflate = inflate, texture = texture, transform = transform, rotations = rotations)
+        return copy(offset = offset, inflate = inflate, texture = texture, transform = transform, rotation = rotation)
     }
 }

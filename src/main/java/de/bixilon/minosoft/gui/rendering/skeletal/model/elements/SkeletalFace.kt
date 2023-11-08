@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
-import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
@@ -22,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Compa
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 
 data class SkeletalFace(
@@ -47,10 +47,10 @@ data class SkeletalFace(
 
         val normal = Vec3(direction.vector)
 
-        for (rotation in context.rotations) {
-            val origin = rotation.origin!!
+        if (context.rotation != null) {
+            val origin = context.rotation.origin ?: ((to + from) / 2.0f)
 
-            val rad = -GLM.radians(rotation.value)
+            val rad = -context.rotation.value.rad
             val vec = Vec3(0, positions)
             normal.rotateAssign(rad)
 
