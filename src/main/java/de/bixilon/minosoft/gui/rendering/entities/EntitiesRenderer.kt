@@ -18,16 +18,15 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.register.EntityRenderFeatures
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.VisibilityManager
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
-import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
-import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class EntitiesRenderer(
@@ -47,7 +46,8 @@ class EntitiesRenderer(
     private var reset = false
 
     override fun registerLayers() {
-        layers.register(EntityLayer, null, this::draw) { visibility.size <= 0 }
+        layers.register(EntityLayer.OpaqueEntityLayer, null, { visibility.opaque.draw() }) { visibility.opaque.size <= 0 }
+        layers.register(EntityLayer.TranslucentEntityLayer, null, { visibility.translucent.draw() }) { visibility.opaque.size <= 0 }
     }
 
     override fun prePrepareDraw() {
@@ -83,17 +83,11 @@ class EntitiesRenderer(
         features.postInit()
     }
 
-    private fun draw() {
-        for (feature in visibility) {
+    private fun ArrayList<EntityRenderFeature>.draw() {
+        for (feature in this) {
             feature.draw()
         }
     }
-
-    object EntityLayer : RenderLayer {
-        override val settings = RenderSettings(faceCulling = false)
-        override val priority: Int get() = TranslucentLayer.priority - 1
-    }
-
 
     companion object : RendererBuilder<EntitiesRenderer> {
 

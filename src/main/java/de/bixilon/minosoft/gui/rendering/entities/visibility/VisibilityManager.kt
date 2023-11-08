@@ -21,13 +21,14 @@ import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import java.util.concurrent.atomic.AtomicInteger
 
-class VisibilityManager(val renderer: EntitiesRenderer) : Iterable<EntityRenderFeature> {
+class VisibilityManager(val renderer: EntitiesRenderer) {
     private var update = false
     var size: Int = 0
         private set
 
     private val count = AtomicInteger()
-    private val visible: ArrayList<EntityRenderFeature> = ArrayList(1000)
+    val opaque: ArrayList<EntityRenderFeature> = ArrayList(1000)
+    val translucent: ArrayList<EntityRenderFeature> = ArrayList(1000)
     private val lock = SimpleLock()
     private val graph = renderer.context.camera.visibilityGraph
     private val frustum = renderer.context.camera.matrixHandler.frustum
@@ -37,7 +38,8 @@ class VisibilityManager(val renderer: EntitiesRenderer) : Iterable<EntityRenderF
     }
 
     fun reset() {
-        this.visible.clear()
+        opaque.clear()
+        translucent.clear()
         count.set(0)
     }
 
@@ -59,18 +61,22 @@ class VisibilityManager(val renderer: EntitiesRenderer) : Iterable<EntityRenderF
         lock.lock()
         for (feature in renderer.features) {
             if (!feature.enabled || !feature.visible) continue
-            this.visible += feature
+            feature.collect(this)
         }
         lock.unlock()
     }
 
     fun finish() {
-        this.visible.sort() // TODO: Optimize it (pre create array, just work with array?)
+        // TODO: Optimize it (pre create array, just work with array?)
+        this.opaque.sort()
+        this.translucent.sort()
         this.update = false
         size = count.get()
     }
 
-    override fun iterator(): Iterator<EntityRenderFeature> {
-        return this.visible.iterator()
+    operator fun get(layer: EntityLayer) = when (layer) {
+        EntityLayer.OpaqueEntityLayer -> opaque
+        EntityLayer.TranslucentEntityLayer -> translucent
+        else -> throw IllegalStateException("Unknown entity layer: $layer")
     }
 }

@@ -14,12 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
+import de.bixilon.minosoft.gui.rendering.entities.visibility.VisibilityManager
 
 abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable<EntityRenderFeature> {
     open var enabled = true
     var visible = true
     open val priority: Int get() = 0
     val sort = this::class.java.hashCode()
+
+    open val layer: EntityLayer get() = EntityLayer.OpaqueEntityLayer
 
     open fun updateVisibility(occluded: Boolean) {
         this.visible = !occluded
@@ -32,7 +36,9 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable
     abstract fun draw()
 
     open fun compareByDistance(other: EntityRenderFeature): Int {
-        return renderer.distance.compareTo(other.renderer.distance)
+        val compared = renderer.distance.compareTo(other.renderer.distance)
+        if (layer === EntityLayer.TranslucentEntityLayer) return -compared // translucent is sorted the exact other way
+        return compared
     }
 
     override fun compareTo(other: EntityRenderFeature): Int {
@@ -42,5 +48,9 @@ abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable
         if (compare != 0) return compare
 
         return compareByDistance(other)
+    }
+
+    open fun collect(visibility: VisibilityManager) {
+        visibility[layer] += this
     }
 }

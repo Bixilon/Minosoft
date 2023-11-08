@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.CharSpacing
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
@@ -56,6 +57,8 @@ open class BillboardTextFeature(
             field = value
             unload() // TODO: just update matrix
         }
+
+    override val layer get() = EntityLayer.TranslucentEntityLayer
 
     override fun update(millis: Long, delta: Float) {
         if (!super.enabled) return unload()
@@ -120,10 +123,6 @@ open class BillboardTextFeature(
         this.mesh = null
         this.info = null
         renderer.renderer.queue += { mesh.unload() }
-    }
-
-    override fun compareByDistance(other: EntityRenderFeature): Int {
-        return -super.compareByDistance(other)
     }
 
     companion object {
