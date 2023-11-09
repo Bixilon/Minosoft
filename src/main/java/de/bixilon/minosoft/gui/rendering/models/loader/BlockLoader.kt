@@ -18,7 +18,7 @@ import de.bixilon.kutil.collections.iterator.async.AsyncIterator.Companion.async
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -94,7 +94,7 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun fixTexturePath(name: ResourceLocation): ResourceLocation {
-        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, MinecraftAssetsVersion.FLATTENING, "blocks/", "block/"))
+        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, MinecraftPackFormat.FLATTENING, "blocks/", "block/"))
     }
 
     private fun ResourceLocation.blockModel(): ResourceLocation {

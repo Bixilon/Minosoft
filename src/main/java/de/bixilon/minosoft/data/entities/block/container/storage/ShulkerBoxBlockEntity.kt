@@ -14,33 +14,27 @@
 package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.colors.DyeColors
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ShulkerBoxBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.DyedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker.ShulkerBoxRenderer
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection), RenderedBlockEntity<ShulkerBoxRenderer> {
     override var renderer: ShulkerBoxRenderer? = null
 
     override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): ShulkerBoxRenderer? {
-        // TODO: remove that junk code
-        val model: BakedSkeletalModel?
-        val prefix = state.block.identifier.path.removeSuffix("shulker_box")
-        if (prefix.endsWith("_")) {
-            // colored
-            val color = DyeColors[prefix.removeSuffix("_")]
-            model = context.models.skeletal[ShulkerBoxRenderer.NAME_COLOR[color.ordinal]]
-            // TODO: light gray -> silver (<1.13)
-        } else {
-            model = context.models.skeletal[ShulkerBoxRenderer.NAME]
+        if (state.block !is ShulkerBoxBlock) return null
+        val name = when {
+            state.block is DyedBlock -> ShulkerBoxRenderer.NAME_COLOR[state.block.color.ordinal]
+            else -> ShulkerBoxRenderer.NAME
         }
-        if (model == null) return null
+        val model = context.models.skeletal[name] ?: return null
         return ShulkerBoxRenderer(this, context, state, position, model, light)
     }
 

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.profiles.resources.assets
 
-import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion.LATEST_PACK_FORMAT
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.LATEST_PACK_FORMAT
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsType
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate

@@ -32,7 +32,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W32A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W42A
 import de.bixilon.minosoft.protocol.versions.Version
 
-object MinecraftAssetsVersion {
+object MinecraftPackFormat {
     const val FLATTENING = 4
     const val LATEST_PACK_FORMAT = 19
 

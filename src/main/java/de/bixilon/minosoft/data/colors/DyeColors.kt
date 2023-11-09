@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.colors
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.FLATTENING
 
 enum class DyeColors {
     WHITE,
@@ -38,5 +39,11 @@ enum class DyeColors {
     companion object : ValuesEnum<DyeColors> {
         override val VALUES: Array<DyeColors> = values()
         override val NAME_MAP: Map<String, DyeColors> = EnumUtil.getEnumValues(VALUES)
+
+
+        fun DyeColors.name(packFormat: Int) = when {
+            packFormat >= FLATTENING && this == LIGHT_GRAY -> "silver"
+            else -> name.lowercase()
+        }
     }
 }

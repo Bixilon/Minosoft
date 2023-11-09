@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.pow
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
-import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion.packFormat
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.packFormat
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
 import de.bixilon.minosoft.camera.ConnectionCamera

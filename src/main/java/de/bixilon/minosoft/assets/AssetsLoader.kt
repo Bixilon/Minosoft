@@ -17,7 +17,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
-import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion.packFormat
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.packFormat
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsManager
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties

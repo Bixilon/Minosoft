@@ -16,10 +16,12 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulke
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.colors.DyeColors
+import de.bixilon.minosoft.data.colors.DyeColors.Companion.name
 import de.bixilon.minosoft.data.entities.block.container.storage.ShulkerBoxBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties.getFacing
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityRendererRegister
@@ -66,7 +68,6 @@ class ShulkerBoxRenderer(
 
         private val named = minecraft("shulker")
         private val texture = minecraft("entity/shulker/shulker").texture()
-        private val colored = Array(DyeColors.VALUES.size) { minecraft("entity/shulker/shulker_${DyeColors[it].name.lowercase()}").texture() }
 
         private val ROTATIONS = arrayOf(
             Vec3(180, 0, 0).rad,
@@ -78,13 +79,17 @@ class ShulkerBoxRenderer(
         )
 
         override fun register(loader: ModelLoader) {
-            val texture = loader.context.textures.staticTextures.createTexture(texture)
-            loader.skeletal.register(NAME, TEMPLATE, override = mapOf(this.named to texture))
+            load(NAME, texture, loader)
 
             for (color in DyeColors) {
-                val texture = loader.context.textures.staticTextures.createTexture(colored[color.ordinal])
-                loader.skeletal.register(NAME_COLOR[color.ordinal], TEMPLATE, override = mapOf(this.named to texture))
+                val texture = minecraft("entity/shulker/shulker_${color.name(loader.packFormat)}").texture()
+                load(NAME_COLOR[color.ordinal], texture, loader)
             }
+        }
+
+        private fun load(name: ResourceLocation, texture: ResourceLocation, loader: ModelLoader) {
+            val texture = loader.context.textures.staticTextures.createTexture(texture)
+            loader.skeletal.register(name, TEMPLATE, override = mapOf(this.named to texture))
         }
     }
 }
