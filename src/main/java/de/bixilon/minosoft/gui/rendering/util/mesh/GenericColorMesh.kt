@@ -33,6 +33,10 @@ open class GenericColorMesh(context: RenderContext, primitiveType: PrimitiveType
         data.add(color)
     }
 
+    fun addVertex(x: Float, y: Float, z: Float, color: Float) {
+        data.add(x, y, z, color)
+    }
+
     fun addVertex(position: FaceVertexData, offset: Int, color: RGBColor?) {
         data.add(
             position[offset + 0], position[offset + 1], position[offset + 2],

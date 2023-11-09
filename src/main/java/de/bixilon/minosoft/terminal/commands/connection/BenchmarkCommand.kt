@@ -57,9 +57,15 @@ object BenchmarkCommand : ConnectionCommand {
             // TODO: make them move randomly?
         }
 
+        var progress = 0.0f
         connection.ticker += {
-            val time = (millis() % 1000L) / 1000.0f * PIf * 2
-            val delta = Vec3d(sin(time))
+            val time = (millis() % 1000L) / 1000.0f
+            progress += time
+            if (progress > (PIf * 2)) {
+                progress %= (PIf * 2)
+            }
+            val sin = sin(progress)
+            val delta = Vec3d(sin, if (sin > 0) 0.1 else -0.1, -sin)
 
             for (entity in entities) {
                 entity.forceMove(delta)
