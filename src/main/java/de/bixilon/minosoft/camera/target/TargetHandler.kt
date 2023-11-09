@@ -16,6 +16,7 @@ package de.bixilon.minosoft.camera.target
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.camera.ConnectionCamera
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
@@ -30,10 +31,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline
 import de.bixilon.minosoft.data.registries.shapes.voxel.AABBRaycastHit
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
-import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.raycastDistance
 import de.bixilon.minosoft.terminal.RunConfiguration
 
@@ -116,17 +115,23 @@ class TargetHandler(
         var fluid: FluidTarget? = null
 
 
-        for (step in 0..MAX_STEPS) {
-            if (step > 0) position += front * position.raycastDistance(front)// TODO 2 steps if diagonal
+        val blockPosition = BlockPosition()
+        val chunkPosition = ChunkPosition()
 
-            val blockPosition = position.floor
-            val chunkPosition = blockPosition.chunkPosition
+        for (step in 0..MAX_STEPS) {
+            if (step > 0) {
+                val distance = position.raycastDistance(front) // TODO 2 steps if diagonal
+                position.x += front.x * distance; position.y += front.y * distance; position.z += front.z * distance
+            }
+
+            blockPosition.x = position.x.floor;blockPosition.y = position.y.floor;blockPosition.z = position.z.floor
+            chunkPosition.x = blockPosition.x shr 4; chunkPosition.y = blockPosition.z shr 4
             if (chunk == null) {
                 chunk = camera.connection.world.chunks[chunkPosition] ?: break
             } else if (chunk.chunkPosition != chunkPosition) {
                 chunk = chunk.neighbours.trace(chunkPosition - chunk.chunkPosition) ?: break
             }
-            val state = chunk[blockPosition.inChunkPosition] ?: continue
+            val state = chunk[blockPosition.x and 0x0F, blockPosition.y, blockPosition.z and 0x0F] ?: continue
             if (state.block is FluidBlock) {
                 if (fluid == null) {
                     val hit = raycast(origin, front, state, blockPosition)
@@ -137,7 +142,7 @@ class TargetHandler(
                 continue
             }
             val hit = raycast(origin, front, state, blockPosition) ?: continue
-            val entity = chunk.getBlockEntity(blockPosition.inChunkPosition)
+            val entity = chunk.getBlockEntity(blockPosition.x and 0x0F, blockPosition.y, blockPosition.z and 0x0F)
             val target = BlockTarget(origin + front * hit.distance, hit.distance, hit.direction, state, entity, blockPosition, hit.inside)
             return Pair(target, fluid)
         }
