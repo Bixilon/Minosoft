@@ -32,6 +32,7 @@ class ConnectionTicker(private val connection: PlayConnection) {
 
 
     fun init() {
+        addDefault()
         connection::state.observe(this) {
             if (it != PlayConnectionStates.PLAYING) {
                 unregister()
@@ -43,16 +44,7 @@ class ConnectionTicker(private val connection: PlayConnection) {
         }
     }
 
-
-    private fun register() {
-        if (registered) {
-            return
-        }
-        lock.lock()
-        if (registered || connection.state != PlayConnectionStates.PLAYING) {
-            lock.unlock()
-            return
-        }
+    private fun addDefault() {
         tasks += RepeatedTask(INTERVAL, maxDelay = MAX_DELAY) {
             connection.world.entities.tick()
         }
@@ -77,10 +69,23 @@ class ConnectionTicker(private val connection: PlayConnection) {
                 connection.world.time = WorldTime(time + offset, connection.world.time.age + offset)
             }
         }
+    }
+
+
+    private fun register() {
+        if (registered) {
+            return
+        }
+        lock.lock()
+        if (registered || connection.state != PlayConnectionStates.PLAYING) {
+            lock.unlock()
+            return
+        }
 
         for (task in tasks) {
             TaskScheduler += task
         }
+
         registered = true
         lock.unlock()
     }
@@ -94,10 +99,21 @@ class ConnectionTicker(private val connection: PlayConnection) {
         for (task in tasks) {
             TaskScheduler -= task
         }
-        tasks.clear()
         registered = false
         lock.unlock()
     }
+
+    fun register(runnable: Runnable) {
+        lock.lock()
+        val task = RepeatedTask(INTERVAL, maxDelay = MAX_DELAY, runnable = runnable)
+        this.tasks += task
+        if (registered) {
+            TaskScheduler += task
+        }
+        lock.unlock()
+    }
+
+    operator fun plusAssign(runnable: Runnable) = register(runnable)
 
     private companion object {
         const val INTERVAL = ProtocolDefinition.TICK_TIME
