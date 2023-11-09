@@ -121,11 +121,13 @@ class NodeTextInputElement(
     }
 
     fun updateSuggestion(suggestion: Suggestion) {
-        val slash = value.startsWith("/")
-        var value = SuggestionUtil.apply(value.removePrefix("/"), suggestion)
-        if (slash) {
-            value = "/$value" // TODO: dirty hack
+        val prefix = when { // TODO: really dirty dirty hack to not remove the / or . before the command. ChatNode should be responsible for that
+            value.startsWith("/") -> "/"
+            value.startsWith(".") -> "."
+            else -> ""
         }
+        var value = SuggestionUtil.apply(value.removePrefix(prefix), suggestion)
+        value = prefix + value
         _set(value)
         forceApply()
     }
