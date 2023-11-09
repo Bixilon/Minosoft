@@ -36,14 +36,17 @@ class TransformInstance(
         }
     }
 
-    fun pack(buffer: FloatBuffer, parent: Mat4, temp: Mat4) {
-        val temp = parent * value // TODO: memory optimize that again
+    fun pack(buffer: FloatBuffer, parent: Mat4, cache: Array<Mat4>) {
+        val temp = cache[this.id]
+        parent.times(value, temp)
+
         val offset = this.id * Mat4.length
         for (index in 0 until Mat4.length) {
             buffer.put(offset + index, temp.array[index])
         }
+
         for (child in array) {
-            child.pack(buffer, temp, temp)
+            child.pack(buffer, temp, cache)
         }
     }
 

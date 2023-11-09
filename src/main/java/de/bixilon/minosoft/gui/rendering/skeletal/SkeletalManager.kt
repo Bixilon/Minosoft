@@ -24,10 +24,10 @@ import org.lwjgl.system.MemoryUtil.memAllocFloat
 class SkeletalManager(
     val context: RenderContext,
 ) {
+    private val cache: Array<Mat4> = Array(MAX_TRANSFORMS) { Mat4() } // reusing matrices
     val buffer = context.system.createFloatUniformBuffer(memAllocFloat(MAX_TRANSFORMS * Mat4.length))
     val shader = context.system.createShader(minosoft("skeletal/normal")) { SkeletalShader(it, buffer) }
     val lightmapShader = context.system.createShader(minosoft("skeletal/lightmap")) { LightmapSkeletalShader(it, buffer) }
-    private val temp = Mat4()
 
     fun init() {
         buffer.init()
@@ -39,11 +39,11 @@ class SkeletalManager(
     }
 
     fun upload(instance: SkeletalInstance, matrix: Mat4) {
-        instance.transform.pack(buffer.buffer, matrix, temp)
+        instance.transform.pack(buffer.buffer, matrix, cache)
         buffer.upload(0, instance.model.transformCount * Mat4.length)
     }
 
     companion object {
-        const val MAX_TRANSFORMS = 128
+        const val MAX_TRANSFORMS = 64
     }
 }
