@@ -14,9 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.entities.model.animal
 
 import de.bixilon.minosoft.gui.rendering.entities.feature.SkeletalFeature
+import de.bixilon.minosoft.gui.rendering.entities.model.animator.HeadAnimator
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 
 class AnimalModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkeletalModel) : SkeletalFeature(renderer, model) {
-    // TODO: animate head
+    val head = instance.transform["head"]?.let { HeadAnimator(renderer, it) }
+
+    override fun updatePosition() {
+        super.updatePosition()
+        head?.update()
+    }
 }

@@ -46,4 +46,8 @@ class TransformInstance(
             child.pack(buffer, temp, temp)
         }
     }
+
+    operator fun get(name: String): TransformInstance? {
+        return this.children[name]
+    }
 }

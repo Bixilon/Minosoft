@@ -11,28 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
+package de.bixilon.minosoft.gui.rendering.entities.model.animator
 
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.entities.easteregg.EntityEasterEggs.isFlipped
-import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
-class HumanHeadAnimator(
-    val model: HumanModel<*>,
+class HeadAnimator(
+    val renderer: EntityRenderer<*>,
     val transform: TransformInstance,
 ) {
     private var rotation = Vec3.EMPTY
 
     fun update() {
-        val info = model.renderer.info
+        val info = renderer.info
 
         val pitch = info.rotation.pitch
         this.rotation.x = pitch.rad
-        if (model.renderer.entity.isFlipped()) {
+        if (renderer.entity.isFlipped()) {
             this.rotation.x = -this.rotation.x // TODO: not 100% correct
         }
         transform.value
