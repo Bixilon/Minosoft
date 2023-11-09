@@ -27,6 +27,15 @@ open class TextureData(
     open fun collect(): Array<ByteBuffer> = arrayOf(buffer)
 
 
+    private operator fun get(offset: Int): Int {
+        return buffer[offset].toInt() and 0xFF
+    }
+
+    operator fun get(x: Int, y: Int): Int {
+        val offset = ((size.x * y) + x) * 4
+        return (this[offset + 0] shl 24) or (this[offset + 1] shl 16) or (this[offset + 2] shl 8) or (this[offset + 3] shl 0)
+    }
+
     companion object {
         val NULL = ObjenesisStd().newInstance(TextureData::class.java)
     }

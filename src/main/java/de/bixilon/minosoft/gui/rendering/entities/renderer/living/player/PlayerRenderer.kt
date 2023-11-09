@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.mesh.SkeletalMeshBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity), DynamicTextureListener {
@@ -71,6 +72,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         this.skin?.removeListener(this)
         if (skin.texture.state == DynamicTextureState.LOADED) {
             this.skin = skin.texture
+            if (skin.model == SkinModel.WIDE && renderer.profile.features.player.detectSlim) return if (skin.isReallyWide()) SkinModel.WIDE else SkinModel.SLIM
             return skin.model
         } else {
             this.skin = skin.default
@@ -108,6 +110,28 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
             SkinModel.SLIM -> SLIM
         }
         return renderer.context.models.skeletal[name]
+    }
+
+    private fun PlayerSkin.isReallyWide(): Boolean {
+        val data = this.texture.data ?: return true
+
+        // check if normal pixel is not black
+        if (data[40, 16].isBlack()) return true // left arm slim
+        if (data[32, 48].isBlack()) return true // right arm slim
+
+        if (!data[52, 20].isBlack()) return true // left arm wide
+        if (!data[53, 31].isBlack()) return true // left arm wide
+
+        if (!data[44, 52].isBlack()) return true // right arm wide
+        if (!data[45, 63].isBlack()) return true // right arm wide
+
+        return false
+    }
+
+    private fun Int.isBlack(): Boolean {
+        if (this and 0xFF == 0x00) return true // alpha
+        if (this shr 8 == 0x00) return true // rgb is black
+        return false
     }
 
     override fun onDynamicTextureChange(texture: DynamicTexture): Boolean {

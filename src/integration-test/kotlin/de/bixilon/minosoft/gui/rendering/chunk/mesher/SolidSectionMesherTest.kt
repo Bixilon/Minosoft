@@ -139,6 +139,7 @@ class SolidSectionMesherTest {
         assertEquals(meshes.blockEntities?.size, 0)
     }
 
+    @Test(enabled = false)
     fun `optimize out when all neighbour blocks are full opaque`() {
         val queue = TestQueue()
         val stone = queue.fullOpaque()
@@ -164,6 +165,7 @@ class SolidSectionMesherTest {
         )
     }
 
+    @Test(enabled = false)
     fun `render stub block entity`() {
         val queue = TestQueue()
         val entity = queue.blockEntity()

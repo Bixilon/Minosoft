@@ -11,17 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.entity.features
+package de.bixilon.minosoft.config.profile.profiles.entity.features.player
 
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfile
-import de.bixilon.minosoft.config.profile.profiles.entity.features.hitbox.HitboxC
-import de.bixilon.minosoft.config.profile.profiles.entity.features.name.NameC
-import de.bixilon.minosoft.config.profile.profiles.entity.features.player.PlayerC
-import de.bixilon.minosoft.config.profile.profiles.entity.features.score.ScoreC
 
-class FeaturesC(profile: EntityProfile) {
-    val hitbox = HitboxC(profile)
-    val name = NameC(profile)
-    val score = ScoreC(profile)
-    val player = PlayerC(profile)
+class PlayerC(profile: EntityProfile) {
+    /**
+     * Automatically use slim skin when model is not wide
+     */
+    var detectSlim by BooleanDelegate(profile, true)
 }
