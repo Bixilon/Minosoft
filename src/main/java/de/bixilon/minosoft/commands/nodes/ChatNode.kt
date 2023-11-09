@@ -13,73 +13,57 @@
 
 package de.bixilon.minosoft.commands.nodes
 
-import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+import de.bixilon.minosoft.commands.nodes.ConnectionNode.Companion.COMMAND_PREFIX
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.terminal.cli.CLI
+import de.bixilon.minosoft.terminal.cli.CLI.CLI_PREFIX
 
 class ChatNode(
     name: String,
     aliases: Set<String> = emptySet(),
     val allowCLI: Boolean = false,
 ) : ExecutableNode(name, aliases) {
-    private val parser = StringParser(StringParser.StringModes.GREEDY)
 
 
     override fun execute(reader: CommandReader, stack: CommandStack) {
         reader.skipWhitespaces()
-        val peek = reader.peek()
-        val node = getNode(reader, stack)
-        val string = parser.parse(reader)
-
-        var thrown: Throwable? = null // throw it after sending ti
-        try {
-            node?.execute(CommandReader(string), stack)
-        } catch (error: Throwable) {
-            thrown = error
+        val node = reader.readNode(stack)
+        if (node == null) {
+            stack.connection.util.sendChatMessage(reader.readRest() ?: return) // send normal chat message
+        } else {
+            node.execute(reader, stack)
         }
-
-
-        if (node != CLI.ROOT_NODE && string.isNotBlank()) {
-            if (peek == '/'.code) {
-                try {
-                    stack.connection.util.sendCommand("/$string", stack)
-                } catch (error: Throwable) {
-                    throw thrown ?: error
-                }
-            } else {
-                stack.connection.util.sendChatMessage(string)
-            }
-        }
-
-        thrown?.let { throw it }
     }
 
-    private fun getNode(reader: CommandReader, stack: CommandStack): RootNode? {
-        val peek = reader.peek()
-        if (peek == '.'.code) {
-            if (allowCLI) {
-                reader.read()
-                return CLI.ROOT_NODE
-            }
-            return null
+    private fun CommandReader.readNode(stack: CommandStack): RootNode? {
+        val peek = peek()
+        val node = when (peek) {
+            COMMAND_PREFIX.code -> stack.connection.commands
+            CLI_PREFIX.code -> if (allowCLI) CLI.commands else null
+            else -> null
         }
 
-        if (peek == '/'.code) {
-            reader.read()
-            return stack.connection.rootNode
+        if (node != null) {
+            read() // remove prefix char
         }
-        return null
+
+        return node
     }
 
     override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Suggestion> {
-        if (reader.string.isEmpty()) {
-            return emptyList()
-        }
         reader.skipWhitespaces()
-        val node = getNode(reader, stack)
-        val string = if (reader.canPeek()) parser.parse(reader) else ""
-        return node?.getSuggestions(CommandReader(string), stack) ?: emptyList()
+        if (!reader.canPeek()) {
+            val suggestions = mutableListOf(
+                Suggestion(reader.pointer, "$COMMAND_PREFIX"),
+            )
+            if (allowCLI) {
+                suggestions += Suggestion(reader.pointer, "$CLI_PREFIX")
+            }
+            return suggestions
+        }
+        val node = reader.readNode(stack)
+        return node?.getSuggestions(reader, stack) ?: emptyList()
     }
 }

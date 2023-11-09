@@ -63,4 +63,8 @@ object ITUtil {
     fun todo() {
         throw SkipException("Not yet implemented!")
     }
+
+    fun <T> Class<T>.allocate(): T {
+        return IT.OBJENESIS.newInstance(this)
+    }
 }

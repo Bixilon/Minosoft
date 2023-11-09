@@ -13,26 +13,31 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.stack.CommandStack
-import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class RootNode : CommandNode {
+open class ConnectionNode : RootNode {
 
-    constructor() : super(false, null)
-    constructor(builder: CommandNodeBuilder) : super(builder.executable, null)
+    constructor() : super()
+    constructor(builder: CommandNodeBuilder) : super(builder)
 
-    fun execute(command: String, connection: PlayConnection? = null) {
-        val stack = CommandStack()
-        if (connection != null) {
-            stack.connection = connection
+    override fun execute(reader: CommandReader, stack: CommandStack) {
+        val rest = reader.peekRemaining() ?: throw ExpectedArgumentError(reader)
+
+        var thrown: Throwable? = null // throw it after sending ti
+        try {
+            super.execute(reader, stack)
+        } catch (error: Throwable) {
+            thrown = error
         }
-        execute(CommandReader(command), stack)
+        stack.connection.util.sendCommand("$COMMAND_PREFIX$rest", stack)
+
+        thrown?.let { throw it }
     }
 
-    fun getSuggestions(command: String): Collection<Suggestion> {
-        return getSuggestions(CommandReader(command), CommandStack())
+    companion object {
+        const val COMMAND_PREFIX = '/'
     }
 }

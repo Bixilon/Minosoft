@@ -27,7 +27,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
 import de.bixilon.minosoft.camera.ConnectionCamera
-import de.bixilon.minosoft.commands.nodes.RootNode
+import de.bixilon.minosoft.commands.nodes.ConnectionNode
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
@@ -109,7 +109,7 @@ class PlayConnection(
 
     var state by observed(PlayConnectionStates.WAITING)
 
-    var rootNode: RootNode? = null
+    var commands: ConnectionNode? = null
     var tags: TagManager = TagManager()
     val legacyTags: TagManager = unsafeNull()
 

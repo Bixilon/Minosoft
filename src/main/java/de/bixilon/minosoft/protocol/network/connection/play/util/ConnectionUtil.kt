@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection.play.util
 
 import de.bixilon.minosoft.commands.nodes.ChatNode
+import de.bixilon.minosoft.commands.nodes.ConnectionNode.Companion.COMMAND_PREFIX
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.chat.ChatUtil
@@ -107,7 +108,7 @@ class ConnectionUtil(
         if (!connection.version.requiresSignedChat || connection.profiles.connection.signature.sendCommandAsMessage) {
             return sendChatMessage(command)
         }
-        val trimmed = ChatUtil.trimChatMessage(command).removePrefix("/")
+        val trimmed = ChatUtil.trimChatMessage(command).removePrefix(COMMAND_PREFIX.toString())
         ChatUtil.validateChatMessage(connection, trimmed)
         val time = Instant.now()
         if (stack.size == 0) {
