@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living.animal
 
-import de.bixilon.minosoft.data.entities.entities.animal.Pig
+import de.bixilon.minosoft.data.entities.entities.animal.Cow
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
@@ -22,32 +22,31 @@ import de.bixilon.minosoft.gui.rendering.entities.model.animal.AnimalModel
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.loader.SkeletalLoader.Companion.sModel
 
-class PigRenderer(renderer: EntitiesRenderer, entity: Pig) : AnimalRenderer<Pig>(renderer, entity) {
+open class CowRenderer(renderer: EntitiesRenderer, entity: Cow) : AnimalRenderer<Cow>(renderer, entity) {
     override var model: AnimalModel<*>? = null
 
-    init {
-        entity.data.observe<Boolean>(Pig.SADDLED) { unload() }
-    }
-
     override fun getModel() = when {
-        entity.isBaby -> PIGLET
-        entity.isSaddled -> SADDLED
-        else -> PIG
+        entity.isBaby -> CALF
+        else -> COW
+    }
+
+    override fun unload() {
+        val model = this.model ?: return
+        this.model = null
+        this.features -= model
     }
 
 
-    companion object : RegisteredEntityModelFactory<Pig>, Identified {
-        override val identifier get() = Pig.identifier
-        private val PIG = minecraft("entities/pig/pig").sModel()
-        private val SADDLED = minecraft("entities/pig/saddled").sModel()
-        private val PIGLET = minecraft("entities/pig/piglet").sModel()
+    companion object : RegisteredEntityModelFactory<Cow>, Identified {
+        override val identifier get() = Cow.identifier
+        private val COW = minecraft("entities/cow/cow").sModel()
+        private val CALF = minecraft("entities/cow/calf").sModel()
 
-        override fun create(renderer: EntitiesRenderer, entity: Pig) = PigRenderer(renderer, entity)
+        override fun create(renderer: EntitiesRenderer, entity: Cow) = CowRenderer(renderer, entity)
 
         override fun register(loader: ModelLoader) {
-            loader.skeletal.register(PIG)
-            loader.skeletal.register(SADDLED)
-            loader.skeletal.register(PIGLET)
+            loader.skeletal.register(COW)
+            loader.skeletal.register(CALF)
         }
     }
 }

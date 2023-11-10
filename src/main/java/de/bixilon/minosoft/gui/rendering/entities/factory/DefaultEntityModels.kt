@@ -17,6 +17,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.entities.renderer.item.FallingBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.item.PrimedTNTEntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.animal.CowRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.animal.PigRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader
@@ -26,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 object DefaultEntityModels : DefaultFactory<RegisteredEntityModelFactory<*>>(
     PlayerRenderer,
-    PigRenderer,
+    PigRenderer, CowRenderer,
     PrimedTNTEntityRenderer, FallingBlockEntityRenderer,
 ) {
 
