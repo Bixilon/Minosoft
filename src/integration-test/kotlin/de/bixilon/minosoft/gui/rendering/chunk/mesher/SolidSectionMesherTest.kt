@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -377,7 +378,7 @@ class SolidSectionMesherTest {
         }
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
-            override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
+            override fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
                 assertEquals(light.size, 7)
                 for ((index, entry) in light.withIndex()) {
                     assertEquals(required[index], entry.toInt() and 0xFF)
@@ -395,7 +396,7 @@ class SolidSectionMesherTest {
         }
         val state = BlockState(block, 0)
         state.model = object : TestModel(this, null) {
-            override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
+            override fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
                 assertEquals(neighbours.size, 6)
                 for ((index, entry) in neighbours.withIndex()) {
                     assertEquals(required[index], entry)
@@ -437,7 +438,7 @@ class SolidSectionMesherTest {
             init {
                 this.model = object : BlockRender {
 
-                    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
+                    override fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
                         entities.add(TestQueue.RenderedEntity(Vec3i(position), state, true)).let { if (!it) throw IllegalArgumentException("Twice!!!") }
 
                         return true
@@ -460,7 +461,7 @@ class SolidSectionMesherTest {
             return this.properties
         }
 
-        override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
+        override fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
             queue.blocks.add(TestQueue.RenderedBlock(Vec3i(position), state, tints?.getOrNull(0))).let { if (!it) throw IllegalArgumentException("Twice!!!") }
             return true
         }

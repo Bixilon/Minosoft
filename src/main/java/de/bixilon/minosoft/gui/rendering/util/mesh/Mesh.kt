@@ -135,6 +135,10 @@ abstract class Mesh(
         order.iterate { position, uv -> vertexConsumer.invoke(positions[position], texturePositions[uv]) }
     }
 
+    override fun ensureSize(floats: Int) {
+        data.ensureSize(floats)
+    }
+
     enum class MeshStates {
         PREPARING,
         FINISHED,

@@ -32,6 +32,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign.Wal
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
@@ -56,9 +57,11 @@ class SignBlockEntityRenderer(
         return STANDING_ROTATIONS[rotation]
     }
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMeshes, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
         state.model?.render(position, offset, mesh, random, state, neighbours, light, tints, entity) // render wood part
         if (entity !is SignBlockEntity) return true
+
+        if (mesh !is ChunkMeshes) return true // TODO
 
         renderText(state, entity, offset, mesh.textMesh!!, light[SELF_LIGHT_INDEX].toInt())
 

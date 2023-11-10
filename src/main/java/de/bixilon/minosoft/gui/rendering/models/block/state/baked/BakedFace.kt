@@ -14,14 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades.Companion.shade
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintUtil
 
@@ -44,23 +42,16 @@ class BakedFace(
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: FloatArray, mesh: ChunkMeshes, light: ByteArray, tints: IntArray?) {
+    fun render(offset: FloatArray, mesh: BlockVertexConsumer, light: ByteArray, tints: IntArray?) {
         val tint = color(tints?.getOrNull(tintIndex) ?: 0)
         val lightTint = ((light[lightIndex].toInt() shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
 
 
-        val mesh = mesh.mesh(texture)
+        val mesh = mesh[texture.transparency]
         mesh.addQuad(offset, this.positions, this.uv, textureId, lightTint)
     }
 
-    private fun ChunkMeshes.mesh(texture: Texture): ChunkMesh {
-        return when (texture.transparency) {
-            TextureTransparencies.OPAQUE -> opaqueMesh
-            TextureTransparencies.TRANSPARENT -> transparentMesh
-            TextureTransparencies.TRANSLUCENT -> translucentMesh
-        }!!
-    }
 
     fun IntArray.getOrNull(index: Int): Int? {
         return if (index >= 0 && index < size) get(index) else null

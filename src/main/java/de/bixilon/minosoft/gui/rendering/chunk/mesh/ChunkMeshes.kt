@@ -13,11 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.mesh
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
@@ -26,7 +30,7 @@ class ChunkMeshes(
     val chunkPosition: Vec2i,
     val sectionHeight: Int,
     smallMesh: Boolean = false,
-) {
+) : BlockVertexConsumer {
     val center: Vec3 = Vec3(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)))
     var opaqueMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 100000)
     var translucentMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 10000, onDemand = true)
@@ -130,4 +134,15 @@ class ChunkMeshes(
             maxPosition.z = z
         }
     }
+
+    override val order get() = Broken()
+    override fun ensureSize(floats: Int) = Unit
+    override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, light: Int) = Broken()
+    override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken()
+
+    override fun get(transparency: TextureTransparencies) = when (transparency) {
+        TextureTransparencies.OPAQUE -> opaqueMesh
+        TextureTransparencies.TRANSPARENT -> transparentMesh
+        TextureTransparencies.TRANSLUCENT -> translucentMesh
+    }!!
 }

@@ -17,4 +17,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
 
 interface AbstractVertexConsumer {
     val order: RenderOrder
+
+    fun ensureSize(floats: Int) = Unit
 }
