@@ -49,8 +49,8 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
         normal1 *= halfLineWidth
         normal2 *= halfLineWidth
 
-        val invertedNormal1 = normal1 * -1
-        val invertedNormal2 = normal2 * -1
+        val invertedNormal1 = -normal1
+        val invertedNormal2 = -normal2
 
         val floatColor = color.rgba.buffer()
 
@@ -75,6 +75,7 @@ open class LineMesh(context: RenderContext, initialCacheSize: Int = 1000) : Gene
     }
 
     private fun drawLineQuad(startX: Float, startY: Float, startZ: Float, endX: Float, endY: Float, endZ: Float, normal1: Vec3, normal2: Vec3, directionWidth: Vec3, color: Float) {
+        // TODO: don't allocate those Vec3s, they are not cheap
         val a = Vec3(startX - directionWidth.x, startY - directionWidth.y, startZ - directionWidth.z)
         val b = Vec3(endX + directionWidth.x, endY + directionWidth.y, endZ + directionWidth.z)
 

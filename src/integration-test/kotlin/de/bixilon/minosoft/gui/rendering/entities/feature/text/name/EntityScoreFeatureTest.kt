@@ -55,7 +55,7 @@ class EntityScoreFeatureTest {
         val renderer = this.renderer.unsafeCast<PlayerRenderer<*>>()
         val objective = ScoreboardObjective("name", TextComponent("Score").color(ChatColors.LIGHT_PURPLE))
         renderer.renderer.connection.scoreboard.positions[ScoreboardPositions.BELOW_NAME] = objective
-        objective.scores[renderer.entity.additional.name] = ScoreboardScore("name", objective, null, 1)
+        objective.scores[renderer.entity.additional.name] = ScoreboardScore(null, 1)
         renderer.renderer.features.score.update()
     }
 

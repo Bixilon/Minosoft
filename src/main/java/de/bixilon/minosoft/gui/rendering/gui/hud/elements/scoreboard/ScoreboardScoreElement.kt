@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 class ScoreboardScoreElement(
     guiRenderer: GUIRenderer,
+    val entity: String,
     val score: ScoreboardScore,
     parent: Element?,
 ) : Element(guiRenderer) {
@@ -53,7 +54,7 @@ class ScoreboardScoreElement(
     }
 
     override fun forceSilentApply() {
-        val entityName = ChatComponent.of(score.entity)
+        val entityName = ChatComponent.of(entity)
         nameElement.text = score.team?.formatting?.decorate(entityName) ?: entityName
 
         scoreElement.text = TextComponent(score.value).color(ChatColors.RED)

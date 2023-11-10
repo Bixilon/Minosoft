@@ -32,13 +32,13 @@ class RemoveScoreboardScoreS2CP(
             for ((_, objective) in connection.scoreboard.objectives.toSynchronizedMap()) {
                 val score = objective.scores.remove(entity) ?: continue
 
-                connection.events.fire(ScoreboardScoreRemoveEvent(connection, score))
+                connection.events.fire(ScoreboardScoreRemoveEvent(connection, objective, entity))
             }
             return
         }
         val score = objective.scores.remove(entity) ?: return
 
-        connection.events.fire(ScoreboardScoreRemoveEvent(connection, score))
+        connection.events.fire(ScoreboardScoreRemoveEvent(connection, objective, entity))
     }
 
 

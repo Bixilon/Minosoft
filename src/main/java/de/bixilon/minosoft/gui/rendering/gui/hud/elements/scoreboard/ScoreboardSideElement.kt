@@ -46,7 +46,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     private val backgroundElement = ColorElement(guiRenderer, size = Vec2.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
     private val nameBackgroundElement = ColorElement(guiRenderer, size = Vec2.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
     private val nameElement = TextElement(guiRenderer, "", background = null, parent = this)
-    private val scores: LockMap<ScoreboardScore, ScoreboardScoreElement> = lockMapOf()
+    private val scores: LockMap<String, ScoreboardScoreElement> = lockMapOf()
 
     override val layoutOffset: Vec2
         get() = super.size.let { return@let Vec2(guiRenderer.scaledSize.x - it.x, (guiRenderer.scaledSize.y - it.y) / 2) }
@@ -100,8 +100,8 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         this.scores.lock.lock()
         this.scores.unsafe.clear()
         objective.scores.lock.acquire()
-        for (score in objective.scores.values) {
-            this.scores.unsafe.getOrPut(score) { ScoreboardScoreElement(guiRenderer, score, this) }
+        for ((entity, score) in objective.scores) {
+            this.scores.unsafe.getOrPut(entity) { ScoreboardScoreElement(guiRenderer, entity, score, this) }
         }
         objective.scores.lock.release()
         this.scores.lock.unlock()
@@ -146,13 +146,13 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         cacheUpToDate = false
     }
 
-    fun removeScore(score: ScoreboardScore) {
-        scores.remove(score) ?: return
+    fun removeScore(entity: String) {
+        scores.remove(entity) ?: return
         queueSizeRecalculation()
     }
 
-    fun updateScore(score: ScoreboardScore) {
-        scores.synchronizedGetOrPut(score) { ScoreboardScoreElement(guiRenderer, score, this) }
+    fun updateScore(entity: String, score: ScoreboardScore) {
+        scores.synchronizedGetOrPut(entity) { ScoreboardScoreElement(guiRenderer, entity, score, this) }
         queueSizeRecalculation()
     }
 
@@ -177,30 +177,30 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
             this.updateName()
         }
         connection.events.listen<ScoreboardScoreRemoveEvent> {
-            if (it.score.objective != this.objective) {
+            if (it.objective != this.objective) {
                 return@listen
             }
-            this.removeScore(it.score)
+            this.removeScore(it.entity)
         }
         connection.events.listen<ScoreboardScorePutEvent> {
-            if (it.score.objective != this.objective) {
+            if (it.objective != this.objective) {
                 return@listen
             }
-            this.updateScore(it.score)
+            this.updateScore(it.entity, it.score)
         }
         connection.events.listen<ScoreTeamChangeEvent> {
-            if (it.score.objective != this.objective) {
+            if (it.objective != this.objective) {
                 return@listen
             }
-            this.updateScore(it.score)
+            this.updateScore(it.entity, it.score)
         }
         connection.events.listen<TeamUpdateEvent> {
             val objective = this.objective ?: return@listen
-            for ((_, score) in objective.scores) {
+            for ((entity, score) in objective.scores) {
                 if (it.team != score.team) {
                     continue
                 }
-                this.updateScore(score)
+                this.updateScore(entity, score)
             }
         }
     }

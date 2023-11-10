@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class ScoreTeamChangeEvent(
     connection: PlayConnection,
     val objective: ScoreboardObjective,
+    val entity: String,
     val score: ScoreboardScore,
     val team: Team,
     val remove: Boolean,
