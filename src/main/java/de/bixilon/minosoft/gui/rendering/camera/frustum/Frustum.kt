@@ -186,8 +186,8 @@ class Frustum(
     fun containsAABB(aabb: AABB): Boolean {
         val offset = camera.offset.offset
         return containsRegion(
-            (aabb.min.x - offset.x).toFloat(), (aabb.min.y - offset.x).toFloat(), (aabb.min.z - offset.x).toFloat(),
-            (aabb.max.x - offset.x).toFloat(), (aabb.max.x - offset.x).toFloat(), (aabb.max.x - offset.x).toFloat(),
+            (aabb.min.x - offset.x).toFloat(), (aabb.min.y - offset.y).toFloat(), (aabb.min.z - offset.z).toFloat(),
+            (aabb.max.x - offset.x).toFloat(), (aabb.max.y - offset.y).toFloat(), (aabb.max.z - offset.z).toFloat(),
         )
     }
 
