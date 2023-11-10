@@ -38,7 +38,7 @@ class TransformInstance(
 
     fun pack(buffer: FloatBuffer, parent: Mat4, cache: Array<Mat4>) {
         val temp = cache[this.id]
-        parent.times(value, temp)
+        parent.times(value, temp) // TODO: dom't multiply them on the rendering thread
 
         val offset = this.id * Mat4.length
         for (index in 0 until Mat4.length) {

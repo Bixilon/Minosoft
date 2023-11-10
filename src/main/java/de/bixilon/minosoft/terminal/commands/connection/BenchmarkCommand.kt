@@ -46,7 +46,7 @@ object BenchmarkCommand : ConnectionCommand {
         val random = Random()
 
         val entities: MutableList<Entity> = ArrayList(count)
-        val spread = minOf(cbrt(count.toDouble()), 5.0)
+        val spread = maxOf(cbrt(count.toDouble()), 5.0)
         for (id in 0 until count) {
             val position = offset + Vec3d(random.nextDouble(-spread, spread), random.nextDouble(-spread, spread), random.nextDouble(-spread, spread))
             val rotation = EntityRotation(random.nextFloat(-179.0f, 179.0f), random.nextFloat(-89.0f, 89.0f))

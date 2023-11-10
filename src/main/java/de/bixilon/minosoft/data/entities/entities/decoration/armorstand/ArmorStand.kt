@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.decoration.armorstand
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -28,13 +29,31 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ArmorStand(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
+    private var flags = 0
+
+    init {
+        data.observe<Int>(FLAGS_DATA) { updateFlags(it ?: 0x00) }
+        updateFlags(data.get(FLAGS_DATA, 0x00))
+    }
+
+    private fun updateFlags(flags: Int) {
+        this.flags = flags
+
+        this.dimensions = when {
+            isMarker -> DIMENSIONS_MARKER
+            isSmall -> DIMENSIONS_SMALL
+            else -> DIMENSIONS
+        }
+    }
 
     private fun getArmorStandFlag(bitMask: Int): Boolean {
-        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
+        return flags.isBitMask(bitMask)
     }
 
     override val canRaycast: Boolean get() = super.canRaycast && !isMarker
     override val hitboxColor: RGBColor? get() = if (isMarker) null else super.hitboxColor
+    override var dimensions: Vec2 = DIMENSIONS
+        private set
 
     @get:SynchronizedEntityData
     val isSmall: Boolean
@@ -76,12 +95,11 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
     val rightLegRotation: Vec3
         get() = data.get(RIGHT_LEG_ROTATION_DATA, Vec3(1.0f, 0.0f, 1.0f))
 
-    override val dimensions: Vec2
-        get() = when {
-            isMarker -> DIMENSIONS_MARKER
-            isSmall -> DIMENSIONS_SMALL
-            else -> DIMENSIONS
-        }
+
+    override fun tick() {
+        if (isMarker && age % 20 != 0) return // tick them really slow to improve performance
+        super.tick()
+    }
 
 
     companion object : EntityFactory<ArmorStand> {

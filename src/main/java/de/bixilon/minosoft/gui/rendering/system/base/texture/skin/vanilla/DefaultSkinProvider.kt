@@ -41,8 +41,12 @@ class DefaultSkinProvider(
 
     private fun load(skin: DefaultSkin) {
         var loaded = 0
-        load(skin.name.skin("slim").texture())?.let { slim[skin.name] = it; loaded++ }
-        load(skin.name.skin("wide").texture())?.let { wide[skin.name] = it; loaded++ }
+        load(skin.name.skin("slim").texture())?.apply { slim[skin.name] = this; loaded++ }
+        val wide = load(skin.name.skin("wide").texture())?.apply { wide[skin.name] = this; loaded++ }
+
+        if (this.fallback == null && wide != null) {
+            fallback = PlayerSkin(wide, null, SkinModel.WIDE)
+        }
 
         if (loaded > 0) {
             return
