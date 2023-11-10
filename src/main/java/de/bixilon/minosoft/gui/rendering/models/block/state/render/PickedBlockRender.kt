@@ -42,6 +42,10 @@ interface PickedBlockRender : BlockRender {
         return pick(state, neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints, entity) ?: false
     }
 
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
+        default?.render(mesh, state, tints)
+    }
+
     override fun getProperties(direction: Directions): SideProperties? {
         return default?.getProperties(direction) // both models should have the same properties
     }

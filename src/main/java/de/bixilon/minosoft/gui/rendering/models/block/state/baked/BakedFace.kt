@@ -52,6 +52,15 @@ class BakedFace(
         mesh.addQuad(offset, this.positions, this.uv, textureId, lightTint)
     }
 
+    fun render(mesh: BlockVertexConsumer, tints: IntArray?) {
+        val tint = color(tints?.getOrNull(tintIndex) ?: 0)
+        val lightTint = tint.buffer()
+        val textureId = this.texture.shaderId.buffer()
+
+        val mesh = mesh[texture.transparency]
+        mesh.addQuad(this.positions, this.uv, textureId, lightTint)
+    }
+
 
     fun IntArray.getOrNull(index: Int): Int? {
         return if (index >= 0 && index < size) get(index) else null

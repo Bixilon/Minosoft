@@ -56,6 +56,13 @@ class BuiltModel(
         }
     }
 
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
+        model.render(mesh, state, tints)
+        for (dynamic in this.dynamic) {
+            dynamic.render(mesh, state, tints)
+        }
+    }
+
     override fun getProperties(direction: Directions): SideProperties? {
         return model.getProperties(direction) // TODO: dynamic?
     }

@@ -33,6 +33,7 @@ import java.util.*
 
 class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
     override fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?) = prototype()
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = prototype()
     override fun getParticleTexture(random: Random?, position: Vec3i) = prototype()
     override fun getProperties(direction: Directions) = prototype()
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = prototype()

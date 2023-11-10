@@ -68,6 +68,10 @@ class SignBlockEntityRenderer(
         return true
     }
 
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
+        state.model?.render(mesh, state, tints) // render wood part
+    }
+
     private fun renderText(state: BlockState, sign: SignBlockEntity, offset: FloatArray, mesh: ChunkMesh, light: Int) {
         when (state.block) {
             is StandingSignBlock -> renderStandingText(state.getRotation(), sign, offset, mesh, light)

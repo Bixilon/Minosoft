@@ -42,5 +42,21 @@ interface BlockVertexConsumer : AbstractVertexConsumer {
         }
     }
 
+    fun addQuad(positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) {
+        ensureSize(ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX * order.size)
+
+        order.iterate { position, uv ->
+            val vertexOffset = position * Vec3.length
+            val uvOffset = uv * Vec2.length
+            addVertex(
+                x = positions[vertexOffset], y = positions[vertexOffset + 1], z = positions[vertexOffset + 2],
+                u = uvData[uvOffset],
+                v = uvData[uvOffset + 1],
+                textureId = textureId,
+                lightTint = lightTint,
+            )
+        }
+    }
+
     operator fun get(transparency: TextureTransparencies): BlockVertexConsumer = this
 }

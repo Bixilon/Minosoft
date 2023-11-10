@@ -28,6 +28,7 @@ interface BlockRender : ItemRender {
     fun getParticleTexture(random: Random?, position: Vec3i): Texture? = null
 
     fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean
+    fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?)
 
     fun getProperties(direction: Directions): SideProperties? = null
 }

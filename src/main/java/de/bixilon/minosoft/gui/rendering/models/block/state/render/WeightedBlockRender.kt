@@ -70,6 +70,10 @@ class WeightedBlockRender(
         models.first().model.render(gui, offset, consumer, options, size, stack)
     }
 
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
+        models.first().model.render(mesh, state, tints)
+    }
+
 
     data class WeightedEntry(
         val weight: Int,

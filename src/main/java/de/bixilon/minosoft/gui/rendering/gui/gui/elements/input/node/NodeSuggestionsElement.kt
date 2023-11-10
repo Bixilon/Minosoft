@@ -149,6 +149,7 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2, val input
 
     fun applySuggestion(): Boolean {
         inputElement.updateSuggestion(activeSuggestion ?: return false)
+        offset = 0
         return true
     }
 
