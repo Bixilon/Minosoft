@@ -11,22 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.renderer
+package de.bixilon.minosoft.gui.rendering.entities.renderer.item
 
-import de.bixilon.minosoft.data.entities.entities.item.PrimedTNT
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.minosoft.data.entities.entities.item.FallingBlockEntity
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
-import de.bixilon.minosoft.gui.rendering.entities.feature.block.flashing.FlashingBlockFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockFeature
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
-class PrimedTNTEntityRenderer(renderer: EntitiesRenderer, entity: PrimedTNT) : EntityRenderer<PrimedTNT>(renderer, entity) {
-    val block = FlashingBlockFeature(this, renderer.connection.registries.block[MinecraftBlocks.TNT]?.states?.default).register()
+class FallingBlockEntityRenderer(renderer: EntitiesRenderer, entity: FallingBlockEntity) : EntityRenderer<FallingBlockEntity>(renderer, entity) {
+    val block = BlockFeature(this, null).register()
+
+    init {
+        entity::blockState.observe(this, true) { block.state = it }
+    }
 
 
-    companion object : RegisteredEntityModelFactory<PrimedTNT>, Identified {
-        override val identifier get() = PrimedTNT.identifier
+    companion object : RegisteredEntityModelFactory<FallingBlockEntity>, Identified {
+        override val identifier get() = FallingBlockEntity.identifier
 
-        override fun create(renderer: EntitiesRenderer, entity: PrimedTNT) = PrimedTNTEntityRenderer(renderer, entity)
+        override fun create(renderer: EntitiesRenderer, entity: FallingBlockEntity) = FallingBlockEntityRenderer(renderer, entity)
     }
 }
