@@ -11,19 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.feature.block
+package de.bixilon.minosoft.gui.rendering.entities.feature.block.flashing
 
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
-import de.bixilon.minosoft.gui.rendering.entities.feature.block.flashing.FlashingBlockShader
-import de.bixilon.minosoft.gui.rendering.entities.feature.register.FeatureRegister
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-class BlockRegister(renderer: EntitiesRenderer) : FeatureRegister {
-    val shader = renderer.context.system.createShader(minosoft("entities/features/block"), ::BlockShader)
-    val flashing = renderer.context.system.createShader(minosoft("entities/features/block/flashing"), ::FlashingBlockShader)
-
-    override fun postInit() {
-        shader.load()
-        flashing.load()
-    }
+class FlashingBlockShader(
+    native: NativeShader,
+) : BlockShader(native) {
+    var flashColor by uniform("uFlashColor", ChatColors.WHITE) { shader, name, value -> shader.setUInt(name, value.rgb) }
+    var flashProgress by uniform("uFlashProgress", 0.0f)
 }

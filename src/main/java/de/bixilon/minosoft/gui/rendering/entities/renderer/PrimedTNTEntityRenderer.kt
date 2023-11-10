@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
-import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.block.flashing.FlashingBlockFeature
 
 class PrimedTNTEntityRenderer(renderer: EntitiesRenderer, entity: PrimedTNT) : EntityRenderer<PrimedTNT>(renderer, entity) {
-    val block = BlockFeature(this, renderer.connection.registries.block[MinecraftBlocks.TNT]?.states?.default).register()
+    val block = FlashingBlockFeature(this, renderer.connection.registries.block[MinecraftBlocks.TNT]?.states?.default).register()
 
 
     companion object : RegisteredEntityModelFactory<PrimedTNT>, Identified {

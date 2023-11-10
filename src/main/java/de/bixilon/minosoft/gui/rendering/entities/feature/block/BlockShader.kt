@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-class BlockShader(
+open class BlockShader(
     override val native: NativeShader,
 ) : Shader(), TextureShader, ViewProjectionShader, FogShader, TintedShader {
     override var textures: TextureManager by textureManager()

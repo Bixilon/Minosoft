@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 open class BlockFeature(
     renderer: EntityRenderer<*>,
     state: BlockState?,
-    var scale: Vec3 = Vec3(0.99f),
+    var scale: Vec3 = DEFAULT_SCALE,
 ) : EntityRenderFeature(renderer) {
     private var mesh: BlockMesh? = null
     private var matrix = Mat4()
@@ -82,6 +82,10 @@ open class BlockFeature(
         if (mesh.state != Mesh.MeshStates.LOADED) mesh.load()
         renderer.renderer.context.system.reset(faceCulling = false)
         val shader = renderer.renderer.features.block.shader
+        draw(mesh, shader)
+    }
+
+    protected open fun draw(mesh: BlockMesh, shader: BlockShader) {
         shader.use()
         shader.matrix = matrix
         shader.tint = renderer.light.value
@@ -92,5 +96,9 @@ open class BlockFeature(
         val mesh = this.mesh ?: return
         this.mesh = null
         renderer.renderer.queue += { mesh.unload() }
+    }
+
+    companion object {
+        val DEFAULT_SCALE = Vec3(0.99f)
     }
 }
