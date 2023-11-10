@@ -167,7 +167,7 @@ class ServerModifyDialog(
             descriptionFX.text = EDIT_DESCRIPTION
             modifyServerButtonFX.ctext = EDIT_UPDATE_BUTTON
 
-            serverNameFX.text = server.name.legacyText.removeSuffix("§r")
+            serverNameFX.text = server.name.legacy.removeSuffix("§r")
             serverAddressFX.text = server.address
 
             modifyServerButtonFX.isDisable = serverAddressFX.text.isBlank()

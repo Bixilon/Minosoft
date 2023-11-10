@@ -138,20 +138,20 @@ class BaseComponent : ChatComponent {
         return BaseComponent(parts)
     }
 
-    override val ansiColoredMessage: String
+    override val ansi: String
         get() {
-            val stringBuilder = StringBuilder()
+            val builder = StringBuilder()
             for (part in parts) {
-                stringBuilder.append(part.ansiColoredMessage)
+                builder.append(part.ansi)
             }
-            return stringBuilder.toString()
+            return builder.toString()
         }
 
-    override val legacyText: String
+    override val legacy: String
         get() {
             val stringBuilder = StringBuilder()
             for (part in parts) {
-                stringBuilder.append(part.legacyText)
+                stringBuilder.append(part.legacy)
             }
             // ToDo: Remove §r suffix
             return stringBuilder.toString()
@@ -198,7 +198,7 @@ class BaseComponent : ChatComponent {
     }
 
     override fun toString(): String {
-        return legacyText
+        return legacy
     }
 
     operator fun plusAssign(component: ChatComponent) {

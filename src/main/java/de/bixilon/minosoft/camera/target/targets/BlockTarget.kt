@@ -36,7 +36,7 @@ class BlockTarget(
     val cursor = position - blockPosition
 
     override fun toString(): String {
-        return toText().legacyText
+        return toText().legacy
     }
 
     override fun toText(): ChatComponent {

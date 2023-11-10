@@ -140,7 +140,7 @@ class TabListEntryElement(
     }
 
     override fun toString(): String {
-        return displayName.legacyText
+        return displayName.legacy
     }
 
     companion object {

@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import javafx.collections.ObservableList
 import javafx.scene.Node
 object EmptyComponent : ChatComponent {
-    override val ansiColoredMessage: String get() = ""
-    override val legacyText: String get() = ""
+    override val ansi: String get() = ""
+    override val legacy: String get() = ""
     override val message: String get() = ""
 
     override fun getJson(): Any = emptyList<Any>()

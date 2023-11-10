@@ -185,7 +185,10 @@ class Frustum(
 
     fun containsAABB(aabb: AABB): Boolean {
         val offset = camera.offset.offset
-        return containsRegion(Vec3(aabb.min - offset), Vec3(aabb.max - offset))
+        return containsRegion(
+            (aabb.min.x - offset.x).toFloat(), (aabb.min.y - offset.x).toFloat(), (aabb.min.z - offset.x).toFloat(),
+            (aabb.max.x - offset.x).toFloat(), (aabb.max.x - offset.x).toFloat(), (aabb.max.x - offset.x).toFloat(),
+        )
     }
 
     operator fun contains(aabb: AABB) = containsAABB(aabb)

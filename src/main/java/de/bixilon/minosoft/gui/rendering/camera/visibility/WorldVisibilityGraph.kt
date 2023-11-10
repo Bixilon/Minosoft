@@ -125,28 +125,27 @@ class WorldVisibilityGraph(
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
             return frustum.containsAABB(aabb)
         }
-        val chunkPositions: MutableSet<Vec2i> = HashSet()
+        val chunkPositions: MutableSet<Vec2i> = HashSet(4, 1.0f)
         val sectionIndices = IntOpenHashSet()
-        for (position in aabb.positions()) {
+        for (position in aabb.positions()) { // TODO: use ChunkPosition iterator
             chunkPositions += position.chunkPosition
             sectionIndices += position.sectionHeight - minSection
         }
-        var visible = false
-        chunkPositions@ for (chunkPosition in chunkPositions) {
+
+        for (chunkPosition in chunkPositions) {
             val visibility = getChunkVisibility(chunkPosition) ?: continue
             for (index in sectionIndices.intIterator()) {
                 if (index < 0 || index > maxIndex) {
-                    visible = true // ToDo: Not 100% correct, image looking from > maxIndex to < 0
-                    break@chunkPositions
+                    // ToDo: Not 100% correct, image looking from > maxIndex to < 0
+                    return false
                 }
                 if (visibility[index + 1]) {
-                    visible = true
-                    break@chunkPositions
+                    return false
                 }
             }
         }
 
-        return !visible
+        return true
     }
 
     fun isAABBVisible(aabb: AABB): Boolean {

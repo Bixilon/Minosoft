@@ -80,7 +80,7 @@ open class TextComponent(
     }
 
     override fun toString(): String {
-        return legacyText
+        return legacy
     }
 
     override fun setFallbackColor(color: RGBColor): TextComponent {
@@ -90,22 +90,22 @@ open class TextComponent(
         return this
     }
 
-    override val ansiColoredMessage: String
+    override val ansi: String
         get() {
-            val stringBuilder = StringBuilder()
+            val builder = StringBuilder()
             this.color?.let {
-                stringBuilder.append(it.ansi)
+                builder.append(it.ansi)
             }
 
             for (formattingCode in this.formatting) {
-                stringBuilder.append(formattingCode.ansi)
+                builder.append(formattingCode.ansi)
             }
-            stringBuilder.append(this.message)
-            stringBuilder.append(FormattingCodes.RESET.ansi)
-            return stringBuilder.toString()
+            builder.append(this.message)
+            builder.append(FormattingCodes.RESET.ansi)
+            return builder.toString()
         }
 
-    override val legacyText: String
+    override val legacy: String
         get() {
             val builder = StringBuilder()
             ChatColors.getChar(color)?.let { builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(it) }

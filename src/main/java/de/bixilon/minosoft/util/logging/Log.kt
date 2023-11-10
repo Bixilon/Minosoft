@@ -102,8 +102,8 @@ object Log {
                 SYSTEM_OUT_STREAM
             }
 
-            val prefix = message.ansiColoredMessage.removeSuffix(RESET) // reset suffix
-            for (line in this.message.ansiColoredMessage.lineSequence()) {
+            val prefix = message.ansi.removeSuffix(RESET) // reset suffix
+            for (line in this.message.ansi.lineSequence()) {
                 stream.println(prefix + line + RESET)
             }
             stream.flush()

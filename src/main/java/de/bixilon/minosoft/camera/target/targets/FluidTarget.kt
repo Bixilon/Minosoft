@@ -34,7 +34,7 @@ class FluidTarget(
 ) : GenericTarget(position, distance, direction), TextFormattable {
 
     override fun toString(): String {
-        return toText().legacyText
+        return toText().legacy
     }
 
     override fun toText(): ChatComponent {

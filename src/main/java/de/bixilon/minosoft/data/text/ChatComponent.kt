@@ -33,12 +33,12 @@ interface ChatComponent {
     /**
      * @return Returns the message formatted with ANSI Formatting codes
      */
-    val ansiColoredMessage: String
+    val ansi: String
 
     /**
      * @return Returns the message formatted with minecraft formatting codes (§)
      */
-    val legacyText: String
+    val legacy: String
 
     /**
      * @return Returns the unformatted message
