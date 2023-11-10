@@ -107,6 +107,10 @@ class RGBColor(val rgba: Int) : TextFormattable {
         return Companion.mix(this, *colors)
     }
 
+    fun mix(other: RGBColor): RGBColor {
+        return RGBColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, (alpha + other.alpha) / 2)
+    }
+
     operator fun times(value: Float): RGBColor {
         return this.with(red = floatRed * value, green = floatGreen * value, blue = floatBlue * value)
     }
