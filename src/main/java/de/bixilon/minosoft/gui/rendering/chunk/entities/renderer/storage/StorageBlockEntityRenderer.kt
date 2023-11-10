@@ -26,6 +26,7 @@ abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
     override var light = 0xFF
 
     override fun draw(context: RenderContext) {
+        skeletal?.update()
         skeletal?.draw(light)
     }
 

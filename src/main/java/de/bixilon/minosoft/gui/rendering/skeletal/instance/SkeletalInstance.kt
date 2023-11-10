@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -52,10 +53,13 @@ class SkeletalInstance(
     fun draw(shader: Shader) {
         shader.use()
 
-        transform.reset()
-        animation.draw()
         context.skeletal.upload(this, matrix)
         model.mesh.draw()
+    }
+
+    fun update(time: Long = millis()) {
+        transform.reset()
+        animation.draw(time)
     }
 
     fun update(position: Vec3, rotation: Vec3, pivot: Vec3 = Vec3.EMPTY_INSTANCE, matrix: Mat4? = null) {
