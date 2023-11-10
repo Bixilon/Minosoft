@@ -16,6 +16,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -29,22 +30,20 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ArmorStand(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
-    private var flags = 0
+    private var flags by data(FLAGS_DATA, 0x00)
 
     init {
-        data.observe<Int>(FLAGS_DATA) { updateFlags(it ?: 0x00) }
-        updateFlags(data.get(FLAGS_DATA, 0x00))
+        this::flags.observe(this, true) { updateFlags() }
     }
 
-    private fun updateFlags(flags: Int) {
-        this.flags = flags
-
+    private fun updateFlags() {
         this.dimensions = when {
             isMarker -> DIMENSIONS_MARKER
             isSmall -> DIMENSIONS_SMALL
             else -> DIMENSIONS
         }
     }
+
 
     private fun getArmorStandFlag(bitMask: Int): Boolean {
         return flags.isBitMask(bitMask)

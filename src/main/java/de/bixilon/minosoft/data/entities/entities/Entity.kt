@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
@@ -50,6 +51,7 @@ abstract class Entity(
     private var initialPosition: Vec3d,
     private var initialRotation: EntityRotation,
 ) : Initializable, EntityAttachable {
+    private var flags: Int by data(FLAGS_DATA, 0x00)
     protected val random = Random()
     val id: Int?
         get() = connection.world.entities.getId(this)
@@ -64,7 +66,7 @@ abstract class Entity(
     open val clientControlled: Boolean get() = primaryPassenger is LocalPlayerEntity
 
     open val dimensions = Vec2(type.width, type.height)
-    open val defaultAABB: AABB = createDefaultAABB()
+    open val defaultAABB: AABB = AABB.EMPTY
 
     open val mountHeightOffset: Double get() = dimensions.y * 0.75
     open val heightOffset: Double get() = 0.0
@@ -114,7 +116,7 @@ abstract class Entity(
     }
 
     private fun getEntityFlag(bitMask: Int): Boolean {
-        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
+        return flags.isBitMask(bitMask)
     }
 
     private fun setEntityFlag(mask: Int, value: Boolean) {
@@ -123,7 +125,7 @@ abstract class Entity(
         if (value) {
             next = next or mask
         }
-        data[FLAGS_DATA] = next
+        flags = next
     }
 
     @get:SynchronizedEntityData
@@ -158,12 +160,11 @@ abstract class Entity(
     val airSupply: Int
         get() = data.get(AIR_SUPPLY_DATA, 300)
 
-    val customName: ChatComponent?
-        get() = data.get(CUSTOM_NAME_DATA, null)
+    @get:SynchronizedEntityData
+    val customName: ChatComponent? by data(CUSTOM_NAME_DATA, null)
 
     @get:SynchronizedEntityData
-    open val isNameVisible: Boolean
-        get() = data.get(CUSTOM_NAME_VISIBLE_DATA, false)
+    open val isNameVisible: Boolean by data(CUSTOM_NAME_VISIBLE_DATA, false)
 
     @get:SynchronizedEntityData
     val isSilent: Boolean
@@ -239,11 +240,12 @@ abstract class Entity(
 
 
     override fun init() {
+        DEFAULT_AABB.forceSet(this, createDefaultAABB())
         PHYSICS.forceSet(this, createPhysics())
         forceTeleport(initialPosition)
         forceRotate(initialRotation)
         if (!RunConfiguration.DISABLE_RENDERING) {
-            Companion.renderInfo[this] = EntityRenderInfo(this)
+            RENDER_INFO[this] = EntityRenderInfo(this)
         }
     }
 
@@ -258,7 +260,8 @@ abstract class Entity(
 
 
     companion object {
-        private val renderInfo = Entity::renderInfo.javaField!!.apply { isAccessible = true }
+        private val RENDER_INFO = Entity::renderInfo.javaField!!.apply { isAccessible = true }
+        private val DEFAULT_AABB = Entity::defaultAABB.javaField!!.apply { isAccessible = true }
         private val PHYSICS = Entity::class.java.getDeclaredField("physics").apply { isAccessible = true }
 
         val FLAGS_DATA = EntityDataField("ENTITY_FLAGS")

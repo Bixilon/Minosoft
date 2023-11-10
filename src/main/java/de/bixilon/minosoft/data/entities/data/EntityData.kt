@@ -115,4 +115,11 @@ class EntityData(
         this.watcher.getOrPut(index) { mutableSetOf() }.add(watcher.unsafeCast()) // TODO: use weakref?
         watcherLock.unlock()
     }
+
+    inline operator fun <reified V> invoke(field: EntityDataField, default: V): EntityDataDelegate<V> {
+        val value = this.get(field, default)
+        val delegate = EntityDataDelegate(value)
+        this.observe<V>(field) { delegate.set(it ?: default) }
+        return delegate
+    }
 }

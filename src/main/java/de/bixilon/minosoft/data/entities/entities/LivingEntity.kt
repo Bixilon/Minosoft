@@ -54,8 +54,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     }
 
     @get:SynchronizedEntityData
-    open val pose: Poses?
-        get() = data.get(POSE_DATA, Poses.STANDING)
+    open val pose: Poses? by data(POSE_DATA, Poses.STANDING)
 
     @get:SynchronizedEntityData
     open val usingHand: Hands?
@@ -69,9 +68,11 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     val isRiptideAttacking: Boolean
         get() = getLivingEntityFlag(0x04)
 
+    private val _health: Float? by data(HEALTH_DATA, null)
+
     @get:SynchronizedEntityData
     open val health: Double
-        get() = data.get<Float?>(HEALTH_DATA, null)?.toDouble() ?: attributes[MinecraftAttributes.MAX_HEALTH]
+        get() = _health?.toDouble() ?: attributes[MinecraftAttributes.MAX_HEALTH]
 
     @get:SynchronizedEntityData
     val effectColor: RGBColor?
