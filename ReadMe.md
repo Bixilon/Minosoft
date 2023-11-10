@@ -61,8 +61,8 @@ The Hypixel skyblock hub (don't try to make such a screenshot)
 ![Rendering](doc/img/afk_pool.png)  
 AFK Pooling, Hit boxes, particles, ...
 
-![Rendering](doc/img/rendering1.png)  
-Lighting demo.
+![Hypixel Lobby](doc/img/hypixel_lobby.png)  
+Lobby of hypixel.net with entities.
 
 ![Rendering](doc/img/sunset.png)
 A beautiful sunset
