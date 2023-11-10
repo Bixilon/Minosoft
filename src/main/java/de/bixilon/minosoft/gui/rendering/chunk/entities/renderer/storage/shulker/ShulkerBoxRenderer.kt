@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulke
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.FLATTENING
 import de.bixilon.minosoft.data.colors.DyeColors
 import de.bixilon.minosoft.data.colors.DyeColors.Companion.name
 import de.bixilon.minosoft.data.entities.block.container.storage.ShulkerBoxBlockEntity
@@ -79,12 +80,18 @@ class ShulkerBoxRenderer(
         )
 
         override fun register(loader: ModelLoader) {
-            load(NAME, texture, loader)
+            if (loader.packFormat > FLATTENING) {
+                load(NAME, texture, loader) // was purple color instead
+            }
 
             for (color in DyeColors) {
-                val texture = minecraft("entity/shulker/shulker_${color.name(loader.packFormat)}").texture()
+                val texture = color.texture(loader.packFormat)
                 load(NAME_COLOR[color.ordinal], texture, loader)
             }
+        }
+
+        private fun DyeColors.texture(packFormat: Int): ResourceLocation {
+            return minecraft("entity/shulker/shulker_${name(packFormat)}").texture()
         }
 
         private fun load(name: ResourceLocation, texture: ResourceLocation, loader: ModelLoader) {

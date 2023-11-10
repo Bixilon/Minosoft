@@ -42,7 +42,7 @@ enum class DyeColors {
 
 
         fun DyeColors.name(packFormat: Int) = when {
-            packFormat >= FLATTENING && this == LIGHT_GRAY -> "silver"
+            packFormat < FLATTENING && this == LIGHT_GRAY -> "silver"
             else -> name.lowercase()
         }
     }
