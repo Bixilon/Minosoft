@@ -26,15 +26,12 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ArmorStand(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
     private var flags by data(FLAGS_DATA, 0x00)
-
-    init {
-        this::flags.observe(this, true) { updateFlags() }
-    }
 
     private fun updateFlags() {
         this.dimensions = when {
@@ -42,6 +39,7 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
             isSmall -> DIMENSIONS_SMALL
             else -> DIMENSIONS
         }
+        this.defaultAABB = createDefaultAABB()
     }
 
 
@@ -51,6 +49,7 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
 
     override val canRaycast: Boolean get() = super.canRaycast && !isMarker
     override val hitboxColor: RGBColor? get() = if (isMarker) null else super.hitboxColor
+    override var defaultAABB: AABB = AABB.EMPTY
     override var dimensions: Vec2 = DIMENSIONS
         private set
 
@@ -98,6 +97,11 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
     override fun tick() {
         if (isMarker && age % 20 != 0) return // tick them really slow to improve performance
         super.tick()
+    }
+
+    override fun init() {
+        this::flags.observe(this, true) { updateFlags() }
+        super.init()
     }
 
 

@@ -91,7 +91,7 @@ abstract class Entity(
 
     open val physics: EntityPhysics<*> = unsafeNull()
 
-    open val canRaycast: Boolean get() = !isInvisible
+    open val canRaycast: Boolean get() = true
 
     var age = 0
         private set

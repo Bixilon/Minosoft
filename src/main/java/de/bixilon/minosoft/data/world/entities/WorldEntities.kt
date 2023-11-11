@@ -164,7 +164,7 @@ class WorldEntities : Iterable<Entity> {
         try {
             lock.acquire()
             for (entity in this) {
-                if (entity.isInvisible || !entity.canRaycast) {
+                if (!entity.canRaycast) {
                     continue
                 }
                 val aabb = entity.physics.aabb
