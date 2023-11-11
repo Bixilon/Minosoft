@@ -60,7 +60,7 @@ object Jackson {
             propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
         }
 
-    val MAPPER_LENIENT = MAPPER.copy().apply { enable(JsonReadFeature.ALLOW_UNQUOTED_FIELD_NAMES.mappedFeature()) }
+    val MAPPER_LENIENT = MAPPER.copy().apply { enable(JsonReadFeature.ALLOW_UNQUOTED_FIELD_NAMES.mappedFeature()); enable(JsonReadFeature.ALLOW_SINGLE_QUOTES.mappedFeature()) }
 
 
     val JSON_MAP_TYPE: MapType = MAPPER.typeFactory.constructMapType(HashMap::class.java, Any::class.java, Any::class.java)

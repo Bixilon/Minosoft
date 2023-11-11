@@ -22,11 +22,21 @@ import org.junit.jupiter.api.Test
 class EntityHoverEventTest {
 
     @Test
-    fun `1_12_2`() {
+    fun `1_12_2 no quotes`() {
         val data = mapOf("text" to """{name:"item.item.slimeball",id:"0d2dc333-f629-4b59-bdf9-074f58b99c06",type:"minecraft:item"}""")
         val event = EntityHoverEvent.build(data, false)
 
         val expected = EntityHoverEvent("0d2dc333-f629-4b59-bdf9-074f58b99c06".toUUID(), minecraft("item"), name = TextComponent("item.item.slimeball"))
+
+        assertEquals(expected, event)
+    }
+
+    @Test
+    fun `1_15_2 single quotes`() {
+        val data = mapOf("text" to """{name:'{"text":"thewating"}',id:"24f0d4a2-1787-4761-aeef-39c90824e746",type:"minecraft:player"}""")
+        val event = EntityHoverEvent.build(data, false)
+
+        val expected = EntityHoverEvent("24f0d4a2-1787-4761-aeef-39c90824e746".toUUID(), minecraft("player"), name = TextComponent("thewating"))
 
         assertEquals(expected, event)
     }
