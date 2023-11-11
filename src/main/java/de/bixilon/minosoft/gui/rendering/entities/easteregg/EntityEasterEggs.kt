@@ -31,7 +31,10 @@ object EntityEasterEggs {
             name = additional.name
         }
         if (name == null) return false
-        if (name !in FLIPPED) return false
+        when (name) {
+            "Dinnerbone", "Grumm" -> Unit
+            else -> return false
+        }
         if (this is PlayerEntity) return SkinParts.CAPE in this.skinParts
         return true
     }
