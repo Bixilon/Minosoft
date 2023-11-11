@@ -50,21 +50,6 @@ class DisplayProperty(
         return _customDisplayName == null && lore.isEmpty() && _dyeColor == null
     }
 
-    override fun updateNbt(nbt: MutableJsonObject): Boolean {
-        val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>() ?: return false
-        display[DISPLAY_MAME_TAG]?.let { _customDisplayName = ChatComponent.of(it, translator = stack.holder?.connection?.language) }
-
-        display[DISPLAY_LORE_TAG]?.listCast<String>()?.let {
-            for (line in it) {
-                this.lore += ChatComponent.of(line, translator = stack.holder?.connection?.language)
-            }
-        }
-
-        display[DISPLAY_COLOR_TAG]?.toInt()?.asRGBColor()?.let { this._dyeColor = it }
-
-        return !isDefault()
-    }
-
     override fun hashCode(): Int {
         return Objects.hashCode(lore, _customDisplayName, _dyeColor)
     }
@@ -92,5 +77,21 @@ class DisplayProperty(
         private const val DISPLAY_MAME_TAG = "Name"
         private const val DISPLAY_LORE_TAG = "Lore"
         private const val DISPLAY_COLOR_TAG = "color"
+
+        fun ItemStack.updateDisplayNbt(nbt: MutableJsonObject): Boolean {
+            val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>() ?: return false
+            display[DISPLAY_MAME_TAG]?.let { this.display._customDisplayName = ChatComponent.of(it, translator = this.holder?.connection?.language) }
+
+            display[DISPLAY_LORE_TAG]?.listCast<String>()?.let {
+                for (line in it) {
+                    this.display.lore += ChatComponent.of(line, translator = this.holder?.connection?.language)
+                }
+            }
+
+            display[DISPLAY_COLOR_TAG]?.toInt()?.asRGBColor()?.let { this.display._dyeColor = it }
+            if (_display == null) return false
+
+            return !this.display.isDefault()
+        }
     }
 }

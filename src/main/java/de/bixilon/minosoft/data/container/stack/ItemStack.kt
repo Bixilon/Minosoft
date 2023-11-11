@@ -20,6 +20,8 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.container.SlotEdit
 import de.bixilon.minosoft.data.container.stack.property.*
+import de.bixilon.minosoft.data.container.stack.property.DisplayProperty.Companion.updateDisplayNbt
+import de.bixilon.minosoft.data.container.stack.property.EnchantingProperty.Companion.updateEnchantingNbt
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -166,13 +168,13 @@ class ItemStack {
             return
         }
         // ToDo: This force creates an instance of every property
-        if (!this.display.updateNbt(nbt)) {
+        if (!this.updateDisplayNbt(nbt)) {
             _display = null
         }
         if (!this.durability.updateNbt(nbt)) {
             _durability = null
         }
-        if (!this.enchanting.updateNbt(nbt)) {
+        if (!this.updateEnchantingNbt(nbt)) {
             _enchanting = null
         }
         if (!this.hide.updateNbt(nbt)) {
