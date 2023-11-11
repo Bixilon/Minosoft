@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.eros.util
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
@@ -47,7 +48,6 @@ import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.Window
 import java.io.File
-import kotlin.reflect.jvm.javaField
 
 object JavaFXUtil {
     private const val DEFAULT_STYLE = "resource:minosoft:eros/style.css"
@@ -135,7 +135,7 @@ object JavaFXUtil {
 
         val controller = fxmlLoader.getController<T>()
 
-        controller::root.javaField!!.forceSet(controller, pane)
+        controller::root.jvmField.forceSet(controller, pane)
         controller.postInit()
 
         return controller

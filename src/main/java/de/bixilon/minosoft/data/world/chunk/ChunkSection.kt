@@ -16,6 +16,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
-import kotlin.reflect.jvm.javaField
 
 /**
  * Collection of 16x16x16 blocks
@@ -96,7 +96,7 @@ class ChunkSection(
     }
 
     companion object {
-        private val CHUNK = ChunkSection::chunk.javaField!!.apply { isAccessible = true }
+        private val CHUNK = ChunkSection::chunk.jvmField
 
         inline val Vec3i.index: Int
             get() = getIndex(x, y, z)

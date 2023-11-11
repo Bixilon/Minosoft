@@ -27,10 +27,9 @@ open class SimpleDelegate<T>(
     override val name = minosoft(name)
     override val description = minosoft("$name.description")
 
-    override fun get() = value
-    override fun set(value: T) {
+    override fun set(value: T): T {
         validate(value)
-        this.value = value
+        return super.set(value)
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {

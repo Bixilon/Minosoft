@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.BindingsManag
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingFilterState
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingState
 import de.bixilon.minosoft.test.IT.OBJENESIS
-import de.bixilon.minosoft.util.KUtil.set
 import it.unimi.dsi.fastutil.objects.Object2LongMap
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
 import org.testng.Assert.assertFalse

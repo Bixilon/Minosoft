@@ -19,6 +19,7 @@ import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityAnimations
@@ -42,7 +43,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import java.util.*
-import kotlin.reflect.jvm.javaField
 
 abstract class Entity(
     val connection: PlayConnection,
@@ -260,8 +260,8 @@ abstract class Entity(
 
 
     companion object {
-        private val RENDER_INFO = Entity::renderInfo.javaField!!.apply { isAccessible = true }
-        private val DEFAULT_AABB = Entity::defaultAABB.javaField!!.apply { isAccessible = true }
+        private val RENDER_INFO = Entity::renderInfo.jvmField
+        private val DEFAULT_AABB = Entity::defaultAABB.jvmField
         private val PHYSICS = Entity::class.java.getDeclaredField("physics").apply { isAccessible = true }
 
         val FLAGS_DATA = EntityDataField("ENTITY_FLAGS")

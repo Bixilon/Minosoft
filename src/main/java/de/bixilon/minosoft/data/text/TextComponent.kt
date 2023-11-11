@@ -12,13 +12,13 @@
  */
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.hover.HoverEvent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
-import de.bixilon.minosoft.data.text.formatting.TextFormatting
 import de.bixilon.minosoft.data.text.formatting.TextStyle
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger
 open class TextComponent(
     message: Any? = "",
     override var color: RGBColor? = null,
-    override val formatting: TextFormatting = TextFormatting(),
+    override val formatting: BitEnumSet<FormattingCodes> = FormattingCodes.set(),
     var font: ResourceLocation? = null,
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
@@ -194,7 +194,7 @@ open class TextComponent(
         return json
     }
 
-    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: TextFormatting = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
+    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: BitEnumSet<FormattingCodes> = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
         return TextComponent(
             message = message,
             color = color,

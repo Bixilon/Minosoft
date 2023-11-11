@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer.code
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
-import de.bixilon.minosoft.data.text.formatting.TextFormatting
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.CodePointAddResult
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
@@ -48,7 +48,7 @@ interface CodePointRenderer {
     }
 
 
-    fun render(offset: TextOffset, color: RGBColor, properties: TextRenderProperties, info: TextRenderInfo, formatting: TextFormatting, codePoint: Int, consumer: GUIVertexConsumer?, options: GUIVertexOptions?): CodePointAddResult {
+    fun render(offset: TextOffset, color: RGBColor, properties: TextRenderProperties, info: TextRenderInfo, formatting: BitEnumSet<FormattingCodes>, codePoint: Int, consumer: GUIVertexConsumer?, options: GUIVertexOptions?): CodePointAddResult {
         val width = calculateWidth(properties.scale, properties.shadow)
         var spacing = getVerticalSpacing(offset, properties, info, consumer != null)
         val height = offset.getNextLineHeight(properties)

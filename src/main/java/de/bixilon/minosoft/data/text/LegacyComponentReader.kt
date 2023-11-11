@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.data.text.events.click.OpenURLClickEvent
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
-import de.bixilon.minosoft.data.text.formatting.TextFormatting
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -81,7 +81,7 @@ object LegacyComponentReader {
     fun parse(parent: TextComponent? = null, legacy: String = "", restricted: Boolean = false): ChatComponent {
         val parts: PartList = mutableListOf()
 
-        val sequence = SequenceBuilder(color = parent?.color, formatting = parent?.formatting?.copy() ?: TextFormatting())
+        val sequence = SequenceBuilder(color = parent?.color, formatting = parent?.formatting?.copy() ?: FormattingCodes.set())
 
         val iterator = StringCharacterIterator(legacy)
 
@@ -133,7 +133,7 @@ object LegacyComponentReader {
     private data class SequenceBuilder(
         var text: StringBuilder = StringBuilder(),
         var color: RGBColor? = null,
-        var formatting: TextFormatting = TextFormatting(),
+        var formatting: BitEnumSet<FormattingCodes> = FormattingCodes.set(),
     ) {
 
         fun reset() {

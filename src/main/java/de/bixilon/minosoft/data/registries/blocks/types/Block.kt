@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.physics.Pushi
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
-import kotlin.reflect.jvm.javaField
 
 abstract class Block(
     override val identifier: ResourceLocation,
@@ -58,6 +58,6 @@ abstract class Block(
     }
 
     private companion object {
-        val STATES = Block::states.javaField!!.apply { isAccessible = true }
+        val STATES = Block::states.jvmField
     }
 }

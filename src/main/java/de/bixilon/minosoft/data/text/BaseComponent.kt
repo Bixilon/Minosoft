@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.text.events.click.ClickEvents
 import de.bixilon.minosoft.data.text.events.hover.HoverEvents
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
-import de.bixilon.minosoft.data.text.formatting.TextFormatting
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors.toColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -49,7 +48,7 @@ class BaseComponent : ChatComponent {
     constructor(translator: Translator? = null, parent: TextComponent? = null, json: Map<String, Any>, restricted: Boolean = false) {
         val color = json["color"]?.nullCast<String>()?.toColor() ?: parent?.color
 
-        val formatting = parent?.formatting?.copy() ?: TextFormatting()
+        val formatting = parent?.formatting?.copy() ?: FormattingCodes.set()
 
         json["bold"]?.toBoolean()?.let { formatting[FormattingCodes.BOLD] = it }
         json["italic"]?.toBoolean()?.let { formatting[FormattingCodes.ITALIC] = it }

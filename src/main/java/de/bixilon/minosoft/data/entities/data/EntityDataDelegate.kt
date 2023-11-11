@@ -14,8 +14,6 @@
 package de.bixilon.minosoft.data.entities.data
 
 import de.bixilon.kutil.observer.DataObserver
-import de.bixilon.kutil.observer.ObserveUtil.invalid
-import de.bixilon.kutil.observer.RemoveObserver
 import kotlin.reflect.KProperty
 
 class EntityDataDelegate<V>(
@@ -28,39 +26,11 @@ class EntityDataDelegate<V>(
         data.observe<V>(field) { set(it ?: default) }
     }
 
-    @Deprecated("kutil 1.25")
-    private fun set(value: V) {
-        if (this.value == value) return
-        lock.lock()
-        unsafeSet(value)
-        lock.unlock()
-    }
-
     override fun setValue(thisRef: Any, property: KProperty<*>, value: V) {
         this.value = value
         data[field] = value
         lock.lock()
         unsafeSet(value)
         lock.unlock()
-    }
-
-    private fun unsafeSet(value: V) {
-        this.value = value
-
-        val iterator = observers.iterator()
-        for ((reference, _, observer) in iterator) {
-            if (reference.invalid) {
-                iterator.remove()
-                continue
-            }
-            try {
-                observer.invoke(value)
-            } catch (_: RemoveObserver) {
-                iterator.remove()
-                continue
-            } catch (exception: Throwable) {
-                exception.printStackTrace()
-            }
-        }
     }
 }

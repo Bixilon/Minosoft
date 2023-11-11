@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.world.chunk.chunk
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
-import kotlin.reflect.jvm.javaField
 
 class ChunkPrototype(
     var blocks: Array<BlockSectionDataProvider?>? = null,
@@ -157,6 +157,6 @@ class ChunkPrototype(
     }
 
     private companion object {
-        private val SECTION = BlockSectionDataProvider::section.javaField!!.apply { isAccessible = true }
+        private val SECTION = BlockSectionDataProvider::section.jvmField
     }
 }

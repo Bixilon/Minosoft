@@ -20,12 +20,12 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.reflect.jvm.javaField
 
 enum class Directions(
     val vector: Vec3i,
@@ -156,8 +156,8 @@ enum class Directions(
         }
 
         init {
-            val inverted = Directions::inverted.javaField!!
-            val axis = Directions::axis.javaField!!
+            val inverted = Directions::inverted.jvmField
+            val axis = Directions::axis.jvmField
             for (direction in VALUES) {
                 inverted.forceSet(direction, direction.invert())
                 axis.forceSet(direction, Axes[direction])

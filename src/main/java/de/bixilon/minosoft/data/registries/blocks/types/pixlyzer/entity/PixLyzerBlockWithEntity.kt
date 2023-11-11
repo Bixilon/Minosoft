@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import kotlin.reflect.jvm.javaField
 
 abstract class PixLyzerBlockWithEntity<T : BlockEntity>(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlock(resourceLocation, registries, data), BlockWithEntity<BlockEntity> {
     private val blockEntity: BlockEntityType<BlockEntity>? = unsafeNull()
@@ -35,6 +35,6 @@ abstract class PixLyzerBlockWithEntity<T : BlockEntity>(resourceLocation: Resour
     override fun createBlockEntity(connection: PlayConnection) = blockEntity?.factory?.build(connection)
 
     private companion object {
-        val FACTORY_FIELD = PixLyzerBlockWithEntity<*>::blockEntity.javaField!!
+        val FACTORY_FIELD = PixLyzerBlockWithEntity<*>::blockEntity.jvmField
     }
 }

@@ -32,9 +32,11 @@ class ListDelegate<V>(
     }
 
     override fun get() = value
-    override fun set(value: MutableList<V>) {
+    override fun set(value: MutableList<V>): MutableList<V> {
         validate(value)
+        val previous = this.value.unsafe
         this.value.unsafe = value
+        return previous
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: MutableList<V>) {

@@ -40,7 +40,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.versions.Versions
 import org.objenesis.ObjenesisStd
 import org.testng.annotations.Test
-import kotlin.reflect.jvm.javaField
 
 const val SECTIONS = 16
 
@@ -50,7 +49,7 @@ object LightTestingUtil {
     fun createConnection(): PlayConnection {
         val connection = ObjenesisStd().newInstance(PlayConnection::class.java)
 
-        Connection::events.javaField!!.forceSet(connection, EventMaster())
+        Connection::events.jvmField.forceSet(connection, EventMaster())
         return connection
     }
 
