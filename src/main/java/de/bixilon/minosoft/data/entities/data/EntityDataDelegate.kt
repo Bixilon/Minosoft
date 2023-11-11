@@ -29,7 +29,7 @@ class EntityDataDelegate<V>(
     }
 
     @Deprecated("kutil 1.25")
-    fun set(value: V) {
+    private fun set(value: V) {
         if (this.value == value) return
         lock.lock()
         unsafeSet(value)
@@ -37,9 +37,9 @@ class EntityDataDelegate<V>(
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: V) {
-        lock.lock()
         this.value = value
         data[field] = value
+        lock.lock()
         unsafeSet(value)
         lock.unlock()
     }
