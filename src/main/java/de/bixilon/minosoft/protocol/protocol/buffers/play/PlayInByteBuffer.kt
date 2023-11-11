@@ -223,6 +223,7 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun readPlayerProperties(): PlayerProperties {
         var textures: PlayerTextures? = null
+
         for (i in 0 until readVarInt()) {
             val name = readString()
             val value = readString()

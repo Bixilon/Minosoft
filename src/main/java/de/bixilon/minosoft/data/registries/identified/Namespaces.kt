@@ -15,12 +15,17 @@ package de.bixilon.minosoft.data.registries.identified
 
 object Namespaces {
     const val MINECRAFT = "minecraft"
+    const val MOJANG = "mojang"
     const val MINOSOFT = "minosoft"
     const val DEFAULT = MINECRAFT
 
 
     fun minecraft(path: String): ResourceLocation {
         return ResourceLocation(MINECRAFT, path)
+    }
+
+    fun mojang(path: String): ResourceLocation {
+        return ResourceLocation(MOJANG, path)
     }
 
     fun minosoft(path: String): ResourceLocation {
