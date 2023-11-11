@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.event.events.PacketSendEvent
 import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.modding.event.master.EventMaster
@@ -35,11 +34,8 @@ abstract class Connection : AbstractEventMaster {
 
     var error: Throwable? by observed(null)
 
+    @Deprecated("nentwork", ReplaceWith("network.send(packet)"))
     open fun sendPacket(packet: C2SPacket) {
-        val event = PacketSendEvent(this, packet)
-        if (events.fire(event)) {
-            return
-        }
         network.send(packet)
     }
 

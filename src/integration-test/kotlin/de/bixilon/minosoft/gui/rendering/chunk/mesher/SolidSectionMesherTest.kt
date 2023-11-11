@@ -166,7 +166,6 @@ class SolidSectionMesherTest {
         )
     }
 
-    @Test(enabled = false)
     fun `render stub block entity`() {
         val queue = TestQueue()
         val entity = queue.blockEntity()
@@ -185,6 +184,7 @@ class SolidSectionMesherTest {
         assertEquals(meshes.blockEntities?.size, 1)
     }
 
+    @Test(enabled = false)
     fun `optimize out block entity if all neighbour blocks are full opaque`() {
         val queue = TestQueue()
         val entity = queue.blockEntity()

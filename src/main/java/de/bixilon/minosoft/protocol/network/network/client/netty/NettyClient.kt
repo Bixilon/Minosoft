@@ -145,6 +145,7 @@ class NettyClient(
     }
 
     override fun send(packet: C2SPacket) {
+        // TODO: packet listener
         if (detached) return
         if (sendingPaused) {
             packetQueue += packet

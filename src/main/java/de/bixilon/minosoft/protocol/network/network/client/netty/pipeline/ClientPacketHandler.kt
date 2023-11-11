@@ -18,7 +18,6 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
-import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
@@ -68,10 +67,7 @@ class ClientPacketHandler(
     }
 
     private fun handle(packet: S2CPacket) {
-        val event = PacketReceiveEvent(connection, packet)
-        if (connection.events.fire(event)) {
-            return
-        }
+        // TODO: packet listener
         when (packet) {
             is PlayS2CPacket -> handle(packet)
             is StatusS2CPacket -> handle(packet)

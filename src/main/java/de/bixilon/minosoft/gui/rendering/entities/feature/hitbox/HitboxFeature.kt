@@ -121,6 +121,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
 
 
     override fun draw() {
+        // TODO: update position with shader uniform
         val mesh = this.mesh ?: return
         if (mesh.state != Mesh.MeshStates.LOADED) mesh.load()
         val system = renderer.renderer.context.system
