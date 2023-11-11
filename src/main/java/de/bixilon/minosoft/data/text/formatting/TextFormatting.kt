@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.data.text.formatting
 
-import java.util.*
+import de.bixilon.minosoft.util.set.IntBitSet
 
+@Deprecated("BitEnumSet kutil 1.25")
 class TextFormatting(
-    val bits: BitSet = BitSet(FormattingCodes.VALUES.size),
+    val bits: IntBitSet = IntBitSet(),
 ) : Iterable<FormattingCodes> {
 
     operator fun minusAssign(code: FormattingCodes) {
@@ -40,7 +41,7 @@ class TextFormatting(
     }
 
     fun copy(): TextFormatting {
-        return TextFormatting(bits.clone() as BitSet)
+        return TextFormatting(bits.clone())
     }
 
     fun collect(): Set<FormattingCodes> {
@@ -68,10 +69,12 @@ class TextFormatting(
     }
 
     private inner class TextFormattingIterator : Iterator<FormattingCodes> {
+        private val length = bits.length()
         private var index = 0
 
         override fun hasNext(): Boolean {
-            return bits.length() > index
+            return length > index
+            // TODO: fairly broken!!! use kutil 1.25
         }
 
         override fun next(): FormattingCodes {
