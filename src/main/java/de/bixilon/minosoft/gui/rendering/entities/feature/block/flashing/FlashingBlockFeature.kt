@@ -42,6 +42,7 @@ open class FlashingBlockFeature(
 
     private fun updateFlashing(delta: Float) {
         if (delta > flashInterval) return
+        // TODO: exponential?
         progress += (delta / flashInterval)
         if (progress > maxFlash) {
             progress -= maxFlash * 2.0f

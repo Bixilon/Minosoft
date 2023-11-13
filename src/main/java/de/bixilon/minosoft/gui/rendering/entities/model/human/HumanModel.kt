@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.ArmAnimat
 import de.bixilon.minosoft.gui.rendering.entities.model.human.animator.LegAnimator
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.util.EntitySpeed
+import de.bixilon.minosoft.gui.rendering.entities.util.EntitySpeedAnimator
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 
 abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkeletalModel) : SkeletalFeature(renderer, model) {
@@ -27,6 +28,7 @@ abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkelet
     val arm = ArmAnimator(this, instance.transform.children["left_arm"]!!, instance.transform.children["right_arm"]!!)
 
     val speed = EntitySpeed(renderer.entity)
+    val speedAnimator = EntitySpeedAnimator(speed)
 
     override fun updatePosition() {
         super.updatePosition()
@@ -35,6 +37,7 @@ abstract class HumanModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkelet
 
     override fun update(millis: Long, delta: Float) {
         speed.update(delta)
+        speedAnimator.update(delta)
         super.update(millis, delta)
         leg.update(delta)
         arm.update(delta)

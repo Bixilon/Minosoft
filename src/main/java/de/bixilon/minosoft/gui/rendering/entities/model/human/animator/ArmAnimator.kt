@@ -14,53 +14,52 @@
 package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
 import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.math.MathConstants.PIf
-import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateXAssign
-import kotlin.math.sin
 
 class ArmAnimator(
     val model: HumanModel<*>,
     val left: TransformInstance,
     val right: TransformInstance,
 ) {
-    private var maxAngle = 0.0f
-    private var progress = 0.0f
-    private var strength = 1.0f
-
-    private fun updateAngle(delta: Float) {
-        this.maxAngle = interpolateLinear(model.speed.value * VELOCITY_ANGLE, 0.0f, MAX_ANGLE)
-        this.progress += strength * delta * 5.0f * model.speed.value
-        this.progress %= 2.0f
-    }
+    private var swinging = FloatArray(Arms.VALUES.size) { Float.NaN }
 
     fun update(delta: Float) {
-        updateAngle(delta)
         apply()
     }
 
     private fun apply() {
-        if (this.maxAngle == 0.0f) return
-        val progress = sin((progress - 1.0f) * PIf) * this.maxAngle
+        val angle = model.speedAnimator.getAngle(MAX_ANGLE).rad
 
-        val rad = progress.rad
+        apply(Arms.LEFT, angle)
+        apply(Arms.RIGHT, -angle)
+    }
 
-        left.value
-            .translateAssign(left.pivot)
-            .rotateXAssign(rad)
-            .translateAssign(left.nPivot)
-        right.value
-            .translateAssign(left.pivot)
-            .rotateXAssign(-rad)
-            .translateAssign(left.nPivot)
+    private fun apply(arm: Arms, walking: Float) {
+        val transform = this[arm]
+        val swinging = swinging[arm.ordinal]
+        if (swinging.isNaN()) {
+            transform.value
+                .translateAssign(right.pivot)
+                .rotateXAssign(walking)
+                .translateAssign(right.nPivot)
+        }
+
+    }
+
+    private operator fun get(arm: Arms) = when (arm) {
+        Arms.LEFT -> left
+        Arms.RIGHT -> right
+    }
+
+
+    fun swing(arm: Arms) {
+        swinging[arm.ordinal] = 0.0f
     }
 
     private companion object {
-        const val MAX_ANGLE = 45.0f
-        const val VELOCITY_ANGLE = 5.0f
+        const val MAX_ANGLE = 40.0f
     }
 }

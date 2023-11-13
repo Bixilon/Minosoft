@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.player
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -38,6 +39,7 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -141,6 +143,7 @@ abstract class PlayerEntity(
 
     fun swingHand(hand: Hands) {
         val arm = hand.getArm(mainArm)
+        renderer?.nullCast<PlayerRenderer<*>>()?.model?.arm?.swing(arm)
     }
 
     override fun handleAnimation(animation: EntityAnimations) {

@@ -36,7 +36,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity), DynamicTextureListener {
-    protected var model: PlayerModel? = null
+    var model: PlayerModel? = null
     var skin: DynamicTexture? = null
     private var refresh = true
 

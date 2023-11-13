@@ -19,41 +19,70 @@ import de.bixilon.kutil.math.interpolation.Interpolator
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.math.sqrt
 
 class EntitySpeed(val entity: Entity) {
     private val interpolator = Interpolator(0.0f, FloatInterpolation::interpolateLinear)
     private var position0 = Vec3d.EMPTY
+    private var length2 = 0.0f
+    private var age = 0
 
     val value: Float get() = interpolator.value
 
 
-    private fun update() {
-        val position = entity.renderInfo.position
+    private fun updateLength2() {
+        val position = entity.physics.position
         val deltaX = position.x - position0.x
         val deltaZ = position.z - position0.z
 
         this.position0 = position
 
-        val length2 = (deltaX * deltaX + deltaZ * deltaZ).toFloat()
 
-        var value = length2 * TIME_RATIO / 5.0f
+        var length2 = (deltaX * deltaX + deltaZ * deltaZ).toFloat()
 
-        // TODO: scale value that it never reaches 1.0
+        if (length2 < 0.00003f) {
+            length2 = 0.0f
+        }
+
+        this.length2 = length2
+    }
+
+
+    private fun push(step: Float) {
+        if (length2 < 0.003f) {
+            return this.interpolator.push(0.0f)
+        }
+        val speed = sqrt(length2) * (step / (ProtocolDefinition.TICK_TIMEf / 1000.0f))
+
+        var value = (1.0f - (1.0f / (speed + 1.0f))) * 1.1f
         if (value > 1.0f) value = 1.0f
-        if (value < 0.1f && value > 0.001f) value = 0.1f
 
         this.interpolator.push(value)
     }
 
     fun update(delta: Float) {
-        if (this.interpolator.delta >= 1.0f) {
-            update()
+        val age = entity.age
+        if (age == this.age) return
+        this.age = age
+
+        val previous = this.length2
+        updateLength2()
+
+        val rapid = when {
+            previous < SPEED_THRESHOLD && length2 > SPEED_THRESHOLD -> true // start
+            previous > SPEED_THRESHOLD && length2 < SPEED_THRESHOLD -> true // stop
+            else -> false
         }
-        this.interpolator.add(delta, TIME)
+        val step = if (rapid) RAPID_STEP else NORMAL_STEP
+        if (rapid || this.interpolator.delta >= 1.0f) {
+            push(step)
+        }
+        this.interpolator.add(delta, step)
     }
 
     private companion object {
-        const val TIME = 0.15f
-        const val TIME_RATIO = TIME / (ProtocolDefinition.TICK_TIMEf / 1000.0f)
+        const val SPEED_THRESHOLD = 0.0005f
+        const val RAPID_STEP = 0.05f
+        const val NORMAL_STEP = 0.1f
     }
 }
