@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.feature
 
+import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature.Companion.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
 class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFeature> {
@@ -31,6 +32,7 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
 
     fun update(millis: Long, delta: Float) {
         for (feature in features) {
+            if (feature.isInvisible()) continue
             feature.update(millis, delta)
         }
     }

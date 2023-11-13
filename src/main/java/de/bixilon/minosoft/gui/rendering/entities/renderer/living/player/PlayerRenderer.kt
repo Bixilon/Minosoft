@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
-import de.bixilon.minosoft.gui.rendering.entities.feature.text.name.EntityScoreFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.score.EntityScoreFeature
 import de.bixilon.minosoft.gui.rendering.entities.model.human.PlayerModel
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.loader.ModelLoader

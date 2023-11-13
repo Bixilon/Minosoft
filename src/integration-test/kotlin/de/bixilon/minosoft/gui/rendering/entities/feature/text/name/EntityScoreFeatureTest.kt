@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillbaordTextTestUtil.assertEmpty
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillbaordTextTestUtil.assertText
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.text.score.EntityScoreFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test

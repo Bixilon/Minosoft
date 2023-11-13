@@ -18,6 +18,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature.Companion.isInvisible
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -81,7 +82,7 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
         lock.lock()
         size++
         for (feature in renderer.features) {
-            if (!feature.enabled || !feature.visible) continue
+            if (!feature.enabled || !feature.visible || feature.isInvisible()) continue
             feature.collect(this)
         }
         lock.unlock()

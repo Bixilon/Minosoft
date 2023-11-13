@@ -38,6 +38,7 @@ abstract class EntityRenderer<E : Entity>(
     val features = FeatureManager(this)
     val info = entity.renderInfo
     var distance: Double = 0.0
+    var isInvisible: Boolean = false
 
     val hitbox = HitboxFeature(this).register()
     val name = EntityNameFeature(this).register()
@@ -71,6 +72,7 @@ abstract class EntityRenderer<E : Entity>(
     }
 
     open fun update(millis: Long, delta: Float) {
+        this.isInvisible = entity.isInvisible(renderer.connection.camera.entity)
         updateLight(delta)
         updateRenderInfo(millis)
         updateMatrix(delta)

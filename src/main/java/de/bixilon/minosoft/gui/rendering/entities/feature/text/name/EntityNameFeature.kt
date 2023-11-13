@@ -27,11 +27,13 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 
-class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null) {
+class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(renderer, null), InvisibleFeature {
     private var delta = 0.0f
+    override val renderInvisible get() = true
 
     init {
         renderer.entity.data.observe<ChatComponent?>(Entity.CUSTOM_NAME_DATA) { delta = 0.0f }

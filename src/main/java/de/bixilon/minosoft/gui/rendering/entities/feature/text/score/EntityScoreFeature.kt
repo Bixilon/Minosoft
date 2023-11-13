@@ -11,20 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entities.feature.text.name
+package de.bixilon.minosoft.gui.rendering.entities.feature.text.score
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.entities.feature.properties.InvisibleFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.text.BillboardTextMesh
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 
-class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(renderer, null) {
+class EntityScoreFeature(renderer: PlayerRenderer<*>) : BillboardTextFeature(renderer, null), InvisibleFeature {
     private var delta = 0.0f
     private val manager = renderer.renderer.features.score
+    override val renderInvisible get() = true
 
 
     override fun update(millis: Long, delta: Float) {
