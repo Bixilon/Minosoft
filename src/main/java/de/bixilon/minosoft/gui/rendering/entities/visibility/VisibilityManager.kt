@@ -14,37 +14,58 @@
 package de.bixilon.minosoft.gui.rendering.entities.visibility
 
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class VisibilityManager(val renderer: EntitiesRenderer) {
     private var update = false
     var size: Int = 0
         private set
 
-    private val count = AtomicInteger()
     val opaque: ArrayList<EntityRenderFeature> = ArrayList(1000)
     val translucent: ArrayList<EntityRenderFeature> = ArrayList(1000)
     private val lock = SimpleLock()
     private val graph = renderer.context.camera.visibilityGraph
     private val frustum = renderer.context.camera.matrixHandler.frustum
+    private var renderDistance = 0
 
     fun init() {
         renderer.connection.events.listen<VisibilityGraphChangeEvent> { update = true }
+        renderer.connection.events.listen<ViewDistanceChangeEvent> { updateViewDistance(server = it.viewDistance) }
+        renderer.profile.general::renderDistance.observe(this, true) { updateViewDistance(entity = it) }
     }
+
+    private fun updateViewDistance(entity: Int = renderer.profile.general.renderDistance, server: Int = renderer.connection.world.view.serverViewDistance) {
+        var distance = if (entity < 0) (server - 1) else entity
+        distance *= ProtocolDefinition.SECTION_LENGTH
+        this.renderDistance = distance * distance // length^2
+    }
+
 
     fun reset() {
         opaque.clear()
         translucent.clear()
-        count.set(0)
+        size = 0
     }
 
-    fun update(renderer: EntityRenderer<*>) {
-        // TODO: check render distance (and maybe entity distance)
+    private fun EntityRenderer<*>.isInRenderDistance(): Boolean {
+        return renderDistance < 0 || distance <= renderDistance
+    }
+
+    fun update(renderer: EntityRenderer<*>, millis: Long) {
+        if (!renderer.isInRenderDistance()) {
+            // distance is only updated if the renderer is visible, so force update
+            renderer.updateRenderInfo(millis)
+        }
+        if (!renderer.isInRenderDistance()) {
+            return renderer.updateVisibility(true, true)
+        }
         val aabb = renderer.entity.renderInfo.cameraAABB
         val visible = aabb in frustum
         if (!visible) {
@@ -57,8 +78,8 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
 
     fun collect(renderer: EntityRenderer<*>) {
         if (!renderer.visible) return
-        count.incrementAndGet()
         lock.lock()
+        size++
         for (feature in renderer.features) {
             if (!feature.enabled || !feature.visible) continue
             feature.collect(this)
@@ -71,7 +92,6 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
         this.opaque.sort()
         this.translucent.sort()
         this.update = false
-        size = count.get()
     }
 
     operator fun get(layer: EntityLayer) = when (layer) {

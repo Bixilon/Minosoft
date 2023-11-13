@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.entity.features.FeaturesC
+import de.bixilon.minosoft.config.profile.profiles.entity.general.GeneralC
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -37,6 +38,7 @@ class EntityProfile(
     override var description by StringDelegate(this, description ?: "")
 
 
+    val general = GeneralC(this)
     val features = FeaturesC(this)
 
     override fun toString(): String {

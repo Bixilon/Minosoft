@@ -60,7 +60,8 @@ class EntitiesRenderer(
         this.visibility.reset()
         renderers.iterate {
             if (reset) it.reset()
-            visibility.update(it)
+            visibility.update(it, millis)
+            if (!it.visible) return@iterate
             it.update(millis)
             visibility.collect(it)
         }
@@ -91,7 +92,8 @@ class EntitiesRenderer(
 
     companion object : RendererBuilder<EntitiesRenderer> {
 
-        override fun build(connection: PlayConnection, context: RenderContext): EntitiesRenderer {
+        override fun build(connection: PlayConnection, context: RenderContext): EntitiesRenderer? {
+            if (!connection.profiles.entity.general.enabled) return null
             return EntitiesRenderer(connection, context)
         }
     }

@@ -72,10 +72,14 @@ abstract class EntityRenderer<E : Entity>(
 
     open fun update(millis: Long, delta: Float) {
         updateLight(delta)
-        entity.draw(millis)
-        this.distance = (entity.renderInfo.eyePosition - renderer.connection.camera.entity.renderInfo.eyePosition).length2()
+        updateRenderInfo(millis)
         updateMatrix(delta)
         features.update(millis, delta)
+    }
+
+    open fun updateRenderInfo(millis: Long) {
+        entity.draw(millis)
+        this.distance = (entity.renderInfo.eyePosition - renderer.connection.camera.entity.renderInfo.eyePosition).length2()
     }
 
     private fun getCurrentLight(): Int {
