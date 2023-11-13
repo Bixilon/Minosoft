@@ -112,7 +112,7 @@ abstract class PlayerEntity(
 
     @get:SynchronizedEntityData
     open val mainArm: Arms
-        get() = if (data.get(MAIN_ARM_DATA, 0x00.toByte()).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
+        get() = if (data.get(MAIN_ARM_DATA, 0x01.toByte()).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
 
     @get:SynchronizedEntityData
     val leftShoulderData: JsonObject?
