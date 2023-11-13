@@ -40,4 +40,15 @@ class EntityHoverEventTest {
 
         assertEquals(expected, event)
     }
+
+    @Test
+    fun `nbt uuid`() {
+        val data = mapOf("text" to mapOf("name" to "abc", "id" to intArrayOf(123, 456, 789, 321), "type" to "player"))
+        val event = EntityHoverEvent.build(data, false)
+
+        val expected = EntityHoverEvent("0000007b-0000-01c8-0000-031500000141".toUUID(), minecraft("player"), name = TextComponent("abc"))
+
+        assertEquals(expected, event)
+        // TODO: verify correct uuid reading
+    }
 }
