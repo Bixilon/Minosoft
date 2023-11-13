@@ -76,7 +76,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         offset.y += TEXT_PROPERTIES.lineHeight
 
         this.scores.lock.acquire()
-        val scores = this.scores.unsafe.entries.sortedWith { a, b -> a.key.compareTo(b.key) }
+        val scores = this.scores.unsafe.entries.sortedWith { a, b -> a.value.score.compareTo(b.value.score) }
         this.scores.lock.release()
 
         var index = 0
