@@ -14,9 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.entities.model.human.animator
 
 import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.func.sin
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.entities.model.human.HumanModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.TransformInstance
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateXAssign
 
 class ArmAnimator(
@@ -28,6 +32,13 @@ class ArmAnimator(
 
     fun update(delta: Float) {
         apply()
+        for ((arm, progress) in swinging.withIndex()) {
+            if (progress.isNaN()) continue
+            swinging[arm] += delta * 5.0f
+            if (swinging[arm] >= 1.0f) {
+                swinging[arm] = Float.NaN
+            }
+        }
     }
 
     private fun apply() {
@@ -40,12 +51,28 @@ class ArmAnimator(
     private fun apply(arm: Arms, walking: Float) {
         val transform = this[arm]
         val swinging = swinging[arm.ordinal]
+        transform.value
+            .translateAssign(right.pivot)
+
         if (swinging.isNaN()) {
-            transform.value
-                .translateAssign(right.pivot)
-                .rotateXAssign(walking)
-                .translateAssign(right.nPivot)
+            transform.value.rotateXAssign(walking)
+        } else {
+            var swing = 1.0f - (swinging)
+            swing *= swing
+            swing *= swing
+            swing = 1.0f - swing
+
+            val sin = (swing * PIf).sin
+
+            val z = (1.0f - (swing * 1.2f)) * (-20.0f).rad // TODO: animate the 1.2f back to 1.0f
+            val y = sin * 0.2f
+            val x = (sin * 1.2f + sin) * -0.65f
+
+
+            transform.value.rotateRadAssign(Vec3(x, y, if (arm == Arms.RIGHT) z else -z))
         }
+        transform.value
+            .translateAssign(right.nPivot)
 
     }
 
@@ -56,6 +83,7 @@ class ArmAnimator(
 
 
     fun swing(arm: Arms) {
+        if (!swinging[arm.ordinal].isNaN()) return
         swinging[arm.ordinal] = 0.0f
     }
 

@@ -35,12 +35,12 @@
         }
       }
     },
-    "left_leg": {
+    "right_leg": {
       "from": [-4, 0, -2],
       "to": [0, 12, 2],
       "uv": [0, 16],
       "texture": "minecraft:skin",
-      "transform": "left_leg",
+      "transform": "right_leg",
       "faces": "all",
       "children": {
         "pants": {
@@ -52,12 +52,12 @@
         }
       }
     },
-    "right_leg": {
+    "left_leg": {
       "from": [0, 0, -2],
       "to": [4, 12, 2],
       "uv": [16, 48],
       "texture": "minecraft:skin",
-      "transform": "right_leg",
+      "transform": "left_leg",
       "faces": "all",
       "children": {
         "pants": {
@@ -69,12 +69,12 @@
         }
       }
     },
-    "left_arm": {
+    "right_arm": {
       "from": [-7, 12, -2],
       "to": [-4, 24, 2],
       "uv": [40, 16],
       "texture": "minecraft:skin",
-      "transform": "left_arm",
+      "transform": "right_arm",
       "faces": "all",
       "children": {
         "sleeve": {
@@ -86,12 +86,12 @@
         }
       }
     },
-    "right_arm": {
+    "left_arm": {
       "from": [4, 12, -2],
       "to": [7, 24, 2],
       "uv": [32, 48],
       "texture": "minecraft:skin",
-      "transform": "right_arm",
+      "transform": "left_arm",
       "faces": "all",
       "children": {
         "sleeve": {
@@ -112,13 +112,13 @@
       "pivot": [3, 12, 0]
     },
     "right_leg": {
-      "pivot": [3, 12, 0]
+      "pivot": [-3, 12, 0]
     },
     "left_arm": {
-      "pivot": [-4, 24, 0]
+      "pivot": [4, 24, 0]
     },
     "right_arm": {
-      "pivot": [4, 24, 0]
+      "pivot": [-4, 24, 0]
     }
   },
   "textures": {
