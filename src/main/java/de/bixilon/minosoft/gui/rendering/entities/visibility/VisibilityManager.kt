@@ -65,13 +65,13 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
             renderer.updateRenderInfo(millis)
         }
         if (!renderer.isInRenderDistance()) {
-            return renderer.updateVisibility(true, true)
+            return renderer.updateVisibility(true, false)
         }
         val aabb = renderer.entity.renderInfo.cameraAABB
         val visible = aabb in frustum
         if (!visible) {
             // TODO: renderer/features: renderOccluded -> occlusion culling is faster than frustum culling
-            return renderer.updateVisibility(true, true)
+            return renderer.updateVisibility(true, false)
         }
         val occluded = graph.isAABBOccluded(aabb)
         renderer.updateVisibility(occluded, true)
