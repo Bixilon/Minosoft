@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.enums.ValuesEnum
 
 class EnumProperty<T : Enum<*>>(
     name: String,
     val values: ValuesEnum<T>,
-    val allowed: Set<T>? = null,
+    val allowed: BitEnumSet<T>? = null,
 ) : BlockProperty<T>(name) {
 
     override fun parse(value: Any): T {

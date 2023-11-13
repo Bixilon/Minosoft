@@ -328,13 +328,12 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
-    @Deprecated("use values enum")
-    inline fun <reified T : Enum<T>> readEnumSet(values: Array<T>): Set<T> {
+    inline fun <reified T : Enum<T>> readEnumSet(universe: ValuesEnum<T>, values: Array<T>): Set<T> {
         val bitset = readBitSet(values.size)
         if (bitset.isEmpty) {
             return emptySet()
         }
-        val set = EnumSet.noneOf(T::class.java)
+        val set = universe.set()
         readEnumSet(bitset, set, values)
         return set
     }

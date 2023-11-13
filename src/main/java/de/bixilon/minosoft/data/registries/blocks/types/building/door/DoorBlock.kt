@@ -65,7 +65,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.versions.Version
-import java.util.*
 
 abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, ModelChooser, DoubleSizeBlock, InteractBlockHandler, OutlinedBlock, CollidableBlock, BlockStateBuilder, LightedBlock {
     override val item: Item = this::item.inject(identifier)
@@ -168,7 +167,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
     }
 
     companion object {
-        val HALF = EnumProperty("half", Halves, EnumSet.of(Halves.UPPER, Halves.LOWER))
+        val HALF = EnumProperty("half", Halves, Halves.set(Halves.UPPER, Halves.LOWER))
         val HINGE = EnumProperty("hinge", Sides)
         val POWERED = BlockProperties.POWERED
         val FACING = BlockProperties.FACING_HORIZONTAL

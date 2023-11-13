@@ -46,7 +46,6 @@ import org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT
 import org.lwjgl.opengl.GL43.glDebugMessageCallback
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
-import java.util.*
 
 class OpenGLRenderSystem(
     private val context: RenderContext,
@@ -54,7 +53,7 @@ class OpenGLRenderSystem(
     private var thread: Thread? = null
     override val nativeShaders: MutableSet<NativeShader> = mutableSetOf()
     override val shaders: MutableSet<Shader> = mutableSetOf()
-    private val capabilities: EnumSet<RenderingCapabilities> = EnumSet.noneOf(RenderingCapabilities::class.java)
+    private val capabilities: MutableSet<RenderingCapabilities> = RenderingCapabilities.set()
     override lateinit var vendor: OpenGLVendor
         private set
     override var active: Boolean = false

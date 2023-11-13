@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.SnowyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
-import java.util.*
 
 @Deprecated("Fallback data")
 object BlockProperties {
@@ -36,7 +35,7 @@ object BlockProperties {
     val WATERLOGGED = BooleanProperty("waterlogged").register()
     val STAIR_DIRECTIONAL = EnumProperty("shape", Shapes).register()
     val SLAB_HALF = EnumProperty("half", Halves).register()
-    val STAIR_HALF = EnumProperty("half", Halves, EnumSet.of(Halves.UPPER, Halves.LOWER))
+    val STAIR_HALF = EnumProperty("half", Halves, Halves.set(Halves.UPPER, Halves.LOWER))
     val SLAB_TYPE = EnumProperty("type", Halves).register()
     val FLUID_LEVEL = FluidBlock.LEVEL.register()
     val MOISTURE_LEVEL = IntProperty("moisture").register()
@@ -119,7 +118,7 @@ object BlockProperties {
 
     val AXIS = EnumProperty("axis", Axes).register()
     val FACING = EnumProperty("facing", Directions).register()
-    val FACING_HORIZONTAL = EnumProperty("facing", Directions, EnumSet.of(Directions.NORTH, Directions.SOUTH, Directions.WEST, Directions.EAST))
+    val FACING_HORIZONTAL = EnumProperty("facing", Directions, Directions.set(Directions.NORTH, Directions.SOUTH, Directions.WEST, Directions.EAST))
     val ROTATION = IntProperty("rotation").register()
     val ORIENTATION = EnumProperty("orientation", Orientations).register()
 
