@@ -42,7 +42,7 @@ class SurvivalDigger(
 
     private fun cancel(status: BlockDigStatus) {
         breaking.executor.cancel()
-        connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, status.position, sequence = 0))
+        connection.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, status.position, sequence = 0))
         this.status = null
     }
 
@@ -50,7 +50,7 @@ class SurvivalDigger(
         val sequence = breaking.executor.finish()
         this.status = null
         if (!instant) {
-            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, status.position, status.direction, sequence))
+            connection.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, status.position, status.direction, sequence))
             breaking.addCooldown()
         }
         breaking.interactions.swingHand(Hands.MAIN)
@@ -118,7 +118,7 @@ class SurvivalDigger(
         } else {
             nextStatus = BlockDigStatus(target.blockPosition, target.state, slot, productivity, target.direction)
             val sequence = breaking.executor.start(target.blockPosition, target.state)
-            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
+            connection.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
         }
 
         if (instant || nextStatus.progress >= 1.0f) {
@@ -128,11 +128,11 @@ class SurvivalDigger(
         this.status = nextStatus
     }
 
-    fun dig(target: BlockTarget?) {
+    fun dig(target: BlockTarget?): Boolean {
         var status = this.status
         if (target == null) {
             status?.let { cancel(it) }
-            return
+            return false
         }
         val slot = connection.player.items.hotbar
 
@@ -141,5 +141,6 @@ class SurvivalDigger(
             status = null
         }
         tick(status, target, slot)
+        return true
     }
 }

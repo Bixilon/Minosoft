@@ -137,9 +137,9 @@ class UseHandler(
 
     fun sendItemUse(hand: Hands, stack: ItemStack) {
         if (connection.version < V_15W31A) {
-            connection.sendPacket(BlockInteractC2SP(null, null, null, stack, hand, false, 1))
+            connection.network.send(BlockInteractC2SP(null, null, null, stack, hand, false, 1))
         }
-        connection.sendPacket(UseItemC2SP(hand, interactions.connection.sequence.getAndIncrement()))
+        connection.network.send(UseItemC2SP(hand, interactions.connection.sequence.getAndIncrement()))
     }
 
     private companion object {
