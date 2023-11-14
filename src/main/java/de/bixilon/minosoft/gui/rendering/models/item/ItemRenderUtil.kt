@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.models.item
 
 import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 object ItemRenderUtil {
 
     @Deprecated("please let this be the last fucking hack in this game") // TODO
-    fun Item.getModel(gui: GUIRenderer): ItemRender? {
-        val block = gui.connection.registries.block[identifier]
+    fun Item.getModel(connection: PlayConnection): ItemRender? {
+        val block = connection.registries.block[identifier]
         return block?.model ?: block?.states?.default?.model ?: model
     }
 }

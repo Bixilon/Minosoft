@@ -97,6 +97,7 @@ class GUIRenderer(
             destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
             sourceAlpha = BlendingFunctions.ONE,
             destinationAlpha = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
+            faceCulling = false,
         )
         shader.use()
     }

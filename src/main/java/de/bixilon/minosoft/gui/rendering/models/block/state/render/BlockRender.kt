@@ -26,6 +26,8 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
+import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
+import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 
@@ -37,7 +39,7 @@ interface BlockRender : ItemRender {
 
 
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
-        val consumer = BlockGUIConsumer(gui, offset, consumer, options, size)
+        val consumer = BlockGUIConsumer(gui, offset, consumer, options, getDisplay(DisplayPositions.GUI) ?: ModelDisplay.DEFAULT, size)
 
         render(consumer, stack, tints)
     }

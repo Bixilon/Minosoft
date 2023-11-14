@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
@@ -36,7 +37,7 @@ class BlockGUIConsumerTest {
         val gui = GUIRenderer::class.java.allocate()
         val consumer = GUIConsumer()
 
-        return BlockGUIConsumer(gui, Vec2(11, 12), consumer, null, Vec2(45))
+        return BlockGUIConsumer(gui, Vec2(11, 12), consumer, null, ModelDisplay.DEFAULT, Vec2(45))
     }
 
     private fun BlockGUIConsumer.assertVertices(vararg expected: Vec2) {

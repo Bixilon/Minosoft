@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.render
 
 import de.bixilon.kotlinglm.GLM
-import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
+import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 
 class BlockGUIConsumer(
@@ -32,6 +32,7 @@ class BlockGUIConsumer(
     val offset: Vec2,
     val consumer: GUIVertexConsumer,
     val options: GUIVertexOptions?,
+    val display: ModelDisplay,
     val size: Vec2,
 ) : BlockVertexConsumer {
     override val order = consumer.order
@@ -42,28 +43,32 @@ class BlockGUIConsumer(
     override fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
 
     override fun addQuad(positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) {
-        val position = Vec3(0, 0, -1) // one block offset in north direction
-        val front = Vec3(0, 0, 1) // and directly looking onto the south side
-        // TODO: look from front (whatever that means) to the block in 45° angle from above
+        val position = Vec3(1.6f, 1.65f, 0.5f)// one block offset in north direction
+        // TODO: look from front
+        val front = Vec3(-0.5f, -0.3f, 0.5f).normalizeAssign() // EntityRotation(45.0f, 45.0f).front
         val view = GLM.lookAt(position, position + front, CameraDefinition.CAMERA_UP_VEC3)
-        val projection = GLM.perspective(45.0f.rad, size.x / size.y, CameraDefinition.NEAR_PLANE, CameraDefinition.FAR_PLANE)
+        val size = size * 1.3f * 10.0f
+        //   val projection = GLM.perspective(105.0f.rad, size.x / size.y, CameraDefinition.NEAR_PLANE, 3.0f)
 
-        val viewProjection = view * projection
+        val viewProjection = view //* projection
 
         val tint = (lightTint.toBits() shl 8) or 0xFF
 
-        order.iterate { p, uv ->
+
+        gui.context.system.quadOrder.iterate { p, uv ->
             val vertexOffset = p * Vec3.length
             val uvOffset = uv * Vec2.length
 
             val xyz = Vec4(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2], 1.0f)
 
-            val a = viewProjection * xyz
+            val out = viewProjection * xyz
 
-            var x = (a.x * 0.5f) + 0.5f
+            var x = ((out.x * 0.5f))
             x = (x * size.x) + offset.x
-            var y = (a.y * 0.5f) + 0.5f
-            y = (y * size.y) + offset.y
+            var y = ((out.y * 0.5f))
+            y = (-y * size.y) + offset.y
+
+            // TODO: depth
 
             consumer.addVertex(x, y, textureId, uvData[uvOffset], uvData[uvOffset + 1], tint, options)
         }

@@ -15,21 +15,24 @@ package de.bixilon.minosoft.gui.rendering.models.raw.display
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 
 data class ModelDisplay(
-    val rotation: Vec3?,
-    val translation: Vec3?,
-    val scale: Vec3?,
+    val rotation: Vec3 = Vec3.EMPTY_INSTANCE,
+    val translation: Vec3 = Vec3.EMPTY_INSTANCE,
+    val scale: Vec3 = Vec3.ONE,
 ) {
     companion object {
+        val DEFAULT = ModelDisplay()
 
         fun deserialize(data: JsonObject): ModelDisplay {
             return ModelDisplay(
-                rotation = data["rotation"]?.toVec3()?.rad,
-                translation = data["translation"]?.toVec3(),
-                scale = data["scale"]?.toVec3(),
+                rotation = data["rotation"]?.toVec3()?.rad ?: Vec3.EMPTY_INSTANCE,
+                translation = data["translation"]?.toVec3() ?: Vec3.EMPTY_INSTANCE,
+                scale = data["scale"]?.toVec3() ?: Vec3.ONE,
             )
         }
     }

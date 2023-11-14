@@ -44,7 +44,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 ### Features
 
 - Blocks
-- Entities (hitboxes and players for now)
+- Entities
 - Block entities (e.g. signs, chests)
 - HUD and GUI (inventory, menus, ...)
 - Particles

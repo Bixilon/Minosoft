@@ -78,7 +78,7 @@ class RawItemElement(
         val textureSize = size - 1
 
         val item = stack.item.item
-        val model = item.getModel(guiRenderer)
+        val model = item.getModel(guiRenderer.connection)
         if (model != null) {
             val tints = context.tints.getItemTint(stack)
             model.render(guiRenderer, offset, consumer, options, textureSize, stack, tints)

@@ -27,6 +27,7 @@ enum class DisplayPositions(vararg names: String = arrayOf()) : AliasableEnum {
     HEAD,
     GROUND,
     FIXED,
+    WORLD,
     ;
 
     override val names: Array<String> = names.unsafeCast()

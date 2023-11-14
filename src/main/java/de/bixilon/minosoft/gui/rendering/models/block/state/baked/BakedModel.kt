@@ -62,7 +62,8 @@ class BakedModel(
     }
 
     private fun render(mesh: BlockVertexConsumer, tints: IntArray?) {
-        for (faces in faces) {
+        for ((directionIndex, faces) in faces.withIndex()) {
+            //     if(directionIndex == Directions.O_NORTH || directionIndex == Directions.O_UP || directionIndex == Directions.O_EAST)
             for (face in faces) {
                 face.render(mesh, tints)
             }
