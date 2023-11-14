@@ -33,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.models.item.ItemRenderUtil.getModel
 
 class RawItemElement(
     guiRenderer: GUIRenderer,
@@ -77,7 +78,7 @@ class RawItemElement(
         val textureSize = size - 1
 
         val item = stack.item.item
-        val model = item.model
+        val model = item.getModel(guiRenderer)
         if (model != null) {
             val tints = context.tints.getItemTint(stack)
             model.render(guiRenderer, offset, consumer, options, textureSize, stack, tints)
