@@ -36,6 +36,10 @@ class GUIMesh(
         addVertex(data, halfSize, x, y, texture ?: whiteTexture.texture, u, v, tint, options)
     }
 
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) {
+        addVertex(data, halfSize, x, y, textureId, u, v, tint, options)
+    }
+
     override fun addCache(cache: GUIMeshCache) {
         data.add(cache.data)
     }
@@ -60,14 +64,18 @@ class GUIMesh(
         }
 
         fun addVertex(data: AbstractFloatList, halfSize: Vec2, x: Float, y: Float, texture: ShaderIdentifiable, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
+            addVertex(data, halfSize, x, y, texture.shaderId.buffer(), u, v, tint.rgba, options)
+        }
+
+        fun addVertex(data: AbstractFloatList, halfSize: Vec2, x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) {
             val x = x / halfSize.x - 1.0f
             val y = 1.0f - y / halfSize.y
 
 
-            var color = tint.rgba
+            var color = tint
 
             if (options != null) {
-                options.tintColor?.let { color = tint.mix(it).rgba }
+                options.tintColor?.let { color = RGBColor(tint).mix(it).rgba }
 
                 if (options.alpha != 1.0f) {
                     val alpha = color and 0xFF
@@ -81,7 +89,7 @@ class GUIMesh(
             data.add(y)
             data.add(u)
             data.add(v)
-            data.add(texture.shaderId.buffer())
+            data.add(textureId)
             data.add(color.buffer())
         }
     }

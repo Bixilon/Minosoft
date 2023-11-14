@@ -72,6 +72,10 @@ class SignBlockEntityRenderer(
         state.model?.render(mesh, state, tints) // render wood part
     }
 
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
+        // TODO
+    }
+
     private fun renderText(state: BlockState, sign: SignBlockEntity, offset: FloatArray, mesh: ChunkMesh, light: Int) {
         when (state.block) {
             is StandingSignBlock -> renderStandingText(state.getRotation(), sign, offset, mesh, light)
@@ -123,7 +127,7 @@ class SignBlockEntityRenderer(
         this += 0.5f
     }
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = Unit
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) = Unit
 
     companion object {
         private val TEXT_PROPERTIES = TextRenderProperties(scale = 1.35f, allowNewLine = false, shadow = false, fallbackColor = ChatColors.BLACK)

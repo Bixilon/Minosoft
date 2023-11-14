@@ -48,11 +48,11 @@ class BuiltModel(
         return rendered
     }
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
-        model.render(gui, offset, consumer, options, size, stack)
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
+        model.render(gui, offset, consumer, options, size, stack, tints)
 
         for (dynamic in this.dynamic) {
-            dynamic.render(gui, offset, consumer, options, size, stack)
+            dynamic.render(gui, offset, consumer, options, size, stack, tints)
         }
     }
 
@@ -60,6 +60,13 @@ class BuiltModel(
         model.render(mesh, state, tints)
         for (dynamic in this.dynamic) {
             dynamic.render(mesh, state, tints)
+        }
+    }
+
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
+        model.render(mesh, stack, tints)
+        for (dynamic in this.dynamic) {
+            dynamic.render(mesh, stack, tints)
         }
     }
 

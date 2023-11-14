@@ -39,6 +39,7 @@ class BillboardTextMesh(context: RenderContext) : Mesh(context, BillboardTextMes
         data.add(tint.rgba.buffer())
     }
 
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) = Broken("This is not a text only consumer!")
 
     data class BillboardTextMeshStruct(

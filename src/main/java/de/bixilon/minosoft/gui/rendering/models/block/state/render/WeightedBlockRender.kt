@@ -66,12 +66,16 @@ class WeightedBlockRender(
         return getModel(random, position).render(position, offset, mesh, random, state, neighbours, light, tints, entity)
     }
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
-        models.first().model.render(gui, offset, consumer, options, size, stack)
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
+        models.first().model.render(gui, offset, consumer, options, size, stack, tints)
     }
 
     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
         models.first().model.render(mesh, state, tints)
+    }
+
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
+        models.first().model.render(mesh, stack, tints)
     }
 
 

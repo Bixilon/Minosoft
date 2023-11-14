@@ -36,7 +36,8 @@ class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = prototype()
     override fun getParticleTexture(random: Random?, position: Vec3i) = prototype()
     override fun getProperties(direction: Directions) = prototype()
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = prototype()
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) = prototype()
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) = prototype()
 
 
     private fun prototype(): Nothing = throw IllegalStateException("prototype")

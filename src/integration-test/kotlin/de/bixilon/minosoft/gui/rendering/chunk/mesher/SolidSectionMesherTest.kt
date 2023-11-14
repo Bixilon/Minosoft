@@ -444,8 +444,9 @@ class SolidSectionMesherTest {
                         return true
                     }
 
-                    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = Broken()
+                    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) = Broken()
                     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = Broken()
+                    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) = Broken()
                 }
             }
 
@@ -457,8 +458,9 @@ class SolidSectionMesherTest {
 
     private open class TestModel(val queue: TestQueue, val properties: SideProperties?) : BlockRender {
 
-        override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) = Broken()
+        override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) = Broken()
         override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = Broken()
+        override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) = Broken()
         override fun getProperties(direction: Directions): SideProperties? {
             return this.properties
         }

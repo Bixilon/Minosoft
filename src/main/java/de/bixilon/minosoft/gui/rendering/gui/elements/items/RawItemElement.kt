@@ -79,7 +79,8 @@ class RawItemElement(
         val item = stack.item.item
         val model = item.model
         if (model != null) {
-            model.render(guiRenderer, offset, consumer, options, textureSize, stack)
+            val tints = context.tints.getItemTint(stack)
+            model.render(guiRenderer, offset, consumer, options, textureSize, stack, tints)
         } else {
             ColorElement(guiRenderer, textureSize, ChatColors.WHITE).render(offset, consumer, options)
         }

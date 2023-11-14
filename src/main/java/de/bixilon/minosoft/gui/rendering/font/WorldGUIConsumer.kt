@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
@@ -36,6 +37,7 @@ class WorldGUIConsumer(val mesh: ChunkMesh, val transform: Mat4, val light: Int)
         mesh.addVertex(transformed, this.uv, texture ?: whiteTexture.texture, tint.rgb, light)
     }
 
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) {
         throw IllegalStateException("This is not hud!")
     }

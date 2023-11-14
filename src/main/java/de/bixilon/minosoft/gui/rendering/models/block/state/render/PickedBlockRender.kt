@@ -34,8 +34,8 @@ interface PickedBlockRender : BlockRender {
     fun pick(state: BlockState, neighbours: Array<BlockState?>): BlockRender?
 
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
-        default?.render(gui, offset, consumer, options, size, stack)
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
+        default?.render(gui, offset, consumer, options, size, stack, tints)
     }
 
     override fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
@@ -44,6 +44,10 @@ interface PickedBlockRender : BlockRender {
 
     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
         default?.render(mesh, state, tints)
+    }
+
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
+        default?.render(mesh, stack, tints)
     }
 
     override fun getProperties(direction: Directions): SideProperties? {
