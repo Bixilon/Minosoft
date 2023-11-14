@@ -35,6 +35,7 @@ class BlockGUIConsumer(
     val display: ModelDisplay,
     val size: Vec2,
 ) : BlockVertexConsumer {
+    private val matrix = VIEW_MATRIX * display.matrix
     override val order = consumer.order
 
 
@@ -43,14 +44,6 @@ class BlockGUIConsumer(
     override fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
 
     override fun addQuad(positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) {
-        val position = Vec3(1.6f, 1.65f, 0.5f)// one block offset in north direction
-        // TODO: look from front
-        val front = Vec3(-0.5f, -0.3f, 0.5f).normalizeAssign() // EntityRotation(45.0f, 45.0f).front
-        val view = GLM.lookAt(position, position + front, CameraDefinition.CAMERA_UP_VEC3)
-        val size = size * 1.3f * 10.0f
-        //   val projection = GLM.perspective(105.0f.rad, size.x / size.y, CameraDefinition.NEAR_PLANE, 3.0f)
-
-        val viewProjection = view //* projection
 
         val tint = (lightTint.toBits() shl 8) or 0xFF
 
@@ -61,12 +54,10 @@ class BlockGUIConsumer(
 
             val xyz = Vec4(positions[vertexOffset], positions[vertexOffset + 1], positions[vertexOffset + 2], 1.0f)
 
-            val out = viewProjection * xyz
+            val out = matrix * xyz
 
-            var x = ((out.x * 0.5f))
-            x = (x * size.x) + offset.x
-            var y = ((out.y * 0.5f))
-            y = (-y * size.y) + offset.y
+            val x = ((out.x) * size.x) + offset.x + 1.0f
+            val y = ((-out.y + 0.75f) * size.y) + offset.y
 
             // TODO: depth
 
@@ -75,5 +66,9 @@ class BlockGUIConsumer(
 
         // block renders from (in normal cases) from 0 to 1
         // matrix should map those pixels into screen 2d space (offset until offset+size)
+    }
+
+    companion object {
+        val VIEW_MATRIX = GLM.lookAt(Vec3(0.0f, 0.0f, -1.0f), Vec3(0.0f, 0.0f, 1.0f), CameraDefinition.CAMERA_UP_VEC3)
     }
 }

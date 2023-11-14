@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.models.raw.display
 
+import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
@@ -25,6 +27,11 @@ data class ModelDisplay(
     val translation: Vec3 = Vec3.EMPTY_INSTANCE,
     val scale: Vec3 = Vec3.ONE,
 ) {
+    val matrix = Mat4()
+        .translateAssign(translation)
+        .rotateRadAssign(rotation)
+        .scaleAssign(scale)
+
     companion object {
         val DEFAULT = ModelDisplay()
 
