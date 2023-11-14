@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
+import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.mat3x3.Mat3
+import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import org.junit.jupiter.api.Test
 import kotlin.math.abs
@@ -48,6 +51,11 @@ class SkeletalShadeTest {
         val z = interpolateShade(aZ, 0.8f)
 
         return x + y + z
+    }
+
+    fun transformNormal(normal: Vec3, transform: Mat4): Vec3 {
+        //  return normalize(mat3(transpose(inverse(transform))) * normal);
+        return (Mat3(transform) * normal).normalizeAssign()
     }
 
     @Test
@@ -105,7 +113,63 @@ class SkeletalShadeTest {
         assertEquals(0.94f, getShade(Vec3(1, 1, 1)))
     }
 
-    // TODO: test transforming
+
+    private fun assertEquals(actual: Vec3, expected: Vec3) {
+        val delta = actual - expected
+        if (delta.length2() < 0.01f) return
+        throw AssertionError("Expected $expected, but got $actual")
+    }
+
+    @Test
+    fun `transform rotate Y 90deg`() {
+        val transform = Mat4().rotateYassign(90.0f.rad)
+        val normal = Vec3(0.0f, 1.0f, 0.0f)
+        assertEquals(transformNormal(normal, transform), Vec3(0.0f, 1.0f, 0.0f))
+    }
+
+    @Test
+    fun `transform rotate Y 180deg`() {
+        val transform = Mat4().rotateYassign(180.0f.rad)
+        val normal = Vec3(0.0f, -1.0f, 0.0f)
+        assertEquals(transformNormal(normal, transform), Vec3(0.0f, -1.0f, 0.0f))
+    }
+
+
+    @Test
+    fun `transform rotate Y 90deg 2`() {
+        val transform = Mat4().rotateYassign(90.0f.rad)
+        val normal = Vec3(1.0f, 0.0f, 0.0f)
+        assertEquals(transformNormal(normal, transform), Vec3(0.0f, 0.0f, -1.0f))
+    }
+
+    @Test
+    fun `transform rotate Y 180deg 2`() {
+        val transform = Mat4().rotateYassign(180.0f.rad)
+        val normal = Vec3(1.0f, 0.0f, 0.0f)
+        assertEquals(transformNormal(normal, transform), Vec3(-1.0f, 0.0f, 0.0f))
+    }
+
+    @Test
+    fun `transform translated`() {
+        val transform = Mat4()
+            .translateAssign(Vec3(123, 456, 789))
+            .rotateYassign(180.0f.rad)
+        val normal = Vec3(1.0f, 0.0f, 0.0f)
+        assertEquals(transformNormal(normal, transform), Vec3(-1.0f, 0.0f, 0.0f))
+    }
+
+    @Test
+    fun `transform translated scaled`() {
+        val transform = Mat4()
+            .scaleAssign(0.4f)
+            .translateAssign(Vec3(123, 456, 789))
+            .rotateYassign(180.0f.rad)
+        val normal = Vec3(1.0f, 0.0f, 0.0f)
+        assertEquals(transformNormal(normal, transform), Vec3(-1.0f, 0.0f, 0.0f))
+    }
+
+    // TODO: test why shade is wrong sometimes
+
 
     private fun assertEquals(expected: Float, actual: Float) {
         if (abs(expected - actual) < 0.03f) return

@@ -26,7 +26,7 @@ vec3 decodeNormal(uint normal) {
 
 vec3 transformNormal(vec3 normal, mat4 transform) {
     //  return normalize(mat3(transpose(inverse(transform))) * normal);
-    return mat3(transform) * normal;
+    return normalize(mat3(transform) * normal);
 }
 
 float interpolateShade(float delta, float max) {

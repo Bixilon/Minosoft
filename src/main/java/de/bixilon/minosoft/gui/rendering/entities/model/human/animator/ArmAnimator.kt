@@ -66,7 +66,7 @@ class ArmAnimator(
 
             val z = (1.0f - (swing * 1.2f)) * (-20.0f).rad // TODO: animate the 1.2f back to 1.0f
             val y = sin * 0.2f
-            val x = (sin * 1.2f + sin) * -0.65f
+            val x = sin * -1.4f
 
 
             transform.value.rotateRadAssign(Vec3(x, y, if (arm == Arms.RIGHT) z else -z))
