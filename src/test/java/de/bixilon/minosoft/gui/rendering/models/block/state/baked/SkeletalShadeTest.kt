@@ -105,6 +105,8 @@ class SkeletalShadeTest {
         assertEquals(0.94f, getShade(Vec3(1, 1, 1)))
     }
 
+    // TODO: test transforming
+
     private fun assertEquals(expected: Float, actual: Float) {
         if (abs(expected - actual) < 0.03f) return
         throw AssertionError("Expected $expected but got $actual")
