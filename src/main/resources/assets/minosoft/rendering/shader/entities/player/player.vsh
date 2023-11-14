@@ -35,11 +35,13 @@ out vec4 finTintColor;
 #include "minosoft:color"
 
 
+#define POSITIVE_INFINITY 1.0f / 0.0f
 
 void main() {
     uint partTransformNormal = floatBitsToUint(vinPartTransformNormal);
     uint skinPart = (partTransformNormal >> 19u & 0xFFu);
     if (skinPart > 0u && ((1u << (skinPart - 1u)) & uSkinParts) == 0u) {
+        gl_Position = vec4(POSITIVE_INFINITY);
         finTintColor.a = 0.0f;
         return;
     }
