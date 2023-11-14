@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager.latestVersion
+import de.bixilon.minosoft.config.profile.profiles.entity.animal.AnimalC
 import de.bixilon.minosoft.config.profile.profiles.entity.features.FeaturesC
 import de.bixilon.minosoft.config.profile.profiles.entity.general.GeneralC
 import java.util.concurrent.atomic.AtomicInteger
@@ -40,6 +41,7 @@ class EntityProfile(
 
     val general = GeneralC(this)
     val features = FeaturesC(this)
+    val animal = AnimalC(this)
 
     override fun toString(): String {
         return EntityProfileManager.getName(this)

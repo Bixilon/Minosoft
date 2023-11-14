@@ -13,14 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.entities.renderer.living.animal
 
+import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.entities.AgeableMob
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.model.animal.AnimalModel
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.LivingEntityRenderer
+import kotlin.random.Random
+import kotlin.random.asJavaRandom
 
 abstract class AnimalRenderer<E : AgeableMob>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity) {
     protected abstract var model: AnimalModel<*>?
+    val scale = if (renderer.profile.animal.randomScale) Random.asJavaRandom().nextFloat(0.9f, 1.1f) else 1.0f
+
 
     init {
         entity.data.observe<Boolean>(AgeableMob.BABY) { unload() }

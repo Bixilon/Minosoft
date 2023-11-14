@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.model.animal
 import de.bixilon.minosoft.gui.rendering.entities.feature.SkeletalFeature
 import de.bixilon.minosoft.gui.rendering.entities.model.animator.HeadAnimator
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.animal.AnimalRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 
 class AnimalModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkeletalModel) : SkeletalFeature(renderer, model) {
@@ -24,5 +25,12 @@ class AnimalModel<R : EntityRenderer<*>>(renderer: R, model: BakedSkeletalModel)
     override fun updatePosition() {
         super.updatePosition()
         head?.update()
+    }
+
+    override fun updateInstance() {
+        super.updateInstance()
+        if (renderer is AnimalRenderer<*>) {
+            instance.matrix.scaleAssign(renderer.scale)
+        }
     }
 }
