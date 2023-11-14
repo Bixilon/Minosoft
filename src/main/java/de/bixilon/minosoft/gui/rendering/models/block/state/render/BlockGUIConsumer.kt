@@ -48,7 +48,7 @@ class BlockGUIConsumer(
         val tint = (lightTint.toBits() shl 8) or 0xFF
 
 
-        gui.context.system.quadOrder.iterate { p, uv ->
+        gui.context.system.quadOrder.iterateReverse { p, uv ->
             val vertexOffset = p * Vec3.length
             val uvOffset = uv * Vec2.length
 
@@ -56,10 +56,9 @@ class BlockGUIConsumer(
 
             val out = matrix * xyz
 
-            val x = ((out.x) * size.x) + offset.x + 1.0f
-            val y = ((-out.y + 0.75f) * size.y) + offset.y
-
-            // TODO: depth
+            val x = ((out.x + 0.8f) * size.x) + offset.x + 1.0f
+            val y = ((-out.y + 0.81f) * size.y) + offset.y
+            // values fresh from my ass
 
             consumer.addVertex(x, y, textureId, uvData[uvOffset], uvData[uvOffset + 1], tint, options)
         }

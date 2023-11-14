@@ -36,10 +36,9 @@ class RenderOrder(
 
     inline fun iterateReverse(vertex: (position: Int, uv: Int) -> Unit) {
         if (size == 0) return
-        this.vertex(0, vertex)
 
         var index = order.size - 1 - 1 // index, element alignment
-        while (index > 1) {
+        while (index >= 0) {
             this.vertex(index, vertex)
             index -= 2
         }

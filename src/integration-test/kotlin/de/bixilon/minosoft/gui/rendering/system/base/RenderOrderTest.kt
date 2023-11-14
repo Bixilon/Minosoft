@@ -34,6 +34,6 @@ class RenderOrderTest {
         val result: MutableList<Int> = mutableListOf()
         order.iterateReverse { position, uv -> result += position; result += uv }
 
-        assertEquals(result, listOf(0, 9, 3, 6, 2, 7, 1, 8))
+        assertEquals(result, listOf(3, 6, 2, 7, 1, 8, 0, 9))
     }
 }

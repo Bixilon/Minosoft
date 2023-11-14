@@ -28,11 +28,15 @@ data class ModelDisplay(
     val scale: Vec3 = Vec3.ONE,
 ) {
     val matrix = Mat4()
-        .translateAssign(translation)
-        .rotateRadAssign(rotation)
         .scaleAssign(scale)
+        .translateAssign(translation)
+        .translateAssign(CENTER)
+        .rotateRadAssign(rotation)
+        .translateAssign(N_CENTER)
 
     companion object {
+        val CENTER = Vec3(0.5f)
+        val N_CENTER = -CENTER
         val DEFAULT = ModelDisplay()
 
         fun deserialize(data: JsonObject): ModelDisplay {
