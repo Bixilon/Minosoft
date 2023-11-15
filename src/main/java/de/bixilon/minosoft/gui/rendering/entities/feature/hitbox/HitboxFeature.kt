@@ -20,18 +20,16 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorUtil
-import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer) {
+class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(renderer) {
     private val manager = renderer.renderer.features.hitbox
-    private var mesh: LineMesh? = null
 
     private var aabb = AABB.EMPTY
     private var eyePosition = Vec3.EMPTY
@@ -39,11 +37,6 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
 
     private var color = Interpolator(renderer.entity.hitboxColor ?: ChatColors.WHITE, ColorUtil::interpolateRGB)
     private var velocity = Interpolator(Vec3.EMPTY, Vec3Util::interpolateLinear)
-
-
-    override fun reset() {
-        unload()
-    }
 
     override fun update(millis: Long, delta: Float) {
         if (!manager.enabled) return unload()
@@ -57,7 +50,8 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
 
         if (this.mesh != null && !update) return
 
-        updateMesh()
+        unload()
+        createMesh()
     }
 
 
@@ -97,8 +91,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
         return !this.color.identical || !this.velocity.identical
     }
 
-    private fun updateMesh() {
-        unload()
+    private fun createMesh() {
         val mesh = LineMesh(renderer.renderer.context)
 
         val color = color.value
@@ -120,10 +113,8 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
     }
 
 
-    override fun draw() {
+    override fun draw(mesh: LineMesh) {
         // TODO: update position with shader uniform
-        val mesh = this.mesh ?: return
-        if (mesh.state != Mesh.MeshStates.LOADED) mesh.load()
         val system = renderer.renderer.context.system
         if (manager.profile.showThroughWalls) {
             system.reset(depth = DepthFunctions.ALWAYS)
@@ -131,12 +122,6 @@ class HitboxFeature(renderer: EntityRenderer<*>) : EntityRenderFeature(renderer)
             system.reset()
         }
         manager.shader.use()
-        mesh.draw()
-    }
-
-    override fun unload() {
-        val mesh = this.mesh ?: return
-        this.mesh = null
-        renderer.renderer.queue += { mesh.unload() }
+        super.draw(mesh)
     }
 }

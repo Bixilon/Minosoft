@@ -16,26 +16,19 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.block
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateZAssign
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 open class BlockFeature(
     renderer: EntityRenderer<*>,
     state: BlockState?,
     var scale: Vec3 = DEFAULT_SCALE,
-) : EntityRenderFeature(renderer) {
-    private var mesh: BlockMesh? = null
+) : MeshedFeature<BlockMesh>(renderer) {
     private var matrix = Mat4()
-    override var enabled: Boolean
-        get() = super.enabled && mesh != null
-        set(value) {
-            super.enabled = value
-        }
     var state: BlockState? = state
         set(value) {
             if (field == value) return
@@ -77,25 +70,12 @@ open class BlockFeature(
         this.matrix = renderer.matrix * matrix
     }
 
-    override fun draw() {
-        val mesh = this.mesh ?: return
-        if (mesh.state != Mesh.MeshStates.LOADED) mesh.load()
+    override fun draw(mesh: BlockMesh) {
         renderer.renderer.context.system.reset(faceCulling = false)
         val shader = renderer.renderer.features.block.shader
-        draw(mesh, shader)
-    }
-
-    protected open fun draw(mesh: BlockMesh, shader: BlockShader) {
-        shader.use()
         shader.matrix = matrix
         shader.tint = renderer.light.value
-        mesh.draw()
-    }
-
-    override fun unload() {
-        val mesh = this.mesh ?: return
-        this.mesh = null
-        renderer.renderer.queue += { mesh.unload() }
+        super.draw(mesh)
     }
 
     companion object {

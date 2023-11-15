@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.font.renderer.component.ChatComponentRenderer
@@ -30,22 +30,15 @@ import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateXAssign
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 open class BillboardTextFeature(
     renderer: EntityRenderer<*>,
     text: ChatComponent?,
     offset: Float = DEFAULT_OFFSET,
-) : EntityRenderFeature(renderer) {
+) : MeshedFeature<BillboardTextMesh>(renderer) {
     override val priority: Int get() = 10000
-    private var mesh: BillboardTextMesh? = null
     private var info: TextRenderInfo? = null
     private var matrix = Mat4()
-    override var enabled: Boolean
-        get() = super.enabled && mesh != null
-        set(value) {
-            super.enabled = value
-        }
     var text: ChatComponent? = text
         set(value) {
             if (field == value) return
@@ -97,9 +90,7 @@ open class BillboardTextFeature(
         this.matrix = renderer.matrix * matrix
     }
 
-    override fun draw() {
-        val mesh = this.mesh ?: return
-        if (mesh.state != Mesh.MeshStates.LOADED) mesh.load()
+    override fun draw(mesh: BillboardTextMesh) {
         renderer.renderer.context.system.reset(
             blending = true,
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,
@@ -113,7 +104,7 @@ open class BillboardTextFeature(
         shader.use()
         shader.matrix = matrix
         shader.tint = renderer.light.value
-        mesh.draw()
+        super.draw(mesh)
     }
 
     override fun updateVisibility(occluded: Boolean) {
@@ -121,10 +112,8 @@ open class BillboardTextFeature(
     }
 
     override fun unload() {
-        val mesh = this.mesh ?: return
-        this.mesh = null
         this.info = null
-        renderer.renderer.queue += { mesh.unload() }
+        super.unload()
     }
 
     companion object {
