@@ -17,6 +17,8 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockMesh
+import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockShader
+import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature.ItemRenderDistance.Companion.getCount
 import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
@@ -32,9 +34,11 @@ open class ItemFeature(
     renderer: EntityRenderer<*>,
     stack: ItemStack?,
     val display: DisplayPositions,
+    val many: Boolean = true,
 ) : MeshedFeature<BlockMesh>(renderer) {
     private var matrix = Mat4()
     private var displayMatrix: Mat4 = Mat4.EMPTY_INSTANCE
+    private var distance: ItemRenderDistance? = null
     var stack: ItemStack? = stack
         set(value) {
             if (field == value) return
@@ -48,6 +52,7 @@ open class ItemFeature(
 
     override fun update(millis: Long, delta: Float) {
         if (!_enabled) return unload()
+        updateDistance()
         if (this.mesh == null) {
             val stack = this.stack ?: return unload()
             createMesh(stack)
@@ -55,7 +60,15 @@ open class ItemFeature(
         updateMatrix()
     }
 
+    private fun updateDistance() {
+        val distance = ItemRenderDistance.of(renderer.distance)
+        if (distance == this.distance) return
+        unload()
+        this.distance = distance
+    }
+
     private fun createMesh(stack: ItemStack) {
+        val distance = this.distance ?: return
         val model = stack.item.item.getModel(renderer.renderer.connection) ?: return
         val display = model.getDisplay(display)
         this.displayMatrix = display?.matrix ?: Mat4.EMPTY_INSTANCE
@@ -63,15 +76,17 @@ open class ItemFeature(
 
         val tint = renderer.renderer.context.tints.getItemTint(stack)
 
-        val count = count(stack.item.count)
+        val count = if (many) distance.getCount(stack.item.count) else 1
+        val spread = maxOf(0.1f, count / 30.0f)
+
         model.render(mesh, stack, tint) // 0 without offset
 
         if (count > 1) {
             val random = Random(1234567890123456789L)
             for (i in 0 until count - 1) {
-                mesh.offset.x = random.nextFloat(-0.2f, 0.2f)
-                mesh.offset.y = random.nextFloat(-0.2f, 0.2f)
-                mesh.offset.z = random.nextFloat(-0.2f, 0.2f)
+                mesh.offset.x = random.nextFloat(-spread, spread)
+                mesh.offset.y = random.nextFloat(-spread, spread)
+                mesh.offset.z = random.nextFloat(-spread, spread)
 
                 model.render(mesh, stack, tint)
             }
@@ -81,25 +96,11 @@ open class ItemFeature(
         this.mesh = mesh
     }
 
-    private fun count(count: Int): Int {
-        // that is not like vanilla, but imho better
-        return when {
-            count <= 0 -> 0
-            count == 1 -> 1
-            count < 16 -> 2
-            count < 32 -> 3
-            count < 48 -> 4
-            else -> 5
-        }
-    }
-
     private fun updateMatrix() {
         this.matrix.reset()
         this.matrix
             .translateXAssign(-0.5f)
             .translateZAssign(-0.5f)
-
-        // TODO
 
 
         this.matrix = renderer.matrix * displayMatrix * matrix
@@ -108,6 +109,12 @@ open class ItemFeature(
     override fun draw(mesh: BlockMesh) {
         renderer.renderer.context.system.reset(faceCulling = false)
         val shader = renderer.renderer.features.block.shader
+        draw(mesh, shader)
+    }
+
+
+    protected open fun draw(mesh: BlockMesh, shader: BlockShader) {
+        shader.use()
         shader.matrix = matrix
         shader.tint = renderer.light.value
         super.draw(mesh)
@@ -115,5 +122,54 @@ open class ItemFeature(
 
     override fun unload() {
         this.displayMatrix = Mat4.EMPTY_INSTANCE
+        super.unload()
+    }
+
+    private enum class ItemRenderDistance(distance: Double) {
+        CLOSE(10.0),
+        MID(20.0),
+        FAR(30.0),
+        EXTREME(48.0),
+        ;
+
+        val distance = distance * distance
+
+        companion object {
+
+            fun of(distance: Double) = when {
+                distance < CLOSE.distance -> CLOSE
+                distance < MID.distance -> MID
+                distance < FAR.distance -> FAR
+                distance < EXTREME.distance -> EXTREME
+                else -> null
+            }
+
+            fun ItemRenderDistance.getCount(count: Int) = when (this) {
+                CLOSE -> when {
+                    count <= 16 -> count
+                    else -> 16
+                }
+
+                MID -> when {
+                    count <= 4 -> count
+                    count < 16 -> 5
+                    count < 32 -> 6
+                    count < 48 -> 7
+                    else -> 8
+                }
+
+                FAR -> when {
+                    count <= 2 -> count
+                    count < 32 -> 3
+                    else -> 4
+                }
+
+                EXTREME -> when {
+                    count <= 1 -> count
+                    count <= 32 -> 1
+                    else -> 2
+                }
+            }
+        }
     }
 }

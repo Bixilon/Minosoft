@@ -44,9 +44,7 @@ class BlockGUIConsumer(
     override fun addQuad(offset: FloatArray, positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) = Broken("Not chunk rendering")
 
     override fun addQuad(positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) {
-
         val tint = (lightTint.toBits() shl 8) or 0xFF
-
 
         gui.context.system.quadOrder.iterateReverse { p, uv ->
             val vertexOffset = p * Vec3.length
@@ -62,9 +60,6 @@ class BlockGUIConsumer(
 
             consumer.addVertex(x, y, textureId, uvData[uvOffset], uvData[uvOffset + 1], tint, options)
         }
-
-        // block renders from (in normal cases) from 0 to 1
-        // matrix should map those pixels into screen 2d space (offset until offset+size)
     }
 
     companion object {
