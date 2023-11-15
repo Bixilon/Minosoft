@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.ParticleCollisionContext
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
@@ -51,6 +52,9 @@ abstract class Particle(
         private set
     protected val random = Random()
     private var lastTickTime = -1L
+
+    private var chunk: Chunk? = null
+    private var chunkRevision = -1
 
     // ageing
     var dead = false
@@ -89,6 +93,23 @@ abstract class Particle(
             aabb = AABB(Vec3d(x, aabb.min.y, z), Vec3d(x + spacing.x, aabb.min.y + spacing.y, z + spacing.z))
         }
 
+    protected fun getChunk(): Chunk? {
+        val revision = connection.world.chunks.revision
+        var chunk = this.chunk
+
+        if (chunk != null) {
+            if (chunk.chunkPosition == this.chunkPosition) return chunk
+            chunk = chunk.neighbours.trace(chunkPosition - chunk.chunkPosition)
+        }
+        if (chunk == null && revision != this.chunkRevision) {
+            chunk = connection.world.chunks[chunkPosition]
+            this.chunk = chunk
+            this.chunkRevision = revision
+        }
+
+        return chunk
+    }
+
 
     init {
         this.velocity += { (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT }
@@ -117,7 +138,7 @@ abstract class Particle(
     private fun collide(movement: Vec3d): Vec3d {
         val aabb = aabb + movement
         val context = ParticleCollisionContext(this)
-        val collisions = connection.world.collectCollisions(context, movement, aabb, null) // TODO: cache chunk
+        val collisions = connection.world.collectCollisions(context, movement, aabb, getChunk())
         val adjusted = collide(movement, aabb, collisions)
         if (adjusted.y != movement.y) {
             onGround = true

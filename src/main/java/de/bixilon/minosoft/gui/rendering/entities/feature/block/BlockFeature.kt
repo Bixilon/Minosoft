@@ -71,7 +71,7 @@ open class BlockFeature(
     }
 
     override fun draw(mesh: BlockMesh) {
-        renderer.renderer.context.system.reset(faceCulling = false)
+        renderer.renderer.context.system.set(EntityLayer.Translucent.settings)
         val shader = renderer.renderer.features.block.shader
         draw(mesh, shader)
     }

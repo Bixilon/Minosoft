@@ -35,11 +35,13 @@ class WorldIterator(
     private var chunk: Chunk? = null,
 ) : Iterator<BlockPair> {
     private var next: BlockPair? = null
+    private var revision = -1
 
 
     constructor(aabb: AABB, world: World, chunk: Chunk? = null) : this(aabb.positions(), world, chunk)
 
     private fun update(): Boolean {
+        if (world.chunks.chunks.unsafe.isEmpty()) return false
         if (!iterator.hasNext()) return false
 
         var chunk = this.chunk
@@ -53,7 +55,9 @@ class WorldIterator(
             chunkPosition.assignChunkPosition(position)
 
             if (chunk == null) {
-                chunk = world.chunks[chunkPosition] ?: continue // TODO: Don't query same chunk multiple times
+                if (revision == world.chunks.revision) continue // previously found no chunk, can not find it now
+                this.revision = world.chunks.revision
+                chunk = world.chunks[chunkPosition] ?: continue
             } else if (chunk.chunkPosition != chunkPosition) {
                 offset.x = chunkPosition.x - chunk.chunkPosition.x
                 offset.y = chunkPosition.y - chunk.chunkPosition.y
