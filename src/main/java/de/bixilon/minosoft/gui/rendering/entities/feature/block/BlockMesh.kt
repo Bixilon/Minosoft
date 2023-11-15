@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockVertexConsumer {
     override val order = context.system.quadOrder
+    val offset = Vec3()
 
     override fun ensureSize(size: Int) {
         data.ensureSize(size)
@@ -33,7 +34,7 @@ class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockV
     override fun addVertex(position: FloatArray, uv: Vec2, texture: ShaderTexture, tintColor: Int, light: Int) {
         data.ensureSize(BlockMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.transformUV(uv).array
-        data.add(position)
+        data.add(position[0] + offset.x, position[1] + offset.y, position[2] + offset.z)
         data.add(transformedUV)
         data.add(
             texture.shaderId.buffer(),
@@ -43,7 +44,7 @@ class BlockMesh(context: RenderContext) : Mesh(context, BlockMeshStruct), BlockV
 
     override inline fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) {
         data.add(
-            x, y, z,
+            x + offset.x, y + offset.y, z + offset.z,
             u, v,
             textureId, lightTint,
         )
