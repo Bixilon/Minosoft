@@ -23,12 +23,15 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
+import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
+import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 
 class BakedModel(
     val faces: Array<Array<BakedFace>>,
     val properties: Array<SideProperties?>,
+    val display: Map<DisplayPositions, ModelDisplay>?,
     val particle: Texture?,
 ) : BlockRender {
 
@@ -71,4 +74,8 @@ class BakedModel(
 
     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = render(mesh, tints)
     override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) = render(mesh, tints)
+
+    override fun getDisplay(position: DisplayPositions): ModelDisplay? {
+        return this.display?.get(position)
+    }
 }

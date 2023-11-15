@@ -28,6 +28,8 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
+import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
+import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 import kotlin.math.abs
@@ -76,6 +78,10 @@ class WeightedBlockRender(
 
     override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
         models.first().model.render(mesh, stack, tints)
+    }
+
+    override fun getDisplay(position: DisplayPositions): ModelDisplay? {
+        return models.first().model.getDisplay(position)
     }
 
 

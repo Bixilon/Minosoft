@@ -73,6 +73,11 @@ open class BlockFeature(
     override fun draw(mesh: BlockMesh) {
         renderer.renderer.context.system.reset(faceCulling = false)
         val shader = renderer.renderer.features.block.shader
+        draw(mesh, shader)
+    }
+
+    protected open fun draw(mesh: BlockMesh, shader: BlockShader) {
+        shader.use()
         shader.matrix = matrix
         shader.tint = renderer.light.value
         super.draw(mesh)

@@ -25,6 +25,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
+import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
+import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 
@@ -52,6 +54,10 @@ interface PickedBlockRender : BlockRender {
 
     override fun getProperties(direction: Directions): SideProperties? {
         return default?.getProperties(direction) // both models should have the same properties
+    }
+
+    override fun getDisplay(position: DisplayPositions): ModelDisplay? {
+        return default?.getDisplay(position)
     }
 
     override fun getParticleTexture(random: Random?, position: Vec3i): Texture? {

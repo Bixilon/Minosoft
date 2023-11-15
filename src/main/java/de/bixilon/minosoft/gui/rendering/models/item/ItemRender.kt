@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.models.item
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -22,15 +21,12 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rad
 
 interface ItemRender {
 
     fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?)
     fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?)
 
-    fun getDisplay(position: DisplayPositions): ModelDisplay? = when (position) { // TODO: remove hardcoded value
-        DisplayPositions.GUI -> ModelDisplay(Vec3(30, 225, 0).rad, scale = Vec3(0.625f))
-        else -> null
-    }
+    // TODO: is that really a property of ItemRender? not BlockRender
+    fun getDisplay(position: DisplayPositions): ModelDisplay? = null
 }

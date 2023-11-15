@@ -136,7 +136,7 @@ data class SingleBlockStateApply(
             element.bake(bakedFaces, properties)
         }
 
-        return BakedModel(bakedFaces.compact(), properties.compactProperties(), this.particle)
+        return BakedModel(bakedFaces.compact(), properties.compactProperties(), model.display, this.particle)
     }
 
     private fun Vec2.applyRotation(axis: Axes, data: FaceVertexData) {
