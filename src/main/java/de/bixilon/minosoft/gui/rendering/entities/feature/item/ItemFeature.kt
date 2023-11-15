@@ -47,7 +47,7 @@ open class ItemFeature(
     override val layer get() = EntityLayer.Translucent // TODO
 
     override fun update(millis: Long, delta: Float) {
-        if (!super.enabled) return unload()
+        if (!_enabled) return unload()
         if (this.mesh == null) {
             val stack = this.stack ?: return unload()
             createMesh(stack)
@@ -69,9 +69,9 @@ open class ItemFeature(
         if (count > 1) {
             val random = Random(1234567890123456789L)
             for (i in 0 until count - 1) {
-                mesh.offset.x = random.nextFloat(-0.1f, 0.1f)
-                mesh.offset.y = random.nextFloat(-0.1f, 0.1f)
-                mesh.offset.z = random.nextFloat(-0.1f, 0.1f)
+                mesh.offset.x = random.nextFloat(-0.2f, 0.2f)
+                mesh.offset.y = random.nextFloat(-0.2f, 0.2f)
+                mesh.offset.z = random.nextFloat(-0.2f, 0.2f)
 
                 model.render(mesh, stack, tint)
             }
@@ -96,7 +96,8 @@ open class ItemFeature(
     private fun updateMatrix() {
         this.matrix.reset()
         this.matrix
-            .translateXAssign(-0.5f).translateZAssign(-0.5f)
+            .translateXAssign(-0.5f)
+            .translateZAssign(-0.5f)
 
         // TODO
 

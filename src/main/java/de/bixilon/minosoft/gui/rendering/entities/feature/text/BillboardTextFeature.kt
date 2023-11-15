@@ -54,7 +54,7 @@ open class BillboardTextFeature(
     override val layer get() = EntityLayer.Translucent
 
     override fun update(millis: Long, delta: Float) {
-        if (!super.enabled) return unload()
+        if (!_enabled) return unload()
         if (!isInRenderDistance()) return unload()
         if (this.mesh == null) {
             val text = this.text ?: return unload()

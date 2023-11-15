@@ -40,7 +40,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
 
     override fun update(millis: Long, delta: Float) {
         if (!manager.enabled) return unload()
-        if (!enabled) return unload()
+        if (!_enabled) return unload()
         if (renderer.entity.isInvisible(renderer.renderer.connection.camera.entity) && !manager.profile.showInvisible) return unload()
         if (!visible) return
 

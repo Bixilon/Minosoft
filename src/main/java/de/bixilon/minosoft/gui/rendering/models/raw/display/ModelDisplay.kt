@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.raw.display
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
@@ -42,7 +43,7 @@ data class ModelDisplay(
         fun deserialize(data: JsonObject): ModelDisplay {
             return ModelDisplay(
                 rotation = data["rotation"]?.toVec3()?.rad ?: Vec3.EMPTY_INSTANCE,
-                translation = data["translation"]?.toVec3() ?: Vec3.EMPTY_INSTANCE,
+                translation = data["translation"]?.toVec3()?.apply { this /= BLOCK_SIZE } ?: Vec3.EMPTY_INSTANCE,
                 scale = data["scale"]?.toVec3() ?: Vec3.ONE,
             )
         }

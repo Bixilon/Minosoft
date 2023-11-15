@@ -39,7 +39,7 @@ open class BlockFeature(
     override val layer get() = EntityLayer.Translucent // TODO
 
     override fun update(millis: Long, delta: Float) {
-        if (!super.enabled) return unload()
+        if (!_enabled) return unload()
         if (this.mesh == null) {
             val state = this.state ?: return unload()
             createMesh(state)

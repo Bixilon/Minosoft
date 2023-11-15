@@ -18,10 +18,16 @@ import de.bixilon.minosoft.gui.rendering.entities.visibility.EntityLayer
 import de.bixilon.minosoft.gui.rendering.entities.visibility.VisibilityManager
 
 abstract class EntityRenderFeature(val renderer: EntityRenderer<*>) : Comparable<EntityRenderFeature> {
-    open var enabled = true
+    protected var _enabled = true
     var visible = true
     open val priority: Int get() = 0
     val sort = this::class.java.hashCode()
+
+    open var enabled
+        get() = _enabled
+        set(value) {
+            _enabled = value
+        }
 
     open val layer: EntityLayer get() = EntityLayer.Opaque
 
