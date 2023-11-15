@@ -231,8 +231,9 @@ class CloudRenderer(
     private fun setYOffset() {
         val y = (context.connection.camera.entity.renderInfo.eyePosition.y - context.camera.offset.offset.y).toFloat()
         var yOffset = 0.0f
-        if (baseHeight - y > maxDistance) {
-            yOffset = y - baseHeight + maxDistance
+        val over = (baseHeight - y)
+        if (over > 0.0f) {
+            yOffset = -(over / 15.0f).pow(2)
         }
         shader.yOffset = yOffset
     }

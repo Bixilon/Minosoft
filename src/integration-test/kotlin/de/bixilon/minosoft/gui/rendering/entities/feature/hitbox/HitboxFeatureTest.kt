@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.isInvisible
+import de.bixilon.minosoft.gui.rendering.entities.feature.properties.MeshedFeature
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.util.KUtil.startInit
@@ -28,7 +29,7 @@ import org.testng.annotations.Test
 
 @Test(groups = ["entities", "rendering"])
 class HitboxFeatureTest {
-    private val mesh = HitboxFeature::class.java.getDeclaredField("mesh").apply { isAccessible = true }
+    private val mesh = MeshedFeature::class.java.getDeclaredField("mesh").apply { isAccessible = true }
 
     val HitboxFeature.mesh: LineMesh? get() = this@HitboxFeatureTest.mesh.get(this).unsafeCast()
 

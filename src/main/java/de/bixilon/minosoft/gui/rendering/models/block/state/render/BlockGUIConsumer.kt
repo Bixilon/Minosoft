@@ -46,7 +46,7 @@ class BlockGUIConsumer(
     override fun addQuad(positions: FaceVertexData, uvData: FaceVertexData, textureId: Float, lightTint: Float) {
         val tint = (lightTint.toBits() shl 8) or 0xFF
 
-        gui.context.system.quadOrder.iterateReverse { p, uv ->
+        order.iterateReverse { p, uv ->
             val vertexOffset = p * Vec3.length
             val uvOffset = uv * Vec2.length
 

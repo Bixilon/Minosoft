@@ -135,7 +135,7 @@ class BlockModelTest {
                 ),
                 DisplayPositions.GROUND to ModelDisplay(
                     rotation = Vec3(0, 0, 0),
-                    translation = Vec3(0, 3, 0),
+                    translation = Vec3(0, 3 / 16.0f, 0),
                     scale = Vec3(0.25, 0.25, 0.25),
                 ),
                 DisplayPositions.FIXED to ModelDisplay(
@@ -145,7 +145,7 @@ class BlockModelTest {
                 ),
                 DisplayPositions.THIRD_PERSON_RIGHT_HAND to ModelDisplay(
                     rotation = Vec3(75, 45, 0).rad,
-                    translation = Vec3(0, 2.5, 0),
+                    translation = Vec3(0, 2.5 / 16.0f, 0),
                     scale = Vec3(0.375, 0.375, 0.375),
                 ),
                 DisplayPositions.FIRST_PERSON_RIGHT_HAND to ModelDisplay(
