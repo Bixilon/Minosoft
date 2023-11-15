@@ -14,12 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.models.item
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
+import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class FlatItemRender(val texture: Texture) : ItemRender {
@@ -29,6 +34,14 @@ class FlatItemRender(val texture: Texture) : ItemRender {
     }
 
     override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
-        // TODO: render items in world space
+        mesh.addQuad(POSITIONS, UV, texture.shaderId.buffer(), (tints?.get(0) ?: 0xFFFFFF).buffer())
+        // TODO: items have depth
+        // TODO: light, ...
+    }
+
+
+    private companion object {
+        val POSITIONS = CuboidUtil.positions(Directions.NORTH, Vec3(0.3f, 0.0f, 0.5f), Vec3(0.6f, 0.3f, 0.5f))
+        val UV = FaceUV(Vec2(0.0f), Vec2(1.0f)).toArray(Directions.NORTH, 2)
     }
 }
