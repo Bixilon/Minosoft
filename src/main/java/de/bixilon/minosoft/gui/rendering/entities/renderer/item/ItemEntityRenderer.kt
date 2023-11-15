@@ -14,24 +14,26 @@
 package de.bixilon.minosoft.gui.rendering.entities.renderer.item
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.minosoft.data.entities.entities.item.FallingBlockEntity
+import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
-import de.bixilon.minosoft.gui.rendering.entities.feature.block.BlockFeature
+import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 
-class ItemEntityRenderer(renderer: EntitiesRenderer, entity: FallingBlockEntity) : EntityRenderer<FallingBlockEntity>(renderer, entity) {
-    val block = BlockFeature(this, null).register()
+class ItemEntityRenderer(renderer: EntitiesRenderer, entity: ItemEntity) : EntityRenderer<ItemEntity>(renderer, entity) {
+    val item = ItemFeature(this, null, DisplayPositions.GROUND).register()
 
     init {
-        entity::blockState.observe(this, true) { block.state = it }
+        entity::stack.observe(this, true) { item.stack = it }
+        // TODO: rotate, lift up and down
     }
 
 
-    companion object : RegisteredEntityModelFactory<FallingBlockEntity>, Identified {
-        override val identifier get() = FallingBlockEntity.identifier
+    companion object : RegisteredEntityModelFactory<ItemEntity>, Identified {
+        override val identifier get() = ItemEntity.identifier
 
-        override fun create(renderer: EntitiesRenderer, entity: FallingBlockEntity) = ItemEntityRenderer(renderer, entity)
+        override fun create(renderer: EntitiesRenderer, entity: ItemEntity) = ItemEntityRenderer(renderer, entity)
     }
 }

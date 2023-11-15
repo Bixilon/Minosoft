@@ -29,8 +29,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class ItemEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
-    val item: ItemStack?
-        get() = data.get(ITEM_DATA, null)
+    val stack: ItemStack? by data(ITEM_DATA, null)
 
 
     override fun onAttack(attacker: Entity): Boolean {
