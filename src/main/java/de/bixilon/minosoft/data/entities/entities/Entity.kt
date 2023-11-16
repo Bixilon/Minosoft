@@ -175,8 +175,7 @@ abstract class Entity(
     open val hasGravity: Boolean get() = !_hasNoGravity
 
     @get:SynchronizedEntityData
-    val ticksFrozen: Int
-        get() = data.get(TICKS_FROZEN_DATA, 0)
+    val ticksFrozen: Int by data(TICKS_FROZEN_DATA, 0)
 
     open val hitboxColor: RGBColor?
         get() = ChatColors.WHITE
