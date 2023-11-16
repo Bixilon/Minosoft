@@ -69,13 +69,23 @@ class CloudRenderer(
 
 
     override fun registerLayers() {
-        layers.register(CloudRenderLayer, shader, this::draw) { !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || cloudLayers.isEmpty() || (connection.camera.entity.physics.position.y + 200) < connection.world.dimension.minY }
+        layers.register(CloudRenderLayer, shader, this::draw, this::canSkip)
     }
 
     override fun asyncInit(latch: AbstractLatch) {
         matrix.load(connection.assetsManager)
 
         context.camera.offset::offset.observe(this) { reset() }
+    }
+
+    private fun canSkip(): Boolean {
+        if (!sky.effects.clouds) return false
+        if (!sky.profile.clouds.enabled) return false
+        if (cloudLayers.isEmpty()) return false
+        if (connection.profiles.block.viewDistance < 3) return false
+        if ((connection.camera.entity.physics.position.y + 10) < connection.world.dimension.minY) return false
+
+        return true
     }
 
     private fun getCloudHeight(index: Int): IntRange {
