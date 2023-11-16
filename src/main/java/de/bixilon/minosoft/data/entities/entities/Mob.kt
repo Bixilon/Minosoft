@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -20,9 +21,10 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class Mob(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
+    private var flags by data(FLAGS_DATA, 0x00)
 
     private fun getMobFlags(bitMask: Int): Boolean {
-        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
+        return flags.isBitMask(bitMask)
     }
 
     @get:SynchronizedEntityData

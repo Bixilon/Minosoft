@@ -170,9 +170,9 @@ abstract class Entity(
     val isSilent: Boolean
         get() = data.get(SILENT_DATA, false)
 
+    private var _hasNoGravity by data(NO_GRAVITY_DATA, false)
     @get:SynchronizedEntityData
-    open val hasGravity: Boolean
-        get() = !data.get(NO_GRAVITY_DATA, false)
+    open val hasGravity: Boolean get() = !_hasNoGravity
 
     @get:SynchronizedEntityData
     val ticksFrozen: Int

@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.container.equipment.EntityEquipment
@@ -49,8 +50,9 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     override val canRaycast: Boolean get() = super.canRaycast && health > 0.0
     override val name: ChatComponent? get() = super.name
 
+    private var flags by data(FLAGS_DATA, 0x00)
     private fun getLivingEntityFlag(bitMask: Int): Boolean {
-        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
+        return flags.isBitMask(bitMask)
     }
 
     @get:SynchronizedEntityData
@@ -83,16 +85,13 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         get() = data.getBoolean(EFFECT_AMBIENT_DATA, false)
 
     @get:SynchronizedEntityData
-    val arrowCount: Int
-        get() = data.get(ARROW_COUNT_DATA, 0)
+    val arrowCount: Int by data(ARROW_COUNT_DATA, 0)
 
     @get:SynchronizedEntityData
-    val absorptionHearts: Int
-        get() = data.get(ABSORPTION_HEARTS_DATA, 0)
+    val absorptionHearts: Int by data(ABSORPTION_HEARTS_DATA, 0)
 
     @get:SynchronizedEntityData
-    val bedPosition: Vec3i?
-        get() = data.get(BED_POSITION_DATA, null)
+    val bedPosition: Vec3i? by data(BED_POSITION_DATA, null)
 
     open val isSleeping: Boolean
         get() = bedPosition != null

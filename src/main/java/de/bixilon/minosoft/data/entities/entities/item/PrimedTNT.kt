@@ -30,8 +30,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
-    val fuseTime: Int
-        get() = data.get(FUSE_TIME_DATA, 80)
+    val fuseTime: Int by data(FUSE_TIME_DATA, 80)
 
     override fun tick() {
         if (fuseTime <= 0) return

@@ -22,8 +22,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 abstract class AgeableMob(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : PathfinderMob(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
-    open val isBaby: Boolean
-        get() = data.getBoolean(BABY, false)
+    open val isBaby: Boolean by data(BABY, false)
 
 
     companion object {

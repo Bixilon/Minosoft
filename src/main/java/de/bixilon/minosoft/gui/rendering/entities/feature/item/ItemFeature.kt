@@ -146,7 +146,7 @@ open class ItemFeature(
 
             fun ItemRenderDistance.getCount(count: Int) = when (this) {
                 CLOSE -> when {
-                    count <= 16 -> count
+                    count <= 12 -> count
                     else -> 16
                 }
 

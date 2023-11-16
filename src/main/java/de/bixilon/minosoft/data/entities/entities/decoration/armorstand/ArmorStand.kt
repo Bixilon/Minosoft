@@ -70,28 +70,22 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
         get() = getArmorStandFlag(0x10)
 
     @get:SynchronizedEntityData
-    val headRotation: Vec3
-        get() = data.get(HEAD_ROTATION_DATA, Vec3(0.0f, 0.0f, 0.0f))
+    val headRotation: Vec3 by data(HEAD_ROTATION_DATA, HEAD_ROTATION)
 
     @get:SynchronizedEntityData
-    val bodyRotation: Vec3
-        get() = data.get(BODY_ROTATION_DATA, Vec3(0.0f, 0.0f, 0.0f))
+    val bodyRotation: Vec3 by data(BODY_ROTATION_DATA, BODY_ROTATION)
 
     @get:SynchronizedEntityData
-    val leftArmRotation: Vec3
-        get() = data.get(LEFT_ARM_ROTATION_DATA, Vec3(-10.0f, 0.0f, -10.0f))
+    val leftArmRotation: Vec3 by data(LEFT_ARM_ROTATION_DATA, LEFT_ARM_ROTATION)
 
     @get:SynchronizedEntityData
-    val rightArmRotation: Vec3
-        get() = data.get(RIGHT_ARM_ROTATION_DATA, Vec3(-15.0f, 0.0f, 10.0f))
+    val rightArmRotation: Vec3 by data(RIGHT_ARM_ROTATION_DATA, RIGHT_ARM_ROTATION)
 
     @get:SynchronizedEntityData
-    val leftLegRotation: Vec3
-        get() = data.get(LEFT_LEG_ROTATION_DATA, Vec3(-1.0f, 0.0f, -1.0f))
+    val leftLegRotation: Vec3 by data(LEFT_LEG_ROTATION_DATA, LEFT_LEG_ROTATION)
 
     @get:SynchronizedEntityData
-    val rightLegRotation: Vec3
-        get() = data.get(RIGHT_LEG_ROTATION_DATA, Vec3(1.0f, 0.0f, 1.0f))
+    val rightLegRotation: Vec3 by data(RIGHT_LEG_ROTATION_DATA, RIGHT_LEG_ROTATION)
 
 
     override fun tick() {
@@ -118,6 +112,13 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
         private val DIMENSIONS = Vec2(0.5f, 1.975f)
         private val DIMENSIONS_MARKER = Vec2(0.0f)
         private val DIMENSIONS_SMALL = DIMENSIONS * 0.5f
+
+        private val HEAD_ROTATION = Vec3(0.0f, 0.0f, 0.0f)
+        private val BODY_ROTATION = Vec3(0.0f, 0.0f, 0.0f)
+        private val LEFT_ARM_ROTATION = Vec3(-10.0f, 0.0f, -10.0f)
+        private val RIGHT_ARM_ROTATION = Vec3(-15.0f, 0.0f, 10.0f)
+        private val LEFT_LEG_ROTATION = Vec3(-1.0f, 0.0f, -1.0f)
+        private val RIGHT_LEG_ROTATION = Vec3(1.0f, 0.0f, 1.0f)
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ArmorStand {
             return ArmorStand(connection, entityType, data, position, rotation)
