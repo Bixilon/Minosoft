@@ -107,7 +107,7 @@ open class ItemFeature(
     }
 
     override fun draw(mesh: BlockMesh) {
-        renderer.renderer.context.system.set(EntityLayer.Translucent.settings)
+        renderer.renderer.context.system.set(layer.settings)
         val shader = renderer.renderer.features.block.shader
         draw(mesh, shader)
     }

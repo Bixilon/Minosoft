@@ -47,7 +47,7 @@ class EntitiesRenderer(
 
     override fun registerLayers() {
         layers.register(EntityLayer.Opaque, null, { visibility.opaque.draw() }) { visibility.opaque.size <= 0 }
-        layers.register(EntityLayer.Translucent, null, { visibility.translucent.draw() }) { visibility.opaque.size <= 0 }
+        layers.register(EntityLayer.Translucent, null, { visibility.translucent.draw() }) { visibility.translucent.size <= 0 }
     }
 
     override fun prePrepareDraw() {

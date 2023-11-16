@@ -59,7 +59,7 @@ class HitboxFeature(renderer: EntityRenderer<*>) : MeshedFeature<LineMesh>(rende
         var changes = 0
 
         val renderInfo = renderer.entity.renderInfo
-        val aabb = renderInfo.cameraAABB + -offset
+        val aabb = renderInfo.cameraAABB
         val eyePosition = Vec3(renderInfo.eyePosition - offset)
         val rotation = renderInfo.rotation
 
