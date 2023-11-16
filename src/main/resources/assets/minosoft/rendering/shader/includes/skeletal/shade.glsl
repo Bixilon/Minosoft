@@ -26,7 +26,21 @@ vec3 decodeNormal(uint normal) {
 
 vec3 transformNormal(vec3 normal, mat4 transform) {
     //  return normalize(mat3(transpose(inverse(transform))) * normal);
-    return normalize(mat3(transform) * normal);
+    //   return mat3(transpose(inverse(transform))) * normal;
+    vec3 transformed = normalize(mat3(transform) * normal);
+
+
+    // asin is just defined in |x| <= 1. fixes precision issues
+    if (transformed.x < -1.0f) transformed.x = -1.0f;
+    else if (transformed.x >= 1.0f) transformed.x = 1.0f;
+
+    if (transformed.y < -1.0f) transformed.y = -1.0f;
+    else if (transformed.y >= 1.0f) transformed.y = 1.0f;
+
+    if (transformed.z < -1.0f) transformed.z = -1.0f;
+    else if (transformed.z >= 1.0f) transformed.z = 1.0f;
+
+    return transformed;
 }
 
 float interpolateShade(float delta, float max) {

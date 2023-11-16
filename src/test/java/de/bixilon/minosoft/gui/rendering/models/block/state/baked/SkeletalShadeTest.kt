@@ -55,7 +55,7 @@ class SkeletalShadeTest {
 
     fun transformNormal(normal: Vec3, transform: Mat4): Vec3 {
         //  return normalize(mat3(transpose(inverse(transform))) * normal);
-        return (Mat3(transform) * normal).normalizeAssign()
+        return (Mat3(transform) * normal)
     }
 
     @Test
@@ -168,7 +168,14 @@ class SkeletalShadeTest {
         assertEquals(transformNormal(normal, transform), Vec3(-1.0f, 0.0f, 0.0f))
     }
 
-    // TODO: test why shade is wrong sometimes
+    @Test
+    fun `somehow broken in the shader`() {
+        val transform = Mat4(-0.7320485, 0.0, -0.5712964, 0.0, 0.0, 0.9285874, 0.0, 0.0, 0.5712964, 0.0, -0.7320485, 0.0, -474.72504, 68.0, 581.7848, 1.0)
+        val expected = Vec3(0.0f, 1.0f, 0.0f)
+        val normal = transformNormal(expected, transform)
+        assertEquals(normal, Vec3(0.0f, 1.0f, 0.0f))
+        assertEquals(getShade(normal), 1.0f)
+    }
 
 
     private fun assertEquals(expected: Float, actual: Float) {
