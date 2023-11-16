@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 
 import de.bixilon.kotlinglm.mat3x3.Mat3
+import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -41,9 +42,7 @@ class Frustum(
     var revision = 0
         private set
 
-
-    fun recalculate() {
-        val matrix = matrixHandler.viewProjectionMatrix.transpose()
+    private fun recalculate(matrix: Mat4) {
         val planes = arrayOf(
             matrix[3] + matrix[0],
             matrix[3] - matrix[0],
@@ -111,6 +110,10 @@ class Frustum(
 
         this.data = FrustumData(normals, planes)
         revision++
+    }
+
+    fun recalculate() {
+        recalculate(matrixHandler.viewProjectionMatrix.transpose())
     }
 
 

@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.entities.util
 
 import de.bixilon.kutil.math.MathConstants
+import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
-import kotlin.math.sin
 
 class EntitySpeedAnimator(
     val speed: EntitySpeed,

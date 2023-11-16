@@ -22,13 +22,13 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.swizzle.xy
 import de.bixilon.kotlinglm.vec3.swizzle.xz
 import de.bixilon.kotlinglm.vec3.swizzle.yz
+import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import kotlin.math.PI
-import kotlin.math.sin
 
 object Vec3Util {
     private val EMPTY_INSTANCE = Vec3.EMPTY

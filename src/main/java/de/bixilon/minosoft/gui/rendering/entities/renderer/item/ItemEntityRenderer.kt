@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entities.renderer.item
 
 import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.registries.identified.Identified
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.entities.feature.item.ItemFeature
 import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
-import kotlin.math.sin
 
 class ItemEntityRenderer(renderer: EntitiesRenderer, entity: ItemEntity) : EntityRenderer<ItemEntity>(renderer, entity) {
     val item = ItemFeature(this, null, DisplayPositions.GROUND).register()
