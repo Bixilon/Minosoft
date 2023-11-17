@@ -100,7 +100,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         }
 
         layout += context.renderer[EntitiesRenderer]?.let {
-            AutoTextElement(guiRenderer, 1) { BaseComponent("E v=", it.visibility.size, ", t=", it.renderers.size, ", w=", connection.world.entities.size) }
+            AutoTextElement(guiRenderer, 1) { BaseComponent("E v=", it.visibility.size, ",ov=", it.visibility.opaque.size, ",tv=", it.visibility.translucent.size, ", t=", it.renderers.size, ", w=", connection.world.entities.size) }
         } ?: AutoTextElement(guiRenderer, 1) { "E w=${connection.world.entities.size.format()}" }
 
         context.renderer[ParticleRenderer]?.apply {

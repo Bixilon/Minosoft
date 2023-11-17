@@ -132,7 +132,7 @@ open class ItemFeature(
         EXTREME(48.0),
         ;
 
-        val distance = distance * distance * distance
+        val distance = distance * distance
 
         companion object {
 

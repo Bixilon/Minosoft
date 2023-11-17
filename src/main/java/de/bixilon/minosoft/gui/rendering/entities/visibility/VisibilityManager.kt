@@ -26,6 +26,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class VisibilityManager(val renderer: EntitiesRenderer) {
     private var update = false
+    private var _size = 0
     var size: Int = 0
         private set
 
@@ -53,6 +54,7 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
         opaque.clear()
         translucent.clear()
         size = 0
+        _size = 0
     }
 
     private fun EntityRenderer<*>.isInRenderDistance(): Boolean {
@@ -80,7 +82,7 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
     fun collect(renderer: EntityRenderer<*>) {
         if (!renderer.visible) return
         lock.lock()
-        size++
+        _size++
         for (feature in renderer.features) {
             if (!feature.enabled || !feature.visible || feature.isInvisible()) continue
             feature.collect(this)
@@ -93,6 +95,7 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
         this.opaque.sort()
         this.translucent.sort()
         this.update = false
+        size = _size
     }
 
     operator fun get(layer: EntityLayer) = when (layer) {

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.terminal.commands.connection
 
 import de.bixilon.kotlinglm.GLM.PIf
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.random.RandomUtil.nextDouble
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.random.RandomUtil.nextInt
@@ -33,7 +34,6 @@ import de.bixilon.minosoft.util.KUtil.startInit
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.util.*
 import kotlin.math.cbrt
-import kotlin.math.sin
 
 object BenchmarkCommand : ConnectionCommand {
     override var node = LiteralNode("benchmark").addChild(
