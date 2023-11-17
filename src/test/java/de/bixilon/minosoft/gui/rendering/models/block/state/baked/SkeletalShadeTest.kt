@@ -25,11 +25,14 @@ class SkeletalShadeTest {
     private val DEGREE_90 = 1.5707964f
 
 
-    fun interpolateShade(delta: Float, max: Float): Float {
-        var delta = delta
+    fun interpolateShade(normal: Float, max: Float): Float {
+        if (normal <= -1.0f) return 0.0f
+        if (normal >= 1.0f) return max
+        var delta: Float = normal
         if (delta < 0.0f) delta = -delta
-        if (delta <= 0.0f) return 0.0f
-        if (delta >= 1.0f) return max
+        delta = asin(delta) / DEGREE_90 // asin is just defined in |x| <= 1
+
+
         return delta * max
     }
 
@@ -37,25 +40,21 @@ class SkeletalShadeTest {
         normal.normalizeAssign() // for testing purposes
         // Take code from skeletal/shade.glsl
 
-        val aX = asin(normal.x) / DEGREE_90
-        val aY = asin(normal.y) / DEGREE_90
-        val aZ = asin(normal.z) / DEGREE_90
-
-        val x = interpolateShade(aX, 0.6f)
+        val x = interpolateShade(normal.x, 0.6f)
         val y: Float
         y = if (normal.y < 0.0f) {
-            interpolateShade(-aY, 0.5f)
+            interpolateShade(normal.y, 0.5f)
         } else {
-            interpolateShade(aY, 1.0f)
+            interpolateShade(normal.y, 1.0f)
         }
-        val z = interpolateShade(aZ, 0.8f)
+        val z = interpolateShade(normal.z, 0.8f)
 
         return x + y + z
     }
 
     fun transformNormal(normal: Vec3, transform: Mat4): Vec3 {
         //  return normalize(mat3(transpose(inverse(transform))) * normal);
-        return (Mat3(transform) * normal)
+        return (Mat3(transform) * normal).normalizeAssign()
     }
 
     @Test

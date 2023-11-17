@@ -110,9 +110,11 @@ abstract class PlayerEntity(
         data.observe(SKIN_PARTS_DATA) { raw: Any? -> updateSkinParts(raw?.toInt() ?: 0) }
     }
 
+    private var _mainArm by data(MAIN_ARM_DATA, 0x01)
+
     @get:SynchronizedEntityData
     open val mainArm: Arms
-        get() = if (data.get(MAIN_ARM_DATA, 0x01.toByte()).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
+        get() = if (_mainArm == 0x01) Arms.RIGHT else Arms.LEFT
 
     @get:SynchronizedEntityData
     val leftShoulderData: JsonObject?
