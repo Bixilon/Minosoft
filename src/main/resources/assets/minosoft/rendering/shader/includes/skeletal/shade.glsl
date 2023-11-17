@@ -27,42 +27,28 @@ vec3 decodeNormal(uint normal) {
 vec3 transformNormal(vec3 normal, mat4 transform) {
     //  return normalize(mat3(transpose(inverse(transform))) * normal);
     //   return mat3(transpose(inverse(transform))) * normal;
-    vec3 transformed = normalize(mat3(transform) * normal);
-
-
-    // asin is just defined in |x| <= 1. fixes precision issues
-    if (transformed.x < -1.0f) transformed.x = -1.0f;
-    else if (transformed.x >= 1.0f) transformed.x = 1.0f;
-
-    if (transformed.y < -1.0f) transformed.y = -1.0f;
-    else if (transformed.y >= 1.0f) transformed.y = 1.0f;
-
-    if (transformed.z < -1.0f) transformed.z = -1.0f;
-    else if (transformed.z >= 1.0f) transformed.z = 1.0f;
-
-    return transformed;
+    return normalize(mat3(transform) * normal);
 }
 
-float interpolateShade(float delta, float max) {
+float interpolateShade(float normal, float max) {
+    float delta = normal;
     if (delta < 0.0f) delta = -delta;
     if (delta <= 0.0f) return 0.0f;
     if (delta >= 1.0f) return max;
+    delta = asin(delta) / DEGREE_90;  // asin is just defined in |x| <= 1
+
     return delta * max;
 }
 
 float getShade(vec3 normal) {
-    float aX = asin(normal.x) / DEGREE_90;
-    float aY = asin(normal.y) / DEGREE_90;
-    float aZ = asin(normal.z) / DEGREE_90;
-
-    float x = interpolateShade(aX, 0.6f);
+    float x = interpolateShade(normal.x, 0.6f);
     float y;
     if (normal.y < 0.0f) {
-        y = interpolateShade(-aY, 0.5f);
+        y = interpolateShade(normal.y, 0.5f);
     } else {
-        y = interpolateShade(aY, 1.0f);
+        y = interpolateShade(normal.y, 1.0f);
     }
-    float z = interpolateShade(aZ, 0.8f);
+    float z = interpolateShade(normal.z, 0.8f);
 
     return (x + y + z);
 }
