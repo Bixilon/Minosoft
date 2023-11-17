@@ -28,7 +28,7 @@ class SkeletalShadeTest {
     fun interpolateShade(normal: Float, max: Float): Float {
         var delta = normal
         if (delta < 0.0f) delta = -delta
-        if (delta <= 0.0f) return 0.0f
+        if (delta <= 0.003f) return 0.0f
         if (delta >= 1.0f) return max
         delta = asin(delta) / DEGREE_90 // asin is just defined in |x| <= 1
 

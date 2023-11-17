@@ -15,8 +15,8 @@
 
 out vec4 foutColor;
 
-uniform vec4 uSkyColor;
+uniform vec3 uSkyColor;
 
 void main() {
-    foutColor = uSkyColor;
+    foutColor = vec4(uSkyColor, 1.0f);
 }

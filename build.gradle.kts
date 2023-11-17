@@ -129,7 +129,8 @@ when (os) {
             /*
             Architectures.ARM -> {
                 lwjglNatives += "-arm64"
-                zstdNatives += "-amd64" // TODO: Windows on arm is not yet supported: https://github.com/luben/zstd-jni/issues/277
+                zstdNatives += "-amd64"
+                 // TODO: javafx for Windows on arm is not yet supported: https://github.com/luben/zstd-jni/issues/277
             }
              */
 
@@ -501,8 +502,15 @@ val fatJar = task("fatJar", type = Jar::class) {
         attributes["Main-Class"] = application.mainClass
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude("META-INF/maven/**")
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     with(tasks["jar"] as CopySpec)
+
+    // TODO: exclude a lot of unneeded files
+
+    // remote other platforms from com.sun.jna
+    // remove most of it.unimi.fastutil classes
+    // remove META-INF/maven
 }
 
 
