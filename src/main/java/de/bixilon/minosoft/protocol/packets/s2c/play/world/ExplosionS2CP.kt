@@ -15,6 +15,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.world
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -28,6 +30,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W45A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -38,6 +41,10 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val power = buffer.readFloat()
     val explodedBlocks: Array<Vec3i> = buffer.readArray((buffer.versionId < V_1_17).decide({ buffer.readInt() }, { buffer.readVarInt() })) { Vec3i(buffer.readByte(), buffer.readByte(), buffer.readByte()) } // ToDo: Find out version
     val velocity = buffer.readVec3f()
+    val destruct = if (buffer.versionId >= V_23W45A) buffer.readEnum(DestructionTypes) else null
+    val particle = if (buffer.versionId >= V_23W45A) buffer.readParticleData() else null
+    val emitter = if (buffer.versionId >= V_23W45A) buffer.readParticleData() else null
+    val sound = if (buffer.versionId >= V_23W45A) buffer.readSound() else null
 
     override fun check(connection: PlayConnection) {
         require(power <= 100.0f) {
@@ -91,6 +98,19 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.player.physics.velocity = connection.player.physics.velocity + velocity
 
         connection.events.fire(ExplosionEvent(connection, this))
+    }
+
+    enum class DestructionTypes {
+        KEEP,
+        DESTROY,
+        DECAY,
+        TRIGGER,
+        ;
+
+        companion object : ValuesEnum<DestructionTypes> {
+            override val VALUES = values()
+            override val NAME_MAP = names()
+        }
     }
 
     override fun log(reducedLog: Boolean) {

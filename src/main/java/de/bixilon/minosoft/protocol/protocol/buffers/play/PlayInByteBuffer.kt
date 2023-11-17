@@ -36,6 +36,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.sound.PlayedSound
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
@@ -386,5 +387,18 @@ class PlayInByteBuffer : InByteBuffer {
             array[index] = readByte()
         }
         return BitSet.valueOf(array)
+    }
+
+    fun readSound(): PlayedSound {
+        if (versionId < ProtocolVersions.V_1_19_3_RC1) {
+            return PlayedSound(readRegistryItem(connection.registries.soundEvent))
+        }
+        val id = readVarInt()
+        if (id != 0) {
+            return PlayedSound(connection.registries.soundEvent[id - 1])
+        }
+        val name = readResourceLocation() // TODO: readRegistryItem?
+        val attenuation = readOptional { readFloat() }
+        return PlayedSound(name, attenuation)
     }
 }

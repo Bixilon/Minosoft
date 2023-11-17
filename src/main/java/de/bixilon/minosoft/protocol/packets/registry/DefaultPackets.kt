@@ -98,6 +98,8 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.recipes.RecipesS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.recipes.UnlockRecipesS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.ObjectivePositionS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.ObjectiveS2CF
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.PutScoreboardScoreS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.RemoveScoreboardScoreS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.ScoreboardScoreS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams.TeamsS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.sign.SignEditorS2CP
@@ -370,6 +372,9 @@ object DefaultPackets {
             registerPlay("unlock_recipes", ::UnlockRecipesS2CP)
 
             registerPlay("objective", ObjectiveS2CF, threadSafe = false)
+            registerPlay("scoreboard_score", ScoreboardScoreS2CF, threadSafe = false)
+            registerPlay("put_scoreboard_score", ::PutScoreboardScoreS2CP, threadSafe = false)
+            registerPlay("remove_scoreboard_score", ::RemoveScoreboardScoreS2CP, threadSafe = false)
             registerPlay("scoreboard_score", ScoreboardScoreS2CF, threadSafe = false)
             registerPlay("teams", TeamsS2CF, threadSafe = false)
             registerPlay("objective_position", ::ObjectivePositionS2CP, threadSafe = false)

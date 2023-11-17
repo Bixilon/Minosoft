@@ -19,7 +19,10 @@ import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardObjectiveCreateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.format.NumberFormat
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.format.NumberFormats.readNumberFormat
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W46A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -33,6 +36,8 @@ class CreateObjectiveS2CP(
     val displayName: ChatComponent
         get() = _displayName!!
     var unit: ObjectiveUnits = ObjectiveUnits.INTEGER
+        private set
+    var format: NumberFormat? = null
         private set
 
     init {
@@ -50,6 +55,9 @@ class CreateObjectiveS2CP(
                     unit = ObjectiveUnits[buffer.readVarInt()]
                 }
             }
+        }
+        if (buffer.versionId >= V_23W46A) {
+            format = buffer.readOptional { buffer.readNumberFormat() }
         }
     }
 

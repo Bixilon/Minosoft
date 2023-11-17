@@ -16,6 +16,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardObjectiveUpdateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.format.NumberFormat
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.format.NumberFormats.readNumberFormat
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -30,6 +32,8 @@ class UpdateObjectiveS2CP(
     val displayName: ChatComponent
         get() = _displayName!!
     var unit: CreateObjectiveS2CP.ObjectiveUnits = CreateObjectiveS2CP.ObjectiveUnits.INTEGER
+        private set
+    var format: NumberFormat? = null
         private set
 
     init {
@@ -47,6 +51,10 @@ class UpdateObjectiveS2CP(
                     unit = CreateObjectiveS2CP.ObjectiveUnits[buffer.readVarInt()]
                 }
             }
+        }
+
+        if (buffer.versionId >= ProtocolVersions.V_23W46A) {
+            format = buffer.readOptional { buffer.readNumberFormat() }
         }
     }
 

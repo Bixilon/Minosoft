@@ -69,6 +69,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         if (buffer.versionId >= V_22W14A) {
             seed = buffer.readLong()
+            seed = buffer.readLong()
         }
     }
 

@@ -27,6 +27,8 @@ class RemoveScoreboardScoreS2CP(
     buffer: PlayInByteBuffer,
 ) : ScoreboardScoreS2CP {
 
+    constructor(buffer: PlayInByteBuffer) : this(buffer.readString(), buffer.readOptional { buffer.readString() }, buffer)
+
     override fun handle(connection: PlayConnection) {
         val objective = connection.scoreboard.objectives[objective] ?: let {
             for ((_, objective) in connection.scoreboard.objectives.toSynchronizedMap()) {

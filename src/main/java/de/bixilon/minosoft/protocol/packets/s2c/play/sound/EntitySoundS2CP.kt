@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.sound
 
 import de.bixilon.minosoft.data.SoundCategories
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -22,27 +21,13 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntitySoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val soundEvent: ResourceLocation = buffer.readSound()
+    val soundEvent = buffer.readSound()
     val category: SoundCategories = SoundCategories[buffer.readVarInt()]
     val entityId: Int = buffer.readVarInt()
     val volume: Float = buffer.readFloat()
     val pitch: Float = buffer.readFloat()
     val seed: Long = if (buffer.versionId >= ProtocolVersions.V_22W14A) buffer.readLong() else 0L
-    var attenuationDistance: Float? = null
-        private set
 
-    private fun PlayInByteBuffer.readSound(): ResourceLocation {
-        if (versionId < ProtocolVersions.V_1_19_3_RC1) {
-            return readRegistryItem(connection.registries.soundEvent)
-        }
-        val id = readVarInt()
-        if (id != 0) {
-            return connection.registries.soundEvent[id - 1]
-        }
-        val name = readResourceLocation()
-        attenuationDistance = readOptional { readFloat() }
-        return name
-    }
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Entity sound effect (soundEvent=$soundEvent, category=$category, entityId$entityId, volume=$volume, pitch=$pitch)" }
