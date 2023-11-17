@@ -26,7 +26,7 @@ import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
-@Test(groups = ["frustum", "rendering"], enabled = false)
+@Test(groups = ["frustum", "rendering"])
 class FrustumTest {
     private val CAMERA = Frustum::class.java.getDeclaredField("camera").apply { isAccessible = true }
     private val RECALCULATE = Frustum::class.java.getDeclaredMethod("recalculate", Mat4::class.java).apply { isAccessible = true }
@@ -40,7 +40,7 @@ class FrustumTest {
 
         val frustum = Frustum::class.java.allocate()
         CAMERA[frustum] = camera
-        RECALCULATE.invoke(frustum, matrix)
+        RECALCULATE.invoke(frustum, matrix.transposeAssign())
 
         return frustum
     }
@@ -96,5 +96,5 @@ class FrustumTest {
         assertFalse(AABB(12379.90899152872, 980.0, -1837647.6819665642, 12380.15899152872, 980.25, -1837647.4319665642) in frustum)
     }
 
-    // TODO: test (aabb, chunk) with camera offset
+    // TODO: test chunk, section (with camera offset)
 }
