@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.light.updater.normal
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.abs
 import kotlin.math.pow
-import kotlin.math.sin
 
 /**
  * Updates the lightmap similar to vanilla
@@ -136,7 +136,7 @@ class NormalLightmapUpdater(
 
         var color = interpolateLinear(baseBrightness, THUNDER_BASE, THUNDER_BRIGHT) * baseBrightness * brightness * 0.3f
 
-        skyRenderer?.let { color = interpolateLinear(brightness * 5.0f + 0.5f, color, it.box.calculateLightingStrike(color)) }
+        skyRenderer?.let { color = interpolateLinear(brightness * 5.0f + 0.5f, color, it.box.color.calculateLightingStrike(color)) }
         return interpolateLinear(thunder, base, color)
     }
 

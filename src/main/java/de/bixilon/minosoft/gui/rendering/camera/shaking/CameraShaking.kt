@@ -17,13 +17,13 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.swizzle.xz
 import de.bixilon.kutil.avg.FloatAverage
+import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.shaking.ShakingC
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.math.sin
 
 class CameraShaking(
     private val camera: Camera,

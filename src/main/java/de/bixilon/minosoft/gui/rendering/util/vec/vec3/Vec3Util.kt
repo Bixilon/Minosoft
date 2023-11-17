@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import de.bixilon.kotlinglm.GLM.PIf
 import de.bixilon.kotlinglm.func.cos
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.func.sin
@@ -28,7 +29,6 @@ import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import kotlin.math.PI
 
 object Vec3Util {
     private val EMPTY_INSTANCE = Vec3.EMPTY
@@ -159,7 +159,7 @@ object Vec3Util {
             return end
         }
 
-        val sineDelta = sin(delta * PI.toFloat() / 2.0f)
+        val sineDelta = sin(delta * PIf / 2.0f)
 
         fun interpolate(start: Float, end: Float): Float {
             return start + sineDelta * (end - start)

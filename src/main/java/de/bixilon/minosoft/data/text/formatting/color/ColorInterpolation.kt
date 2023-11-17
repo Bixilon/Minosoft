@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
+import de.bixilon.kotlinglm.GLM.PIf
 import de.bixilon.kutil.math.Trigonometry.sin
-import kotlin.math.PI
 
 object ColorInterpolation {
 
@@ -46,7 +46,7 @@ object ColorInterpolation {
             return end
         }
 
-        return interpolateColor((sin(delta * PI.toFloat() / 2.0f)), start, end)
+        return interpolateColor((sin(delta * PIf / 2.0f)), start, end)
     }
 
     private fun interpolateColor(delta: Float, start: RGBColor, end: RGBColor): RGBColor {
