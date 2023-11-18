@@ -27,8 +27,9 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.data.registries.effects.attributes.integrated.IntegratedAttributeModifiers
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
+import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
+import de.bixilon.minosoft.gui.rendering.entities.factory.EntityModelFactory
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.LocalPlayerRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
@@ -41,7 +42,7 @@ class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
     val keyManagement: SignatureKeyManagement,
-) : PlayerEntity(connection, connection.registries.entityType[identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, PlayerAdditional(account.username, ping = 0, properties = account.properties)) {
+) : PlayerEntity(connection, connection.registries.entityType[identifier]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY, PlayerAdditional(account.username, ping = 0, properties = account.properties)), EntityModelFactory<LocalPlayerEntity> {
     var healthCondition by observed(HealthCondition())
     var experienceCondition by observed(ExperienceCondition())
     var compass by observed(CompassPosition())
@@ -109,10 +110,10 @@ class LocalPlayerEntity(
     override val usingHand: Hands?
         get() = using?.hand
 
-    override fun createModel(renderer: EntityRenderer): LocalPlayerModel {
-        return LocalPlayerModel(renderer, this).apply { this@LocalPlayerEntity.model = this }
-    }
-
     override fun createPhysics() = LocalPlayerPhysics(this)
     override fun physics(): LocalPlayerPhysics = super.physics().unsafeCast()
+    override fun create(renderer: EntitiesRenderer) = LocalPlayerRenderer(renderer, this)
+
+
+    override fun updateSkinParts(flags: Int) = Unit // server can not update our own skin parts
 }

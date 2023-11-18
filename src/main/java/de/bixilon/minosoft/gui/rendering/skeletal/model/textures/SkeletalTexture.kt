@@ -13,18 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.textures
 
-import de.bixilon.minosoft.data.registries.identified.Namespaces
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import java.util.*
+import de.bixilon.kotlinglm.vec2.Vec2i
 
-// ToDo: This does not follow the specification
 data class SkeletalTexture(
-    val path: String,
-    val name: String,
-    val namespace: String = Namespaces.DEFAULT,
-    val id: Int,
-    val uuid: UUID,
-) {
-    val resourceLocation = ResourceLocation(namespace, path).texture()
-}
+    val resolution: Vec2i,
+)

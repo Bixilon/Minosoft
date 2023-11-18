@@ -35,6 +35,7 @@ internal object MinosoftSIT {
     @BeforeSuite
     fun setup() {
         Log.ASYNC_LOGGING = false
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "This is java version ${System.getProperty("java.version")}" }
         RunConfiguration.VERBOSE_LOGGING = true
         KUtil.initBootClasses()
         KUtil.initPlayClasses()

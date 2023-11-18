@@ -45,7 +45,7 @@ class PigRidingTest : AbstractRidingTest<Pig>() {
     }
 
     override fun saddle(entity: Pig) {
-        entity.data[Pig.HAS_SADDLE_DATA] = true
+        entity.data[Pig.SADDLED] = true
     }
 
     fun pigStartRiding() {

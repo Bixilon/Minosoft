@@ -14,9 +14,19 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.sign
 
 import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.PixLyzerBlockWithEntity
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign.SignBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
+import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 
-abstract class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<SignBlockEntity>(resourceLocation, registries, data)
+abstract class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<SignBlockEntity>(resourceLocation, registries, data), ModelChooser {
+
+    override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
+        super.bakeModel(context, model)
+        this.model = SignBlockEntityRenderer(context)
+    }
+}
 

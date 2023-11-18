@@ -14,21 +14,31 @@
 package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.SingleChestRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
+class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection), RenderedBlockEntity<SingleChestRenderer> {
+    override var renderer: SingleChestRenderer? = null
 
-    override fun createRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? {
-        val model = context.models.entities.skeletal[SingleChestRenderer.EnderChest.MODEL] ?: return null
-        return SingleChestRenderer(this, context, blockState, blockPosition, model, light)
+    override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): SingleChestRenderer? {
+        val model = context.models.skeletal[SingleChestRenderer.EnderChest.NAME] ?: return null
+        return SingleChestRenderer(this, context, state, position, model, light)
+    }
+
+    override fun onOpen() {
+        super.onOpen()
+        renderer?.open()
+    }
+
+    override fun onClose() {
+        super.onClose()
+        renderer?.close()
     }
 
     companion object : BlockEntityFactory<EnderChestBlockEntity> {

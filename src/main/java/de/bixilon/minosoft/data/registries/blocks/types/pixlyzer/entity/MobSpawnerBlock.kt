@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class MobSpawnerBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<MobSpawnerBlockEntity>(resourceLocation, registries, data) {
+open class MobSpawnerBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<MobSpawnerBlockEntity>(resourceLocation, registries, data) {
 
     companion object : PixLyzerBlockFactory<MobSpawnerBlock>, MultiClassFactory<MobSpawnerBlock> {
         override val ALIASES: Set<String> = setOf("SpawnerBlock")

@@ -35,7 +35,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
     init {
-        val actions = if (buffer.versionId < ProtocolVersions.V_22W42A) LegacyActions[buffer.readVarInt()].actions else buffer.readEnumSet(Actions.VALUES_22W42A).actions()
+        val actions = if (buffer.versionId < ProtocolVersions.V_22W42A) LegacyActions[buffer.readVarInt()].actions else buffer.readEnumSet(Actions, Actions.VALUES_22W42A).actions()
         val entries: MutableMap<UUID, AdditionalDataUpdate?> = mutableMapOf()
 
         for (index in 0 until buffer.readVarInt()) {
@@ -77,7 +77,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 connection.tabList.uuid[uuid] = item
                 connection.tabList.name[name] = item
 
-                for (team in connection.scoreboardManager.teams.toSynchronizedMap().values) {
+                for (team in connection.scoreboard.teams.toSynchronizedMap().values) {
                     if (team.members.contains(data.name)) {
                         item.team = team
                         break

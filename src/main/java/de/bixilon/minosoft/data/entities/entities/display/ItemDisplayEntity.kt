@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
+@Deprecated("TODO")
 class ItemDisplayEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : DisplayEntity(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ItemDisplayEntity> {

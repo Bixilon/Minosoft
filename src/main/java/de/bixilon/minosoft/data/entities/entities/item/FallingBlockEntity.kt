@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.item
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -30,7 +31,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData
-    var blockState: BlockState? = null
+    var blockState: BlockState? by observed(null)
         private set
 
     @get:SynchronizedEntityData

@@ -121,12 +121,7 @@ class NodeTextInputElement(
     }
 
     fun updateSuggestion(suggestion: Suggestion) {
-        val slash = value.startsWith("/")
-        var value = SuggestionUtil.apply(value.removePrefix("/"), suggestion)
-        if (slash) {
-            value = "/$value" // TODO: dirty hack
-        }
-        _set(value)
+        _set(SuggestionUtil.apply(value, suggestion))
         forceApply()
     }
 }

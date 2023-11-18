@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -73,6 +73,9 @@ class Chunk(
         val section = getOrPut(y.sectionHeight) ?: return
         val previous = section.blocks.set(x, y and 0x0F, z, state)
         if (previous == state) return
+        if (previous?.block != state?.block) {
+            this[y.sectionHeight]?.blockEntities?.set(x, y and 0x0F, z, null)
+        }
         val entity = getOrPutBlockEntity(x, y, z)
 
         if (world.dimension.light) {
@@ -92,14 +95,18 @@ class Chunk(
         val sectionHeight = y.sectionHeight
         val inSectionHeight = y.inSectionHeight
         var blockEntity = this[sectionHeight]?.blockEntities?.get(x, inSectionHeight, z)
+        val state = this[sectionHeight]?.blocks?.get(x, inSectionHeight, z) ?: return null
+        if (blockEntity != null && state.block !is BlockWithEntity<*>) {
+            this[sectionHeight]?.blockEntities?.set(x, inSectionHeight, z, null)
+            return null
+        }
         if (blockEntity != null) {
             return blockEntity
         }
-        val block = this[sectionHeight]?.blocks?.get(x, inSectionHeight, z) ?: return null
-        if (block.block !is BlockWithEntity<*>) {
+        if (state.block !is BlockWithEntity<*>) {
             return null
         }
-        blockEntity = block.block.factory?.build(connection) ?: return null
+        blockEntity = state.block.createBlockEntity(connection) ?: return null
         (this.getOrPut(sectionHeight) ?: return null).blockEntities[x, inSectionHeight, z] = blockEntity
 
         return blockEntity
@@ -143,6 +150,9 @@ class Chunk(
             section = getOrPut(sectionHeight, lock = false) ?: continue
             val previous = section.blocks.noOcclusionSet(update.position.x, update.position.y.inSectionHeight, update.position.z, update.state)
             if (previous == update.state) continue
+            if (previous?.block != update.state?.block) {
+                this[update.position.y.sectionHeight]?.blockEntities?.set(update.position.x, update.position.y and 0x0F, update.position.z, null)
+            }
             getOrPutBlockEntity(update.position)
             executed += update
             sections += section
@@ -207,9 +217,11 @@ class Chunk(
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, random: Random) {
         if (!neighbours.complete) return
+        lock.acquire()
         for ((index, section) in sections.withIndex()) {
             section?.tick(connection, chunkPosition, index + minSection, random)
         }
+        lock.release()
     }
 
     override fun iterator(): Iterator<ChunkSection?> {

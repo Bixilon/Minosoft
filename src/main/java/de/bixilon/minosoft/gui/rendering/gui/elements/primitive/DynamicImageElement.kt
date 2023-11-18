@@ -21,10 +21,10 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 open class DynamicImageElement(
@@ -35,13 +35,11 @@ open class DynamicImageElement(
     size: Vec2 = Vec2.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
     parent: Element? = null,
-) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6), DynamicStateChangeCallback {
+) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6), DynamicTextureListener {
 
     var texture: DynamicTexture? = null
         set(value) {
-            field?.usages?.decrementAndGet()
             field?.removeListener(this)
-            value?.usages?.incrementAndGet()
             value?.addListener(this)
             field = value
             cacheUpToDate = false
@@ -82,7 +80,7 @@ open class DynamicImageElement(
         this.parent = parent
     }
 
-    private fun getAvailableTexture(): ShaderIdentifiable {
+    private fun getAvailableTexture(): ShaderTexture {
         val texture = texture ?: return context.textures.whiteTexture.texture
         if (texture.state != DynamicTextureState.LOADED) {
             return context.textures.whiteTexture.texture
@@ -97,13 +95,11 @@ open class DynamicImageElement(
     override fun forceSilentApply() = Unit
     override fun silentApply(): Boolean = false
 
-    protected fun finalize() {
-        texture?.usages?.decrementAndGet()
-    }
-
-    override fun onStateChange(texture: DynamicTexture, state: DynamicTextureState) {
+    override fun onDynamicTextureChange(texture: DynamicTexture): Boolean {
         if (texture === this.texture) {
             forceApply()
+            return false
         }
+        return true
     }
 }

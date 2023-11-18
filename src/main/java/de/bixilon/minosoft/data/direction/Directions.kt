@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.direction
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -21,12 +20,12 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.reflect.jvm.javaField
 
 enum class Directions(
     val vector: Vec3i,
@@ -46,7 +45,6 @@ enum class Directions(
     val vectord = Vec3d(vector)
 
     val axis: Axes = unsafeNull()
-    val rotatedMatrix: Mat4 = unsafeNull()
     val inverted: Directions = unsafeNull()
 
     private fun invert(): Directions {
@@ -60,19 +58,6 @@ enum class Directions(
 
     operator fun get(axis: Axes): Int {
         return vector[axis]
-    }
-
-
-    @Deprecated("outsource")
-    fun getPositions(from: Vec3, to: Vec3): Array<Vec3> {
-        return when (this) {
-            DOWN -> arrayOf(Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.z), Vec3(to.x, from.y, from.z), from)
-            UP -> arrayOf(Vec3(from.x, to.y, from.z), Vec3(to.x, to.y, from.z), to, Vec3(from.x, to.y, to.z))
-            NORTH -> arrayOf(Vec3(to.x, to.y, from.z), Vec3(from.x, to.y, from.z), from, Vec3(to.x, from.y, from.z))
-            SOUTH -> arrayOf(Vec3(from.x, to.y, to.z), to, Vec3(to.x, from.y, to.z), Vec3(from.x, from.y, to.z))
-            WEST -> arrayOf(Vec3(from.x, to.y, from.z), Vec3(from.x, to.y, to.z), Vec3(from.x, from.y, to.z), from)
-            EAST -> arrayOf(to, Vec3(to.x, to.y, from.z), Vec3(to.x, from.y, from.z), Vec3(to.x, from.y, to.z))
-        }
     }
 
     @Deprecated("outsource")
@@ -170,14 +155,11 @@ enum class Directions(
             return minDirection
         }
 
-
         init {
-            val rotationMatrix = Directions::rotatedMatrix.javaField!!
-            val inverted = Directions::inverted.javaField!!
-            val axis = Directions::axis.javaField!!
+            val inverted = Directions::inverted.jvmField
+            val axis = Directions::axis.jvmField
             for (direction in VALUES) {
                 inverted.forceSet(direction, direction.invert())
-                rotationMatrix.forceSet(direction, DirectionUtil.rotateMatrix(direction))
                 axis.forceSet(direction, Axes[direction])
             }
             NAME_MAP.unsafeCast<MutableMap<String, Directions>>()["bottom"] = DOWN

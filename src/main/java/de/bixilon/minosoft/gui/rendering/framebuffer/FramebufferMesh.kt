@@ -28,9 +28,7 @@ class FramebufferMesh(context: RenderContext) : Mesh(context, DefaultFramebuffer
             Vec2(+1.0f, +1.0f) to Vec2(1.0f, 0.0f),
             Vec2(+1.0f, -1.0f) to Vec2(1.0f, 1.0f),
         )
-        for (index in 0 until order.size step 2) {
-            addVertex(vertices[order[index]].first, vertices[order[index + 1]].second)
-        }
+        order.iterate { position, uv -> addVertex(vertices[position].first, vertices[uv].second) }
     }
 
     private fun addVertex(position: Vec2, uv: Vec2) {

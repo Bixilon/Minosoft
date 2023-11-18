@@ -13,45 +13,48 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
-import com.sun.marlin.MarlinConst.BLOCK_SIZE
-import de.bixilon.kotlinglm.vec2.Vec2
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
-import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.faces.SkeletalFace
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalTransform
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalBakeContext
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
+import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTextureInstance
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import java.util.*
+import de.bixilon.minosoft.util.json.SkeletalFaceDeserializer
+import de.bixilon.minosoft.util.json.SkeletalRotationDeserializer
 
 data class SkeletalElement(
-    val name: String,
-    val rescale: Boolean = false,
-    val visible: Boolean = true,
-    val from: Vec3 = Vec3.EMPTY,
-    val to: Vec3 = Vec3.ONE,
-    val rotation: Vec3 = Vec3.EMPTY,
-    val origin: Vec3 = Vec3.EMPTY,
-    val uvOffset: Vec2 = Vec2.EMPTY,
-    val faces: Map<Directions, SkeletalFace> = emptyMap(),
-    val uuid: UUID,
+    val from: Vec3,
+    val to: Vec3,
+    val offset: Vec3 = Vec3.EMPTY,
+    @JsonDeserialize(using = SkeletalRotationDeserializer::class) val rotation: SkeletalRotation? = null,
     val inflate: Float = 0.0f,
-    val transparency: Boolean = true,
+    val texture: ResourceLocation? = null,
+    val uv: Vec2i? = null,
+    val transform: String? = null,
+    @JsonDeserialize(using = SkeletalFaceDeserializer::class)
+    val faces: Map<Directions, SkeletalFace>,
+    val children: Map<String, SkeletalElement> = emptyMap(),
 ) {
 
-    fun bake(model: SkeletalModel, textures: Int2ObjectOpenHashMap<ShaderTexture>, outlinerMapping: Map<UUID, Int>, consumer: SkeletalVertexConsumer) {
-        if (!visible) {
-            return
-        }
+    fun bake(consumer: AbstractSkeletalMesh, textures: Map<ResourceLocation, SkeletalTextureInstance>, transform: BakedSkeletalTransform, path: String) {
+        val context = SkeletalBakeContext(transform = transform, textures = textures, consumer = consumer)
+        return bake(context, path)
+    }
 
-        val outlinerId = outlinerMapping[uuid] ?: 0
+    private fun bake(context: SkeletalBakeContext, path: String) {
+        val context = context.copy(this)
 
-        val inflate = (inflate / BLOCK_SIZE) / 2
+
+        val transform = context.transform.id
         for ((direction, face) in faces) {
-            face.bake(model, this, direction, inflate, outlinerId, textures, consumer)
+            face.bake(context, direction, this, transform, path)
+        }
+        for ((name, child) in children) {
+            child.bake(context, "$path.$name")
         }
     }
 }

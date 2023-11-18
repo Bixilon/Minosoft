@@ -182,6 +182,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     InteractionEntity,
 
     Sniffer,
+    Breeze, WindCharge,
 ) {
 
     fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, uuid: UUID?, versionId: Int): Entity? {

@@ -13,9 +13,6 @@
 
 package de.bixilon.minosoft.data.direction
 
-import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.array.ArrayUtil
 import de.bixilon.minosoft.data.Axes
 
@@ -37,16 +34,5 @@ object DirectionUtil {
         if (count < 0) count += Directions.SIZE_SIDES
 
         return Directions.INDEXED[1][ArrayUtil.modifyArrayIndex(index.y + count, Directions.SIZE_SIDES)]
-    }
-
-    fun rotateMatrix(direction: Directions): Mat4 {
-        return when (direction) {
-            Directions.DOWN -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign(180.0f.rad, Vec3(1, 0, 0)).translateAssign(Vec3(-0.5f))
-            Directions.UP -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign((-180.0f).rad, Vec3(1, 0, 0)).translateAssign(Vec3(-0.5f)) // ToDo
-            Directions.NORTH -> Mat4()
-            Directions.SOUTH -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign(180.0f.rad, Vec3(0, 1, 0)).translateAssign(Vec3(-0.5f))
-            Directions.WEST -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign((-270.0f).rad, Vec3(0, 1, 0)).translateAssign(Vec3(-0.5f))
-            Directions.EAST -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign((-90.0f).rad, Vec3(0, 1, 0)).translateAssign(Vec3(-0.5f))
-        }
     }
 }

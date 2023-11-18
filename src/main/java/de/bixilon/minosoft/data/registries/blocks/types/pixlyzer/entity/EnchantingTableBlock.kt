@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class EnchantingTableBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<EnchantingTableBlockEntity>(resourceLocation, registries, data) {
+open class EnchantingTableBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<EnchantingTableBlockEntity>(resourceLocation, registries, data) {
 
     companion object : PixLyzerBlockFactory<EnchantingTableBlock> {
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EnchantingTableBlock {

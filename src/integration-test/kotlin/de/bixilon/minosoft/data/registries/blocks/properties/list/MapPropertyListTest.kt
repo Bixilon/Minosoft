@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.primitives.BooleanP
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
-@Test(groups = ["blocks"])
+@Test(groups = ["block"])
 class MapPropertyListTest {
 
     fun `unpacking single boolean property`() {

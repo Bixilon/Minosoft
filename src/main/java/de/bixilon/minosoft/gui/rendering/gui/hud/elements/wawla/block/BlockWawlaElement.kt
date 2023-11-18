@@ -41,7 +41,7 @@ class BlockWawlaElement(wawla: WawlaHUDElement, val target: BlockTarget) : Wawla
     }
 
     private fun createName(): TextElement {
-        return createNameElement(target.state.block.translationKey, ChatComponent.of(target.state.block.identifier))
+        return createNameElement(null, target.state.block.translationKey, ChatComponent.of(target.state.block.identifier))
     }
 
     private fun createMod(): TextElement? {

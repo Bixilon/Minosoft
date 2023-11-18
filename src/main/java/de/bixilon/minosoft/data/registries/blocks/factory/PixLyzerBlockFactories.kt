@@ -17,17 +17,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.*
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.button.StoneButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.button.WoodenButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.*
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.DispenserBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.DropperBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.HopperBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.SmokerBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.processing.BlastFurnaceBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.processing.BrewingStandBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.processing.FurnaceBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.storage.BarrelBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.storage.ChestBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.storage.EnderChestBlock
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.container.storage.TrappedChestBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.end.EndGatewayBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.end.EndPortalBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.redstone.CommandBlock
@@ -57,8 +46,6 @@ object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     ComparatorBlock,
     CampfireBlock,
     TorchBlock,
-    BrewingStandBlock,
-    EnderChestBlock,
     NetherPortalBlock,
     RedstoneTorchBlock,
     KelpBlock,
@@ -70,33 +57,21 @@ object PixLyzerBlockFactories : DefaultClassFactory<PixLyzerBlockFactory<*>>(
     CropBlock,
     CraftingTableBlock,
 
-    FurnaceBlock,
-    ChestBlock,
-    TrappedChestBlock,
-    EnderChestBlock,
-    DispenserBlock,
-    DropperBlock,
     WallSignBlock,
     StandingSignBlock,
     MobSpawnerBlock,
     PistonBlock,
-    BrewingStandBlock,
     EnchantingTableBlock,
     EndPortalBlock,
     BeaconBlock,
     SkullBlock,
     DaylightDetectorBlock,
-    HopperBlock,
     BannerBlock,
     StructureBlock,
     EndGatewayBlock,
     CommandBlock,
-    ShulkerBoxBlock,
     BedBlock,
     ConduitBlock,
-    BarrelBlock,
-    SmokerBlock,
-    BlastFurnaceBlock,
     LecternBlock,
     BellBlock,
     JigsawBlock,

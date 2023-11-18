@@ -40,7 +40,7 @@ class JavaFXInitializer internal constructor() : Application() {
         JavaFXUtil.HOST_SERVICES = hostServices
         DesktopUtil.initialize()
 
-        val worker = UnconditionalWorker()
+        val worker = UnconditionalWorker(autoWork = true)
         worker += { JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER[DesktopUtil.ICON]) }
         worker += { catchAll { JavaFXUtil.BIXILON_LOGO = SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()]) } }
         worker.work(LATCH)

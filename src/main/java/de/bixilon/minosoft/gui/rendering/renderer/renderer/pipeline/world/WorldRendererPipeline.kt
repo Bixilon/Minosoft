@@ -27,6 +27,7 @@ class WorldRendererPipeline(val renderer: RendererManager) : Drawable {
         for (renderer in renderer) {
             if (renderer !is WorldRenderer) continue
             list += renderer.layers.elements
+            renderer.layers.elements.clear() // TODO: replace WorldRenderer::layers with unsafeNull()
         }
 
         return list.sorted().toTypedArray()

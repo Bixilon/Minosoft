@@ -29,7 +29,6 @@ class DefaultSkinProvider(
     private val array: DynamicTextureArray,
     private val assets: AssetsManager,
 ) {
-    private var defaultId = 0
     private val slim: MutableMap<ResourceLocation, DynamicTexture> = mutableMapOf()
     private val wide: MutableMap<ResourceLocation, DynamicTexture> = mutableMapOf()
     private var fallback: PlayerSkin? = null
@@ -40,11 +39,14 @@ class DefaultSkinProvider(
         }
     }
 
-
     private fun load(skin: DefaultSkin) {
         var loaded = 0
-        load(skin.name.skin("slim").texture())?.let { slim[skin.name] = it; loaded++ }
-        load(skin.name.skin("wide").texture())?.let { wide[skin.name] = it; loaded++ }
+        load(skin.name.skin("slim").texture())?.apply { slim[skin.name] = this; loaded++ }
+        val wide = load(skin.name.skin("wide").texture())?.apply { wide[skin.name] = this; loaded++ }
+
+        if (this.fallback == null && wide != null) {
+            fallback = PlayerSkin(wide, null, SkinModel.WIDE)
+        }
 
         if (loaded > 0) {
             return
@@ -60,15 +62,13 @@ class DefaultSkinProvider(
         this[skin.model][skin.name] = texture
 
         if (skin.fallback) {
-            this.fallback = PlayerSkin(texture, skin.model)
+            this.fallback = PlayerSkin(texture, texture, skin.model)
         }
     }
 
     private fun load(path: ResourceLocation): DynamicTexture? {
         val data = assets.getOrNull(path)?.readTexture() ?: return null
-        val texture = array.pushBuffer(UUID(0L, defaultId++.toLong()), true) { data }
-        texture.usages.incrementAndGet()
-        return texture
+        return array.push(path, false) { data }
     }
 
     private fun ResourceLocation.skin(prefix: String): ResourceLocation {
@@ -92,7 +92,7 @@ class DefaultSkinProvider(
     }
 
     operator fun get(skin: DefaultSkin, model: SkinModel): PlayerSkin? {
-        return this[model][skin.name]?.let { PlayerSkin(it, model) }
+        return this[model][skin.name]?.let { PlayerSkin(it, null, model) }
     }
 
     operator fun get(uuid: UUID?): PlayerSkin? {

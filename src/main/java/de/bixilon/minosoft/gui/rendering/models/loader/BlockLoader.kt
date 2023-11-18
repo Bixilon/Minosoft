@@ -17,7 +17,8 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.iterator.async.AsyncIterator.Companion.async
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -63,6 +64,7 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun load(latch: AbstractLatch?) {
         loader.context.connection.registries.block.async {
+            if (it.model != null) return@async // model already set
             val model: DirectBlockModel
             try {
                 model = loadState(it) ?: return@async
@@ -88,11 +90,11 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun cleanup() {
-        this.cache.clear()
+        this::cache.forceSet(null)
     }
 
     fun fixTexturePath(name: ResourceLocation): ResourceLocation {
-        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, MinecraftAssetsVersion.FLATTENING, "blocks/", "block/"))
+        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, MinecraftPackFormat.FLATTENING, "blocks/", "block/"))
     }
 
     private fun ResourceLocation.blockModel(): ResourceLocation {

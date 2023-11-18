@@ -32,7 +32,7 @@ object Commands {
 
         SayCommand,
         ActionCommand, QueryCommand,
-        DebugCommand,
+        DebugCommand, BenchmarkCommand,
         DisconnectCommand,
     )
 }

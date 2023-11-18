@@ -26,10 +26,10 @@ import java.nio.charset.StandardCharsets
 
 
 plugins {
-    kotlin("jvm") version "1.9.10"
+    kotlin("jvm") version "1.9.20"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit.service") version "5.2.0"
+    id("org.ajoberstar.grgit.service") version "5.2.1"
     id("com.github.ben-manes.versions") version "0.49.0"
 }
 
@@ -129,7 +129,8 @@ when (os) {
             /*
             Architectures.ARM -> {
                 lwjglNatives += "-arm64"
-                zstdNatives += "-amd64" // TODO: Windows on arm is not yet supported: https://github.com/luben/zstd-jni/issues/277
+                zstdNatives += "-amd64"
+                 // TODO: javafx for Windows on arm is not yet supported: https://github.com/luben/zstd-jni/issues/277
             }
              */
 
@@ -152,7 +153,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:1.9.10")
+                implementation("org.jetbrains.kotlin:kotlin-test:1.9.20")
             }
 
             targets {
@@ -228,7 +229,8 @@ testing {
                         options {
                             val options = this as TestNGOptions
                             options.preserveOrder = true
-                            // options.excludeGroups("models", "mesher", "chunk", "input", "font", "command", "registry", "biome", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "block", "physics", "light", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "chunk_renderer", "rendering")
+                            // options.excludeGroups("models", "mesher", "chunk", "input", "font", "command", "registry", "biome", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "block", "physics", "light", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "chunk_renderer", "rendering", "texture", "atlas", "gui")
+                            //   options.excludeGroups("models", "chunk", "input", "font", "command", "registry", "biome", "version", "fluid", "world", "raycasting", "pixlyzer", "item", "physics", "light", "packet", "container", "item_stack", "signature", "private_key", "interaction", "item_digging", "chunk_renderer", "texture", "atlas", "gui")
                         }
                     }
                 }
@@ -332,13 +334,13 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 
 dependencies {
     implementation("org.slf4j", "slf4j-api", "2.0.9")
-    implementation("com.google.guava", "guava", "32.1.2-jre")
+    implementation("com.google.guava", "guava", "32.1.3-jre")
     implementation("dnsjava", "dnsjava", "3.5.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
-    implementation("org.jline", "jline", "3.23.0")
+    implementation("org.jline", "jline", "3.24.1")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.4.6")
-    implementation("com.github.luben", "zstd-jni", "1.5.5-6", classifier = zstdNatives)
+    implementation("com.github.oshi", "oshi-core", "6.4.7")
+    implementation("com.github.luben", "zstd-jni", "1.5.5-10", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.13.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
@@ -378,7 +380,7 @@ dependencies {
     lwjgl("stb")
 
     // kotlin
-    implementation(kotlin("reflect", "1.9.10"))
+    implementation(kotlin("reflect", "1.9.20"))
 
 
     // platform specific
@@ -500,8 +502,15 @@ val fatJar = task("fatJar", type = Jar::class) {
         attributes["Main-Class"] = application.mainClass
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude("META-INF/maven/**")
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     with(tasks["jar"] as CopySpec)
+
+    // TODO: exclude a lot of unneeded files
+
+    // remote other platforms from com.sun.jna
+    // remove most of it.unimi.fastutil classes
+    // remove META-INF/maven
 }
 
 

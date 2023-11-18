@@ -99,10 +99,7 @@ class LocalPlayerPhysics(entity: LocalPlayerEntity) : PlayerPhysics<LocalPlayerE
         if (!entity.input.sneak) return false
         if (movement.y > 0.0) return false
         if (entity.abilities.flying) return false
-
-        if (onGround) {
-            return true
-        }
+        if (!onGround) return false
 
         return (fallDistance < stepHeight && !entity.connection.world.isSpaceEmpty(entity, aabb.offset(Vec3d(0.0, fallDistance - stepHeight, 0.0)), positionInfo.chunk))
     }

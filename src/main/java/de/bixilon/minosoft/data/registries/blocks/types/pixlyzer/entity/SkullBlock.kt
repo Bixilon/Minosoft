@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class SkullBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<SkullBlockEntity>(resourceLocation, registries, data) {
+open class SkullBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<SkullBlockEntity>(resourceLocation, registries, data) {
 
     companion object : PixLyzerBlockFactory<SkullBlock> {
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SkullBlock {

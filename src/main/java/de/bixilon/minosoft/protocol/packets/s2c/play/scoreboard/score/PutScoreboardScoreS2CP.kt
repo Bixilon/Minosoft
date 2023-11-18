@@ -16,7 +16,9 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardScorePutEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.format.NumberFormats.readNumberFormat
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W46A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -32,14 +34,20 @@ class PutScoreboardScoreS2CP(
     } else {
         buffer.readVarInt()
     }
+    val display = if (buffer.versionId >= V_23W46A) buffer.readOptional { buffer.readNbtChatComponent() } else null
+    val format = if (buffer.versionId >= V_23W46A) buffer.readOptional { buffer.readNumberFormat() } else null
+
+    constructor(buffer: PlayInByteBuffer) : this(buffer.readString(), buffer.readString(), buffer)
 
     override fun handle(connection: PlayConnection) {
         check(objective != null) { "Can not update null objective!" }
-        val objective = connection.scoreboardManager.objectives[objective] ?: return
-        val score = ScoreboardScore(entity, objective, connection.scoreboardManager.getTeam(entity), value)
+        val objective = connection.scoreboard.objectives[objective] ?: return
+        val score = ScoreboardScore(connection.scoreboard.getTeam(entity), value)
         objective.scores[entity] = score
 
-        connection.events.fire(ScoreboardScorePutEvent(connection, score))
+        // TODO: handle display and unit here
+
+        connection.events.fire(ScoreboardScorePutEvent(connection, objective, entity, score))
     }
 
 

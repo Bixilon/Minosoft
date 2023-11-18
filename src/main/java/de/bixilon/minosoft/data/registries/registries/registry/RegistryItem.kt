@@ -15,19 +15,19 @@ package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import java.lang.reflect.Field
 import kotlin.reflect.KProperty
-import kotlin.reflect.jvm.javaField
 
 abstract class RegistryItem : Identified {
     open val injectable: Boolean get() = true
     private val injects: MutableMap<Field, List<Any>> = if (injectable) hashMapOf() else unsafeNull()
 
     fun <T : RegistryItem> KProperty<T?>.inject(vararg keys: Any?): T {
-        return this.javaField!!.inject(*keys)
+        return this.jvmField.inject(*keys)
     }
 
     fun <T : RegistryItem> Field.inject(vararg keys: Any?): T {
@@ -79,6 +79,6 @@ abstract class RegistryItem : Identified {
     }
 
     companion object {
-        private val INJECTS_FIELD = RegistryItem::injects.javaField!!.apply { isAccessible = true }
+        private val INJECTS_FIELD = RegistryItem::injects.jvmField
     }
 }

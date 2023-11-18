@@ -14,6 +14,8 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -22,25 +24,22 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
-    override val dimensions: Vec2
-        get() = Vec2(radius * 2, super.dimensions.y)
+    override var dimensions = Vec2.EMPTY
+        private set
 
     @get:SynchronizedEntityData
-    val ignoreRadius: Boolean
-        get() = data.getBoolean(IGNORE_RADIUS_DATA, false)
+    val ignoreRadius: Boolean by data(IGNORE_RADIUS_DATA, false) { it.toBoolean() }
 
     @get:SynchronizedEntityData
-    val radius: Float
-        get() = data.get(RADIUS_DATA, 0.5f)
+    val radius: Float by data(RADIUS_DATA, 0.5f)
 
     @get:SynchronizedEntityData
-    val color: Int
-        get() = data.get(COLOR_DATA, 0)
+    val color: Int by data(COLOR_DATA, 0)
 
     // ignore radius???
     @get:SynchronizedEntityData
@@ -48,9 +47,12 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: 
         get() = data.getBoolean(WAITING_DATA, false)
 
     @get:SynchronizedEntityData
-    val particle: ParticleData?
-        get() = data.get(PARTICLE_DATA, null)
+    val particle: ParticleData? by data(PARTICLE_DATA, null)
 
+
+    init {
+        this::radius.observe(this, true) { this.dimensions = Vec2(radius * 2, super.dimensions.y) }
+    }
 
     companion object : EntityFactory<AreaEffectCloud> {
         override val identifier: ResourceLocation = minecraft("area_effect_cloud")

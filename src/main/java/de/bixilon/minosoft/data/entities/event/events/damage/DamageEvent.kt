@@ -13,15 +13,12 @@
 
 package de.bixilon.minosoft.data.entities.event.events.damage
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.event.EntityEvent
-import de.bixilon.minosoft.gui.rendering.entity.models.DamageableModel
 
 interface DamageEvent : EntityEvent<LivingEntity> {
 
     override fun handle(entity: LivingEntity) {
-        entity.model?.nullCast<DamageableModel>()?.onDamage()
-        // TODO
+        entity.onDamage(this)
     }
 }

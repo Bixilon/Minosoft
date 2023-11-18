@@ -38,7 +38,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<CampfireBlockEntity>(resourceLocation, registries, data), LitBlock, RandomDisplayTickable {
+open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<CampfireBlockEntity>(resourceLocation, registries, data), LitBlock, RandomDisplayTickable {
     val lavaParticles = data["lava_particles"]?.toBoolean() ?: true
 
     private val cosySmokeParticle = registries.particleType[CampfireSmokeParticle.CosyFactory]!!

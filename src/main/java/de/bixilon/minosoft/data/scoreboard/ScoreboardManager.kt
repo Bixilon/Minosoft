@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.scoreboard
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.minosoft.data.scoreboard.team.Team
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreTeamChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -43,14 +43,13 @@ class ScoreboardManager(private val connection: PlayConnection) {
         objectives.lock.acquire()
         for (objective in objectives.values) {
             objective.scores.lock.acquire()
-            for (score in objective.scores.values) {
-                if (score.entity in members) {
-                    score.team = remove.decide(null, team)
-                    if (!fireEvent) {
-                        continue
-                    }
-                    connection.fire(ScoreTeamChangeEvent(connection, objective, score, team, remove))
+            for ((entity, score) in objective.scores) {
+                if (entity !in members) continue
+                score.team = if (remove) null else team
+                if (!fireEvent) {
+                    continue
                 }
+                connection.events.fire(ScoreTeamChangeEvent(connection, objective, entity, score, team, remove)) // TODO: fire event after lock is released
             }
             objective.scores.lock.release()
         }

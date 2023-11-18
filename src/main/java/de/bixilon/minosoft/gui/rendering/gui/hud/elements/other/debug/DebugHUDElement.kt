@@ -34,7 +34,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entities.EntitiesRenderer
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -94,13 +94,13 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         val layout = RowLayout(guiRenderer)
         layout.margin = Vec4(2)
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
-        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}§r; t=§d${context.renderStats.avgFrameTime.avg.formatNanos()}" }
+        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${context.renderStats.smoothAvgFPS.rounded10}§r; t=§d${context.renderStats.avgDrawTime.avg.formatNanos().replace('µ', 'u')}" } // rendering of µ eventually broken
         context.renderer[ChunkRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "C v=${visible.sizeString}, l=${loaded.size.format()}, cQ=${culledQueue.size.format()}, q=${meshingQueue.size.format()}, pT=${meshingQueue.tasks.size.format()}/${meshingQueue.tasks.max.format()}, lQ=${loadingQueue.size.format()}/${meshingQueue.maxMeshesToLoad.format()}, w=${connection.world.chunks.chunks.size.format()}" }
         }
 
-        layout += context.renderer[EntityRenderer]?.let {
-            AutoTextElement(guiRenderer, 1) { BaseComponent("E v=", it.visibleCount, ", m=", it.modelCount, ", w=", connection.world.entities.size) }
+        layout += context.renderer[EntitiesRenderer]?.let {
+            AutoTextElement(guiRenderer, 1) { BaseComponent("E v=", it.visibility.size, ",ov=", it.visibility.opaque.size, ",tv=", it.visibility.translucent.size, ", t=", it.renderers.size, ", w=", connection.world.entities.size) }
         } ?: AutoTextElement(guiRenderer, 1) { "E w=${connection.world.entities.size.format()}" }
 
         context.renderer[ParticleRenderer]?.apply {
@@ -248,6 +248,10 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += LineSpacerElement(guiRenderer)
 
         layout += TextElement(guiRenderer, "${connection.events.size.format()}x listeners", properties = RIGHT)
+
+        layout += LineSpacerElement(guiRenderer)
+
+        layout += AutoTextElement(guiRenderer, 20, properties = RIGHT) { "Dynamic textures ${context.textures.dynamicTextures.size.format()}/${context.textures.dynamicTextures.capacity.format()}" }
 
         layout += LineSpacerElement(guiRenderer)
 

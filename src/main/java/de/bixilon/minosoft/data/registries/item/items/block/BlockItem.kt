@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.block
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import kotlin.reflect.jvm.javaField
 
 abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identifier), StackableItem, PlaceableItem {
     val block: T = unsafeNull()
@@ -44,6 +44,6 @@ abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identif
 
 
     private companion object {
-        private val BLOCK_FIELD = BlockItem<*>::block.javaField!!
+        private val BLOCK_FIELD = BlockItem<*>::block.jvmField
     }
 }

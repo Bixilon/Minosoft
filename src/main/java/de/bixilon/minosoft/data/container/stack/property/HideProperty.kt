@@ -72,7 +72,7 @@ class HideProperty(
         return _hideFlags == 0
     }
 
-    override fun updateNbt(nbt: MutableJsonObject): Boolean {
+    fun updateNbt(nbt: MutableJsonObject): Boolean {
         nbt.remove(HIDE_FLAGS_TAG)?.toInt()?.let { this._hideFlags = it }
         return !isDefault()
     }

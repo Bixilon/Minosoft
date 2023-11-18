@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.player.additional
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.scoreboard.Team
+import de.bixilon.minosoft.data.scoreboard.team.Team
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.util.KUtil.nullCompare
@@ -41,7 +41,7 @@ class PlayerAdditional(
     var listed by observed(listed)
 
     val tabDisplayName: ChatComponent
-        get() = displayName ?: ChatComponent.of(name).let { team?.decorateName(it) ?: it }
+        get() = displayName ?: ChatComponent.of(name).let { team?.formatting?.decorate(it) ?: it }
 
     fun merge(data: AdditionalDataUpdate) {
         spareMerge(data)

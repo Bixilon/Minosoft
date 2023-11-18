@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,33 +12,19 @@
  */
 package de.bixilon.minosoft.data.scoreboard
 
-class ScoreboardScore(
-    val entity: String,
-    var objective: ScoreboardObjective,
+import de.bixilon.minosoft.data.scoreboard.team.Team
+
+data class ScoreboardScore(
     var team: Team?,
     var value: Int,
 ) : Comparable<ScoreboardScore> {
 
-    override fun toString(): String {
-        return "$entity=$value"
-    }
-
-    override fun hashCode(): Int {
-        return entity.hashCode()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is ScoreboardScore) {
-            return false
-        }
-        return entity == other.entity // ToDo: Compare all?
-    }
 
     override fun compareTo(other: ScoreboardScore): Int {
         val difference = other.value - value
         if (difference != 0) {
             return difference
         }
-        return entity.compareTo(other.entity) // ToDo
+        return 0 // TODO
     }
 }

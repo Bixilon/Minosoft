@@ -172,6 +172,9 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     private fun submit() {
         val value = input.value
+        if (value.isBlank()) {
+            return guiRenderer.gui.pop()
+        }
         input.submit()
         input.value = ""
         if (history.lastOrNull() != value) {
@@ -202,6 +205,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
                     historyIndex--
                     input.value = history[historyIndex]
                 }
+
                 KeyCodes.KEY_DOWN -> {
                     val size = history.size
                     historyIndex++

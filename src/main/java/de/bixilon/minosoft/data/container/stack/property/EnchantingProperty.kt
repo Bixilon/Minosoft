@@ -61,26 +61,6 @@ class EnchantingProperty(
         return _repairCost == 0 && enchantments.isEmpty()
     }
 
-    override fun updateNbt(nbt: MutableJsonObject): Boolean {
-        nbt.remove(REPAIR_COST_TAG)?.toInt()?.let { _repairCost = it }
-
-        nbt.remove(*ENCHANTMENTS_TAG)?.listCast<JsonObject>()?.let {
-            val registry = stack.holder?.connection?.registries?.enchantment ?: return@let
-            for (tag in it) {
-                val enchantmentName = tag[ENCHANTMENT_ID_TAG]
-                val enchantment = registry[enchantmentName] ?: throw IllegalArgumentException("Unknown enchantment: $enchantmentName")
-                val level = tag[ENCHANTMENT_LEVEL_TAG]?.toInt() ?: 1
-                if (level <= 0) {
-                    continue
-                }
-
-                enchantments[enchantment] = level
-            }
-        }
-
-        return !isDefault()
-    }
-
     override fun hashCode(): Int {
         return Objects.hashCode(enchantments, _repairCost)
     }
@@ -111,5 +91,27 @@ class EnchantingProperty(
 
         private const val ENCHANTMENT_ID_TAG = "id"
         private const val ENCHANTMENT_LEVEL_TAG = "lvl"
+
+
+        fun ItemStack.updateEnchantingNbt(nbt: MutableJsonObject): Boolean {
+            nbt.remove(REPAIR_COST_TAG)?.toInt()?.let { enchanting._repairCost = it }
+
+            nbt.remove(*ENCHANTMENTS_TAG)?.listCast<JsonObject>()?.let {
+                val registry = holder?.connection?.registries?.enchantment ?: return@let
+                for (tag in it) {
+                    val enchantmentName = tag[ENCHANTMENT_ID_TAG]
+                    val enchantment = registry[enchantmentName] ?: throw IllegalArgumentException("Unknown enchantment: $enchantmentName")
+                    val level = tag[ENCHANTMENT_LEVEL_TAG]?.toInt() ?: 1
+                    if (level <= 0) {
+                        continue
+                    }
+
+                    this.enchanting.enchantments[enchantment] = level
+                }
+            }
+            if (_enchanting == null) return false
+
+            return !enchanting.isDefault()
+        }
     }
 }

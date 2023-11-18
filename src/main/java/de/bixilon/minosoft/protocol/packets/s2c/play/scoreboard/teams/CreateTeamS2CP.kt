@@ -16,8 +16,10 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
-import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
+import de.bixilon.minosoft.data.scoreboard.team.Team
+import de.bixilon.minosoft.data.scoreboard.team.TeamFormatting
+import de.bixilon.minosoft.data.scoreboard.team.TeamVisibility
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -106,25 +108,23 @@ class CreateTeamS2CP(
 
 
     override fun handle(connection: PlayConnection) {
+        val visibility = TeamVisibility(canSeeInvisibleTeam, nameTagVisibility)
+        val formatting = TeamFormatting(displayName, prefix, suffix, color)
         val team = Team(
             name = name,
-            displayName = displayName,
-            prefix = prefix,
-            suffix = suffix,
+            formatting = formatting,
             friendlyFire = friendlyFire,
-            canSeeInvisibleTeam = canSeeInvisibleTeam,
-            collisionRule = collisionRule,
-            nameTagVisibility = nameTagVisibility,
-            color = color,
+            collisions = collisionRule,
+            visibility = visibility,
             members = members.toSynchronizedSet(),
         )
-        connection.scoreboardManager.teams[name] = team
+        connection.scoreboard.teams[name] = team
 
         for (member in members) {
             connection.tabList.name[member]?.team = team
         }
 
-        connection.scoreboardManager.updateScoreTeams(team, members)
+        connection.scoreboard.updateScoreTeams(team, members)
 
         connection.events.fire(TeamCreateEvent(connection, team))
     }

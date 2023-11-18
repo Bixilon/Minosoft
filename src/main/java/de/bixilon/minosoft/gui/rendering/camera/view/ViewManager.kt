@@ -26,13 +26,15 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ViewManager(private val camera: Camera) {
     private val debug = DebugView(camera)
     private val firstPerson = FirstPersonView(camera)
-    private val thirdPerson = ThirdPersonView(camera)
+    private val thirdPersonBack = ThirdPersonView(camera, true)
+    private val thirdPersonFront = ThirdPersonView(camera, false)
+    private val views = arrayOf(firstPerson, thirdPersonBack, thirdPersonFront)
 
     var view: CameraView by observed(firstPerson)
         private set
 
     private var isDebug = false
-    private var isThirdPerson = false
+    private var index = 0
 
 
     fun init() {
@@ -54,7 +56,8 @@ class ViewManager(private val camera: Camera) {
                 KeyActions.STICKY to setOf(KeyCodes.KEY_F5),
             )
         ) {
-            this.isThirdPerson = it
+            this.index++
+            if (this.index >= views.size) this.index = 0
             updateView()
         }
 
@@ -62,8 +65,8 @@ class ViewManager(private val camera: Camera) {
     }
 
 
-    private fun updateView(debug: Boolean = isDebug, thirdPerson: Boolean = isThirdPerson) {
-        val next = getView(debug, thirdPerson)
+    private fun updateView(debug: Boolean = isDebug, index: Int = this.index) {
+        val next = getView(debug, index)
         if (next == this.view) {
             return
         }
@@ -73,10 +76,9 @@ class ViewManager(private val camera: Camera) {
         this.view.onAttach(previous)
     }
 
-    private fun getView(debug: Boolean, thirdPerson: Boolean): CameraView {
+    private fun getView(debug: Boolean, index: Int): CameraView {
         if (debug) return this.debug
-        if (thirdPerson) return this.thirdPerson
-        return this.firstPerson
+        return views[index]
     }
 
     fun draw() {

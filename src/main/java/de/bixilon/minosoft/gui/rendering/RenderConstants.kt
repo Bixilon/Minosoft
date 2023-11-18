@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
-import de.bixilon.minosoft.util.KUtil
 
 object RenderConstants {
     val EXPERIENCE_BAR_LEVEL_COLOR = "#80ff20".asColor()

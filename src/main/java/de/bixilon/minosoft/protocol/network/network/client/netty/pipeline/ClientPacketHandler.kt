@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
-import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
@@ -39,9 +38,8 @@ class ClientPacketHandler(
     private val connection: Connection = client.connection
 
     override fun channelRead0(context: ChannelHandlerContext, queued: QueuedS2CP<*>) {
-        if (queued.type.threadSafe && (DefaultThreadPool.queueSize < DefaultThreadPool.threadCount - 1 || queued.type.lowPriority)) { // only handle async when thread pool not busy
-            val runnable = SimplePoolRunnable(priority = if (queued.type.lowPriority) ThreadPool.Priorities.NORMAL else ThreadPool.Priorities.HIGH)
-            runnable.runnable = Runnable { tryHandle(context, queued.type, queued.packet) }
+        if (queued.type.threadSafe && (queued.type.lowPriority || DefaultThreadPool.queueSize < DefaultThreadPool.threadCount - 1)) { // only handle async when thread pool not busy
+            val runnable = ForcePooledRunnable(priority = if (queued.type.lowPriority) ThreadPool.Priorities.NORMAL else ThreadPool.Priorities.HIGH) { tryHandle(context, queued.type, queued.packet) }
             DefaultThreadPool += runnable
         } else {
             tryHandle(context, queued.type, queued.packet)
@@ -52,7 +50,7 @@ class ClientPacketHandler(
         if (type.extra != null) {
             type.extra.onError(error, connection)
         }
-        context.fireExceptionCaught(error)
+        client.handleError(error)
     }
 
     private fun tryHandle(context: ChannelHandlerContext, type: PacketType, packet: S2CPacket) {
@@ -69,10 +67,7 @@ class ClientPacketHandler(
     }
 
     private fun handle(packet: S2CPacket) {
-        val event = PacketReceiveEvent(connection, packet)
-        if (connection.events.fire(event)) {
-            return
-        }
+        // TODO: packet listener
         when (packet) {
             is PlayS2CPacket -> handle(packet)
             is StatusS2CPacket -> handle(packet)

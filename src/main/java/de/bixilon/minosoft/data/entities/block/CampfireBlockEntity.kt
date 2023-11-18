@@ -63,18 +63,18 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
     }
 
 
-    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        if (blockState.block !is CampfireBlock || !blockState.isLit()) {
+    override fun tick(connection: PlayConnection, state: BlockState, position: Vec3i, random: Random) {
+        if (state.block !is CampfireBlock || !state.isLit()) {
             return
         }
 
         if (random.nextFloat() < 0.11f) {
             for (i in 0 until random.nextInt(2) + 2) {
-                blockState.block.spawnSmokeParticles(connection, blockState, blockPosition, false, random)
+                state.block.spawnSmokeParticles(connection, state, position, false, random)
             }
         }
 
-        val facing = blockState.getFacing().campfireId
+        val facing = state.getFacing().campfireId
 
         for ((index, item) in items.withIndex()) {
             item ?: continue
@@ -83,7 +83,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             }
             val direction = HORIZONTAL[Math.floorMod(index + facing, Directions.SIDES.size)]
 
-            val position = Vec3d(blockPosition) + Vec3d(
+            val position = Vec3d(position) + Vec3d(
                 0.5f - direction.vector.x * DIRECTION_OFFSET + direction.rotateY().vector.x * DIRECTION_OFFSET,
                 0.5f,
                 0.5f - direction.vector.z * DIRECTION_OFFSET + direction.rotateY().vector.z * DIRECTION_OFFSET,

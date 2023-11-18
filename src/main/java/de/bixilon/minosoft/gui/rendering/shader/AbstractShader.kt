@@ -19,5 +19,5 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 interface AbstractShader {
     val native: NativeShader
 
-    fun <T> uniform(name: String, default: T, type: ShaderSetter<T> = NativeShader::set): ShaderUniform<T>
+    fun <T> uniform(name: String, default: T, type: ShaderSetter<T> = ShaderSetter { shader, name, value -> shader[name] = value }): ShaderUniform<T>
 }

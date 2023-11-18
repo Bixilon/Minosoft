@@ -33,7 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyFloatU
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyIntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.shader.DummyNativeShader
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
@@ -80,7 +80,8 @@ class DummyRenderSystem(
     override var clearColor: RGBColor = Colors.TRANSPARENT
     override var quadType: PrimitiveTypes = PrimitiveTypes.QUAD
 
-    override var quadOrder: IntArray = if (quadType == PrimitiveTypes.QUAD) OpenGLRenderSystem.QUAD_ORDER else OpenGLRenderSystem.TRIANGLE_ORDER
+    override var quadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.QUAD else MeshOrder.TRIANGLE
+    override var legacyQuadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.LEGACY_QUAD else MeshOrder.LEGACY_TRIANGLE
 
     override fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer {
         TODO("Not yet implemented")

@@ -95,7 +95,7 @@ class LanguageTest {
     @Test
     fun formatting() {
         val language = create("§eHi %s, welcome!")
-        assertEquals(language.translate(KEY, data = arrayOf("§aMoritz"))?.legacyText, "§eHi §r§aMoritz§r§e, welcome!§r")
+        assertEquals(language.translate(KEY, data = arrayOf("§aMoritz"))?.legacy, "§eHi §r§aMoritz§r§e, welcome!§r")
     }
 
     @Test
@@ -107,7 +107,7 @@ class LanguageTest {
     @Test
     fun parent() {
         val language = create("Hi %s, welcome!")
-        assertEquals(language.translate(KEY, parent = TextComponent("").color(ChatColors.YELLOW), data = arrayOf("§aMoritz"))?.legacyText, "§eHi §r§aMoritz§r§e, welcome!§r")
+        assertEquals(language.translate(KEY, parent = TextComponent("").color(ChatColors.YELLOW), data = arrayOf("§aMoritz"))?.legacy, "§eHi §r§aMoritz§r§e, welcome!§r")
     }
 
     @Test

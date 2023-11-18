@@ -59,7 +59,7 @@ class WorldBorderMesh(
     }
 
     private fun addVertexX(x: Float, width: Float, positions: Array<Vec2>, rotated: Boolean) {
-        for (index in 0 until order.size step 2) {
+        for (index in 0 until order.order.size step 2) {
             val (z, y) = positions[index]
             val texture = if (rotated) textureIndex(index + 1) else index + 1
             addVertex(x, y, z, textureIndex(texture), width)
@@ -73,7 +73,7 @@ class WorldBorderMesh(
     }
 
     private fun addVertexZ(z: Float, width: Float, positions: Array<Vec2>, rotated: Boolean) {
-        for (index in 0 until order.size step 2) {
+        for (index in 0 until order.order.size step 2) {
             val (x, y) = positions[index]
             val texture = if (rotated) textureIndex(index + 1) else index + 1
             addVertex(x, y, z, textureIndex(texture), width)

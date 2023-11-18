@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.concurrent.lock.thread.ThreadMissmatchException
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
@@ -34,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLU
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.logging.Log
@@ -53,7 +53,7 @@ class OpenGLRenderSystem(
     private var thread: Thread? = null
     override val nativeShaders: MutableSet<NativeShader> = mutableSetOf()
     override val shaders: MutableSet<Shader> = mutableSetOf()
-    private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
+    private val capabilities: MutableSet<RenderingCapabilities> = RenderingCapabilities.set()
     override lateinit var vendor: OpenGLVendor
         private set
     override var active: Boolean = false
@@ -64,15 +64,13 @@ class OpenGLRenderSystem(
     var blendingDestination = BlendingFunctions.ZERO
         private set
 
-    override var quadType: PrimitiveTypes = if (context.preferQuads) {
-        PrimitiveTypes.QUAD
-    } else {
-        PrimitiveTypes.TRIANGLE
-    }
-    override var quadOrder: IntArray = if (quadType == PrimitiveTypes.QUAD) QUAD_ORDER else TRIANGLE_ORDER
+    override var quadType: PrimitiveTypes = if (context.preferQuads) PrimitiveTypes.QUAD else PrimitiveTypes.TRIANGLE
+    override var quadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.QUAD else MeshOrder.TRIANGLE
+    override var legacyQuadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.LEGACY_QUAD else MeshOrder.LEGACY_TRIANGLE
     var boundVao = -1
     var boundBuffer = -1
     var uniformBufferBindingIndex = 0
+    var textureBindingIndex = 0
 
     override var shader: NativeShader? = null
         set(value) {
@@ -328,21 +326,6 @@ class OpenGLRenderSystem(
     }
 
     companion object {
-        val TRIANGLE_ORDER = intArrayOf(
-            // TOOD: they are all rotated 90° wrong, fix this for triangle and quad order
-            0, 1,
-            3, 2,
-            2, 3,
-            2, 3,
-            1, 0,
-            0, 1,
-        )
-        val QUAD_ORDER = intArrayOf(
-            0, 1,
-            3, 2,
-            2, 3,
-            1, 0,
-        )
 
         private val RenderingCapabilities.gl: Int
             get() {

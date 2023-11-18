@@ -14,17 +14,19 @@
 package de.bixilon.minosoft.data.world.container.block
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.concurrent.lock.Lock
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.fluids.WaterFluid.Companion.isWaterlogged
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
-import kotlin.reflect.jvm.javaField
 
 class BlockSectionDataProvider(
+    lock: Lock? = null,
     data: Array<BlockState?>? = null,
-) : SectionDataProvider<BlockState?>(data, true, false) {
+) : SectionDataProvider<BlockState?>(lock, data, true, false) {
     val section: ChunkSection = unsafeNull()
     val occlusion = SectionOcclusion(this)
     var fluidCount = 0
@@ -89,7 +91,7 @@ class BlockSectionDataProvider(
     }
 
     companion object {
-        private val sections = BlockSectionDataProvider::section.javaField!!.apply { isAccessible = true }
+        private val sections = BlockSectionDataProvider::section.jvmField
 
         @Deprecated("properly integrate in constructor")
         fun BlockSectionDataProvider.unsafeSetSection(section: ChunkSection) {

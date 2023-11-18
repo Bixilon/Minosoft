@@ -72,7 +72,10 @@ class InteractionManager(val camera: ConnectionCamera) : Tickable {
     }
 
     fun swingHand(hand: Hands) {
-        swingArmRateLimiter += { connection.sendPacket(SwingArmC2SP(hand)) }
+        swingArmRateLimiter += {
+            connection.network.send(SwingArmC2SP(hand))
+            connection.player.swingHand(hand)
+        }
     }
 
     fun isCoolingDown(item: Item): Boolean {

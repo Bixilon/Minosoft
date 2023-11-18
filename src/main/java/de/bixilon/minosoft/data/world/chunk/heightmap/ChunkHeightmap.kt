@@ -45,6 +45,7 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
         val sections = chunk.sections
 
         var y = Int.MIN_VALUE
+        val index = (z shl 4) or x
 
         sectionLoop@ for (sectionIndex in (startY.sectionHeight - chunk.minSection) downTo 0) {
             if (sectionIndex >= sections.size) {
@@ -59,21 +60,18 @@ abstract class ChunkHeightmap(protected val chunk: Chunk) : Heightmap {
 
             if (x < min.x || x > max.x || z < min.z || z > max.z) continue // out of section
 
-            section.acquire()
+
             for (sectionY in max.y downTo min.y) {
-                val state = section.blocks[x, sectionY, z] ?: continue
+                val state = section.blocks[(sectionY shl 8) or index] ?: continue
                 val pass = passes(state)
                 if (pass == HeightmapPass.PASSES) continue
 
                 y = (sectionIndex + chunk.minSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
                 if (pass == HeightmapPass.ABOVE) y++
 
-                section.release()
                 break@sectionLoop
             }
-            section.release()
         }
-        val index = (z shl 4) or x
         val previous = heightmap[index]
 
         if (previous == y) return

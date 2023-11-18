@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import org.checkerframework.common.value.qual.IntRange
 
 class RGBColor(val rgba: Int) : TextFormattable {
-    val ansi: String = ANSI.rgb(red, green, blue)
+    val ansi: String get() = ANSI.rgb(red, green, blue)
 
     @JvmOverloads
     constructor(red: Int, green: Int, blue: Int, alpha: Int = 0xFF) : this(alpha or (blue shl 8) or (green shl 16) or (red shl 24))
@@ -105,6 +105,10 @@ class RGBColor(val rgba: Int) : TextFormattable {
 
     fun mix(vararg colors: RGBColor): RGBColor {
         return Companion.mix(this, *colors)
+    }
+
+    fun mix(other: RGBColor): RGBColor {
+        return RGBColor((red + other.red) / 2, (green + other.green) / 2, (blue + other.blue) / 2, (alpha + other.alpha) / 2)
     }
 
     operator fun times(value: Float): RGBColor {

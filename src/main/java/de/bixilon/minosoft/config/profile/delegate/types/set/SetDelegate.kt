@@ -32,9 +32,11 @@ class SetDelegate<V>(
     }
 
     override fun get() = value
-    override fun set(value: MutableSet<V>) {
+    override fun set(value: MutableSet<V>): MutableSet<V> {
         validate(value)
+        val previous = this.value.unsafe
         this.value.unsafe = value
+        return previous
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: MutableSet<V>) {

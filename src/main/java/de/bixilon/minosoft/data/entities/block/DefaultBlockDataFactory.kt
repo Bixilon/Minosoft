@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.entities.block.container.processing.*
-import de.bixilon.minosoft.data.entities.block.container.storage.*
+import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
+import de.bixilon.minosoft.data.entities.block.container.storage.EnderChestBlockEntity
+import de.bixilon.minosoft.data.entities.block.container.storage.ShulkerBoxBlockEntity
+import de.bixilon.minosoft.data.entities.block.container.storage.TrappedChestBlockEntity
 import de.bixilon.minosoft.data.entities.block.end.EndGatewayBlockEntity
 import de.bixilon.minosoft.data.entities.block.end.EndPortalBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.CommandBlockEntity
-import de.bixilon.minosoft.data.entities.block.redstone.ComparatorBlockEntity
-import de.bixilon.minosoft.data.entities.block.redstone.DaylightDetectorBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.SculkSensorBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.piston.PistonBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.piston.StickyPistonBlockEntity
@@ -28,30 +28,20 @@ import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 
 object DefaultBlockDataFactory : DefaultFactory<BlockEntityFactory<out BlockEntity>>(
     BedBlockEntity,
-    HopperBlockEntity,
     SignBlockEntity,
-    BlastFurnaceBlockEntity,
-    FurnaceBlockEntity,
     CampfireBlockEntity,
     JigsawBlockEntity,
     LecternBlockEntity,
     BellBlockEntity,
-    SmokerBlockEntity,
     ConduitBlockEntity,
-    BarrelBlockEntity,
     ShulkerBoxBlockEntity,
     StructureBlockBlockEntity,
     CommandBlockEntity,
-    ComparatorBlockEntity,
     BannerBlockEntity,
-    DaylightDetectorBlockEntity,
     BeaconBlockEntity,
     SkullBlockEntity,
     EnchantingTableBlockEntity,
-    BrewingStandBlockEntity,
     MobSpawnerBlockEntity,
-    DispenserBlockEntity,
-    DropperBlockEntity,
     EnderChestBlockEntity,
     JukeboxBlockEntity,
     ChestBlockEntity,

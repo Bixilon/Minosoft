@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
@@ -35,11 +36,10 @@ import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.item.items.dye.DyeableItem
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
-import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
+import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.physics.entities.living.player.PlayerPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -54,12 +54,6 @@ abstract class PlayerEntity(
     rotation: EntityRotation = EntityRotation.EMPTY,
     val additional: PlayerAdditional,
 ) : LivingEntity(connection, entityType, data, position, rotation) {
-
-    protected var _model: PlayerModel?
-        get() = super.model.nullCast()
-        set(value) {
-            super.model = value
-        }
 
     override val dimensions: Vec2
         get() = pose?.let { getDimensions(it) } ?: Vec2(type.width, type.height)
@@ -97,25 +91,30 @@ abstract class PlayerEntity(
             return field
         }
 
-    val skinParts: MutableSet<SkinParts> by observedSet(mutableSetOf())
+    val skinParts: MutableSet<SkinParts> by observedSet(SkinParts.set(*SkinParts.VALUES))
 
+    override val isNameVisible get() = true
+    override val name: ChatComponent? get() = additional.tabDisplayName // minecraft does use the plain name
 
     protected open fun updateSkinParts(flags: Int) {
         for (part in SkinParts.VALUES) {
-            if (!flags.isBitMask(part.bitmask)) {
+            if (flags.isBitMask(part.bitmask)) {
+                skinParts += part
+            } else {
                 skinParts -= part
             }
-            skinParts += part
         }
     }
 
     init {
-        data.observe(SKIN_PARTS_DATA) { raw: Any? -> updateSkinParts(raw?.toInt() ?: 0) }
+        data.observe(SKIN_PARTS_DATA) { raw: Any? -> updateSkinParts(raw?.toInt() ?: 0xFF) }
     }
+
+    private var _mainArm by data(MAIN_ARM_DATA, 0x01)
 
     @get:SynchronizedEntityData
     open val mainArm: Arms
-        get() = if (data.get(MAIN_ARM_DATA, 0x00.toByte()).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
+        get() = if (_mainArm == 0x01) Arms.RIGHT else Arms.LEFT
 
     @get:SynchronizedEntityData
     val leftShoulderData: JsonObject?
@@ -138,25 +137,15 @@ abstract class PlayerEntity(
             if (chestPlate != null && chestPlate.item.item is DyeableItem) {
                 chestPlate._display?.dyeColor?.let { return it }
             }
-            val formattingCode = additional.team?.color
-            if (formattingCode is RGBColor) {
-                return formattingCode
-            }
+            additional.team?.formatting?.color?.let { return it }
             return ChatColors.RED
         }
 
-    override fun createModel(renderer: EntityRenderer): EntityModel<PlayerEntity>? {
-        return PlayerModel(renderer, this).apply { this@PlayerEntity.model = this }
-    }
-
-    override fun createPhysics(): PlayerPhysics<*> {
-        return PlayerPhysics(this)
-    }
-
+    override fun createPhysics(): PlayerPhysics<*> = PlayerPhysics(this)
 
     fun swingHand(hand: Hands) {
         val arm = hand.getArm(mainArm)
-        _model?.swingArm(arm)
+        renderer?.nullCast<PlayerRenderer<*>>()?.model?.arm?.swing(arm)
     }
 
     override fun handleAnimation(animation: EntityAnimations) {
@@ -165,6 +154,14 @@ abstract class PlayerEntity(
             EntityAnimations.SWING_OFF_ARM -> swingHand(Hands.OFF)
             else -> super.handleAnimation(animation)
         }
+    }
+
+    override fun isInvisible(camera: Entity): Boolean {
+        if (!super.isInvisible(camera)) return false
+        if (camera !is PlayerEntity) return true
+        val team = additional.team ?: return true
+        if (team != camera.additional.team) return true
+        return !team.visibility.invisibleTeam
     }
 
     companion object : Identified {

@@ -15,16 +15,16 @@
 
 out vec4 foutColor;
 
-uniform vec4 uCloudsColor;
+uniform vec3 uCloudsColor;
 
 flat in float finBrightness;
 
 
-#define DISTANCE_MULTIPLIER 0.3f
+#define DISTANCE_MULTIPLIER 0.03f
 #include "minosoft:fog"
 
 void main() {
-    foutColor = uCloudsColor;
+    foutColor = vec4(uCloudsColor, 1.0f);
     foutColor.rgb *= finBrightness;
     set_fog();
 }

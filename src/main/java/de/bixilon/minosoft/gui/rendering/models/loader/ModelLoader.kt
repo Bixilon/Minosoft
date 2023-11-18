@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.models.loader
 
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.time.TimeUtil.nanos
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.EntityModels
+import de.bixilon.minosoft.gui.rendering.chunk.entities.DefaultBlockEntityModels
+import de.bixilon.minosoft.gui.rendering.entities.factory.DefaultEntityModels
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -27,41 +30,52 @@ class ModelLoader(
 ) {
     val packFormat = context.connection.assetsManager.properties.pack.format
     val fluids = FluidModelLoader(this)
-    val entities = EntityModels(this)
     val block = BlockLoader(this)
     val item = ItemLoader(this)
+    val skeletal = SkeletalLoader(this)
 
 
     fun load(latch: AbstractLatch) {
+        val start = nanos()
+
+        DefaultBlockEntityModels.load(this, latch)
+        DefaultEntityModels.load(this, latch)
         fluids.load(latch)
-        entities.load(latch)
         block.load(latch)
         item.load(latch)
+        skeletal.load(latch)
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all models!" }
+        val time = nanos() - start
+
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all models in ${time.formatNanos()}!" }
     }
 
     fun bake(latch: AbstractLatch) {
+        val start = nanos()
+
         block.bake(latch)
         item.bake(latch)
-        entities.bake()
+        skeletal.bake(latch)
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models!" }
+        val time = nanos() - start
+
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Baked models in ${time.formatNanos()}!" }
+    }
+
+    fun upload() {
+        skeletal.upload()
     }
 
     fun cleanup() {
         block.cleanup()
         item.cleanup()
+        skeletal.cleanup()
     }
 
     companion object {
 
         fun ResourceLocation.model(): ResourceLocation {
             return this.extend(prefix = "models/", suffix = ".json")
-        }
-
-        fun ResourceLocation.bbModel(): ResourceLocation {
-            return this.extend(prefix = "models/", suffix = ".bbmodel")
         }
     }
 }

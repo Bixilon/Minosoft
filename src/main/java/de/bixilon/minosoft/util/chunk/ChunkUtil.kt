@@ -105,7 +105,7 @@ object ChunkUtil {
 
                 blocks[yzx] = buffer.connection.registries.blockState.getOrNull(blockId) ?: continue
             }
-            sections[sectionHeight] = BlockSectionDataProvider(blocks)
+            sections[sectionHeight] = BlockSectionDataProvider(data = blocks)
         }
         chunkData.blocks = sections
         return chunkData
@@ -149,7 +149,7 @@ object ChunkUtil {
                 val block = buffer.connection.registries.blockState.getOrNull(blockId) ?: continue
                 blocks[yzx] = block
             }
-            sections[sectionHeight] = BlockSectionDataProvider(blocks)
+            sections[sectionHeight] = BlockSectionDataProvider(data = blocks)
         }
         chunkData.blocks = sections
         return chunkData
@@ -175,7 +175,7 @@ object ChunkUtil {
             val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.connection.registries.blockState, paletteFactory = BlockStatePaletteFactory)
 
             if (!blockContainer.isEmpty) {
-                val unpacked = BlockSectionDataProvider(blockContainer.unpack())
+                val unpacked = BlockSectionDataProvider(data = blockContainer.unpack())
                 if (!unpacked.isEmpty) {
                     sectionBlocks[sectionHeight - dimension.minSection] = unpacked
                 }
@@ -305,18 +305,6 @@ object ChunkUtil {
             neighbourChunks[6][sectionHeight + 1], // 25, (+1 | +0)
             neighbourChunks[7][sectionHeight + 1], // 26, (+1 | +1)
         )
-    }
-
-    fun Array<ChunkSection?>.acquire() {
-        for (section in this) {
-            section?.acquire()
-        }
-    }
-
-    fun Array<ChunkSection?>.release() {
-        for (section in this) {
-            section?.release()
-        }
     }
 
     fun ChunkPosition.isInViewDistance(viewDistance: Int, cameraPosition: ChunkPosition): Boolean {

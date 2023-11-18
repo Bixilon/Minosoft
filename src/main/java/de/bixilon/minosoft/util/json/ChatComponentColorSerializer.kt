@@ -41,7 +41,7 @@ object ChatComponentColorSerializer : SimpleModule() {
     object Serializer : StdSerializer<ChatComponent>(ChatComponent::class.java) {
 
         override fun serialize(value: ChatComponent?, generator: JsonGenerator, provider: SerializerProvider?) {
-            generator.writeString(value?.legacyText?.removeSuffix(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX.toString() + FormattingCodes.RESET.char.toString()))
+            generator.writeString(value?.legacy?.removeSuffix(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX.toString() + FormattingCodes.RESET.char.toString()))
         }
     }
 }

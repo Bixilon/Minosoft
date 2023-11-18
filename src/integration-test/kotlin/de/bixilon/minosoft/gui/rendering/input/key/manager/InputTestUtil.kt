@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.keysP
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.test.IT
-import de.bixilon.minosoft.util.KUtil.set
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
 
 object InputTestUtil {

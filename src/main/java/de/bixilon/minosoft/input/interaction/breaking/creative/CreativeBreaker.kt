@@ -23,13 +23,14 @@ class CreativeBreaker(
 ) {
     private val connection = breaking.interactions.connection
 
-    fun breakBlock(target: BlockTarget?) {
-        if (target == null) return
+    fun breakBlock(target: BlockTarget?): Boolean {
+        if (target == null) return false
         breaking.addCooldown()
         val sequence = breaking.executor.start(target.blockPosition, target.state)
         breaking.executor.finish()
 
-        connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
+        connection.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
         breaking.interactions.swingHand(Hands.MAIN)
+        return true
     }
 }

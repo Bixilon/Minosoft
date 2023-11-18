@@ -36,6 +36,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.sound.PlayedSound
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
@@ -51,7 +52,6 @@ import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.set
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -223,6 +223,7 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun readPlayerProperties(): PlayerProperties {
         var textures: PlayerTextures? = null
+
         for (i in 0 until readVarInt()) {
             val name = readString()
             val value = readString()
@@ -274,7 +275,9 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun <T : RegistryItem> readLegacyRegistryItem(registry: Registry<T>, fixer: ResourceLocationFixer? = null): T? {
-        return registry[readResourceLocation()]
+        var name = readResourceLocation()
+        fixer?.fix(name)?.let { name = it }
+        return registry[name]
     }
 
     fun <T : Enum<*>> readEnum(registry: EnumRegistry<T>): T? {
@@ -326,13 +329,12 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
-    @Deprecated("use values enum")
-    inline fun <reified T : Enum<T>> readEnumSet(values: Array<T>): Set<T> {
+    inline fun <reified T : Enum<T>> readEnumSet(universe: ValuesEnum<T>, values: Array<T>): Set<T> {
         val bitset = readBitSet(values.size)
         if (bitset.isEmpty) {
             return emptySet()
         }
-        val set = EnumSet.noneOf(T::class.java)
+        val set = universe.set()
         readEnumSet(bitset, set, values)
         return set
     }
@@ -385,5 +387,18 @@ class PlayInByteBuffer : InByteBuffer {
             array[index] = readByte()
         }
         return BitSet.valueOf(array)
+    }
+
+    fun readSound(): PlayedSound {
+        if (versionId < ProtocolVersions.V_1_19_3_RC1) {
+            return PlayedSound(readRegistryItem(connection.registries.soundEvent))
+        }
+        val id = readVarInt()
+        if (id != 0) {
+            return PlayedSound(connection.registries.soundEvent[id - 1])
+        }
+        val name = readResourceLocation() // TODO: readRegistryItem?
+        val attenuation = readOptional { readFloat() }
+        return PlayedSound(name, attenuation)
     }
 }

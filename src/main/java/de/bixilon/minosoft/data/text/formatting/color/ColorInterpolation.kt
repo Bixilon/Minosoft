@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.text.formatting.color
 
-import kotlin.math.PI
-import kotlin.math.sin
+import de.bixilon.kotlinglm.GLM.PIf
+import de.bixilon.kutil.math.Trigonometry.sin
 
 object ColorInterpolation {
 
@@ -46,7 +46,7 @@ object ColorInterpolation {
             return end
         }
 
-        return interpolateColor((sin(delta * PI.toFloat() / 2.0f)), start, end)
+        return interpolateColor((sin(delta * PIf / 2.0f)), start, end)
     }
 
     private fun interpolateColor(delta: Float, start: RGBColor, end: RGBColor): RGBColor {

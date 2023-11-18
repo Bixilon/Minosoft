@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.block.legacy
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.gui.rendering.models.item.ItemRender
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import kotlin.reflect.jvm.javaField
 
 open class PixLyzerBlockItem(
     resourceLocation: ResourceLocation,
@@ -52,7 +52,7 @@ open class PixLyzerBlockItem(
 
     companion object : PixLyzerItemFactory<PixLyzerBlockItem>, MultiClassFactory<PixLyzerBlockItem> {
         override val ALIASES = setOf("BlockItem", "AliasedBlockItem")
-        private val BLOCK_FIELD = PixLyzerBlockItem::block.javaField!!
+        private val BLOCK_FIELD = PixLyzerBlockItem::block.jvmField
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PixLyzerBlockItem {
             return PixLyzerBlockItem(resourceLocation, registries, data)

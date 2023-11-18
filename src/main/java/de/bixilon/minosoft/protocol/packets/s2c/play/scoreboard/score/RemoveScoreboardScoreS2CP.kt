@@ -27,18 +27,20 @@ class RemoveScoreboardScoreS2CP(
     buffer: PlayInByteBuffer,
 ) : ScoreboardScoreS2CP {
 
+    constructor(buffer: PlayInByteBuffer) : this(buffer.readString(), buffer.readOptional { buffer.readString() }, buffer)
+
     override fun handle(connection: PlayConnection) {
-        val objective = connection.scoreboardManager.objectives[objective] ?: let {
-            for ((_, objective) in connection.scoreboardManager.objectives.toSynchronizedMap()) {
+        val objective = connection.scoreboard.objectives[objective] ?: let {
+            for ((_, objective) in connection.scoreboard.objectives.toSynchronizedMap()) {
                 val score = objective.scores.remove(entity) ?: continue
 
-                connection.events.fire(ScoreboardScoreRemoveEvent(connection, score))
+                connection.events.fire(ScoreboardScoreRemoveEvent(connection, objective, entity))
             }
             return
         }
         val score = objective.scores.remove(entity) ?: return
 
-        connection.events.fire(ScoreboardScoreRemoveEvent(connection, score))
+        connection.events.fire(ScoreboardScoreRemoveEvent(connection, objective, entity))
     }
 
 

@@ -13,39 +13,66 @@
 
 package de.bixilon.minosoft.data.entities.block.sign
 
-import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.asJsonList
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.entities.block.MeshedBlockEntity
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection) {
-    var lines: Array<ChatComponent> = Array(LINES) { ChatComponent.of("") }
-    var color: RGBColor = ChatColors.BLACK
-    var glowing = false
+class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+    val front = SignTextProperties()
+    val back = SignTextProperties()
+    var waxed = false
 
 
     override fun updateNBT(nbt: Map<String, Any>) {
-        color = nbt["Color"]?.toString()?.lowercase()?.let { ChatColors.NAME_MAP[it] } ?: ChatColors.BLACK
-        glowing = nbt["GlowingText"]?.toBoolean() ?: false
-        for (i in 1..LINES) {
-            val tag = nbt["Text$i"]?.toString() ?: continue
-
-            lines[i - 1] = ChatComponent.of(tag, translator = connection.language)
-        }
-        // TODO: update front/back text
+        nbt["is_waxed"]?.toBoolean()?.let { this.waxed = it }
+        val front = nbt["front_text"]?.toJsonObject() ?: return updateLegacy(nbt)
+        this.front.update(front, connection)
+        nbt["back_text"]?.toJsonObject()?.let { this.back.update(it, connection) }
     }
 
-    override fun createMeshedRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i): SignBlockEntityRenderer {
-        return SignBlockEntityRenderer(this, context, blockState)
+    private fun updateLegacy(nbt: JsonObject) {
+        this.front.update(nbt["Color"], nbt["GlowingText"])
+        for (i in 1..LINES) {
+            val line = nbt["Text$i"]?.toString() ?: continue
+
+            front.text[i - 1] = ChatComponent.of(line, translator = connection.language)
+        }
+    }
+
+    operator fun get(side: SignSides) = when (side) {
+        SignSides.FRONT -> front
+        SignSides.BACK -> back
+    }
+
+    class SignTextProperties(
+        var glowing: Boolean = false,
+        var color: RGBColor? = null,
+        val text: Array<ChatComponent> = Array(LINES) { EmptyComponent },
+    ) {
+
+        fun update(data: JsonObject, connection: PlayConnection) {
+            update(data["color"], data["has_glowing_text"])
+            data["messages"]?.asJsonList()?.let {
+                for ((index, line) in it.withIndex()) {
+                    this.text[index] = ChatComponent.of(line, translator = connection.language)
+                }
+            }
+        }
+
+        fun update(color: Any?, glowing: Any?) {
+            this.color = color?.toString()?.lowercase()?.let { ChatColors.NAME_MAP[it] }
+            this.glowing = glowing?.toBoolean() ?: false
+        }
     }
 
     companion object : BlockEntityFactory<SignBlockEntity> {

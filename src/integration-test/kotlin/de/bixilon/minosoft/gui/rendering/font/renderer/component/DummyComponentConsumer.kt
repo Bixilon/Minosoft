@@ -22,19 +22,21 @@ import de.bixilon.minosoft.gui.rendering.font.types.FontType
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import org.testng.Assert.assertEquals
 
 class DummyComponentConsumer : GUIVertexConsumer {
     val chars: MutableList<RendererdCodePoint> = mutableListOf()
     val quads: MutableList<RendererdQuad> = mutableListOf()
 
-    override val order: IntArray get() = IntArray(0)
-    override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) = Broken()
+    override val order: RenderOrder get() = RenderOrder(IntArray(0))
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) = Broken()
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) = Broken()
     override fun addCache(cache: GUIMeshCache) = Broken()
     override fun ensureSize(size: Int) = Unit
 
-    override fun addQuad(start: Vec2, end: Vec2, texture: ShaderIdentifiable?, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addQuad(start: Vec2, end: Vec2, texture: ShaderTexture?, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         quads += RendererdQuad(Vec2(start), Vec2(end))
     }
 

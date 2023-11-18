@@ -21,6 +21,8 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.com
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.compactProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
+import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
+import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
@@ -62,11 +64,11 @@ class BuilderApply(
         val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
         val properties: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
         var particle: Texture? = null
+        var display: Map<DisplayPositions, ModelDisplay>? = null
 
         for (model in this) {
-            if (particle == null) {
-                particle = model.particle
-            }
+            if (particle == null) particle = model.particle
+            if (display == null) display = model.display
 
             for (direction in Directions) {
                 faces[direction.ordinal] += model.faces[direction.ordinal]
@@ -74,6 +76,6 @@ class BuilderApply(
             }
         }
 
-            return BakedModel(faces.compact(), properties.compactProperties(), particle)
+        return BakedModel(faces.compact(), properties.compactProperties(), display, particle)
     }
 }

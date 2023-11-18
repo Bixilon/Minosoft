@@ -35,7 +35,7 @@ class Pig(connection: PlayConnection, entityType: EntityType, data: EntityData, 
 
     @get:SynchronizedEntityData
     override val isSaddled: Boolean
-        get() = data.getBoolean(HAS_SADDLE_DATA, false)
+        get() = data.getBoolean(SADDLED, false)
 
     @get:SynchronizedEntityData
     val boostTime: Int
@@ -50,7 +50,7 @@ class Pig(connection: PlayConnection, entityType: EntityType, data: EntityData, 
 
     companion object : EntityFactory<Pig> {
         override val identifier: ResourceLocation = minecraft("pig")
-        val HAS_SADDLE_DATA = EntityDataField("PIG_HAS_SADDLE")
+        val SADDLED = EntityDataField("PIG_HAS_SADDLE")
         private val BOOST_TIME_DATA = EntityDataField("PIG_BOOST_TIME")
 
 

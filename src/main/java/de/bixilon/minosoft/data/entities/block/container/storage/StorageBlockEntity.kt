@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,39 +13,38 @@
 
 package de.bixilon.minosoft.data.entities.block.container.storage
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
-import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.StorageBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection), BlockActionEntity {
-    protected var blockEntityRenderer: StorageBlockEntityRenderer<*>? = null
-    override var renderer: BlockEntityRenderer<out BlockEntity>?
-        get() = blockEntityRenderer
-        set(value) {
-            blockEntityRenderer = value?.unsafeCast()
-        }
 
-    var playersLookingIntoStorage: Int = 0
+    var viewing: Int = 0
         private set
 
-    val closed: Boolean get() = playersLookingIntoStorage <= 0
+    val closed: Boolean get() = viewing <= 0
 
-    override fun setBlockActionData(data1: Byte, data2: Byte) {
-        val closed = closed
-        playersLookingIntoStorage = data2.toInt()
-
-        if (this.closed == closed) {
-            // state has not changed
-            return
-        }
-        if (playersLookingIntoStorage <= 0) {
-            blockEntityRenderer?.close()
-        } else {
-            blockEntityRenderer?.open()
+    override fun setBlockActionData(type: Int, data: Int) {
+        when (type) {
+            1 -> setViewing(data and 0xFF)
         }
     }
+
+    protected fun setViewing(viewing: Int) {
+        if (this.viewing == viewing) return
+        val previous = this.viewing
+        this.viewing = viewing
+
+        when {
+            viewing == 0 -> onClose()
+            previous == 0 -> onOpen()
+            else -> onViewingChange(viewing)
+        }
+    }
+
+    protected open fun onViewingChange(viewing: Int) = Unit
+
+    protected open fun onOpen() = Unit
+
+    protected open fun onClose() = Unit
 }

@@ -20,14 +20,16 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.view.CameraView
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.input.camera.MovementInputActions
 import de.bixilon.minosoft.input.camera.PlayerMovementInput
 
 // TODO: handle block changes
-class ThirdPersonView(override val camera: Camera) : PersonView {
+class ThirdPersonView(
+    override val camera: Camera,
+    val inverse: Boolean,
+) : PersonView {
     override val context: RenderContext get() = camera.context
 
     override var eyePosition: Vec3d = Vec3d.EMPTY
@@ -42,24 +44,29 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
 
 
     override fun onMouse(delta: Vec2d) {
-        val rotation = super.handleMouse(delta) ?: return
+        val rotation = super.handleMouse(delta)?.update() ?: return
         this.rotation = rotation
-        this.front = rotation.front
         update(eyePosition, rotation.front)
     }
 
     private fun update() {
         val entity = camera.context.connection.camera.entity
-        this.rotation = entity.physics.rotation
-        this.front = rotation.front
-        update(entity.renderInfo.eyePosition, front)
+        rotation = entity.physics.rotation.update()
+        update(entity.renderInfo.eyePosition, rotation.front)
+    }
+
+    private fun EntityRotation.update(): EntityRotation {
+        if (inverse) return this
+        return EntityRotation(yaw - 180.0f, -pitch)
     }
 
     private fun update(position: Vec3d, front: Vec3) {
-        val target = camera.context.connection.camera.target.raycastBlock(position, (-front).toVec3d).first
+        val direction = -front
+        val target = camera.context.connection.camera.target.raycastBlock(position, Vec3d(direction)).first
         val distance = target?.distance?.let { minOf(it, MAX_DISTANCE) } ?: MAX_DISTANCE
 
-        this.eyePosition = position + (-front * distance)
+        this.eyePosition = if (distance <= 0.0) position else position + (direction * (distance - MIN_MARGIN))
+        this.front = front
     }
 
     override fun onAttach(previous: CameraView?) {
@@ -71,6 +78,7 @@ class ThirdPersonView(override val camera: Camera) : PersonView {
     }
 
     companion object {
+        const val MIN_MARGIN = 0.05
         const val MAX_DISTANCE = 3.0
     }
 }

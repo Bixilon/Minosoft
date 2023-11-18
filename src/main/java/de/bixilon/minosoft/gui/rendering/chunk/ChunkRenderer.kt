@@ -311,6 +311,7 @@ class ChunkRenderer(
     companion object : RendererBuilder<ChunkRenderer> {
 
         override fun build(connection: PlayConnection, context: RenderContext): ChunkRenderer {
+            //        return null
             return ChunkRenderer(connection, context)
         }
     }

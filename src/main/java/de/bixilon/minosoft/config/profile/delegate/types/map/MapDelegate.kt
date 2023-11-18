@@ -32,9 +32,11 @@ open class MapDelegate<K, V>(
     }
 
     override fun get() = value
-    override fun set(value: MutableMap<K, V>) {
+    override fun set(value: MutableMap<K, V>): MutableMap<K, V> {
         validate(value)
+        val previous = this.value.unsafe
         this.value.unsafe = value
+        return previous
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: MutableMap<K, V>) {

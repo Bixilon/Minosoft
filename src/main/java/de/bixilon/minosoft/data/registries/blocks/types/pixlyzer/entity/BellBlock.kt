@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class BellBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<BellBlockEntity>(resourceLocation, registries, data) {
+open class BellBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BellBlockEntity>(resourceLocation, registries, data) {
 
     companion object : PixLyzerBlockFactory<BellBlock> {
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BellBlock {

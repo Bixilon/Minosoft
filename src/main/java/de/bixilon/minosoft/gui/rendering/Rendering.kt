@@ -40,6 +40,7 @@ class Rendering(private val connection: PlayConnection) {
 
     private fun startAudioPlayerThread(latch: AbstractLatch) {
         if (connection.profiles.audio.skipLoading) {
+            latch.dec()
             return
         }
         val audioLatch = ParentLatch(1, latch)

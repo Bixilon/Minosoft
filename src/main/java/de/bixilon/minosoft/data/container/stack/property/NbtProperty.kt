@@ -29,7 +29,7 @@ class NbtProperty(
         return nbt.isEmpty()
     }
 
-    override fun updateNbt(nbt: MutableJsonObject): Boolean {
+    fun updateNbt(nbt: MutableJsonObject): Boolean {
         this.nbt.putAll(nbt)
         return !isDefault()
     }

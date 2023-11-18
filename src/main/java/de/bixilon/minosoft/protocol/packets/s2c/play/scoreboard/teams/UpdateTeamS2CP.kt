@@ -94,16 +94,16 @@ class UpdateTeamS2CP(
 
 
     override fun handle(connection: PlayConnection) {
-        val team = connection.scoreboardManager.teams[name] ?: return
+        val team = connection.scoreboard.teams[name] ?: return
 
-        team.displayName = displayName
-        team.prefix = prefix
-        team.suffix = suffix
+        val formatting = team.formatting
+        formatting.name = displayName; formatting.prefix = prefix; formatting.suffix = suffix; formatting.color = color
+
+        val visibility = team.visibility
+        visibility.invisibleTeam = canSeeInvisibleTeam; visibility.name = nameTagVisibility
+
         team.friendlyFire = friendlyFire
-        team.canSeeInvisibleTeam = canSeeInvisibleTeam
-        team.collisionRule = collisionRule
-        team.nameTagVisibility = nameTagVisibility
-        team.color = color
+        team.collisions = collisionRule
 
         connection.events.fire(TeamUpdateEvent(connection, team))
     }

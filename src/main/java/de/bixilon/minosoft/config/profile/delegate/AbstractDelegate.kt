@@ -23,7 +23,7 @@ interface AbstractDelegate<T> : TextFormattable {
     val description: ResourceLocation
 
     fun get(): T
-    fun set(value: T)
+    fun set(value: T): T
 
     fun validate(value: T) = Unit
 

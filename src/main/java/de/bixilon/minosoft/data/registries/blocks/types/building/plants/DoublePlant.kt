@@ -94,7 +94,7 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
     }
 
     companion object {
-        val HALF = EnumProperty("half", Halves, setOf(Halves.UPPER, Halves.LOWER))
+        val HALF = EnumProperty("half", Halves, Halves.set(Halves.UPPER, Halves.LOWER))
     }
 
     open class Sunflower(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : DoublePlant(identifier, settings) {

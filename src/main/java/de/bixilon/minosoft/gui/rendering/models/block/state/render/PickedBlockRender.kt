@@ -17,13 +17,16 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.SideProperties
+import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
+import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import java.util.*
 
@@ -33,16 +36,28 @@ interface PickedBlockRender : BlockRender {
     fun pick(state: BlockState, neighbours: Array<BlockState?>): BlockRender?
 
 
-    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack) {
-        default?.render(gui, offset, consumer, options, size, stack)
+    override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
+        default?.render(gui, offset, consumer, options, size, stack, tints)
     }
 
-    override fun render(position: BlockPosition, offset: FloatArray, mesh: ChunkMesh, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
-        return pick(state, neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints) ?: false
+    override fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?): Boolean {
+        return pick(state, neighbours)?.render(position, offset, mesh, random, state, neighbours, light, tints, entity) ?: false
+    }
+
+    override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) {
+        default?.render(mesh, state, tints)
+    }
+
+    override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
+        default?.render(mesh, stack, tints)
     }
 
     override fun getProperties(direction: Directions): SideProperties? {
         return default?.getProperties(direction) // both models should have the same properties
+    }
+
+    override fun getDisplay(position: DisplayPositions): ModelDisplay? {
+        return default?.getDisplay(position)
     }
 
     override fun getParticleTexture(random: Random?, position: Vec3i): Texture? {

@@ -18,6 +18,8 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kotlinglm.vec4.swizzle.xyz
+import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
@@ -26,9 +28,8 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
-import kotlin.math.PI
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.Z
 import kotlin.math.abs
-import kotlin.math.sin
 
 class SunScatterRenderer(
     private val sky: SkyRenderer,
@@ -43,7 +44,7 @@ class SunScatterRenderer(
     private fun calculateMatrix(skyMatrix: Mat4) {
         val matrix = Mat4(skyMatrix)
 
-        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3(0, 0, 1))
+        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3.Z)
 
         this.matrix = matrix
     }
@@ -59,12 +60,12 @@ class SunScatterRenderer(
     private fun calculateIntensity(progress: Float): Float {
         val delta = (abs(progress) * 2.0f)
 
-        return maxOf(sin(delta * PI.toFloat() / 2.0f), 0.5f)
+        return maxOf(sin(delta * PIf / 2.0f), 0.5f)
     }
 
     private fun calculateSunPosition(): Vec3 {
         val matrix = Mat4()
-        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3(0, 0, 1))
+        matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3.Z)
 
         val barePosition = Vec4(1.0f, 0.128f, 0.0f, 1.0f)
 

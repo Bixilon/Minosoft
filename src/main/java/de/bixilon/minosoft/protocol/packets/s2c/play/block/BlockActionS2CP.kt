@@ -30,8 +30,8 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         buffer.readBlockPosition()
     }
-    val data1: Byte = buffer.readByte()
-    val data2: Byte = buffer.readByte()
+    val type = buffer.readByte().toInt()
+    val data = buffer.readByte().toInt()
     val block: Block = if (buffer.versionId < FLATTENING_VERSION) buffer.readRegistryItem(buffer.connection.registries.blockState)!!.block else buffer.readRegistryItem(buffer.connection.registries.block)
 
     override fun handle(connection: PlayConnection) {
@@ -41,10 +41,10 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             Log.log(LogMessageType.NETWORK_IN, LogLevels.WARN) { "Block entity $blockEntity can not accept block entity actions!" }
             return
         }
-        blockEntity.setBlockActionData(data1, data2)
+        blockEntity.setBlockActionData(type, data)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Block action (position=$position, data1=$data1, data2=$data2, block=$block)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Block action (position=$position, type=$type, data=$data, block=$block)" }
     }
 }

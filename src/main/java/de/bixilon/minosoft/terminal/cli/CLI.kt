@@ -34,8 +34,9 @@ import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
 
 object CLI {
+    const val CLI_PREFIX = '.'
     var connection: PlayConnection? by observed(null)
-    val ROOT_NODE = RootNode()
+    val commands = RootNode()
 
     init {
         register()
@@ -43,21 +44,21 @@ object CLI {
 
     @Synchronized
     private fun register() {
-        ROOT_NODE.clear()
+        commands.clear()
         val connection = this.connection
 
         for (command in Commands.COMMANDS) {
             if (command is ConnectionCommand && connection == null) {
                 continue
             }
-            ROOT_NODE.addChild(command.node)
+            commands.addChild(command.node)
         }
     }
 
 
-    fun startThread(latch: AbstractLatch) {
-        latch.inc()
-        Thread({ latch.dec(); startLoop() }, "CLI").start()
+    fun startThread(latch: AbstractLatch?) {
+        latch?.inc()
+        Thread({ latch?.dec(); startLoop() }, "CLI").start()
     }
 
     private fun startLoop() {
@@ -108,7 +109,7 @@ object CLI {
 
     private fun processLine(line: String) {
         try {
-            ROOT_NODE.execute(line, connection)
+            commands.execute(line, connection)
         } catch (error: ReaderError) {
             Log.log(LogMessageType.OTHER, LogLevels.WARN) { error.message }
         } catch (error: Throwable) {
@@ -120,7 +121,7 @@ object CLI {
 
         override fun complete(reader: LineReader, line: ParsedLine, candidates: MutableList<Candidate>) {
             val line = line.line()
-            val suggestions = ROOT_NODE.getSuggestions(line)
+            val suggestions = commands.getSuggestions(line)
             for (suggestion in suggestions) {
                 candidates += Candidate(suggestion.text) // TODO: add offset, ...
             }

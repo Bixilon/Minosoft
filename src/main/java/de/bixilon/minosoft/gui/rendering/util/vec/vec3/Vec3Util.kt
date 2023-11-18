@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import de.bixilon.kotlinglm.GLM.PIf
 import de.bixilon.kotlinglm.func.cos
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.func.sin
@@ -22,16 +23,18 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.swizzle.xy
 import de.bixilon.kotlinglm.vec3.swizzle.xz
 import de.bixilon.kotlinglm.vec3.swizzle.yz
+import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import kotlin.math.PI
-import kotlin.math.sin
 
 object Vec3Util {
     private val EMPTY_INSTANCE = Vec3.EMPTY
+    private val X = Vec3(1, 0, 0)
+    private val Y = Vec3(0, 1, 0)
+    private val Z = Vec3(0, 0, 1)
 
     val Vec3.Companion.MIN: Vec3
         get() = Vec3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
@@ -54,6 +57,10 @@ object Vec3Util {
 
     val Vec3.blockPosition: Vec3i
         get() = this.floor
+
+    val Vec3.Companion.X: Vec3 get() = Vec3Util.X
+    val Vec3.Companion.Y: Vec3 get() = Vec3Util.Y
+    val Vec3.Companion.Z: Vec3 get() = Vec3Util.Z
 
 
     val Vec3.rad: Vec3 get() = Vec3(x.rad, y.rad, z.rad)
@@ -82,6 +89,20 @@ object Vec3Util {
         this -= origin
         rotateAssign(angle, axis, rescale)
         this += origin
+    }
+
+    fun Vec3.rotateAssign(rad: Vec3, origin: Vec3, rescale: Boolean) {
+        this -= origin
+        rotateAssign(rad.x, Axes.X, rescale)
+        rotateAssign(rad.y, Axes.Y, rescale)
+        rotateAssign(rad.z, Axes.Z, rescale)
+        this += origin
+    }
+
+    fun Vec3.rotateAssign(rad: Vec3) {
+        rotateAssign(rad.x, Axes.X, false)
+        rotateAssign(rad.y, Axes.Y, false)
+        rotateAssign(rad.z, Axes.Z, false)
     }
 
     operator fun Vec3.get(axis: Axes): Float {
@@ -138,7 +159,7 @@ object Vec3Util {
             return end
         }
 
-        val sineDelta = sin(delta * PI.toFloat() / 2.0f)
+        val sineDelta = sin(delta * PIf / 2.0f)
 
         fun interpolate(start: Float, end: Float): Float {
             return start + sineDelta * (end - start)

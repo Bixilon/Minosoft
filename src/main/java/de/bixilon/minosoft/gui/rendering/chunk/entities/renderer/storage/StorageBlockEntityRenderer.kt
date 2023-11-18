@@ -20,25 +20,16 @@ import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
 abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
-    override val blockState: BlockState,
+    override var state: BlockState,
     protected val skeletal: SkeletalInstance?,
-    override var light: Int,
 ) : BlockEntityRenderer<E> {
+    override var light = 0xFF
 
     override fun draw(context: RenderContext) {
-        skeletal?.light = light
-        skeletal?.draw()
+        skeletal?.update()
+        skeletal?.draw(light)
     }
 
-    fun open() {
-        val skeletal = this.skeletal ?: return
-        skeletal.clearAnimation()
-        skeletal.playAnimation("animation.chest.opening")
-    }
-
-    fun close() {
-        val skeletal = this.skeletal ?: return
-        skeletal.clearAnimation()
-        skeletal.playAnimation("animation.chest.closing")
-    }
+    open fun open() = Unit
+    open fun close() = Unit
 }

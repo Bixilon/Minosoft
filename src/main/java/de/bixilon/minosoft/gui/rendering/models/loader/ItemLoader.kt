@@ -15,7 +15,8 @@ package de.bixilon.minosoft.gui.rendering.models.loader
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -78,11 +79,11 @@ class ItemLoader(private val loader: ModelLoader) {
     }
 
     fun cleanup() {
-        this.cache.clear()
+        this::cache.forceSet(null)
     }
 
     fun fixTexturePath(name: ResourceLocation): ResourceLocation {
-        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, MinecraftAssetsVersion.FLATTENING, "items/", "item/"))
+        return ResourceLocation(name.namespace, name.path.fixPrefix(loader.packFormat, MinecraftPackFormat.FLATTENING, "items/", "item/"))
     }
 
     private fun ResourceLocation.itemModel(): ResourceLocation {

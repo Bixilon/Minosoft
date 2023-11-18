@@ -41,12 +41,13 @@ class RenderLoop(
         var paused = false
         context::state.observe(this) {
             paused = if (paused) {
-                context.queue.clear()
+                // context.queue.clear() // TODO: That might cause bugs and memory leaks
                 false
             } else {
                 it == RenderingStates.PAUSED
             }
         }
+        context.profile.performance::slowRendering.observe(this) { this.slowRendering = it }
     }
 
 
@@ -57,6 +58,7 @@ class RenderLoop(
             if (context.state == RenderingStates.PAUSED) {
                 context.window.title = "Minosoft | Paused"
             }
+            //     context.renderer[ChunkRenderer]?.clearChunkCache()
 
             while (context.state == RenderingStates.PAUSED) {
                 Thread.sleep(20L)
@@ -98,9 +100,13 @@ class RenderLoop(
 
             context.window.pollEvents()
             context.window.swapBuffers()
+            context.window.pollEvents()
 
             context.input.draw(deltaFrameTime)
             context.camera.draw()
+
+            val state = context.connection.registries.block["chest"]!!.states.default
+            context.connection.world[4, -60, 1] = state
 
             // handle opengl context tasks, but limit it per frame
             context.queue.timeWork(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)

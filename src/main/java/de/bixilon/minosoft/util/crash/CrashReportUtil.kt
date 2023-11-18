@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,9 +32,7 @@ object CrashReportUtil {
         "You're evil",
         "Maybe in another life.",
         "This sucks",
-        "Chill ur life",
         "Chill your life",
-        "Chill your base",
         "Damn!",
         "Developing is hard.",
         "Please don't kill me for this",
@@ -47,18 +45,20 @@ object CrashReportUtil {
         "I am #1 in bedwars swordless",
         "Der AB kam vor der CD",
         "You can't do this",
-        "Sing me a happy song!",
         "This message should not be visible...",
         "lmfao",
-        "Your fault",
         "Technoblade never dies", // In memorial to technoblade. RIP Technoblade 30.6.2022
+        "Find help at: https://www.youtube.com/watch?v=dQw4w9WgXcQ", // rick
+        "//TODO: What the hell is causing this?", // S H&R
+        "If this happens, we're in big shit.", // S H&R
+        "this is bulky, but fuck it, gotta get this shit working like yesterday", // S H&R
     )
 
 
-    fun createCrashReport(error: Throwable?): String {
+    fun createCrashReport(error: Throwable?, notes: String = "-/-"): String {
         val builder = CrashReportBuilder()
 
-        builder += GeneralSection()
+        builder += GeneralSection(notes)
         error?.let { builder += ThrowableSection(it) }
         builder += RuntimeSection()
         builder += SystemSection()

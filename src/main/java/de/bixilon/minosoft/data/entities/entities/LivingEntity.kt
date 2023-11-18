@@ -14,6 +14,8 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.bit.BitByte.isBitMask
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.container.equipment.EntityEquipment
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -22,9 +24,12 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.entities.entities.properties.StatusEffectProperty
+import de.bixilon.minosoft.data.entities.event.events.damage.DamageEvent
+import de.bixilon.minosoft.data.entities.event.events.damage.DamageListener
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.MinecraftAttributes
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
@@ -33,7 +38,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.sp
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
+abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation), DamageListener {
     private val entityEffectParticle = connection.registries.particleType[EntityEffectParticle]
     private val ambientEntityEffectParticle = connection.registries.particleType[AmbientEntityEffectParticle]
 
@@ -42,15 +47,16 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     val attributes = EntityAttributes(entityType.attributes)
 
 
-    override val canRaycast: Boolean get() = health > 0.0
+    override val canRaycast: Boolean get() = super.canRaycast && health > 0.0
+    override val name: ChatComponent? get() = super.name
 
+    private var flags by data(FLAGS_DATA, 0x00)
     private fun getLivingEntityFlag(bitMask: Int): Boolean {
-        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
+        return flags.isBitMask(bitMask)
     }
 
     @get:SynchronizedEntityData
-    open val pose: Poses?
-        get() = data.get(POSE_DATA, Poses.STANDING)
+    open val pose: Poses? by data(POSE_DATA, Poses.STANDING)
 
     @get:SynchronizedEntityData
     open val usingHand: Hands?
@@ -64,9 +70,11 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     val isRiptideAttacking: Boolean
         get() = getLivingEntityFlag(0x04)
 
+    private val _health: Float? by data(HEALTH_DATA, null)
+
     @get:SynchronizedEntityData
     open val health: Double
-        get() = data.get<Float?>(HEALTH_DATA, null)?.toDouble() ?: attributes[MinecraftAttributes.MAX_HEALTH]
+        get() = _health?.toDouble() ?: attributes[MinecraftAttributes.MAX_HEALTH]
 
     @get:SynchronizedEntityData
     val effectColor: RGBColor?
@@ -77,16 +85,13 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         get() = data.getBoolean(EFFECT_AMBIENT_DATA, false)
 
     @get:SynchronizedEntityData
-    val arrowCount: Int
-        get() = data.get(ARROW_COUNT_DATA, 0)
+    val arrowCount: Int by data(ARROW_COUNT_DATA, 0)
 
     @get:SynchronizedEntityData
-    val absorptionHearts: Int
-        get() = data.get(ABSORPTION_HEARTS_DATA, 0)
+    val absorptionHearts: Int by data(ABSORPTION_HEARTS_DATA, 0)
 
     @get:SynchronizedEntityData
-    val bedPosition: Vec3i?
-        get() = data.get(BED_POSITION_DATA, null)
+    val bedPosition: Vec3i? by data(BED_POSITION_DATA, null)
 
     open val isSleeping: Boolean
         get() = bedPosition != null
@@ -98,9 +103,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
             else -> super.hitboxColor
         }
 
-    override fun createPhysics(): LivingEntityPhysics<*> {
-        return LivingEntityPhysics(this)
-    }
+    override fun createPhysics(): LivingEntityPhysics<*> = LivingEntityPhysics(this)
 
     override fun tick() {
         super.tick()
@@ -110,6 +113,10 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     val activelyRiding: Boolean get() = false
 
     override fun physics(): LivingEntityPhysics<*> = super.physics().unsafeCast()
+
+    override fun onDamage(type: DamageEvent) {
+        this.renderer?.nullCast<DamageListener>()?.onDamage(type)
+    }
 
     companion object {
         private val FLAGS_DATA = EntityDataField("LIVING_ENTITY_FLAGS")

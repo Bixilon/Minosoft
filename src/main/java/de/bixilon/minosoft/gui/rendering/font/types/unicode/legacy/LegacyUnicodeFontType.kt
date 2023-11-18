@@ -36,11 +36,14 @@ import java.io.InputStream
 class LegacyUnicodeFontType(
     val chars: Array<UnicodeCodeRenderer?>,
 ) : PostInitFontType {
+    private var postInit = false
 
     override fun postInit(latch: AbstractLatch) {
+        if (postInit) return
         for (char in chars) {
             char?.updateArray()
         }
+        postInit = true
     }
 
     override fun get(codePoint: Int): UnicodeCodeRenderer? {

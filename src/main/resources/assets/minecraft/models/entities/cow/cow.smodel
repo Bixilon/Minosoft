@@ -1,0 +1,95 @@
+{
+  "elements": {
+    "body": {
+      "from": [-6, 0, 6],
+      "to": [6, 18, 16],
+      "texture": "minecraft:entity/cow/cow",
+      "uv": [18, 4],
+      "rotation": {
+        "value": [-90, 0, 0],
+        "origin": [0, 19, 9]
+      },
+      "faces": "all"
+    },
+    "head": {
+      "from": [-4, 16, 7],
+      "to": [4, 24, 13],
+      "uv": [0, 0],
+      "texture": "minecraft:entity/cow/cow",
+      "faces": "all",
+      "transform": "head",
+      "children": {
+        "right_horn": {
+          "from": [-5, 22, 10],
+          "to": [-4, 25, 11],
+          "uv": [22, 0],
+          "faces": "all"
+        },
+        "left_horn": {
+          "from": [4, 22, 10],
+          "to": [5, 25, 11],
+          "uv": [22, 0],
+          "faces": "all"
+        }
+      }
+    },
+    "front_right": {
+      "offset": [-4, 0, 6],
+      "from": [-2, 0, -2],
+      "to": [2, 12, 2],
+      "uv": [0, 16],
+      "texture": "minecraft:entity/cow/cow",
+      "faces": "-up",
+      "transform": "front_right"
+    },
+    "front_left": {
+      "offset": [4, 0, 6],
+      "from": [-2, 0, -2],
+      "to": [2, 12, 2],
+      "uv": [0, 16],
+      "texture": "minecraft:entity/cow/cow",
+      "faces": "-up",
+      "transform": "front_left"
+    },
+    "hind_left": {
+      "offset": [4, 0, -7],
+      "from": [-2, 0, -2],
+      "to": [2, 12, 2],
+      "uv": [0, 16],
+      "texture": "minecraft:entity/cow/cow",
+      "faces": "-up",
+      "transform": "hind_left"
+    },
+    "hind_right": {
+      "offset": [-4, 0, -7],
+      "from": [-2, 0, -2],
+      "to": [2, 12, 2],
+      "uv": [0, 16],
+      "texture": "minecraft:entity/cow/cow",
+      "faces": "-up",
+      "transform": "hind_right"
+    }
+  },
+  "transforms": {
+    "head": {
+      "pivot": [0, 20, 7]
+    },
+    "hind_left": {
+      "pivot": [4, 0, -7]
+    },
+    "hind_right": {
+      "pivot": [-4, 0, -7]
+    },
+    "front_left": {
+      "pivot": [4, 0, 6]
+    },
+    "front_right": {
+      "pivot": [-4, 0, 6]
+    }
+  },
+  "textures": {
+    "minecraft:entity/cow/cow": {
+      "resolution": [64, 32]
+    }
+  }
+}

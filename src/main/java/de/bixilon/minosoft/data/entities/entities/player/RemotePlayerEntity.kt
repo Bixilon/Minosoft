@@ -42,14 +42,7 @@ class RemotePlayerEntity(
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation, uuid: UUID?): RemotePlayerEntity? {
             val additional = connection.tabList.uuid[uuid] ?: return null
 
-            return RemotePlayerEntity(
-                connection = connection,
-                entityType = connection.registries.entityType[identifier]!!,
-                data = data,
-                position = position,
-                rotation = rotation,
-                additional = additional,
-            )
+            return RemotePlayerEntity(connection, entityType, data, position, rotation, additional)
         }
     }
 }

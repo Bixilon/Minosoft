@@ -20,6 +20,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -190,5 +191,10 @@ open class InByteBuffer : de.bixilon.kutil.buffer.bytes.`in`.InByteBuffer {
             var name = readString(readUnsignedShort()) // ToDo: Should this name be ignored?
         }
         return readNBTTag(type)
+    }
+
+    fun <T : Enum<*>> readEnum(universe: ValuesEnum<T>): T {
+        val ordinal = readVarInt()
+        return universe[ordinal]
     }
 }

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.mesher
 import de.bixilon.kutil.concurrent.pool.runnable.InterruptableRunnable
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.smallMesh
 import de.bixilon.minosoft.util.chunk.ChunkUtil
@@ -27,7 +27,7 @@ class ChunkMesher(
     private val solid = SolidSectionMesher(renderer.context)
     private val fluid = FluidSectionMesher(renderer.context)
 
-    private fun mesh(item: WorldQueueItem): ChunkMesh? {
+    private fun mesh(item: WorldQueueItem): ChunkMeshes? {
         if (item.section.blocks.isEmpty) {
             renderer.unload(item)
             return null
@@ -38,11 +38,16 @@ class ChunkMesher(
             return null
         }
         val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, item.chunk, item.section.sectionHeight)
-        val mesh = ChunkMesh(renderer.context, item.chunkPosition, item.sectionHeight, item.section.smallMesh)
-        solid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
+        val mesh = ChunkMeshes(renderer.context, item.chunkPosition, item.sectionHeight, item.section.smallMesh)
+        try {
+            solid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
 
-        if (item.section.blocks.fluidCount > 0) {
-            fluid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
+            if (item.section.blocks.fluidCount > 0) {
+                fluid.mesh(item.chunkPosition, item.sectionHeight, item.chunk, item.section, neighbours, sectionNeighbours, mesh)
+            }
+        } catch (exception: Exception) {
+            mesh.unload()
+            throw exception
         }
 
         return mesh

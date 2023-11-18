@@ -13,26 +13,43 @@
 
 package de.bixilon.minosoft.data.entities.block.container.storage
 
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ShulkerBoxBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.DyedBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.shulker.ShulkerBoxRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.toResourceLocationList
 
-class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
+class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection), RenderedBlockEntity<ShulkerBoxRenderer> {
+    override var renderer: ShulkerBoxRenderer? = null
 
+    override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): ShulkerBoxRenderer? {
+        if (state.block !is ShulkerBoxBlock) return null
+        val name = when {
+            state.block is DyedBlock -> ShulkerBoxRenderer.NAME_COLOR[state.block.color.ordinal]
+            else -> ShulkerBoxRenderer.NAME
+        }
+        val model = context.models.skeletal[name] ?: return null
+        return ShulkerBoxRenderer(this, context, state, position, model, light)
+    }
 
-    companion object : BlockEntityFactory<ShulkerBoxBlockEntity>, AliasedIdentified {
+    override fun onOpen() {
+        super.onOpen()
+        renderer?.open()
+    }
+
+    override fun onClose() {
+        super.onClose()
+        renderer?.close()
+    }
+
+    companion object : BlockEntityFactory<ShulkerBoxBlockEntity> {
         override val identifier: ResourceLocation = minecraft("shulker_box")
-        override val identifiers: Set<ResourceLocation> = setOf(
-            "minecraft:white_shulker_box", "minecraft:orange_shulker_box", "minecraft:magenta_shulker_box", "minecraft:light_blue_shulker_box",
-            "minecraft:yellow_shulker_box", "minecraft:lime_shulker_box", "minecraft:pink_shulker_box", "minecraft:gray_shulker_box",
-            "minecraft:silver_shulker_box", "minecraft:cyan_shulker_box", "minecraft:purple_shulker_box", "minecraft:blue_shulker_box",
-            "minecraft:brown_shulker_box", "minecraft:green_shulker_box", "minecraft:red_shulker_box", "minecraft:black_shulker_box",
-        ).toResourceLocationList()
-
 
         override fun build(connection: PlayConnection): ShulkerBoxBlockEntity {
             return ShulkerBoxBlockEntity(connection)

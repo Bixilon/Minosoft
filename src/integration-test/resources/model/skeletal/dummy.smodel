@@ -1,0 +1,78 @@
+{
+  "elements": {
+    "body": {
+      "from": [-8, 0, -8],
+      "to": [8, 16, 8],
+      "rotation": {
+        "value": [-180, 0, 270],
+        "origin": [0, 8, 0],
+        "rescale": false
+      },
+      "texture": "minosoft:dummy_texture",
+      "transform": "body",
+      "faces": {
+        "down": {"uv": [0, 0, 16, 16]},
+        "up": {"uv": [0, 0, 16, 16]},
+        "north": {"uv": [0, 0, 16, 16]},
+        "south": {"uv": [0, 0, 16, 16]},
+        "west": {"uv": [0, 0, 16, 16]},
+        "east": {"uv": [0, 0, 16, 16], "texture": "minosoft:second_texture"}
+      },
+      "children": {
+        "head1": {
+          "transform": "head",
+          "offset": [0, 5, 0],
+          "from": [-5, 0, -5],
+          "rotation": [0, 0, 180],
+          "to": [5, 10, 5],
+          "uv": [10, 0],
+          "faces": "all"
+        },
+        "head2": {
+          "transform": "head",
+          "offset": [0, 6, 0],
+          "from": [-5, 0, -5],
+          "to": [5, 10, 5],
+          "uv": [0, 0],
+          "faces": ["up", "down"]
+        }
+      }
+    }
+  },
+  "transforms": {
+    "body": {
+      "pivot": [0, 8, 0],
+      "children": {
+        "head": {
+          "pivot": [0, 16, 0]
+        }
+      }
+    }
+  },
+  "textures": {
+    "minosoft:dummy_texture": {
+      "resolution": [128, 128]
+    },
+    "minosoft:second_texture": {
+      "resolution": [1024, 1024]
+    }
+  },
+  "animations": {
+    "open": [
+      {
+        "transform": "head",
+        "keyframes": [
+          {
+            "type": "rotate",
+            "loop": "hold",
+            "interpolation": "sine",
+            "data": {
+              "0.0": [0, 0, 0],
+              "0.3": [-90, 0, 0]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

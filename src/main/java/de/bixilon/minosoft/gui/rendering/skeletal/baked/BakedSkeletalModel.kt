@@ -13,89 +13,36 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement.Companion.BLOCK_SIZE
-import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
-import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
-import java.util.*
+import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.mesh.AbstractSkeletalMesh
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 
-class BakedSkeletalModel(
-    val model: SkeletalModel,
-    val textures: Int2ObjectOpenHashMap<ShaderTexture>,
+data class BakedSkeletalModel(
+    val mesh: AbstractSkeletalMesh,
+    val transform: BakedSkeletalTransform,
+    val transformCount: Int,
+    val animations: Map<String, SkeletalAnimation>,
 ) {
-    lateinit var mesh: SkeletalMesh
-    var state: SkeletalModelStates = SkeletalModelStates.DECLARED
-        private set
+    private var state = SkeletalModelStates.DECLARED
 
-    private fun calculateOutlinerMapping(): Map<UUID, Int> {
-        val mapping: Object2IntOpenHashMap<UUID> = Object2IntOpenHashMap()
-        var offset = 0
-
-        fun addOutliner(child: Any, parentId: Int) {
-            if (child is UUID) {
-                mapping[child] = parentId
-                return
-            }
-            if (child !is SkeletalOutliner) {
-                throw IllegalArgumentException()
-            }
-            if (mapping.containsKey(child.uuid)) {
-                return
-            }
-            val id = offset++
-            mapping[child.uuid] = id
-
-            for (childChild in child.children) {
-                addOutliner(childChild, id)
-            }
-        }
-
-        for (outliner in this.model.outliner) {
-            addOutliner(outliner, -1)
-        }
-
-        return mapping
-    }
-
-    fun preload(context: RenderContext) {
-        check(state == SkeletalModelStates.DECLARED) { "Can not preload model in $state" }
-        val mesh = SkeletalMesh(context, 1000)
-
-        val outlinerMapping = calculateOutlinerMapping()
-
-        for (element in model.elements) {
-            element.bake(model, textures, outlinerMapping, mesh)
-        }
-
-        this.mesh = mesh
-        state = SkeletalModelStates.PRE_LOADED
-    }
 
     fun load() {
-        check(state == SkeletalModelStates.PRE_LOADED) { "Can not load model in state: $state" }
+        if (state != SkeletalModelStates.DECLARED) throw IllegalStateException("Can not load model!")
         mesh.load()
         state = SkeletalModelStates.LOADED
     }
 
     fun unload() {
-        check(state == SkeletalModelStates.LOADED) { "Can not unload model in state $state" }
+        if (state != SkeletalModelStates.LOADED) throw IllegalStateException("Can not unload model!")
         mesh.unload()
         state = SkeletalModelStates.UNLOADED
     }
 
-    companion object {
 
-        fun Vec3.fromBlockCoordinates(): Vec3 {
-            return Vec3(this.x.toBlockCoordinate(), this.y / BLOCK_SIZE, this.z.toBlockCoordinate())
-        }
+    fun createInstance(context: RenderContext): SkeletalInstance {
+        val transforms = this.transform.instance()
 
-        inline fun Float.toBlockCoordinate(): Float {
-            return this / BLOCK_SIZE + 0.5f
-        }
+        return SkeletalInstance(context, this, transforms)
     }
 }

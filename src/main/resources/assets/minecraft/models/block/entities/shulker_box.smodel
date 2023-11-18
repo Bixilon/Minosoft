@@ -1,0 +1,29 @@
+{
+  "elements": {
+    "base": {
+      "from": [-8, 0, -8],
+      "to": [8, 8, 8],
+      "texture": "minecraft:shulker",
+      "uv": [0, 28],
+      "faces": "all"
+    },
+    "lid": {
+      "transform": "lid",
+      "from": [-8, 4, -8],
+      "to": [8, 16, 8],
+      "texture": "minecraft:shulker",
+      "uv": [0, 0],
+      "faces": "all"
+    }
+  },
+  "transforms": {
+    "lid": {
+      "pivot": [0, 8, 0]
+    }
+  },
+  "textures": {
+    "minecraft:shulker": {
+      "resolution": [64, 64]
+    }
+  }
+}

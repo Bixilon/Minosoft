@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.tab.actions
 
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.enums.ValuesEnum.Companion.names
+
 enum class Actions(val action: AbstractAction) {
     INITIALIZE(InitializeAction),
     CHAT(ChatAction),
@@ -22,7 +25,9 @@ enum class Actions(val action: AbstractAction) {
     DISPLAY_NAME(DisplayNameAction),
     ;
 
-    companion object {
+    companion object : ValuesEnum<Actions> {
+        override val VALUES = values()
+        override val NAME_MAP = names()
         val VALUES_22W42A = arrayOf(INITIALIZE, CHAT, GAMEMODE, LISTED, LATENCY, DISPLAY_NAME)
     }
 

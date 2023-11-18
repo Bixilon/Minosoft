@@ -27,6 +27,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBloc
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.EnderChestBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ShulkerBoxBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.WoodenChestBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.LavaFluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumnBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterFluidBlock
@@ -78,6 +81,10 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     SnowBlock, SnowLayerBlock,
     FernBlock.DeadBush, FernBlock.Grass, FernBlock.Fern,
     DoublePlant.Sunflower, DoublePlant.Lilac, DoublePlant.TallGrass, DoublePlant.LargeFern, DoublePlant.RoseBush, DoublePlant.Peony, DoublePlant.UpperBlock,
+
+
+    WoodenChestBlock.Chest, WoodenChestBlock.TrappedChest, EnderChestBlock,
+    ShulkerBoxBlock, ShulkerBoxBlock.White, ShulkerBoxBlock.Orange, ShulkerBoxBlock.Magenta, ShulkerBoxBlock.LightBlue, ShulkerBoxBlock.Yellow, ShulkerBoxBlock.Lime, ShulkerBoxBlock.Pink, ShulkerBoxBlock.Gray, ShulkerBoxBlock.LightGray, ShulkerBoxBlock.Cyan, ShulkerBoxBlock.Purple, ShulkerBoxBlock.Blue, ShulkerBoxBlock.Brown, ShulkerBoxBlock.Green, ShulkerBoxBlock.Green, ShulkerBoxBlock.Red, ShulkerBoxBlock.Black,
 ) {
 
     fun build(name: ResourceLocation, registries: Registries, settings: BlockSettings): Block? {

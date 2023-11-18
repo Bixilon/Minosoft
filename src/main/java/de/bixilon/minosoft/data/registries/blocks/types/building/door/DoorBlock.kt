@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.*
 import de.bixilon.minosoft.data.registries.blocks.properties.list.MapPropertyList
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.BooleanProperty
@@ -36,6 +37,7 @@ import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateBuilde
 import de.bixilon.minosoft.data.registries.blocks.state.builder.BlockStateSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.properties.InteractBlockHandler
+import de.bixilon.minosoft.data.registries.blocks.types.properties.LightedBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
@@ -63,10 +65,11 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.versions.Version
-import java.util.*
 
-abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, ModelChooser, DoubleSizeBlock, InteractBlockHandler, OutlinedBlock, CollidableBlock, BlockStateBuilder {
+abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockWithItem<Item>, ModelChooser, DoubleSizeBlock, InteractBlockHandler, OutlinedBlock, CollidableBlock, BlockStateBuilder, LightedBlock {
     override val item: Item = this::item.inject(identifier)
+
+    override fun getLightProperties(blockState: BlockState) = TransparentProperty
 
     override fun register(version: Version, list: MapPropertyList) {
         super<Block>.register(version, list)
@@ -124,6 +127,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
         val isTop = isTop(state, connection)
         val other = connection.world[position + if (isTop) Directions.DOWN else Directions.UP]
         if (other !is PropertyBlockState || other.block !is DoorBlock) return null
+        if (isTop(other, connection) == isTop) return null  // impossible
 
 
         val top = if (isTop) state else other
@@ -163,7 +167,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
     }
 
     companion object {
-        val HALF = EnumProperty("half", Halves, EnumSet.of(Halves.UPPER, Halves.LOWER))
+        val HALF = EnumProperty("half", Halves, Halves.set(Halves.UPPER, Halves.LOWER))
         val HINGE = EnumProperty("hinge", Sides)
         val POWERED = BlockProperties.POWERED
         val FACING = BlockProperties.FACING_HORIZONTAL
@@ -193,6 +197,7 @@ abstract class DoorBlock(identifier: ResourceLocation, settings: BlockSettings) 
 
             val other = if (half == Halves.UPPER) neighbours[Directions.O_DOWN] else neighbours[Directions.O_UP]
             if (other !is PropertyBlockState || other.block !is DoorBlock) return null
+            if (other[HALF] == half) return null // double door is invalid
 
             val top = if (half == Halves.UPPER) state else other
             val bottom = if (half == Halves.UPPER) other else state

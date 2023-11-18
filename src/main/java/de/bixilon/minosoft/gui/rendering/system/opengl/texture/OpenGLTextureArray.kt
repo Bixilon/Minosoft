@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
@@ -32,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -39,10 +41,12 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL12.*
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
+import org.lwjgl.opengl.GL45.glGetTextureSubImage
 import java.nio.ByteBuffer
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -59,6 +63,10 @@ class OpenGLTextureArray(
 
     private val texturesByResolution = Array<MutableList<Texture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
     private val lastTextureId = IntArray(TEXTURE_RESOLUTION_ID_MAP.size)
+
+    init {
+        context.system.unsafeCast<OpenGLRenderSystem>().textureBindingIndex += TEXTURE_RESOLUTION_ID_MAP.size
+    }
 
     override fun get(resourceLocation: ResourceLocation): Texture? {
         return this.namedTextures[resourceLocation]
@@ -237,6 +245,19 @@ class OpenGLTextureArray(
             glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
             shader.setTexture("$name[$index]", index)
         }
+    }
+
+    override fun dump(texture: Texture): ByteBuffer {
+        val shaderId = texture.shaderId
+        val level = 0
+
+        val buffer = BufferUtils.createByteBuffer(texture.array.size * texture.array.size * 4)
+
+        // glBindTexture(GL_TEXTURE_2D_ARRAY, shaderId shr 28)
+
+        glGetTextureSubImage(textureIds[TEXTURE_RESOLUTION_ID_MAP.indexOf(texture.array.size)], 0, 0, 0, (shaderId shr 12) and 0xFFFFF, texture.array.size shr level, texture.array.size shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
+
+        return buffer
     }
 
 

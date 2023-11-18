@@ -12,7 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
+import de.bixilon.minosoft.data.entities.event.events.damage.DamageListener
+import de.bixilon.minosoft.data.entities.event.events.damage.GenericDamageEvent
 import de.bixilon.minosoft.data.registries.entities.damage.DamageType
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -25,6 +28,13 @@ class EntityDamageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val source: Int = buffer.readVarInt() - 1
     val direct: Int = buffer.readVarInt() - 1
     val position = buffer.readOptional { buffer.readVec3d() }
+
+
+    override fun handle(connection: PlayConnection) {
+        val entity = connection.world.entities[entityId] ?: return
+        if (entity !is DamageListener) return
+        entity.onDamage(GenericDamageEvent) // TODO
+    }
 
 
     override fun log(reducedLog: Boolean) {

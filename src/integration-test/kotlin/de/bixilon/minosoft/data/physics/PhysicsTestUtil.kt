@@ -19,6 +19,7 @@ import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.FloatUtil
 import de.bixilon.kutil.primitive.FloatUtil.matches
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.camera.ConnectionCamera
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -36,15 +37,14 @@ import de.bixilon.minosoft.util.KUtil.matches
 import de.bixilon.minosoft.util.KUtil.startInit
 import org.testng.Assert
 import java.util.*
-import kotlin.reflect.jvm.javaField
 
 object PhysicsTestUtil {
     const val MATCH_EXACTLY = true
     val VALUE_MARGIN = if (MATCH_EXACTLY) 0.0 else DoubleUtil.DEFAULT_MARGIN
 
-    private val PLAYER_ATTRIBUTES = LocalPlayerEntity::attributes.javaField!!
-    private val CONNECTION_PLAYER = PlayConnection::player.javaField!!
-    private val CONNECTION_CAMERA = PlayConnection::camera.javaField!!
+    private val PLAYER_ATTRIBUTES = LocalPlayerEntity::attributes.jvmField
+    private val CONNECTION_PLAYER = PlayConnection::player.jvmField
+    private val CONNECTION_CAMERA = PlayConnection::camera.jvmField
 
 
     fun createPlayer(connection: PlayConnection = createConnection(light = false)): LocalPlayerEntity {

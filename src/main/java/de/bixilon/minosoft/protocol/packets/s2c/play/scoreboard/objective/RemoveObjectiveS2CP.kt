@@ -31,13 +31,13 @@ class RemoveObjectiveS2CP(
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.objectives.remove(objective)
+        connection.scoreboard.objectives.remove(objective)
 
-        for ((position, objective) in connection.scoreboardManager.positions.toSynchronizedMap()) {
+        for ((position, objective) in connection.scoreboard.positions.toSynchronizedMap()) {
             if (objective.name != this.objective) {
                 continue
             }
-            connection.scoreboardManager.positions -= position
+            connection.scoreboard.positions -= position
             connection.events.fire(ObjectivePositionSetEvent(connection, position, null))
         }
     }

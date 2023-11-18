@@ -41,6 +41,12 @@ class TestNetwork : ClientNetwork {
         encrypted = true
     }
 
+    override fun setupCompression(threshold: Int) {
+        this.compressionThreshold = threshold
+    }
+
+    override fun detach() = Unit
+
     override fun pauseSending(pause: Boolean) = Unit
 
     override fun send(packet: C2SPacket) {

@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.createT
 import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.positions
+import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil.positions
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import org.testng.annotations.Test
 

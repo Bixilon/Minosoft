@@ -19,7 +19,7 @@ import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class RootNode : CommandNode {
+open class RootNode : CommandNode {
 
     constructor() : super(false, null)
     constructor(builder: CommandNodeBuilder) : super(builder.executable, null)

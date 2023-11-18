@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.key.manager
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
+import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -31,10 +32,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.set
 import it.unimi.dsi.fastutil.objects.Object2LongMap
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
-import java.util.*
 
 class InputManager(
     val context: RenderContext,
@@ -46,7 +45,7 @@ class InputManager(
     val interaction = InteractionManagerKeys(this, connection.camera.interactions)
 
 
-    private val pressed: EnumSet<KeyCodes> = KeyCodes.set()
+    private val pressed: BitEnumSet<KeyCodes> = KeyCodes.set()
     private val times: Object2LongMap<KeyCodes> = Object2LongOpenHashMap<KeyCodes>().apply { defaultReturnValue(-1L) }
 
     var mousePosition: Vec2d = Vec2d.EMPTY
@@ -77,6 +76,7 @@ class InputManager(
     }
 
     private fun onKey(code: KeyCodes, change: KeyChangeTypes) {
+        val handler = this.handler.handler
         this.handler.onKey(code, change)
 
         val pressed = when (change) {
@@ -94,8 +94,7 @@ class InputManager(
             this.pressed -= code
         }
 
-        val handler = this.handler.handler
-        bindings.onKey(code, pressed, millis)
+        bindings.onKey(code, pressed, handler, millis)
 
         if (pressed) {
             times[code] = millis

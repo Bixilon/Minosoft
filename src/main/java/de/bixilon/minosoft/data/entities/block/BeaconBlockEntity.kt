@@ -16,11 +16,10 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 
 class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
 
-    override fun setBlockActionData(data1: Byte, data2: Byte) {
+    override fun setBlockActionData(type: Int, data: Int) {
         // no data used, just recalculates the beam
     }
 

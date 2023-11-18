@@ -17,8 +17,8 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.commands.nodes.CommandNode
+import de.bixilon.minosoft.commands.nodes.ConnectionNode
 import de.bixilon.minosoft.commands.nodes.NamedNode
-import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.commands.nodes.builder.ArgumentNodes
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactories
@@ -34,17 +34,17 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val nodes = buffer.readArray { buffer.readCommandNode() }.build()
-    val rootNode = nodes[buffer.readVarInt()].nullCast<RootNode>()
+    val rootNode = nodes[buffer.readVarInt()].nullCast<ConnectionNode>()
 
 
     override fun handle(connection: PlayConnection) {
-        connection.rootNode = rootNode
+        connection.commands = rootNode
     }
 
-    fun Array<CommandNodeBuilder>.build(): Array<CommandNode> {
+    private fun Array<CommandNodeBuilder>.build(): Array<CommandNode> {
         val nodes: Array<CommandNode?> = arrayOfNulls(this.size)
         for ((index, builder) in this.withIndex()) {
-            val node = builder.build()
+            val node = builder.build(true)
             nodes[index] = node
         }
 

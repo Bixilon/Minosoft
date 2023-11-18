@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
@@ -29,7 +30,6 @@ import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import org.objenesis.ObjenesisStd
-import kotlin.reflect.jvm.javaField
 
 const val SECTIONS = 16
 
@@ -39,7 +39,7 @@ object LightTestingUtil {
     fun createConnection(): PlayConnection {
         val connection = ObjenesisStd().newInstance(PlayConnection::class.java)
 
-        Connection::events.javaField!!.forceSet(connection, EventMaster())
+        Connection::events.jvmField.forceSet(connection, EventMaster())
         return connection
     }
 

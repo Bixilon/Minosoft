@@ -41,9 +41,11 @@ data class EntityHoverEvent(
             } else {
                 data.unsafeCast()
             }
-            json["text"]?.let {
-                // 1.14.3.... lol
-                json = Jackson.MAPPER_LENIENT.readValue(it.unsafeCast<String>(), Jackson.JSON_MAP_TYPE)
+            json["text"]?.let {// minecraft (e.g. 1.14) is boxing the actual data in an nbt string
+                when (it) {
+                    is String -> json = Jackson.MAPPER_LENIENT.readValue(it, Jackson.JSON_MAP_TYPE)
+                    is Map<*, *> -> json = it.unsafeCast()
+                }
             }
             var type: ResourceLocation? = null
             json["type"]?.nullCast<String>()?.let {

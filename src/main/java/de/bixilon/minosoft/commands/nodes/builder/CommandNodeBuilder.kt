@@ -13,10 +13,7 @@
 
 package de.bixilon.minosoft.commands.nodes.builder
 
-import de.bixilon.minosoft.commands.nodes.ArgumentNode
-import de.bixilon.minosoft.commands.nodes.CommandNode
-import de.bixilon.minosoft.commands.nodes.LiteralNode
-import de.bixilon.minosoft.commands.nodes.RootNode
+import de.bixilon.minosoft.commands.nodes.*
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 
@@ -30,9 +27,9 @@ class CommandNodeBuilder {
     var executable = false
 
 
-    fun build(): CommandNode {
+    fun build(connection: Boolean): CommandNode {
         return when (type) {
-            ArgumentNodes.ROOT -> RootNode(this)
+            ArgumentNodes.ROOT -> if (connection) ConnectionNode(this) else RootNode(this)
             ArgumentNodes.LITERAL -> LiteralNode(this)
             ArgumentNodes.ARGUMENT -> ArgumentNode(this)
             else -> throw IllegalStateException("Type not set")

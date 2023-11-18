@@ -79,7 +79,7 @@ class TabListEntryElement(
 
     init {
         background = ColorElement(guiRenderer, size, RGBColor(120, 120, 120, 130))
-        DefaultThreadPool += { skinElement.texture = context.textures.skins.getSkin(uuid, item.properties, fetch = guiRenderer.connection.network.encrypted)?.texture }
+        DefaultThreadPool += { skinElement.texture = context.textures.skins.getSkin(uuid, item.properties, fetch = guiRenderer.connection.network.encrypted, async = false)?.texture }
         forceSilentApply()
     }
 
@@ -140,7 +140,7 @@ class TabListEntryElement(
     }
 
     override fun toString(): String {
-        return displayName.legacyText
+        return displayName.legacy
     }
 
     companion object {

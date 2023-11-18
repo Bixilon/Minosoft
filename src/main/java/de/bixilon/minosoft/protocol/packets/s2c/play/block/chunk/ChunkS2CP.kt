@@ -17,11 +17,11 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
@@ -103,43 +103,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
             // set position to expected read positions; the server sometimes sends a bunch of useless zeros (~ 190k), thanks @pokechu22
 
-            // block entities
-            when {
-                buffer.versionId < V_1_9_4 -> Unit
-                buffer.versionId < V_21W37A -> {
-                    val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
-                    val positionOffset = Vec3i.of(position, dimension.minSection, Vec3i.EMPTY)
-                    for (i in 0 until buffer.readVarInt()) {
-                        val nbt = buffer.readNBT().asJsonObject()
-                        val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
-                        val id = (nbt["id"]?.toResourceLocation() ?: continue).fixBlockEntity()
-                        val type = buffer.connection.registries.blockEntityType[id] ?: continue
-
-                        val entity = type.build(buffer.connection)
-                        entity.updateNBT(nbt)
-                        blockEntities[position] = entity
-                    }
-                    this.prototype.blockEntities = blockEntities
-                }
-
-                else -> {
-                    val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
-
-                    for (i in 0 until buffer.readVarInt()) {
-                        val xz = buffer.readUnsignedByte()
-                        val y = buffer.readShort()
-                        val type = buffer.connection.registries.blockEntityType.getOrNull(buffer.readVarInt())
-                        val nbt = buffer.readNBT()?.asJsonObject()
-
-                        val entity = type?.build(buffer.connection) ?: continue
-                        if (nbt != null) {
-                            entity.updateNBT(nbt)
-                        }
-                        blockEntities[Vec3i(xz shr 4, y, xz and 0x0F)] = entity
-                    }
-                    this.prototype.blockEntities = blockEntities
-                }
-            }
+            this.prototype.blockEntities = buffer.readBlockEntities(dimension)
 
             if (buffer.versionId >= V_21W37A) {
                 if (StaticConfiguration.IGNORE_SERVER_LIGHT) {
@@ -149,6 +113,42 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 }
             }
         }
+    }
+
+    private fun PlayInByteBuffer.readBlockEntities(dimension: DimensionProperties): Map<Vec3i, JsonObject>? {
+        if (versionId < V_1_9_4) return null
+        val count = readVarInt()
+        if (count <= 0) return null
+        val entities: MutableMap<Vec3i, JsonObject> = hashMapOf()
+
+        when {
+            versionId < V_21W37A -> {
+                val positionOffset = Vec3i.of(position, dimension.minSection, Vec3i.EMPTY)
+                for (i in 0 until count) {
+                    val nbt = readNBT()?.asJsonObject() ?: continue
+                    val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
+                    val id = (nbt["id"]?.toResourceLocation() ?: continue).fixBlockEntity()
+                    val type = connection.registries.blockEntityType[id] ?: continue
+
+                    entities[position] = nbt
+                }
+            }
+
+            else -> {
+                for (i in 0 until count) {
+                    val xz = readUnsignedByte()
+                    val y = readShort()
+                    val type = connection.registries.blockEntityType.getOrNull(readVarInt())
+                    val nbt = readNBT()?.asJsonObject() ?: continue
+                    if (type == null) continue
+
+                    entities[Vec3i(xz shr 4, y, xz and 0x0F)] = nbt
+                }
+            }
+        }
+        if (entities.isEmpty()) return null
+
+        return entities
     }
 
 

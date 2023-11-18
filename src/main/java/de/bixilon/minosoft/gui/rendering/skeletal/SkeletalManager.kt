@@ -13,53 +13,37 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal
 
+import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.shader.LightmapSkeletalShader
+import de.bixilon.minosoft.gui.rendering.skeletal.shader.SkeletalShader
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 
 class SkeletalManager(
     val context: RenderContext,
 ) {
-    private val uniformBuffer = context.system.createFloatUniformBuffer(memAllocFloat(TRANSFORMS * MAT4_SIZE))
-    val shader = context.system.createShader(minosoft("skeletal")) { SkeletalShader(it, uniformBuffer) }
+    private val cache: Array<Mat4> = Array(MAX_TRANSFORMS) { Mat4() } // reusing matrices
+    val buffer = context.system.createFloatUniformBuffer(memAllocFloat(MAX_TRANSFORMS * Mat4.length))
+    val shader = context.system.createShader(minosoft("skeletal/normal")) { SkeletalShader(it, buffer) }
+    val lightmapShader = context.system.createShader(minosoft("skeletal/lightmap")) { LightmapSkeletalShader(it, buffer) }
 
     fun init() {
-        uniformBuffer.init()
+        buffer.init()
     }
 
     fun postInit() {
-        shader.native.defines["TRANSFORMS"] = TRANSFORMS
         shader.load()
-        shader.light = 0xFF
+        lightmapShader.load()
     }
 
-    private fun prepareDraw() {
-        if (context.system.shader == shader.native) {
-            // probably already prepared
-            return
-        }
-        context.system.reset()
-        shader.use()
+    fun upload(instance: SkeletalInstance, matrix: Mat4) {
+        instance.transform.pack(buffer.buffer, matrix, cache)
+        buffer.upload(0, instance.model.transformCount * Mat4.length)
     }
 
-    fun draw(instance: SkeletalInstance, light: Int) {
-        prepareDraw()
-        shader.light = light
-        val transforms = instance.calculateTransforms()
-        var stride = 0
-        for (transform in transforms) {
-            for (float in transform.array) {
-                uniformBuffer.buffer.put(stride++, float)
-            }
-        }
-        uniformBuffer.upload(0 until (transforms.size * MAT4_SIZE))
-
-        instance.model.mesh.draw()
-    }
-
-    private companion object {
-        private const val TRANSFORMS = 32
-        private const val MAT4_SIZE = 4 * 4
+    companion object {
+        const val MAX_TRANSFORMS = 64
     }
 }

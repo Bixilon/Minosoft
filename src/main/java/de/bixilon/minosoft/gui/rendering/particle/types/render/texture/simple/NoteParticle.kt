@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
-import de.bixilon.kotlinglm.GLM
+import de.bixilon.kotlinglm.GLM.PIf
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.math.Trigonometry.sin
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import kotlin.math.sin
 
 class NoteParticle(connection: PlayConnection, position: Vec3d, colorModifier: Float, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
 
@@ -33,7 +33,7 @@ class NoteParticle(connection: PlayConnection, position: Vec3d, colorModifier: F
         this.velocity.y += 0.2
 
         fun getColor(offset: Float): Float {
-            return maxOf(0.0f, sin((colorModifier + offset) * 2 * GLM.PIf) * 0.65f + 0.35f)
+            return maxOf(0.0f, sin((colorModifier + offset) * 2.0f * PIf) * 0.65f + 0.35f)
         }
 
         this.color = RGBColor(

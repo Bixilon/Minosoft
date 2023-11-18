@@ -20,8 +20,10 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextOffset
@@ -29,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
 
 interface ChatComponentRenderer<T : ChatComponent> {
 
@@ -52,22 +54,34 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
         }
 
-        fun render3dFlat(context: RenderContext, position: Vec3, properties: TextRenderProperties, rotation: Vec3, maxSize: Vec2, mesh: SingleChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
+        fun render3d(context: RenderContext, position: Vec3, properties: TextRenderProperties, rotation: Vec3, maxSize: Vec2, mesh: ChunkMesh, text: ChatComponent, light: Int): TextRenderInfo {
             val matrix = Mat4()
                 .translateAssign(position)
-                .rotateDegreesAssign(rotation)
+                .rotateRadAssign(rotation)
                 .translateAssign(Vec3(0, 0, -1))
 
             val primitives = calculatePrimitiveCount(text)
-            mesh.data.ensureSize(primitives * mesh.order.size * SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
+            mesh.ensureSize(primitives * mesh.order.size * ChunkMesh.ChunkMeshStruct.FLOATS_PER_VERTEX)
 
             val consumer = WorldGUIConsumer(mesh, matrix, light)
+            return render3d(context, properties, maxSize, consumer, text, null)
+        }
+
+        fun render3d(context: RenderContext, properties: TextRenderProperties, maxSize: Vec2, mesh: GUIVertexConsumer, text: ChatComponent, background: RGBColor? = RenderConstants.TEXT_BACKGROUND_COLOR): TextRenderInfo {
+            val primitives = calculatePrimitiveCount(text)
+            mesh.ensureSize(primitives)
 
             val info = TextRenderInfo(maxSize)
             render(TextOffset(), context.font, properties, info, null, null, text)
             info.rewind()
+            if (background != null) {
+                mesh.addQuad(Vec2(-1, 0), info.size + Vec2(1, 0), background, null)
+            }
+            val size = info.size.x
             info.size.x = maxSize.x // this allows font aligning
-            render(TextOffset(), context.font, properties, info, consumer, null, text)
+
+            render(TextOffset(), context.font, properties, info, mesh, null, text)
+            info.size.x = size
 
             return info
         }

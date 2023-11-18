@@ -12,8 +12,11 @@
  */
 package de.bixilon.minosoft.data.entities.entities.decoration.armorstand
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.bit.BitByte.isBitMask
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -23,17 +26,32 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ArmorStand(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
+    private var flags by data(FLAGS_DATA, 0x00)
+
+    private fun updateFlags() {
+        this.dimensions = when {
+            isMarker -> DIMENSIONS_MARKER
+            isSmall -> DIMENSIONS_SMALL
+            else -> DIMENSIONS
+        }
+        this.defaultAABB = createDefaultAABB()
+    }
+
 
     private fun getArmorStandFlag(bitMask: Int): Boolean {
-        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
+        return flags.isBitMask(bitMask)
     }
 
     override val canRaycast: Boolean get() = super.canRaycast && !isMarker
     override val hitboxColor: RGBColor? get() = if (isMarker) null else super.hitboxColor
+    override var defaultAABB: AABB = AABB.EMPTY
+    override var dimensions: Vec2 = DIMENSIONS
+        private set
 
     @get:SynchronizedEntityData
     val isSmall: Boolean
@@ -52,28 +70,33 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
         get() = getArmorStandFlag(0x10)
 
     @get:SynchronizedEntityData
-    val headRotation: Vec3
-        get() = data.get(HEAD_ROTATION_DATA, Vec3(0.0f, 0.0f, 0.0f))
+    val headRotation: Vec3 by data(HEAD_ROTATION_DATA, HEAD_ROTATION)
 
     @get:SynchronizedEntityData
-    val bodyRotation: Vec3
-        get() = data.get(BODY_ROTATION_DATA, Vec3(0.0f, 0.0f, 0.0f))
+    val bodyRotation: Vec3 by data(BODY_ROTATION_DATA, BODY_ROTATION)
 
     @get:SynchronizedEntityData
-    val leftArmRotation: Vec3
-        get() = data.get(LEFT_ARM_ROTATION_DATA, Vec3(-10.0f, 0.0f, -10.0f))
+    val leftArmRotation: Vec3 by data(LEFT_ARM_ROTATION_DATA, LEFT_ARM_ROTATION)
 
     @get:SynchronizedEntityData
-    val rightArmRotation: Vec3
-        get() = data.get(RIGHT_ARM_ROTATION_DATA, Vec3(-15.0f, 0.0f, 10.0f))
+    val rightArmRotation: Vec3 by data(RIGHT_ARM_ROTATION_DATA, RIGHT_ARM_ROTATION)
 
     @get:SynchronizedEntityData
-    val leftLegRotation: Vec3
-        get() = data.get(LEFT_LEG_ROTATION_DATA, Vec3(-1.0f, 0.0f, -1.0f))
+    val leftLegRotation: Vec3 by data(LEFT_LEG_ROTATION_DATA, LEFT_LEG_ROTATION)
 
     @get:SynchronizedEntityData
-    val rightLegRotation: Vec3
-        get() = data.get(RIGHT_LEG_ROTATION_DATA, Vec3(1.0f, 0.0f, 1.0f))
+    val rightLegRotation: Vec3 by data(RIGHT_LEG_ROTATION_DATA, RIGHT_LEG_ROTATION)
+
+
+    override fun tick() {
+        if (isMarker && age % 20 != 0) return // tick them really slow to improve performance
+        super.tick()
+    }
+
+    override fun init() {
+        this::flags.observe(this, true) { updateFlags() }
+        super.init()
+    }
 
 
     companion object : EntityFactory<ArmorStand> {
@@ -85,6 +108,17 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
         private val RIGHT_ARM_ROTATION_DATA = EntityDataField("ARMOR_STAND_RIGHT_ARM_ROTATION")
         private val LEFT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_LEG_ROTATION", "ARMOR_STAND_LEFT_LAG_ROTATION")
         private val RIGHT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_RIGHT_LEG_ROTATION", "ARMOR_STAND_RIGHT_LAG_ROTATION")
+
+        private val DIMENSIONS = Vec2(0.5f, 1.975f)
+        private val DIMENSIONS_MARKER = Vec2(0.0f)
+        private val DIMENSIONS_SMALL = DIMENSIONS * 0.5f
+
+        private val HEAD_ROTATION = Vec3(0.0f, 0.0f, 0.0f)
+        private val BODY_ROTATION = Vec3(0.0f, 0.0f, 0.0f)
+        private val LEFT_ARM_ROTATION = Vec3(-10.0f, 0.0f, -10.0f)
+        private val RIGHT_ARM_ROTATION = Vec3(-15.0f, 0.0f, 10.0f)
+        private val LEFT_LEG_ROTATION = Vec3(-1.0f, 0.0f, -1.0f)
+        private val RIGHT_LEG_ROTATION = Vec3(1.0f, 0.0f, 1.0f)
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ArmorStand {
             return ArmorStand(connection, entityType, data, position, rotation)

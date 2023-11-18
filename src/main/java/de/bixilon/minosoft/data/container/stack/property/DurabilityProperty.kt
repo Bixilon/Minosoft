@@ -59,7 +59,7 @@ class DurabilityProperty(
         return !_unbreakable && (stack.item.item is DurableItem && _durability == stack.item.item.maxDurability)
     }
 
-    override fun updateNbt(nbt: MutableJsonObject): Boolean {
+    fun updateNbt(nbt: MutableJsonObject): Boolean {
         nbt.remove(UNBREAKABLE_TAG)?.toBoolean()?.let { this._unbreakable = it }
         nbt.remove(DAMAGE_TAG)?.toInt()?.let { if (stack.item.item is DurableItem) this._durability = stack.item.item.maxDurability - it }
 

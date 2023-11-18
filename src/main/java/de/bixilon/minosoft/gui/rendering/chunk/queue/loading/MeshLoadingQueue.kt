@@ -18,7 +18,7 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.QueuePosition
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.maxBusyTime
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -26,7 +26,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 class MeshLoadingQueue(
     private val renderer: ChunkRenderer,
 ) {
-    private val meshes: MutableList<ChunkMesh> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
+    private val meshes: MutableList<ChunkMeshes> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
     private val positions: MutableSet<QueuePosition> = HashSet()
     private val lock = SimpleLock()
 
@@ -44,7 +44,7 @@ class MeshLoadingQueue(
         val start = TimeUtil.millis()
         val maxTime = renderer.maxBusyTime // If the player is still, then we can load more chunks (to not cause lags)
 
-        var meshes: Int2ObjectOpenHashMap<ChunkMesh> = unsafeNull()
+        var meshes: Int2ObjectOpenHashMap<ChunkMeshes> = unsafeNull()
         var position: ChunkPosition? = null
 
         renderer.loaded.lock()
@@ -81,7 +81,7 @@ class MeshLoadingQueue(
     }
 
 
-    fun queue(mesh: ChunkMesh) {
+    fun queue(mesh: ChunkMeshes) {
         lock()
         if (!this.positions.add(QueuePosition(mesh))) {
             // already inside, remove

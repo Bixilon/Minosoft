@@ -44,6 +44,8 @@ interface RenderSystem {
     fun init()
     fun destroy()
 
+    fun reset() = set(RenderSettings.DEFAULT)
+
     fun reset(
         depthTest: Boolean = RenderSettings.DEFAULT.depthTest,
         blending: Boolean = RenderSettings.DEFAULT.blending,
@@ -59,8 +61,16 @@ interface RenderSystem {
         polygonOffsetFactor: Float = RenderSettings.DEFAULT.polygonOffsetFactor,
         polygonOffsetUnit: Float = RenderSettings.DEFAULT.polygonOffsetUnit,
     ) {
-        val settings = RenderSettings(depthTest, blending, faceCulling, polygonOffset, depthMask, sourceRGB, destinationRGB, sourceAlpha, destinationAlpha, depth, clearColor, polygonOffsetFactor, polygonOffsetUnit)
-        this.set(settings)
+        setBlendFunction(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha)
+        this[RenderingCapabilities.DEPTH_TEST] = depthTest
+        this[RenderingCapabilities.BLENDING] = blending
+        this[RenderingCapabilities.FACE_CULLING] = faceCulling
+        this[RenderingCapabilities.POLYGON_OFFSET] = polygonOffset
+        this.depth = depth
+        this.depthMask = depthMask
+        this.clearColor = clearColor
+        // shader = null
+        polygonOffset(polygonOffsetFactor, polygonOffsetUnit)
     }
 
     fun set(settings: RenderSettings) {
@@ -72,7 +82,7 @@ interface RenderSystem {
         this.depth = settings.depth
         this.depthMask = settings.depthMask
         this.clearColor = settings.clearColor
-        shader = null
+        // shader = null
         polygonOffset(settings.polygonOffsetFactor, settings.polygonOffsetUnit)
     }
 
@@ -102,7 +112,9 @@ interface RenderSystem {
     var clearColor: RGBColor
 
     var quadType: PrimitiveTypes
-    var quadOrder: IntArray
+
+    var quadOrder: RenderOrder
+    @Deprecated("legacy") var legacyQuadOrder: RenderOrder
 
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 

@@ -18,36 +18,52 @@ import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.ChestTypes
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
+import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.WoodenChestBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.chunk.entities.BlockEntityRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.DoubleChestRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.SingleChestRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.RenderedBlockEntity
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.ChestRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.DoubleChestRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.entities.renderer.storage.chest.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
+open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection), RenderedBlockEntity<ChestRenderer> {
+    override var renderer: ChestRenderer? = null
 
-    override fun createRenderer(context: RenderContext, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*>? {
-        val type: ChestTypes = blockState[BlockProperties.CHEST_TYPE]
-        if (type == ChestTypes.SINGLE) {
-            return SingleChestRenderer(this, context, blockState, blockPosition, context.models.entities.skeletal[getSingleModel()] ?: return null, light)
+    override fun createRenderer(context: RenderContext, state: BlockState, position: Vec3i, light: Int): ChestRenderer? {
+        if (state.block !is WoodenChestBlock<*>) return null
+        if (state !is PropertyBlockState) return null
+        val type = state.properties[BlockProperties.CHEST_TYPE]
+        if (type == ChestTypes.SINGLE || type == null) { // TODO: type null: check neighbour blocks (<1.13)
+            return SingleChestRenderer(this, context, state, position, context.models.skeletal[getSingleModel()] ?: return null, light)
         }
 
         if (type == ChestTypes.LEFT) {
             // only left chest will be rendered (the model is the double chest), reduces drawing overhead
-            return DoubleChestRenderer(this, context, blockState, blockPosition, context.models.entities.skeletal[getDoubleModel()] ?: return null, light)
+            return DoubleChestRenderer(this, context, state, position, context.models.skeletal[getDoubleModel()] ?: return null, light)
         }
 
         return null
     }
 
     protected open fun getSingleModel(): ResourceLocation {
-        return SingleChestRenderer.NormalChest.MODEL
+        return SingleChestRenderer.NormalChest.NAME
     }
 
     protected open fun getDoubleModel(): ResourceLocation {
-        return DoubleChestRenderer.NormalChest.MODEL
+        return DoubleChestRenderer.NormalChest.NAME
+    }
+
+    override fun onOpen() {
+        super.onOpen()
+        renderer?.open()
+    }
+
+    override fun onClose() {
+        super.onClose()
+        renderer?.close()
     }
 
     companion object : BlockEntityFactory<ChestBlockEntity> {

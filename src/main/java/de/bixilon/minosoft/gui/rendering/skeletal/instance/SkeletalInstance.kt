@@ -13,136 +13,79 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
-import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.renderer.drawable.DeltaDrawable
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalModelStates
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
-import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import java.util.*
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.reset
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateRadAssign
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
 
 class SkeletalInstance(
     val context: RenderContext,
     val model: BakedSkeletalModel,
-    position: Vec3 = Vec3.EMPTY,
-    transform: Mat4 = Mat4(),
+    val transform: TransformInstance,
 ) {
-    private var baseTransform = Mat4().translateAssign(position) * transform
-    private var previousBaseTransform = baseTransform
-    private var animations: MutableList<SkeletalAnimationInstance> = mutableListOf()
-    private var transforms: List<Mat4> = emptyList()
-
-    private var lastDraw = -1L
+    val animation = AnimationManager(this)
+    var matrix = Mat4()
 
 
-    var light: Int = 0xFF
-
-    fun getAnimation(name: String): SkeletalAnimation? {
-        for (animation in model.model.animations) {
-            if (animation.name != name) {
-                continue
-            }
-            return animation
-        }
-        return null
+    fun draw(light: Int) {
+        context.system.reset(faceCulling = false)
+        val shader = context.skeletal.lightmapShader
+        shader.use()
+        shader.light = light
+        draw(shader)
     }
 
-    fun playAnimation(animation: SkeletalAnimation) {
-        val instance = SkeletalAnimationInstance(animation)
-        animations.removeAll { it.animation == animation }
-        animations += instance
+    fun draw(tint: RGBColor) {
+        context.system.reset(faceCulling = false)
+        val shader = context.skeletal.shader
+        shader.use()
+        shader.tint = tint
+        draw(shader)
     }
 
-    fun playAnimation(name: String) {
-        playAnimation(getAnimation(name) ?: throw IllegalArgumentException("Can not find animation $name"))
+    fun draw(shader: Shader) {
+        shader.use()
+
+        context.skeletal.upload(this, matrix)
+        model.mesh.draw()
     }
 
-    fun clearAnimation() {
-        animations.clear()
+    fun update(time: Long = millis()) {
+        transform.reset()
+        animation.draw(time)
     }
 
-    fun draw() {
-        context.skeletal.draw(this, light)
-    }
+    fun update(position: Vec3, rotation: Vec3, pivot: Vec3 = Vec3.EMPTY_INSTANCE, matrix: Mat4? = null) {
+        this.matrix.reset()
+        this.matrix
+            .translateAssign(position)
+            .translateAssign(pivot)
+            .rotateRadAssign(rotation)
+            .translateAssign(-pivot)
 
-    fun updatePosition(position: Vec3d, rotation: EntityRotation) {
-        val matrix = Mat4()
-            .translateAssign(Vec3(position - context.camera.offset.offset))
-            .rotateAssign((EntityRotation.HALF_CIRCLE_DEGREE - rotation.yaw).rad, Y_ROTATION_VECTOR)
-            .translateAssign(CENTER_OFFSET) // move to bottom center
-
-        if (baseTransform != matrix) {
-            baseTransform = matrix
+        if (matrix != null) {
+            this.matrix = matrix * this.matrix
         }
     }
 
-    fun calculateTransforms(base: Mat4 = this.baseTransform): List<Mat4> {
-        val time = millis()
-        if (animations.isNotEmpty()) {
-            val iterator = animations.iterator()
-            for (animation in iterator) {
-                animation.draw(time)
-                if (animation.canClear()) {
-                    iterator.remove()
-                }
-            }
-        }
-        if (animations.isEmpty()) {
-            if (this.transforms.isNotEmpty() && base === previousBaseTransform) {
-                return this.transforms
-            }
-        }
-
-        val delta = time - lastDraw
-        for (instance in animations) {
-            val animation = instance.animation
-            if (animation is DeltaDrawable) {
-                animation.draw(delta)
-            }
-        }
-        val transforms: MutableList<Mat4> = mutableListOf()
-        for (outliner in model.model.outliner) {
-            calculateTransform(base, animations, outliner, transforms)
-        }
-        this.transforms = transforms
-        this.previousBaseTransform = base
-        return transforms
+    fun update(rotation: Vec3, matrix: Mat4? = null) {
+        update(Vec3.EMPTY_INSTANCE, rotation, matrix = matrix)
     }
 
-    private fun calculateTransform(transform: Mat4, animations: List<SkeletalAnimationInstance>, outliner: Any /* UUID or SkeletalOutliner */, transforms: MutableList<Mat4>) {
-        if (outliner is UUID) {
-            return
-        }
-        check(outliner is SkeletalOutliner)
-        val skeletalTransform = Mat4(transform)
-
-        for (animation in this.animations) {
-            skeletalTransform *= animation.animation.calculateTransform(outliner, animation.time)
-        }
-
-        transforms += skeletalTransform
-
-        for (child in outliner.children) {
-            calculateTransform(skeletalTransform, animations, child, transforms)
-        }
+    fun update(position: Vec3i, rotation: Vec3) {
+        val position = Vec3(position - context.camera.offset.offset)
+        position.x += 0.5f; position.z += 0.5f // models origin is the center of block origin
+        update(position, rotation, BLOCK_PIVOT)
     }
 
-    fun unload() {
-        val model = model
-        if (model.state == SkeletalModelStates.LOADED) {
-            model.unload()
-        }
-    }
-
-    companion object {
-        private val CENTER_OFFSET = Vec3(-0.5, 0.0f, -0.5)
-        private val Y_ROTATION_VECTOR = Vec3(0, 1, 0)
+    private companion object {
+        val BLOCK_PIVOT = Vec3(0.0f, 0.5f, 0.0f)
     }
 }

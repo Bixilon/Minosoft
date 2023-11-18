@@ -19,7 +19,7 @@ import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.InvalidAssetException
-import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsVersion.packFormat
+import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.packFormat
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
 import de.bixilon.minosoft.assets.util.FileAssetsTypes

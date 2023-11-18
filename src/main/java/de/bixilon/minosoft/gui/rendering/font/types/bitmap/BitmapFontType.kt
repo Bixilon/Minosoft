@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties.CHAR_BASE_HEIGHT
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
@@ -38,6 +39,7 @@ import java.util.stream.IntStream
 class BitmapFontType(
     val chars: Int2ObjectOpenHashMap<CodePointRenderer>,
 ) : PostInitFontType {
+    private var postInit = false
 
     init {
         chars.trim()
@@ -48,10 +50,12 @@ class BitmapFontType(
     }
 
     override fun postInit(latch: AbstractLatch) {
+        if (postInit) return
         for (char in chars.values) {
             if (char !is BitmapCodeRenderer) continue
             char.updateArray()
         }
+        postInit = true
     }
 
 
@@ -62,7 +66,7 @@ class BitmapFontType(
         override fun build(context: RenderContext, manager: FontManager, data: JsonObject): BitmapFontType? {
             val file = data["file"]?.toString()?.let { it.toResourceLocation().texture() } ?: throw IllegalArgumentException("Missing file!")
             val height = data["height"]?.toInt() ?: 8
-            val ascent = data["ascent"]?.toInt() ?: 8
+            val ascent = data["ascent"]?.toInt() ?: 7
             val chars = data["chars"]?.listCast<String>() ?: throw IllegalArgumentException("Missing chars!")
             return load(file, height, ascent, chars, context)
         }
@@ -114,9 +118,10 @@ class BitmapFontType(
                 uvEnd.y -= RenderConstants.UV_ADD // this workarounds some precision loss
             }
 
-            val scaledWidth = width / (height.toFloat() / FontProperties.CHAR_BASE_HEIGHT)
+            val scale = if (height < CHAR_BASE_HEIGHT) 1 else height / CHAR_BASE_HEIGHT
+            val scaledWidth = width / scale
 
-            return BitmapCodeRenderer(texture, uvStart, uvEnd, scaledWidth, ascent)
+            return BitmapCodeRenderer(texture, uvStart, uvEnd, scaledWidth.toFloat(), (height / scale).toFloat(), ascent.toFloat())
         }
 
         private fun load(texture: Texture, height: Int, ascent: Int, chars: Array<IntStream>): BitmapFontType? {

@@ -98,6 +98,8 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.recipes.RecipesS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.recipes.UnlockRecipesS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.ObjectivePositionS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.ObjectiveS2CF
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.PutScoreboardScoreS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.RemoveScoreboardScoreS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.ScoreboardScoreS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams.TeamsS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.sign.SignEditorS2CP
@@ -110,6 +112,8 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.tab.LegacyTabListS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListRemoveS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListTextS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.tick.TickRateS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.tick.TickStepS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.world.*
 import de.bixilon.minosoft.protocol.packets.s2c.status.PongS2CP
@@ -369,6 +373,9 @@ object DefaultPackets {
 
             registerPlay("objective", ObjectiveS2CF, threadSafe = false)
             registerPlay("scoreboard_score", ScoreboardScoreS2CF, threadSafe = false)
+            registerPlay("put_scoreboard_score", ::PutScoreboardScoreS2CP, threadSafe = false)
+            registerPlay("remove_scoreboard_score", ::RemoveScoreboardScoreS2CP, threadSafe = false)
+            registerPlay("scoreboard_score", ScoreboardScoreS2CF, threadSafe = false)
             registerPlay("teams", TeamsS2CF, threadSafe = false)
             registerPlay("objective_position", ::ObjectivePositionS2CP, threadSafe = false)
 
@@ -384,6 +391,9 @@ object DefaultPackets {
             registerPlay("tab_list_remove", ::TabListRemoveS2CP, threadSafe = false)
             registerPlay("tab_list", ::TabListS2CP, threadSafe = false)
             registerPlay("tab_list_text", ::TabListTextS2CP, threadSafe = false)
+
+            registerPlay("tick_rate", ::TickRateS2CP, threadSafe = false)
+            registerPlay("tick_step", ::TickStepS2CP, threadSafe = false)
 
             registerPlay("clear_title", ClearTitleS2CF, threadSafe = false)
             registerPlay("hotbar_text", ::HotbarTextS2CP, threadSafe = false)

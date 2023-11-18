@@ -15,16 +15,21 @@ package de.bixilon.minosoft.data.entities.entities
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRenderInfo
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.properties.EntityAttachment
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -32,16 +37,13 @@ import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.entity.models.DummyModel
-import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
+import de.bixilon.minosoft.gui.rendering.entities.renderer.EntityRenderer
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Initializable
 import java.util.*
-import kotlin.reflect.jvm.javaField
 
 abstract class Entity(
     val connection: PlayConnection,
@@ -50,6 +52,7 @@ abstract class Entity(
     private var initialPosition: Vec3d,
     private var initialRotation: EntityRotation,
 ) : Initializable, EntityAttachable {
+    private var flags: Int by data(FLAGS_DATA, 0x00)
     protected val random = Random()
     val id: Int?
         get() = connection.world.entities.getId(this)
@@ -64,7 +67,7 @@ abstract class Entity(
     open val clientControlled: Boolean get() = primaryPassenger is LocalPlayerEntity
 
     open val dimensions = Vec2(type.width, type.height)
-    open val defaultAABB: AABB = createDefaultAABB()
+    open val defaultAABB: AABB = AABB.EMPTY
 
     open val mountHeightOffset: Double get() = dimensions.y * 0.75
     open val heightOffset: Double get() = 0.0
@@ -85,14 +88,16 @@ abstract class Entity(
 
     var lastTickTime = -1L
 
-    open var model: EntityModel<*>? = null
+    open var renderer: EntityRenderer<*>? = null
 
     open val physics: EntityPhysics<*> = unsafeNull()
 
-    open val canRaycast: Boolean get() = false
+    open val canRaycast: Boolean get() = true
 
     var age = 0
         private set
+
+    open val name: ChatComponent? get() = customName
 
 
     open fun forceTeleport(position: Vec3d) {
@@ -112,7 +117,7 @@ abstract class Entity(
     }
 
     private fun getEntityFlag(bitMask: Int): Boolean {
-        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
+        return flags.isBitMask(bitMask)
     }
 
     private fun setEntityFlag(mask: Int, value: Boolean) {
@@ -121,7 +126,7 @@ abstract class Entity(
         if (value) {
             next = next or mask
         }
-        data[FLAGS_DATA] = next
+        flags = next
     }
 
     @get:SynchronizedEntityData
@@ -156,24 +161,23 @@ abstract class Entity(
     val airSupply: Int
         get() = data.get(AIR_SUPPLY_DATA, 300)
 
-    val customName: ChatComponent?
-        get() = data.get(CUSTOM_NAME_DATA, null)
+    @get:SynchronizedEntityData
+    val customName: ChatComponent? by data(CUSTOM_NAME_DATA, null) { ChatComponent.of(it) }
 
     @get:SynchronizedEntityData
-    val isCustomNameVisible: Boolean
-        get() = data.get(CUSTOM_NAME_VISIBLE_DATA, false)
+    open val isNameVisible: Boolean by data(CUSTOM_NAME_VISIBLE_DATA, false) { it.toBoolean() }
 
     @get:SynchronizedEntityData
     val isSilent: Boolean
         get() = data.get(SILENT_DATA, false)
 
-    @get:SynchronizedEntityData
-    open val hasGravity: Boolean
-        get() = !data.get(NO_GRAVITY_DATA, false)
+    private var _hasNoGravity by data(NO_GRAVITY_DATA, false) { it.toBoolean() }
 
     @get:SynchronizedEntityData
-    val ticksFrozen: Int
-        get() = data.get(TICKS_FROZEN_DATA, 0)
+    open val hasGravity: Boolean get() = !_hasNoGravity
+
+    @get:SynchronizedEntityData
+    val ticksFrozen: Int by data(TICKS_FROZEN_DATA, 0)
 
     open val hitboxColor: RGBColor?
         get() = ChatColors.WHITE
@@ -229,13 +233,7 @@ abstract class Entity(
 
     open fun onAttack(attacker: Entity) = true
 
-    open fun createModel(renderer: EntityRenderer): EntityModel<*>? {
-        return DummyModel(renderer, this).apply { this@Entity.model = this }
-    }
-
-    open fun createPhysics(): EntityPhysics<*> {
-        return EntityPhysics(this)
-    }
+    open fun createPhysics(): EntityPhysics<*> = EntityPhysics(this)
 
     open fun physics(): EntityPhysics<*> = physics.unsafeCast()
 
@@ -243,11 +241,12 @@ abstract class Entity(
 
 
     override fun init() {
-        Entity::class.java.getDeclaredField("physics").forceSet(this, createPhysics())
+        DEFAULT_AABB.forceSet(this, createDefaultAABB())
+        PHYSICS.forceSet(this, createPhysics())
         forceTeleport(initialPosition)
         forceRotate(initialRotation)
         if (!RunConfiguration.DISABLE_RENDERING) {
-            Companion.renderInfo[this] = EntityRenderInfo(this)
+            RENDER_INFO[this] = EntityRenderInfo(this)
         }
     }
 
@@ -255,9 +254,16 @@ abstract class Entity(
         physics.tickRiding()
     }
 
+    open fun isInvisible(camera: Entity): Boolean {
+        if (camera is PlayerEntity && camera.additional.gamemode == Gamemodes.SPECTATOR) return false
+        return isInvisible
+    }
+
 
     companion object {
-        private val renderInfo = Entity::renderInfo.javaField!!.apply { isAccessible = true }
+        private val RENDER_INFO = Entity::renderInfo.jvmField
+        private val DEFAULT_AABB = Entity::defaultAABB.jvmField
+        private val PHYSICS = Entity::class.java.getDeclaredField("physics").apply { isAccessible = true }
 
         val FLAGS_DATA = EntityDataField("ENTITY_FLAGS")
         val AIR_SUPPLY_DATA = EntityDataField("ENTITY_AIR_SUPPLY")

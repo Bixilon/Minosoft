@@ -29,8 +29,8 @@ class EntityData(
 ) {
     private val lock = SimpleLock()
     private val data: Int2ObjectOpenHashMap<Any> = Int2ObjectOpenHashMap()
-    private val watcher: Int2ObjectOpenHashMap<MutableSet<(Any?) -> Unit>> = Int2ObjectOpenHashMap()
-    private val watcherLock = SimpleLock()
+    private val observers: Int2ObjectOpenHashMap<MutableSet<(Any?) -> Unit>> = Int2ObjectOpenHashMap()
+    private val observersLock = SimpleLock()
 
     init {
         data?.let { merge(it) }
@@ -39,31 +39,35 @@ class EntityData(
     fun merge(data: Int2ObjectOpenHashMap<Any?>) {
         lock.lock()
         for ((index, value) in data) {
-            if (value == null) {
-                this.data.remove(index)
-            } else {
-                this.data[index] = value
-            }
-
-            val watchers = watcher[index] ?: continue
-            watcherLock.acquire()
-            for (watcher in watchers) {
-                try {
-                    watcher.invoke(value)
-                } catch (error: Throwable) {
-                    error.printStackTrace()
-                }
-            }
-            watcherLock.release()
+            set(index, value)
         }
         lock.unlock()
     }
 
     operator fun set(field: EntityDataField, value: Any?) {
         val index = connection.registries.getEntityDataIndex(field) ?: return
-        lock.acquire()
-        this.data[index] = value
-        lock.release()
+        lock.lock()
+        set(index, value)
+        lock.unlock()
+    }
+
+    operator fun set(index: Int, value: Any?) {
+        if (value == null) {
+            this.data.remove(index)
+        } else {
+            this.data[index] = value
+        }
+
+        val watchers = observers[index] ?: return
+        observersLock.acquire()
+        for (watcher in watchers) {
+            try {
+                watcher.invoke(value)
+            } catch (error: Throwable) {
+                error.printStackTrace()
+            }
+        }
+        observersLock.release()
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
@@ -111,8 +115,13 @@ class EntityData(
 
     fun <K> observe(field: EntityDataField, watcher: (value: K?) -> Unit) {
         val index = connection.registries.getEntityDataIndex(field) ?: return // field not available
-        watcherLock.lock()
-        this.watcher.getOrPut(index) { mutableSetOf() }.add(watcher.unsafeCast())
-        watcherLock.unlock()
+        observersLock.lock()
+        this.observers.getOrPut(index) { mutableSetOf() }.add(watcher.unsafeCast()) // TODO: use weakref?
+        observersLock.unlock()
+    }
+
+    inline operator fun <reified V> invoke(field: EntityDataField, default: V, noinline converter: ((Any) -> V)? = null): EntityDataDelegate<V> {
+        val value = this.get(field, default)
+        return EntityDataDelegate(value, field, this, converter)
     }
 }

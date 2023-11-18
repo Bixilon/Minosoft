@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SectionLight(
     val section: ChunkSection,
-    var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION), // packed (skyLight: 0xF0, blockLight: 0x0F)
+    @JvmField var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION), // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) : AbstractSectionLight() {
 
     fun onBlockChange(x: Int, y: Int, z: Int, previous: BlockState?, state: BlockState?) {
@@ -212,9 +212,7 @@ class SectionLight(
 
     fun reset() {
         update = true
-        for (index in light.indices) {
-            light[index] = 0x00.toByte()
-        }
+        light.fill(0x00.toByte(), 0, light.size)
     }
 
 
@@ -228,7 +226,7 @@ class SectionLight(
         update = true
         val blocks = section.blocks
 
-        blocks.acquire()
+        section.chunk.lock.lock()
         val min = blocks.minPosition
         val max = blocks.maxPosition
 
@@ -245,7 +243,7 @@ class SectionLight(
                 }
             }
         }
-        blocks.release()
+        section.chunk.lock.unlock()
         section.chunk.light.sky.recalculate(section.sectionHeight)
     }
 

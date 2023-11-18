@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.util.logging
 
-import de.bixilon.kutil.ansi.ANSI
+import de.bixilon.kutil.ansi.ANSI.RESET
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -37,8 +37,6 @@ import kotlin.contracts.contract
 
 @OptIn(ExperimentalContracts::class)
 object Log {
-    @Deprecated("Kutil 1.24")
-    private val RESET = ANSI.formatting(0)
     var ASYNC_LOGGING = true
     private val MINOSOFT_START_TIME = millis()
     private val TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
@@ -104,10 +102,11 @@ object Log {
                 SYSTEM_OUT_STREAM
             }
 
-            val prefix = message.ansiColoredMessage.removeSuffix(RESET) // reset suffix
-            for (line in this.message.ansiColoredMessage.lineSequence()) {
+            val prefix = message.ansi.removeSuffix(RESET) // reset suffix
+            for (line in this.message.ansi.lineSequence()) {
                 stream.println(prefix + line + RESET)
             }
+            stream.flush()
 
         } catch (exception: Throwable) {
             SYSTEM_ERR_STREAM.println("Can not send log message $this!")

@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.item.items.food.FoodItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class PixLyzerFoodItem(
+class PixLyzerFoodItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,

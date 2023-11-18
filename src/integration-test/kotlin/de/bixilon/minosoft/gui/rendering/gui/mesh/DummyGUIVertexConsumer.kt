@@ -14,14 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.RenderOrder
+import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 
 open class DummyGUIVertexConsumer : GUIVertexConsumer {
-    override val order: IntArray get() = OpenGLRenderSystem.QUAD_ORDER
+    override val order: RenderOrder get() = MeshOrder.QUAD
     var char = 0
 
     override fun addCache(cache: GUIMeshCache) {
@@ -32,9 +33,11 @@ open class DummyGUIVertexConsumer : GUIVertexConsumer {
         TODO("Not yet implemented")
     }
 
-    override fun addVertex(position: Vec2, texture: ShaderIdentifiable?, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
         TODO("Not yet implemented")
     }
+
+    override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) = Broken()
 
     override fun addChar(start: Vec2, end: Vec2, texture: Texture?, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
         addChar(start, end, this.char++)

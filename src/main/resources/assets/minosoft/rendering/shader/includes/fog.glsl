@@ -37,7 +37,7 @@ float calulate_fog_alpha(float distance2) {
 }
 
 float calculate_fog() {
-    if (uFogStart > 100000.0f) {
+    if (uFogStart > 10000.0f) {
         return 1.0f;
     };
     #ifdef FOG_SPHERE

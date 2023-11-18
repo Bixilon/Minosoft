@@ -14,14 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.models.block.state.baked
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.SingleChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.chunk.mesher.SolidSectionMesher.Companion.SELF_LIGHT_INDEX
 import de.bixilon.minosoft.gui.rendering.models.block.element.FaceVertexData
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.Shades.Companion.shade
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.tint.TintUtil
 
@@ -44,39 +42,25 @@ class BakedFace(
         return TintUtil.calculateTint(tint, shade)
     }
 
-    fun render(offset: FloatArray, mesh: ChunkMesh, light: ByteArray, tints: IntArray?) {
+    fun render(offset: FloatArray, mesh: BlockVertexConsumer, light: ByteArray, tints: IntArray?) {
         val tint = color(tints?.getOrNull(tintIndex) ?: 0)
         val lightTint = ((light[lightIndex].toInt() shl 24) or tint).buffer()
         val textureId = this.texture.shaderId.buffer()
 
 
-        val mesh = mesh.mesh(texture)
-        mesh.data.ensureSize(SingleChunkMesh.WorldMeshStruct.FLOATS_PER_VERTEX * mesh.order.size)
-
-        var index = 0
-        val size = mesh.order.size
-        while (index < size) {
-            val vertexOffset = mesh.order[index] * 3
-            val uvOffset = mesh.order[index + 1] * 2
-
-            mesh.addVertex(
-                x = offset[0] + positions[vertexOffset], y = offset[1] + positions[vertexOffset + 1], z = offset[2] + positions[vertexOffset + 2],
-                u = this.uv[uvOffset],
-                v = this.uv[uvOffset + 1],
-                shaderTextureId = textureId,
-                lightTint = lightTint,
-            )
-            index += 2
-        }
+        val mesh = mesh[texture.transparency]
+        mesh.addQuad(offset, this.positions, this.uv, textureId, lightTint)
     }
 
-    private fun ChunkMesh.mesh(texture: Texture): SingleChunkMesh {
-        return when (texture.transparency) {
-            TextureTransparencies.OPAQUE -> opaqueMesh
-            TextureTransparencies.TRANSPARENT -> transparentMesh
-            TextureTransparencies.TRANSLUCENT -> translucentMesh
-        }!!
+    fun render(mesh: BlockVertexConsumer, tints: IntArray?) {
+        val tint = color(tints?.getOrNull(tintIndex) ?: 0)
+        val lightTint = tint.buffer()
+        val textureId = this.texture.shaderId.buffer()
+
+        val mesh = mesh[texture.transparency]
+        mesh.addQuad(this.positions, this.uv, textureId, lightTint)
     }
+
 
     fun IntArray.getOrNull(index: Int): Int? {
         return if (index >= 0 && index < size) get(index) else null

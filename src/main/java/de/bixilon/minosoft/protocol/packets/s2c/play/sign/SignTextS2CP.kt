@@ -46,7 +46,9 @@ class SignTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         connection.world[position] = entity
 
-        entity.lines = lines
+        for ((index, line) in lines.withIndex()) {
+            entity.front.text[index] = line
+        }
     }
 
     override fun log(reducedLog: Boolean) {

@@ -30,9 +30,8 @@ import kotlin.reflect.full.companionObject
 class BitmapFontTypeTest {
     private val LOAD = BitmapFontType::class.companionObject!!.java.getDeclaredMethod("load", Texture::class.java, Int::class.java, Int::class.java, Array<IntStream>::class.java).apply { isAccessible = true }
 
-    private fun createTexture(start: IntArray, end: IntArray, width: Int, height: Int): Texture {
+    private fun createTexture(start: IntArray, end: IntArray, width: Int, height: Int, rows: Int): Texture {
         check(start.size == end.size)
-        val rows = (start.size / 16) + if (start.size % 16 == 0) 0 else 1
         val size = Vec2i(width * 16, rows * height)
 
         val buffer = ByteBuffer.allocate(size.x * size.y * 4)
@@ -66,8 +65,8 @@ class BitmapFontTypeTest {
         return texture
     }
 
-    private fun load(start: IntArray, end: IntArray, width: Int = 8, height: Int = 8, ascent: Int = 8, chars: Array<IntArray>): BitmapFontType {
-        val texture = createTexture(start, end, width, height)
+    private fun load(start: IntArray, end: IntArray, width: Int = 8, height: Int = 8, ascent: Int = 7, chars: Array<IntArray>): BitmapFontType {
+        val texture = createTexture(start, end, width, height, chars.size)
 
         val fontType = LOAD(BitmapFontType, texture, height, ascent, chars.map { IntStream.of(*it) }.toTypedArray()) as BitmapFontType
 
@@ -75,13 +74,14 @@ class BitmapFontTypeTest {
         return fontType
     }
 
-    private fun BitmapFontType.assert(char: Char, width: Float, uvStart: Vec2, uvEnd: Vec2) {
+    private fun BitmapFontType.assert(char: Char, width: Int, uvStart: Vec2, uvEnd: Vec2, height: Int? = null) {
         val char = this[char.code]
         assertNotNull(char)
         char as BitmapCodeRenderer
-        assertEquals(char.width, width, "width mismatch")
+        assertEquals(char.width, width.toFloat(), "width mismatch")
         assertEquals(char.uvStart, uvStart, "uv start mismatch")
         assertEquals(char.uvEnd, uvEnd, "uv end mismatch")
+        height?.let { assertEquals(char.height, height.toFloat()) }
     }
 
     fun `space size`() {
@@ -95,19 +95,25 @@ class BitmapFontTypeTest {
     fun `load basic with default options`() {
         val font = load(intArrayOf(1, 2, 3), intArrayOf(7, 4, 6), chars = arrayOf(intArrayOf('a'.code, 'b'.code, 'c'.code)))
 
-        font.assert('a', 7.0f, Vec2(0.0068125f, 0), Vec2(0.0546875f, 1.0f))
-        font.assert('b', 3.0f, Vec2(0.077125f, 0), Vec2(0.0859375f, 1.0f))
-        font.assert('c', 4.0f, Vec2(0.1474375f, 0.0), Vec2(0.15625f, 1.0f))
+        font.assert('a', 7, Vec2(0.0068125f, 0), Vec2(0.0546875f, 1.0f))
+        font.assert('b', 3, Vec2(0.077125f, 0), Vec2(0.0859375f, 1.0f))
+        font.assert('c', 4, Vec2(0.1474375f, 0.0), Vec2(0.15625f, 1.0f))
     }
 
     fun `multiple rows`() {
         val font = load(IntArray(64) { it % 3 }, IntArray(64) { (it + 2) % 4 }, chars = arrayOf(IntArray(16) { 'A'.code + it }, IntArray(16) { 'A'.code + 16 + it }, IntArray(16) { 'A'.code + 32 + it }, IntArray(16) { 'A'.code + 48 + it }))
 
-        font.assert('A', 3.0f, Vec2(0.0f, 0), Vec2(0.0234375f, 0.249f))
-        font.assert('P', 2.0f, Vec2(0.9365f, 0.0), Vec2(0.953125f, 0.249f))
+        font.assert('A', 3, Vec2(0.0f, 0), Vec2(0.0234375f, 0.249f))
+        font.assert('P', 2, Vec2(0.9365f, 0.0), Vec2(0.953125f, 0.249f))
 
-        font.assert('Q', 2.0f, Vec2(0.0068125f, 0.25f), Vec2(0.015625f, 0.499f))
-        font.assert('a', 1.0f, Vec2(0.014625f, 0.5f), Vec2(0.0078125f, 0.749f))
-        font.assert('q', 3.0f, Vec2(0.0f, 0.75f), Vec2(0.0234375f, 1.0f))
+        font.assert('Q', 2, Vec2(0.0068125f, 0.25f), Vec2(0.015625f, 0.499f))
+        font.assert('a', 1, Vec2(0.014625f, 0.5f), Vec2(0.0078125f, 0.749f))
+        font.assert('q', 3, Vec2(0.0f, 0.75f), Vec2(0.0234375f, 1.0f))
+    }
+
+    fun `12 px height`() {
+        val font = load(intArrayOf(1, 2), intArrayOf(6, 7), width = 8, height = 12, ascent = 10, arrayOf(intArrayOf('ä'.code, 'ö'.code), intArrayOf(), intArrayOf()))
+
+        font.assert('ä', 6, Vec2(0.0068125f, 0.0f), Vec2(0.046875f, 0.33233336f), height = 12)
     }
 }

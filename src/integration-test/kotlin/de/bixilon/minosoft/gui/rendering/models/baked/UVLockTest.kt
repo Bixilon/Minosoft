@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.FaceUV
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
 import de.bixilon.minosoft.gui.rendering.models.block.state.apply.SingleBlockStateApply
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakingUtil.positions
+import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil.positions
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import org.testng.annotations.Test
 

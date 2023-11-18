@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.redstone
 
-import de.bixilon.minosoft.data.entities.block.redstone.DaylightDetectorBlockEntity
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
-import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity.PixLyzerBlockWithEntity
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class DaylightDetectorBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<DaylightDetectorBlockEntity>(resourceLocation, registries, data) {
+open class DaylightDetectorBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : PixLyzerBlockWithEntity<BlockEntity>(resourceLocation, registries, data) {
 
     companion object : PixLyzerBlockFactory<DaylightDetectorBlock> {
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): DaylightDetectorBlock {

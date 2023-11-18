@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.queue
 
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import java.util.*
 
 class QueuePosition(
@@ -23,7 +23,7 @@ class QueuePosition(
     val sectionHeight: Int,
 ) {
 
-    constructor(mesh: ChunkMesh) : this(mesh.chunkPosition, mesh.sectionHeight)
+    constructor(mesh: ChunkMeshes) : this(mesh.chunkPosition, mesh.sectionHeight)
 
 
     override fun equals(other: Any?): Boolean {

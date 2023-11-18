@@ -47,7 +47,7 @@ class FaceCullingTest {
     private fun createBlock(block: Block, transparency: TextureTransparencies = TextureTransparencies.OPAQUE, properties: SideProperties? = SideProperties(arrayOf(FaceProperties(Vec2(0), Vec2(1), transparency)), transparency)): BlockState {
         val state = BlockState(block, 0)
 
-        state.model = BakedModel(Array(Directions.SIZE) { emptyArray() }, arrayOf(properties, properties, properties, properties, properties, properties), null)
+        state.model = BakedModel(Array(Directions.SIZE) { emptyArray() }, arrayOf(properties, properties, properties, properties, properties, properties), null, null)
 
         return state
     }

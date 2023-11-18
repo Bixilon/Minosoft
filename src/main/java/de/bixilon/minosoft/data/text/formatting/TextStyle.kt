@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.data.text.formatting
 
+import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 interface TextStyle {
     var color: RGBColor?
 
-    val formatting: TextFormatting
+    val formatting: BitEnumSet<FormattingCodes>
 }

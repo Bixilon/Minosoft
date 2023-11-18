@@ -1,0 +1,129 @@
+{
+  "elements": {
+    "body": {
+      "offset": [0, 12, 0],
+      "from": [-4, 0, -2],
+      "to": [4, 12, 2],
+      "texture": "minecraft:skin",
+      "uv": [16, 16],
+      "faces": "all",
+      "children": {
+        "jacket": {
+          "from": [-4, 0, -2],
+          "to": [4, 12, 2],
+          "inflate": 0.25,
+          "uv": [16, 32],
+          "faces": "all"
+        }
+      }
+    },
+    "head": {
+      "offset": [0, 24, 0],
+      "from": [-4, 0, -4],
+      "to": [4, 8, 4],
+      "uv": [0, 0],
+      "texture": "minecraft:skin",
+      "transform": "head",
+      "faces": "all",
+      "children": {
+        "hat": {
+          "from": [-4, 0, -4],
+          "to": [4, 8, 4],
+          "inflate": 0.5,
+          "uv": [32, 0],
+          "faces": "all"
+        }
+      }
+    },
+    "right_leg": {
+      "from": [-4, 0, -2],
+      "to": [0, 12, 2],
+      "uv": [0, 16],
+      "texture": "minecraft:skin",
+      "transform": "right_leg",
+      "faces": "all",
+      "children": {
+        "pants": {
+          "from": [-4, 0, -2],
+          "to": [0, 12, 2],
+          "inflate": 0.25,
+          "uv": [0, 32],
+          "faces": "all"
+        }
+      }
+    },
+    "left_leg": {
+      "from": [0, 0, -2],
+      "to": [4, 12, 2],
+      "uv": [16, 48],
+      "texture": "minecraft:skin",
+      "transform": "left_leg",
+      "faces": "all",
+      "children": {
+        "pants": {
+          "from": [0, 0, -2],
+          "to": [4, 12, 2],
+          "inflate": 0.25,
+          "uv": [0, 48],
+          "faces": "all"
+        }
+      }
+    },
+    "right_arm": {
+      "from": [-8, 12, -2],
+      "to": [-4, 24, 2],
+      "uv": [40, 16],
+      "texture": "minecraft:skin",
+      "transform": "right_arm",
+      "faces": "all",
+      "children": {
+        "sleeve": {
+          "from": [-8, 12, -2],
+          "to": [-4, 24, 2],
+          "inflate": 0.25,
+          "uv": [40, 32],
+          "faces": "all"
+        }
+      }
+    },
+    "left_arm": {
+      "from": [4, 12, -2],
+      "to": [8, 24, 2],
+      "uv": [32, 48],
+      "texture": "minecraft:skin",
+      "transform": "left_arm",
+      "faces": "all",
+      "children": {
+        "sleeve": {
+          "from": [4, 12, -2],
+          "to": [8, 24, 2],
+          "inflate": 0.25,
+          "uv": [48, 48],
+          "faces": "all"
+        }
+      }
+    }
+  },
+  "transforms": {
+    "head": {
+      "pivot": [0, 24, 0]
+    },
+    "left_leg": {
+      "pivot": [3, 12, 0]
+    },
+    "right_leg": {
+      "pivot": [-3, 12, 0]
+    },
+    "left_arm": {
+      "pivot": [4, 24, 0]
+    },
+    "right_arm": {
+      "pivot": [-4, 24, 0]
+    }
+  },
+  "textures": {
+    "minecraft:skin": {
+      "resolution": [64, 64]
+    }
+  }
+}

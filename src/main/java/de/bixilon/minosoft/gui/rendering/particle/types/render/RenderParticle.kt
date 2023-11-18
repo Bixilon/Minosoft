@@ -43,7 +43,7 @@ abstract class RenderParticle(connection: PlayConnection, position: Vec3d, veloc
         var maxSkyLight = 0
 
         val chunkPosition = position.chunkPosition
-        val chunk = connection.world.chunks[chunkPosition] ?: return maxBlockLight
+        val chunk = getChunk() ?: return maxBlockLight
 
         val offset = Vec2i.EMPTY
         val inChunk = Vec3i()

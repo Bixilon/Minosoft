@@ -44,7 +44,7 @@ import org.testng.annotations.Test
 
 @Test(groups = ["interaction"], dependsOnGroups = ["item", "block"])
 class EntityUseIT {
-    private val pig = EntityType(Pig.identifier, minecraft(""), 1.0f, 1.0f, true, false, mapOf(), Pig, null)
+    private val pig = EntityType(Pig.identifier, minecraft(""), 1.0f, 1.0f, mapOf(), Pig, null)
 
 
     fun testAirOnPig() {

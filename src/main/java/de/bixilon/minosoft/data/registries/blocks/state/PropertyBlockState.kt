@@ -85,7 +85,7 @@ open class PropertyBlockState(
     }
 
     override fun <T> get(property: BlockProperty<T>): T {
-        val value = this.properties[property] ?: throw IllegalArgumentException("$this has not property $property")
+        val value = this.properties[property] ?: throw IllegalArgumentException("$this has no property $property")
         return value.unsafeCast()
     }
 

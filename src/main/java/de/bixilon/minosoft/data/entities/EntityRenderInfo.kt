@@ -32,7 +32,7 @@ class EntityRenderInfo(private val entity: Entity) : Drawable, Tickable {
 
 
     private var eyeHeight0 = 0.0f
-    private var eyeHeight1 = entity.eyeHeight
+    private var eyeHeight1 = eyeHeight0
 
     var position: Vec3d = position1
         private set

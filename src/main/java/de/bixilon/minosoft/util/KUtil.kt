@@ -28,8 +28,6 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
-import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -132,16 +130,6 @@ object KUtil {
         }
     }
 
-    fun Set<String>.toResourceLocationList(): Set<ResourceLocation> {
-        val ret: MutableSet<ResourceLocation> = mutableSetOf()
-
-        for (resourceLocation in this) {
-            ret += resourceLocation.toResourceLocation()
-        }
-
-        return ret
-    }
-
     fun pause() {
         var setBreakPointHere = 1
     }
@@ -213,16 +201,6 @@ object KUtil {
     val Throwable.text: TextComponent
         get() = TextComponent(this::class.java.realName + ": " + this.message).color(ChatColors.DARK_RED)
 
-
-    fun <T : Identified> List<T>.asResourceLocationMap(): Map<ResourceLocation, T> {
-        val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
-
-        for (value in this) {
-            ret[value.identifier] = value
-        }
-
-        return ret
-    }
 
     fun String?.nullCompare(other: String?): Int? {
         if (this == null || other == null) {
@@ -356,19 +334,6 @@ object KUtil {
         }
 
         return table
-    }
-
-    @Deprecated("kutil 1.24")
-    fun AbstractLatch.waitIfLess(value: Int, timeout: Long = 0L) = synchronized(notify) {
-        while (this.count < value) {
-            waitForChange(timeout)
-        }
-    }
-
-    @Deprecated("kutil 1.24")
-    @JvmStatic
-    inline fun <reified T : Enum<T>> ValuesEnum<T>.set(): EnumSet<T> {
-        return EnumSetUtil.create(T::class.java, VALUES)
     }
 
     fun PlayInByteBuffer.dump(name: String) {

@@ -55,7 +55,8 @@ class BreakHandler(
             interactions.swingHand(Hands.MAIN)
             return
         }
-        tickBreaking()
+        val swung = tickBreaking()
+        if (!swung) interactions.swingHand(Hands.MAIN)
     }
 
     override fun onRelease() {
@@ -70,16 +71,15 @@ class BreakHandler(
         tickBreaking()
     }
 
-    private fun tickBreaking() {
+    private fun tickBreaking(): Boolean {
         val gamemode = connection.player.gamemode
         val target = validateTarget()
 
         if (gamemode == Gamemodes.CREATIVE) {
             digging.tryCancel()
-            creative.breakBlock(target)
-        } else {
-            this.digging.dig(target)
+            return creative.breakBlock(target)
         }
+        return this.digging.dig(target)
     }
 
     fun addCooldown() {

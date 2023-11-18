@@ -24,7 +24,7 @@ class CompressionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
     override fun handle(connection: PlayConnection) {
-        connection.network.compressionThreshold = threshold
+        connection.network.setupCompression(threshold)
     }
 
     override fun log(reducedLog: Boolean) {
