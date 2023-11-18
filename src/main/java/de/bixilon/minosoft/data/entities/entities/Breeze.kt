@@ -10,31 +10,24 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.display
+package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
-import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 @Deprecated("TODO")
-class TextDisplayEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : DisplayEntity(connection, entityType, data, position, rotation) {
+class Breeze(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
-    companion object : EntityFactory<TextDisplayEntity> {
-        override val identifier: ResourceLocation = minecraft("text_display")
-        private val TEXT = EntityDataField("TEXT")
-        private val LINE_WIDTH = EntityDataField("LINE_WIDTH")
-        private val BACKGROUND = EntityDataField("BACKGROUND")
-        private val TEXT_OPACITY = EntityDataField("TEXT_OPACITY")
-        private val TEXT_DISPLAY_FLAGS = EntityDataField("TEXT_DISPLAY_FLAGS")
+    companion object : EntityFactory<Breeze> {
+        override val identifier = minecraft("breeze")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): TextDisplayEntity {
-            return TextDisplayEntity(connection, entityType, data, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Breeze {
+            return Breeze(connection, entityType, data, position, rotation)
         }
     }
 }

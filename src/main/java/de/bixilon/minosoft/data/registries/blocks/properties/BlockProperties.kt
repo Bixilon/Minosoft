@@ -147,6 +147,8 @@ object BlockProperties {
     val CRACKED = BooleanProperty("cracked").register()
     val CRAFTING = BooleanProperty("crafting").register()
 
+    val TRIAL_SPAWNER_STATE = EnumProperty("trial_spawner_state", TrialSpawnerStates).register()
+
 
     @Deprecated("should not exist")
     fun <T : BlockProperty<*>> T.register(): T {
