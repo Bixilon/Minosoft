@@ -136,7 +136,7 @@ class NormalLightmapUpdater(
 
         var color = interpolateLinear(baseBrightness, THUNDER_BASE, THUNDER_BRIGHT) * baseBrightness * brightness * 0.3f
 
-        skyRenderer?.let { color = interpolateLinear(brightness * 5.0f + 0.5f, color, it.box.color.calculateLightingStrike(color)) }
+        skyRenderer?.let { color = interpolateLinear(brightness * 5.0f + 0.5f, color, it.box.color.lightning(color)) }
         return interpolateLinear(thunder, base, color)
     }
 
