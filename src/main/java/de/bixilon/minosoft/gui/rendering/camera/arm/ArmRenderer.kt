@@ -96,13 +96,13 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
         shader.texture = renderer.skin?.shaderId ?: context.textures.debugTexture.shaderId
         shader.tint = ChatColors.WHITE
 
-        val pivot = Vec3((if (arm == Arms.RIGHT) 4 else -4) / 16f, 24 / 16f, 0)
+        val pivot = Vec3((if (arm == Arms.RIGHT) 6 else -6) / 16f, 24 / 16f, 0)
 
         // TODO: arm animation
         val matrix = Mat4()
-            .translateAssign(Vec3((if (arm == Arms.RIGHT) 20f / 16f else -20f / 16f), -11 / 16f, -0.2f))
+            .translateAssign(Vec3((if (arm == Arms.RIGHT) 23f / 16f else -23f / 16f), -17 / 16f, -0.7f))
             .rotateXassign(120.0f.rad)
-            .rotateYassign((if (arm == Arms.RIGHT) -5.0f else 5.0f).rad)
+            .rotateYassign((if (arm == Arms.RIGHT) -20.0f else 20.0f).rad)
 
             .translateAssign(-pivot)
 
