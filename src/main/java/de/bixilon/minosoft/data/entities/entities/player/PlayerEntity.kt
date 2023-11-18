@@ -91,7 +91,7 @@ abstract class PlayerEntity(
             return field
         }
 
-    val skinParts: MutableSet<SkinParts> by observedSet(SkinParts.set())
+    val skinParts: MutableSet<SkinParts> by observedSet(SkinParts.set(*SkinParts.VALUES))
 
     override val isNameVisible get() = true
     override val name: ChatComponent? get() = additional.tabDisplayName // minecraft does use the plain name
@@ -107,7 +107,7 @@ abstract class PlayerEntity(
     }
 
     init {
-        data.observe(SKIN_PARTS_DATA) { raw: Any? -> updateSkinParts(raw?.toInt() ?: 0) }
+        data.observe(SKIN_PARTS_DATA) { raw: Any? -> updateSkinParts(raw?.toInt() ?: 0xFF) }
     }
 
     private var _mainArm by data(MAIN_ARM_DATA, 0x01)

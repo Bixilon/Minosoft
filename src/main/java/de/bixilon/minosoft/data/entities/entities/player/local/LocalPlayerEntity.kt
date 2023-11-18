@@ -113,4 +113,7 @@ class LocalPlayerEntity(
     override fun createPhysics() = LocalPlayerPhysics(this)
     override fun physics(): LocalPlayerPhysics = super.physics().unsafeCast()
     override fun create(renderer: EntitiesRenderer) = LocalPlayerRenderer(renderer, this)
+
+
+    override fun updateSkinParts(flags: Int) = Unit // server can not update our own skin parts
 }
