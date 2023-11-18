@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.entities.feature.EntityRenderFeature
 import de.bixilon.minosoft.gui.rendering.entities.feature.register.EntityRenderFeatures
@@ -59,11 +60,16 @@ class EntitiesRenderer(
         val millis = millis()
         this.visibility.reset()
         renderers.iterate {
-            if (reset) it.reset()
-            visibility.update(it, millis)
-            if (!it.visible) return@iterate
-            it.update(millis)
-            visibility.collect(it)
+            try {
+                if (reset) it.reset()
+                visibility.update(it, millis)
+                if (!it.visible) return@iterate
+                it.update(millis)
+                visibility.collect(it)
+            } catch (error: Throwable) {
+                error.printStackTrace()
+                Exception("Exception while rendering entities: ${connection.connectionId}", error).crash()
+            }
         }
         this.reset = false
         this.visibility.finish()
