@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -161,16 +162,17 @@ abstract class Entity(
         get() = data.get(AIR_SUPPLY_DATA, 300)
 
     @get:SynchronizedEntityData
-    val customName: ChatComponent? by data(CUSTOM_NAME_DATA, null)
+    val customName: ChatComponent? by data(CUSTOM_NAME_DATA, null) { ChatComponent.of(it) }
 
     @get:SynchronizedEntityData
-    open val isNameVisible: Boolean by data(CUSTOM_NAME_VISIBLE_DATA, false)
+    open val isNameVisible: Boolean by data(CUSTOM_NAME_VISIBLE_DATA, false) { it.toBoolean() }
 
     @get:SynchronizedEntityData
     val isSilent: Boolean
         get() = data.get(SILENT_DATA, false)
 
-    private var _hasNoGravity by data(NO_GRAVITY_DATA, false)
+    private var _hasNoGravity by data(NO_GRAVITY_DATA, false) { it.toBoolean() }
+
     @get:SynchronizedEntityData
     open val hasGravity: Boolean get() = !_hasNoGravity
 

@@ -20,10 +20,18 @@ class EntityDataDelegate<V>(
     default: V,
     val field: EntityDataField,
     val data: EntityData,
+    val converter: ((Any) -> V)? = null,
 ) : DataObserver<V>(default) {
 
     init {
-        data.observe<V>(field) { set(it ?: default) }
+        data.observe<V>(field) {
+            if (it == null) {
+                set(default)
+                return@observe
+            }
+            val value = if (converter == null) it else converter.invoke(it)
+            set(value)
+        }
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: V) {

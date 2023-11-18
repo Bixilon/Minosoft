@@ -120,8 +120,8 @@ class EntityData(
         observersLock.unlock()
     }
 
-    inline operator fun <reified V> invoke(field: EntityDataField, default: V): EntityDataDelegate<V> {
+    inline operator fun <reified V> invoke(field: EntityDataField, default: V, noinline converter: ((Any) -> V)? = null): EntityDataDelegate<V> {
         val value = this.get(field, default)
-        return EntityDataDelegate(value, field, this)
+        return EntityDataDelegate(value, field, this, converter)
     }
 }

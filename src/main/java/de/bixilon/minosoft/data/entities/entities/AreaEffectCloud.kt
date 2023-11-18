@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -32,7 +33,7 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: 
         private set
 
     @get:SynchronizedEntityData
-    val ignoreRadius: Boolean by data(IGNORE_RADIUS_DATA, false)
+    val ignoreRadius: Boolean by data(IGNORE_RADIUS_DATA, false) { it.toBoolean() }
 
     @get:SynchronizedEntityData
     val radius: Float by data(RADIUS_DATA, 0.5f)
