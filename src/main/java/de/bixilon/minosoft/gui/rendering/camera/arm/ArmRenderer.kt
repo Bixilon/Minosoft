@@ -46,7 +46,7 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
     override val framebuffer get() = context.framebuffer.gui
     val shader = context.system.createShader(minosoft("entities/player/arm")) { ArmShader(it) }
 
-    init {
+    override fun init(latch: AbstractLatch) {
         registerModels()
     }
 

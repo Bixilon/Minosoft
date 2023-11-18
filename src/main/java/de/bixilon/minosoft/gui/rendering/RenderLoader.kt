@@ -77,7 +77,6 @@ object RenderLoader {
         textures.initializeSkins(connection)
         textures.loadDefaultTextures()
         font = FontManager.create(this, initLatch)
-        models.load(latch)
 
 
         framebuffer.init()
@@ -91,6 +90,7 @@ object RenderLoader {
         // Wait for init stage to complete
         initLatch.dec()
         initLatch.await()
+        models.load(latch)
 
         renderer[GUIRenderer]?.atlas?.load() // TODO: remove this
 
