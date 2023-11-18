@@ -47,6 +47,9 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
                 }
             }
         }
+        for (entity in renderer.connection.world.entities.entities) {
+            this += entity
+        }
     }
 
     private fun Entity.createRenderer() = when {

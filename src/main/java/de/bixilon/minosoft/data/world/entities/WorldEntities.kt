@@ -41,7 +41,6 @@ class WorldEntities : Iterable<Entity> {
 
 
     fun add(entityId: Int?, entityUUID: UUID?, entity: Entity) {
-        check(entityId != null || entityUUID != null) { "Entity id and UUID is null!" }
         try {
             lock.lock()
             if (entityId != null) {
@@ -97,7 +96,7 @@ class WorldEntities : Iterable<Entity> {
 
     fun remove(entity: Entity) {
         lock.lock()
-        if (!entities.remove(entity)) {
+        if (entity !is LocalPlayerEntity && !entities.remove(entity)) {
             lock.unlock()
             return
         }
@@ -113,8 +112,10 @@ class WorldEntities : Iterable<Entity> {
             lock.unlock()
             return
         }
-        entities -= entity
-        entityIdMap.remove(entity)
+        if (entity !is LocalPlayerEntity) {
+            entities -= entity
+        }
+        entityIdMap.removeInt(entity)
         val uuid = entityUUIDMap.remove(entity)
         if (uuid != null) {
             uuidEntityMap.remove(uuid)
@@ -192,13 +193,9 @@ class WorldEntities : Iterable<Entity> {
             entityIdMap.remove(entity)?.let { idEntityMap.remove(it) }
             entityUUIDMap.remove(entity)?.let { uuidEntityMap.remove(it) }
         }
-        if (local) {
-            this.entities.clear()
-        } else {
-            val remove = this.entities.toMutableSet()
-            remove -= connection.player
-            this.entities.removeAll(remove)
-        }
+        val remove = this.entities.toMutableSet()
+        remove -= connection.player
+        this.entities.removeAll(remove)
         this.lock.unlock()
     }
 

@@ -216,6 +216,7 @@ class PlayConnection(
             language = LanguageUtil.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
 
             this::player.forceSet(LocalPlayerEntity(account, this, keyManagement))
+            world.entities.add(null, null, player)
             settingsManager.initSkins()
             player.startInit()
 
