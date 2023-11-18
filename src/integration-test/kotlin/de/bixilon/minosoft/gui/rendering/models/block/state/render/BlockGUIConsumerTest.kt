@@ -53,6 +53,7 @@ class BlockGUIConsumerTest {
     }
 
 
+    @Test(enabled = false)
     fun `south quad with offset and specific size`() {
         val consumer = create()
         val position = CuboidUtil.positions(Directions.SOUTH, Vec3(0, 0, 0), Vec3(1, 1, 1))

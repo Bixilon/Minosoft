@@ -38,7 +38,8 @@ object FontLoader {
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
         val providers: Array<FontType?> = arrayOfNulls(providersRaw.size)
 
-        val worker = UnconditionalWorker()
+        var error: Throwable? = null
+        val worker = UnconditionalWorker { error = it }
         for ((index, provider) in providersRaw.withIndex()) {
             val type = provider["type"].toResourceLocation()
             worker += add@{
@@ -51,6 +52,8 @@ object FontLoader {
             }
         }
         worker.work(latch)
+
+        error?.let { throw it }
 
         val trimmed = providers.trim()
         if (trimmed.isEmpty()) return null

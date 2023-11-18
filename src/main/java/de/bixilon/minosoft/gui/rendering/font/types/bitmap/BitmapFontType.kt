@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
+import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties.CHAR_BASE_HEIGHT
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
@@ -117,7 +118,7 @@ class BitmapFontType(
                 uvEnd.y -= RenderConstants.UV_ADD // this workarounds some precision loss
             }
 
-            val scale = height / FontProperties.CHAR_BASE_HEIGHT
+            val scale = if (height < CHAR_BASE_HEIGHT) 1 else height / CHAR_BASE_HEIGHT
             val scaledWidth = width / scale
 
             return BitmapCodeRenderer(texture, uvStart, uvEnd, scaledWidth.toFloat(), (height / scale).toFloat(), ascent.toFloat())
