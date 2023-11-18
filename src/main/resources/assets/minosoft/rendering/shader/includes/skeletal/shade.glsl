@@ -12,7 +12,7 @@
  */
 #define DEGREE_90 1.5707964f
 
-float decodeNormalY(uint data) {
+float decodeNormalPart(uint data) {
     if (data < 8u) return (data / 8.0f) - 1.0f;
     return (data - 8u) / 7.0f;
 }
@@ -21,7 +21,7 @@ vec3 decodeNormal(uint normal) {
     uint x = normal & 0x0Fu;
     uint y = normal >> 8u & 0x0Fu;
     uint z = normal >> 4u & 0x0Fu;
-    return vec3(x / 15.0f, decodeNormalY(y), z / 15.0f);
+    return vec3(decodeNormalPart(x), decodeNormalPart(y), decodeNormalPart(z));
 }
 
 vec3 transformNormal(vec3 normal, mat4 transform) {

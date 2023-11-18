@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test
 class SkeletalMeshUtilTest {
 
     // Take code from skeletal/shade.glsl
-    private fun decodeNormalY(data: Int): Float {
+    private fun decodeNormalPart(data: Int): Float {
         if (data < 8) return (data / 8.0f) - 1.0f
         return (data - 8) / 7.0f
     }
@@ -29,7 +29,7 @@ class SkeletalMeshUtilTest {
         val x = normal and 0x0F
         val y = normal shr 8 and 0x0F
         val z = normal shr 4 and 0x0F
-        return Vec3(x / 15.0f, decodeNormalY(y), z / 15.0f)
+        return Vec3(decodeNormalPart(x), decodeNormalPart(y), decodeNormalPart(z))
     }
 
 
@@ -48,8 +48,8 @@ class SkeletalMeshUtilTest {
     fun `encode max negative normal`() {
         val normal = Vec3(-1, -1, -1)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
-        assertEquals(encoded, 0x0FF)
-        assertEquals(decodeNormal(encoded), Vec3(1, -1, 1))
+        assertEquals(encoded, 0x00)
+        assertEquals(decodeNormal(encoded), Vec3(-1, -1, -1))
     }
 
     @Test
@@ -72,15 +72,15 @@ class SkeletalMeshUtilTest {
     fun `correct negative clamping`() {
         val normal = Vec3(-2, -2, -2)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
-        assertEquals(encoded, 0x0FF)
-        assertEquals(decodeNormal(encoded), Vec3(1, -1, 1))
+        assertEquals(encoded, 0x00)
+        assertEquals(decodeNormal(encoded), Vec3(-1, -1, -1))
     }
 
     @Test
     fun `zero`() {
         val normal = Vec3(0, 0, 0)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
-        assertEquals(encoded, 0x800)
+        assertEquals(encoded, 0x888)
         assertEquals(decodeNormal(encoded), normal)
     }
 
@@ -88,7 +88,7 @@ class SkeletalMeshUtilTest {
     fun `zero dot one`() {
         val normal = Vec3(0.15f, 0.15f, 0.15f)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
-        assertEquals(encoded, 0x922)
+        assertEquals(encoded, 0x999)
         assertEquals(decodeNormal(encoded), normal)
     }
 
@@ -96,7 +96,7 @@ class SkeletalMeshUtilTest {
     fun `minus zero dot one`() {
         val normal = Vec3(-0.1f, -0.1f, -0.1f)
         val encoded = SkeletalMeshUtil.encodeNormal(normal)
-        assertEquals(encoded, 0x711)
+        assertEquals(encoded, 0x777)
         assertEquals(decodeNormal(encoded), normal)
     }
 }

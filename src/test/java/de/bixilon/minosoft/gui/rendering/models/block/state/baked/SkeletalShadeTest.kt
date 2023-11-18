@@ -169,11 +169,11 @@ class SkeletalShadeTest {
 
     @Test
     fun `somehow broken in the shader`() {
-        val transform = Mat4(-0.7320485, 0.0, -0.5712964, 0.0, 0.0, 0.9285874, 0.0, 0.0, 0.5712964, 0.0, -0.7320485, 0.0, -474.72504, 68.0, 581.7848, 1.0)
-        val expected = Vec3(0.0f, 1.0f, 0.0f)
+        val transform = Mat4(-0.93298566, 0.0, 0.09189103, 0.0, -0.09186335, 0.023007425, -0.9327047, 0.0, -0.0022551212, -0.9372176, -0.02289664, 0.0, -455.2743, 95.37174, 618.4536, 1.0)
+        val expected = Vec3(1.0f, 0.0f, 0.0f)
         val normal = transformNormal(expected, transform)
-        assertEquals(normal, Vec3(0.0f, 1.0f, 0.0f))
-        assertEquals(getShade(normal), 1.0f)
+        assertEquals(normal, Vec3(-1.0f, 0.0f, 0.0f))
+        assertEquals(getShade(normal), 0.6f)
     }
 
 
