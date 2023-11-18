@@ -61,8 +61,8 @@ interface GUIVertexConsumer {
 
         val start = start.array
         val end = end.array
-        val uvStart = (texture?.transformUV(uvStart) ?: uvStart).array
-        val uvEnd = (texture?.transformUV(uvEnd) ?: uvEnd).array
+        val uvStart = uvStart.array
+        val uvEnd = uvEnd.array
 
         order.iterate { position, uv ->
             val x = when (position) {

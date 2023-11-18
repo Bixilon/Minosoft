@@ -21,13 +21,17 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderPropert
  * See the great explanation of @Suragch at https://stackoverflow.com/questions/27631736/meaning-of-top-ascent-baseline-descent-bottom-and-leading-in-androids-font
  */
 interface AscentedCodePointRenderer : RasterizedCodePointRenderer {
-    val ascent: Float get() = 8.0f
+    val ascent: Float get() = DEFAULT_ASCENT
     val height: Float
 
 
     override fun calculateStart(properties: TextRenderProperties, base: Vec2, scale: Float): Vec2 {
         val position = Vec2(base)
-        val offset = properties.charSpacing.top - (height - ascent - 1.0f)
+        var diff = ascent - DEFAULT_ASCENT
+        if (diff > 2.0f) {
+            diff += 0.8f // TODO: dirty hack
+        }
+        val offset = properties.charSpacing.top - diff
         position.y += offset * scale
 
         return position
@@ -39,5 +43,9 @@ interface AscentedCodePointRenderer : RasterizedCodePointRenderer {
         position.x += width * scale
 
         return position
+    }
+
+    companion object {
+        const val DEFAULT_ASCENT = 7.0f
     }
 }

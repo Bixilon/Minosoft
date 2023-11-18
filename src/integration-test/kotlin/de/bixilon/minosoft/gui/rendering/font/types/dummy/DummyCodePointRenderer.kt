@@ -15,13 +15,14 @@ package de.bixilon.minosoft.gui.rendering.font.types.dummy
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.AscentedCodePointRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.code.AscentedCodePointRenderer.Companion.DEFAULT_ASCENT
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 
 class DummyCodePointRenderer(
     override val uvStart: Vec2 = Vec2(0.1f, 0.2f),
     override val uvEnd: Vec2 = Vec2(0.6f, 0.7f),
     override val width: Float = 5.0f,
-    override val ascent: Float = 7.0f,
+    override val ascent: Float = DEFAULT_ASCENT,
     override val height: Float = 8.0f,
 ) : AscentedCodePointRenderer {
     override val texture = DummyTexture()
