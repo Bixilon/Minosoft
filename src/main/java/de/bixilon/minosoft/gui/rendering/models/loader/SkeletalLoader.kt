@@ -32,8 +32,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class SkeletalLoader(private val loader: ModelLoader) {
     private val registered: SynchronizedMap<ResourceLocation, RegisteredModel> = synchronizedMapOf()
     private val baked: MutableMap<ResourceLocation, BakedSkeletalModel> = HashMap()
+    private var loaded = false
 
     fun load(latch: AbstractLatch?) {
+        if (loaded) throw IllegalStateException("Already loaded!")
         val templates: MutableMap<ResourceLocation, SkeletalModel> = HashMap(this.registered.size, 0.1f)
 
         for ((name, registered) in this.registered) {
@@ -50,6 +52,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
             template.load(loader.context, registered.override.keys)
             registered.model = template
         }
+        loaded = true
     }
 
     fun bake(latch: AbstractLatch?) {
@@ -74,6 +77,7 @@ class SkeletalLoader(private val loader: ModelLoader) {
     }
 
     fun register(name: ResourceLocation, template: ResourceLocation = name, override: Map<ResourceLocation, ShaderTexture> = emptyMap(), mesh: SkeletalMeshBuilder = SkeletalMesh) {
+        if (loaded) throw IllegalStateException("Already loaded!")
         val previous = this.registered.put(name, RegisteredModel(template, override, mesh))
         if (previous != null) throw IllegalArgumentException("A model with the name $name was already registered!")
     }

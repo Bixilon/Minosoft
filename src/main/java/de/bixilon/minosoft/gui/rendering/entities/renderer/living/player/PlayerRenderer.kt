@@ -100,7 +100,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     protected open fun createModel(skin: SkinModel): PlayerModel? {
         val model = getModel(skin) ?: return null
 
-        return PlayerModel(this, model)
+        return PlayerModel(this, model, skin)
     }
 
 
@@ -151,10 +151,9 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
 
     companion object : RegisteredEntityModelFactory<PlayerEntity>, Identified, SkeletalMeshBuilder {
         override val identifier get() = PlayerEntity.identifier
-        private val WIDE = minecraft("entities/player/wide").sModel()
-        private val SLIM = minecraft("entities/player/slim").sModel()
-
-        private val SKIN = minecraft("skin")
+        val WIDE = minecraft("entities/player/wide").sModel()
+        val SLIM = minecraft("entities/player/slim").sModel()
+        val SKIN = minecraft("skin")
 
         private const val SNEAKING_OFFSET = -0.125f
 

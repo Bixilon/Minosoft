@@ -16,15 +16,18 @@ package de.bixilon.minosoft.gui.rendering.entities.model.human
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts.Companion.pack
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 
 open class PlayerModel(
     renderer: PlayerRenderer<*>,
     model: BakedSkeletalModel,
+    val type: SkinModel,
 ) : HumanModel<PlayerRenderer<*>>(renderer, model) {
     private val shader = renderer.renderer.features.player.shader
-    private var skinParts = 0xFF
+    var skinParts = 0xFF
+        private set
 
     init {
         renderer.entity::skinParts.observeSet(this, instant = true) { skinParts = renderer.entity.skinParts.pack() }

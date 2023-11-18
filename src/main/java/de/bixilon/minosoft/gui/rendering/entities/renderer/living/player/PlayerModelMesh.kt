@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class PlayerModelMesh(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMesh(context, PlayerMeshStruct, initialCacheSize = initialCacheSize) {
+open class PlayerModelMesh(context: RenderContext, initialCacheSize: Int = 1000) : AbstractSkeletalMesh(context, PlayerMeshStruct, initialCacheSize = initialCacheSize) {
     override val order = context.system.quadOrder
 
     private fun addVertex(position: FaceVertexData, positionOffset: Int, uv: FaceVertexData, uvOffset: Int, partTransformNormal: Float) {

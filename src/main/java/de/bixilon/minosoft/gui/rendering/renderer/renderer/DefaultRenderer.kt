@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
+import de.bixilon.minosoft.gui.rendering.camera.arm.ArmRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.border.WorldBorderRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.chunk.ChunkBorderRenderer
@@ -35,6 +36,7 @@ object DefaultRenderer {
         CloudRenderer,
         ChunkBorderRenderer,
         WorldBorderRenderer,
+        ArmRenderer,
         GUIRenderer,
     )
 }
