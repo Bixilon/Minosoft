@@ -31,12 +31,12 @@ class ChatC(profile: GUIProfile) {
     /**
      * The width of the chat in scaled pixels
      */
-    var width by IntDelegate(profile, 320, "", arrayOf(100..500))
+    var width by IntDelegate(profile, 320, arrayOf(100..500))
 
     /**
      * The height of the chat in scaled pixels
      */
-    var height by IntDelegate(profile, 180, "", arrayOf(40..500))
+    var height by IntDelegate(profile, 180, arrayOf(40..500))
 
     /**
      * ToDo: Unknown purpose

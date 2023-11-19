@@ -47,12 +47,12 @@ class ErosServer(
     /**
      * Server-address as string. May contain the port
      */
-    override var address by SimpleDelegate(profile, address, "") { check(it.isNotBlank()) { "Server address must not be blank!" } }
+    override var address by SimpleDelegate(profile, address) { check(it.isNotBlank()) { "Server address must not be blank!" } }
 
     /**
      * Server name (showed in eros)
      */
-    override var name by SimpleDelegate(profile, name, "") { check(it.message.isNotBlank()) { "Server name must not be blank!" } }
+    override var name by SimpleDelegate(profile, name) { check(it.message.isNotBlank()) { "Server name must not be blank!" } }
 
     /**
      * Sends version -1 in the handshake to query the servers version
@@ -65,11 +65,11 @@ class ErosServer(
      * If profile is unset, defaults to eros global profiles
      */
     @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
-    override var profiles: MutableMap<ResourceLocation, String> by MapDelegate(profile, profiles, "")
+    override var profiles: MutableMap<ResourceLocation, String> by MapDelegate(profile, profiles)
 
     @get:JsonProperty("forced_version")
     @get:JsonInclude(JsonInclude.Include.NON_NULL)
-    private var _forcedVersion by NullableStringDelegate(profile, forcedVersion.unsafeCast<Version?>()?.name, "")
+    private var _forcedVersion by NullableStringDelegate(profile, forcedVersion.unsafeCast<Version?>()?.name)
 
     @get:JsonIgnore
     override var forcedVersion by BackingDelegate(get = { Versions[_forcedVersion] }, set = { _forcedVersion = it?.name })
@@ -79,5 +79,5 @@ class ErosServer(
     }
 
     @get:JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    override var faviconHash: String? by NullableStringDelegate(profile, null, "") { if (it != null) check(it.length == HashTypes.SHA256.length) { "Not a valid sha256 hash!" } }
+    override var faviconHash: String? by NullableStringDelegate(profile, null) { if (it != null) check(it.length == HashTypes.SHA256.length) { "Not a valid sha256 hash!" } }
 }

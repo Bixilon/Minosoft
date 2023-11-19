@@ -37,20 +37,19 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
 class ConnectionProfiles(
-    overrides: Map<ResourceLocation, String> = emptyMap(),
+    overrides: Map<ProfileType<*>, String> = emptyMap(),
     val eros: ErosProfile = ErosProfileManager.selected,
-    val account: AccountProfile = overrides[AccountProfileManager.namespace]?.let { return@let AccountProfileManager.profiles[it] } ?: AccountProfileManager.selected,
-    val particle: ParticleProfile = overrides[ParticleProfileManager.namespace]?.let { return@let ParticleProfileManager.profiles[it] } ?: ParticleProfileManager.selected,
-    val audio: AudioProfile = overrides[AudioProfileManager.namespace]?.let { return@let AudioProfileManager.profiles[it] } ?: AudioProfileManager.selected,
-    val entity: EntityProfile = overrides[EntityProfileManager.namespace]?.let { return@let EntityProfileManager.profiles[it] } ?: EntityProfileManager.selected,
-    val resources: ResourcesProfile = overrides[ResourcesProfileManager.namespace]?.let { return@let ResourcesProfileManager.profiles[it] } ?: ResourcesProfileManager.selected,
-    val rendering: RenderingProfile = overrides[RenderingProfileManager.namespace]?.let { return@let RenderingProfileManager.profiles[it] } ?: RenderingProfileManager.selected,
-    val block: BlockProfile = overrides[BlockProfileManager.namespace]?.let { return@let BlockProfileManager.profiles[it] } ?: BlockProfileManager.selected,
-    val connection: ConnectionProfile = overrides[ConnectionProfileManager.namespace]?.let { return@let ConnectionProfileManager.profiles[it] } ?: ConnectionProfileManager.selected,
-    val gui: GUIProfile = overrides[GUIProfileManager.namespace]?.let { return@let GUIProfileManager.profiles[it] } ?: GUIProfileManager.selected,
-    val controls: ControlsProfile = overrides[ControlsProfileManager.namespace]?.let { return@let ControlsProfileManager.profiles[it] } ?: ControlsProfileManager.selected,
-    val other: OtherProfile = overrides[OtherProfileManager.namespace]?.let { return@let OtherProfileManager.profiles[it] } ?: OtherProfileManager.selected,
+    val account: AccountProfile = overrides[AccountProfile]?.let { AccountProfileManager[it] } ?: AccountProfileManager.selected,
+    val particle: ParticleProfile = overrides[ParticleProfile]?.let { ParticleProfileManager[it] } ?: ParticleProfileManager.selected,
+    val audio: AudioProfile = overrides[AudioProfile]?.let { AudioProfileManager[it] } ?: AudioProfileManager.selected,
+    val entity: EntityProfile = overrides[EntityProfile]?.let { EntityProfileManager[it] } ?: EntityProfileManager.selected,
+    val resources: ResourcesProfile = overrides[ResourcesProfile]?.let { ResourcesProfileManager[it] } ?: ResourcesProfileManager.selected,
+    val rendering: RenderingProfile = overrides[RenderingProfile]?.let { RenderingProfileManager[it] } ?: RenderingProfileManager.selected,
+    val block: BlockProfile = overrides[BlockProfile]?.let { BlockProfileManager[it] } ?: BlockProfileManager.selected,
+    val connection: ConnectionProfile = overrides[ConnectionProfile]?.let { ConnectionProfileManager[it] } ?: ConnectionProfileManager.selected,
+    val gui: GUIProfile = overrides[GUIProfile]?.let { GUIProfileManager[it] } ?: GUIProfileManager.selected,
+    val controls: ControlsProfile = overrides[ControlsProfile]?.let { ControlsProfileManager[it] } ?: ControlsProfileManager.selected,
+    val other: OtherProfile = overrides[OtherProfile]?.let { OtherProfileManager[it] } ?: OtherProfileManager.selected,
 )

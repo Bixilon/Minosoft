@@ -16,33 +16,28 @@ package de.bixilon.minosoft.config.profile.profiles.account
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.delegates.BackingDelegate
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.ProfileLock
+import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.latestVersion
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.accounts.Account
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 /**
  * Profile for accounts
  */
 class AccountProfile(
-    description: String? = null,
+    override val storage: ProfileStorage? = null,
 ) : Profile {
-    override val manager: ProfileManager<Profile> = AccountProfileManager.unsafeCast()
-    override var initializing: Boolean = true
-        private set
-    override var reloading: Boolean = false
-    override var saved: Boolean = true
-    override var ignoreReloads = AtomicInteger()
-    override val version: Int = latestVersion
-    override var description by StringDelegate(this, description ?: "")
+    override val lock = ProfileLock()
 
     @Deprecated("Account warning", level = DeprecationLevel.HIDDEN)
     val NOTICE by StringDelegate(this, "NEVER EVER SHARE THIS FILE WITH SOMEBODY (NOT IN ISSUES, BUG REPORTS, NOWHERE!). IF YOU DO SO, YOU PUT YOUR ACCOUNTS AT HIGH RISK!!!")
@@ -64,7 +59,7 @@ class AccountProfile(
      * All accounts
      */
     @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
-    var entries: MutableMap<String, Account> by MapDelegate(this, mutableMapOf(), "")
+    var entries: MutableMap<String, Account> by MapDelegate(this, mutableMapOf())
         private set
 
     /**
@@ -81,12 +76,16 @@ class AccountProfile(
         this::_selected.observe(this) { this.selected = entries[it] }
     }
 
-
     override fun toString(): String {
-        return AccountProfileManager.getName(this)
+        return storage?.toString() ?: super.toString()
     }
 
-    init {
-        initializing = false
+
+    companion object : ProfileType<AccountProfile> {
+        override val identifier = minosoft("account")
+        override val clazz = AccountProfile::class.java
+        override val icon: Ikon get() = FontAwesomeSolid.HEADPHONES
+
+        override fun create(storage: ProfileStorage?) = AccountProfile(storage)
     }
 }

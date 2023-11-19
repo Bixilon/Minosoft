@@ -13,43 +13,16 @@
 
 package de.bixilon.minosoft.config.profile.profiles.other
 
-import com.fasterxml.jackson.databind.JavaType
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
-import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
-import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
-import de.bixilon.minosoft.config.profile.GlobalProfileManager
-import de.bixilon.minosoft.config.profile.ProfileManager
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.json.Jackson
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
-import java.util.concurrent.locks.ReentrantLock
+import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 
-object OtherProfileManager : ProfileManager<OtherProfile> {
-    override val mapper = Jackson.MAPPER.copy()
-    override val namespace = "minosoft:other".toResourceLocation()
+object OtherProfileManager : StorageProfileManager<OtherProfile>() {
+    override val type get() = OtherProfile
     override val latestVersion get() = 3
-    override val saveLock = ReentrantLock()
-    override val profileClass = OtherProfile::class.java
-    override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
-    override val icon = FontAwesomeSolid.RANDOM
 
-    override val profiles: AbstractMutableBiMap<String, OtherProfile> by observedBiMap(synchronizedBiMapOf())
-
-    override var selected: OtherProfile = null.unsafeCast()
-        set(value) {
-            field = value
-            GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fire(OtherProfileSelectEvent(value))
-        }
-
-    override fun createProfile(description: String?) = OtherProfile(description ?: "Default profile for various things")
-
-    override fun migrate(from: Int, data: MutableMap<String, Any?>) {
-        when (from) {
-            1 -> OtherProfileMigration.migrate1(data)
-            2 -> OtherProfileMigration.migrate2(data)
-        }
+    override fun migrate(version: Int, data: MutableJsonObject) = when (version) {
+        1 -> OtherProfileMigration.migrate1(data)
+        2 -> OtherProfileMigration.migrate2(data)
+        else -> Unit
     }
 }

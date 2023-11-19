@@ -13,41 +13,39 @@
 
 package de.bixilon.minosoft.config.profile.profiles.entity
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.config.profile.ProfileManager
-import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
+import de.bixilon.minosoft.config.profile.ProfileLock
+import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.entity.animal.AnimalC
 import de.bixilon.minosoft.config.profile.profiles.entity.features.FeaturesC
 import de.bixilon.minosoft.config.profile.profiles.entity.general.GeneralC
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 /**
  * Profile for entity
  */
 class EntityProfile(
-    description: String? = null,
+    override val storage: ProfileStorage? = null,
 ) : Profile {
-    override val manager: ProfileManager<Profile> = EntityProfileManager.unsafeCast()
-    override var initializing: Boolean = true
-        private set
-    override var reloading: Boolean = false
-    override var saved: Boolean = true
-    override var ignoreReloads = AtomicInteger()
-    override val version: Int = latestVersion
-    override var description by StringDelegate(this, description ?: "")
-
+    override val lock = ProfileLock()
 
     val general = GeneralC(this)
     val features = FeaturesC(this)
     val animal = AnimalC(this)
 
+
     override fun toString(): String {
-        return EntityProfileManager.getName(this)
+        return storage?.toString() ?: super.toString()
     }
 
-    init {
-        initializing = false
+    companion object : ProfileType<EntityProfile> {
+        override val identifier = minosoft("entity")
+        override val clazz = EntityProfile::class.java
+        override val icon: Ikon get() = FontAwesomeSolid.SKULL
+
+        override fun create(storage: ProfileStorage?) = EntityProfile(storage)
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,9 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.config.profile.ProfileManager
-import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
+import de.bixilon.minosoft.config.profile.ProfileLock
+import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.rendering.advanced.AdvancedC
 import de.bixilon.minosoft.config.profile.profiles.rendering.animations.AnimationsC
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.CameraC
@@ -29,22 +27,18 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
 import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.OverlayC
 import de.bixilon.minosoft.config.profile.profiles.rendering.performance.PerformanceC
 import de.bixilon.minosoft.config.profile.profiles.rendering.sky.SkyC
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 /**
  * Profile for general rendering
  */
 class RenderingProfile(
-    description: String? = null,
+    override val storage: ProfileStorage? = null,
 ) : Profile {
-    override val manager: ProfileManager<Profile> = RenderingProfileManager.unsafeCast()
-    override var initializing: Boolean = true
-        private set
-    override var reloading: Boolean = false
-    override var saved: Boolean = true
-    override var ignoreReloads = AtomicInteger()
-    override val version: Int = latestVersion
-    override var description by StringDelegate(this, description ?: "")
+    override val lock = ProfileLock()
 
     val advanced = AdvancedC(this)
     val animations = AnimationsC(this)
@@ -60,10 +54,14 @@ class RenderingProfile(
 
 
     override fun toString(): String {
-        return RenderingProfileManager.getName(this)
+        return storage?.toString() ?: super.toString()
     }
 
-    init {
-        initializing = false
+    companion object : ProfileType<RenderingProfile> {
+        override val identifier = minosoft("rendering")
+        override val clazz = RenderingProfile::class.java
+        override val icon: Ikon get() = FontAwesomeSolid.VECTOR_SQUARE
+
+        override fun create(storage: ProfileStorage?) = RenderingProfile(storage)
     }
 }

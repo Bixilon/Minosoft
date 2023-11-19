@@ -15,17 +15,13 @@ package de.bixilon.minosoft.config.profile.delegate
 
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import kotlin.reflect.KProperty
 
 open class SimpleDelegate<T>(
     override val profile: Profile,
     default: T,
-    name: String,
     private val verify: ((T) -> Unit)? = null,
-) : DataObserver<T>(default), AbstractDelegate<T> {
-    override val name = minosoft(name)
-    override val description = minosoft("$name.description")
+) : DataObserver<T>(default), AbstractProfileDelegate<T> {
 
     override fun set(value: T): T {
         validate(value)
@@ -34,7 +30,7 @@ open class SimpleDelegate<T>(
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
         super.setValue(thisRef, property, value)
-        queueSave()
+        invalidate()
     }
 
     override fun validate(value: T) {

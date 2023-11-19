@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,36 +13,9 @@
 
 package de.bixilon.minosoft.config.profile.profiles.gui
 
-import com.fasterxml.jackson.databind.JavaType
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
-import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
-import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
-import de.bixilon.minosoft.config.profile.GlobalProfileManager
-import de.bixilon.minosoft.config.profile.ProfileManager
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.json.Jackson
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
-import java.util.concurrent.locks.ReentrantLock
+import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 
-object GUIProfileManager : ProfileManager<GUIProfile> {
-    override val mapper = Jackson.MAPPER.copy()
-    override val namespace = "minosoft:gui".toResourceLocation()
+object GUIProfileManager : StorageProfileManager<GUIProfile>() {
+    override val type get() = GUIProfile
     override val latestVersion get() = 1
-    override val saveLock = ReentrantLock()
-    override val profileClass = GUIProfile::class.java
-    override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
-    override val icon = FontAwesomeSolid.TACHOMETER_ALT
-
-    override val profiles: AbstractMutableBiMap<String, GUIProfile> by observedBiMap(synchronizedBiMapOf())
-
-    override var selected: GUIProfile = null.unsafeCast()
-        set(value) {
-            field = value
-            GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fire(GUIProfileSelectEvent(value))
-        }
-
-    override fun createProfile(description: String?) = GUIProfile(description ?: "Default hud profile")
 }

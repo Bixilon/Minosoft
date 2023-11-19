@@ -38,14 +38,14 @@ class GeneralC(profile: ErosProfile) {
     @get:JsonIgnore var accountProfile: AccountProfile
         get() = AccountProfileManager.profiles[_accountProfile] ?: AccountProfileManager.selected
         set(value) {
-            _accountProfile = AccountProfileManager.getName(value)
+            _accountProfile = value.storage?.name
         }
 
     /**
      * Profiles to use for connections
      * If profile is not set or not found, the global default profile is used
      */
-    var profileOverrides: MutableMap<ResourceLocation, String> by MapDelegate(profile, mutableMapOf(), "")
+    var profileOverrides: MutableMap<ResourceLocation, String> by MapDelegate(profile, mutableMapOf())
 
 
     /**

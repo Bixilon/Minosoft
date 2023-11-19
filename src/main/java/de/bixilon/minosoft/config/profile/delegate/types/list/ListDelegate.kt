@@ -14,21 +14,17 @@
 package de.bixilon.minosoft.config.profile.delegate.types.list
 
 import de.bixilon.kutil.observer.list.ListObserver
-import de.bixilon.minosoft.config.profile.delegate.AbstractDelegate
+import de.bixilon.minosoft.config.profile.delegate.AbstractProfileDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import kotlin.reflect.KProperty
 
 class ListDelegate<V>(
     override val profile: Profile,
     default: MutableList<V> = mutableListOf(),
-    name: String,
-) : ListObserver<V>(default), AbstractDelegate<MutableList<V>> {
-    override val name = minosoft(name)
-    override val description = minosoft("$name.description")
+) : ListObserver<V>(default), AbstractProfileDelegate<MutableList<V>> {
 
     init {
-        value.addObserver { queueSave() }
+        value.addObserver { invalidate() }
     }
 
     override fun get() = value
@@ -41,7 +37,7 @@ class ListDelegate<V>(
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: MutableList<V>) {
         super.setValue(thisRef, property, value)
-        queueSave()
+        invalidate()
     }
 
     override fun validate(value: MutableList<V>) = Unit

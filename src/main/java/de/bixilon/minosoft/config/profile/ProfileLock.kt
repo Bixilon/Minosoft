@@ -11,30 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.delegate
+package de.bixilon.minosoft.config.profile
 
-import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 
-interface AbstractDelegate<T> : TextFormattable {
-    val profile: Profile
-    val name: ResourceLocation
-    val description: ResourceLocation
-
-    fun get(): T
-    fun set(value: T): T
-
-    fun validate(value: T) = Unit
-
-    override fun toText(): Any? {
-        return get()
-    }
-
-    fun queueSave() {
-        if (profile.reloading) {
-            return
-        }
-        profile.saved = false
-    }
-}
+typealias ProfileLock = ThreadLock

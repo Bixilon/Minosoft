@@ -15,15 +15,12 @@ package de.bixilon.minosoft.gui.eros.main.play.server.type.types
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
-import de.bixilon.minosoft.modding.EventPriorities
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.kordamp.ikonli.Ikon
@@ -38,9 +35,7 @@ object CustomServerType : ServerType {
     override val translationKey: ResourceLocation = "minosoft:server_type.custom".toResourceLocation()
 
     init {
-        GlobalEventMaster.listen<ErosProfileSelectEvent>(priority = EventPriorities.LOW) {
-            servers = ErosProfileManager.selected.server.entries
-        }
+        ErosProfileManager::selected.observe(this) { ErosProfileManager.selected.server.entries }
     }
 
     override fun refresh(cards: List<ServerCard>) {

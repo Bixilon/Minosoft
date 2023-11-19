@@ -66,7 +66,7 @@ abstract class Account(
         profiles@ for (profile in AccountProfileManager.profiles.values) {
             for ((_, account) in profile.entries) {
                 if (account === this) {
-                    AccountProfileManager.saveAsync(profile)
+                    profile.storage?.invalidate()
                     break@profiles
                 }
             }

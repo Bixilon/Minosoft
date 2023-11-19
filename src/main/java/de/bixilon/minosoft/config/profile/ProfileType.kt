@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.connection
+package de.bixilon.minosoft.config.profile
 
-import de.bixilon.minosoft.modding.event.events.Event
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
+import de.bixilon.minosoft.data.registries.identified.Identified
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
-class ConnectionProfileSelectEvent(
-    val profile: ConnectionProfile,
-) : Event
+interface ProfileType<P : Profile> : Identified {
+    val clazz: Class<P>
+    val icon: Ikon get() = FontAwesomeSolid.QUESTION
+
+    fun create(storage: ProfileStorage?): P
+}

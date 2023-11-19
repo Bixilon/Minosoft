@@ -20,6 +20,8 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
+import de.bixilon.minosoft.config.profile.ProfileType
+import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
@@ -127,11 +129,18 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         val ping = serverCard.ping
         val version = serverCard.server.forcedVersion ?: serverCard.ping.serverVersion ?: return
         Eros.mainErosController.verifyAccount { account ->
+            val override: MutableMap<ProfileType<*>, String> = mutableMapOf()
+            for ((type, name) in ErosProfileManager.selected.general.profileOverrides) {
+                override[ProfileManagers[type]?.type ?: continue] = name
+            }
+            for ((type, name) in server.profiles) {
+                override[ProfileManagers[type]?.type ?: continue] = name
+            }
             val connection = PlayConnection(
                 address = ping.realAddress ?: DNSUtil.getServerAddress(server.address),
                 account = account,
                 version = version,
-                profiles = ConnectionProfiles(ErosProfileManager.selected.general.profileOverrides.toMutableMap().apply { putAll(server.profiles) })
+                profiles = ConnectionProfiles(override)
             )
             account.connections[server] = connection
             serverCard.connections += connection

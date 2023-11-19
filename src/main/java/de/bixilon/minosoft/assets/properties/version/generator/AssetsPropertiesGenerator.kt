@@ -16,7 +16,7 @@ package de.bixilon.minosoft.assets.properties.version.generator
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
-import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
+import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.logging.Log
 import org.objenesis.ObjenesisStd
@@ -33,8 +33,7 @@ object AssetsPropertiesGenerator {
         if (args.size != 1) {
             throw IllegalArgumentException("Usage: application <client jar hash>")
         }
-        // create profile to not make crashes (or load an actual profile)
-        val profile = ResourcesProfileManager.createProfile()
+        val profile = ResourcesProfile()
         profile.verify = false
         val (clientJarHash) = args
 

@@ -14,21 +14,17 @@
 package de.bixilon.minosoft.config.profile.delegate.types.set
 
 import de.bixilon.kutil.observer.set.SetObserver
-import de.bixilon.minosoft.config.profile.delegate.AbstractDelegate
+import de.bixilon.minosoft.config.profile.delegate.AbstractProfileDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import kotlin.reflect.KProperty
 
 class SetDelegate<V>(
     override val profile: Profile,
     default: MutableSet<V> = mutableSetOf(),
-    name: String,
-) : SetObserver<V>(default), AbstractDelegate<MutableSet<V>> {
-    override val name = minosoft(name)
-    override val description = minosoft("$name.description")
+) : SetObserver<V>(default), AbstractProfileDelegate<MutableSet<V>> {
 
     init {
-        value.addObserver { queueSave() }
+        value.addObserver { invalidate() }
     }
 
     override fun get() = value
@@ -41,7 +37,7 @@ class SetDelegate<V>(
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: MutableSet<V>) {
         super.setValue(thisRef, property, value)
-        queueSave()
+        invalidate()
     }
 
     override fun validate(value: MutableSet<V>) = Unit

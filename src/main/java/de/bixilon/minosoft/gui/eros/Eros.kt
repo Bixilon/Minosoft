@@ -16,8 +16,9 @@ package de.bixilon.minosoft.gui.eros
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.forceInit
@@ -73,9 +74,9 @@ object Eros {
             start()
         }
 
-        GlobalEventMaster.listen<ErosProfileSelectEvent> {
+        ErosProfileManager::selected.observe(this) {
             if (skipErosStartup || !this::mainErosController.isInitialized) {
-                return@listen
+                return@observe
             }
             JavaFXUtil.runLater {
                 this.mainErosController.stage.close()

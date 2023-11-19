@@ -19,20 +19,17 @@ import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 
 class ProfileCardController : AbstractCardController<Profile>() {
     @FXML private lateinit var profileNameFX: TextFlow
-    @FXML private lateinit var profileDescriptionFX: TextFlow
 
     lateinit var profileList: ProfilesListController
 
 
     override fun clear() {
         profileNameFX.children.clear()
-        profileDescriptionFX.children.clear()
     }
 
     override fun updateItem(item: Profile?, empty: Boolean) {
@@ -45,8 +42,7 @@ class ProfileCardController : AbstractCardController<Profile>() {
         }
 
 
-        profileNameFX.text = item.name
-        item::description.observeFX(this, true) { profileDescriptionFX.text = it }
+        profileNameFX.text = item.storage?.name
     }
 
     companion object : CardFactory<ProfileCardController> {

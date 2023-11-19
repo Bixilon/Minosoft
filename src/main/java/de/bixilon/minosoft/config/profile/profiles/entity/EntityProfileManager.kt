@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,37 +13,9 @@
 
 package de.bixilon.minosoft.config.profile.profiles.entity
 
-import com.fasterxml.jackson.databind.JavaType
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
-import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
-import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
-import de.bixilon.minosoft.config.profile.GlobalProfileManager
-import de.bixilon.minosoft.config.profile.ProfileManager
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.json.Jackson
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
-import java.util.concurrent.locks.ReentrantLock
+import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 
-object EntityProfileManager : ProfileManager<EntityProfile> {
-    override val mapper = Jackson.MAPPER.copy()
-    override val namespace = "minosoft:entity".toResourceLocation()
+object EntityProfileManager : StorageProfileManager<EntityProfile>() {
+    override val type get() = EntityProfile
     override val latestVersion get() = 1
-    override val saveLock = ReentrantLock()
-    override val profileClass = EntityProfile::class.java
-    override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
-    override val icon = FontAwesomeSolid.SKULL
-
-
-    override val profiles: AbstractMutableBiMap<String, EntityProfile> by observedBiMap(synchronizedBiMapOf())
-
-    override var selected: EntityProfile = null.unsafeCast()
-        set(value) {
-            field = value
-            GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fire(EntityProfileSelectEvent(value))
-        }
-
-    override fun createProfile(description: String?) = EntityProfile(description ?: "Default entity profile")
 }

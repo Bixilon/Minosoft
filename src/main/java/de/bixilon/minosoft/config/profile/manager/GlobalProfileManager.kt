@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.block
+package de.bixilon.minosoft.config.profile.manager
 
-import de.bixilon.minosoft.modding.event.events.Event
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.terminal.RunConfiguration
 
-class BlockProfileSelectEvent(
-    val profile: BlockProfile,
-) : Event
+object GlobalProfileManager {
+    private val SELECTED_PROFILES_PATH = RunConfiguration.CONFIG_DIRECTORY.resolve("selected_profiles.json").toFile()
+
+    init {
+    }
+
+    @Synchronized
+    fun initialize(latch: AbstractLatch?) {
+    }
+
+}

@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.eros.dialog.profiles
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.GlobalProfileManager
-import de.bixilon.minosoft.config.profile.ProfileManager
-import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.ProfileType
+import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.data.language.translate.Translatable
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -33,14 +33,14 @@ import javafx.stage.Modality
 
 class ProfileSelectDialog(
     profiles: MutableMap<ResourceLocation, String>,
-    private val onConfirm: (Map<ResourceLocation, String>) -> Unit,
+    private val onConfirm: (Map<ProfileType<*>, String>) -> Unit,
     private val onCancel: () -> Unit,
 ) : DialogController() {
     private val profiles = profiles.toMutableMap()
     @FXML private lateinit var headerFX: TextFlow
 
     @FXML private lateinit var profilesFX: TableView<ProfileEntry>
-    @FXML private lateinit var typeColumnFX: TableColumn<ProfileEntry, ResourceLocation>
+    @FXML private lateinit var typeColumnFX: TableColumn<ProfileEntry, Identified>
     @FXML private lateinit var profileColumnFX: TableColumn<ProfileEntry, Any?>
 
     @FXML private lateinit var cancelButtonFX: Button
@@ -59,14 +59,15 @@ class ProfileSelectDialog(
         typeColumnFX.ctext = TYPE_COLUMN_TITLE
         profileColumnFX.ctext = PROFILE_COLUMN_TITLE
 
-        typeColumnFX.setCellFactory { ResourceLocationCell() }
+        typeColumnFX.setCellFactory { IdentifiedCell() }
         profileColumnFX.setCellFactory { ProfileCell() }
 
         cancelButtonFX.ctext = CANCEL
         confirmButtonFX.ctext = CONFIRM
 
-        for ((type, profile) in profiles) {
-            profilesFX.items += ProfileEntry(type, profile)
+        for ((name, profile) in profiles) {
+            val manager = ProfileManagers[name] ?: continue
+            profilesFX.items += ProfileEntry(manager.type, profile)
         }
         profilesFX.items += ProfileEntry(null, "")
     }
@@ -80,12 +81,10 @@ class ProfileSelectDialog(
     @FXML
     fun confirm() {
         stage.close()
-        val profiles: MutableMap<ResourceLocation, String> = mutableMapOf()
-        for ((resourceLocation, profile) in this.profilesFX.items) {
-            if (profile !is String) {
-                continue
-            }
-            profiles[resourceLocation ?: continue] = profile
+        val profiles: MutableMap<ProfileType<*>, String> = mutableMapOf()
+        for ((type, profile) in this.profilesFX.items) {
+            if (profile !is String) continue
+            profiles[type ?: continue] = profile
         }
         onConfirm(profiles)
     }
@@ -112,7 +111,7 @@ class ProfileSelectDialog(
     }
 
     private data class ProfileEntry(
-        var resourceLocation: ResourceLocation?,
+        var type: ProfileType<*>?,
         var profile: String?,
     )
 
@@ -161,7 +160,7 @@ class ProfileSelectDialog(
         }
     }
 
-    private inner class ResourceLocationCell : EditTableCell<ResourceLocation?>() {
+    private inner class IdentifiedCell : EditTableCell<Identified?>() {
 
         init {
             comboBox.selectionModel.selectedItemProperty().addListener { _, previous, selected ->
@@ -174,29 +173,27 @@ class ProfileSelectDialog(
         }
 
         override fun startEdit() {
-            val thisNamespace: ResourceLocation? = tableRow.item.resourceLocation
+            val type = tableRow.item.type
             if (comboBox.items.isEmpty()) {
-                val alreadyDisplayed: MutableSet<ResourceLocation?> = mutableSetOf()
+                val out: MutableSet<ProfileType<*>?> = mutableSetOf()
                 for (entry in tableView.items) {
-                    alreadyDisplayed += entry.resourceLocation ?: continue
+                    out += entry.type ?: continue
                 }
-                for ((namespace, profileManager) in GlobalProfileManager.DEFAULT_MANAGERS) {
-                    if (!profileManager.profileSelectable || (thisNamespace != namespace && namespace in alreadyDisplayed)) {
-                        continue
-                    }
-                    comboBox.items += namespace
+                for (manager in ProfileManagers) {
+                    if (type != manager.type && manager.type in out) continue
+                    comboBox.items += type
                 }
             }
-            comboBox.selectionModel.select(thisNamespace)
+            comboBox.selectionModel.select(type)
             super.startEdit()
         }
 
 
-        override fun update(entry: ProfileEntry) = updateItem(entry.resourceLocation)
+        override fun update(entry: ProfileEntry) = updateItem(entry.type)
 
-        override fun updateItem(item: ResourceLocation?) {
+        override fun updateItem(item: Identified?) {
             label.ctext = item?.toString() ?: CLICK_ME_TO_ADD
-            tableRow.item.resourceLocation = item
+            tableRow.item.type = item.unsafeCast()
         }
     }
 
@@ -205,15 +202,14 @@ class ProfileSelectDialog(
         init {
             // forbid selection of "CREATE"
             comboBox.selectionModel.selectedItemProperty().addListener { _, _, next ->
-                if (next == SelectSpecialOptions.CREATE) {
-                    val profileManager: ProfileManager<Profile> = (GlobalProfileManager[this.tableRow.item.resourceLocation] ?: return@addListener).unsafeCast()
-                    ProfileCreateDialog(profileManager, true) { _, profile ->
-                        val name = profile.name
-                        comboBox.items.add(name)
-                        comboBox.selectionModel.select(name)
-                    }.show()
-                    comboBox.selectionModel.select(SelectSpecialOptions.NONE)
-                }
+                if (next != SelectSpecialOptions.CREATE) return@addListener
+                val manager = ProfileManagers[this.tableRow.item.type?.identifier] ?: return@addListener
+                ProfileCreateDialog(manager, true) { _, profile ->
+                    comboBox.items.add(manager.type)
+                    comboBox.selectionModel.select(profile)
+                }.show()
+
+                comboBox.selectionModel.select(SelectSpecialOptions.NONE)
             }
             styleClass.add("table-row-cell")
         }
@@ -234,7 +230,7 @@ class ProfileSelectDialog(
             comboBox.items += SelectSpecialOptions.NONE
             comboBox.items += SelectSpecialOptions.CREATE
 
-            GlobalProfileManager[tableRow.item.resourceLocation ?: return]?.let {
+            ProfileManagers[tableRow.item.type?.identifier]?.let {
                 for (profile in it.profiles.keys) {
                     comboBox.items += profile
                 }

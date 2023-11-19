@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,31 +13,25 @@
 
 package de.bixilon.minosoft.config.profile.profiles.audio
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.ProfileLock
+import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.audio.gui.GuiC
 import de.bixilon.minosoft.config.profile.profiles.audio.types.TypesC
 import de.bixilon.minosoft.config.profile.profiles.audio.volume.VolumeC
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 /**
  * Profile for audio
  */
 class AudioProfile(
-    description: String? = null,
+    override val storage: ProfileStorage? = null,
 ) : Profile {
-    override val manager: ProfileManager<Profile> = AudioProfileManager.unsafeCast()
-    override var initializing: Boolean = true
-        private set
-    override var reloading: Boolean = false
-    override var saved: Boolean = true
-    override var ignoreReloads = AtomicInteger()
-    override val version: Int = latestVersion
-    override var description by StringDelegate(this, description ?: "")
+    override val lock = ProfileLock()
 
     /**
      * Skips the loading od the AudioPlayer
@@ -58,10 +52,14 @@ class AudioProfile(
 
 
     override fun toString(): String {
-        return AudioProfileManager.getName(this)
+        return storage?.toString() ?: super.toString()
     }
 
-    init {
-        initializing = false
+    companion object : ProfileType<AudioProfile> {
+        override val identifier = minosoft("audio")
+        override val clazz = AudioProfile::class.java
+        override val icon: Ikon get() = FontAwesomeSolid.USER_CIRCLE
+
+        override fun create(storage: ProfileStorage?) = AudioProfile(storage)
     }
 }

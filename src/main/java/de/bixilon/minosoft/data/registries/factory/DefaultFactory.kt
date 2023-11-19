@@ -45,8 +45,8 @@ open class DefaultFactory<T : Identified>(private vararg val factories: T) : Ite
         map -= factory.identifier
     }
 
-    operator fun get(resourceLocation: ResourceLocation): T? {
-        return map[resourceLocation]
+    operator fun get(identifier: ResourceLocation?): T? {
+        return map[identifier]
     }
 
     operator fun get(index: Int): T {

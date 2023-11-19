@@ -13,34 +13,28 @@
 
 package de.bixilon.minosoft.config.profile.profiles.controls
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.config.profile.ProfileManager
-import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
+import de.bixilon.minosoft.config.profile.ProfileLock
+import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.controls.interaction.InteractionC
 import de.bixilon.minosoft.config.profile.profiles.controls.mouse.MouseC
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import java.util.concurrent.atomic.AtomicInteger
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 /**
  * Profile for controls
  */
 class ControlsProfile(
-    description: String? = null,
+    override val storage: ProfileStorage? = null,
 ) : Profile {
-    override val manager: ProfileManager<Profile> = ControlsProfileManager.unsafeCast()
-    override var initializing: Boolean = true
-        private set
-    override var reloading: Boolean = false
-    override var saved: Boolean = true
-    override var ignoreReloads = AtomicInteger()
-    override val version: Int = latestVersion
-    override var description by StringDelegate(this, description ?: "")
+    override val lock = ProfileLock()
 
-    var bindings: MutableMap<ResourceLocation, KeyBinding> by MapDelegate(this, mutableMapOf(), "")
+    var bindings: MutableMap<ResourceLocation, KeyBinding> by MapDelegate(this, mutableMapOf())
         private set
 
     val mouse = MouseC(this)
@@ -48,10 +42,14 @@ class ControlsProfile(
 
 
     override fun toString(): String {
-        return ControlsProfileManager.getName(this)
+        return storage?.toString() ?: super.toString()
     }
 
-    init {
-        initializing = false
+    companion object : ProfileType<ControlsProfile> {
+        override val identifier = minosoft("controls")
+        override val clazz = ControlsProfile::class.java
+        override val icon: Ikon get() = FontAwesomeSolid.KEYBOARD
+
+        override fun create(storage: ProfileStorage?) = ControlsProfile(storage)
     }
 }

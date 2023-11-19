@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,43 +13,41 @@
 
 package de.bixilon.minosoft.config.profile.profiles.eros
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.config.profile.ProfileManager
-import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
+import de.bixilon.minosoft.config.profile.ProfileLock
+import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.eros.general.GeneralC
 import de.bixilon.minosoft.config.profile.profiles.eros.server.ServerC
 import de.bixilon.minosoft.config.profile.profiles.eros.text.TextC
 import de.bixilon.minosoft.config.profile.profiles.eros.theme.ThemeC
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 /**
  * Profile for Eros
  */
 class ErosProfile(
-    description: String? = null,
+    override val storage: ProfileStorage? = null,
 ) : Profile {
-    override val manager: ProfileManager<Profile> = ErosProfileManager.unsafeCast()
-    override var initializing: Boolean = true
-        private set
-    override var reloading: Boolean = false
-    override var saved: Boolean = true
-    override var ignoreReloads = AtomicInteger()
-    override val version: Int = latestVersion
-    override var description by StringDelegate(this, description ?: "")
-
+    override val lock = ProfileLock()
 
     val general = GeneralC(this)
     val theme = ThemeC(this)
     val server = ServerC(this)
     val text = TextC(this)
 
+
     override fun toString(): String {
-        return ErosProfileManager.getName(this)
+        return storage?.toString() ?: super.toString()
     }
 
-    init {
-        initializing = false
+    companion object : ProfileType<ErosProfile> {
+        override val identifier = minosoft("eros")
+        override val clazz = ErosProfile::class.java
+        override val icon: Ikon get() = FontAwesomeSolid.WINDOW_RESTORE
+
+        override fun create(storage: ProfileStorage?) = ErosProfile(storage)
     }
 }

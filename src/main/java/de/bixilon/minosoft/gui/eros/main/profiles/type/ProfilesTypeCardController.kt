@@ -18,8 +18,8 @@ import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.observer.map.MapChange
 import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observeBiMap
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -30,12 +30,12 @@ import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
 import kotlin.reflect.KProperty0
 
-class ProfilesTypeCardController : AbstractCardController<ProfileManager<*>>() {
+class ProfilesTypeCardController : AbstractCardController<StorageProfileManager<*>>() {
     @FXML private lateinit var iconFX: FontIcon
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var textFX: TextFlow
 
-    override fun updateItem(item: ProfileManager<*>?, empty: Boolean) {
+    override fun updateItem(item: StorageProfileManager<*>?, empty: Boolean) {
         val previous = this.item
         super.updateItem(item, empty)
         item ?: return
@@ -46,14 +46,14 @@ class ProfilesTypeCardController : AbstractCardController<ProfileManager<*>>() {
 
         iconFX.isVisible = true
 
-        iconFX.iconCode = item.icon
-        headerFX.text = Minosoft.LANGUAGE_MANAGER.forceTranslate(item.namespace)
+        iconFX.iconCode = item.type.icon
+        headerFX.text = Minosoft.LANGUAGE_MANAGER.forceTranslate(item.type.identifier)
 
         recalculate(item)
         item::profiles.observeBiMapFX(this) { recalculate(item) }
     }
 
-    private fun recalculate(item: ProfileManager<*>) {
+    private fun recalculate(item: StorageProfileManager<*>) {
         textFX.text = "${item.profiles.size} profiles"
     }
 

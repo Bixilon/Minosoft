@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,7 +36,7 @@ class OutlineC(profile: BlockProfile) {
      * The color of the block that is currently selected
      * Defaults to light red
      */
-    var outlineColor by ColorDelegate(profile, ChatColors.RED, "profile.block.outline.color")
+    var outlineColor by ColorDelegate(profile, ChatColors.RED)
 
 
     /**
@@ -47,5 +47,5 @@ class OutlineC(profile: BlockProfile) {
     /**
      * The color of the block collision box that is currently selected
      */
-    var collisionColor by ColorDelegate(profile, ChatColors.BLUE, "profile.block.outline.collisions.color")
+    var collisionColor by ColorDelegate(profile, ChatColors.BLUE)
 }

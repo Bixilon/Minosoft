@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.eros.dialog.profiles
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.config.profile.GlobalProfileManager
-import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -34,9 +34,9 @@ import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 
 class ProfileCreateDialog<T : Profile>(
-    private val manager: ProfileManager<T>,
+    private val manager: StorageProfileManager<T>,
     private val strictType: Boolean,
-    private val onCreate: (manager: ProfileManager<*>, profile: Profile) -> Unit,
+    private val onCreate: (manager: StorageProfileManager<*>, profile: Profile) -> Unit,
 ) : JavaFXWindowController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var descriptionFX: TextFlow
@@ -45,8 +45,6 @@ class ProfileCreateDialog<T : Profile>(
     @FXML private lateinit var typeFX: ComboBox<ResourceLocation>
     @FXML private lateinit var nameLabelFX: TextFlow
     @FXML private lateinit var nameFX: TextField
-    @FXML private lateinit var descriptionLabelFX: TextFlow
-    @FXML private lateinit var descriptionFieldFX: TextField
 
     @FXML private lateinit var createButtonFX: Button
     @FXML private lateinit var cancelButtonFX: Button
@@ -63,14 +61,14 @@ class ProfileCreateDialog<T : Profile>(
         super.init()
 
         if (strictType) {
-            typeFX.items += manager.namespace
-            typeFX.selectionModel.select(manager.namespace)
+            typeFX.items += manager.type.identifier
+            typeFX.selectionModel.select(manager.type.identifier)
             typeFX.isDisable = true
         } else {
-            for (namespace in GlobalProfileManager.DEFAULT_MANAGERS.keys) {
-                typeFX.items += namespace
+            for (namespace in ProfileManagers) {
+                typeFX.items += namespace.identifier
             }
-            typeFX.selectionModel.select(manager.namespace)
+            typeFX.selectionModel.select(manager.type.identifier)
         }
 
 
@@ -79,13 +77,11 @@ class ProfileCreateDialog<T : Profile>(
         typeLabelFX.text = TYPE_LABEL
         nameLabelFX.text = NAME_LABEL
         nameFX.placeholder = NAME_PLACEHOLDER
-        descriptionLabelFX.text = DESCRIPTION_LABEL
-        descriptionFieldFX.placeholder = DESCRIPTION_PLACEHOLDER
         createButtonFX.ctext = CREATE_BUTTON
         cancelButtonFX.ctext = CANCEL_BUTTON
 
         nameFX.textProperty().addListener { _, _, new ->
-            createButtonFX.isDisable = !ProfileManager.PROFILE_REGEX.matches(new) || manager.profiles[new] != null
+            createButtonFX.isDisable = !StorageProfileManager.NAME_REGEX.matches(new) || manager.profiles[new] != null
         }
     }
 
@@ -101,15 +97,10 @@ class ProfileCreateDialog<T : Profile>(
 
     @FXML
     fun create() {
-        if (createButtonFX.isDisable) {
-            return
-        }
-        val manager: ProfileManager<T> = if (strictType) {
-            manager
-        } else {
-            GlobalProfileManager[typeFX.selectionModel.selectedItem]?.unsafeCast() ?: return
-        }
-        val profile = manager.createProfile(nameFX.text, descriptionFieldFX.text)
+        if (createButtonFX.isDisable) return
+
+        val manager: StorageProfileManager<T> = if (strictType) manager else ProfileManagers[typeFX.selectionModel.selectedItem]?.unsafeCast() ?: return
+        val profile = manager.create(nameFX.text)
         onCreate(manager, profile)
         close()
     }
@@ -128,8 +119,6 @@ class ProfileCreateDialog<T : Profile>(
         private val TYPE_LABEL = "minosoft:general.dialog.profile.create.type.label".toResourceLocation()
         private val NAME_LABEL = "minosoft:general.dialog.profile.create.name.label".toResourceLocation()
         private val NAME_PLACEHOLDER = "minosoft:general.dialog.profile.create.name.placeholder".toResourceLocation()
-        private val DESCRIPTION_LABEL = "minosoft:general.dialog.profile.create.description.label".toResourceLocation()
-        private val DESCRIPTION_PLACEHOLDER = "minosoft:general.dialog.profile.create.description.placeholder".toResourceLocation()
         private val CREATE_BUTTON = "minosoft:general.dialog.profile.create.create_button".toResourceLocation()
         private val CANCEL_BUTTON = "minosoft:general.dialog.profile.create.cancel_button".toResourceLocation()
     }

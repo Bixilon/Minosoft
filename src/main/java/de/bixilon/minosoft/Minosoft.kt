@@ -33,7 +33,7 @@ import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.meta.MinosoftMeta
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
-import de.bixilon.minosoft.config.profile.GlobalProfileManager
+import de.bixilon.minosoft.config.profile.manager.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.entities.event.EntityEvents
 import de.bixilon.minosoft.data.language.LanguageUtil

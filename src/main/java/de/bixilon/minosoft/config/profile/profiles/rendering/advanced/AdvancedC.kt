@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,7 +25,7 @@ class AdvancedC(profile: RenderingProfile) {
      * Every value above 0 means 1/x  * <vsync framerate>
      * Must not be negative
      */
-    var swapInterval by IntDelegate(profile, 1, "profile.rendering.advanced.swap_interval", arrayOf(0..Int.MAX_VALUE))
+    var swapInterval by IntDelegate(profile, 1, arrayOf(0..Int.MAX_VALUE))
 
     /**
      * Instead of using GL_TRIANGLES it tries to use GL_QUADS whenever possible.

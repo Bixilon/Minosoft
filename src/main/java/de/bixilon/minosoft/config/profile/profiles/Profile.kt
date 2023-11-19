@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,21 +14,12 @@
 package de.bixilon.minosoft.config.profile.profiles
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonMerge
-import com.fasterxml.jackson.annotation.OptBoolean
-import de.bixilon.minosoft.config.profile.ProfileManager
-import java.util.concurrent.atomic.AtomicInteger
+import com.fasterxml.jackson.annotation.JsonInclude
+import de.bixilon.kutil.concurrent.lock.Lock
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 
 interface Profile {
-    @get:JsonMerge(OptBoolean.FALSE)
-    val version: Int
-    var description: String
-    @get:JsonIgnore val manager: ProfileManager<Profile>
-    @get:JsonIgnore val name: String
-        get() = manager.getName(this)
-
-    @get:JsonIgnore var saved: Boolean
-    @get:JsonIgnore val initializing: Boolean
-    @get:JsonIgnore var reloading: Boolean
-    @get:JsonIgnore var ignoreReloads: AtomicInteger// used for saving and not instantly reloading
+    @get:JsonIgnore val storage: ProfileStorage?
+    @get:JsonInclude(JsonInclude.Include.NON_NULL) val version: Int? get() = storage?.version
+    @get:JsonIgnore val lock: Lock
 }

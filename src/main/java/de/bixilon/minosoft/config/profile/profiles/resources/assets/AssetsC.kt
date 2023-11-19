@@ -25,9 +25,9 @@ import de.bixilon.minosoft.config.profile.profiles.resources.assets.packs.Resour
 class AssetsC(profile: ResourcesProfile) {
     var disableJarAssets by BooleanDelegate(profile, false)
     var disableIndexAssets by BooleanDelegate(profile, false)
-    val indexAssetsTypes: MutableSet<IndexAssetsType> by SetDelegate(profile, mutableSetOf(*IndexAssetsType.VALUES), "")
+    val indexAssetsTypes: MutableSet<IndexAssetsType> by SetDelegate(profile, mutableSetOf(*IndexAssetsType.VALUES))
 
-    val resourcePacks: List<ResourcePack> by ListDelegate(profile, mutableListOf(), "")
+    val resourcePacks: List<ResourcePack> by ListDelegate(profile, mutableListOf())
 
-    val packFormat by IntDelegate(profile, -1, "", arrayOf(-1..-1, 0..LATEST_PACK_FORMAT))
+    val packFormat by IntDelegate(profile, -1, arrayOf(-1..-1, 0..LATEST_PACK_FORMAT))
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.particle
+package de.bixilon.minosoft.config.profile.delegate
 
-import de.bixilon.minosoft.modding.event.events.Event
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
 
-class ParticleProfileSelectEvent(
-    val profile: ParticleProfile,
-) : Event
+interface AbstractProfileDelegate<T> : TextFormattable {
+    val profile: Profile
+
+    fun get(): T
+    fun set(value: T): T
+
+    fun validate(value: T) = Unit
+
+    override fun toText(): Any? {
+        return get()
+    }
+
+    fun invalidate() {
+        profile.storage?.invalidate()
+    }
+}

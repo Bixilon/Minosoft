@@ -202,7 +202,11 @@ class ServerModifyDialog(
         val dialog = ProfileSelectDialog(
             profiles = profiles,
             onConfirm = {
-                this.profiles = it.toMutableMap()
+                val map: MutableMap<ResourceLocation, String> = mutableMapOf()
+                for ((type, profile) in it) {
+                    map[type.identifier] = profile
+                }
+                this.profiles = map
                 this.profileSelectDialog = null
             },
             onCancel = {

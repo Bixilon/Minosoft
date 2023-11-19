@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,9 +19,8 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 open class NullableStringDelegate(
     override val profile: Profile,
     default: String?,
-    name: String = "",
     verify: ((String?) -> Unit)? = null,
-) : SimpleDelegate<String?>(profile, default, name, verify) {
+) : SimpleDelegate<String?>(profile, default, verify) {
 
     override fun validate(value: String?) = Unit
 }

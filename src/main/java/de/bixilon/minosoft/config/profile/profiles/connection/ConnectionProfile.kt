@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,33 +13,27 @@
 
 package de.bixilon.minosoft.config.profile.profiles.connection
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.ProfileLock
+import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.EnumDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.LanguageDelegate
-import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.connection.signature.SignatureC
 import de.bixilon.minosoft.config.profile.profiles.connection.skin.SkinC
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.entities.entities.player.Arms
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 /**
  * Profile for connection
  */
 class ConnectionProfile(
-    description: String? = null,
+    override val storage: ProfileStorage? = null,
 ) : Profile {
-    override val manager: ProfileManager<Profile> = ConnectionProfileManager.unsafeCast()
-    override var initializing: Boolean = true
-        private set
-    override var reloading: Boolean = false
-    override var saved: Boolean = true
-    override var ignoreReloads = AtomicInteger()
-    override val version: Int = latestVersion
-    override var description by StringDelegate(this, description ?: "")
+    override val lock = ProfileLock()
 
     /**
      * Language for language files.
@@ -69,11 +63,16 @@ class ConnectionProfile(
      */
     var fakeBrand by BooleanDelegate(this, false)
 
+
     override fun toString(): String {
-        return ConnectionProfileManager.getName(this)
+        return storage?.toString() ?: super.toString()
     }
 
-    init {
-        initializing = false
+    companion object : ProfileType<ConnectionProfile> {
+        override val identifier = minosoft("connection")
+        override val clazz = ConnectionProfile::class.java
+        override val icon: Ikon get() = FontAwesomeSolid.NETWORK_WIRED
+
+        override fun create(storage: ProfileStorage?) = ConnectionProfile(storage)
     }
 }

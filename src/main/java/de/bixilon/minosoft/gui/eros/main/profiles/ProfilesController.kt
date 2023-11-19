@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.eros.main.profiles
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.config.profile.GlobalProfileManager
-import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.manager.ProfileManagers
+import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.profiles.type.ProfilesTypeCardController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -26,14 +26,14 @@ import javafx.scene.layout.Pane
 
 class ProfilesController : EmbeddedJavaFXController<Pane>() {
     @FXML private lateinit var managerContentFX: Pane
-    @FXML private lateinit var managerTypeListViewFX: ListView<ProfileManager<*>>
+    @FXML private lateinit var managerTypeListViewFX: ListView<StorageProfileManager<*>>
 
 
     private lateinit var currentController: EmbeddedJavaFXController<*>
 
     override fun init() {
         managerTypeListViewFX.setCellFactory { ProfilesTypeCardController.build() }
-        for (manager in GlobalProfileManager.DEFAULT_MANAGERS.values) {
+        for (manager in ProfileManagers) {
             managerTypeListViewFX.items += manager
         }
         // ToDo

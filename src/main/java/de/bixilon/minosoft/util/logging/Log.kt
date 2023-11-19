@@ -14,16 +14,15 @@ package de.bixilon.minosoft.util.logging
 
 import de.bixilon.kutil.ansi.ANSI.RESET
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileSelectEvent
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.TextFormattable
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
 import java.io.PrintStream
 import java.io.PrintWriter
@@ -60,8 +59,7 @@ object Log {
                 QUEUE.take().print()
             }
         }, "Log").start()
-
-        GlobalEventMaster.register(CallbackEventListener.of<OtherProfileSelectEvent> { this.levels = it.profile.log.levels })
+        OtherProfileManager::selected.observe(this) { this.levels = it.log.levels }
         ShutdownManager.addHook { ASYNC_LOGGING = false; catchAll { await() } }
     }
 

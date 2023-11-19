@@ -13,31 +13,25 @@
 
 package de.bixilon.minosoft.config.profile.profiles.particle
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.ProfileLock
+import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
-import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.particle.types.TypesC
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import java.util.concurrent.atomic.AtomicInteger
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 /**
  * Profile for particle
  */
 class ParticleProfile(
-    description: String? = null,
+    override val storage: ProfileStorage? = null,
 ) : Profile {
-    override val manager: ProfileManager<Profile> = ParticleProfileManager.unsafeCast()
-    override var initializing: Boolean = true
-        private set
-    override var reloading: Boolean = false
-    override var saved: Boolean = true
-    override var ignoreReloads = AtomicInteger()
-    override val version: Int = latestVersion
-    override var description by StringDelegate(this, description ?: "")
+    override val lock = ProfileLock()
 
     /**
      * Skips the loading of the particle render. Requires to reload the renderer!
@@ -56,7 +50,7 @@ class ParticleProfile(
      *
      * @see de.bixilon.minosoft.config.profile.profiles.block.BlockProfile.viewDistance
      */
-    var viewDistance by IntDelegate(this, 10, "", arrayOf(0..128))
+    var viewDistance by IntDelegate(this, 10, arrayOf(0..128))
 
     /**
      * Limits the number of particles.
@@ -64,14 +58,19 @@ class ParticleProfile(
      * Must not be negative or exceed $RenderConstants.MAXIMUM_PARTICLE_AMOUNT
      * @see ParticleRenderer.MAXIMUM_AMOUNT
      */
-    var maxAmount by IntDelegate(this, ParticleRenderer.MAXIMUM_AMOUNT, "", arrayOf(0..ParticleRenderer.MAXIMUM_AMOUNT))
+    var maxAmount by IntDelegate(this, ParticleRenderer.MAXIMUM_AMOUNT, arrayOf(0..ParticleRenderer.MAXIMUM_AMOUNT))
     val types = TypesC(this)
 
+
     override fun toString(): String {
-        return ParticleProfileManager.getName(this)
+        return storage?.toString() ?: super.toString()
     }
 
-    init {
-        initializing = false
+    companion object : ProfileType<ParticleProfile> {
+        override val identifier = minosoft("particle")
+        override val clazz = ParticleProfile::class.java
+        override val icon: Ikon get() = FontAwesomeSolid.BIRTHDAY_CAKE
+
+        override fun create(storage: ProfileStorage?) = ParticleProfile(storage)
     }
 }

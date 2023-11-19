@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,31 +13,25 @@
 
 package de.bixilon.minosoft.config.profile.profiles.block
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.ProfileLock
+import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
-import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.block.outline.OutlineC
 import de.bixilon.minosoft.config.profile.profiles.block.rendering.RenderingC
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.World
-import java.util.concurrent.atomic.AtomicInteger
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 /**
  * Profile for block rendering
  */
 class BlockProfile(
-    description: String? = null,
+    override val storage: ProfileStorage? = null,
 ) : Profile {
-    override val manager: ProfileManager<Profile> = BlockProfileManager.unsafeCast()
-    override var initializing: Boolean = true
-        private set
-    override var reloading: Boolean = false
-    override var saved: Boolean = true
-    override var ignoreReloads = AtomicInteger()
-    override val version: Int = latestVersion
-    override var description by StringDelegate(this, description ?: "")
+    override val lock = ProfileLock()
 
     /**
      * The block view distance in chunks.
@@ -48,7 +42,7 @@ class BlockProfile(
      * Other profiles (like entities, ...) also have view distance, but this value is the only one that gets sent to the server.
      * The server may limit the other view distances according to this value
      */
-    var viewDistance by IntDelegate(this, 10, "profile.block.view.distance", arrayOf(0..World.MAX_RENDER_DISTANCE))
+    var viewDistance by IntDelegate(this, 10, arrayOf(0..World.MAX_RENDER_DISTANCE))
 
     /**
      * Ticking (entity, block, particle) is just applied in this distance.
@@ -58,16 +52,21 @@ class BlockProfile(
      * For calculation see viewDistance
      * @see viewDistance
      */
-    var simulationDistance by IntDelegate(this, 8, "profile.block.simulation.distance", arrayOf(0..World.MAX_RENDER_DISTANCE))
+    var simulationDistance by IntDelegate(this, 8, arrayOf(0..World.MAX_RENDER_DISTANCE))
 
     val outline = OutlineC(this)
     val rendering = RenderingC(this)
 
+
     override fun toString(): String {
-        return BlockProfileManager.getName(this)
+        return storage?.toString() ?: super.toString()
     }
 
-    init {
-        initializing = false
+    companion object : ProfileType<BlockProfile> {
+        override val identifier = minosoft("block")
+        override val clazz = BlockProfile::class.java
+        override val icon: Ikon get() = FontAwesomeSolid.CUBES
+
+        override fun create(storage: ProfileStorage?) = BlockProfile(storage)
     }
 }

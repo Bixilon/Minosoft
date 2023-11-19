@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.profiles.other
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asMutableJsonObject
 
 object OtherProfileMigration {
@@ -20,14 +21,14 @@ object OtherProfileMigration {
     /**
      * log level `AUDIO_LOADING` got renamed to just `AUDIO`
      */
-    fun migrate1(data: MutableMap<String, Any?>) {
+    fun migrate1(data: JsonObject) {
         data["log"]?.asMutableJsonObject()?.get("levels")?.asMutableJsonObject()?.let { it.remove("AUDIO_LOADING")?.let { audio -> it["AUDIO"] = audio } }
     }
 
     /**
      * Some log levels got renamed
      */
-    fun migrate2(data: MutableMap<String, Any?>) {
+    fun migrate2(data: JsonObject) {
         data["log"]?.asMutableJsonObject()?.get("levels")?.asMutableJsonObject()?.let {
             it.remove("NETWORK_RESOLVING")?.let { level -> it["NETWORK"] = level }
             it -= "NETWORK_STATUS"

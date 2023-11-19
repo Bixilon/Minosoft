@@ -28,5 +28,5 @@ class GeneralC(profile: EntityProfile) {
      * Entity render distance (x,y,z direction)
      * May be -1 to use the block render distance
      */
-    var renderDistance by IntDelegate(profile, -1, "", ranges = arrayOf(-1..-1, 0..World.MAX_RENDER_DISTANCE))
+    var renderDistance by IntDelegate(profile, -1, ranges = arrayOf(-1..-1, 0..World.MAX_RENDER_DISTANCE))
 }

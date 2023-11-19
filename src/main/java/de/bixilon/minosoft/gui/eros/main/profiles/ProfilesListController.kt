@@ -13,11 +13,10 @@
 
 package de.bixilon.minosoft.gui.eros.main.profiles
 
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.observer.map.MapChange.Companion.values
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
@@ -28,7 +27,6 @@ import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
 import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
-import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeBiMapFX
 import javafx.fxml.FXML
@@ -43,7 +41,7 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
 
     @FXML private lateinit var createProfileButtonFX: Button
 
-    var profileManager: ProfileManager<Profile>? = null
+    var profileManager: StorageProfileManager<Profile>? = null
         set(value) {
             check(value != null)
             field = value
@@ -119,17 +117,17 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
 
 
     private fun setProfileInfo(profile: Profile?) {
-        val profileManager = this.profileManager
+        val manager = this.profileManager ?: return
         if (profile == null) {
             profileInfoFX.reset()
             return
         }
         profileInfoFX.update(profile, PROFILE_INFO_PROPERTIES, actions = arrayOf(
             Button("Delete").apply {
-                isDisable = !profile.manager.canDelete(profile)
+                isDisable = manager.selected == profile
                 setOnAction {
                     SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), onConfirm = {
-                        profile.manager.deleteAsync(profile)
+                        manager.delete(profile)
                         JavaFXUtil.runLater {
                             profilesListViewFX.items.remove(profile)
                             setProfileInfo(profilesListViewFX.selectionModel.selectedItem)
@@ -140,13 +138,14 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
             },
             Button("Edit").apply {
                 // ToDo: proper profile editing
-                setOnAction { DefaultThreadPool += { DesktopUtil.openFile(profile.manager.getPath(profile.name)) } }
+                isDisable = true
+                //      setOnAction { DefaultThreadPool += { DesktopUtil.openFile(profile.manager.getPath(profile.name)) } }
                 ctext = EDIT
             },
             Button("Set primary").apply {
-                isDisable = profile.manager.selected == profile
+                isDisable = manager.selected == profile
                 setOnAction {
-                    profile.manager.selected = profile
+                    manager.selected = profile
                     isDisable = true
                 }
                 ctext = SET_PRIMARY
@@ -175,13 +174,12 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
         private val CREATE = "minosoft:profiles.profile.list.button.create".toResourceLocation()
 
         private val PROFILE_INFO_PROPERTIES: List<Pair<ResourceLocation, (Profile) -> Any?>> = listOf(
-            "minosoft:profiles.profile.name".toResourceLocation() to { it.name },
-            "minosoft:profiles.profile.description".toResourceLocation() to { it.description },
+            "minosoft:profiles.profile.name".toResourceLocation() to { it.storage?.name },
 
             TranslatableComponents.GENERAL_EMPTY to { " " },
 
-            "minosoft:profiles.profile.disk_path".toResourceLocation() to {
-                val path = it.manager.getPath(it.name)
+            "minosoft:profiles.profile.disk_path".toResourceLocation() to a@{
+                val path = it.storage?.path ?: return@a null
                 TextComponent(path, clickEvent = OpenFileClickEvent(path))
             },
         )
