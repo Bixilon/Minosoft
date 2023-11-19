@@ -14,12 +14,10 @@
 package de.bixilon.minosoft.config.profile.profiles
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonInclude
 import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 
 interface Profile {
     @get:JsonIgnore val storage: ProfileStorage?
-    @get:JsonInclude(JsonInclude.Include.NON_NULL) val version: Int? get() = storage?.version
     @get:JsonIgnore val lock: Lock
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.eros.dialog.profiles
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.storage.ProfileIOUtil.isValidName
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
@@ -81,7 +82,7 @@ class ProfileCreateDialog<T : Profile>(
         cancelButtonFX.ctext = CANCEL_BUTTON
 
         nameFX.textProperty().addListener { _, _, new ->
-            createButtonFX.isDisable = !StorageProfileManager.NAME_REGEX.matches(new) || manager.profiles[new] != null
+            createButtonFX.isDisable = !new.isValidName() || manager[new] != null
         }
     }
 

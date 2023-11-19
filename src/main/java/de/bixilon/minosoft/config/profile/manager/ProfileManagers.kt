@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.config.profile.manager
 
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
+import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager
@@ -41,4 +43,14 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
     GUIProfileManager,
     ControlsProfileManager,
     OtherProfileManager,
-)
+) {
+
+
+    fun load(latch: AbstractLatch?) {
+        val worker = UnconditionalWorker()
+        for (manager in ProfileManagers) {
+            worker += { manager.load() }
+        }
+        worker.work(latch)
+    }
+}

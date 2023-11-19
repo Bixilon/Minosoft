@@ -33,7 +33,7 @@ import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.meta.MinosoftMeta
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
-import de.bixilon.minosoft.config.profile.manager.GlobalProfileManager
+import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.entities.event.EntityEvents
 import de.bixilon.minosoft.data.language.LanguageUtil
@@ -102,7 +102,7 @@ object Minosoft {
 
         taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER, executor = VersionLoader::load)
         taskWorker += WorkerTask(identifier = BootTasks.FILE_WATCHER, priority = ThreadPool.HIGHER, optional = true, executor = this::startFileWatcherService)
-        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHER, dependencies = arrayOf(BootTasks.FILE_WATCHER), executor = GlobalProfileManager::initialize)
+        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHER, dependencies = arrayOf(BootTasks.FILE_WATCHER), executor = ProfileManagers::load)
 
         taskWorker += WorkerTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
         taskWorker += WorkerTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = AssetsVersionProperties::load)

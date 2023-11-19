@@ -11,10 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile
+package de.bixilon.minosoft.config.profile.storage
 
-data class ProfileState(
-    var initializing: Boolean = true,
-    var reloading: Boolean = false,
-    var saving: Boolean = false,
-)
+class FileStorage(
+    override val name: String,
+    val manager: StorageProfileManager<*>,
+    override val path: String,
+) : ProfileStorage {
+    var updating = false
+    var invalid = false
+
+
+    override fun invalidate() {
+        if (updating) return
+        invalid = true
+    }
+}

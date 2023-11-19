@@ -11,19 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.manager
+package de.bixilon.minosoft.config.profile.storage
 
-import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.terminal.RunConfiguration
+object ProfileIOUtil {
+    val NAME_REGEX = "[\\w_ ]{1,32}".toRegex()
 
-object GlobalProfileManager {
-    private val SELECTED_PROFILES_PATH = RunConfiguration.CONFIG_DIRECTORY.resolve("selected_profiles.json").toFile()
-
-    init {
+    fun String.isValidName(): Boolean {
+        return NAME_REGEX.matches(this)
     }
-
-    @Synchronized
-    fun initialize(latch: AbstractLatch?) {
-    }
-
 }

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.config.profile.storage
 
 interface ProfileStorage {
     val name: String
-    val version: Int
     val path: String?
 
     fun invalidate() = Unit
