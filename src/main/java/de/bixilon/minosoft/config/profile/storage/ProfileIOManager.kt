@@ -45,8 +45,10 @@ object ProfileIOManager {
 
 
         lock.unlock()
-        notify.awaitOrChange()
-        Thread.sleep(50L) // sometimes changes happen very quickly, we don't want to save 10 times while in change
+        while (notify.count == 0) {
+            notify.awaitOrChange()
+            Thread.sleep(50L) // sometimes changes happen very quickly, we don't want to save 10 times while in change
+        }
     }
 
     private fun MutableSet<FileStorage>.work(worker: (Profile, FileStorage, StorageProfileManager<Profile>) -> Unit) {

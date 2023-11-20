@@ -21,11 +21,14 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.file.watcher.FileWatcherService
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
 import de.bixilon.minosoft.assets.util.FileUtil.mkdirParent
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.storage.ProfileIOUtil.isValidName
@@ -62,7 +65,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
     open fun migrate(version: Int, data: ObjectNode) = Unit
     open fun migrate(data: ObjectNode): Int {
-        val version = data["version"]?.intValue() ?: throw IllegalArgumentException("Data has no version set!")
+        val version = data[VERSION]?.intValue() ?: throw IllegalArgumentException("Data has no version set!")
         when {
             version == latestVersion -> return -1
             version > latestVersion -> throw IllegalArgumentException("Profile was created with a newer version!")
@@ -82,12 +85,27 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     }
 
     private fun load(name: String, path: File): P {
+        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profile from $path" }
         val stream = FileInputStream(path)
         val content = Jackson.MAPPER.readTree(stream).unsafeCast<ObjectNode>()
         stream.close()
         val storage = FileStorage(name, this, path)
-        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profile from $path" }
         return load(storage, content)
+    }
+
+    private fun loadSelected(root: File): String? {
+        val file = root.resolve(SELECTED)
+        if (!file.isFile) return null
+        val stream = FileInputStream(file)
+        return stream.readAsString()
+    }
+
+    private fun saveSelected(root: File, name: String) {
+        val file = root.resolve(SELECTED)
+        file.mkdirParent()
+        val stream = FileOutputStream(file)
+        stream.write(name.encodeNetwork())
+        stream.close()
     }
 
     open fun load() {
@@ -96,13 +114,17 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
             root.mkdirs()
             return createDefault()
         }
-        var selected = DEFAULT_NAME // root.resolve("selected") TODO
+        var selected = loadSelected(root)
+        if (selected == null) {
+            selected = DEFAULT_NAME
+            saveSelected(root, selected)
+        }
         if (!selected.isValidName()) selected = DEFAULT_NAME
         val files = root.listFiles() ?: return createDefault()
 
         for (file in files) {
-            if (!file.name.endsWith(".json")) continue
-            val name = file.name.removeSuffix(".json")
+            if (!file.name.endsWith(FILE_SUFFIX)) continue
+            val name = file.name.removeSuffix(FILE_SUFFIX)
             if (!name.isValidName()) {
                 Log.log(LogMessageType.PROFILES, LogLevels.WARN) { "Not loading $file: Invalid name!" }
                 continue
@@ -120,6 +142,14 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         }
 
         this.selected = this[selected] ?: create(selected)
+        this::selected.observe(this) {
+            val name = it.storage.unsafeCast<FileStorage>().name
+            DefaultThreadPool += {
+                this.lock.acquire()
+                saveSelected(root, name)
+                this.lock.release()
+            }
+        }
 
         observe(root.toPath())
     }
@@ -127,8 +157,8 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     private fun observe(root: Path) {
         FileWatcherService.watchAsync(root, setOf(ENTRY_MODIFY, ENTRY_CREATE)) { _, path ->
             val filename = path.fileName.toString()
-            if (!filename.endsWith(".json")) return@watchAsync
-            val profile = this[filename.removeSuffix(".json")] ?: return@watchAsync
+            if (!filename.endsWith(FILE_SUFFIX)) return@watchAsync
+            val profile = this[filename.removeSuffix(FILE_SUFFIX)] ?: return@watchAsync
             val storage = profile.storage?.nullCast<FileStorage>() ?: return@watchAsync
             if (storage.path.toPath() != path) return@watchAsync
             ProfileIOManager.reload(storage)
@@ -187,7 +217,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         profile.lock.acquire()
         storage.saved++
         val node = Jackson.MAPPER.valueToTree<ObjectNode>(profile) // TODO: cache jacksonType
-        node.put("version", latestVersion)
+        node.put(VERSION, latestVersion)
         val string = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(node)
         val stream = FileOutputStream(path)
         stream.write(string.encodeNetwork())
@@ -228,5 +258,8 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
     companion object {
         const val DEFAULT_NAME = "Default"
+        const val SELECTED = "selected"
+        const val VERSION = "version"
+        const val FILE_SUFFIX = ".json"
     }
 }
