@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.config.profile.storage
 
+import java.net.URI
+
 interface ProfileStorage {
     val name: String
-    val path: String?
+    val url: URI?
 
     fun invalidate() = Unit
 }

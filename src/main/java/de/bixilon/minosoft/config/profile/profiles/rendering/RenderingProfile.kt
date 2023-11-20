@@ -36,7 +36,7 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
  * Profile for general rendering
  */
 class RenderingProfile(
-    override val storage: ProfileStorage? = null,
+    override var storage: ProfileStorage? = null,
 ) : Profile {
     override val lock = ProfileLock()
 

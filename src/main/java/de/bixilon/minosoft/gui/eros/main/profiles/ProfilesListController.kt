@@ -20,7 +20,6 @@ import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
-import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
@@ -179,8 +178,8 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
             TranslatableComponents.GENERAL_EMPTY to { " " },
 
             "minosoft:profiles.profile.disk_path".toResourceLocation() to a@{
-                val path = it.storage?.path ?: return@a null
-                TextComponent(path, clickEvent = OpenFileClickEvent(path))
+                val path = it.storage?.url ?: return@a null
+                TextComponent(path/* clickEvent = OpenFileClickEvent(path)*/) // TODO
             },
         )
     }

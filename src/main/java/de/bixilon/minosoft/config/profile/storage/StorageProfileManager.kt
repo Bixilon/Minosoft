@@ -20,6 +20,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
@@ -28,6 +29,7 @@ import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.storage.ProfileIOUtil.isValidName
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.json.Jackson
@@ -37,18 +39,19 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import kotlin.io.path.absolutePathString
 
 
 abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     private val jacksonType = Jackson.MAPPER.typeFactory.constructType(type.clazz)
+    private val reader = Jackson.MAPPER.readerFor(jacksonType)
+    override val identifier get() = type.identifier
 
 
     abstract val latestVersion: Int
     abstract val type: ProfileType<P>
 
-    override val identifier get() = type.identifier
 
+    private val lock = SimpleLock()
     val profiles: AbstractMutableBiMap<String, P> by observedBiMap(mutableBiMapOf())
     var selected: P by observed(unsafeNull())
 
@@ -91,8 +94,16 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
                 Log.log(LogMessageType.PROFILES, LogLevels.WARN) { "Not loading $file: Invalid name!" }
                 continue
             }
-            val profile = load(name, file)
-            profiles[name] = profile
+            lock.lock()
+            try {
+                val profile = load(name, file)
+                profiles[name] = profile
+            } catch (error: Throwable) {
+                Log.log(LogMessageType.PROFILES, LogLevels.FATAL) { error }
+                error.crash()
+            } finally {
+                lock.unlock()
+            }
         }
 
         this.selected = this[selected] ?: create(selected)
@@ -102,7 +113,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         val stream = FileInputStream(path)
         val content = Jackson.MAPPER.readTree(stream).unsafeCast<ObjectNode>()
         stream.close()
-        val storage = FileStorage(name, this, path.absolutePath)
+        val storage = FileStorage(name, this, path)
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profile from $path" }
         return load(storage, content)
     }
@@ -113,6 +124,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
     fun load(storage: FileStorage, data: ObjectNode): P {
         val profile = type.create(storage)
+        storage.profile = profile
         update(profile, data)
         return profile
     }
@@ -129,21 +141,22 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
         val injectable = InjectableValues.Std()
         injectable.addValue(type.clazz, profile)
-        Jackson.MAPPER
-            .readerForUpdating(profile)
+        reader
+            .withValueToUpdate(profile)
             .with(injectable)
             .readValue<P>(data)
 
         storage.updating = false
-        storage.invalid = false
+        // storage.invalid = false
         profile.lock.unlock()
     }
 
     fun create(name: String): P {
         if (!name.isValidName()) throw IllegalArgumentException("Invalid profile name!")
         val path = RunConfiguration.CONFIG_DIRECTORY.resolve(identifier.namespace).resolve(identifier.path).resolve("$name.json")
-        val storage = FileStorage(name, this, path.absolutePathString())
+        val storage = FileStorage(name, this, path.toFile())
         val profile = type.create(storage)
+        storage.profile = profile
         this.profiles[name] = profile
 
         storage.invalidate()
@@ -154,12 +167,12 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     fun save(profile: P) {
         val storage = profile.storage?.nullCast<FileStorage>() ?: throw IllegalArgumentException("Storage unset!")
         if (!storage.invalid) return
-        val path = File(storage.path)
+        val path = storage.path
         path.mkdirParent()
 
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Saving profile to $path" }
         profile.lock.acquire()
-        val node = Jackson.MAPPER.valueToTree<ObjectNode>(profile)
+        val node = Jackson.MAPPER.valueToTree<ObjectNode>(profile) // TODO: cache jacksonType
         node.put("version", latestVersion)
         val string = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(node)
         val stream = FileOutputStream(path)
@@ -171,12 +184,25 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         profile.lock.release()
     }
 
-    fun delete(name: String) = Unit
-    fun delete(profile: P) = Unit
-    operator fun get(name: String): P? {
-        return profiles[name]
+    fun delete(name: String) {
+        delete(this[name] ?: return)
     }
 
+    fun delete(profile: P) {
+        val storage = profile.storage?.nullCast<FileStorage>() ?: throw IllegalArgumentException("Not storage set!")
+        lock.lock()
+        profile.storage = null
+        this.profiles.remove(storage.name)
+        lock.unlock()
+        ProfileIOManager.delete(storage)
+    }
+
+    operator fun get(name: String): P? {
+        lock.acquire()
+        val profile = profiles[name]
+        lock.release()
+        return profile
+    }
 
     override fun iterator(): Iterator<P> {
         return profiles.values.iterator()

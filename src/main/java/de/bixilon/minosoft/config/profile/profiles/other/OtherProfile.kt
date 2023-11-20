@@ -27,7 +27,7 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
  * Profile for various things that do not fit in any other profile
  */
 class OtherProfile(
-    override val storage: ProfileStorage? = null,
+    override var storage: ProfileStorage? = null,
 ) : Profile {
     override val lock = ProfileLock()
 

@@ -18,6 +18,6 @@ import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 
 interface Profile {
-    @get:JsonIgnore val storage: ProfileStorage?
+    @get:JsonIgnore var storage: ProfileStorage?
     @get:JsonIgnore val lock: Lock
 }

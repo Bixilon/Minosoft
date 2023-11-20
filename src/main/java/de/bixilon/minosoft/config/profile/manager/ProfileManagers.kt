@@ -27,6 +27,7 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
+import de.bixilon.minosoft.config.profile.storage.ProfileIOManager
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 
@@ -52,5 +53,6 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
             worker += { manager.load() }
         }
         worker.work(latch)
+        ProfileIOManager.init()
     }
 }

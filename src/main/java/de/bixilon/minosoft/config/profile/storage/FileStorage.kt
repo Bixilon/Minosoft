@@ -13,17 +13,23 @@
 
 package de.bixilon.minosoft.config.profile.storage
 
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import java.io.File
+
 class FileStorage(
     override val name: String,
     val manager: StorageProfileManager<*>,
-    override val path: String,
+    val path: File,
 ) : ProfileStorage {
+    var profile: Profile? = null
     var updating = false
     var invalid = false
 
+    override val url = path.toURI()
 
     override fun invalidate() {
         if (updating) return
         invalid = true
+        ProfileIOManager.save(this)
     }
 }
