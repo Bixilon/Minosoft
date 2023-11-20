@@ -16,6 +16,7 @@ package de.bixilon.minosoft
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.file.watcher.FileWatcherService
@@ -78,6 +79,7 @@ object Minosoft {
 
     private fun preBoot(args: Array<String>) {
         async(ThreadPool.Priorities.HIGHEST) { Jackson.init(); MinosoftPropertiesLoader.init() }
+        DefaultThreadPool += ForcePooledRunnable { KUtil.initBootClasses() }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
 
@@ -85,7 +87,6 @@ object Minosoft {
         DefaultThreadPool += { MINOSOFT_ASSETS_MANAGER.load(); MinosoftPropertiesLoader.load(); latch.dec() }
         DefaultThreadPool += { ModLoader.initModLoading(); latch.dec() }
 
-        KUtil.initBootClasses()
         KUtil.init()
 
         latch.await()

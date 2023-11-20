@@ -42,8 +42,8 @@ import java.io.FileOutputStream
 
 
 abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
-    private val jacksonType = Jackson.MAPPER.typeFactory.constructType(type.clazz)
-    private val reader = Jackson.MAPPER.readerFor(jacksonType)
+    private val jacksonType by lazy { Jackson.MAPPER.typeFactory.constructType(type.clazz) }
+    private val reader by lazy { Jackson.MAPPER.readerFor(jacksonType) }
     override val identifier get() = type.identifier
 
 
@@ -77,13 +77,22 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         selected = default
     }
 
-    private fun loadAll() {
+    private fun load(name: String, path: File): P {
+        val stream = FileInputStream(path)
+        val content = Jackson.MAPPER.readTree(stream).unsafeCast<ObjectNode>()
+        stream.close()
+        val storage = FileStorage(name, this, path)
+        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profile from $path" }
+        return load(storage, content)
+    }
+
+    open fun load() {
         val root = RunConfiguration.CONFIG_DIRECTORY.resolve(identifier.namespace).resolve(identifier.path).toFile()
         if (!root.exists()) {
             root.mkdirs()
             return createDefault()
         }
-        var selected = DEFAULT_NAME // root.resolve("selected")
+        var selected = DEFAULT_NAME // root.resolve("selected") TODO
         if (!selected.isValidName()) selected = DEFAULT_NAME
         val files = root.listFiles() ?: return createDefault()
 
@@ -107,19 +116,6 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         }
 
         this.selected = this[selected] ?: create(selected)
-    }
-
-    private fun load(name: String, path: File): P {
-        val stream = FileInputStream(path)
-        val content = Jackson.MAPPER.readTree(stream).unsafeCast<ObjectNode>()
-        stream.close()
-        val storage = FileStorage(name, this, path)
-        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profile from $path" }
-        return load(storage, content)
-    }
-
-    open fun load() {
-        loadAll()
     }
 
     fun load(storage: FileStorage, data: ObjectNode): P {
@@ -206,6 +202,10 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
     override fun iterator(): Iterator<P> {
         return profiles.values.iterator()
+    }
+
+    fun init() {
+        reader
     }
 
     companion object {

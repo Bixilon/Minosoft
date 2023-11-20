@@ -26,9 +26,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 object MinosoftPropertiesLoader {
     val type = Jackson.MAPPER.constructType(MinosoftP::class.java)
+    val reader = Jackson.MAPPER.readerFor(type)
 
     fun load() {
-        val properties = Minosoft.MINOSOFT_ASSETS_MANAGER.getOrNull(minosoft("version.json"))?.readJson<MinosoftP>(type = type)
+        val properties = Minosoft.MINOSOFT_ASSETS_MANAGER.getOrNull(minosoft("version.json"))?.readJson<MinosoftP>(reader = reader)
         MinosoftProperties = if (properties == null) {
             Log.log(LogMessageType.OTHER, LogLevels.FATAL) { "Can not load version.json! Did you compile with gradle?" }
             MinosoftP(GeneralP("unknown", false), null)

@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.gui.eros.util
 
-import afester.javafx.svg.SvgLoader
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.SimpleLatch
@@ -21,7 +22,6 @@ import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.util.DesktopUtil
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -42,11 +42,11 @@ class JavaFXInitializer internal constructor() : Application() {
 
         val worker = UnconditionalWorker(autoWork = true)
         worker += { JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER[DesktopUtil.ICON]) }
-        worker += { catchAll { JavaFXUtil.BIXILON_LOGO = SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()]) } }
         worker.work(LATCH)
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }
         LATCH.dec()
+        DefaultThreadPool += ForcePooledRunnable(priority = Int.MIN_VALUE) { JavaFXUtil.BIXILON_LOGO } // lazy value
     }
 
     companion object {

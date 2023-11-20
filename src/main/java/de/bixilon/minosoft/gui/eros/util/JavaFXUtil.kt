@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.gui.eros.util
 
+import afester.javafx.svg.SvgLoader
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.url.URLUtil.toURL
@@ -57,7 +59,7 @@ object JavaFXUtil {
     lateinit var JAVA_FX_THREAD: Thread
     lateinit var MINOSOFT_LOGO: Image
     lateinit var HOST_SERVICES: HostServices
-    lateinit var BIXILON_LOGO: Group
+    val BIXILON_LOGO: Group? by lazy { catchAll { SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()]) } }
     private var watchingTheme = false
 
     val THEME_ASSETS_MANAGER = Minosoft.MINOSOFT_ASSETS_MANAGER

@@ -27,7 +27,7 @@ object ResourcesAssetsUtil {
 
     fun create(clazz: Class<*>, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX): AssetsManager {
         val rootResources = clazz.classLoader.getResource(prefix) ?: clazz.classLoader.getResource("$prefix/.assets")
-        if (rootResources == null) {
+        if (rootResources === null) {
             Log.log(LogMessageType.OTHER, LogLevels.FATAL) { "Can not find \"$prefix\" assets root for $clazz" }
             return ResourceAssetsManager(clazz, prefix)
         }
