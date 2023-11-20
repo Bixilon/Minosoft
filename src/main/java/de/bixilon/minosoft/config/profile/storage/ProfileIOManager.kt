@@ -13,11 +13,17 @@
 
 package de.bixilon.minosoft.config.profile.storage
 
+import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.util.json.Jackson
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import java.io.FileInputStream
 
 object ProfileIOManager {
     private val lock = SimpleLock()
@@ -69,7 +75,20 @@ object ProfileIOManager {
     }
 
     private fun reload() {
-        // TODO
+        reload.work { profile, storage, manager ->
+            profile.lock.acquire()
+            if (storage.saved > 0) {
+                storage.saved--
+                profile.lock.release()
+                return@work
+            }
+            profile.lock.release()
+            Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Reloading profile $storage" }
+            val stream = FileInputStream(storage.path)
+            val content = Jackson.MAPPER.readTree(stream).unsafeCast<ObjectNode>()
+            stream.close()
+            manager.update(profile, content)
+        }
     }
 
 

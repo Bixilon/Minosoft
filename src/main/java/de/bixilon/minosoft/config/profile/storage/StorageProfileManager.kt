@@ -22,6 +22,7 @@ import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
 import de.bixilon.minosoft.assets.util.FileUtil.mkdirParent
@@ -39,6 +40,9 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.nio.file.Path
+import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
+import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
 
 
 abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
@@ -116,6 +120,19 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         }
 
         this.selected = this[selected] ?: create(selected)
+
+        observe(root.toPath())
+    }
+
+    private fun observe(root: Path) {
+        FileWatcherService.watchAsync(root, setOf(ENTRY_MODIFY, ENTRY_CREATE)) { _, path ->
+            val filename = path.fileName.toString()
+            if (!filename.endsWith(".json")) return@watchAsync
+            val profile = this[filename.removeSuffix(".json")] ?: return@watchAsync
+            val storage = profile.storage?.nullCast<FileStorage>() ?: return@watchAsync
+            if (storage.path.toPath() != path) return@watchAsync
+            ProfileIOManager.reload(storage)
+        }
     }
 
     fun load(storage: FileStorage, data: ObjectNode): P {
@@ -168,6 +185,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Saving profile to $path" }
         profile.lock.acquire()
+        storage.saved++
         val node = Jackson.MAPPER.valueToTree<ObjectNode>(profile) // TODO: cache jacksonType
         node.put("version", latestVersion)
         val string = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(node)

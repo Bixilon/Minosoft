@@ -22,6 +22,7 @@ open class MapDelegate<K, V>(
     override val profile: Profile,
     default: MutableMap<K, V>,
 ) : MapObserver<K, V>(default), AbstractProfileDelegate<MutableMap<K, V>> {
+
     init {
         value.addObserver { invalidate() }
     }

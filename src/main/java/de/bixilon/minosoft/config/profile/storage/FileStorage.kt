@@ -22,14 +22,20 @@ class FileStorage(
     val path: File,
 ) : ProfileStorage {
     var profile: Profile? = null
+
     var updating = false
     var invalid = false
+    var saved = 0
 
     override val url = path.toURI()
 
     override fun invalidate() {
-        if (updating) return
+        if (updating || invalid) return
         invalid = true
         ProfileIOManager.save(this)
+    }
+
+    override fun toString(): String {
+        return path.toString()
     }
 }
