@@ -59,7 +59,6 @@ object Log {
                 QUEUE.take().print()
             }
         }, "Log").start()
-        OtherProfileManager::selected.observe(this) { this.levels = it.log.levels }
         ShutdownManager.addHook { ASYNC_LOGGING = false; catchAll { await() } }
     }
 
@@ -199,4 +198,8 @@ object Log {
     }
 
     fun init() = Unit
+
+    fun observeProfile() {
+        OtherProfileManager::selected.observe(this, true) { this.levels = it.log.levels }
+    }
 }

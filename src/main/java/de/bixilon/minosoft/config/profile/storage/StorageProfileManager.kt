@@ -107,7 +107,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         return load(storage, content)
     }
 
-    fun load() {
+    open fun load() {
         loadAll()
     }
 

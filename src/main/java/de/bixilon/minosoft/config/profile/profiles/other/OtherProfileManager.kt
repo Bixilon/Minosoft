@@ -13,16 +13,22 @@
 
 package de.bixilon.minosoft.config.profile.profiles.other
 
-import de.bixilon.kutil.json.MutableJsonObject
+import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
+import de.bixilon.minosoft.util.logging.Log
 
 object OtherProfileManager : StorageProfileManager<OtherProfile>() {
     override val type get() = OtherProfile
     override val latestVersion get() = 3
 
-    override fun migrate(version: Int, data: MutableJsonObject) = when (version) {
+    override fun migrate(version: Int, data: ObjectNode) = when (version) {
         1 -> OtherProfileMigration.migrate1(data)
         2 -> OtherProfileMigration.migrate2(data)
         else -> Unit
+    }
+
+    override fun load() {
+        super.load()
+        Log.observeProfile()
     }
 }
