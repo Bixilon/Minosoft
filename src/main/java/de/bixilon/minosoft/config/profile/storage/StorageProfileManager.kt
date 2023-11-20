@@ -14,19 +14,16 @@
 package de.bixilon.minosoft.config.profile.storage
 
 import com.fasterxml.jackson.databind.InjectableValues
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
-import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.util.FileUtil.mkdirParent
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.storage.ProfileIOUtil.isValidName
@@ -56,9 +53,9 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     var selected: P by observed(unsafeNull())
 
 
-    open fun migrate(version: Int, data: MutableJsonObject) = Unit
-    open fun migrate(data: MutableJsonObject): Int {
-        val version = data["version"]?.toInt() ?: throw IllegalArgumentException("Data has no version set!")
+    open fun migrate(version: Int, data: ObjectNode) = Unit
+    open fun migrate(data: ObjectNode): Int {
+        val version = data["version"]?.intValue() ?: throw IllegalArgumentException("Data has no version set!")
         when {
             version == latestVersion -> return -1
             version > latestVersion -> throw IllegalArgumentException("Profile was created with a newer version!")
@@ -102,8 +99,11 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     }
 
     private fun load(name: String, path: File): P {
-        val content = FileInputStream(path).readJsonObject(true).toMutableMap() // TODO: is copy needed?
+        val stream = FileInputStream(path)
+        val content = Jackson.MAPPER.readTree(stream).unsafeCast<ObjectNode>()
+        stream.close()
         val storage = FileStorage(name, this, path.absolutePath)
+        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profile from $path" }
         return load(storage, content)
     }
 
@@ -111,13 +111,13 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         loadAll()
     }
 
-    fun load(storage: FileStorage, data: MutableJsonObject): P {
+    fun load(storage: FileStorage, data: ObjectNode): P {
         val profile = type.create(storage)
         update(profile, data)
         return profile
     }
 
-    fun update(profile: P, data: MutableJsonObject) {
+    fun update(profile: P, data: ObjectNode) {
         val storage = profile.storage.nullCast<FileStorage>() ?: throw IllegalArgumentException("Storage not set!")
         val migrated = migrate(data)
         if (migrated >= 0) {
@@ -132,7 +132,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         Jackson.MAPPER
             .readerForUpdating(profile)
             .with(injectable)
-            .readValue<P>(Jackson.MAPPER.valueToTree(data) as JsonNode)
+            .readValue<P>(data)
 
         storage.updating = false
         storage.invalid = false
@@ -157,6 +157,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         val path = File(storage.path)
         path.mkdirParent()
 
+        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Saving profile to $path" }
         profile.lock.acquire()
         val node = Jackson.MAPPER.valueToTree<ObjectNode>(profile)
         node.put("version", latestVersion)
@@ -183,6 +184,5 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
     companion object {
         const val DEFAULT_NAME = "Default"
-
     }
 }

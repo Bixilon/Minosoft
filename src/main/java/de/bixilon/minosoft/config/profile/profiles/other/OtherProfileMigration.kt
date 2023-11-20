@@ -13,30 +13,30 @@
 
 package de.bixilon.minosoft.config.profile.profiles.other
 
-import de.bixilon.kutil.json.JsonObject
-import de.bixilon.kutil.json.JsonUtil.asMutableJsonObject
+import com.fasterxml.jackson.databind.node.ObjectNode
+import de.bixilon.kutil.cast.CastUtil.nullCast
 
 object OtherProfileMigration {
 
     /**
      * log level `AUDIO_LOADING` got renamed to just `AUDIO`
      */
-    fun migrate1(data: JsonObject) {
-        data["log"]?.asMutableJsonObject()?.get("levels")?.asMutableJsonObject()?.let { it.remove("AUDIO_LOADING")?.let { audio -> it["AUDIO"] = audio } }
+    fun migrate1(data: ObjectNode) {
+        data["log"]?.get("levels")?.nullCast<ObjectNode>()?.let { it.remove("AUDIO_LOADING")?.let { audio -> it.replace("AUDIO", audio) } }
     }
 
     /**
      * Some log levels got renamed
      */
-    fun migrate2(data: JsonObject) {
-        data["log"]?.asMutableJsonObject()?.get("levels")?.asMutableJsonObject()?.let {
-            it.remove("NETWORK_RESOLVING")?.let { level -> it["NETWORK"] = level }
-            it -= "NETWORK_STATUS"
-            it.remove("NETWORK_PACKETS_IN")?.let { level -> it["NETWORK_IN"] = level }
-            it.remove("NETWORK_PACKETS_OUT")?.let { level -> it["NETWORK_OUT"] = level }
-            it.remove("RENDERING_GENERAL")?.let { level -> it["RENDERING"] = level }
-            it.remove("VERSION_LOADING")?.let { level -> it["LOADING"] = level }
-            it -= "RENDERING_LOADING"
+    fun migrate2(data: ObjectNode) {
+        data["log"]?.get("levels")?.nullCast<ObjectNode>()?.let {
+            it.remove("NETWORK_RESOLVING")?.let { level -> it.replace("NETWORK", level) }
+            it.remove("NETWORK_STATUS")
+            it.remove("NETWORK_PACKETS_IN")?.let { level -> it.replace("NETWORK_IN", level) }
+            it.remove("NETWORK_PACKETS_OUT")?.let { level -> it.replace("NETWORK_OUT", level) }
+            it.remove("RENDERING_GENERAL")?.let { level -> it.replace("RENDERING", level) }
+            it.remove("VERSION_LOADING")?.let { level -> it.replace("LOADING", level) }
+            it.remove("RENDERING_LOADING")
         }
     }
 }
