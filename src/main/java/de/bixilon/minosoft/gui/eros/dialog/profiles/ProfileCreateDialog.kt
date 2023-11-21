@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.eros.dialog.profiles
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.config.profile.ProfileUtil.isValidName
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.storage.ProfileIOUtil.isValidName
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController

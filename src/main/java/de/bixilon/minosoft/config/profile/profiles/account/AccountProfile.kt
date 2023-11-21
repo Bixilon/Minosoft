@@ -13,15 +13,11 @@
 
 package de.bixilon.minosoft.config.profile.profiles.account
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
-import de.bixilon.kutil.delegates.BackingDelegate
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.ProfileLock
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.RedirectDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
@@ -62,19 +58,7 @@ class AccountProfile(
     var entries: MutableMap<String, Account> by MapDelegate(this, mutableMapOf())
         private set
 
-    /**
-     * The current id of the selected account
-     */
-    @get:JsonInclude(JsonInclude.Include.NON_NULL)
-    @get:JsonProperty("selected")
-    private var _selected: String? by NullableStringDelegate(this, null)
-
-    @get:JsonIgnore
-    var selected: Account? by BackingDelegate(get = { entries[_selected] }, set = { _selected = it?.id })
-
-    init {
-        this::_selected.observe(this) { this.selected = entries[it] }
-    }
+    var selected: Account? by RedirectDelegate<Account?, String?>(this, { it?.id }, { entries[it] })
 
     override fun toString(): String {
         return storage?.toString() ?: super.toString()
