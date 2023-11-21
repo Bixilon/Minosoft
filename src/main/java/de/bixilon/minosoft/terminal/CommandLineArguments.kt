@@ -103,6 +103,7 @@ object CommandLineArguments {
 
     fun parse(args: Array<String>) {
         check(!this::ARGUMENTS.isInitialized) { "Already initialized!" }
+        if (args.isEmpty()) return
         this.ARGUMENTS = args.toList()
         val namespace: Namespace
         try {

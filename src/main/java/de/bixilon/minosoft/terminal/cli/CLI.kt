@@ -38,10 +38,6 @@ object CLI {
     var connection: PlayConnection? by observed(null)
     val commands = RootNode()
 
-    init {
-        register()
-    }
-
     @Synchronized
     private fun register() {
         commands.clear()
@@ -62,6 +58,7 @@ object CLI {
     }
 
     private fun startLoop() {
+        register()
         val builder = TerminalBuilder.builder()
 
         val terminal: Terminal = builder.build()

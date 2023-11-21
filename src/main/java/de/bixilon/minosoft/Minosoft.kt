@@ -33,6 +33,7 @@ import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.meta.MinosoftMeta
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.entities.event.EntityEvents
@@ -42,6 +43,8 @@ import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.text.formatting.FormattingCodes
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.datafixer.DataFixer
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport
@@ -77,14 +80,14 @@ object Minosoft {
 
 
     private fun preBoot(args: Array<String>) {
-        async(ThreadPool.Priorities.HIGHEST) { Jackson.init(); MinosoftPropertiesLoader.init() }
+        DefaultThreadPool += ForcePooledRunnable { Jackson.init(); MinosoftPropertiesLoader.init() }
         DefaultThreadPool += ForcePooledRunnable { KUtil.initBootClasses() }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
 
         val latch = SimpleLatch(2)
-        DefaultThreadPool += { MINOSOFT_ASSETS_MANAGER.load(); MinosoftPropertiesLoader.load(); latch.dec() }
-        DefaultThreadPool += { ModLoader.initModLoading(); latch.dec() }
+        DefaultThreadPool += ForcePooledRunnable { MINOSOFT_ASSETS_MANAGER.load(); MinosoftPropertiesLoader.load(); latch.dec() }
+        DefaultThreadPool += ForcePooledRunnable { ModLoader.initModLoading(); latch.dec() }
 
         KUtil.init()
 
@@ -98,7 +101,7 @@ object Minosoft {
     }
 
     private fun boot() {
-        val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() })
+        val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() }, forcePool = true)
 
         taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER, executor = VersionLoader::load)
         taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHEST, executor = ProfileManagers::load)
@@ -149,15 +152,25 @@ object Minosoft {
         taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(BOOT_LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
         taskWorker += WorkerTask(identifier = BootTasks.EROS, dependencies = arrayOf(BootTasks.JAVAFX, BootTasks.PROFILES, BootTasks.MODS, BootTasks.VERSIONS, BootTasks.LANGUAGE_FILES), executor = { DefaultThreadPool += { Eros.preload() } })
 
-        Eros::class.java.forceInit()
+        DefaultThreadPool += ForcePooledRunnable { Eros::class.java.forceInit() }
+    }
+
+    private fun initLog() {
+        DefaultThreadPool += ForcePooledRunnable { Log.init() }
+        DefaultThreadPool += ForcePooledRunnable { RunConfiguration }
+        DefaultThreadPool += ForcePooledRunnable { FormattingCodes }
+        DefaultThreadPool += ForcePooledRunnable { ChatColors }
     }
 
     @JvmStatic
     fun main(args: Array<String>) {
         val start = nanos()
-        Log.init()
+        initLog()
 
-        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Pre booting..." }
+
+        if (StaticConfiguration.DEBUG_MODE) {
+            // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Pre booting..." }
+        }
         preBoot(args)
 
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Booting..." }
