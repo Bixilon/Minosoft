@@ -21,10 +21,13 @@ import de.bixilon.kutil.observer.list.ListObserver.Companion.observeList
 import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
@@ -42,6 +45,7 @@ object CustomServerType : ServerType {
         ErosProfileManager::selected.observe(this, true) { profile ->
             servers.clear()
             servers += ErosProfileManager.selected.server.entries
+            this.profile = profile
 
             profile.server::entries.observeList(this) {
                 if (profile !== this.profile) throw RemoveObserver()
@@ -62,5 +66,14 @@ object CustomServerType : ServerType {
                 ping.ping()
             }
         }
+    }
+
+    override fun remove(server: AbstractServer) {
+        profile?.server?.entries?.remove(server)
+    }
+
+    override fun add(name: String, address: String, forcedVersion: Version?, profiles: Map<ResourceLocation, String>, queryVersion: Boolean) {
+        val profile = this.profile ?: return
+        profile.server.entries += ErosServer(profile = profile, name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion, profiles = profiles.toMutableMap(), queryVersion = queryVersion)
     }
 }

@@ -14,11 +14,13 @@
 package de.bixilon.minosoft.gui.eros.main.play.server.type.types
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
@@ -34,4 +36,7 @@ object LANServerType : ServerType {
     override fun refresh(cards: List<ServerCard>) {
         LANServerListener.clear()
     }
+
+    override fun remove(server: AbstractServer) = Broken("read only?")
+    override fun add(name: String, address: String, forcedVersion: Version?, profiles: Map<ResourceLocation, String>, queryVersion: Boolean) = Broken("read only")
 }

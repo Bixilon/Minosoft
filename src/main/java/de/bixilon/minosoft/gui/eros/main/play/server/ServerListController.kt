@@ -40,7 +40,6 @@ import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
-import de.bixilon.minosoft.gui.eros.main.play.server.type.types.CustomServerType
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -282,20 +281,12 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
         val actions: Array<Node> = arrayOf(
             Button("Delete").apply {
-                if (server !is ErosServer) {
-                    isDisable = true
-                }
+                val type = serverType
+                isDisable = type.readOnly
                 setOnAction {
-                    SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = {
-                        val type = serverType
-                        if (type !is CustomServerType) {
-                            return@SimpleErosConfirmationDialog
-                        }
-                        type.servers.remove(server)
-                    }).show()
+                    SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = { type.remove(server) }).show()
                 }
                 ctext = TranslatableComponents.GENERAL_DELETE
-                isDisable = serverType.readOnly
             },
             Button("Edit").apply {
                 if (server !is ErosServer) {
@@ -402,13 +393,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     @FXML
     fun addServer() {
-        ServerModifyDialog(onUpdate = { name, address, forcedVersion, profiles, queryVersion ->
-            val type = serverType
-            if (type !is CustomServerType) {
-                return@ServerModifyDialog
-            }
-            type.servers += ErosServer(profile = ErosProfileManager.selected, name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion, profiles = profiles.toMutableMap(), queryVersion = queryVersion)
-        }).show()
+        val type = serverType ?: return
+        ServerModifyDialog(onUpdate = type::add).show()
     }
 
     override fun refresh() {
