@@ -74,4 +74,6 @@ class StorageProfileManagerTest {
         profile.key = 999
         assertTrue(profile.isSaveQueued())
     }
+
+    // TODO: test reload, delete and selected queue
 }

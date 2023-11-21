@@ -19,7 +19,6 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
-import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.latch.SimpleLatch
@@ -102,8 +101,7 @@ object Minosoft {
         val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() })
 
         taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER, executor = VersionLoader::load)
-        taskWorker += WorkerTask(identifier = BootTasks.FILE_WATCHER, priority = ThreadPool.HIGHER, optional = true, executor = this::startFileWatcherService)
-        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHER, dependencies = arrayOf(BootTasks.FILE_WATCHER), executor = ProfileManagers::load)
+        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHEST, executor = ProfileManagers::load)
 
         taskWorker += WorkerTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
         taskWorker += WorkerTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = AssetsVersionProperties::load)
@@ -170,12 +168,6 @@ object Minosoft {
 
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Post booting..." }
         postBoot()
-    }
-
-    private fun startFileWatcherService(latch: AbstractLatch?) {
-        Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "Starting file watcher service..." }
-        FileWatcherService.start()
-        Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "File watcher service started!" }
     }
 
     private fun loadLanguageFiles(latch: AbstractLatch?) {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.config.profile.manager
 
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
+import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
@@ -30,6 +31,7 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileMan
 import de.bixilon.minosoft.config.profile.storage.ProfileIOManager
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.terminal.RunConfiguration
 
 object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
     ErosProfileManager,
@@ -48,6 +50,9 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
 
 
     fun load(latch: AbstractLatch?) {
+        if (RunConfiguration.PROFILES_HOT_RELOADING) {
+            FileWatcherService.start() // TODO: remove kutil race condition
+        }
         val worker = UnconditionalWorker()
         for (manager in ProfileManagers) {
             worker += { manager.load() }

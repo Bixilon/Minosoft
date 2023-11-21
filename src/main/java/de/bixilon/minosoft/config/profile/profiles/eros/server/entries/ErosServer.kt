@@ -14,12 +14,14 @@
 package de.bixilon.minosoft.config.profile.profiles.eros.server.entries
 
 import com.fasterxml.jackson.annotation.JacksonInject
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.assets.util.HashTypes
 import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
-import de.bixilon.minosoft.config.profile.delegate.types.RedirectDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -63,8 +65,17 @@ class ErosServer(
     @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
     override var profiles: MutableMap<ResourceLocation, String> by MapDelegate(profile, profiles)
 
+    @get:JsonProperty("forcedVersion")
     @get:JsonInclude(JsonInclude.Include.NON_NULL)
-    override var forcedVersion: Version? by RedirectDelegate<Version?, String?>(profile, { it?.name }, { Versions[it] })
+    private var _forcedVersion: String? by SimpleDelegate(profile, null)
+
+    @get:JsonIgnore
+    override var forcedVersion: Version? by SimpleDelegate(profile, null)
+
+    init {
+        this::forcedVersion.observe(this) { _forcedVersion = it?.name }
+        this::_forcedVersion.observe(this) { this.forcedVersion = Versions[it] }
+    }
 
     @get:JsonInclude(JsonInclude.Include.NON_DEFAULT)
     override var faviconHash: String? by NullableStringDelegate(profile, null) { if (it != null) check(it.length == HashTypes.SHA256.length) { "Not a valid sha256 hash!" } }

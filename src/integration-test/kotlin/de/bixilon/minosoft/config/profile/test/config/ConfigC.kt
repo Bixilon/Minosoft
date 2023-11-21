@@ -13,14 +13,27 @@
 
 package de.bixilon.minosoft.config.profile.test.config
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.Boxed
-import de.bixilon.minosoft.config.profile.delegate.types.RedirectDelegate
+import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 
 class ConfigC(profile: Profile) {
-    @get:JsonDeserialize(using = RedirectDelegate.RedirectDeserializer::class)
-    var prop by RedirectDelegate<Boxed?, Int?>(profile, { it?.value }, { it?.let { Boxed(it, false) } })
+
+    @get:JsonProperty("prop")
+    private var _prop by IntDelegate(profile, 0)
+
+    @get:JsonIgnore
+    var prop: Boxed? by SimpleDelegate(profile, null)
+
+    init {
+        this::prop.observe(this) { _prop = it?.value ?: 0 }
+        this::_prop.observe(this) { prop = Boxed(it, false) }
+    }
+
     var normal by StringDelegate(profile, "test")
 }

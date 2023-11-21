@@ -77,8 +77,6 @@ class RedirectDelegateTest {
         val profile = create()
         profile.config.prop = Boxed(123, true)
         val data = profile.serialize()
-        assertEquals(data, mapOf("config" to mapOf("prop" to 123, "normal" to "test")))
+        assertEquals(data, mapOf("config" to mapOf("prop" to 123, "normal" to "test"), "key" to 1))
     }
-
-
 }
