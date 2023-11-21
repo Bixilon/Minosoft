@@ -16,7 +16,10 @@ package de.bixilon.minosoft.gui.eros.main.play.server.type.types
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.RemoveObserver
+import de.bixilon.kutil.observer.list.ListObserver.Companion.observeList
 import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -30,12 +33,22 @@ object CustomServerType : ServerType {
     override val icon: Ikon = FontAwesomeSolid.SERVER
     override val hidden: Boolean = false
     override var readOnly: Boolean = false
-    override var servers: MutableList<ErosServer> by observedList(ErosProfileManager.selected.server.entries)
+    override var servers: MutableList<ErosServer> by observedList(mutableListOf())
         private set
     override val translationKey: ResourceLocation = "minosoft:server_type.custom".toResourceLocation()
+    private var profile: ErosProfile? = null
 
     init {
-        ErosProfileManager::selected.observe(this) { ErosProfileManager.selected.server.entries }
+        ErosProfileManager::selected.observe(this, true) { profile ->
+            servers.clear()
+            servers += ErosProfileManager.selected.server.entries
+
+            profile.server::entries.observeList(this) {
+                if (profile !== this.profile) throw RemoveObserver()
+                this.servers -= it.removes
+                this.servers += it.adds
+            }
+        }
     }
 
     override fun refresh(cards: List<ServerCard>) {

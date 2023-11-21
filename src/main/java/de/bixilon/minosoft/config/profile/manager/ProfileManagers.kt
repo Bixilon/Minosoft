@@ -51,7 +51,7 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
 
     fun load(latch: AbstractLatch?) {
         if (RunConfiguration.PROFILES_HOT_RELOADING) {
-            FileWatcherService.start() // TODO: remove kutil race condition
+            FileWatcherService.start() // TODO: kutil 1.25: remove kutil race condition
         }
         val worker = UnconditionalWorker()
         for (manager in ProfileManagers) {
