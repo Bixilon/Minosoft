@@ -17,8 +17,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -27,6 +27,7 @@ import java.util.*
 
 abstract class Account(
     val username: String,
+    @get:JsonIgnore var storage: ProfileStorage?,
 ) {
     abstract val id: String
     abstract val type: ResourceLocation
@@ -62,15 +63,7 @@ abstract class Account(
     }
 
     fun save() {
-        // ToDo: Optimize
-        profiles@ for (profile in AccountProfileManager.profiles.values) {
-            for ((_, account) in profile.entries) {
-                if (account === this) {
-                    profile.storage?.invalidate()
-                    break@profiles
-                }
-            }
-        }
+        storage?.invalidate()
     }
 
     open fun fetchKey(latch: AbstractLatch?): MinecraftPrivateKey? = null

@@ -21,6 +21,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
+import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
@@ -39,12 +40,13 @@ import java.util.*
 
 class MicrosoftAccount(
     override val uuid: UUID,
+    storage: ProfileStorage?,
     username: String,
     @field:JsonProperty private var msa: MicrosoftTokens,
     @field:JsonProperty private var minecraft: MinecraftTokens,
     @field:JsonProperty var key: MinecraftPrivateKey? = null,
     override val properties: PlayerProperties?,
-) : Account(username) {
+) : Account(username, storage) {
     override val id: String = uuid.toString()
     override val type: ResourceLocation = identifier
 

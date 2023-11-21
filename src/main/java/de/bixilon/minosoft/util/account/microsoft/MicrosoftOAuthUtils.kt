@@ -147,6 +147,7 @@ object MicrosoftOAuthUtils {
 
         val account = MicrosoftAccount(
             uuid = profile.uuid,
+            storage = null,
             username = profile.name,
             msa = msaTokens,
             minecraft = minecraftToken,

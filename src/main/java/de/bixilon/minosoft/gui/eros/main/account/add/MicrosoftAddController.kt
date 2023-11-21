@@ -78,6 +78,7 @@ class MicrosoftAddController(
 
         try {
             val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(response, latch)
+            account.storage = profile.storage
             profile.entries[account.id] = account
             if (this.account == null) {
                 profile.selected = account

@@ -45,7 +45,7 @@ class MojangAccount(
     val email: String,
     @field:JsonProperty private var accessToken: String,
     override val properties: PlayerProperties?,
-) : Account(username) {
+) : Account(username, null) {
     @Transient
     private var refreshed: Boolean = false
     override val type: ResourceLocation get() = identifier

@@ -58,7 +58,7 @@ object AccountManageCommand : Command {
                     if (!ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(name).matches()) throw CommandException("Invalid username: $name")
                     val profile = AccountProfileManager.selected
                     if (profile.entries.containsKey(name)) throw CommandException("Account does already exist!")
-                    val account = OfflineAccount(name)
+                    val account = OfflineAccount(name, profile.storage)
                     profile.entries[account.id] = account
                     profile.selected = account
                     stack.print.print("Successfully created and selected offline account ${account.username}!")
@@ -72,6 +72,7 @@ object AccountManageCommand : Command {
                             stack.print.print("Logging in into microsoft account...")
                             val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(it)
                             val profile = AccountProfileManager.selected
+                            account.storage = profile.storage
                             profile.entries[account.id] = account
                             profile.selected = account
 
