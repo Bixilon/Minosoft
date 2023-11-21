@@ -40,6 +40,7 @@ object ProfileIOManager {
 
     private fun observe() {
         lock.lock()
+        notify.count = 0
         ignoreAll { delete() }
         ignoreAll { save() }
         ignoreAll { reload() }
