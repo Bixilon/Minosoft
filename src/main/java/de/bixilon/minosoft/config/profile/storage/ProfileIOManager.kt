@@ -31,6 +31,7 @@ object ProfileIOManager {
     private val save: MutableSet<FileStorage> = mutableSetOf()
     private val delete: MutableSet<FileStorage> = mutableSetOf()
     private val reload: MutableSet<FileStorage> = mutableSetOf()
+    private val selected: MutableSet<StorageProfileManager<*>> = mutableSetOf()
 
 
     fun init() {
@@ -93,6 +94,16 @@ object ProfileIOManager {
         }
     }
 
+    private fun selected() {
+        if (selected.isEmpty()) return
+        val iterator = selected.iterator()
+        while (iterator.hasNext()) {
+            val manager = iterator.next()
+            iterator.remove()
+            ignoreAll { manager.saveSelected() }
+        }
+    }
+
 
     fun save(storage: FileStorage) {
         lock.lock()
@@ -111,6 +122,13 @@ object ProfileIOManager {
     fun reload(storage: FileStorage) {
         lock.lock()
         reload += storage
+        lock.unlock()
+        notify.countUp()
+    }
+
+    fun saveSelected(manager: StorageProfileManager<*>) {
+        lock.lock()
+        selected += manager
         lock.unlock()
         notify.countUp()
     }

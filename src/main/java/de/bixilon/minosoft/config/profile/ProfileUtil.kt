@@ -11,9 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.storage
+package de.bixilon.minosoft.config.profile
 
-object ProfileIOUtil {
+object ProfileUtil {
     val NAME_REGEX = "[\\w_ ]{1,32}".toRegex()
 
     fun String.isValidName(): Boolean {

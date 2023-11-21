@@ -21,7 +21,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
@@ -30,8 +29,8 @@ import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
 import de.bixilon.minosoft.assets.util.FileUtil.mkdirParent
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
 import de.bixilon.minosoft.config.profile.ProfileType
+import de.bixilon.minosoft.config.profile.ProfileUtil.isValidName
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.storage.ProfileIOUtil.isValidName
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
@@ -52,6 +51,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     private val jacksonType by lazy { Jackson.MAPPER.typeFactory.constructType(type.clazz) }
     private val reader by lazy { Jackson.MAPPER.readerFor(jacksonType) }
     override val identifier get() = type.identifier
+    private lateinit var root: File
 
 
     abstract val latestVersion: Int
@@ -100,16 +100,18 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         return stream.readAsString()
     }
 
-    private fun saveSelected(root: File, name: String) {
+    fun saveSelected(name: String? = this.selected.storage?.nullCast<FileStorage>()?.name) {
         val file = root.resolve(SELECTED)
         file.mkdirParent()
         val stream = FileOutputStream(file)
-        stream.write(name.encodeNetwork())
+        if (name != null) {
+            stream.write(name.encodeNetwork())
+        }
         stream.close()
     }
 
     open fun load() {
-        val root = RunConfiguration.CONFIG_DIRECTORY.resolve(identifier.namespace).resolve(identifier.path).toFile()
+        root = RunConfiguration.CONFIG_DIRECTORY.resolve(identifier.namespace).resolve(identifier.path).toFile()
         if (!root.exists()) {
             root.mkdirs()
             return createDefault()
@@ -117,7 +119,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         var selected = loadSelected(root)
         if (selected == null) {
             selected = DEFAULT_NAME
-            saveSelected(root, selected)
+            saveSelected(selected)
         }
         if (!selected.isValidName()) selected = DEFAULT_NAME
         val files = root.listFiles() ?: return createDefault()
@@ -142,14 +144,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         }
 
         this.selected = this[selected] ?: create(selected)
-        this::selected.observe(this) {
-            val name = it.storage.unsafeCast<FileStorage>().name
-            DefaultThreadPool += {
-                this.lock.acquire()
-                saveSelected(root, name)
-                this.lock.release()
-            }
-        }
+        this::selected.observe(this) { ProfileIOManager.saveSelected(this) }
 
         observe(root.toPath())
     }
