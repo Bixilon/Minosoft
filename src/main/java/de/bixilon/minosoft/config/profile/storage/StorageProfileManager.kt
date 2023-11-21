@@ -146,7 +146,9 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         this.selected = this[selected] ?: create(selected)
         this::selected.observe(this) { ProfileIOManager.saveSelected(this) }
 
-        observe(root.toPath())
+        if (RunConfiguration.PROFILES_HOT_RELOADING) {
+            observe(root.toPath())
+        }
     }
 
     private fun observe(root: Path) {

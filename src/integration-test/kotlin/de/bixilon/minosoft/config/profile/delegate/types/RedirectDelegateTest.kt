@@ -16,11 +16,9 @@ package de.bixilon.minosoft.config.profile.delegate.types
 import com.fasterxml.jackson.databind.InjectableValues
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.convertValue
-import de.bixilon.kutil.concurrent.lock.Lock
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.config.profile.ProfileLock
-import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.storage.ProfileStorage
+import de.bixilon.minosoft.config.profile.Boxed
+import de.bixilon.minosoft.config.profile.test.TestProfile
 import de.bixilon.minosoft.util.json.Jackson
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -65,7 +63,8 @@ class RedirectDelegateTest {
     fun `update redirect property`() {
         val profile = create()
         assertEquals(profile.config.prop, null)
-        profile.update(mapOf("config" to mapOf("normal" to 12)))
+
+        profile.update(mapOf("config" to mapOf("prop" to 12)))
         assertEquals(profile.config.prop, Boxed(12, false))
     }
 
@@ -82,23 +81,4 @@ class RedirectDelegateTest {
     }
 
 
-    class TestProfile(
-        override var storage: ProfileStorage? = null,
-        override val lock: Lock = ProfileLock(),
-    ) : Profile {
-        val config = TestConfig(this)
-    }
-
-    class TestConfig(profile: Profile) {
-        var prop by RedirectDelegate<Boxed?, Int?>(profile, { it?.value }, { it?.let { Boxed(it, false) } })
-        var normal by StringDelegate(profile, "test")
-    }
-
-    class Boxed(val value: Int, val unused: Boolean) {
-
-        override fun equals(other: Any?): Boolean {
-            if (other !is Boxed) return false
-            return other.value == this.value
-        }
-    }
 }

@@ -13,11 +13,16 @@
 
 package de.bixilon.minosoft.config.profile.delegate.types
 
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.minosoft.config.profile.delegate.AbstractProfileDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import kotlin.reflect.KProperty
 
+@JsonDeserialize(using = RedirectDelegate.RedirectDeserializer::class)
 class RedirectDelegate<V, S>(
     override val profile: Profile,
     val serializer: (V?) -> S?,
@@ -33,4 +38,12 @@ class RedirectDelegate<V, S>(
     //   fun setValue(thisRef: Any, property: KProperty<*>, value: S?) {
 //       setValue(thisRef, property, lookup(value))
 //   }
+
+    object RedirectDeserializer : StdDeserializer<Any>(Any::class.java) {
+
+        override fun deserialize(parser: JsonParser, context: DeserializationContext?): Any {
+            return "test"
+        }
+    }
+
 }

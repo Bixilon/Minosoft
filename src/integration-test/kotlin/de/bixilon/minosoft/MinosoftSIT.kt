@@ -14,6 +14,7 @@
 package de.bixilon.minosoft
 
 import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.meta.MinosoftMeta
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
@@ -28,15 +29,24 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import org.testng.annotations.BeforeSuite
+import java.nio.file.Path
 
 
 internal object MinosoftSIT {
 
+    private fun setupEnv() {
+        Log.ASYNC_LOGGING = false
+        RunConfiguration.VERBOSE_LOGGING = true
+        RunConfiguration.APPLICATION_NAME = "Minosoft it"
+        RunConfiguration::HOME_DIRECTORY.forceSet(Path.of(System.getProperty("java.io.tmpdir"), "minosoft"))
+        RunConfiguration::CONFIG_DIRECTORY.forceSet(Path.of(System.getProperty("java.io.tmpdir"), "minosoft").resolve("conf"))
+        RunConfiguration.PROFILES_HOT_RELOADING = false
+    }
+
     @BeforeSuite
     fun setup() {
-        Log.ASYNC_LOGGING = false
+        setupEnv()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "This is java version ${System.getProperty("java.version")}" }
-        RunConfiguration.VERBOSE_LOGGING = true
         KUtil.initBootClasses()
         KUtil.initPlayClasses()
         disableGC()
