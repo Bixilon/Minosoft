@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.config.profile.storage
 
+import de.bixilon.minosoft.config.profile.storage.ProfileIOManagerTest.Companion.isSaveQueued
 import de.bixilon.minosoft.config.profile.test.TestProfileManager
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.terminal.RunConfiguration
-import org.testng.Assert.assertEquals
+import org.testng.Assert.*
 import org.testng.annotations.Test
 import java.io.FileOutputStream
 
@@ -33,14 +34,44 @@ class StorageProfileManagerTest {
         stream.close()
     }
 
-    fun `load dumped profiles`() {
-        val profile = """{"version": "1", "key_old": 123}"""
-        dump("Dumped", profile)
+    fun `load unmigrated profile`() {
+        val profile = """{"version": 2, "key": 123}"""
+        dump("Dumped1", profile)
 
         val manager = TestProfileManager()
-        assertEquals(manager["Dumped"], null)
+        assertEquals(manager["Dumped1"], null)
         manager.load()
-        val dumped = manager["Dumped"]!!
+        val dumped = manager["Dumped1"]!!
+        assertFalse(dumped.isSaveQueued())
         assertEquals(dumped.key, 123)
+        base.toFile().deleteRecursively()
+    }
+
+    fun `load migrated profile`() {
+        val profile = """{"version": 1, "key_old": 123}"""
+        dump("Dumped2", profile)
+
+        val manager = TestProfileManager()
+        assertEquals(manager["Dumped2"], null)
+        manager.load()
+        val dumped = manager["Dumped2"]!!
+        assertTrue(dumped.isSaveQueued()) // profile was migrated
+        assertEquals(dumped.key, 123)
+        base.toFile().deleteRecursively()
+    }
+
+    fun `create and verify save is queued`() {
+        val manager = TestProfileManager()
+        val profile = manager.create("Dumped3")
+        assertTrue(profile.isSaveQueued())
+    }
+
+    fun `queue save on change`() {
+        val manager = TestProfileManager()
+        val profile = manager.create("Dumped4")
+        assertTrue(profile.isSaveQueued())
+        assertFalse(profile.isSaveQueued()) // save flag really removed
+        profile.key = 999
+        assertTrue(profile.isSaveQueued())
     }
 }

@@ -43,6 +43,7 @@ object ProfileIOManager {
         ignoreAll { delete() }
         ignoreAll { save() }
         ignoreAll { reload() }
+        ignoreAll { selected() }
 
 
         lock.unlock()
