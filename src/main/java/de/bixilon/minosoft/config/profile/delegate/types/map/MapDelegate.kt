@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.delegate.types.map
 
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.observer.map.MapObserver
 import de.bixilon.minosoft.config.profile.delegate.AbstractProfileDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
@@ -21,7 +22,7 @@ import kotlin.reflect.KProperty
 open class MapDelegate<K, V>(
     override val profile: Profile,
     default: MutableMap<K, V>,
-) : MapObserver<K, V>(default), AbstractProfileDelegate<MutableMap<K, V>> {
+) : MapObserver<K, V>(LockMap(default, profile.lock)), AbstractProfileDelegate<MutableMap<K, V>> {
 
     init {
         value.addObserver { invalidate() }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.config.profile.profiles.other.log
 
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.delegate.types.map.LogDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfile
 import de.bixilon.minosoft.util.logging.LogMessageType
 
@@ -31,6 +31,6 @@ class LogC(profile: OtherProfile) {
      * @see de.bixilon.minosoft.util.logging.LogLevels
      * @see de.bixilon.minosoft.util.logging.LogMessageType
      */
-    var levels by LogDelegate(profile, LogMessageType.DEFAULT_LOG_MAP.toMutableMap())
+    var levels by MapDelegate(profile, LogMessageType.DEFAULT_LOG_MAP.toMutableMap())
         private set
 }
