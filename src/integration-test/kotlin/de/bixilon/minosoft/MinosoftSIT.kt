@@ -38,7 +38,11 @@ internal object MinosoftSIT {
         Log.ASYNC_LOGGING = false
         RunConfiguration.VERBOSE_LOGGING = true
         RunConfiguration.APPLICATION_NAME = "Minosoft it"
-        RunConfiguration::HOME_DIRECTORY.forceSet(Path.of("./it"))
+
+        val isCi = (System.getenv("GITHUB_ACTIONS") ?: System.getenv("TRAVIS") ?: System.getenv("CIRCLECI") ?: System.getenv("GITLAB_CI")) != null
+        if (isCi) {
+            RunConfiguration::HOME_DIRECTORY.forceSet(Path.of("./it"))
+        }
         RunConfiguration::CONFIG_DIRECTORY.forceSet(Path.of(System.getProperty("java.io.tmpdir"), "minosoft").resolve("conf"))
         RunConfiguration.PROFILES_HOT_RELOADING = false
     }
