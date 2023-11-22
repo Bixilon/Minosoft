@@ -10,7 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.common
+package de.bixilon.minosoft.protocol.packets.s2c.common.resourcepack
 
 import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.kutil.url.URLUtil.toURL
@@ -20,12 +20,14 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.common.ResourcepackC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_3_PRE1
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ResourcepackS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    var uuid = if (buffer.versionId > V_1_20_3_PRE1) buffer.readUUID() else null
     val url: String = buffer.readString().apply { toURL().checkWeb() }
     val hash: String = buffer.readString()
     val forced = if (buffer.versionId >= ProtocolVersions.V_20W45A) {
@@ -48,10 +50,10 @@ class ResourcepackS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (connection.events.fire(event)) {
             return
         }
-        connection.sendPacket(ResourcepackC2SP(hash, ResourcepackC2SP.ResourcePackStates.SUCCESSFULLY)) // ToDo: This fakes it, to not get kicked on most servers
+        connection.network.send(ResourcepackC2SP(uuid, hash, ResourcepackC2SP.ResourcePackStates.SUCCESSFULLY)) // ToDo: This fakes it, to not get kicked on most servers
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Resourcepack (url=$url, hash=$hash, forced=$forced, promptText=$promptText)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Resourcepack (uuid=$uuid, url=$url, hash=$hash, forced=$forced, promptText=$promptText)" }
     }
 }

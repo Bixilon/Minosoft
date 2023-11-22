@@ -60,6 +60,8 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.recipe.book.RecipeBookState
 import de.bixilon.minosoft.protocol.packets.c2s.status.PingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.common.*
+import de.bixilon.minosoft.protocol.packets.s2c.common.resourcepack.RemoveResourcepackS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.common.resourcepack.ResourcepackS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.configuration.ReadyS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.configuration.RegistriesS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.login.ChannelS2CP
@@ -247,6 +249,7 @@ object DefaultPackets {
             registerPlay("heartbeat", ::HeartbeatS2CP)
             registerPlay("kick", ::KickS2CP)
             registerPlay("ping", ::PingS2CP)
+            registerPlay("remove_resourcepack", ::RemoveResourcepackS2CP)
             registerPlay("resourcepack", ::ResourcepackS2CP)
             registerPlay("tags", ::TagsS2CP)
 
@@ -260,6 +263,7 @@ object DefaultPackets {
             registerPlay("heartbeat", ::HeartbeatS2CP)
             registerPlay("kick", ::KickS2CP, threadSafe = false)
             registerPlay("ping", ::PingS2CP)
+            registerPlay("remove_resourcepack", ::RemoveResourcepackS2CP)
             registerPlay("resourcepack", ::ResourcepackS2CP)
             registerPlay("tags", ::TagsS2CP, threadSafe = false)
 

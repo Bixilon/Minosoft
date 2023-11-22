@@ -14,17 +14,23 @@ package de.bixilon.minosoft.protocol.packets.c2s.common
 
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_3_PRE1
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
 class ResourcepackC2SP(
+    val uuid: UUID?,
     val hash: String,
     val status: ResourcePackStates,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
+        if (buffer.versionId >= V_1_20_3_PRE1) {
+            buffer.writeUUID(uuid!!)
+        }
         if (buffer.versionId < ProtocolVersions.V_1_10_PRE1) {
             buffer.writeString(hash)
         }
@@ -40,5 +46,9 @@ class ResourcepackC2SP(
         DECLINED,
         FAILED_DOWNLOAD,
         ACCEPTED,
+        INVALID_URL,
+        FAILED_RELOAD,
+        DISCARDED,
+        ;
     }
 }

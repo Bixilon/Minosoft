@@ -10,20 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.protocol.packets.s2c.common.resourcepack
 
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.common.resourcepack.ResourcepackS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ResourcePackRequestEvent(
-    connection: PlayConnection,
-    val url: String,
-    val hash: String,
-    val promptText: ChatComponent?,
-) : PlayConnectionEvent(connection), CancelableEvent {
+class RemoveResourcepackS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val uuid = buffer.readOptional { buffer.readUUID() }
 
-
-    constructor(connection: PlayConnection, packet: ResourcepackS2CP) : this(connection, packet.url, packet.hash, packet.promptText)
+    override fun log(reducedLog: Boolean) {
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Remove resourcepack (uuid=$uuid)" }
+    }
 }
