@@ -189,6 +189,9 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     fun unsafeUpdate(profile: P, data: ObjectNode) {
         val injectable = InjectableValues.Std()
         injectable.addValue(type.clazz, profile)
+        injectable.addValue(ProfileStorage::class.java, profile.storage)
+        //  injectable.addValue(FileStorage::class.java, profile.storage)
+
         reader
             .withValueToUpdate(profile)
             .with(injectable)

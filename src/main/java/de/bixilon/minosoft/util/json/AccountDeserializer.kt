@@ -15,9 +15,11 @@ package de.bixilon.minosoft.util.json
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectReader
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
-import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.types.AccountTypes
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -33,12 +35,14 @@ object AccountDeserializer : SimpleModule() {
 
         override fun deserialize(parser: JsonParser, context: DeserializationContext?): Account {
             val codec = parser.codec
-            val root = codec.readValue<JsonObject>(parser, Jackson.JSON_MAP_TYPE)
+            val root = codec.readTree<JsonNode>(parser)
 
-            val type = root["type"].toResourceLocation()
+            val type = root["type"].asText().toResourceLocation()
             val clazz = AccountTypes.types[type] ?: throw IllegalArgumentException("Can not find account type $type!")
 
-            return Jackson.MAPPER.convertValue(root, clazz.java)
+            return codec.unsafeCast<ObjectReader>()
+                .forType(clazz.java)
+                .readValue(root)
         }
     }
 }

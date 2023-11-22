@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.accounts
 
+import com.fasterxml.jackson.annotation.JacksonInject
 import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.latch.AbstractLatch
@@ -27,7 +28,7 @@ import java.util.*
 
 abstract class Account(
     val username: String,
-    @get:JsonIgnore var storage: ProfileStorage?,
+    @JacksonInject storage: ProfileStorage?,
 ) {
     abstract val id: String
     abstract val type: ResourceLocation
@@ -35,6 +36,7 @@ abstract class Account(
     @get:JsonIgnore @set:JsonIgnore open var state: AccountStates by observed(AccountStates.UNCHECKED)
     @get:JsonIgnore open var error: Throwable? by observed(null)
     abstract val uuid: UUID
+    @get:JsonIgnore var storage = storage
 
 
     @get:JsonIgnore open val supportsEncryption: Boolean get() = true

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.util.*
 
-object TestAccount : Account("Bixilon") {
+object TestAccount : Account("Bixilon", null) {
     override val id: String = "id"
     override val type: ResourceLocation = minosoft("test_account")
     override val properties: PlayerProperties = PlayerProperties()

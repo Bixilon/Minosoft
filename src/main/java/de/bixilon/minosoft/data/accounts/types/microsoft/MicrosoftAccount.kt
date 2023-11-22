@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.accounts.types.microsoft
 
+import com.fasterxml.jackson.annotation.JacksonInject
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
@@ -40,7 +41,7 @@ import java.util.*
 
 class MicrosoftAccount(
     override val uuid: UUID,
-    storage: ProfileStorage?,
+    @JacksonInject storage: ProfileStorage?,
     username: String,
     @field:JsonProperty private var msa: MicrosoftTokens,
     @field:JsonProperty private var minecraft: MinecraftTokens,

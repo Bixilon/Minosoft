@@ -11,20 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.delegate.types
+package de.bixilon.minosoft.config.profile.test
 
-import com.fasterxml.jackson.databind.InjectableValues
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.convertValue
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.config.profile.Boxed
-import de.bixilon.minosoft.config.profile.test.TestProfile
 import de.bixilon.minosoft.util.json.Jackson
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["profiles"])
-class RedirectDelegateTest {
+class ProfileManagerTest {
     private val jacksonType by lazy { Jackson.MAPPER.typeFactory.constructType(TestProfile::class.java) }
     private val reader by lazy { Jackson.MAPPER.readerFor(jacksonType) }
 
@@ -32,16 +30,9 @@ class RedirectDelegateTest {
         return TestProfile()
     }
 
-    private fun TestProfile.update(data: JsonObject) {
+    private fun TestProfile.update(manager: TestProfileManager, data: JsonObject) {
         val tree = Jackson.MAPPER.convertValue<ObjectNode>(data)
-
-
-        val injectable = InjectableValues.Std()
-        injectable.addValue(TestProfile::class.java, this)
-        reader
-            .withValueToUpdate(this)
-            .with(injectable)
-            .readValue<TestProfile>(tree)
+        manager.unsafeUpdate(this, tree)
     }
 
     private fun TestProfile.serialize(): JsonObject {
@@ -56,7 +47,7 @@ class RedirectDelegateTest {
     fun `update with just the normal property`() {
         val profile = create()
         assertEquals(profile.config.normal, "test")
-        profile.update(mapOf("config" to mapOf("normal" to "abc")))
+        profile.update(TestProfileManager(), mapOf("config" to mapOf("normal" to "abc")))
         assertEquals(profile.config.normal, "abc")
     }
 
@@ -64,7 +55,7 @@ class RedirectDelegateTest {
         val profile = create()
         assertEquals(profile.config.prop, null)
 
-        profile.update(mapOf("config" to mapOf("prop" to 12)))
+        profile.update(TestProfileManager(), mapOf("config" to mapOf("prop" to 12)))
         assertEquals(profile.config.prop, Boxed(12, false))
     }
 

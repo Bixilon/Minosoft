@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.accounts.types.offline
 
+import com.fasterxml.jackson.annotation.JacksonInject
 import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-class OfflineAccount(username: String, storage: ProfileStorage?) : Account(username, storage) {
+class OfflineAccount(username: String, @JacksonInject storage: ProfileStorage?) : Account(username, storage) {
     override val id: String = username
     override val uuid: UUID = UUID("OfflinePlayer:$username".hashCode().toLong(), 0L) // ToDo
     override val type: ResourceLocation = identifier
