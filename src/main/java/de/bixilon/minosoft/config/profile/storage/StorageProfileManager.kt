@@ -179,16 +179,20 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
         profile.lock.lock()
         storage.updating = true
 
+        unsafeUpdate(profile, data)
+
+        storage.updating = false
+        // storage.invalid = false
+        profile.lock.unlock()
+    }
+
+    fun unsafeUpdate(profile: P, data: ObjectNode) {
         val injectable = InjectableValues.Std()
         injectable.addValue(type.clazz, profile)
         reader
             .withValueToUpdate(profile)
             .with(injectable)
             .readValue<P>(data)
-
-        storage.updating = false
-        // storage.invalid = false
-        profile.lock.unlock()
     }
 
     fun create(name: String): P {
@@ -212,15 +216,16 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
 
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Saving profile to $path" }
         profile.lock.acquire()
+        storage.invalid = false // do it before actually saving it. If the data changes while writing it gets saved another time
         storage.saved++
+
         val node = Jackson.MAPPER.valueToTree<ObjectNode>(profile) // TODO: cache jacksonType
         node.put(VERSION, latestVersion)
         val string = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(node)
+
         val stream = FileOutputStream(path)
         stream.write(string.encodeNetwork())
         stream.close()
-
-        storage.invalid = false
 
         profile.lock.release()
     }
@@ -250,7 +255,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
     }
 
     fun init() {
-        reader
+        reader // init lazy value
     }
 
     companion object {

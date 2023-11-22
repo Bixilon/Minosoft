@@ -40,6 +40,12 @@ jobs:
           path: ~/.gradle/wrapper
           key: ${{ matrix.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
 
+      - name: Setup Gradle Wrapper Cache
+        uses: actions/cache@v3
+        with:
+          path: ./it
+          key: minosoft-assets
+
       - name: Build
         uses: gradle/gradle-build-action@v2
         with:

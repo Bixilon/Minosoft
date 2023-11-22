@@ -29,6 +29,10 @@ cache:
         - "gradle/wrapper/gradle-wrapper.properties"
     paths:
       - .gradle_home/wrapper
+  - key:
+      "minosoft-assets"
+    paths:
+      - ./it
 
 build:
   stage: build
