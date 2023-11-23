@@ -37,7 +37,7 @@ object MinosoftBoot {
 
     fun register(worker: TaskWorker) {
         worker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER, executor = VersionLoader::load)
-        worker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHEST, executor = ProfileManagers::load)
+        worker += WorkerTask(identifier = BootTasks.PROFILES, dependencies = arrayOf(BootTasks.VERSIONS), priority = ThreadPool.HIGHEST, executor = ProfileManagers::load) // servers might have a version set
 
         worker += WorkerTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = AssetsVersionProperties::load)
         worker += WorkerTask(identifier = BootTasks.DEFAULT_REGISTRIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = { MinosoftMeta.load(); FallbackTags.load(); FallbackRegistries.load(); EntityEvents.load() })

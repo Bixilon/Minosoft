@@ -69,7 +69,7 @@ class AccountProfile(
 
     init {
         this::selected.observe(this) { _selected = it?.id }
-        this::_selected.observe(this) { selected = entries[it] }
+        this::_selected.observe(this, true) { selected = entries[it] }
     }
 
     override fun toString(): String {

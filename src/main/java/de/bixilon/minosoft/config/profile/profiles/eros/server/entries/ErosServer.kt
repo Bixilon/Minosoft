@@ -74,7 +74,7 @@ class ErosServer(
 
     init {
         this::forcedVersion.observe(this) { _forcedVersion = it?.name }
-        this::_forcedVersion.observe(this) { this.forcedVersion = Versions[it] }
+        this::_forcedVersion.observe(this, true) { this.forcedVersion = Versions[it] }
     }
 
     @get:JsonInclude(JsonInclude.Include.NON_DEFAULT)
