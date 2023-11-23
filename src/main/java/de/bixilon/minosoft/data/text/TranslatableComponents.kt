@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object TranslatableComponents {
@@ -27,8 +27,15 @@ object TranslatableComponents {
     val GENERAL_EXIT = "minosoft:general.exit".toResourceLocation()
     val GENERAL_REFRESH = "minosoft:general.refresh".toResourceLocation()
 
-    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:server_info.delete.dialog.description".toResourceLocation(), name, address) }
-    val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:main.account.card.connection_count".toResourceLocation(), count) }
-    val CONNECTION_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:connection.kick.description".toResourceLocation(), server.name, account.username) }
-    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:connection.login_kick.description".toResourceLocation(), server.name, account.username) }
+    @Deprecated("yah")
+    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> IntegratedLanguage.LANGUAGE.forceTranslate("minosoft:server_info.delete.dialog.description".toResourceLocation(), name, address) }
+
+    @Deprecated("yah")
+    val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> IntegratedLanguage.LANGUAGE.forceTranslate("minosoft:main.account.card.connection_count".toResourceLocation(), count) }
+
+    @Deprecated("yah")
+    val CONNECTION_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> IntegratedLanguage.LANGUAGE.forceTranslate("minosoft:connection.kick.description".toResourceLocation(), server.name, account.username) }
+
+    @Deprecated("yah")
+    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> IntegratedLanguage.LANGUAGE.forceTranslate("minosoft:connection.login_kick.description".toResourceLocation(), server.name, account.username) }
 }

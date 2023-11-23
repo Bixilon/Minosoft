@@ -17,9 +17,9 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.observer.map.MapChange
 import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observeBiMap
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -47,7 +47,7 @@ class ProfilesTypeCardController : AbstractCardController<StorageProfileManager<
         iconFX.isVisible = true
 
         iconFX.iconCode = item.type.icon
-        headerFX.text = Minosoft.LANGUAGE_MANAGER.forceTranslate(item.type.identifier)
+        headerFX.text = IntegratedLanguage.LANGUAGE.forceTranslate(item.type.identifier)
 
         recalculate(item)
         item::profiles.observeBiMapFX(this) { recalculate(item) }

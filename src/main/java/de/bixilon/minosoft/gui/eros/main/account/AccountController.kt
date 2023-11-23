@@ -20,13 +20,13 @@ import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.observer.map.MapChange.Companion.values
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
@@ -184,7 +184,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             for ((key, property) in ACCOUNT_INFO_PROPERTIES.extend(accountTypeListViewFX.selectionModel.selectedItem.additionalDetails)) { // ToDo
                 val propertyValue = property(account) ?: continue
 
-                it.add(Minosoft.LANGUAGE_MANAGER.forceTranslate(key).textFlow, 0, row)
+                it.add(IntegratedLanguage.LANGUAGE.forceTranslate(key).textFlow, 0, row)
                 it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
             }
 

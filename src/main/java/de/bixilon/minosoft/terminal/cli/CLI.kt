@@ -20,9 +20,9 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.RootNode
+import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.commands.Commands
 import de.bixilon.minosoft.terminal.commands.connection.ConnectionCommand
@@ -70,7 +70,7 @@ object CLI {
 
         this::connection.observe(this) { register() }
 
-        Minosoft.BOOT_LATCH.await()
+        MinosoftBoot.LATCH.await()
 
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "§aA headless input system is available, §epress tab§a or type §ehelp§a to see all available commands!" }
         reader.pollLines()

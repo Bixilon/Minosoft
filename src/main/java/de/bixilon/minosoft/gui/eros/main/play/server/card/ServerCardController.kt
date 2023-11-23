@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.eros.main.play.server.card
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
@@ -111,7 +111,7 @@ class ServerCardController : AbstractCardController<ServerCard>() {
                 return@observeFX
             }
 
-            motdFX.text = ChatComponent.of(Minosoft.LANGUAGE_MANAGER.translate(it))
+            motdFX.text = ChatComponent.of(IntegratedLanguage.LANGUAGE.translate(it))
             serverList?.onPingUpdate(item)
             resetPing()
         }

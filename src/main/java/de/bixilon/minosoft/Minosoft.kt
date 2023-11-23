@@ -20,7 +20,6 @@ import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.kutil.latch.CallbackLatch
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.os.OSTypes
@@ -31,50 +30,35 @@ import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.assets.IntegratedAssets
-import de.bixilon.minosoft.assets.meta.MinosoftMeta
-import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.data.entities.event.EntityEvents
-import de.bixilon.minosoft.data.language.LanguageUtil
-import de.bixilon.minosoft.data.language.manager.MultiLanguageManager
-import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
-import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
-import de.bixilon.minosoft.data.registries.identified.Namespaces
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.datafixer.DataFixer
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.main.BootTasks
+import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
-import de.bixilon.minosoft.protocol.protocol.LANServerListener
-import de.bixilon.minosoft.protocol.versions.VersionLoader
 import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 
 
 object Minosoft {
-    val LANGUAGE_MANAGER = MultiLanguageManager()
-    val BOOT_LATCH = CallbackLatch(1)
 
 
     private fun preBoot(args: Array<String>) {
@@ -104,15 +88,8 @@ object Minosoft {
     private fun boot() {
         val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() }, forcePool = true)
 
-        taskWorker += WorkerTask(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGHER, executor = VersionLoader::load)
-        taskWorker += WorkerTask(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGHEST, executor = ProfileManagers::load)
-
+        MinosoftBoot.register(taskWorker)
         taskWorker += WorkerTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
-        taskWorker += WorkerTask(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = AssetsVersionProperties::load)
-        taskWorker += WorkerTask(identifier = BootTasks.DEFAULT_REGISTRIES, dependencies = arrayOf(BootTasks.VERSIONS), executor = { MinosoftMeta.load(); FallbackTags.load(); FallbackRegistries.load(); EntityEvents.load() })
-
-
-        taskWorker += WorkerTask(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
 
         if (!RunConfiguration.DISABLE_EROS) {
             javafx(taskWorker)
@@ -121,17 +98,10 @@ object Minosoft {
             // eros is disabled, but rendering not, force initialize the desktop, otherwise eros will do so
             DefaultThreadPool += { DesktopUtil.initialize() }
         }
-        taskWorker += WorkerTask(identifier = BootTasks.YGGDRASIL, executor = { YggdrasilUtil.load() })
 
-        taskWorker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { IntegratedAssets.OVERRIDE.load(it) })
-        taskWorker += WorkerTask(identifier = BootTasks.MODS, executor = { ModLoader.load(LoadingPhases.BOOT, it) })
-        taskWorker += WorkerTask(identifier = BootTasks.DATA_FIXER, executor = { DataFixer.load() })
-        taskWorker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.LOW, executor = CLI::startThread)
-
-
-        taskWorker.work(BOOT_LATCH)
-        BOOT_LATCH.dec() // initial count
-        BOOT_LATCH.await()
+        taskWorker.work(MinosoftBoot.LATCH)
+        MinosoftBoot.LATCH.dec() // initial count
+        MinosoftBoot.LATCH.await()
     }
 
     private fun postBoot() {
@@ -150,7 +120,7 @@ object Minosoft {
     private fun javafx(taskWorker: TaskWorker) {
         taskWorker += WorkerTask(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start(); async(ThreadPool.HIGHER) { javafx.scene.text.Font.getDefault() } })
 
-        taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(BOOT_LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
+        taskWorker += WorkerTask(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(MinosoftBoot.LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
         taskWorker += WorkerTask(identifier = BootTasks.EROS, dependencies = arrayOf(BootTasks.JAVAFX, BootTasks.PROFILES, BootTasks.MODS, BootTasks.VERSIONS, BootTasks.LANGUAGE_FILES), executor = { DefaultThreadPool += { Eros.preload() } })
 
         DefaultThreadPool += ForcePooledRunnable { Eros::class.java.forceInit() }
@@ -185,12 +155,7 @@ object Minosoft {
     }
 
     private fun loadLanguageFiles(latch: AbstractLatch?) {
-        val language = ErosProfileManager.selected.general.language
-        ErosProfileManager.selected.general::language.observe(this, true) {
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
-            LANGUAGE_MANAGER.translators[Namespaces.MINOSOFT] = LanguageUtil.load(it, null, IntegratedAssets.DEFAULT, minosoft("language/"))
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }
-        }
+        ErosProfileManager.selected.general::language.observe(this, true) { IntegratedLanguage.load(it) }
     }
 
     private fun checkMacOS() {

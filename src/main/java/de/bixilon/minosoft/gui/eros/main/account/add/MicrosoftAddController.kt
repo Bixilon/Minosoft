@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.eros.main.account.add
 
 import de.bixilon.kutil.latch.CallbackLatch
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.dialog.PleaseWaitDialog
@@ -109,7 +109,7 @@ class MicrosoftAddController(
     companion object {
         private val LAYOUT = "minosoft:eros/main/account/add/microsoft.fxml".toResourceLocation()
         private val TITLE = "minosoft:main.account.add.microsoft.title".toResourceLocation()
-        private val HEADER = { link: URL -> Minosoft.LANGUAGE_MANAGER.forceTranslate("minosoft:main.account.add.microsoft.header".toResourceLocation(), link) }
+        private val HEADER = { link: URL -> IntegratedLanguage.LANGUAGE.forceTranslate("minosoft:main.account.add.microsoft.header".toResourceLocation(), link) }
         private val CANCEL = "minosoft:main.account.add.microsoft.cancel".toResourceLocation()
     }
 }

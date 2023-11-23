@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -81,7 +81,7 @@ open class TextElement(
 
     override var text: Any = text
         set(value) {
-            chatComponent = ChatComponent.of(value, translator = Minosoft.LANGUAGE_MANAGER /*guiRenderer.connection.language*/) // Should the server be allowed to send minosoft namespaced translation keys?
+            chatComponent = ChatComponent.of(value, translator = IntegratedLanguage.LANGUAGE /*guiRenderer.connection.language*/) // Should the server be allowed to send minosoft namespaced translation keys?
             field = value
         }
 

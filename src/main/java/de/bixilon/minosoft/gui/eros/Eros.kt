@@ -17,11 +17,11 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.forceInit
+import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
@@ -100,7 +100,7 @@ object Eros {
             mainErosController = it
             catchAll { it.stage.forceInit() }
             latch.dec()
-            if (Minosoft.BOOT_LATCH.count == 0) {
+            if (MinosoftBoot.LATCH.count == 0) {
                 start()
             }
         }

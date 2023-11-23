@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.eros.util.cell
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 
 class VersionListCell : LabeledListCell<Version>({
     if (it == Versions.AUTOMATIC) {
-        Minosoft.LANGUAGE_MANAGER.forceTranslate(AUTOMATIC)
+        IntegratedLanguage.LANGUAGE.forceTranslate(AUTOMATIC)
     } else {
         "${it.name} (${it.type.name.lowercase()})"
     }

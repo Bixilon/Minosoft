@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.eros.dialog.profiles
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
@@ -57,7 +57,7 @@ class ProfileSelectDialog(
     }
 
     override fun init() {
-        headerFX.text = Minosoft.LANGUAGE_MANAGER.forceTranslate(HEADER)
+        headerFX.text = IntegratedLanguage.LANGUAGE.forceTranslate(HEADER)
 
         typeColumnFX.ctext = TYPE_COLUMN_TITLE
         profileColumnFX.ctext = PROFILE_COLUMN_TITLE

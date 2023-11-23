@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.format
 import javafx.geometry.HPos
@@ -41,7 +41,7 @@ class InfoPane<T>(vararg children: Node) : AnchorPane(*children) {
         for ((key, property) in properties) {
             val propertyValue = property(item) ?: continue
 
-            propertiesPane.add(Minosoft.LANGUAGE_MANAGER.forceTranslate(key).textFlow, 0, row)
+            propertiesPane.add(IntegratedLanguage.LANGUAGE.forceTranslate(key).textFlow, 0, row)
             propertiesPane.add(propertyValue.format().textFlow, 1, row++)
         }
     }

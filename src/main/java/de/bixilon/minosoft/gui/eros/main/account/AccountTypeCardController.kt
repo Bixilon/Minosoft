@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.eros.main.account
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -41,7 +41,7 @@ class AccountTypeCardController : AbstractCardController<ErosAccountType<*>>() {
         iconFX.isVisible = true
 
         iconFX.iconCode = item.icon
-        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)
+        headerFX.text = IntegratedLanguage.LANGUAGE.translate(item)
 
         recalculate(item)
         ErosProfileManager.selected.general.accountProfile::entries.observeMapFX(this) { recalculate(item) }

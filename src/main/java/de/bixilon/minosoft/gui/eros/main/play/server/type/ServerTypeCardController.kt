@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server.type
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
@@ -41,7 +41,7 @@ class ServerTypeCardController : AbstractCardController<ServerType>() {
 
 
         iconFX.iconCode = item.icon
-        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)
+        headerFX.text = IntegratedLanguage.LANGUAGE.translate(item)
 
         recalculate(item)
         item::servers.observeListFX(this) { recalculate(item) }

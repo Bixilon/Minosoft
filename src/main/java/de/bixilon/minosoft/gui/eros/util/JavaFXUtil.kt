@@ -20,9 +20,9 @@ import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.url.URLUtil.toURL
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
@@ -86,7 +86,7 @@ object JavaFXUtil {
     private fun <T : JavaFXController> loadController(title: Any, fxmlLoader: FXMLLoader, parent: Parent, modality: Modality = Modality.WINDOW_MODAL): T {
         val stage = Stage()
         stage.initModality(modality)
-        stage.title = Minosoft.LANGUAGE_MANAGER.translate(title).message
+        stage.title = IntegratedLanguage.LANGUAGE.translate(title).message
         stage.scene = Scene(parent)
         stage.icons.setAll(MINOSOFT_LOGO)
 
@@ -148,31 +148,31 @@ object JavaFXUtil {
     var TextFlow.text: Any?
         get() = TODO("Can not get the text of a TextFlow (yet)")
         set(value) {
-            this.children.setAll(Minosoft.LANGUAGE_MANAGER.translate(value).javaFXText)
+            this.children.setAll(IntegratedLanguage.LANGUAGE.translate(value).javaFXText)
         }
 
     var TextField.placeholder: Any?
         get() = this.promptText
         set(value) {
-            this.promptText = Minosoft.LANGUAGE_MANAGER.translate(value).message
+            this.promptText = IntegratedLanguage.LANGUAGE.translate(value).message
         }
 
     var Labeled.ctext: Any?
         get() = this.text
         set(value) {
-            this.text = Minosoft.LANGUAGE_MANAGER.translate(value).message
+            this.text = IntegratedLanguage.LANGUAGE.translate(value).message
         }
 
     var TableColumnBase<*, *>.ctext: Any?
         get() = this.text
         set(value) {
-            this.text = Minosoft.LANGUAGE_MANAGER.translate(value).message
+            this.text = IntegratedLanguage.LANGUAGE.translate(value).message
         }
 
     var Text.ctext: Any?
         get() = this.text
         set(value) {
-            this.text = Minosoft.LANGUAGE_MANAGER.translate(value).message
+            this.text = IntegratedLanguage.LANGUAGE.translate(value).message
         }
 
     fun Text.hyperlink(link: String) {
