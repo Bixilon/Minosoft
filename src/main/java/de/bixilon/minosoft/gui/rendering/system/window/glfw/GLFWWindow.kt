@@ -32,13 +32,10 @@ import de.bixilon.minosoft.gui.rendering.events.input.CharInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.KeyInputEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
+import de.bixilon.minosoft.gui.rendering.system.window.*
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MAXIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_WINDOW_SIZE
-import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
-import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -433,7 +430,7 @@ class GLFWWindow(
         return eventMaster.fire(event)
     }
 
-    companion object {
+    companion object : WindowFactory {
         private val initLatch = SimpleLatch(1)
 
         init {
@@ -446,6 +443,8 @@ class GLFWWindow(
                 initLatch.dec()
             }
         }
+
+        override fun create(context: RenderContext) = GLFWWindow(context)
 
         val KEY_CODE_MAPPING = mapOf(
             GLFW_KEY_UNKNOWN to KeyCodes.KEY_UNKNOWN,

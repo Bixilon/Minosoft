@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindowFactory
+import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -42,7 +42,7 @@ class RenderContext(
     val profile = connection.profiles.rendering
     val preferQuads = profile.advanced.preferQuads
 
-    val window = BaseWindowFactory.create(this)
+    val window = WindowFactory.factory?.create(this) ?: throw IllegalStateException("Expected a window factory, but none is set.")
     val system = RenderSystemFactory.create(this)
     val camera = Camera(this)
 

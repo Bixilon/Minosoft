@@ -16,6 +16,8 @@ package de.bixilon.minosoft.terminal
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.assets.util.AssetsOptions
+import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GLFWWindow
 import de.bixilon.minosoft.modding.loader.parameters.ModParameters
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
@@ -99,11 +101,14 @@ object CommandLineArguments {
             addArgument("--config")
                 .action(Arguments.store())
                 .help("Path where minosoft configuration files are stored")
+
+            addArgument("--window")
+                .action(Arguments.store())
+                .help("Window library to use")
         }
 
     fun parse(args: Array<String>) {
         check(!this::ARGUMENTS.isInitialized) { "Already initialized!" }
-        if (args.isEmpty()) return
         this.ARGUMENTS = args.toList()
         val namespace: Namespace
         try {
@@ -141,5 +146,14 @@ object CommandLineArguments {
         namespace.getString("home")?.let { RunConfiguration.setHome(Path.of(it)) }
         namespace.getString("assets")?.let { AssetsOptions.PATH = Path.of(it) }
         namespace.getString("config")?.let { RunConfiguration.setConfig(Path.of(it)) }
+
+        setWindowFactory(namespace.getString("window")?.lowercase() ?: "glfw")
+    }
+
+    private fun setWindowFactory(name: String) {
+        WindowFactory.factory = when (name) {
+            "glfw" -> GLFWWindow
+            else -> throw IllegalStateException("Unknown window library: $name")
+        }
     }
 }

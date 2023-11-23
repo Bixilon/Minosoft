@@ -17,9 +17,11 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
+import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import java.nio.ByteBuffer
 
@@ -57,4 +59,8 @@ class DummyWindow : BaseWindow {
 
     override fun setIcon(size: Vec2i, buffer: ByteBuffer) = Unit
     override fun postInit() = Unit
+
+    companion object : WindowFactory {
+        override fun create(context: RenderContext) = DummyWindow()
+    }
 }

@@ -17,6 +17,8 @@ import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
+import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
+import de.bixilon.minosoft.gui.rendering.system.window.dummy.DummyWindow
 import de.bixilon.minosoft.main.BootTasks
 import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -44,6 +46,8 @@ internal object MinosoftSIT {
         }
         RunConfiguration::CONFIG_DIRECTORY.forceSet(Path.of(System.getProperty("java.io.tmpdir"), "minosoft").resolve("conf"))
         RunConfiguration.PROFILES_HOT_RELOADING = false
+
+        WindowFactory.factory = DummyWindow
     }
 
     @BeforeSuite
