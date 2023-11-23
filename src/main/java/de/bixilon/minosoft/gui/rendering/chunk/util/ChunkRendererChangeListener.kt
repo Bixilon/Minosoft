@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChangeUpdate
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkSectionPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.sectionHeight
+import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
@@ -139,6 +140,7 @@ object ChunkRendererChangeListener {
 
 
     private fun ChunkRenderer.handle(update: AbstractWorldUpdate) {
+        if (context.state == RenderingStates.PAUSED) return
         when (update) {
             is SingleBlockUpdate -> handle(update)
             is SingleBlockDataUpdate -> handle(update)
