@@ -15,6 +15,7 @@ package de.bixilon.minosoft.recipes.crafting
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_23W45A
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.recipes.RecipeCategories
@@ -35,10 +36,21 @@ class ShapedRecipe(
         override val identifier = "crafting_shaped".toResourceLocation()
 
         override fun build(buffer: PlayInByteBuffer): ShapedRecipe {
-            val width = buffer.readVarInt()
-            val height = buffer.readVarInt()
+            var width = 0
+            var height = 0
+
+            if (buffer.versionId < V_23W45A) {
+                width = buffer.readVarInt()
+                height = buffer.readVarInt()
+            }
             val group = buffer.readString()
             val category = if (buffer.versionId >= ProtocolVersions.V_22W42A) RecipeCategories[buffer.readVarInt()] else null
+
+            if (buffer.versionId >= V_23W45A) {
+                width = buffer.readVarInt()
+                height = buffer.readVarInt()
+            }
+
             val ingredients = buffer.readArray(width * height) { buffer.readIngredient() }
             val result = buffer.readItemStack()
             val notification = if (buffer.versionId >= ProtocolVersions.V_1_19_4) buffer.readBoolean() else true // TODO: unknown version

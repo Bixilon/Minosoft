@@ -79,8 +79,8 @@ class AdvancementsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     fun PlayInByteBuffer.readDisplay(): AdvancementDisplay {
-        val title = readChatComponent()
-        val description = readChatComponent()
+        val title = readNbtChatComponent()
+        val description = readNbtChatComponent()
         val icon = readItemStack()
         val frame = AdvancementFrames[readVarInt()]
         val flags = readInt()
