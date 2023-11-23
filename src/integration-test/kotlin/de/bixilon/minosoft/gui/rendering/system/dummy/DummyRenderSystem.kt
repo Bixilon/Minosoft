@@ -116,4 +116,9 @@ class DummyRenderSystem(
     override fun getErrors(): List<RenderSystemError> = emptyList()
 
     override fun polygonOffset(factor: Float, unit: Float) = Unit
+
+    companion object : RenderSystemFactory {
+
+        override fun create(context: RenderContext) = DummyRenderSystem(context)
+    }
 }

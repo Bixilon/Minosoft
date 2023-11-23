@@ -43,7 +43,7 @@ class RenderContext(
     val preferQuads = profile.advanced.preferQuads
 
     val window = WindowFactory.factory?.create(this) ?: throw IllegalStateException("Expected a window factory, but none is set.")
-    val system = RenderSystemFactory.create(this)
+    val system = RenderSystemFactory.factory?.create(this) ?: throw IllegalStateException("Expected a rendering api factory, but none is set.")
     val camera = Camera(this)
 
     val input = InputManager(this)

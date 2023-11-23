@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.system.base
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 
-object RenderSystemFactory {
+interface RenderSystemFactory {
 
-    fun create(context: RenderContext): RenderSystem {
-        return OpenGLRenderSystem(context)
+    fun create(context: RenderContext): RenderSystem
+
+    companion object {
+        var factory: RenderSystemFactory? = null
     }
 }

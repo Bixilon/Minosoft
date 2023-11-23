@@ -16,6 +16,8 @@ package de.bixilon.minosoft.terminal
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.assets.util.AssetsOptions
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
 import de.bixilon.minosoft.gui.rendering.system.window.glfw.GLFWWindow
 import de.bixilon.minosoft.modding.loader.parameters.ModParameters
@@ -104,7 +106,11 @@ object CommandLineArguments {
 
             addArgument("--window")
                 .action(Arguments.store())
-                .help("Window library to use")
+                .help("Window library to use. Defaults to glfw")
+
+            addArgument("--render-api")
+                .action(Arguments.store())
+                .help("Render API to use. Defaults to gl")
         }
 
     fun parse(args: Array<String>) {
@@ -148,12 +154,20 @@ object CommandLineArguments {
         namespace.getString("config")?.let { RunConfiguration.setConfig(Path.of(it)) }
 
         setWindowFactory(namespace.getString("window")?.lowercase() ?: "glfw")
+        setRenderApi(namespace.getString("render_api")?.lowercase() ?: "gl")
     }
 
     private fun setWindowFactory(name: String) {
         WindowFactory.factory = when (name) {
             "glfw" -> GLFWWindow
             else -> throw IllegalStateException("Unknown window library: $name")
+        }
+    }
+
+    private fun setRenderApi(name: String) {
+        RenderSystemFactory.factory = when (name) {
+            "gl" -> OpenGLRenderSystem
+            else -> throw IllegalStateException("Unknown render api: $name")
         }
     }
 }

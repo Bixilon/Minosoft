@@ -325,7 +325,9 @@ class OpenGLRenderSystem(
         }
     }
 
-    companion object {
+    companion object : RenderSystemFactory {
+
+        override fun create(context: RenderContext) = OpenGLRenderSystem(context)
 
         private val RenderingCapabilities.gl: Int
             get() {
