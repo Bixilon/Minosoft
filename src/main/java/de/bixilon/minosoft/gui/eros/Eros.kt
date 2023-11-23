@@ -19,11 +19,11 @@ import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.gui.eros.main.MainErosController
+import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener.Companion.javaFX
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.forceInit
 import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
@@ -69,8 +69,8 @@ object Eros {
 
 
     init {
-        GlobalEventMaster.listen<FinishBootEvent> {
-            if (skipErosStartup) return@listen
+        GlobalEventMaster.javaFX<FinishBootEvent> {
+            if (skipErosStartup) return@javaFX
             start()
         }
 
