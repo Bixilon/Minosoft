@@ -14,16 +14,13 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import javafx.collections.ObservableList
-import javafx.scene.Node
+
 object EmptyComponent : ChatComponent {
     override val ansi: String get() = ""
     override val legacy: String get() = ""
     override val message: String get() = ""
 
     override fun getJson(): Any = emptyList<Any>()
-
-    override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> = nodes
 
     override fun setFallbackColor(color: RGBColor) = this
 

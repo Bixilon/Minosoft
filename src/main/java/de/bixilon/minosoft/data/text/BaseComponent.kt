@@ -29,10 +29,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
-import javafx.collections.ObservableList
-import javafx.scene.Node
 
-class BaseComponent : ChatComponent {
+class BaseComponent : ChatComponent, Iterable<ChatComponent> {
     val parts: MutableList<ChatComponent> = mutableListOf()
 
     constructor(parts: MutableList<ChatComponent>) {
@@ -165,13 +163,6 @@ class BaseComponent : ChatComponent {
             return stringBuilder.toString()
         }
 
-    override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
-        for (part in parts) {
-            part.getJavaFXText(nodes)
-        }
-        return nodes
-    }
-
     override fun obfuscate(): BaseComponent {
         for (part in parts) part.obfuscate(); return this
     }
@@ -283,5 +274,9 @@ class BaseComponent : ChatComponent {
         }
 
         return parts.toTypedArray()
+    }
+
+    override fun iterator(): Iterator<ChatComponent> {
+        return parts.iterator()
     }
 }

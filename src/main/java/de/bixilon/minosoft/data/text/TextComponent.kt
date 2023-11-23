@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.enums.BitEnumSet
 import de.bixilon.kutil.json.MutableJsonObject
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.hover.HoverEvent
@@ -23,15 +22,6 @@ import de.bixilon.minosoft.data.text.formatting.TextStyle
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import javafx.animation.Animation
-import javafx.animation.KeyFrame
-import javafx.animation.Timeline
-import javafx.collections.ObservableList
-import javafx.scene.Node
-import javafx.scene.paint.Color
-import javafx.scene.text.Text
-import javafx.util.Duration
-import java.util.concurrent.atomic.AtomicInteger
 
 
 open class TextComponent(
@@ -117,63 +107,6 @@ open class TextComponent(
             builder.append(ProtocolDefinition.TEXT_COMPONENT_FORMATTING_PREFIX).append(FormattingCodes.RESET.char) // ToDo: This should not always be appended
             return builder.toString()
         }
-
-    override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
-        val text = Text(this.message)
-        val color = this.color
-        if (color == null) {
-            text.styleClass += "text-default-color"
-        } else {
-            if (ErosProfileManager.selected.text.colored) {
-                text.fill = Color.rgb(color.red, color.green, color.blue)
-            }
-        }
-        if (FormattingCodes.OBFUSCATED in formatting) {
-            // ToDo: This is just slow
-            val obfuscatedTimeline = if (ErosProfileManager.selected.text.obfuscated) {
-                val index = AtomicInteger()
-                Timeline(
-                    KeyFrame(Duration.millis(50.0), {
-                        val chars = text.text.toCharArray()
-                        for (i in chars.indices) {
-                            chars[i] = ProtocolDefinition.OBFUSCATED_CHARS[index.getAndIncrement() % ProtocolDefinition.OBFUSCATED_CHARS.size]
-                        }
-                        text.text = String(chars)
-                    }),
-                )
-            } else {
-                Timeline(
-                    KeyFrame(Duration.millis(500.0), {
-                        text.isVisible = false
-                    }),
-                    KeyFrame(Duration.millis(1000.0), {
-                        text.isVisible = true
-                    }),
-                )
-            }
-
-            obfuscatedTimeline.cycleCount = Animation.INDEFINITE
-            obfuscatedTimeline.play()
-            text.styleClass.add("obfuscated")
-        }
-        if (FormattingCodes.BOLD in formatting) {
-            text.style += "-fx-font-weight: bold;"
-        }
-        if (FormattingCodes.STRIKETHROUGH in formatting) {
-            text.style += "-fx-strikethrough: true;"
-        }
-        if (FormattingCodes.UNDERLINED in formatting) {
-            text.style += "-fx-underline: true;"
-        }
-        if (FormattingCodes.ITALIC in formatting) {
-            text.style += "-fx-font-style: italic;"
-        }
-        nodes.add(text)
-
-        clickEvent?.applyJavaFX(text)
-        hoverEvent?.applyJavaFX(text)
-        return nodes
-    }
 
     override fun getJson(): Any {
         if (message.isEmpty()) {

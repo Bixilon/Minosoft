@@ -90,13 +90,14 @@ object Minosoft {
         val taskWorker = TaskWorker(errorHandler = { _, error -> error.printStackTrace(); error.crash() }, forcePool = true)
 
         MinosoftBoot.register(taskWorker)
+
         taskWorker += WorkerTask(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
 
         if (!RunConfiguration.DISABLE_EROS) {
             javafx(taskWorker)
         }
         if (RunConfiguration.DISABLE_EROS && !RunConfiguration.DISABLE_RENDERING) {
-            // eros is disabled, but rendering not, force initialize the desktop, otherwise eros will do so
+            // eros is disabled, but rendering not, force initialize the desktop, because eros won't
             DefaultThreadPool += { SystemUtil.api = DesktopAPI() }
         }
 
@@ -160,9 +161,8 @@ object Minosoft {
     }
 
     private fun checkMacOS() {
-        if (RunConfiguration.X_START_ON_FIRST_THREAD_SET && (!RunConfiguration.DISABLE_RENDERING || !RunConfiguration.DISABLE_EROS)) {
-            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using macOS. To use rendering you must not set the jvm argument §9-XstartOnFirstThread§r. Please remove it!" }
-            ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
-        }
+        if (!RunConfiguration.X_START_ON_FIRST_THREAD_SET || !(!RunConfiguration.DISABLE_RENDERING || !RunConfiguration.DISABLE_EROS)) return
+        Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using macOS. To use rendering you must not set the jvm argument §9-XstartOnFirstThread§r. Please remove it!" }
+        ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
     }
 }

@@ -21,9 +21,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.json.Jackson
-import javafx.collections.FXCollections
-import javafx.collections.ObservableList
-import javafx.scene.Node
 import javafx.scene.text.TextFlow
 
 /**
@@ -47,17 +44,6 @@ interface ChatComponent {
 
 
     fun getJson(): Any
-
-    /**
-     * @return Returns a list of Nodes, drawable in JavaFX (TextFlow)
-     */
-    fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node>
-
-    /**
-     * @return Returns a list of Nodes, drawable in JavaFX (TextFlow)
-     */
-    val javaFXText: ObservableList<Node>
-        get() = getJavaFXText(FXCollections.observableArrayList())
 
     val textFlow: TextFlow
         get() {

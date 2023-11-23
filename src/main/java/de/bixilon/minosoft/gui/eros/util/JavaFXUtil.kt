@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.util.text.JavaFXTextRenderer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.crash.freeze.FreezeDumpUtil
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
@@ -148,7 +149,7 @@ object JavaFXUtil {
     var TextFlow.text: Any?
         get() = TODO("Can not get the text of a TextFlow (yet)")
         set(value) {
-            this.children.setAll(IntegratedLanguage.LANGUAGE.translate(value).javaFXText)
+            this.children.setAll(JavaFXTextRenderer.render(IntegratedLanguage.LANGUAGE.translate(value)))
         }
 
     var TextField.placeholder: Any?
