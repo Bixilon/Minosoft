@@ -1,3 +1,16 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2023 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
 package de.bixilon.minosoft.util.yggdrasil
 
 import org.testng.Assert.*
@@ -5,13 +18,6 @@ import org.testng.annotations.Test
 
 @Test(groups = ["signature", "yggdrasil"])
 class YggdrasilUtilTest {
-
-
-    @Test(groups = ["signature", "yggdrasil"], priority = -1)
-    fun load() {
-        YggdrasilUtil.load()
-    }
-
 
     fun `simple skin from mineskin_org`() {
         val texture = "ewogICJ0aW1lc3RhbXAiIDogMTY5MDQwNDM4NjczNywKICAicHJvZmlsZUlkIiA6ICI3ZGY4NmY1MWFjZmI0MjQzYTkzNDQ1OTAyZDEzYTc0MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNclJpcHRpZGUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjAxNzk1YmZhNmY3YzdkY2E0ZTI2ZWZiMzg2NGFmN2Y2MzhkZTliY2I4MjVjY2QzMjZiN2ZlZGVhZmVlZGZlNSIKICAgIH0KICB9Cn0="

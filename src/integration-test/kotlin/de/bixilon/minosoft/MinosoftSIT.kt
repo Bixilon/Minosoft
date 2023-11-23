@@ -13,19 +13,17 @@
 
 package de.bixilon.minosoft
 
-import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.IntegratedAssets
-import de.bixilon.minosoft.assets.meta.MinosoftMeta
-import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
-import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
-import de.bixilon.minosoft.datafixer.DataFixer
-import de.bixilon.minosoft.protocol.versions.VersionLoader
+import de.bixilon.minosoft.main.BootTasks
+import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.minusAssign
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -56,11 +54,19 @@ internal object MinosoftSIT {
         KUtil.initPlayClasses()
         disableGC()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
-        initAssetsManager()
-        DataFixer.load()
-        loadVersionsJson()
-        loadAssetsProperties()
-        loadDefaultRegistries()
+
+        IntegratedAssets.DEFAULT.load()
+
+        val worker = TaskWorker()
+        MinosoftBoot.register(worker)
+        worker.minusAssign(BootTasks.PROFILES)
+        worker.minusAssign(BootTasks.LAN_SERVERS)
+        worker.minusAssign(BootTasks.MODS)
+        worker.minusAssign(BootTasks.CLI)
+        worker.work(MinosoftBoot.LATCH)
+        MinosoftBoot.LATCH.dec()
+        MinosoftBoot.LATCH.await()
+
         loadPixlyzerData()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Integration tests setup successfully!" }
     }
@@ -76,25 +82,6 @@ internal object MinosoftSIT {
             }
             references.hashCode() // force keep reference to references
         }.start()
-    }
-
-    fun initAssetsManager() {
-        IntegratedAssets.DEFAULT.load()
-        IntegratedAssets.OVERRIDE.load()
-    }
-
-    fun loadVersionsJson() {
-        VersionLoader.load(SimpleLatch(0))
-    }
-
-    fun loadAssetsProperties() {
-        AssetsVersionProperties.load(SimpleLatch(0))
-    }
-
-    fun loadDefaultRegistries() {
-        FallbackTags.load()
-        FallbackRegistries.load()
-        MinosoftMeta.load()
     }
 
     fun loadPixlyzerData() {
