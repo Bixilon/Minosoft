@@ -19,7 +19,7 @@ import de.bixilon.minosoft.assets.util.AssetsOptions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystemFactory
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.WindowFactory
-import de.bixilon.minosoft.gui.rendering.system.window.glfw.GLFWWindow
+import de.bixilon.minosoft.gui.rendering.system.window.glfw.GLFWWindowFactory
 import de.bixilon.minosoft.modding.loader.parameters.ModParameters
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
@@ -159,7 +159,7 @@ object CommandLineArguments {
 
     private fun setWindowFactory(name: String) {
         WindowFactory.factory = when (name) {
-            "glfw" -> GLFWWindow
+            "glfw" -> GLFWWindowFactory
             else -> throw IllegalStateException("Unknown window library: $name")
         }
     }
