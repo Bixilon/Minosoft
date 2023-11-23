@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.eros.util
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
-import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.shutdown.ShutdownManager
@@ -40,9 +39,7 @@ class JavaFXInitializer internal constructor() : Application() {
         JavaFXUtil.HOST_SERVICES = hostServices
         SystemUtil.api = JavaFXSystemAPI()
 
-        val worker = UnconditionalWorker(autoWork = true)
-        worker += { JavaFXUtil.MINOSOFT_LOGO = Image(IntegratedAssets.DEFAULT[SystemUtil.ICON]) }
-        worker.work(LATCH)
+        JavaFXUtil.MINOSOFT_LOGO = Image(IntegratedAssets.DEFAULT[SystemUtil.ICON])
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }
         LATCH.dec()
