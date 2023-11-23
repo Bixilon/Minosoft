@@ -17,7 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.protocol.packets.registry.DefaultPackets
@@ -86,7 +86,7 @@ object VersionLoader {
 
     fun load(latch: AbstractLatch?) {
         Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading versions..." }
-        val index: VersionIndex = Minosoft.MINOSOFT_ASSETS_MANAGER[INDEX].readJson()
+        val index: VersionIndex = IntegratedAssets.DEFAULT[INDEX].readJson()
 
         for ((versionId, data) in index) {
             load(versionId, index, data)

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.fallback
 
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
@@ -76,7 +76,7 @@ object FallbackRegistries {
         check(!initialized) { "Already initialized!" }
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading default registries..." }
 
-        val enumJson: Map<ResourceLocation, Any> = Minosoft.MINOSOFT_ASSETS_MANAGER[ENUM_RESOURCE_LOCATION].readJson()
+        val enumJson: Map<ResourceLocation, Any> = IntegratedAssets.DEFAULT[ENUM_RESOURCE_LOCATION].readJson()
 
         EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("equipment_slots")].asJsonObject())
         HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("hand_equipment_slots")].asJsonObject())
@@ -91,7 +91,7 @@ object FallbackRegistries {
         ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation.of("entity_actions")].asJsonObject())
 
 
-        val registriesJson: Map<ResourceLocation, Any> = Minosoft.MINOSOFT_ASSETS_MANAGER[REGISTRIES_RESOURCE_LOCATION].readJson()
+        val registriesJson: Map<ResourceLocation, Any> = IntegratedAssets.DEFAULT[REGISTRIES_RESOURCE_LOCATION].readJson()
 
         DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation.of("default_channels")].asJsonObject(), PluginChannel)
 

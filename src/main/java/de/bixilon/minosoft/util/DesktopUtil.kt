@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
@@ -66,7 +66,7 @@ object DesktopUtil {
     }
 
     private fun Taskbar.setDockIcon() {
-        iconImage = Toolkit.getDefaultToolkit().createImage(Minosoft.MINOSOFT_ASSETS_MANAGER[ICON].readAllBytes())
+        iconImage = Toolkit.getDefaultToolkit().createImage(IntegratedAssets.DEFAULT[ICON].readAllBytes())
     }
 
     private fun Taskbar.initialize() {

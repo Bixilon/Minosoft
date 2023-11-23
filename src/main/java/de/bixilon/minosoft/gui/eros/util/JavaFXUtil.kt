@@ -21,7 +21,9 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
@@ -59,10 +61,10 @@ object JavaFXUtil {
     lateinit var JAVA_FX_THREAD: Thread
     lateinit var MINOSOFT_LOGO: Image
     lateinit var HOST_SERVICES: HostServices
-    val BIXILON_LOGO: Group? by lazy { catchAll { SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()]) } }
+    val BIXILON_LOGO: Group? by lazy { catchAll { SvgLoader().loadSvg(IntegratedAssets.DEFAULT[minosoft("textures/icons/bixilon_logo.svg")]) } }
     private var watchingTheme = false
 
-    val THEME_ASSETS_MANAGER = Minosoft.MINOSOFT_ASSETS_MANAGER
+    val THEME_ASSETS_MANAGER = IntegratedAssets.DEFAULT
 
     private fun startThemeWatcher() {
         if (watchingTheme) {
@@ -109,7 +111,7 @@ object JavaFXUtil {
         startThemeWatcher()
         val fxmlLoader = createLoader()
         controller?.let { fxmlLoader.setController(it) }
-        val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
+        val parent: Parent = fxmlLoader.load(IntegratedAssets.DEFAULT[layout])
         parent.registerFreezeDumpKey()
         return loadController(title, fxmlLoader, parent, modality)
     }
@@ -119,7 +121,7 @@ object JavaFXUtil {
             startThemeWatcher()
             val fxmlLoader = createLoader()
             controller?.let { fxmlLoader.setController(it) }
-            val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
+            val parent: Parent = fxmlLoader.load(IntegratedAssets.DEFAULT[layout])
             parent.registerFreezeDumpKey()
 
             if (callback == null) {
@@ -133,7 +135,7 @@ object JavaFXUtil {
     fun <T : EmbeddedJavaFXController<out Pane>> loadEmbeddedController(layout: ResourceLocation, controller: T? = null): T {
         val fxmlLoader = createLoader()
         controller?.let { fxmlLoader.setController(it) }
-        val pane = fxmlLoader.load<Pane>(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
+        val pane = fxmlLoader.load<Pane>(IntegratedAssets.DEFAULT[layout])
 
         val controller = fxmlLoader.getController<T>()
 

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.properties
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.properties.general.GeneralP
@@ -29,7 +29,7 @@ object MinosoftPropertiesLoader {
     val reader = Jackson.MAPPER.readerFor(type)
 
     fun load() {
-        val properties = Minosoft.MINOSOFT_ASSETS_MANAGER.getOrNull(minosoft("version.json"))?.readJson<MinosoftP>(reader = reader)
+        val properties = IntegratedAssets.DEFAULT.getOrNull(minosoft("version.json"))?.readJson<MinosoftP>(reader = reader)
         MinosoftProperties = if (properties == null) {
             Log.log(LogMessageType.OTHER, LogLevels.FATAL) { "Can not load version.json! Did you compile with gradle?" }
             MinosoftP(GeneralP("unknown", false), null)

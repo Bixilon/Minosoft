@@ -19,7 +19,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.mbf.MBFBinaryReader
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.HashTypes
@@ -37,7 +37,7 @@ object MinosoftMeta {
 
 
     fun load() {
-        this.root = Minosoft.MINOSOFT_ASSETS_MANAGER[INDEX].readJson<MetaRoot>()
+        this.root = IntegratedAssets.DEFAULT[INDEX].readJson<MetaRoot>()
     }
 
     private fun ByteArray.load(): JsonObject {

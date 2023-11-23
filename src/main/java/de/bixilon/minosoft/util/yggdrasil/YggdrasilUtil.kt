@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util.yggdrasil
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.data.registries.identified.Namespaces.mojang
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
@@ -36,7 +36,7 @@ object YggdrasilUtil {
             return
         }
         check(!this::PUBLIC_KEY.isInitialized) { "Already loaded!" }
-        val spec = X509EncodedKeySpec(Minosoft.MINOSOFT_ASSETS_MANAGER[mojang("yggdrasil/pubkey.der")].readAllBytes())
+        val spec = X509EncodedKeySpec(IntegratedAssets.DEFAULT[mojang("yggdrasil/pubkey.der")].readAllBytes())
         val keyFactory: KeyFactory = KeyFactory.getInstance("RSA")
         PUBLIC_KEY = keyFactory.generatePublic(spec)
     }

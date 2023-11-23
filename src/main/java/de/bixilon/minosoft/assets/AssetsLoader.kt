@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.assets
 
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
 import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.packFormat
@@ -50,7 +49,7 @@ object AssetsLoader {
 
         val assetsManager = ConnectionAssetsManager(properties)
 
-        assetsManager += Minosoft.OVERRIDE_ASSETS_MANAGER
+        assetsManager += IntegratedAssets.OVERRIDE
 
         assetsManager.addPacks(profile, latch)
 
@@ -60,7 +59,7 @@ object AssetsLoader {
         if (!profile.assets.disableJarAssets) {
             assetsManager += JarAssetsManager(property.jarAssetsHash, property.clientJarHash, profile, version, property.jarAssetsTarBytes ?: JarAssetsManager.DEFAULT_TAR_BYTES)
         }
-        assetsManager += Minosoft.MINOSOFT_ASSETS_MANAGER
+        assetsManager += IntegratedAssets.DEFAULT
 
         return assetsManager
     }

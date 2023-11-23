@@ -30,7 +30,7 @@ import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
-import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.meta.MinosoftMeta
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.StaticConfiguration
@@ -73,21 +73,22 @@ import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 
 
 object Minosoft {
-    val MINOSOFT_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false)
-    val OVERRIDE_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false, prefix = "assets_override")
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val BOOT_LATCH = CallbackLatch(1)
 
 
     private fun preBoot(args: Array<String>) {
+        val assets = SimpleLatch(1)
+        DefaultThreadPool += ForcePooledRunnable { IntegratedAssets.DEFAULT.load(); assets.dec() }
         DefaultThreadPool += ForcePooledRunnable { Jackson.init(); MinosoftPropertiesLoader.init() }
         DefaultThreadPool += ForcePooledRunnable { KUtil.initBootClasses() }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
 
         val latch = SimpleLatch(2)
-        DefaultThreadPool += ForcePooledRunnable { MINOSOFT_ASSETS_MANAGER.load(); MinosoftPropertiesLoader.load(); latch.dec() }
         DefaultThreadPool += ForcePooledRunnable { ModLoader.initModLoading(); latch.dec() }
+        assets.await()
+        DefaultThreadPool += ForcePooledRunnable { MinosoftPropertiesLoader.load(); latch.dec() }
 
         KUtil.init()
 
@@ -122,7 +123,7 @@ object Minosoft {
         }
         taskWorker += WorkerTask(identifier = BootTasks.YGGDRASIL, executor = { YggdrasilUtil.load() })
 
-        taskWorker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { OVERRIDE_ASSETS_MANAGER.load(it) })
+        taskWorker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { IntegratedAssets.OVERRIDE.load(it) })
         taskWorker += WorkerTask(identifier = BootTasks.MODS, executor = { ModLoader.load(LoadingPhases.BOOT, it) })
         taskWorker += WorkerTask(identifier = BootTasks.DATA_FIXER, executor = { DataFixer.load() })
         taskWorker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.LOW, executor = CLI::startThread)
@@ -187,7 +188,7 @@ object Minosoft {
         val language = ErosProfileManager.selected.general.language
         ErosProfileManager.selected.general::language.observe(this, true) {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
-            LANGUAGE_MANAGER.translators[Namespaces.MINOSOFT] = LanguageUtil.load(it, null, MINOSOFT_ASSETS_MANAGER, minosoft("language/"))
+            LANGUAGE_MANAGER.translators[Namespaces.MINOSOFT] = LanguageUtil.load(it, null, IntegratedAssets.DEFAULT, minosoft("language/"))
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }
         }
     }

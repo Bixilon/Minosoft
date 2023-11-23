@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.assets.properties.version
 
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
@@ -32,7 +32,7 @@ object AssetsVersionProperties {
             throw IllegalStateException("Already loaded!")
         }
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading assets properties..." }
-        val assetsProperties: Map<String, AssetsVersionProperty> = Minosoft.MINOSOFT_ASSETS_MANAGER[ASSETS_PROPERTIES_FILE].readJson()
+        val assetsProperties: Map<String, AssetsVersionProperty> = IntegratedAssets.DEFAULT[ASSETS_PROPERTIES_FILE].readJson()
         for ((versionName, property) in assetsProperties) {
             PROPERTIES[Versions[versionName] ?: continue] = property
         }

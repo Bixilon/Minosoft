@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.event
 import de.bixilon.kutil.cast.CollectionCast.asAnyMap
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.event.events.damage.*
@@ -58,7 +58,7 @@ object EntityEvents : DefaultFactory<EntityEvent<*>>(
     }
 
     fun load() {
-        val json: Map<ResourceLocation, Any> = Minosoft.MINOSOFT_ASSETS_MANAGER[FILE].readJson()
+        val json: Map<ResourceLocation, Any> = IntegratedAssets.DEFAULT[FILE].readJson()
         for ((name, data) in json) {
             val clazz = DefaultEntityFactories.ABSTRACT_ENTITY_DATA_CLASSES[name]?.java ?: DefaultEntityFactories[name]?.javaClass // TODO: This is the companion class
             if (clazz == null) {

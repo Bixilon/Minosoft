@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.fallback.tags
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CollectionCast.asAnyCollection
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.tool.ToolLevels
@@ -40,7 +40,7 @@ object FallbackTags {
     private val tags: MutableMap<ResourceLocation, MutableMap<ResourceLocation, Set<ResourceLocation>>> = mutableMapOf()
 
     private fun read(type: ResourceLocation, name: ResourceLocation): Set<ResourceLocation> {
-        val content = Minosoft.MINOSOFT_ASSETS_MANAGER[ResourceLocation(name.namespace, "tags/${type.path}/${name.path}.json")].readJsonObject()["values"].asAnyCollection()
+        val content = IntegratedAssets.DEFAULT[ResourceLocation(name.namespace, "tags/${type.path}/${name.path}.json")].readJsonObject()["values"].asAnyCollection()
 
         val set: MutableSet<ResourceLocation> = ObjectOpenHashSet()
         for (entry in content) {

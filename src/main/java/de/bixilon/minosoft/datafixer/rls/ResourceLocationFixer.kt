@@ -15,7 +15,7 @@ package de.bixilon.minosoft.datafixer.rls
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.datafixer.Fixer
@@ -25,7 +25,7 @@ abstract class ResourceLocationFixer(private val path: ResourceLocation) : Fixer
 
 
     override fun load() {
-        this::renames.forceSet(Minosoft.MINOSOFT_ASSETS_MANAGER[this.path.fixer()].readJson())
+        this::renames.forceSet(IntegratedAssets.DEFAULT[this.path.fixer()].readJson())
     }
 
     open fun fix(resourceLocation: ResourceLocation): ResourceLocation {

@@ -11,29 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.url
+package de.bixilon.minosoft.assets
 
-import de.bixilon.minosoft.assets.IntegratedAssets
-import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import java.io.InputStream
-import java.net.URL
-import java.net.URLConnection
-import java.net.URLStreamHandler
+import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 
-
-object ResourceURLHandler : URLStreamHandler() {
-
-    override fun openConnection(url: URL?): URLConnection {
-        return ResourceURLConnection(url)
-    }
-
-
-    private class ResourceURLConnection(url: URL?) : URLConnection(url) {
-        override fun connect() {
-        }
-
-        override fun getInputStream(): InputStream {
-            return IntegratedAssets.DEFAULT[ResourceLocation.of(url.path)]
-        }
-    }
+object IntegratedAssets {
+    val DEFAULT = ResourcesAssetsUtil.create(IntegratedAssets::class.java, canUnload = false)
+    val OVERRIDE = ResourcesAssetsUtil.create(IntegratedAssets::class.java, canUnload = false, prefix = "assets_override")
 }

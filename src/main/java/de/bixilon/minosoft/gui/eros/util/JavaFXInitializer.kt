@@ -19,7 +19,7 @@ import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.logging.Log
@@ -41,7 +41,7 @@ class JavaFXInitializer internal constructor() : Application() {
         DesktopUtil.initialize()
 
         val worker = UnconditionalWorker(autoWork = true)
-        worker += { JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER[DesktopUtil.ICON]) }
+        worker += { JavaFXUtil.MINOSOFT_LOGO = Image(IntegratedAssets.DEFAULT[DesktopUtil.ICON]) }
         worker.work(LATCH)
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }

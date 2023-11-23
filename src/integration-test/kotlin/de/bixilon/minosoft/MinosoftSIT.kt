@@ -15,6 +15,7 @@ package de.bixilon.minosoft
 
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.assets.meta.MinosoftMeta
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
@@ -78,7 +79,8 @@ internal object MinosoftSIT {
     }
 
     fun initAssetsManager() {
-        Minosoft.MINOSOFT_ASSETS_MANAGER.load()
+        IntegratedAssets.DEFAULT.load()
+        IntegratedAssets.OVERRIDE.load()
     }
 
     fun loadVersionsJson() {

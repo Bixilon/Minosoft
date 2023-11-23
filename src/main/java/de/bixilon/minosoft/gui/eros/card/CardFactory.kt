@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.card
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import javafx.scene.control.ListCell
@@ -24,7 +24,7 @@ interface CardFactory<T : ListCell<*>> {
     fun build(): T {
         val loader = JavaFXUtil.createLoader()
 
-        loader.load<Any>(Minosoft.MINOSOFT_ASSETS_MANAGER[LAYOUT])
+        loader.load<Any>(IntegratedAssets.DEFAULT[LAYOUT])
 
         return loader.getController()
     }
