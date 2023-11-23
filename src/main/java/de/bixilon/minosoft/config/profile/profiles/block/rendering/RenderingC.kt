@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ class RenderingC(profile: BlockProfile) {
      * This option tries to do its best to fix any occurring [Moiré Patterns](https://en.wikipedia.org/wiki/Moir%C3%A9_pattern)
      * If set position based random block models are disabled
      */
-    var antiMoirePattern by BooleanDelegate(profile, true, "profile.block.rendering.anti_moire_pattern")
+    var antiMoirePattern by BooleanDelegate(profile, true)
 
     val entities = EntitiesC(profile)
 }

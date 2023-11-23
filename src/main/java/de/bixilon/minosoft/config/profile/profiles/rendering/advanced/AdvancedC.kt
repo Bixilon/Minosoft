@@ -36,5 +36,5 @@ class AdvancedC(profile: RenderingProfile) {
      * Violates the opengl specification.
      * Requires rendering restart to apply
      */
-    var preferQuads by BooleanDelegate(profile, false, "profile.rendering.advanced.prefer_quads")
+    var preferQuads by BooleanDelegate(profile, false)
 }

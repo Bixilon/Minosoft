@@ -23,6 +23,10 @@ open class SimpleDelegate<T>(
     private val verify: ((T) -> Unit)? = null,
 ) : DataObserver<T>(default), AbstractProfileDelegate<T> {
 
+    init {
+
+    }
+
     override fun set(value: T): T {
         validate(value)
         return super.set(value)

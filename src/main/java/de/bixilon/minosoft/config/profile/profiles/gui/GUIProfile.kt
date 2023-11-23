@@ -38,7 +38,7 @@ class GUIProfile(
      * The scale of the hud
      * Must be non-negative
      */
-    var scale by FloatDelegate(this, 2.0f, "", arrayOf(1.0f..10.0f))
+    var scale by FloatDelegate(this, 2.0f, arrayOf(1.0f..10.0f))
 
     val chat = ChatC(this)
     val hud = HudC(this)

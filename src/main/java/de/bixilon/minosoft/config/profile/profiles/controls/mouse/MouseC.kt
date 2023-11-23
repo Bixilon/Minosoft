@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,11 +23,11 @@ class MouseC(profile: ControlsProfile) {
      * Controls how fast the mouse rotates the player around
      * Must be non-negative
      */
-    var sensitivity by FloatDelegate(profile, 1.0f, "", arrayOf(0.01f..10.0f))
+    var sensitivity by FloatDelegate(profile, 1.0f, arrayOf(0.01f..10.0f))
 
     /**
      * Controls how fast you scroll (e.g. in the hotbar)
      * Must be non-negative
      */
-    var scrollSensitivity by FloatDelegate(profile, 1.0f, "", arrayOf(0.01f..10.0f))
+    var scrollSensitivity by FloatDelegate(profile, 1.0f, arrayOf(0.01f..10.0f))
 }

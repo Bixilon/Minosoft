@@ -19,7 +19,6 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 open class FloatDelegate(
     override val profile: Profile,
     default: Float,
-    name: String,
     private val ranges: Array<ClosedFloatingPointRange<Float>>? = null,
 ) : SimpleDelegate<Float>(profile, default) {
 

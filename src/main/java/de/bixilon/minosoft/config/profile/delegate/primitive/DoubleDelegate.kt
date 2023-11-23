@@ -19,7 +19,6 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 open class DoubleDelegate(
     override val profile: Profile,
     default: Double,
-    name: String,
     private val ranges: Array<ClosedFloatingPointRange<Double>>? = null,
 ) : SimpleDelegate<Double>(profile, default) {
 

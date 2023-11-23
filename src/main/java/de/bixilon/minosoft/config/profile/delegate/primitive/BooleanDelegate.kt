@@ -19,7 +19,6 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 open class BooleanDelegate(
     override val profile: Profile,
     default: Boolean,
-    name: String = "",
 ) : SimpleDelegate<Boolean>(profile, default) {
 
     override fun validate(value: Boolean) = Unit

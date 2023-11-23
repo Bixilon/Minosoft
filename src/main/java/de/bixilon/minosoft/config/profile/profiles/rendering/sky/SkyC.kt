@@ -28,7 +28,7 @@ class SkyC(profile: RenderingProfile) {
     /**
      * Enables or disables the (ugly?) sun scatter
      */
-    var sunScatter by BooleanDelegate(profile, true, "")
+    var sunScatter by BooleanDelegate(profile, true)
 
     val clouds = CloudC(profile)
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,7 +22,7 @@ class PerformanceC(profile: RenderingProfile) {
      * Does not render the bottom bedrock face when at minimum y.
      * Kind of xray when falling out of the world.
      */
-    var fastBedrock by BooleanDelegate(profile, true, "")
+    var fastBedrock by BooleanDelegate(profile, true)
 
     /**
      * Disables the voronoi noise for biome cache building.
@@ -31,10 +31,10 @@ class PerformanceC(profile: RenderingProfile) {
      * Only affects 19w36+ (~1.14.4)
      * ToDo: Requires rejoin to apply
      */
-    var fastBiomeNoise by BooleanDelegate(profile, true, "")
+    var fastBiomeNoise by BooleanDelegate(profile, true)
 
     /**
      * Sleeps 100 ms if the rendering window is not in focus anymore
      */
-    var slowRendering by BooleanDelegate(profile, true, "")
+    var slowRendering by BooleanDelegate(profile, true)
 }

@@ -25,10 +25,10 @@ class CameraC(profile: RenderingProfile) {
      * Field of view
      * Value must be greater than 0 and smaller than 180
      */
-    var fov by FloatDelegate(profile, 70.0f, "profile.rendering.camera.fov", arrayOf(10.0f..179.0f))
+    var fov by FloatDelegate(profile, 70.0f, arrayOf(10.0f..179.0f))
 
     /**
      * Changes the fov to create a speed or slowness illusion
      */
-    var dynamicFOV by BooleanDelegate(profile, true, "profile.rendering.camera.fov.dynamic")
+    var dynamicFOV by BooleanDelegate(profile, true)
 }

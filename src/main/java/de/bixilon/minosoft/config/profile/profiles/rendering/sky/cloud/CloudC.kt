@@ -23,22 +23,22 @@ class CloudC(profile: RenderingProfile) {
     /**
      * Renders clouds
      */
-    var enabled by BooleanDelegate(profile, true, "")
+    var enabled by BooleanDelegate(profile, true)
 
     /**
      * Renders clouds flat and not 3d
      */
-    var flat by BooleanDelegate(profile, false, "")
+    var flat by BooleanDelegate(profile, false)
 
     /**
      * Moves clouds from time to time
      */
-    var movement by BooleanDelegate(profile, true, "")
+    var movement by BooleanDelegate(profile, true)
 
     /**
      * Max y axis distance to clouds
      */
-    var maxDistance by FloatDelegate(profile, 60.0f, "")
+    var maxDistance by FloatDelegate(profile, 60.0f)
 
 
     /**

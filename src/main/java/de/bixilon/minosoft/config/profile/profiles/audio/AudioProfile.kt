@@ -37,13 +37,13 @@ class AudioProfile(
      * Skips the loading od the AudioPlayer
      * Requires reloading of the whole audio subsystem to be applied
      */
-    var skipLoading by BooleanDelegate(this, false, "profile.audio.loading.skip")
+    var skipLoading by BooleanDelegate(this, false)
 
     /**
      * Enabled or disables all audio playing
      * Does not skip loading of audio
      */
-    var enabled by BooleanDelegate(this, false, "profile.audio.enabled")
+    var enabled by BooleanDelegate(this, false)
 
     val types = TypesC(this)
     val volume = VolumeC(this)

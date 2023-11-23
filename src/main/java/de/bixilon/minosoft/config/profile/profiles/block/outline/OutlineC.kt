@@ -23,14 +23,14 @@ class OutlineC(profile: BlockProfile) {
     /**
      * Highlights the current selected block
      */
-    var enabled by BooleanDelegate(profile, true, "profile.block.outline.enabled")
+    var enabled by BooleanDelegate(profile, true)
 
 
     /**
      * Disables the z-buffer of the block outline
      * Makes the whole outline visible and ignores the walls
      */
-    var showThroughWalls by BooleanDelegate(profile, false, "profile.block.outline.through_walls")
+    var showThroughWalls by BooleanDelegate(profile, false)
 
     /**
      * The color of the block that is currently selected
@@ -42,7 +42,7 @@ class OutlineC(profile: BlockProfile) {
     /**
      * Shows the collision box of the selected block
      */
-    var collisions by BooleanDelegate(profile, false, "profile.block.outline.collisions.enabled")
+    var collisions by BooleanDelegate(profile, false)
 
     /**
      * The color of the block collision box that is currently selected

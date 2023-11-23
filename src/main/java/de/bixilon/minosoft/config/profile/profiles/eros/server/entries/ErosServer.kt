@@ -55,7 +55,7 @@ class ErosServer(
     /**
      * Sends version -1 in the handshake to query the servers version
      */
-    override var queryVersion by BooleanDelegate(profile, queryVersion, "")
+    override var queryVersion by BooleanDelegate(profile, queryVersion)
 
     /**
      * Profiles to use for the connection to the server.
