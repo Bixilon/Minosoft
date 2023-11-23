@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.registries.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.EvokerFangs
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.*
 import de.bixilon.minosoft.data.entities.entities.ambient.Bat
