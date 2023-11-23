@@ -74,6 +74,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.block.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.batch.ChunkBatchDoneS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.batch.ChunkBatchStartS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.ChunkLightS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.border.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.bossbar.BossbarS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.chat.*

@@ -38,8 +38,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 /**

@@ -42,7 +42,7 @@ internal object MinosoftSIT {
         RunConfiguration.VERBOSE_LOGGING = true
         RunConfiguration.APPLICATION_NAME = "Minosoft it"
 
-        val isCi = (System.getenv("GITHUB_ACTIONS") ?: System.getenv("TRAVIS") ?: System.getenv("CIRCLECI") ?: System.getenv("GITLAB_CI")) != null
+        val isCi = (System.getenv("GITHUB_ACTIONS") ?: System.getenv("TRAVIS") ?: System.getenv("CIRCLECI") ?: System.getenv("GITLAB_CI")) != null // TODO: kutil 1.25 Environment.isInCI()
         if (isCi) {
             RunConfiguration::HOME_DIRECTORY.forceSet(Path.of("./it"))
         }

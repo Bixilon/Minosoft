@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.chunk
+package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype

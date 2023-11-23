@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.chunk
+package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.StaticConfiguration
@@ -31,6 +31,7 @@ import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFac
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.LightUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W35A

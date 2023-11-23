@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.WorldQueueItem
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.tasks.MeshPrepareTask
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererUtil.smallMesh
-import de.bixilon.minosoft.util.chunk.ChunkUtil
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil
 
 class ChunkMesher(
     private val renderer: ChunkRenderer,

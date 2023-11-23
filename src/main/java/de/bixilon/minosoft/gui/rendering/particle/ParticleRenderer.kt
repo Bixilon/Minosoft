@@ -37,8 +37,8 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
 
 

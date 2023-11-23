@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
-import de.bixilon.minosoft.util.chunk.ChunkUtil
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil
 
 class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
     val neighbours: Array<Chunk?> = arrayOfNulls(COUNT)
