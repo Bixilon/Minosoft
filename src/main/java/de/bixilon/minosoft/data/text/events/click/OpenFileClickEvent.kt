@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.OpenFileConfirmationDialog
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.util.DesktopUtil
+import de.bixilon.minosoft.util.system.SystemUtil
 import javafx.scene.text.Text
 import java.io.File
 import java.nio.file.Path
@@ -41,7 +41,7 @@ class OpenFileClickEvent(
             return
         }
         if (!guiRenderer.connection.profiles.gui.confirmation.openFile) {
-            DesktopUtil.openFile(file)
+            SystemUtil.api?.openFile(file)
             return
         }
         val dialog = OpenFileConfirmationDialog(guiRenderer, file)

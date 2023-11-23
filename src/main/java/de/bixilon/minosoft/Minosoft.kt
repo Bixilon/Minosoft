@@ -50,12 +50,13 @@ import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.system.DesktopAPI
+import de.bixilon.minosoft.util.system.SystemUtil
 
 
 object Minosoft {
@@ -96,7 +97,7 @@ object Minosoft {
         }
         if (RunConfiguration.DISABLE_EROS && !RunConfiguration.DISABLE_RENDERING) {
             // eros is disabled, but rendering not, force initialize the desktop, otherwise eros will do so
-            DefaultThreadPool += { DesktopUtil.initialize() }
+            DefaultThreadPool += { SystemUtil.api = DesktopAPI() }
         }
 
         taskWorker.work(MinosoftBoot.LATCH)

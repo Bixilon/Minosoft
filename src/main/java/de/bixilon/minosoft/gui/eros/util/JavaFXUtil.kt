@@ -28,10 +28,10 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
-import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.crash.freeze.FreezeDumpUtil
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
+import de.bixilon.minosoft.util.system.SystemUtil
 import javafx.application.HostServices
 import javafx.application.Platform
 import javafx.beans.property.BooleanPropertyBase
@@ -177,14 +177,14 @@ object JavaFXUtil {
 
     fun Text.hyperlink(link: String) {
         val url = link.toURL()
-        this.setOnMouseClicked { DefaultThreadPool += { DesktopUtil.openURL(url) } }
+        this.setOnMouseClicked { DefaultThreadPool += { SystemUtil.api?.openURL(url) } }
         this.accessibleRole = AccessibleRole.HYPERLINK
         this.styleClass.setAll("hyperlink")
         this.clickable()
     }
 
     fun Text.file(path: File) {
-        this.setOnMouseClicked { DefaultThreadPool += { DesktopUtil.openFile(path) } }
+        this.setOnMouseClicked { DefaultThreadPool += { SystemUtil.api?.openFile(path) } }
         this.accessibleRole = AccessibleRole.HYPERLINK
         this.styleClass.setAll("hyperlink")
         this.clickable()

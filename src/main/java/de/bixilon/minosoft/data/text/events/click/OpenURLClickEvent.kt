@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.URLConfirmationDialog
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.util.DesktopUtil
+import de.bixilon.minosoft.util.system.SystemUtil
 import javafx.scene.text.Text
 import java.net.URL
 
@@ -39,7 +39,7 @@ class OpenURLClickEvent(
             return
         }
         if (!guiRenderer.connection.profiles.gui.confirmation.openURL) {
-            DesktopUtil.openURL(url)
+            SystemUtil.api?.openURL(url)
             return
         }
         val dialog = URLConfirmationDialog(guiRenderer, url)

@@ -11,31 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util
+package de.bixilon.minosoft.gui.eros.util
 
-import de.bixilon.minosoft.assets.IntegratedAssets
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.awt.Taskbar
-import java.awt.Toolkit
+import de.bixilon.minosoft.util.system.DesktopAPI
 import java.io.File
 import java.net.URL
-import java.nio.file.Path
 
+class JavaFXSystemAPI : DesktopAPI() {
 
-object DesktopUtil {
-    val ICON = minosoft("icons/window_icon").texture()
-
-    fun openURL(url: URL) {
-        if (RunConfiguration.DISABLE_EROS) {
-            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Can not open url: $url: Eros is disabled!" }
-            return
-        }
+    override fun openURL(url: URL) {
         try {
             JavaFXUtil.HOST_SERVICES.showDocument(url.toString())
         } catch (exception: Throwable) {
@@ -43,18 +30,9 @@ object DesktopUtil {
         }
     }
 
-    fun openFile(path: Path) {
-        openFile(path.toFile())
-    }
-
-    fun openFile(file: File) {
+    override fun openFile(file: File) {
         if (!file.exists()) {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Can not open file $file: File does not exist!" }
-            return
-        }
-
-        if (RunConfiguration.DISABLE_EROS) {
-            Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Can not open file: $file: Eros is disabled!" }
             return
         }
 
@@ -62,23 +40,6 @@ object DesktopUtil {
             JavaFXUtil.HOST_SERVICES.showDocument(file.absolutePath)
         } catch (exception: Throwable) {
             exception.printStackTrace()
-        }
-    }
-
-    private fun Taskbar.setDockIcon() {
-        iconImage = Toolkit.getDefaultToolkit().createImage(IntegratedAssets.DEFAULT[ICON].readAllBytes())
-    }
-
-    private fun Taskbar.initialize() {
-        if (isSupported(Taskbar.Feature.ICON_IMAGE)) {
-            setDockIcon()
-        }
-    }
-
-    fun initialize() {
-        System.setProperty("java.awt.headless", false.toString())
-        if (Taskbar.isTaskbarSupported()) {
-            Taskbar.getTaskbar().initialize()
         }
     }
 }

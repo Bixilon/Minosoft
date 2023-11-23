@@ -138,7 +138,7 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
             Button("Edit").apply {
                 // ToDo: proper profile editing
                 isDisable = true
-                //      setOnAction { DefaultThreadPool += { DesktopUtil.openFile(profile.manager.getPath(profile.name)) } }
+                //      setOnAction { DefaultThreadPool += { SystemUtil.openFile(profile.manager.getPath(profile.name)) } }
                 ctext = EDIT
             },
             Button("Set primary").apply {

@@ -21,10 +21,10 @@ import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
-import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.system.SystemUtil
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.image.Image
@@ -38,10 +38,10 @@ class JavaFXInitializer internal constructor() : Application() {
 
         JavaFXUtil.JAVA_FX_THREAD = Thread.currentThread()
         JavaFXUtil.HOST_SERVICES = hostServices
-        DesktopUtil.initialize()
+        SystemUtil.api = JavaFXSystemAPI()
 
         val worker = UnconditionalWorker(autoWork = true)
-        worker += { JavaFXUtil.MINOSOFT_LOGO = Image(IntegratedAssets.DEFAULT[DesktopUtil.ICON]) }
+        worker += { JavaFXUtil.MINOSOFT_LOGO = Image(IntegratedAssets.DEFAULT[SystemUtil.ICON]) }
         worker.work(LATCH)
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }

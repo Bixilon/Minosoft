@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
-import de.bixilon.minosoft.util.DesktopUtil
+import de.bixilon.minosoft.util.system.SystemUtil
 import java.io.File
 
 class OpenFileConfirmationDialog(
@@ -32,7 +32,7 @@ class OpenFileConfirmationDialog(
     override fun createButtons(): Array<ButtonElement> {
         return arrayOf(
             ButtonElement(guiRenderer, "Yes, open it!") {
-                DesktopUtil.openFile(file)
+                SystemUtil.api?.openFile(file)
                 close()
             },
             createCopyToClipboardButton(file.path)

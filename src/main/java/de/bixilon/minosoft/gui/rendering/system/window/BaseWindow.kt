@@ -18,8 +18,8 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
+import de.bixilon.minosoft.util.system.SystemUtil
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
@@ -83,7 +83,7 @@ interface BaseWindow {
 
 
     fun setDefaultIcon(assetsManager: AssetsManager) {
-        val decoder = PNGDecoder(assetsManager[DesktopUtil.ICON])
+        val decoder = PNGDecoder(assetsManager[SystemUtil.ICON])
         val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
         decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
         data.flip()
