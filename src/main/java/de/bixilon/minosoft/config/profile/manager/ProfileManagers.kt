@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.config.profile.manager
 
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.assets.util.FileUtil.mkdirParent
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager
@@ -32,6 +34,7 @@ import de.bixilon.minosoft.config.profile.storage.ProfileIOManager
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.terminal.RunConfiguration
+import java.nio.file.Files
 
 object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
     ErosProfileManager,
@@ -49,7 +52,27 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
 ) {
 
 
+    private fun migrateLegacyProfiles() {
+        val legacy = RunConfiguration.CONFIG_DIRECTORY.resolve("selected_profiles.json").toFile()
+        if (!legacy.isFile) return
+        legacy.delete()
+
+        for (namespace in RunConfiguration.CONFIG_DIRECTORY.toFile().listFiles() ?: return) {
+            if (!namespace.isDirectory) continue
+            for (profileName in namespace.listFiles() ?: continue) {
+                if (!profileName.isDirectory) continue
+                for (type in profileName.listFiles() ?: continue) {
+                    val target = RunConfiguration.CONFIG_DIRECTORY.resolve(namespace.name).resolve(type.name.removeSuffix(".json")).resolve(profileName.name + ".json").toFile()
+                    target.mkdirParent()
+                    ignoreAll { Files.move(type.toPath(), target.toPath()) }
+                }
+                profileName.delete()
+            }
+        }
+    }
+
     fun load(latch: AbstractLatch?) {
+        ignoreAll { migrateLegacyProfiles() }
         if (RunConfiguration.PROFILES_HOT_RELOADING) {
             FileWatcherService.start() // TODO: kutil 1.25: remove kutil race condition
         }
@@ -59,5 +82,11 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
         }
         worker.work(latch)
         ProfileIOManager.init()
+
+        //   runLater(5000) {
+        //       for (i in 0 until 1000) {
+        //           AccountProfileManager.selected.entries[i.toString()] = OfflineAccount(i.toString() + "00", AccountProfileManager.selected.storage)
+        //       }
+        //   }
     }
 }
