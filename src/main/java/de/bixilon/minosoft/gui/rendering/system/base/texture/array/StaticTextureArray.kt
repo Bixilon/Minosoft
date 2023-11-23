@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
-import java.nio.ByteBuffer
 
 interface StaticTextureArray : TextureArray {
     val animator: SpriteAnimator
@@ -31,6 +30,4 @@ interface StaticTextureArray : TextureArray {
     fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, properties: Boolean = true, default: (mipmaps: Boolean) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture
 
     fun load(latch: AbstractLatch)
-
-    fun dump(texture: Texture): ByteBuffer
 }

@@ -41,12 +41,10 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL12.*
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
-import org.lwjgl.opengl.GL45.glGetTextureSubImage
 import java.nio.ByteBuffer
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -246,20 +244,6 @@ class OpenGLTextureArray(
             shader.setTexture("$name[$index]", index)
         }
     }
-
-    override fun dump(texture: Texture): ByteBuffer {
-        val shaderId = texture.shaderId
-        val level = 0
-
-        val buffer = BufferUtils.createByteBuffer(texture.array.size * texture.array.size * 4)
-
-        // glBindTexture(GL_TEXTURE_2D_ARRAY, shaderId shr 28)
-
-        glGetTextureSubImage(textureIds[TEXTURE_RESOLUTION_ID_MAP.indexOf(texture.array.size)], 0, 0, 0, (shaderId shr 12) and 0xFFFFF, texture.array.size shr level, texture.array.size shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
-
-        return buffer
-    }
-
 
     companion object {
         const val TEXTURE_MAX_RESOLUTION = 2048

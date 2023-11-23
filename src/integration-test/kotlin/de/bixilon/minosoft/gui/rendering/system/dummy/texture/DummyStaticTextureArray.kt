@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import java.nio.ByteBuffer
 
 class DummyStaticTextureArray(renderSystem: RenderSystem) : StaticTextureArray {
     private val textures: MutableMap<ResourceLocation, Texture> = synchronizedMapOf()
@@ -54,5 +53,4 @@ class DummyStaticTextureArray(renderSystem: RenderSystem) : StaticTextureArray {
     }
 
     override fun use(shader: NativeShader, name: String) = Unit
-    override fun dump(texture: Texture): ByteBuffer = throw UnsupportedOperationException()
 }
