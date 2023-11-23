@@ -11,28 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.identified
+package de.bixilon.minosoft.gui.eros.util.cell
 
-object Namespaces {
-    const val MINECRAFT = "minecraft"
-    const val MOJANG = "mojang"
-    const val MINOSOFT = "minosoft"
-    const val DEFAULT = MINECRAFT
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.gui.eros.dialog.ServerModifyDialog
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.Versions
 
-
-    fun minecraft(path: String): ResourceLocation {
-        return ResourceLocation(MINECRAFT, path)
+class VersionListCell : LabeledListCell<Version>({
+    if (it == Versions.AUTOMATIC) {
+        Minosoft.LANGUAGE_MANAGER.forceTranslate(ServerModifyDialog.VERSION_AUTOMATIC).message
+    } else {
+        "${it.name} (${it.type.name.lowercase()})"
     }
-
-    fun mojang(path: String): ResourceLocation {
-        return ResourceLocation(MOJANG, path)
-    }
-
-    fun minosoft(path: String): ResourceLocation {
-        return ResourceLocation(MINOSOFT, path)
-    }
-
-    fun i18n(path: String): ResourceLocation {
-        return minosoft(path)
-    }
-}
+})

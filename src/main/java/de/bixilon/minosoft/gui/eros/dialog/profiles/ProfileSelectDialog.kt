@@ -13,17 +13,20 @@
 
 package de.bixilon.minosoft.gui.eros.dialog.profiles
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.Identified
+import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
+import de.bixilon.minosoft.gui.eros.util.cell.LabeledListCell
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -122,7 +125,7 @@ class ProfileSelectDialog(
         init {
             graphic = label
 
-            comboBox.maxWidth = Double.MAX_VALUE
+            comboBox.maxWidth = -1.0
             selectedProperty().addListener { _, _, _ -> cancelEdit() }
             comboBox.selectionModel.selectedItemProperty().addListener { _, _, selected ->
                 commitEdit(selected)
@@ -163,9 +166,10 @@ class ProfileSelectDialog(
     private inner class IdentifiedCell : EditTableCell<Identified?>() {
 
         init {
+            comboBox.setCellFactory { LabeledListCell { it.nullCast<Identified>()?.identifier } }
             comboBox.selectionModel.selectedItemProperty().addListener { _, previous, selected ->
                 if (previous == null && selected != null && this.index == tableView.items.size - 1) {
-                    tableView.items += ProfileEntry(null, "")
+                    tableView.items += ProfileEntry(null, null)
                     tableView.refresh()
                 }
             }
@@ -181,7 +185,7 @@ class ProfileSelectDialog(
                 }
                 for (manager in ProfileManagers) {
                     if (type != manager.type && manager.type in out) continue
-                    comboBox.items += type
+                    comboBox.items += manager.type
                 }
             }
             comboBox.selectionModel.select(type)
@@ -192,7 +196,7 @@ class ProfileSelectDialog(
         override fun update(entry: ProfileEntry) = updateItem(entry.type)
 
         override fun updateItem(item: Identified?) {
-            label.ctext = item?.toString() ?: CLICK_ME_TO_ADD
+            label.ctext = item?.identifier?.toString() ?: CLICK_ME_TO_ADD
             tableRow.item.type = item.unsafeCast()
         }
     }
@@ -212,21 +216,12 @@ class ProfileSelectDialog(
                 comboBox.selectionModel.select(SelectSpecialOptions.NONE)
             }
             styleClass.add("table-row-cell")
+            comboBox.setCellFactory { LabeledListCell { it } }
+            comboBox.width
         }
 
         override fun startEdit() {
             comboBox.items.clear()
-            comboBox.setCellFactory {
-                object : ListCell<Any?>() {
-                    override fun updateItem(item: Any?, empty: Boolean) {
-                        super.updateItem(item, empty)
-                        if (empty) {
-                            return
-                        }
-                        ctext = item
-                    }
-                }
-            }
             comboBox.items += SelectSpecialOptions.NONE
             comboBox.items += SelectSpecialOptions.CREATE
 
@@ -253,8 +248,8 @@ class ProfileSelectDialog(
 
 
     private enum class SelectSpecialOptions(override val translationKey: ResourceLocation?) : Translatable {
-        NONE("minosoft:general.dialog.profile.select.none".toResourceLocation()),
-        CREATE("minosoft:general.dialog.profile.select.create".toResourceLocation()),
+        NONE(i18n("general.dialog.profile.select.none")),
+        CREATE(i18n("general.dialog.profile.select.create")),
         ;
     }
 }

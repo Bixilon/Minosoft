@@ -11,28 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.identified
+package de.bixilon.minosoft.gui.eros.util.cell
 
-object Namespaces {
-    const val MINECRAFT = "minecraft"
-    const val MOJANG = "mojang"
-    const val MINOSOFT = "minosoft"
-    const val DEFAULT = MINECRAFT
+import de.bixilon.minosoft.data.text.EmptyComponent
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
+import javafx.scene.control.ListCell
 
+open class LabeledListCell<T>(
+    val texter: (T) -> Any?,
+) : ListCell<T>() {
 
-    fun minecraft(path: String): ResourceLocation {
-        return ResourceLocation(MINECRAFT, path)
-    }
-
-    fun mojang(path: String): ResourceLocation {
-        return ResourceLocation(MOJANG, path)
-    }
-
-    fun minosoft(path: String): ResourceLocation {
-        return ResourceLocation(MINOSOFT, path)
-    }
-
-    fun i18n(path: String): ResourceLocation {
-        return minosoft(path)
+    override fun updateItem(item: T, empty: Boolean) {
+        super.updateItem(item, empty)
+        ctext = if (empty || item == null) {
+            EmptyComponent
+        } else {
+            texter.invoke(item) ?: EmptyComponent
+        }
     }
 }

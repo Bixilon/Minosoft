@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.eros.dialog
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -27,13 +26,17 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
+import de.bixilon.minosoft.gui.eros.util.cell.VersionListCell
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.VersionTypes
 import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
-import javafx.scene.control.*
+import javafx.scene.control.Button
+import javafx.scene.control.CheckBox
+import javafx.scene.control.ComboBox
+import javafx.scene.control.TextField
 import javafx.scene.text.TextFlow
 
 /**
@@ -132,20 +135,7 @@ class ServerModifyDialog(
             }
         }
 
-        forcedVersionFX.setCellFactory {
-            object : ListCell<Version>() {
-                override fun updateItem(version: Version?, empty: Boolean) {
-                    super.updateItem(version, empty)
-                    version ?: return
-
-                    text = if (version == Versions.AUTOMATIC) {
-                        Minosoft.LANGUAGE_MANAGER.forceTranslate(VERSION_AUTOMATIC).message
-                    } else {
-                        "${version.name} (${version.type.name.lowercase()})"
-                    }
-                }
-            }
-        }
+        forcedVersionFX.setCellFactory { VersionListCell() }
         forcedVersionFX.selectionModel.selectedItemProperty().addListener { _, _, next ->
             if (next == Versions.AUTOMATIC) {
                 optionQueryVersionFX.isSelected = true
@@ -226,7 +216,7 @@ class ServerModifyDialog(
         private val SERVER_ADDRESS_LABEL = "minosoft:modify_server.address.label".toResourceLocation()
         private val SERVER_ADDRESS_PLACEHOLDER = "minosoft:modify_server.address.placeholder".toResourceLocation()
         private val FORCED_VERSION_LABEL = "minosoft:modify_server.forced_version.label".toResourceLocation()
-        private val VERSION_AUTOMATIC = "minosoft:modify_server.forced_version.automatic".toResourceLocation()
+        val VERSION_AUTOMATIC = "minosoft:modify_server.forced_version.automatic".toResourceLocation()
         private val SHOW_RELEASES = "minosoft:modify_server.forced_version.releases".toResourceLocation()
         private val SHOW_SNAPSHOTS = "minosoft:modify_server.forced_version.snapshots".toResourceLocation()
         private val PROFILES_LABEL = "minosoft:modify_server.profiles.label".toResourceLocation()
