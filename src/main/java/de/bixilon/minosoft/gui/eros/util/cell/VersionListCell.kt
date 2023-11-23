@@ -14,14 +14,19 @@
 package de.bixilon.minosoft.gui.eros.util.cell
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.gui.eros.dialog.ServerModifyDialog
+import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 
 class VersionListCell : LabeledListCell<Version>({
     if (it == Versions.AUTOMATIC) {
-        Minosoft.LANGUAGE_MANAGER.forceTranslate(ServerModifyDialog.VERSION_AUTOMATIC).message
+        Minosoft.LANGUAGE_MANAGER.forceTranslate(AUTOMATIC)
     } else {
         "${it.name} (${it.type.name.lowercase()})"
     }
-})
+}) {
+
+    companion object {
+        val AUTOMATIC = i18n("modify_server.forced_version.automatic")
+    }
+}

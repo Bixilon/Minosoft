@@ -216,7 +216,6 @@ class ServerModifyDialog(
         private val SERVER_ADDRESS_LABEL = "minosoft:modify_server.address.label".toResourceLocation()
         private val SERVER_ADDRESS_PLACEHOLDER = "minosoft:modify_server.address.placeholder".toResourceLocation()
         private val FORCED_VERSION_LABEL = "minosoft:modify_server.forced_version.label".toResourceLocation()
-        val VERSION_AUTOMATIC = "minosoft:modify_server.forced_version.automatic".toResourceLocation()
         private val SHOW_RELEASES = "minosoft:modify_server.forced_version.releases".toResourceLocation()
         private val SHOW_SNAPSHOTS = "minosoft:modify_server.forced_version.snapshots".toResourceLocation()
         private val PROFILES_LABEL = "minosoft:modify_server.profiles.label".toResourceLocation()
