@@ -351,8 +351,10 @@ class GLFWWindow(
         if (window != this.window) {
             return
         }
-        val previousSize = Vec2i(_size)
         val nextSize = unscalePosition(Vec2i(width, height))
+        if (nextSize.x <= 0 || nextSize.y <= 0) return  // windows returns size (0,0) if minimized
+        val previousSize = Vec2i(_size)
+        if (previousSize == nextSize) return
         _size = nextSize
         fireGLFWEvent(ResizeWindowEvent(context, previousSize = previousSize, size = _size))
         this.skipNextMouseEvent = true
