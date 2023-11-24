@@ -72,7 +72,8 @@ object ContainerGUIManager {
 
         registerLocalContainerEvent(guiRenderer)
 
-        guiRenderer.connection.events.listen<ContainerOpenEvent> { open(guiRenderer, it.container) }
-        guiRenderer.connection.events.listen<ContainerCloseEvent> { close(guiRenderer, it.container) }
+        val queue = guiRenderer.context.queue
+        guiRenderer.connection.events.listen<ContainerOpenEvent> { queue += { open(guiRenderer, it.container) } }
+        guiRenderer.connection.events.listen<ContainerCloseEvent> { queue += { close(guiRenderer, it.container) } }
     }
 }
