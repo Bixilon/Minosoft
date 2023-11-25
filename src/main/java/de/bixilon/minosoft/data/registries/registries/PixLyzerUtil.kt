@@ -25,6 +25,10 @@ import de.bixilon.minosoft.assets.util.HashTypes
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readMBFMap
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.util.http.DownloadUtil
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.ByteArrayInputStream
 
 object PixLyzerUtil {
@@ -33,20 +37,25 @@ object PixLyzerUtil {
         return ByteArrayInputStream(this).readMBFMap().toJsonObject() ?: throw IllegalStateException("Could not read pixlyzer data!")
     }
 
-    private fun verify(url: String, hash: String): Map<String, Any> {
-        FileAssetsUtil.readOrNull(hash, type = FileAssetsTypes.PIXLYZER, compress = false)?.let { return it.read() }
-
-
-        val data = FileAssetsUtil.read(url.formatPlaceholder(
+    private fun verify(url: String, hash: String): JsonObject {
+        val url = url.formatPlaceholder(
             "hashPrefix" to hash.substring(0, 2),
             "fullHash" to hash,
-        ).toURL().openStream(), type = FileAssetsTypes.PIXLYZER, compress = false, hash = HashTypes.SHA1)
+        ).toURL()
+        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading pixlyzer data $url" }
+        val data = FileAssetsUtil.read(url.openStream(), type = FileAssetsTypes.PIXLYZER, compress = false, hash = HashTypes.SHA1)
 
         if (data.hash != hash) {
             throw IllegalStateException("Pixlyzer data mismatch (expected=$hash, hash=${data.hash}!")
         }
 
         return data.data.read()
+    }
+
+    private fun verify(urls: List<String>, hash: String): JsonObject {
+        FileAssetsUtil.readOrNull(hash, type = FileAssetsTypes.PIXLYZER, compress = false)?.let { return it.read() }
+
+        return DownloadUtil.retry(urls) { verify(it, hash) }
     }
 
     fun loadPixlyzerData(profile: ResourcesProfile, version: Version): JsonObject {

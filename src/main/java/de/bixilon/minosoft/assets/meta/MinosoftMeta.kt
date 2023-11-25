@@ -28,6 +28,10 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
+import de.bixilon.minosoft.util.http.DownloadUtil
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.ByteArrayInputStream
 
 object MinosoftMeta {
@@ -44,19 +48,25 @@ object MinosoftMeta {
         return MBFBinaryReader(ByteArrayInputStream(this)).readMBF().data.unsafeCast()
     }
 
-    private fun MetaVersionEntry.load(profile: ResourcesProfile): JsonObject {
-        FileAssetsUtil.readOrNull(this.hash, FileAssetsTypes.META, compress = false)?.let { return it.load() }
-
-        val data = FileAssetsUtil.read(profile.source.minosoftMeta.formatPlaceholder(
+    private fun verify(url: String, hash: String): JsonObject {
+        val url = url.formatPlaceholder(
             "hashPrefix" to hash.substring(0, 2),
             "fullHash" to hash,
-        ).toURL().openStream(), type = FileAssetsTypes.META, compress = false, hash = HashTypes.SHA256)
+        ).toURL()
+        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading minosoft meta $url" }
+        val data = FileAssetsUtil.read(url.openStream(), type = FileAssetsTypes.META, compress = false, hash = HashTypes.SHA256)
 
         if (data.hash != hash) {
             throw IllegalStateException("Minosoft meta data mismatch (expected=$hash, hash=${data.hash}!")
         }
 
         return data.data.load()
+    }
+
+    private fun MetaVersionEntry.load(profile: ResourcesProfile): JsonObject {
+        FileAssetsUtil.readOrNull(this.hash, FileAssetsTypes.META, compress = false)?.let { return it.load() }
+
+        return DownloadUtil.retry(profile.source.minosoftMeta) { verify(it, hash) }
     }
 
     fun MetaTypeEntry.load(profile: ResourcesProfile, version: Version): JsonObject? {

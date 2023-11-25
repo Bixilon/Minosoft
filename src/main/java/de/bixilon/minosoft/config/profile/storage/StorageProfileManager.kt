@@ -32,7 +32,6 @@ import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.ProfileUtil.isValidName
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.identified.Identified
-import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.json.Jackson
@@ -137,7 +136,7 @@ abstract class StorageProfileManager<P : Profile> : Iterable<P>, Identified {
                 profiles[name] = profile
             } catch (error: Throwable) {
                 Log.log(LogMessageType.PROFILES, LogLevels.FATAL) { error }
-                error.crash()
+                throw error
             } finally {
                 lock.unlock()
             }

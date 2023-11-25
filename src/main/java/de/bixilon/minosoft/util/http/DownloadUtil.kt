@@ -11,18 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.resources
+package de.bixilon.minosoft.util.http
 
-import com.fasterxml.jackson.databind.node.ObjectNode
-import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
+import de.bixilon.kutil.json.JsonObject
 
-object ResourcesProfileManager : StorageProfileManager<ResourcesProfile>() {
-    override val type get() = ResourcesProfile
-    override val latestVersion get() = 2
+object DownloadUtil {
 
+    fun retry(urls: List<String>, loader: (String) -> JsonObject): Map<String, Any> {
+        if (urls.isEmpty()) throw IllegalArgumentException("No urls provided!")
 
-    override fun migrate(version: Int, data: ObjectNode) = when (version) {
-        1 -> ResourceProfileMigration.migrate1(data)
-        else -> Unit
+        var first: Throwable? = null
+        for (url in urls) {
+            try {
+                return loader.invoke(url)
+            } catch (error: Throwable) {
+                first = error
+                error.printStackTrace()
+            }
+        }
+        throw first!!
     }
 }
