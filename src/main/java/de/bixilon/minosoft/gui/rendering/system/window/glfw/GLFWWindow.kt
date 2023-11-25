@@ -190,6 +190,8 @@ class GLFWWindow(
             setOpenGLVersion(3, 3, true)
         }
         glfwWindowHint(GLFW_VISIBLE, false.glfw)
+        glfwWindowHint(GLFW_DEPTH_BITS, 0)
+        glfwWindowHint(GLFW_STENCIL_BITS, 0)
 
 
         window = glfwCreateWindow(size.x, size.y, RunConfiguration.APPLICATION_NAME, MemoryUtil.NULL, MemoryUtil.NULL)
