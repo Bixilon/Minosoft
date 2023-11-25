@@ -52,8 +52,9 @@ object TextureUtil {
         val decoder = PNGDecoder(this)
         val size = Vec2i(decoder.width, decoder.height)
         val buffer = factory?.create(size) ?: when {
-            decoder.hasAlphaChannel() -> RGBA8Buffer(size)
-            else -> RGB8Buffer(size)
+            decoder.hasAlphaChannel() && decoder.hasAlpha() -> RGBA8Buffer(size)
+            //  else -> RGB8Buffer(size) // TODO: pngdecoder is broken
+            else -> RGBA8Buffer(size)
         }
         val format = when {
             buffer.bits == 8 && buffer.components == 4 && buffer.alpha -> PNGDecoder.Format.RGBA
@@ -99,6 +100,7 @@ object TextureUtil {
         return try {
             readTexture1(factory)
         } catch (exception: Throwable) {
+            exception.printStackTrace()
             this.reset()
             readTexture2(factory)
         }

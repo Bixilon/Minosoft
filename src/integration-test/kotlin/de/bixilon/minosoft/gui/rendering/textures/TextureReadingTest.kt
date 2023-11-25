@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBufferFactory
 import org.testng.Assert.assertEquals
@@ -25,6 +27,7 @@ import java.io.InputStream
 class TextureReadingTest {
     private val GRAY_GRAY = TextureReadingTest::class.java.getResourceAsStream("/texture_reading/gray_gray.png")!!.readAllBytes()
     private val GRAY_RGB = TextureReadingTest::class.java.getResourceAsStream("/texture_reading/gray_rgb.png")!!.readAllBytes()
+    private val SAND = TextureReadingTest::class.java.getResourceAsStream("/texture_reading/sand.png")!!.readAllBytes()
 
     private val READ_1 = TextureUtil::class.java.getDeclaredMethod("readTexture1", InputStream::class.java, TextureBufferFactory::class.java).apply { isAccessible = true }
     private val READ_2 = TextureUtil::class.java.getDeclaredMethod("readTexture2", InputStream::class.java, TextureBufferFactory::class.java).apply { isAccessible = true }
@@ -61,5 +64,35 @@ class TextureReadingTest {
     fun `read gray 2`() {
         val texture = READ_2.invoke(TextureUtil, ByteArrayInputStream(GRAY_GRAY), null) as TextureBuffer
         texture.assertGray()
+    }
+
+    private fun TextureBuffer.assertSand() {
+        assertEquals(getRGBA(0, 0), 0xE7E4BBFF.toInt())
+        assertEquals(getRGBA(1, 0), 0xDACFA3FF.toInt())
+        assertEquals(getRGBA(0, 1), 0xD5C496FF.toInt())
+
+    }
+
+    fun `read1 sand rgba`() {
+        val texture = READ_1.invoke(TextureUtil, ByteArrayInputStream(SAND), TextureBufferFactory { RGBA8Buffer(it) }) as TextureBuffer
+        texture.assertSand()
+    }
+
+    @Test(enabled = false)
+    fun `read1 sand rgb`() {
+        val texture = READ_1.invoke(TextureUtil, ByteArrayInputStream(SAND), TextureBufferFactory { RGB8Buffer(it) }) as TextureBuffer
+        texture.assertSand()
+    }
+
+    @Test(enabled = false)
+    fun `read2 sand rgba`() {
+        val texture = READ_2.invoke(TextureUtil, ByteArrayInputStream(SAND), TextureBufferFactory { RGBA8Buffer(it) }) as TextureBuffer
+        texture.assertSand()
+    }
+
+    @Test(enabled = false)
+    fun `read2 sand rgb`() {
+        val texture = READ_2.invoke(TextureUtil, ByteArrayInputStream(SAND), TextureBufferFactory { RGB8Buffer(it) }) as TextureBuffer
+        texture.assertSand()
     }
 }
