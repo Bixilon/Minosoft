@@ -65,7 +65,7 @@ interface TextureBuffer {
         for (y in 0 until size.y) {
             for (x in 0 until size.x) {
                 val rgba = source.getRGBA(sourceOffset.x + x, sourceOffset.y + y)
-                setRGBA(targetOffset.x + x, targetOffset.y, rgba)
+                setRGBA(targetOffset.x + x, targetOffset.y + y, rgba)
             }
         }
     }

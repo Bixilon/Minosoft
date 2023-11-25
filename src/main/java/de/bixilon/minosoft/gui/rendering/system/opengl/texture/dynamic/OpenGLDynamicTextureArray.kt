@@ -62,7 +62,6 @@ class OpenGLDynamicTextureArray(
                 // clear first
                 glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, empty)
             }
-            buffer.data.rewind()
             buffer.data.flip()
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
         }
@@ -70,7 +69,7 @@ class OpenGLDynamicTextureArray(
 
     override fun upload() {
         if (handle >= 0) throw MemoryLeakException("Texture was not unloaded!")
-        val textureId = OpenGLTextureUtil.createTextureArray()
+        val handle = OpenGLTextureUtil.createTextureArray()
         for (level in 0 until OpenGLTextureUtil.MAX_MIPMAP_LEVELS) {
             glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
         }
@@ -80,7 +79,7 @@ class OpenGLDynamicTextureArray(
             if (texture.data == null) continue
             unsafeUpload(index, texture)
         }
-        this.handle = textureId
+        this.handle = handle
 
         for (shader in shaders) {
             unsafeUse(shader)

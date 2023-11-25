@@ -194,7 +194,6 @@ class OpenGLTextureArray(
         for (texture in textures) {
             val renderData = texture.renderData as OpenGLTextureData
             for ((level, buffer) in texture.data.collect().withIndex()) {
-                buffer.data.rewind()
                 buffer.data.flip()
                 glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
             }
