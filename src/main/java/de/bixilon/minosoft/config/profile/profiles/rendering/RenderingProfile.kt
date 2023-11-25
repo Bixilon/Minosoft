@@ -27,6 +27,7 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
 import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.OverlayC
 import de.bixilon.minosoft.config.profile.profiles.rendering.performance.PerformanceC
 import de.bixilon.minosoft.config.profile.profiles.rendering.sky.SkyC
+import de.bixilon.minosoft.config.profile.profiles.rendering.textures.TexturesC
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import org.kordamp.ikonli.Ikon
@@ -51,6 +52,7 @@ class RenderingProfile(
     val performance = PerformanceC(this)
     val overlay = OverlayC(this)
     val sky = SkyC(this)
+    val textures = TexturesC(this)
 
 
     override fun toString(): String {

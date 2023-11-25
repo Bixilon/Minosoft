@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 class MemoryTexture(
     override val size: Vec2i,
     override var properties: ImageProperties = ImageProperties(),
-    override var mipmaps: Boolean = true,
+    override var mipmaps: Int,
     buffer: TextureBuffer,
 ) : Texture {
     override lateinit var array: TextureArrayProperties

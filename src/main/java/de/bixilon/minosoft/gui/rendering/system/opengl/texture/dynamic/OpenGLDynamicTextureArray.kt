@@ -40,7 +40,8 @@ class OpenGLDynamicTextureArray(
     val index: Int = renderSystem.textureBindingIndex++,
     initialSize: Int = 32,
     val resolution: Int,
-) : DynamicTextureArray(context, initialSize) {
+    mipmaps: Int,
+) : DynamicTextureArray(context, initialSize, mipmaps) {
     private val empty = IntArray(resolution * resolution) { 0x00 }
     private var handle = -1
 
@@ -69,8 +70,8 @@ class OpenGLDynamicTextureArray(
 
     override fun upload() {
         if (handle >= 0) throw MemoryLeakException("Texture was not unloaded!")
-        val handle = OpenGLTextureUtil.createTextureArray()
-        for (level in 0 until OpenGLTextureUtil.MAX_MIPMAP_LEVELS) {
+        val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
+        for (level in 0..mipmaps) {
             glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
         }
 

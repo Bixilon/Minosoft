@@ -30,7 +30,7 @@ class SpriteTexture(private val original: Texture) : Texture {
     override var properties: ImageProperties by original::properties
     override var renderData: TextureRenderData by original::renderData
     override val transparency: TextureTransparencies by original::transparency
-    override var mipmaps: Boolean = true
+    override val mipmaps: Int get() = original.mipmaps
 
     override var state: TextureStates = TextureStates.DECLARED
         private set
@@ -58,7 +58,7 @@ class SpriteTexture(private val original: Texture) : Texture {
             val buffer = original.create(size)
             buffer.put(original, Vec2i(0, size.y), Vec2i.EMPTY, size)
 
-            val splitTexture = MemoryTexture(size, mipmaps = true, buffer = buffer)
+            val splitTexture = MemoryTexture(size, mipmaps = this.original.mipmaps, buffer = buffer)
 
             splitTextures += splitTexture
         }

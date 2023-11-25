@@ -36,7 +36,7 @@ class UnifontTexture(
     override val size: Vec2i = Vec2i(resolution)
     private val pixel = 1.0f / size.x
     override val transparency: TextureTransparencies = TextureTransparencies.TRANSPARENT
-    override val mipmaps: Boolean get() = false
+    override val mipmaps: Int get() = 0
 
     override lateinit var array: TextureArrayProperties
     override lateinit var renderData: TextureRenderData

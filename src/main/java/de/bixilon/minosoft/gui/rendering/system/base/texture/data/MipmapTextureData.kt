@@ -14,12 +14,29 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.data
 
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 
 open class MipmapTextureData(
     buffer: TextureBuffer,
+    levels: Int,
 ) : TextureData(buffer) {
-    val mipmaps: Array<TextureBuffer> = OpenGLTextureUtil.generateMipMaps(buffer)
+    val mipmaps: Array<TextureBuffer> = generate(levels)
 
     override fun collect(): Array<TextureBuffer> = mipmaps
+
+
+    fun generate(levels: Int): Array<TextureBuffer> {
+        val images: MutableList<TextureBuffer> = mutableListOf(buffer)
+
+        var data = buffer
+        for (i in 0 until levels) {
+            val size = data.size shr 1
+            if (size.x <= 0 || size.y <= 0) {
+                break
+            }
+            data = data.mipmap()
+            images += data
+        }
+
+        return images.toTypedArray()
+    }
 }

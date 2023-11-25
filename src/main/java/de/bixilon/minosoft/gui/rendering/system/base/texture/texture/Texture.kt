@@ -35,7 +35,7 @@ interface Texture : ShaderTexture {
     var renderData: TextureRenderData
 
     var data: TextureData
-    val mipmaps: Boolean
+    val mipmaps: Int
 
 
     fun load(context: RenderContext)
@@ -52,7 +52,8 @@ interface Texture : ShaderTexture {
         return renderData.transformUV(end)
     }
 
-    fun createData(mipmaps: Boolean = this.mipmaps, buffer: TextureBuffer): TextureData {
-        return if (mipmaps) MipmapTextureData(buffer) else TextureData(buffer)
+    fun createData(mipmaps: Int = this.mipmaps, buffer: TextureBuffer): TextureData {
+        if (mipmaps <= 0) return TextureData(buffer)
+        return MipmapTextureData(buffer, mipmaps)
     }
 }

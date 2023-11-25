@@ -13,21 +13,85 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
+import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
+import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.json.Jackson
 
-interface StaticTextureArray : TextureArray {
-    val animator: SpriteAnimator
-    val state: TextureArrayStates
+abstract class StaticTextureArray(
+    val context: RenderContext,
+    val async: Boolean,
+    val mipmaps: Int,
+) : TextureArray {
+    protected val named: MutableMap<ResourceLocation, Texture> = mutableMapOf()
+    protected val other: MutableSet<Texture> = mutableSetOf()
+    private val lock = SimpleLock()
 
-    operator fun get(resourceLocation: ResourceLocation): Texture?
+    val animator = SpriteAnimator(context.system)
+    var state: TextureArrayStates = TextureArrayStates.DECLARED
+        protected set
+
+
+    operator fun get(resourceLocation: ResourceLocation): Texture? {
+        lock.acquire()
+        val texture = this.named[resourceLocation]
+        lock.release()
+        return texture
+    }
+
     operator fun plusAssign(texture: Texture) = pushTexture(texture)
 
-    fun pushTexture(texture: Texture)
-    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, properties: Boolean = true, default: (mipmaps: Boolean) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture
 
-    fun load(latch: AbstractLatch)
+    fun pushTexture(texture: Texture) {
+        lock.lock()
+        other += texture
+        lock.unlock()
+        if (texture.state != TextureStates.LOADED && async) {
+            DefaultThreadPool += ForcePooledRunnable { texture.load(context) }
+        }
+    }
+
+    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, properties: Boolean = true, factory: (mipmaps: Int) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture {
+        lock.lock()
+        named[resourceLocation]?.let { lock.unlock(); return it }
+
+        // load .mcmeta
+        val properties = if (properties) readImageProperties(resourceLocation) ?: ImageProperties.DEFAULT else ImageProperties.DEFAULT // TODO: That kills performance
+        val default = factory.invoke(if (mipmaps) this.mipmaps else 0)
+
+        val texture = if (properties.animation == null) default else SpriteTexture(default)
+
+        texture.properties = properties
+        named[resourceLocation] = texture
+        lock.unlock()
+        if (async) {
+            DefaultThreadPool += ForcePooledRunnable { texture.load(context) }
+        }
+
+        return texture
+    }
+
+    private fun readImageProperties(texture: ResourceLocation): ImageProperties? {
+        try {
+            val data = context.connection.assetsManager.getOrNull("$texture.mcmeta".toResourceLocation())?.readAsString() ?: return null
+            return Jackson.MAPPER.readValue(data, ImageProperties::class.java)
+        } catch (error: Throwable) {
+            error.printStackTrace()
+        }
+        return null
+    }
+
+
+    abstract fun load(latch: AbstractLatch)
 }

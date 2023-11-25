@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
@@ -33,7 +32,7 @@ import java.io.FileNotFoundException
 
 class PNGTexture(
     override val resourceLocation: ResourceLocation,
-    override var mipmaps: Boolean = true,
+    override var mipmaps: Int,
 ) : FileTexture {
     override lateinit var renderData: TextureRenderData
 
@@ -66,7 +65,7 @@ class PNGTexture(
             }
             assetsManager[RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION].readTexture()
         }
-        val data = if (mipmaps) MipmapTextureData(buffer) else TextureData(buffer)
+        val data = createData(mipmaps, buffer)
 
         this.size = data.size
         transparency = TextureTransparencies.OPAQUE

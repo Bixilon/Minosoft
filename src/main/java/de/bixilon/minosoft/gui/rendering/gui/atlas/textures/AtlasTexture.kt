@@ -30,7 +30,7 @@ class AtlasTexture(
     override val size: Vec2i,
 ) : Texture {
     override val transparency: TextureTransparencies = TextureTransparencies.TRANSLUCENT
-    override val mipmaps: Boolean get() = false
+    override val mipmaps: Int get() = 0
     private val pixel = Vec2(1.0f) / size
 
     override lateinit var array: TextureArrayProperties

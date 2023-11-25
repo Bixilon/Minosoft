@@ -33,7 +33,7 @@ class DummyTexture : Texture {
     override var properties: ImageProperties = ImageProperties()
     override var renderData: TextureRenderData = DummyTextureRenderData
     override lateinit var data: TextureData
-    override var mipmaps: Boolean = false
+    override val mipmaps: Int get() = 0
 
     override fun load(context: RenderContext) {
         data = TextureData(RGBA8Buffer(size))

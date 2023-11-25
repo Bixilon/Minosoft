@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 
-class DummyDynamicTextureArray(context: RenderContext) : DynamicTextureArray(context, 1) {
+class DummyDynamicTextureArray(context: RenderContext) : DynamicTextureArray(context, 1, 0) {
     override fun createTexture(identifier: Any, index: Int) = DummyDynamicTexture
 
     override fun unload() = Unit

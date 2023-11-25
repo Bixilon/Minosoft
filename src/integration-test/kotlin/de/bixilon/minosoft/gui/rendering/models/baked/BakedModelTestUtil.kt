@@ -37,7 +37,7 @@ object BakedModelTestUtil {
     private val connection by lazy { createConnection() }
     private val rendering by lazy {
         val rendering = Rendering(connection)
-        rendering.context.textures::debugTexture.forceSet(MemoryTexture(Vec2i.EMPTY_INSTANCE, buffer = RGBA8Buffer(Vec2i(0, 0))))
+        rendering.context.textures::debugTexture.forceSet(MemoryTexture(Vec2i.EMPTY_INSTANCE, mipmaps = 0, buffer = RGBA8Buffer(Vec2i(0, 0))))
         return@lazy rendering
     }
 

@@ -30,6 +30,7 @@ import java.lang.ref.WeakReference
 abstract class DynamicTextureArray(
     val context: RenderContext,
     val initialSize: Int,
+    val mipmaps: Int,
 ) : TextureArray {
     protected var textures: Array<WeakReference<DynamicTexture>?> = arrayOfNulls(initialSize)
     protected val shaders: MutableSet<NativeShader> = mutableSetOf()
@@ -71,7 +72,7 @@ abstract class DynamicTextureArray(
     private fun DynamicTexture.load(index: Int, creator: () -> TextureBuffer) {
         val buffer = creator.invoke()
 
-        this.data = MipmapTextureData(buffer)
+        this.data = MipmapTextureData(buffer, mipmaps)
         if (Thread.currentThread() == context.thread) {
             upload(index, this)
         } else {

@@ -11,14 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.dummy.texture
+package de.bixilon.minosoft.config.profile.profiles.rendering.textures
 
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
-import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
+import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class DummyTextureManager(val context: RenderContext) : TextureManager() {
-    override val dynamicTextures: DynamicTextureArray = DummyDynamicTextureArray(context)
-    override val staticTextures: StaticTextureArray = DummyStaticTextureArray(context)
+class TexturesC(profile: RenderingProfile) {
+
+    /**
+     * Weather to use mipmaps for all static textures
+     */
+    var mipmaps by IntDelegate(profile, 4, arrayOf(0..4))
 }
