@@ -33,6 +33,7 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileMan
 import de.bixilon.minosoft.config.profile.storage.ProfileIOManager
 import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
 import java.nio.file.Files
 
@@ -77,10 +78,22 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
             FileWatcherService.start() // TODO: kutil 1.25: remove kutil race condition
         }
         val worker = UnconditionalWorker()
+        var first: Throwable? = null
         for (manager in ProfileManagers) {
-            worker += { manager.load() }
+            worker += {
+                try {
+                    manager.load()
+                } catch (error: Throwable) {
+                    error.printStackTrace()
+                    if (first == null) {
+                        first = error
+                    }
+                }
+            }
         }
         worker.work(latch)
+        first?.let { it.crash(); throw it }
+
         ProfileIOManager.init()
 
         //   runLater(5000) {
