@@ -12,7 +12,7 @@
  */
 
 
-uniform sampler2DArray uTextures[9];
+uniform sampler2DArray uTextures[10];
 
 // ToDo: Those methods are just stupid and workaround an opengl crash with mesa drivers
 
@@ -29,6 +29,7 @@ vec4 getTexture(uint textureId, vec3 uv) {
         case 6u: return texture(uTextures[6], uv);
         case 7u: return texture(uTextures[7], uv);
         case 8u: return texture(uTextures[8], uv);
+case 9u: return texture(uTextures[9], uv);
     }
     return texture(uTextures[0], uv);
     #endif
@@ -47,6 +48,7 @@ vec4 getTexture(uint textureId, vec3 uv, float mipmapLevel) {
         case 6u: return textureLod(uTextures[6], uv, mipmapLevel);
         case 7u: return textureLod(uTextures[7], uv, mipmapLevel);
         case 8u: return textureLod(uTextures[8], uv, mipmapLevel);
+case 9u: return textureLod(uTextures[8], uv, mipmapLevel);
     }
     return textureLod(uTextures[0], uv, mipmapLevel);
     #endif

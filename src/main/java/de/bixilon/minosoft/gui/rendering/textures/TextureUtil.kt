@@ -100,7 +100,6 @@ object TextureUtil {
         return try {
             readTexture1(factory)
         } catch (exception: Throwable) {
-            exception.printStackTrace()
             this.reset()
             readTexture2(factory)
         }

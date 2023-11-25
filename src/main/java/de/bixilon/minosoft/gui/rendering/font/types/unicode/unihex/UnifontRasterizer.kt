@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex.UnifontTexture.Companion.isPixelSet
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
 
 class UnifontRasterizer(
-    private val array: StaticTextureArray,
+    private val array: FontTextureArray,
     totalWidth: Int,
 ) {
     private var width = totalWidth
@@ -54,8 +53,7 @@ class UnifontRasterizer(
     }
 
     private fun calculateRows(width: Int): Int {
-        val size = array.findResolution(Vec2i(width, HEIGHT))
-        return size.y / HEIGHT
+        return array.resolution / HEIGHT
     }
 
     private fun createTexture(): UnifontTexture {

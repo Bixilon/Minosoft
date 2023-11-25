@@ -26,8 +26,9 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.io.IOException
@@ -64,14 +65,14 @@ class LegacyUnicodeFontType(
             val template = data["template"]?.toString() ?: throw IllegalArgumentException("template missing!")
             val sizes = data.loadSizes(assets) ?: return null
 
-            return load(template, sizes, assets, context.textures.staticTextures)
+            return load(template, sizes, assets, context.textures.font)
         }
 
         private fun String.formatTemplate(page: Int): ResourceLocation {
             return this.replace("%s", page.toHex(2)).toResourceLocation().texture()
         }
 
-        fun load(template: String, sizes: InputStream, assets: AssetsManager, textures: StaticTextureArray): LegacyUnicodeFontType {
+        fun load(template: String, sizes: InputStream, assets: AssetsManager, textures: FontTextureArray): LegacyUnicodeFontType {
             val chars: Array<UnicodeCodeRenderer?> = arrayOfNulls(1 shl Char.SIZE_BITS)
             for (pageId in 0 until UNICODE_PAGES) {
                 val textureFile = template.formatTemplate(pageId)
@@ -81,13 +82,15 @@ class LegacyUnicodeFontType(
             return LegacyUnicodeFontType(chars)
         }
 
-        private fun tryLoadPage(pageId: Int, textureFile: ResourceLocation, chars: Array<UnicodeCodeRenderer?>, sizes: InputStream, assets: AssetsManager, textures: StaticTextureArray) {
+        private fun tryLoadPage(pageId: Int, textureFile: ResourceLocation, chars: Array<UnicodeCodeRenderer?>, sizes: InputStream, assets: AssetsManager, textures: FontTextureArray) {
             if (textureFile !in assets) { // TODO: cache assets manger
                 // file not present, skip entire page
                 sizes.skip(PAGE_SIZE.toLong())
                 return
             }
-            val texture = textures.create(textureFile, mipmaps = false, properties = false)
+
+            val texture = PNGTexture(textureFile, 0)
+            textures += texture
 
             loadPage(pageId, texture, chars, sizes)
         }

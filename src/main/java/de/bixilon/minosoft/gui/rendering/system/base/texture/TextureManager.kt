@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.atlas.textures.CodeTexturePart
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.SkinManager
@@ -30,6 +31,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 abstract class TextureManager {
     abstract val staticTextures: StaticTextureArray
     abstract val dynamicTextures: DynamicTextureArray
+    abstract val font: FontTextureArray
 
     lateinit var debugTexture: Texture
         private set
@@ -54,6 +56,7 @@ abstract class TextureManager {
     fun use(shader: NativeShader, name: String = ShaderUniforms.TEXTURES) {
         staticTextures.use(shader, name)
         dynamicTextures.use(shader, name)
+        font.use(shader, name)
     }
 
     fun reload() {

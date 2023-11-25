@@ -44,7 +44,7 @@ object RenderConstants {
     const val DEFAULT_LINE_WIDTH = 1.0f / 128.0f
 
 
-    const val UV_ADD = 0.001f
+    const val UV_ADD = 0.00001f
 
     const val DISABLE_GUI_CACHE = false
 

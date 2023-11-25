@@ -66,7 +66,7 @@ class UnihexFontType(
         }
 
         private fun load(context: RenderContext, totalWidth: Int, chars: Int2ObjectOpenHashMap<ByteArray>, sizes: List<SizeOverride>): UnihexFontType {
-            val rasterizer = UnifontRasterizer(context.textures.staticTextures, totalWidth)
+            val rasterizer = UnifontRasterizer(context.textures.font, totalWidth)
 
             val rasterized = Int2ObjectOpenHashMap<CodePointRenderer>()
 

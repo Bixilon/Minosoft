@@ -43,7 +43,7 @@ class PNGTexture(
         private set
     override lateinit var transparency: TextureTransparencies
         private set
-    override lateinit var properties: ImageProperties
+    override var properties: ImageProperties = ImageProperties.DEFAULT
 
 
     override lateinit var data: TextureData

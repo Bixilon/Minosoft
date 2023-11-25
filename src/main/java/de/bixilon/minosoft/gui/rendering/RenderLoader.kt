@@ -97,9 +97,11 @@ object RenderLoader {
         // Post init stage
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
         textures.staticTextures.load(renderLatch)
+        textures.font.load(renderLatch)
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Uploading textures (after ${stopwatch.labTime()})..." }
         textures.staticTextures.upload(renderLatch)
+        textures.font.upload(renderLatch)
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Baking models (after ${stopwatch.labTime()})..." }
         font.postInit(renderLatch)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
+import de.bixilon.minosoft.config.DebugOptions.EMPTY_BUFFERS
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderFloatBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
@@ -35,7 +36,7 @@ open class FloatOpenGLBuffer(renderSystem: OpenGLRenderSystem, protected var _da
         bind()
         val position = buffer.position()
         buffer.position(0)
-        nglBufferData(type.gl, buffer, position, drawTypes.gl)
+        nglBufferData(type.gl, buffer, if (EMPTY_BUFFERS) 0 else position, drawTypes.gl)
         buffer.position(position)
         unbind()
         state = RenderableBufferStates.UPLOADED

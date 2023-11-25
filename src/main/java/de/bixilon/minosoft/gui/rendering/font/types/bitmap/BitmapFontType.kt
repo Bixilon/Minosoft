@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.isBlack
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -78,7 +79,8 @@ class BitmapFontType(
 
         private fun load(file: ResourceLocation, height: Int, ascent: Int, chars: List<String>, context: RenderContext): BitmapFontType? {
             if (chars.isEmpty() || height <= 0) return null
-            val texture = context.textures.staticTextures.create(file, mipmaps = false, properties = false)
+            val texture = PNGTexture(file, 0)
+            context.textures.font += texture
             texture.load(context) // force load it, we need to calculate the width of every char
 
             return load(texture, texture.size.y / chars.size, ascent, chars.codePoints())

@@ -16,12 +16,11 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
-import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic.OpenGLDynamicTextureArray
 
 class OpenGLTextureManager(val context: RenderContext) : TextureManager() {
     private val mipmaps = context.connection.profiles.rendering.textures.mipmaps
-    override val staticTextures: StaticTextureArray = OpenGLTextureArray(context, true, mipmaps)
-    override val dynamicTextures: DynamicTextureArray = OpenGLDynamicTextureArray(context, context.system.unsafeCast(), resolution = 64, mipmaps = mipmaps)
+    override val staticTextures = OpenGLTextureArray(context, true, mipmaps)
+    override val dynamicTextures = OpenGLDynamicTextureArray(context, context.system.unsafeCast(), resolution = 64, mipmaps = mipmaps)
+    override val font = OpenGLFontTextureArray(context)
 }
