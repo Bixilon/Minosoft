@@ -251,7 +251,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += AutoTextElement(guiRenderer, 20, properties = RIGHT) { "Dynamic textures ${context.textures.dynamicTextures.size.format()}/${context.textures.dynamicTextures.capacity.format()}" }
+        layout += AutoTextElement(guiRenderer, 20, properties = RIGHT) { "Dynamic textures ${context.textures.dynamic.size.format()}/${context.textures.dynamic.capacity.format()}" }
 
         layout += LineSpacerElement(guiRenderer)
 

@@ -27,7 +27,7 @@ import kotlin.math.pow
 class SunRenderer(
     sky: SkyRenderer,
 ) : PlanetRenderer(sky) {
-    override val texture = sky.context.textures.staticTextures.create(SUN)
+    override val texture = sky.context.textures.static.create(SUN)
 
     public override fun calculateAngle(): Float {
         val time = sky.context.connection.world.time

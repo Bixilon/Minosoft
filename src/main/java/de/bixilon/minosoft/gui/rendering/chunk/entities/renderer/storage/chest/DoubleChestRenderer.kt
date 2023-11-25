@@ -43,14 +43,14 @@ class DoubleChestRenderer(
         private val TEXTURE_5 = arrayOf(minecraft("left"), minecraft("right"))
 
         private fun register(loader: ModelLoader, name: ResourceLocation, texture: ResourceLocation) {
-            val static = loader.context.textures.staticTextures
+            val static = loader.context.textures.static
             val override = mapOf(TEXTURE to static.create(texture))
             loader.skeletal.register(name, MODEL, override)
         }
 
         private fun register5(loader: ModelLoader, name: ResourceLocation, textures: Array<ResourceLocation>) {
             if (textures.size != 2) throw IllegalStateException("Textures must be left and right!")
-            val static = loader.context.textures.staticTextures
+            val static = loader.context.textures.static
             val override = mapOf(
                 TEXTURE_5[0] to static.create(textures[0]),
                 TEXTURE_5[1] to static.create(textures[1]),

@@ -24,7 +24,7 @@ interface TextureShader : AbstractShader {
         return uniform(name, textureManager) { native, name, value: TextureManager ->
             value.use(native, name)
             if (animated) {
-                textureManager.staticTextures.animator.use(native)
+                textureManager.static.animator.use(native)
             }
         }
     }

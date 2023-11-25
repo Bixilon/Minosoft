@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldBorderOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val config = context.connection.profiles.rendering.overlay
-    override val texture: Texture = context.textures.staticTextures.create(OVERLAY_TEXTURE)
+    override val texture: Texture = context.textures.static.create(OVERLAY_TEXTURE)
     override val render: Boolean
         get() = config.worldBorder && context.connection.world.border.isOutside(context.connection.player.physics.position)
 

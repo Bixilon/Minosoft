@@ -89,7 +89,7 @@ class RenderLoop(
             lastFrame = currentFrame
 
 
-            context.textures.staticTextures.animator.draw()
+            context.textures.static.animator.draw()
 
             context.renderer.draw()
 

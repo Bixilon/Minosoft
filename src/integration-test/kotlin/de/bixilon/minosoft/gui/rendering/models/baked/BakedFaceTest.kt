@@ -34,7 +34,7 @@ class BakedFaceTest {
 
     private fun texture(): Texture {
         val manager = BakedModelTestUtil.createTextureManager(texture)
-        return manager.staticTextures.create(texture.toResourceLocation())
+        return manager.static.create(texture.toResourceLocation())
     }
 
     private fun singleMesh(): ChunkMesh {

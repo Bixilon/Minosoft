@@ -59,12 +59,12 @@ class WorldBorderRenderer(
         shader.native.defines["MAX_DISTANCE"] = MAX_DISTANCE
         shader.load()
 
-        texture = context.textures.staticTextures.create(TEXTURE)
+        texture = context.textures.static.create(TEXTURE)
         context.camera.offset::offset.observe(this) { reload = true }
     }
 
     override fun postInit(latch: AbstractLatch) {
-        context.textures.staticTextures.use(shader)
+        context.textures.static.use(shader)
         shader.textureIndexLayer = texture.renderData.shaderTextureId
     }
 

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic.OpenGLDyn
 
 class OpenGLTextureManager(val context: RenderContext) : TextureManager() {
     private val mipmaps = context.connection.profiles.rendering.textures.mipmaps
-    override val staticTextures = OpenGLTextureArray(context, true, mipmaps)
-    override val dynamicTextures = OpenGLDynamicTextureArray(context, context.system.unsafeCast(), resolution = 64, mipmaps = mipmaps)
+    override val static = OpenGLTextureArray(context, true, mipmaps)
+    override val dynamic = OpenGLDynamicTextureArray(context, context.system.unsafeCast(), resolution = 64, mipmaps = mipmaps)
     override val font = OpenGLFontTextureArray(context)
 }

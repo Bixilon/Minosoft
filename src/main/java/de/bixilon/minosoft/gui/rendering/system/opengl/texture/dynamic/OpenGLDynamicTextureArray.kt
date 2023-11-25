@@ -49,7 +49,7 @@ class OpenGLDynamicTextureArray(
         glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
 
         unsafeUpload(index, texture)
-        context.textures.staticTextures.activate() // TODO: why?
+        context.textures.static.activate() // TODO: why?
         texture.state = DynamicTextureState.LOADED
     }
 
@@ -86,7 +86,7 @@ class OpenGLDynamicTextureArray(
             unsafeUse(shader)
         }
 
-        context.textures.staticTextures.activate() // TODO: why?
+        context.textures.static.activate() // TODO: why?
 
     }
 

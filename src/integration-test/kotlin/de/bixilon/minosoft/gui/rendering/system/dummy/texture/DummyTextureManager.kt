@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
 
 class DummyTextureManager(val context: RenderContext) : TextureManager() {
-    override val dynamicTextures = DummyDynamicTextureArray(context)
-    override val staticTextures = DummyStaticTextureArray(context)
+    override val dynamic = DummyDynamicTextureArray(context)
+    override val static = DummyStaticTextureArray(context)
     override val font: FontTextureArray = DummyFontTextureArray(context)
 }

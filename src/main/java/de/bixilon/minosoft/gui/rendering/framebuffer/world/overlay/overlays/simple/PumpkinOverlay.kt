@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PumpkinOverlay(context: RenderContext) : FirstPersonOverlay(context) {
     private val config = context.connection.profiles.rendering.overlay
-    override val texture: Texture = context.textures.staticTextures.create(OVERLAY_TEXTURE)
+    override val texture: Texture = context.textures.static.create(OVERLAY_TEXTURE)
     override val render: Boolean
         get() {
             if (!config.pumpkin) {

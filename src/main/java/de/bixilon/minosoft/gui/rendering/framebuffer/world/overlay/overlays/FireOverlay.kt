@@ -31,7 +31,7 @@ class FireOverlay(
     private val config = context.connection.profiles.rendering.overlay.fire
     private val player = context.connection.player
     private val shader = context.shaders.genericTexture2dShader
-    private var texture: Texture = context.textures.staticTextures.create("block/fire_1".toResourceLocation().texture())
+    private var texture: Texture = context.textures.static.create("block/fire_1".toResourceLocation().texture())
     private val lava = context.connection.registries.fluid[LavaFluid]
     override val render: Boolean
         get() {

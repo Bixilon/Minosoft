@@ -95,7 +95,7 @@ class ShulkerBoxRenderer(
         }
 
         private fun load(name: ResourceLocation, texture: ResourceLocation, loader: ModelLoader) {
-            val texture = loader.context.textures.staticTextures.create(texture)
+            val texture = loader.context.textures.static.create(texture)
             loader.skeletal.register(name, TEMPLATE, override = mapOf(this.named to texture))
         }
     }

@@ -73,7 +73,7 @@ object RenderLoader {
         val initLatch = ParentLatch(1, renderLatch)
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.labTime()})..." }
         initLatch.inc(); runAsync { tints.init(connection.assetsManager); initLatch.dec() }
-        textures.dynamicTextures.upload(initLatch)
+        textures.dynamic.upload(initLatch)
         textures.initializeSkins(connection)
         textures.loadDefaultTextures()
         font = FontManager.create(this, initLatch)
@@ -96,11 +96,11 @@ object RenderLoader {
 
         // Post init stage
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
-        textures.staticTextures.load(renderLatch)
+        textures.static.load(renderLatch)
         textures.font.load(renderLatch)
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Uploading textures (after ${stopwatch.labTime()})..." }
-        textures.staticTextures.upload(renderLatch)
+        textures.static.upload(renderLatch)
         textures.font.upload(renderLatch)
 
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Baking models (after ${stopwatch.labTime()})..." }
@@ -120,7 +120,7 @@ object RenderLoader {
         window::focused.observeRendering(this) { state = it.decide(RenderingStates.RUNNING, RenderingStates.SLOW) }
 
         window::iconified.observeRendering(this) { state = it.decide(RenderingStates.PAUSED, RenderingStates.RUNNING) }
-        profile.animations::sprites.observe(this, true) { textures.staticTextures.animator.enabled = it }
+        profile.animations::sprites.observe(this, true) { textures.static.animator.enabled = it }
 
 
         input.init()
@@ -136,8 +136,8 @@ object RenderLoader {
 
         window.postInit()
 
-        textures.dynamicTextures.activate()
-        textures.staticTextures.activate()
+        textures.dynamic.activate()
+        textures.static.activate()
 
 
         renderLatch.dec() // initial count from rendering

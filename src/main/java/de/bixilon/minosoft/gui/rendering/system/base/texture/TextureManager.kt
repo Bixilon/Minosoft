@@ -29,8 +29,8 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class TextureManager {
-    abstract val staticTextures: StaticTextureArray
-    abstract val dynamicTextures: DynamicTextureArray
+    abstract val static: StaticTextureArray
+    abstract val dynamic: DynamicTextureArray
     abstract val font: FontTextureArray
 
     lateinit var debugTexture: Texture
@@ -44,8 +44,8 @@ abstract class TextureManager {
         if (this::debugTexture.isInitialized) {
             throw IllegalStateException("Already initialized!")
         }
-        debugTexture = staticTextures.create(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
-        whiteTexture = CodeTexturePart(texture = staticTextures.create(minosoft("white").texture(), mipmaps = false), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
+        debugTexture = static.create(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
+        whiteTexture = CodeTexturePart(texture = static.create(minosoft("white").texture(), mipmaps = false), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
     }
 
     fun initializeSkins(connection: PlayConnection) {
@@ -54,12 +54,12 @@ abstract class TextureManager {
     }
 
     fun use(shader: NativeShader, name: String = ShaderUniforms.TEXTURES) {
-        staticTextures.use(shader, name)
-        dynamicTextures.use(shader, name)
+        static.use(shader, name)
+        dynamic.use(shader, name)
         font.use(shader, name)
     }
 
     fun reload() {
-        dynamicTextures.reload()
+        dynamic.reload()
     }
 }

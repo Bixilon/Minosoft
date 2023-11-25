@@ -41,7 +41,7 @@ class SingleChestRenderer(
         private val named = minecraft("chest")
 
         fun register(loader: ModelLoader, name: ResourceLocation, texture: ResourceLocation) {
-            val texture = loader.context.textures.staticTextures.create(texture)
+            val texture = loader.context.textures.static.create(texture)
             val model = if (loader.packFormat < 5) MODEL else MODEL_5
             loader.skeletal.register(name, model, mapOf(named to texture))
         }

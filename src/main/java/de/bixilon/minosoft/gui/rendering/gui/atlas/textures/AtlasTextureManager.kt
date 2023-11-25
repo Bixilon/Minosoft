@@ -67,7 +67,7 @@ class AtlasTextureManager(private val context: RenderContext) {
 
     fun load() {
         for (texture in textures) {
-            context.textures.staticTextures += texture
+            context.textures.static += texture
         }
         this.cache.clear()
         this.textures.clear()

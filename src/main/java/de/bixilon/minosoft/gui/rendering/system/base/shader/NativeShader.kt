@@ -84,7 +84,7 @@ interface NativeShader {
     companion object {
         val DEFAULT_DEFINES: Map<String, (context: RenderContext) -> Any?> = mapOf(
             "ANIMATED_TEXTURE_COUNT" to {
-                max(it.textures.staticTextures.animator.size, 1)
+                max(it.textures.static.animator.size, 1)
             }
         )
 
