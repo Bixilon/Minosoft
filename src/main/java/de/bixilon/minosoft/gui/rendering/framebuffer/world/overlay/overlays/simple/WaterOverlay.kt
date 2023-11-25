@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WaterOverlay(context: RenderContext) : SimpleOverlay(context) {
     private val player = context.connection.player
-    override val texture: Texture = context.textures.staticTextures.createTexture("minecraft:misc/underwater".toResourceLocation().texture())
+    override val texture: Texture = context.textures.staticTextures.create("minecraft:misc/underwater".toResourceLocation().texture())
     override val render: Boolean
         get() = player.gamemode != Gamemodes.SPECTATOR && player.physics.submersion.eye is WaterFluid
 

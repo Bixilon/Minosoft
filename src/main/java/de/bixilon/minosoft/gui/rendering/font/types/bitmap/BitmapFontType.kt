@@ -78,7 +78,7 @@ class BitmapFontType(
 
         private fun load(file: ResourceLocation, height: Int, ascent: Int, chars: List<String>, context: RenderContext): BitmapFontType? {
             if (chars.isEmpty() || height <= 0) return null
-            val texture = context.textures.staticTextures.createTexture(file, mipmaps = false, properties = false)
+            val texture = context.textures.staticTextures.create(file, mipmaps = false, properties = false)
             texture.load(context) // force load it, we need to calculate the width of every char
 
             return load(texture, texture.size.y / chars.size, ascent, chars.codePoints())

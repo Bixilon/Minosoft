@@ -32,7 +32,7 @@ class ItemModel(
         if (this.textures == null) return null
         val texture = this.textures["layer0", "particle"]?.toResourceLocation()?.texture() ?: return null
 
-        return ItemModelPrototype(textures.staticTextures.createTexture(texture))
+        return ItemModelPrototype(textures.staticTextures.create(texture))
     }
 
     companion object {

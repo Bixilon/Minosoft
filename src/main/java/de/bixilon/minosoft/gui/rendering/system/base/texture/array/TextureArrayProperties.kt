@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 import de.bixilon.kotlinglm.vec2.Vec2
 
 data class TextureArrayProperties(
-    val uvEnd: Vec2,
+    val uvEnd: Vec2?,
     val size: Int,
-    val pixel: Vec2,
+    val pixel: Float,
 )

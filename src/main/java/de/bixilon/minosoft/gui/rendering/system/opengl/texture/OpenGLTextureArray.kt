@@ -14,15 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
 import de.bixilon.kutil.latch.AbstractLatch
-import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
@@ -46,92 +42,17 @@ class OpenGLTextureArray(
     async: Boolean,
     mipmaps: Int,
 ) : StaticTextureArray(context, async, mipmaps) {
-    private var textureIds = IntArray(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
+    private var handles = IntArray(RESOLUTIONS.size) { -1 }
 
-    private val texturesByResolution = Array<MutableList<Texture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
-    private val lastTextureId = IntArray(TEXTURE_RESOLUTION_ID_MAP.size)
+    private val resolution = Array<MutableList<Texture>>(RESOLUTIONS.size) { mutableListOf() }
+    private val lastTextureId = IntArray(RESOLUTIONS.size)
 
     init {
-        context.system.unsafeCast<OpenGLRenderSystem>().textureBindingIndex += TEXTURE_RESOLUTION_ID_MAP.size
+        context.system.unsafeCast<OpenGLRenderSystem>().textureBindingIndex += RESOLUTIONS.size
     }
 
 
-    private fun preLoad(latch: AbstractLatch, textures: Collection<Texture>) {
-        for (texture in textures) {
-            if (texture.state != TextureStates.DECLARED) {
-                latch.dec()
-                continue
-            }
-            DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGH) { texture.load(context); latch.dec() }
-        }
-    }
-
-    private fun preLoad(animationIndex: AtomicInteger, textures: Collection<Texture>) {
-        for (texture in textures) {
-            check(texture.size.x <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.x})" }
-            check(texture.size.y <= TEXTURE_MAX_RESOLUTION) { "Texture's height exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.y})" }
-
-
-            var arrayId = -1
-            var arrayResolution = -1
-
-            for (i in TEXTURE_RESOLUTION_ID_MAP.indices) {
-                arrayResolution = TEXTURE_RESOLUTION_ID_MAP[i]
-                if (texture.size.x <= arrayResolution && texture.size.y <= arrayResolution) {
-                    arrayId = i
-                    break
-                }
-            }
-
-
-            val uvEnd: Vec2? = if (texture.size.x == arrayResolution && texture.size.y == arrayResolution) {
-                null
-            } else {
-                Vec2(texture.size) / arrayResolution
-            }
-            val singlePixelSize = Vec2(1.0f) / arrayResolution
-            val array = TextureArrayProperties(uvEnd ?: Vec2(1.0f, 1.0f), arrayResolution, singlePixelSize)
-
-            if (texture is SpriteTexture) {
-                val animationIndex = animationIndex.getAndIncrement()
-                val animation = TextureAnimation(texture)
-                animator.animations += animation
-                texture.renderData = OpenGLTextureData(-1, -1, uvEnd, animationIndex)
-                for (split in texture.splitTextures) {
-                    split.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, animationIndex)
-                    split.array = array
-                    texturesByResolution[arrayId] += split
-                }
-                for (frame in texture.properties.animation!!.frames) {
-                    frame.texture = texture.splitTextures[frame.index]
-                }
-            } else {
-                texturesByResolution[arrayId] += texture
-                texture.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, -1)
-                texture.array = array
-            }
-        }
-    }
-
-    @Synchronized
-    override fun load(latch: AbstractLatch) {
-        if (state == TextureArrayStates.LOADED || state == TextureArrayStates.PRE_LOADED) {
-            return
-        }
-        val preLoadLatch = SimpleLatch(named.size + other.size)
-        preLoad(preLoadLatch, named.values)
-        preLoad(preLoadLatch, other)
-        preLoadLatch.await()
-
-        val animationIndex = AtomicInteger()
-        preLoad(animationIndex, named.values)
-        preLoad(animationIndex, other)
-
-        state = TextureArrayStates.PRE_LOADED
-    }
-
-
-    private fun loadSingleArray(resolution: Int, textures: List<Texture>): Int {
+    private fun upload(resolution: Int, textures: List<Texture>): Int {
         val textureId = OpenGLTextureUtil.createTextureArray(mipmaps)
 
         for (level in 0..mipmaps) {
@@ -154,22 +75,20 @@ class OpenGLTextureArray(
 
 
     override fun upload(latch: AbstractLatch?) {
-        var totalLayers = 0
-        for ((index, textures) in texturesByResolution.withIndex()) {
-            if (textures.isEmpty()) {
-                continue
-            }
-            textureIds[index] = loadSingleArray(TEXTURE_RESOLUTION_ID_MAP[index], textures)
-            totalLayers += textures.size
+        var total = 0
+        for ((index, textures) in resolution.withIndex()) {
+            if (textures.isEmpty()) continue
+            handles[index] = upload(RESOLUTIONS[index], textures)
+            total += textures.size
         }
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${named.size} textures containing ${animator.animations.size} animated ones, split into $totalLayers layers!" }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${named.size} textures containing ${animator.animations.size} animated ones, split into $total layers!" }
 
         animator.init()
-        state = TextureArrayStates.LOADED
+        state = TextureArrayStates.UPLOADED
     }
 
     override fun activate() {
-        for ((index, textureId) in textureIds.withIndex()) {
+        for ((index, textureId) in handles.withIndex()) {
             if (textureId == -1) {
                 continue
             }
@@ -182,7 +101,7 @@ class OpenGLTextureArray(
         shader.use()
         activate()
 
-        for ((index, textureId) in textureIds.withIndex()) {
+        for ((index, textureId) in handles.withIndex()) {
             if (textureId == -1) {
                 continue
             }
@@ -192,8 +111,71 @@ class OpenGLTextureArray(
         }
     }
 
-    companion object {
-        const val TEXTURE_MAX_RESOLUTION = 2048
-        val TEXTURE_RESOLUTION_ID_MAP = intArrayOf(16, 32, 64, 128, 256, 512, 1024, TEXTURE_MAX_RESOLUTION) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
+    override fun findResolution(size: Vec2i): Vec2i {
+        if (size.x >= MAX_RESOLUTION || size.y >= MAX_RESOLUTION) return Vec2i(MAX_RESOLUTION)
+        val array = findArray(size)
+        if (array < 0) return Vec2i(0, 0)
+        return Vec2i(RESOLUTIONS[array])
+    }
+
+    private fun findArray(size: Vec2i): Int {
+        for ((index, resolution) in RESOLUTIONS.withIndex()) {
+            if (size.x > resolution || size.y > resolution) continue
+            return index
+        }
+
+        return -1
+    }
+
+    private fun load(animationIndex: AtomicInteger, arrayId: Int, texture: Texture) {
+        val resolution = RESOLUTIONS[arrayId]
+        val pixel = PIXEL[arrayId]
+        val size = texture.size
+
+        val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2(size) / resolution
+        val array = TextureArrayProperties(uvEnd, resolution, pixel)
+
+        if (texture !is SpriteTexture) {
+            this.resolution[arrayId] += texture
+            texture.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, -1)
+            texture.array = array
+            return
+        }
+
+        val animationIndex = animationIndex.getAndIncrement()
+        val animation = TextureAnimation(texture)
+        animator.animations += animation
+
+        texture.renderData = OpenGLTextureData(-1, -1, uvEnd, animationIndex)
+        for (split in texture.splitTextures) {
+            split.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, animationIndex)
+            split.array = array
+            this.resolution[arrayId] += split
+        }
+        for (frame in texture.properties.animation!!.frames) {
+            frame.texture = texture.splitTextures[frame.index]
+        }
+    }
+
+    override fun load(animationIndex: AtomicInteger, textures: Collection<Texture>) {
+        for (texture in textures) {
+            if (texture.size.x > MAX_RESOLUTION || texture.size.y > MAX_RESOLUTION) {
+                Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Texture $texture exceeds max resolution ($MAX_RESOLUTION): ${texture.size}" }
+                continue
+            }
+
+            val arrayId = findArray(texture.size)
+            if (arrayId == -1) {
+                Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find texture array for $arrayId" }
+                continue
+            }
+            load(animationIndex, arrayId, texture)
+        }
+    }
+
+    private companion object {
+        const val MAX_RESOLUTION = 2048
+        val RESOLUTIONS = intArrayOf(16, 32, 64, 128, 256, 512, 1024, MAX_RESOLUTION) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
+        val PIXEL = FloatArray(RESOLUTIONS.size) { 1.0f / RESOLUTIONS[it] }
     }
 }

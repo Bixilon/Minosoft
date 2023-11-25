@@ -44,14 +44,14 @@ data class BlockModel(
 
     fun createTexture(name: String, textures: TextureManager): Texture? {
         if (!name.startsWith("#")) {
-            return textures.staticTextures.createTexture(name.toResourceLocation())
+            return textures.staticTextures.create(name.toResourceLocation())
         }
         val texture = this.textures?.get(name.substring(1))
         if (texture == null || texture !is ResourceLocation) {
             return null
         }
 
-        return textures.staticTextures.createTexture(texture)
+        return textures.staticTextures.create(texture)
     }
 
     fun getOrNullTexture(name: String, textures: TextureManager): Texture? {

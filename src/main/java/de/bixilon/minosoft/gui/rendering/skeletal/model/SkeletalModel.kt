@@ -42,7 +42,7 @@ data class SkeletalModel(
             if (name in skip) continue
             val file = name.texture()
             if (file in skip) continue
-            val texture = context.textures.staticTextures.createTexture(file)
+            val texture = context.textures.staticTextures.create(file)
             this.loadedTextures[name] = SkeletalTextureInstance(properties, texture)
         }
     }

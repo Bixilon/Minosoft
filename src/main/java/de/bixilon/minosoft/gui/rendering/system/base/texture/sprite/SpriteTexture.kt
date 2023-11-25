@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.Memo
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
+@Deprecated("Slow, because of synchronized loading of mcmeta")
 class SpriteTexture(private val original: Texture) : Texture {
     override var array: TextureArrayProperties by original::array
     override var properties: ImageProperties by original::properties

@@ -87,7 +87,7 @@ class LegacyUnicodeFontType(
                 sizes.skip(PAGE_SIZE.toLong())
                 return
             }
-            val texture = textures.createTexture(textureFile, mipmaps = false, properties = false)
+            val texture = textures.create(textureFile, mipmaps = false, properties = false)
 
             loadPage(pageId, texture, chars, sizes)
         }

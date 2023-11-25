@@ -19,14 +19,15 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class UnicodeCodeRenderer(
     override val texture: Texture,
-    override var uvStart: Vec2,
-    override var uvEnd: Vec2,
+    override val uvStart: Vec2,
+    override val uvEnd: Vec2,
     override val width: Float,
 ) : RasterizedCodePointRenderer {
 
 
     fun updateArray() {
-        uvStart = uvStart * texture.array.uvEnd
-        uvEnd = uvEnd * texture.array.uvEnd
+        val end = texture.array.uvEnd ?: return
+        uvStart *= end
+        uvEnd *= end
     }
 }

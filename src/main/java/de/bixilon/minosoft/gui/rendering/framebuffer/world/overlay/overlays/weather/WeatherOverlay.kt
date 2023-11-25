@@ -33,8 +33,8 @@ import java.util.*
 class WeatherOverlay(private val context: RenderContext) : Overlay {
     private val world = context.connection.world
     private val config = context.connection.profiles.rendering.overlay.weather
-    private val rain = context.textures.staticTextures.createTexture(RAIN)
-    private val snow = context.textures.staticTextures.createTexture(SNOW)
+    private val rain = context.textures.staticTextures.create(RAIN)
+    private val snow = context.textures.staticTextures.create(SNOW)
     private val precipitation get() = context.connection.player.physics.positionInfo.biome?.precipitation
     override val render: Boolean
         get() = world.dimension.effects.weather && world.weather.raining && when (precipitation) { // ToDo: Check if exposed to the sky
@@ -70,7 +70,7 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
             val offsetMultiplicator = random.nextFloat(0.8f, 1.2f)
             val alpha = random.nextFloat(0.8f, 1.0f)
             mesh.addZQuad(
-                Vec2(offset, 0), OVERLAY_Z, Vec2(offset + step, windowSize.y), Vec2(0.0f), texture.array.uvEnd
+                Vec2(offset, 0), OVERLAY_Z, Vec2(offset + step, windowSize.y), Vec2(0.0f), texture.array.uvEnd ?: Vec2(1.0f)
             ) { position, uv ->
                 val transformed = Vec2()
                 transformed.x = position.x / (windowSize.x / 2) - 1.0f

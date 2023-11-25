@@ -13,10 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.array
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
+import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -28,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTex
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
+import java.util.concurrent.atomic.AtomicInteger
 
 abstract class StaticTextureArray(
     val context: RenderContext,
@@ -50,10 +55,9 @@ abstract class StaticTextureArray(
         return texture
     }
 
-    operator fun plusAssign(texture: Texture) = pushTexture(texture)
+    operator fun plusAssign(texture: Texture) = push(texture)
 
-
-    fun pushTexture(texture: Texture) {
+    fun push(texture: Texture) {
         lock.lock()
         other += texture
         lock.unlock()
@@ -62,7 +66,7 @@ abstract class StaticTextureArray(
         }
     }
 
-    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, properties: Boolean = true, factory: (mipmaps: Int) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture {
+    open fun create(resourceLocation: ResourceLocation, mipmaps: Boolean = true, properties: Boolean = true, factory: (mipmaps: Int) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture {
         lock.lock()
         named[resourceLocation]?.let { lock.unlock(); return it }
 
@@ -92,6 +96,30 @@ abstract class StaticTextureArray(
         return null
     }
 
+    abstract fun findResolution(size: Vec2i): Vec2i
 
-    abstract fun load(latch: AbstractLatch)
+
+    private fun load(latch: AbstractLatch, textures: Collection<Texture>) {
+        for (texture in textures) {
+            if (texture.state != TextureStates.DECLARED) continue
+
+            latch.inc()
+            DefaultThreadPool += SimplePoolRunnable(ThreadPool.HIGH) { texture.load(context); latch.dec() }
+        }
+    }
+
+    protected abstract fun load(animationIndex: AtomicInteger, textures: Collection<Texture>)
+
+    fun load(latch: AbstractLatch) {
+        val latch = latch.child(0)
+        load(latch, named.values)
+        load(latch, other)
+        latch.await()
+
+        val animationIndex = AtomicInteger()
+        load(animationIndex, named.values)
+        load(animationIndex, other)
+
+        state = TextureArrayStates.LOADED
+    }
 }

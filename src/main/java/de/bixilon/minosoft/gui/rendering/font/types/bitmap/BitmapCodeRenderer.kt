@@ -27,7 +27,8 @@ class BitmapCodeRenderer(
 ) : AscentedCodePointRenderer {
 
     fun updateArray() {
-        uvStart *= texture.array.uvEnd
-        uvEnd *= texture.array.uvEnd
+        val end = texture.array.uvEnd ?: return
+        uvStart *= end
+        uvEnd *= end
     }
 }

@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex.UnifontTexture.Companion.isPixelSet
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureArray.Companion.TEXTURE_RESOLUTION_ID_MAP
 
 class UnifontRasterizer(
     private val array: StaticTextureArray,
@@ -54,15 +54,8 @@ class UnifontRasterizer(
     }
 
     private fun calculateRows(width: Int): Int {
-        var previous = TEXTURE_RESOLUTION_ID_MAP.last()
-        for (index in TEXTURE_RESOLUTION_ID_MAP.size - 1 downTo 0) {
-            val resolution = TEXTURE_RESOLUTION_ID_MAP[index]
-            val size = resolution * resolution / HEIGHT
-            if (width >= size) return previous / HEIGHT
-            previous = resolution
-        }
-
-        return 1
+        val size = array.findResolution(Vec2i(width, HEIGHT))
+        return size.y / HEIGHT
     }
 
     private fun createTexture(): UnifontTexture {

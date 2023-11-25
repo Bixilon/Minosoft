@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRend
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 class DummyTexture : Texture {
-    override var array = TextureArrayProperties(Vec2(), 1, Vec2())
+    override var array = TextureArrayProperties(Vec2(), 1, 1.0f)
     override var state: TextureStates = TextureStates.DECLARED
     override var size: Vec2i = Vec2i(1, 1)
     override val transparency: TextureTransparencies get() = TextureTransparencies.OPAQUE

@@ -29,13 +29,14 @@ import java.util.*
 class MoonRenderer(
     sky: SkyRenderer,
 ) : PlanetRenderer(sky) {
-    override val texture = sky.context.textures.staticTextures.createTexture(MOON_PHASES)
+    override val texture = sky.context.textures.staticTextures.create(MOON_PHASES)
     private var phase = MoonPhases.FULL_MOON
 
     private fun updateUV(phases: MoonPhases) {
         val coordinates = PHASE_UV[phases.ordinal]
-        uvStart = Vec2(1.0f / 4 * coordinates.x, 1.0f / 2 * coordinates.y) * texture.array.uvEnd
-        uvEnd = Vec2(1.0f / 4 * (coordinates.x + 1), 1.0f / 2 * (coordinates.y + 1)) * texture.array.uvEnd
+        val end = texture.array.uvEnd ?: Vec2i(1.0f)
+        uvStart = Vec2(1.0f / 4 * coordinates.x, 1.0f / 2 * coordinates.y) * end
+        uvEnd = Vec2(1.0f / 4 * (coordinates.x + 1), 1.0f / 2 * (coordinates.y + 1)) * end
         meshInvalid = true
     }
 

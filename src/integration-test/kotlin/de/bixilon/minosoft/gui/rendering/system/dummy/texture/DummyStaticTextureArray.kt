@@ -13,23 +13,34 @@
 
 package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import java.util.concurrent.atomic.AtomicInteger
 
 class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(context, false, 0) {
 
-    override fun load(latch: AbstractLatch) {
-        for (texture in this.named.values) {
-            (texture as DummyTexture).state = TextureStates.LOADED
+    override fun load(animationIndex: AtomicInteger, textures: Collection<Texture>) {
+        for (texture in textures) {
+            if (texture !is DummyTexture) continue
+            texture.state = TextureStates.LOADED
         }
     }
 
     override fun upload(latch: AbstractLatch?) {
         animator.init()
     }
+
+    override fun create(resourceLocation: ResourceLocation, mipmaps: Boolean, properties: Boolean, factory: (mipmaps: Int) -> Texture): Texture {
+        return super.create(resourceLocation, mipmaps, properties) { DummyTexture() }
+    }
+
+    override fun findResolution(size: Vec2i) = size
 
     override fun activate() = Unit
     override fun use(shader: NativeShader, name: String) = Unit

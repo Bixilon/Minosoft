@@ -85,7 +85,7 @@ class SkyboxRenderer(
     override fun init() {
         for (properties in DefaultDimensionEffects) {
             val texture = properties.fixedTexture ?: continue
-            textureCache[texture] = sky.context.textures.staticTextures.createTexture(texture)
+            textureCache[texture] = sky.context.textures.staticTextures.create(texture)
         }
     }
 
