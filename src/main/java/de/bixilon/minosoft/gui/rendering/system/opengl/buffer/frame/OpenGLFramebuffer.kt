@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,15 +26,20 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.Open
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRenderbuffer
 import org.lwjgl.opengl.GL30.*
 
-class OpenGLFramebuffer(val renderSystem: OpenGLRenderSystem, var size: Vec2i) : Framebuffer {
+class OpenGLFramebuffer(
+    val renderSystem: OpenGLRenderSystem,
+    var size: Vec2i,
+    val color: Boolean,
+    val depth: Boolean,
+) : Framebuffer {
     override var state: FramebufferState = FramebufferState.PREPARING
         private set
 
     private var id = -1
 
-    private lateinit var colorTexture: OpenGLFramebufferColorTexture
-    private lateinit var depthTexture: OpenGLFramebufferDepthTexture
-    private lateinit var renderbuffer: OpenGLRenderbuffer
+    private var colorTexture: OpenGLFramebufferColorTexture? = null
+    private var depthTexture: OpenGLFramebufferDepthTexture? = null
+    private var depthBuffer: OpenGLRenderbuffer? = null
 
     override fun init() {
         check(state != FramebufferState.COMPLETE) { "Framebuffer is complete!" }
@@ -43,13 +48,19 @@ class OpenGLFramebuffer(val renderSystem: OpenGLRenderSystem, var size: Vec2i) :
 
         glViewport(0, 0, size.x, size.y)
 
-        colorTexture = OpenGLFramebufferColorTexture(size)
-        colorTexture.init()
-        attach(colorTexture)
+        if (color) {
+            val colorTexture = OpenGLFramebufferColorTexture(size)
+            this.colorTexture = colorTexture
+            colorTexture.init()
+            attach(colorTexture)
+        }
 
-        renderbuffer = OpenGLRenderbuffer(renderSystem, RenderbufferModes.DEPTH_COMPONENT24, size)
-        renderbuffer.init()
-        attach(renderbuffer)
+        if (depth) {
+            val depth = OpenGLRenderbuffer(renderSystem, RenderbufferModes.DEPTH_COMPONENT24, size)
+            this.depthBuffer = depth
+            depth.init()
+            attach(depth)
+        }
 
         //depthTexture = OpenGLFramebufferDepthTexture(size)
         //depthTexture.init()
@@ -91,22 +102,16 @@ class OpenGLFramebuffer(val renderSystem: OpenGLRenderSystem, var size: Vec2i) :
 
     override fun bindTexture() {
         check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
-        colorTexture.bind(0)
-        if (this::depthTexture.isInitialized) {
-            depthTexture.bind(1)
-        }
+        colorTexture?.bind(0)
+        depthTexture?.bind(1)
     }
 
     override fun resize(size: Vec2i) {
         if (size == this.size) {
             return
         }
-        if (this::colorTexture.isInitialized) {
-            colorTexture.unload()
-        }
-        if (this::renderbuffer.isInitialized) {
-            renderbuffer.unload()
-        }
+        colorTexture?.unload()
+        depthBuffer?.unload()
         this.size = size
         delete()
         init()

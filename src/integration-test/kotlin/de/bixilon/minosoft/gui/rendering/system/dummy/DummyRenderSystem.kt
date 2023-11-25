@@ -103,7 +103,7 @@ class DummyRenderSystem(
         return DummyFloatUniformBuffer(data)
     }
 
-    override fun createFramebuffer(): Framebuffer {
+    override fun createFramebuffer(color: Boolean, depth: Boolean): Framebuffer {
         return DummyFramebuffer()
     }
 

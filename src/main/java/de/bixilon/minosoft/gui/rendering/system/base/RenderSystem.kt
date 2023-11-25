@@ -143,7 +143,7 @@ interface RenderSystem {
 
     fun createIntUniformBuffer(data: IntArray = IntArray(0)): IntUniformBuffer
     fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer
-    fun createFramebuffer(): Framebuffer
+    fun createFramebuffer(color: Boolean, depth: Boolean): Framebuffer
 
     fun createTextureManager(): TextureManager
 

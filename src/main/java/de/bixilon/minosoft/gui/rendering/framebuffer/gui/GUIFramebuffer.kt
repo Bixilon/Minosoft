@@ -25,7 +25,7 @@ class GUIFramebuffer(
     override val context: RenderContext,
 ) : IntegratedFramebuffer {
     override val shader = context.system.createShader("minosoft:framebuffer/gui".toResourceLocation()) { FramebufferShader(it) }
-    override val framebuffer: Framebuffer = context.system.createFramebuffer()
+    override val framebuffer: Framebuffer = context.system.createFramebuffer(color = true, depth = false)
     override val mesh = FramebufferMesh(context)
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT
 }

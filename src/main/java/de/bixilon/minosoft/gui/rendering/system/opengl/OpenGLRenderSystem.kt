@@ -268,8 +268,8 @@ class OpenGLRenderSystem(
         return IntOpenGLUniformBuffer(this, uniformBufferBindingIndex++, data)
     }
 
-    override fun createFramebuffer(): OpenGLFramebuffer {
-        return OpenGLFramebuffer(this, context.window.size)
+    override fun createFramebuffer(color: Boolean, depth: Boolean): OpenGLFramebuffer {
+        return OpenGLFramebuffer(this, context.window.size, color, depth)
     }
 
     override fun createTextureManager(): OpenGLTextureManager {
