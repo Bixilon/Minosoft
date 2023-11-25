@@ -13,15 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.data
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
-import java.nio.ByteBuffer
 
 open class MipmapTextureData(
-    size: Vec2i,
-    buffer: ByteBuffer,
-) : TextureData(size, buffer) {
-    val mipmaps: Array<ByteBuffer> = OpenGLTextureUtil.generateMipMaps(buffer, size)
+    buffer: TextureBuffer,
+) : TextureData(buffer) {
+    val mipmaps: Array<TextureBuffer> = OpenGLTextureUtil.generateMipMaps(buffer)
 
-    override fun collect(): Array<ByteBuffer> = mipmaps
+    override fun collect(): Array<TextureBuffer> = mipmaps
 }

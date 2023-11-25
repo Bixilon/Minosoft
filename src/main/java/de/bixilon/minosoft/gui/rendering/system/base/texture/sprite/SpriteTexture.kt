@@ -22,10 +22,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.TextureGenerator
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
-import de.matthiasmann.twl.utils.PNGDecoder
-import java.nio.ByteBuffer
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class SpriteTexture(private val original: Texture) : Texture {
     override var array: TextureArrayProperties by original::array
@@ -56,29 +54,15 @@ class SpriteTexture(private val original: Texture) : Texture {
         size = Vec2i(animationProperties.width, animationProperties.height)
 
 
-        val bytesPerTexture = size.x * size.y * PNGDecoder.Format.RGBA.numComponents
-
         for (i in 0 until animationProperties.frameCount) {
-            val buffer = TextureGenerator.allocate(size)
-            buffer.copyFrom(original, bytesPerTexture * i, 0, bytesPerTexture)
-            buffer.flip()
+            val buffer = original.create(size)
+            buffer.put(original, Vec2i(0, size.y), Vec2i.EMPTY, size)
 
             val splitTexture = MemoryTexture(size, mipmaps = true, buffer = buffer)
 
             splitTextures += splitTexture
         }
+
         state = TextureStates.LOADED
-    }
-
-    companion object {
-        private fun ByteBuffer.copyFrom(origin: ByteBuffer, sourceOffset: Int, destinationOffset: Int, length: Int) {
-            origin.rewind()
-            origin.position(sourceOffset)
-            val bytes = ByteArray(length)
-
-            origin.get(bytes, 0, length)
-
-            this.put(bytes, destinationOffset, length)
-        }
     }
 }

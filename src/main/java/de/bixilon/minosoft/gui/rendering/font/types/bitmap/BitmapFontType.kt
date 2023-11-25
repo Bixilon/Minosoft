@@ -28,12 +28,13 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.isBlack
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import java.nio.ByteBuffer
 import java.util.stream.IntStream
 
 class BitmapFontType(
@@ -83,14 +84,10 @@ class BitmapFontType(
             return load(texture, texture.size.y / chars.size, ascent, chars.codePoints())
         }
 
-        private fun ByteBuffer.scanLine(y: Int, width: Int, start: IntArray, end: IntArray) {
+        private fun TextureBuffer.scanLine(y: Int, width: Int, start: IntArray, end: IntArray) {
             for (index in 0 until (width * ROW)) {
-                val pixelIndex = ((ROW * width * y) + index)
-                val alpha = this[pixelIndex * 4 + 3].toInt() // index * rgba + a
-                if (alpha == 0) {
-                    // transparent
-                    continue
-                }
+                val rgba = this[index, y]
+                if (rgba.isBlack()) continue
 
                 val char = index / width
                 val pixel = index % width
@@ -153,8 +150,6 @@ class BitmapFontType(
                 start.fill(width); end.fill(0) // fill with maximum values again
                 offset.x = 0.0f; offset.y += height * pixel.y
             }
-
-            texture.data.buffer.rewind()
 
             if (renderer.isEmpty()) return null
             renderer.trim()

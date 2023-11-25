@@ -17,11 +17,11 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
 import org.testng.Assert.*
 import org.testng.annotations.Test
-import java.nio.ByteBuffer
 import java.util.stream.IntStream
 import kotlin.reflect.full.companionObject
 
@@ -34,7 +34,7 @@ class BitmapFontTypeTest {
         check(start.size == end.size)
         val size = Vec2i(width * 16, rows * height)
 
-        val buffer = ByteBuffer.allocate(size.x * size.y * 4)
+        val buffer = RGBA8Buffer(size)
 
         for (row in 0 until rows) {
             for (height in 0 until height) {
@@ -43,24 +43,24 @@ class BitmapFontTypeTest {
                     val end = end.getOrNull((row * 16) + char) ?: width
 
                     for (pixel in 0 until width) {
-                        buffer.put(0xFF.toByte())
-                        buffer.put(0xFF.toByte())
-                        buffer.put(0xFF.toByte())
+                        buffer.data.put(0xFF.toByte())
+                        buffer.data.put(0xFF.toByte())
+                        buffer.data.put(0xFF.toByte())
 
                         if (pixel in start..end) {
-                            buffer.put(0xFF.toByte())
+                            buffer.data.put(0xFF.toByte())
                         } else {
-                            buffer.put(0x00.toByte())
+                            buffer.data.put(0x00.toByte())
                         }
                     }
                 }
             }
         }
-        assertEquals(buffer.position(), buffer.limit())
+        assertEquals(buffer.data.position(), buffer.data.limit())
 
         val texture = DummyTexture()
         texture.size = size
-        texture.data = TextureData(size, buffer)
+        texture.data = TextureData(buffer)
 
         return texture
     }

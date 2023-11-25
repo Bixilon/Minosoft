@@ -25,17 +25,19 @@ class CloudMatrix {
 
 
     fun load(assetsManager: AssetsManager) {
-        val data = assetsManager.getOrNull(CLOUD_MATRIX)?.readTexture() ?: return
+        val buffer = assetsManager.getOrNull(CLOUD_MATRIX)?.readTexture() ?: return
 
-        if (data.size.x != CLOUD_MATRIX_SIZE || data.size.y != CLOUD_MATRIX_SIZE) {
-            throw IllegalStateException("Cloud matrix has invalid size: ${data.size}")
+        if (buffer.size.x != CLOUD_MATRIX_SIZE || buffer.size.y != CLOUD_MATRIX_SIZE) {
+            throw IllegalStateException("Cloud matrix has invalid size: ${buffer.size}")
         }
 
         for (i in 0 until CLOUD_MATRIX_SIZE * CLOUD_MATRIX_SIZE) {
             if (DebugOptions.CLOUD_RASTER) {
                 matrix[i] = if ((i / CLOUD_MATRIX_SIZE) % 2 == 0) (i + 1) % 2 == 0 else (i % 2) == 0
             } else {
-                matrix[i] = data.buffer.getInt(i * 4) ushr 24 == 0xFF
+                val y = i / CLOUD_MATRIX_SIZE
+                val x = i % CLOUD_MATRIX_SIZE
+                matrix[i] = buffer.getRGBA(x, y) ushr 24 == 0xFF
             }
         }
 

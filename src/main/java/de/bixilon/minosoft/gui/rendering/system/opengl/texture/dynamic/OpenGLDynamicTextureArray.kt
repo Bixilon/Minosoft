@@ -21,6 +21,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.opengl.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL12.glTexSubImage3D
@@ -49,12 +54,17 @@ class OpenGLDynamicTextureArray(
 
     private fun unsafeUpload(index: Int, texture: DynamicTexture) {
         val data = texture.data ?: throw IllegalArgumentException("No texture data?")
+        if (data.size.x > resolution || data.size.y > resolution) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Dynamic texture is too big: $texture" }
+        }
         for ((level, buffer) in data.collect().withIndex()) {
             if (data.size.x != resolution || data.size.y != resolution) {
                 // clear first
                 glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, empty)
             }
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, data.size.x shr level, data.size.y shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
+            buffer.data.rewind()
+            buffer.data.flip()
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
         }
     }
 

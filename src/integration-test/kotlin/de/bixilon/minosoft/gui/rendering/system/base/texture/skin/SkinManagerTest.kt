@@ -37,11 +37,11 @@ class SkinManagerTest {
         assertEquals(old.size, Vec2i(64, 64)) // fixed size
         assertEquals(expected.size, Vec2i(64, 64))
 
-        old.buffer.rewind()
-        expected.buffer.rewind()
+        old.buffer.data.rewind()
+        expected.data.rewind()
 
         // TextureUtil.dump(File("/home/moritz/test.png"), old.size, old.buffer, true, false)
-        assertEquals(old.buffer, expected.buffer)
+        assertEquals(old.buffer.data, expected.data)
     }
 
 }

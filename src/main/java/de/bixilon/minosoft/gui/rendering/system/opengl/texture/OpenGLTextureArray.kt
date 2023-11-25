@@ -34,6 +34,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimat
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -182,20 +184,19 @@ class OpenGLTextureArray(
     }
 
 
-    @Synchronized
     private fun loadSingleArray(resolution: Int, textures: List<Texture>): Int {
         val textureId = OpenGLTextureUtil.createTextureArray()
 
         for (level in 0 until OpenGLTextureUtil.MAX_MIPMAP_LEVELS) {
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA8, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
         }
 
         for (texture in textures) {
             val renderData = texture.renderData as OpenGLTextureData
-            for ((level, data) in texture.data.collect().withIndex()) {
-                val size = texture.size shr level
-
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, size.x, size.y, 1, GL_RGBA, GL_UNSIGNED_BYTE, data)
+            for ((level, buffer) in texture.data.collect().withIndex()) {
+                buffer.data.rewind()
+                buffer.data.flip()
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
             }
 
             texture.data = TextureData.NULL
@@ -205,7 +206,6 @@ class OpenGLTextureArray(
     }
 
 
-    @Synchronized
     override fun upload(latch: AbstractLatch?) {
         var totalLayers = 0
         for ((index, textures) in texturesByResolution.withIndex()) {

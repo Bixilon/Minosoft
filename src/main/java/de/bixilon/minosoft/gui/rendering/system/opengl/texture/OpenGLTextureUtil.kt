@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import example.jonathan2520.SRGBAverager
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
@@ -38,19 +41,19 @@ object OpenGLTextureUtil {
         return textureId
     }
 
-    fun generateMipMaps(data: ByteBuffer, size: Vec2i): Array<ByteBuffer> {
-        val images: MutableList<ByteBuffer> = mutableListOf()
+    fun generateMipMaps(buffer: TextureBuffer): Array<TextureBuffer> {
+        val images: MutableList<TextureBuffer> = mutableListOf()
 
-        images += data
+        images += buffer
 
-        var currentData = data
+        var data = buffer
         for (i in 1 until MAX_MIPMAP_LEVELS) {
-            val mipMapSize = Vec2i(size.x shr i, size.y shr i)
-            if (mipMapSize.x <= 0 || mipMapSize.y <= 0) {
+            val size = Vec2i(buffer.size.x shr i, buffer.size.y shr i)
+            if (size.x <= 0 || size.y <= 0) {
                 break
             }
-            currentData = generateMipmap(currentData, Vec2i(size.x shr (i - 1), size.y shr (i - 1)))
-            images += currentData
+            data = data.mipmap()
+            images += data
         }
 
         return images.toTypedArray()
@@ -93,4 +96,19 @@ object OpenGLTextureUtil {
         buffer.position(0)
         return buffer
     }
+
+    val TextureBuffer.glFormat: Int
+        get() = when (this) {
+            is RGBA8Buffer -> GL_RGBA
+            is RGB8Buffer -> GL_RGB
+            // is RGBA2Buffer -> GL_RGBA
+            else -> throw IllegalArgumentException("Can not get glFormat of $this")
+        }
+    val TextureBuffer.glType: Int
+        get() = when (this) {
+            is RGBA8Buffer -> GL_UNSIGNED_BYTE
+            is RGB8Buffer -> GL_UNSIGNED_BYTE
+            //  is RGBA2Buffer -> GL_UNSIGNED_BYTE
+            else -> throw IllegalArgumentException("Can not get glFormat of $this")
+        }
 }

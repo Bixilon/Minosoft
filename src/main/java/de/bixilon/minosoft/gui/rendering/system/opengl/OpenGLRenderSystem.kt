@@ -27,6 +27,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader.Companion.shader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGLFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
@@ -39,12 +41,10 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT
 import org.lwjgl.opengl.GL43.glDebugMessageCallback
-import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
 class OpenGLRenderSystem(
@@ -245,9 +245,10 @@ class OpenGLRenderSystem(
     override lateinit var gpuType: String
         private set
 
-    override fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer {
-        val buffer: ByteBuffer = BufferUtils.createByteBuffer((end.x - start.x) * (end.y - start.y) * type.bytes)
-        glReadPixels(start.x, start.y, end.x, end.y, type.gl, GL_UNSIGNED_BYTE, buffer)
+    override fun readPixels(start: Vec2i, end: Vec2i): TextureBuffer {
+        val size = Vec2i(end.x - start.x, end.y - start.y)
+        val buffer = RGB8Buffer(size)
+        glReadPixels(start.x, start.y, end.x, end.y, GL_RGB8, GL_UNSIGNED_BYTE, buffer.data)
         return buffer
     }
 
@@ -373,19 +374,6 @@ class OpenGLRenderSystem(
                     DepthFunctions.GREATER_OR_EQUAL -> GL_GEQUAL
                     DepthFunctions.ALWAYS -> GL_ALWAYS
                     else -> throw IllegalArgumentException("OpenGL does not support depth function: $this")
-                }
-            }
-
-        private val PixelTypes.gl: Int
-            get() {
-                return when (this) {
-                    PixelTypes.RED -> GL_RED
-                    PixelTypes.GREEN -> GL_GREEN
-                    PixelTypes.BLUE -> GL_BLUE
-                    PixelTypes.ALPHA -> GL_ALPHA
-                    PixelTypes.RGB -> GL_RGB
-                    PixelTypes.RGBA -> GL_RGBA
-                    else -> throw IllegalArgumentException("OpenGL does not support pixel type: $this")
                 }
             }
 

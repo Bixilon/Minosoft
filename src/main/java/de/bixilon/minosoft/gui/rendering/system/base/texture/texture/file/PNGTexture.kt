@@ -56,7 +56,7 @@ class PNGTexture(
             return
         }
 
-        var data = try {
+        val buffer = try {
             assetsManager[resourceLocation].readTexture()
         } catch (error: Throwable) {
             state = TextureStates.ERRORED
@@ -66,18 +66,19 @@ class PNGTexture(
             }
             assetsManager[RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION].readTexture()
         }
-        data.buffer.rewind()
-        if (mipmaps) data = MipmapTextureData(data.size, data.buffer)
+        val data = if (mipmaps) MipmapTextureData(buffer) else TextureData(buffer)
 
         this.size = data.size
         transparency = TextureTransparencies.OPAQUE
-        for (i in 0 until data.buffer.limit() / 4) {
-            val alpha = data.buffer[i * 4 + 3].toInt() and 0xFF
-            if (alpha == 0x00) {
-                transparency = TextureTransparencies.TRANSPARENT
-            } else if (alpha < 0xFF) {
-                transparency = TextureTransparencies.TRANSLUCENT
-                break
+        for (y in 0 until data.size.y) {
+            for (x in 0 until data.size.x) {
+                val alpha = data.buffer.getA(x, y)
+                if (alpha == 0x00) {
+                    transparency = TextureTransparencies.TRANSPARENT
+                } else if (alpha < 0xFF) {
+                    transparency = TextureTransparencies.TRANSLUCENT
+                    break
+                }
             }
         }
 

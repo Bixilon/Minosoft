@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.gui.atlas.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.TextureGenerator
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -34,25 +34,24 @@ class AtlasTextureManagerTest {
         create()
     }
 
-    private fun createTexture(size: Vec2i): TextureData {
-        val data = TextureData(size, TextureGenerator.allocate(size))
-        for (index in 0 until data.buffer.limit()) {
-            data.buffer.put(0xFF.toByte())
+    private fun createTexture(size: Vec2i): TextureBuffer {
+        val buffer = RGBA8Buffer(size)
+        for (index in 0 until buffer.data.limit()) {
+            buffer.data.put(0xFF.toByte())
         }
 
         for (y in 0 until size.y) {
             for (x in 0 until size.x) {
                 val offset = ((size.x * y) + x) * 4
-                data.buffer.put(offset, (x + 1).toByte())
+                buffer.data.put(offset, (x + 1).toByte())
             }
         }
 
-        return data
+        return buffer
     }
 
     private fun AtlasTexture.getR(x: Int, y: Int): Int {
-        val offset = ((y * size.x) + x) * 4
-        return data.buffer[offset].toInt() and 0xFF
+        return data.buffer.getR(x, y)
     }
 
     fun `copy simple texture to atlas texture`() {

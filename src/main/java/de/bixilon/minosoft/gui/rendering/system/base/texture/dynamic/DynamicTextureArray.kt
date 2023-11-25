@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
@@ -68,10 +68,10 @@ abstract class DynamicTextureArray(
         return null
     }
 
-    private fun DynamicTexture.load(index: Int, creator: () -> TextureData) {
-        val data = creator.invoke()
+    private fun DynamicTexture.load(index: Int, creator: () -> TextureBuffer) {
+        val buffer = creator.invoke()
 
-        this.data = MipmapTextureData(data.size, data.buffer)
+        this.data = MipmapTextureData(buffer)
         if (Thread.currentThread() == context.thread) {
             upload(index, this)
         } else {
@@ -83,7 +83,7 @@ abstract class DynamicTextureArray(
         return push(identifier, async) { ByteArrayInputStream(creator()).readTexture() }
     }
 
-    fun push(identifier: Any, async: Boolean = true, creator: () -> TextureData): DynamicTexture {
+    fun push(identifier: Any, async: Boolean = true, creator: () -> TextureBuffer): DynamicTexture {
         lock.lock()
         cleanup()
         unsafeGet(identifier)?.let { lock.unlock(); return it }

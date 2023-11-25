@@ -21,9 +21,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
-import java.nio.ByteBuffer
 
 interface Texture : ShaderTexture {
     var array: TextureArrayProperties
@@ -52,7 +52,7 @@ interface Texture : ShaderTexture {
         return renderData.transformUV(end)
     }
 
-    fun createData(mipmaps: Boolean = this.mipmaps, size: Vec2i, buffer: ByteBuffer): TextureData {
-        return if (mipmaps) MipmapTextureData(size, buffer) else TextureData(size, buffer)
+    fun createData(mipmaps: Boolean = this.mipmaps, buffer: TextureBuffer): TextureData {
+        return if (mipmaps) MipmapTextureData(buffer) else TextureData(buffer)
     }
 }

@@ -20,9 +20,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.TextureGenerator
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 class DummyTexture : Texture {
@@ -36,6 +36,6 @@ class DummyTexture : Texture {
     override var mipmaps: Boolean = false
 
     override fun load(context: RenderContext) {
-        data = TextureData(size, TextureGenerator.allocate(size))
+        data = TextureData(RGBA8Buffer(size))
     }
 }

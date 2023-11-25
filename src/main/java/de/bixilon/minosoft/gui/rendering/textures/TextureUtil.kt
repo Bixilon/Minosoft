@@ -14,22 +14,21 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBufferFactory
 import de.matthiasmann.twl.utils.PNGDecoder
-import org.lwjgl.BufferUtils
-import org.lwjgl.system.MemoryUtil
 import java.awt.image.BufferedImage
-import java.io.ByteArrayOutputStream
-import java.io.DataOutputStream
 import java.io.File
 import java.io.InputStream
-import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
 object TextureUtil {
@@ -49,19 +48,30 @@ object TextureUtil {
         }!!
     }
 
-    private fun InputStream.readTexture1(): TextureData {
+    private fun InputStream.readTexture1(factory: TextureBufferFactory<*>?): TextureBuffer {
         val decoder = PNGDecoder(this)
-        val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
-        decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
+        val size = Vec2i(decoder.width, decoder.height)
+        val buffer = factory?.create(size) ?: when {
+            decoder.hasAlphaChannel() -> RGBA8Buffer(size)
+            else -> RGB8Buffer(size)
+        }
+        val format = when {
+            buffer.bits == 8 && buffer.components == 4 && buffer.alpha -> PNGDecoder.Format.RGBA
+            buffer.bits == 8 && buffer.components == 3 -> PNGDecoder.Format.RGB
+            else -> Broken("PNGDecoder can not read to $buffer")
+        }
+        decoder.decode(buffer.data, decoder.width * buffer.bytes, format)
 
-        return TextureData(Vec2i(decoder.width, decoder.height), data)
+        return buffer
     }
 
-    private fun InputStream.readTexture2(): TextureData {
+    private fun InputStream.readTexture2(factory: TextureBufferFactory<*>?): TextureBuffer {
         val image: BufferedImage = ImageIO.read(this)
-
-        val byteOutput = ByteArrayOutputStream()
-        val dataOutput = DataOutputStream(byteOutput)
+        val size = Vec2i(image.width, image.height)
+        val buffer = factory?.create(size) ?: when {
+            image.raster.numBands == 3 -> RGB8Buffer(size)
+            else -> RGBA8Buffer(size)
+        }
 
         val samples = when (image.raster.numBands) {
             4 -> COMPONENTS_4
@@ -71,50 +81,41 @@ object TextureUtil {
 
         for (y in 0 until image.height) {
             for (x in 0 until image.width) {
-                dataOutput.writeByte(image.raster.getSample(x, y, samples[0]))
-                dataOutput.writeByte(image.raster.getSample(x, y, samples[1]))
-                dataOutput.writeByte(image.raster.getSample(x, y, samples[2]))
+                var rgba = (image.raster.getSample(x, y, samples[0]) shl 24) or (image.raster.getSample(x, y, samples[1]) shl 16) or (image.raster.getSample(x, y, samples[2]) shl 8)
+
                 if (samples.size > 3) {
-                    dataOutput.writeByte(image.raster.getSample(x, y, samples[3]))
+                    rgba = rgba or (image.raster.getSample(x, y, samples[3]))
                 } else {
-                    val alpha = image.alphaRaster?.getSample(x, y, 0) ?: 0xFF
-                    dataOutput.writeByte(alpha)
+                    rgba = rgba or (image.alphaRaster?.getSample(x, y, 0) ?: 0xFF)
                 }
+                buffer.setRGBA(x, y, rgba)
             }
         }
 
-        val buffer = MemoryUtil.memAlloc(byteOutput.size())
-        buffer.put(byteOutput.toByteArray())
-
-        return TextureData(Vec2i(image.width, image.height), buffer)
+        return buffer
     }
 
-    fun InputStream.readTexture(): TextureData {
+    fun InputStream.readTexture(factory: TextureBufferFactory<*>? = null): TextureBuffer {
         return try {
-            readTexture1()
+            readTexture1(factory)
         } catch (exception: Throwable) {
             this.reset()
-            readTexture2()
+            readTexture2(factory)
         }
     }
 
-    fun dump(file: File, size: Vec2i, buffer: ByteBuffer, alpha: Boolean, flipY: Boolean) {
-        val bufferedImage = BufferedImage(size.x, size.y, if (alpha) BufferedImage.TYPE_INT_ARGB else BufferedImage.TYPE_INT_RGB)
-        val components = if (alpha) 4 else 3
+    fun dump(file: File, buffer: TextureBuffer, alpha: Boolean, flipY: Boolean) {
+        val bufferedImage = BufferedImage(buffer.size.x, buffer.size.y, if (alpha && buffer.alpha) BufferedImage.TYPE_INT_ARGB else BufferedImage.TYPE_INT_RGB)
 
-        for (x in 0 until size.x) {
-            for (y in 0 until size.y) {
-                val index: Int = (x + size.x * y) * components
-                val red: Int = buffer[index].toInt() and 0xFF
-                val green: Int = buffer[index + 1].toInt() and 0xFF
-                val blue: Int = buffer[index + 2].toInt() and 0xFF
+        for (x in 0 until buffer.size.x) {
+            for (y in 0 until buffer.size.y) {
+                val rgba = buffer.getRGBA(x, y)
 
-                val targetY = if (flipY) size.y - (y + 1) else y
+                val targetY = if (flipY) buffer.size.y - (y + 1) else y
 
-                bufferedImage.setRGB(x, targetY, 0xFF shl 24 or (red shl 16) or (green shl 8) or blue)
+                bufferedImage.setRGB(x, targetY, 0xFF shl 24 or (rgba shr 8))
                 if (alpha) {
-                    val alpha = buffer[index + 3].toInt() and 0xFF
-                    bufferedImage.alphaRaster.setSample(x, targetY, 0, alpha)
+                    bufferedImage.alphaRaster.setSample(x, targetY, 0, rgba ushr 24)
                 }
             }
         }
@@ -124,17 +125,9 @@ object TextureUtil {
         ImageIO.write(bufferedImage, "png", file)
     }
 
-    fun copy(sourceOffset: Vec2i, source: TextureData, targetOffset: Vec2i, target: TextureData, size: Vec2i) {
-        for (y in 0 until size.y) {
-            for (x in 0 until size.x) {
-                val sofs = ((sourceOffset.y + y) * source.size.x + (sourceOffset.x + x)) * 4
-                val dofs = ((targetOffset.y + y) * target.size.x + (targetOffset.x + x)) * 4
-
-                target.buffer.put(dofs + 0, source.buffer.get(sofs + 0))
-                target.buffer.put(dofs + 1, source.buffer.get(sofs + 1))
-                target.buffer.put(dofs + 2, source.buffer.get(sofs + 2))
-                target.buffer.put(dofs + 3, source.buffer.get(sofs + 3))
-            }
-        }
+    fun Int.isBlack(): Boolean {
+        if (this and 0xFF == 0x00) return true // alpha
+        if (this shr 8 == 0x00) return true // rgb is black
+        return false
     }
 }

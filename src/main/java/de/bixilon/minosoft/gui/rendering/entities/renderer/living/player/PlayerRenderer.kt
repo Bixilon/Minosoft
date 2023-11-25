@@ -33,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureListener
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.isBlack
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.translateYAssign
 
 open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: E) : LivingEntityRenderer<E>(renderer, entity), DynamicTextureListener {
@@ -113,7 +114,7 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
     }
 
     private fun PlayerSkin.isReallyWide(): Boolean {
-        val data = this.texture.data ?: return true
+        val data = this.texture.data?.buffer ?: return true
 
         // check if normal pixel is not black
         if (data[40, 16].isBlack()) return true // left arm slim
@@ -125,12 +126,6 @@ open class PlayerRenderer<E : PlayerEntity>(renderer: EntitiesRenderer, entity: 
         if (!data[44, 52].isBlack()) return true // right arm wide
         if (!data[45, 63].isBlack()) return true // right arm wide
 
-        return false
-    }
-
-    private fun Int.isBlack(): Boolean {
-        if (this and 0xFF == 0x00) return true // alpha
-        if (this shr 8 == 0x00) return true // rgb is black
         return false
     }
 

@@ -22,10 +22,11 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.vanilla.DefaultSkinProvider
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import java.io.ByteArrayInputStream
 import java.util.*
 
@@ -73,16 +74,15 @@ class SkinManager(private val textureManager: TextureManager) {
         return getSkin(uuid, properties ?: if (fetch) catchAll { PlayerProperties.fetch(uuid) } else null, async)
     }
 
-    private fun ByteArray.readSkin(): TextureData {
+    private fun ByteArray.readSkin(): TextureBuffer {
         val data = ByteArrayInputStream(this).readTexture()
         if (data.size.y != 32) return data
 
-        val next = TextureData(Vec2i(64))
-        data.buffer.rewind()
-        next.buffer.put(data.buffer)
+        val next = RGBA8Buffer(Vec2i(64))
+        next.put(data, Vec2i.EMPTY_INSTANCE, Vec2i.EMPTY_INSTANCE, data.size)
 
-        TextureUtil.copy(Vec2i(0, 16), next, Vec2i(16, 48), next, Vec2i(16, 16)) // leg [0, 16][16,16] to left leg [16, 48]
-        TextureUtil.copy(Vec2i(40, 16), next, Vec2i(32, 48), next, Vec2i(16, 16)) // arm [40, 16] to left arm [32, 48]
+        next.put(next, Vec2i(0, 16), Vec2i(16, 48), Vec2i(16, 16))// leg [0, 16][16,16] to left leg [16, 48]
+        next.put(next, Vec2i(40, 16), Vec2i(32, 48), Vec2i(16, 16)) // arm [40, 16] to left arm [32, 48]
 
         // TODO: flip every texture part
 

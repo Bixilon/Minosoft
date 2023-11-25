@@ -17,15 +17,15 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class AtlasTextureManager(private val context: RenderContext) {
-    private val cache: MutableMap<ResourceLocation, TextureData> = HashMap()
+    private val cache: MutableMap<ResourceLocation, TextureBuffer> = HashMap()
     private val textures: MutableList<AtlasTexture> = mutableListOf()
 
-    private fun getTexture(texture: ResourceLocation, assets: AssetsManager): TextureData {
+    private fun getTexture(texture: ResourceLocation, assets: AssetsManager): TextureBuffer {
         this.cache[texture]?.let { return it }
 
         val data = assets[texture].readTexture()
@@ -35,8 +35,8 @@ class AtlasTextureManager(private val context: RenderContext) {
     }
 
     fun add(texture: ResourceLocation, assets: AssetsManager, start: Vec2i, end: Vec2i, resolution: Vec2i): CodeTexturePart {
-        val textureData = getTexture(texture, assets)
-        val scale = textureData.size / resolution
+        val buffer = getTexture(texture, assets)
+        val scale = buffer.size / resolution
 
         val realStart = start * scale
         val realEnd = end * scale
@@ -44,7 +44,7 @@ class AtlasTextureManager(private val context: RenderContext) {
 
         val target = request(size)
 
-        return target.put(textureData, realStart, size)
+        return target.put(buffer, realStart, size)
     }
 
     private fun request(size: Vec2i): Target {
@@ -78,7 +78,7 @@ class AtlasTextureManager(private val context: RenderContext) {
         val offset: Vec2i,
     ) {
 
-        fun put(source: TextureData, start: Vec2i, size: Vec2i): CodeTexturePart {
+        fun put(source: TextureBuffer, start: Vec2i, size: Vec2i): CodeTexturePart {
             return texture.put(offset, source, start, size)
         }
     }

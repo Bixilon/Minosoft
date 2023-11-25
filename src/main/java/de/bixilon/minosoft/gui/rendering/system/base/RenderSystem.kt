@@ -26,10 +26,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
-import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
 interface RenderSystem {
@@ -116,7 +116,7 @@ interface RenderSystem {
     var quadOrder: RenderOrder
     @Deprecated("legacy") var legacyQuadOrder: RenderOrder
 
-    fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
+    fun readPixels(start: Vec2i, end: Vec2i): TextureBuffer
 
 
     fun createNativeShader(resourceLocation: ResourceLocation): NativeShader {

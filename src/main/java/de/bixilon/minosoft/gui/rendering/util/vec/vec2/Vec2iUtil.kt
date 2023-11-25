@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,12 +21,15 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 
 object Vec2iUtil {
+    private val empty = Vec2i.EMPTY
 
     val Vec2i.Companion.MIN: Vec2i
         get() = Vec2i(Int.MIN_VALUE, Int.MIN_VALUE)
 
     val Vec2i.Companion.EMPTY: Vec2i
         get() = Vec2i(0, 0)
+    val Vec2i.Companion.EMPTY_INSTANCE: Vec2i
+        get() = empty
 
     val Vec2i.Companion.MAX: Vec2i
         get() = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE)

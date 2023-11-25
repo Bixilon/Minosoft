@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.DummyVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.dummy.buffer.uniform.DummyFloatUniformBuffer
@@ -35,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.system.dummy.shader.DummyNativeShader
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
 class DummyRenderSystem(
@@ -83,7 +83,7 @@ class DummyRenderSystem(
     override var quadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.QUAD else MeshOrder.TRIANGLE
     override var legacyQuadOrder: RenderOrder = if (quadType == PrimitiveTypes.QUAD) MeshOrder.LEGACY_QUAD else MeshOrder.LEGACY_TRIANGLE
 
-    override fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer {
+    override fun readPixels(start: Vec2i, end: Vec2i): TextureBuffer {
         TODO("Not yet implemented")
     }
 

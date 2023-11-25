@@ -20,9 +20,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 class AtlasTexture(
@@ -34,7 +35,7 @@ class AtlasTexture(
 
     override lateinit var array: TextureArrayProperties
     override lateinit var renderData: TextureRenderData
-    override var data: TextureData = TextureData(size)
+    override var data: TextureData = TextureData(RGBA8Buffer(size))
     override var properties = ImageProperties.DEFAULT
     override val state: TextureStates = TextureStates.LOADED
 
@@ -42,8 +43,8 @@ class AtlasTexture(
 
     fun request(size: Vec2i): Vec2i? = null
 
-    fun put(offset: Vec2i, source: TextureData, start: Vec2i, size: Vec2i): CodeTexturePart {
-        TextureUtil.copy(start, source, offset, this.data, size)
+    fun put(offset: Vec2i, source: TextureBuffer, start: Vec2i, size: Vec2i): CodeTexturePart {
+        this.data.buffer.put(source, start, offset, size)
 
         return CodeTexturePart(this, pixel * offset, pixel * (offset + size), size)
     }

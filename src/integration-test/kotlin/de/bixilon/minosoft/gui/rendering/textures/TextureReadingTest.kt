@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBufferFactory
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 import java.io.ByteArrayInputStream
@@ -25,39 +26,40 @@ class TextureReadingTest {
     private val GRAY_GRAY = TextureReadingTest::class.java.getResourceAsStream("/texture_reading/gray_gray.png")!!.readAllBytes()
     private val GRAY_RGB = TextureReadingTest::class.java.getResourceAsStream("/texture_reading/gray_rgb.png")!!.readAllBytes()
 
-    private val READ_1 = TextureUtil::class.java.getDeclaredMethod("readTexture1", InputStream::class.java).apply { isAccessible = true }
-    private val READ_2 = TextureUtil::class.java.getDeclaredMethod("readTexture2", InputStream::class.java).apply { isAccessible = true }
+    private val READ_1 = TextureUtil::class.java.getDeclaredMethod("readTexture1", InputStream::class.java, TextureBufferFactory::class.java).apply { isAccessible = true }
+    private val READ_2 = TextureUtil::class.java.getDeclaredMethod("readTexture2", InputStream::class.java, TextureBufferFactory::class.java).apply { isAccessible = true }
 
-    private fun TextureData.assertGray() {
+    private fun TextureBuffer.assertGray() {
         assertEquals(size, Vec2i(16, 16))
 
-        assertEquals(buffer.get(0), 0x94.toByte())
-        assertEquals(buffer.get(1), 0x94.toByte())
-        assertEquals(buffer.get(2), 0x94.toByte())
-        assertEquals(buffer.get(3), 0xFF.toByte())
-        assertEquals(buffer.get(4), 0xC3.toByte())
-        assertEquals(buffer.get(128), 0xA3.toByte())
-        assertEquals(buffer.get(256), 0xA2.toByte())
+        assertEquals(getR(0, 0), 0x94)
+        assertEquals(getG(0, 0), 0x94)
+        assertEquals(getB(0, 0), 0x94)
+        assertEquals(getA(0, 0), 0xFF)
+
+        assertEquals(getR(1, 0), 0xC3)
+        assertEquals(getR(0, 2), 0xA3)
+        assertEquals(getR(0, 4), 0xA2)
     }
 
     fun `read rgb 1`() {
-        val texture = READ_1.invoke(TextureUtil, ByteArrayInputStream(GRAY_RGB)) as TextureData
+        val texture = READ_1.invoke(TextureUtil, ByteArrayInputStream(GRAY_RGB), null) as TextureBuffer
         texture.assertGray()
     }
 
     fun `read rgb 2`() {
-        val texture = READ_2.invoke(TextureUtil, ByteArrayInputStream(GRAY_RGB)) as TextureData
+        val texture = READ_2.invoke(TextureUtil, ByteArrayInputStream(GRAY_RGB), null) as TextureBuffer
         texture.assertGray()
     }
 
     @Test(enabled = false)
     fun `read gray 1`() {
-        val texture = READ_1.invoke(TextureUtil, ByteArrayInputStream(GRAY_GRAY)) as TextureData
+        val texture = READ_1.invoke(TextureUtil, ByteArrayInputStream(GRAY_GRAY), null) as TextureBuffer
         texture.assertGray()
     }
 
     fun `read gray 2`() {
-        val texture = READ_2.invoke(TextureUtil, ByteArrayInputStream(GRAY_GRAY)) as TextureData
+        val texture = READ_2.invoke(TextureUtil, ByteArrayInputStream(GRAY_GRAY), null) as TextureBuffer
         texture.assertGray()
     }
 }
