@@ -35,7 +35,7 @@ object ResourceProfileMigration {
             if (it == "https://gitlab.bixilon.de/bixilon/minosoft-meta-bin/-/raw/master/\${hashPrefix}/\${fullHash}?ref_type=heads") return@let
             val array = Jackson.MAPPER.createArrayNode()
             array.add(it)
-            source.replace("minosoft-meta", array)
+            source.replace("minosoft_meta", array)
         }
     }
 }
