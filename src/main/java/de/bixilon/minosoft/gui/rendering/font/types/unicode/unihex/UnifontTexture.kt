@@ -16,8 +16,9 @@ package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.bit.BitByte.isBit
-import de.bixilon.minosoft.gui.rendering.RenderConstants.UV_ADD
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVEnd
+import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVStart
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
@@ -74,8 +75,8 @@ class UnifontTexture(
             }
         }
 
-        val uvStart = Vec2(pixel * (offset), pixel * (row * UnifontRasterizer.HEIGHT)) + UV_ADD
-        val uvEnd = Vec2(pixel * (offset + (end - start)), pixel * ((row + 1) * UnifontRasterizer.HEIGHT)) - UV_ADD
+        val uvStart = Vec2(pixel * (offset), pixel * (row * UnifontRasterizer.HEIGHT)).fixUVStart()
+        val uvEnd = Vec2(pixel * (offset + (end - start)), pixel * ((row + 1) * UnifontRasterizer.HEIGHT)).fixUVEnd()
         val width = (end - start) * (FontProperties.CHAR_BASE_HEIGHT.toFloat() / UnifontRasterizer.HEIGHT)
 
         return UnicodeCodeRenderer(this, uvStart, uvEnd, width)

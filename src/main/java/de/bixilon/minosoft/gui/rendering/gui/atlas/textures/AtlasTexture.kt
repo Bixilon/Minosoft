@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.gui.atlas.textures
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVEnd
+import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVStart
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
@@ -46,6 +48,6 @@ class AtlasTexture(
     fun put(offset: Vec2i, source: TextureBuffer, start: Vec2i, size: Vec2i): CodeTexturePart {
         this.data.buffer.put(source, start, offset, size)
 
-        return CodeTexturePart(this, pixel * offset, pixel * (offset + size), size)
+        return CodeTexturePart(this, (pixel * offset).fixUVStart(), (pixel * (offset + size)).fixUVEnd(), size)
     }
 }

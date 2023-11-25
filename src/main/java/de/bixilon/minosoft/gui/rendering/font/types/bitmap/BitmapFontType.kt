@@ -19,8 +19,9 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVEnd
+import de.bixilon.minosoft.gui.rendering.RenderUtil.fixUVStart
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.AscentedCodePointRenderer.Companion.DEFAULT_ASCENT
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
@@ -106,16 +107,12 @@ class BitmapFontType(
 
             val uvStart = Vec2(offset)
             uvStart.x += start * pixel.x
-            if (uvStart.x > RenderConstants.UV_ADD) {
-                uvStart.x -= RenderConstants.UV_ADD // this workarounds some precision loss
-            }
+            uvStart.fixUVStart()
 
             val uvEnd = Vec2(offset)
             uvEnd.x += width * pixel.x
             uvEnd.y += height * pixel.y
-            if (uvEnd.y > RenderConstants.UV_ADD && uvEnd.y < 1.0f) {
-                uvEnd.y -= RenderConstants.UV_ADD // this workarounds some precision loss
-            }
+            uvEnd.fixUVEnd()
 
             val scale = if (height < CHAR_BASE_HEIGHT) 1 else height / CHAR_BASE_HEIGHT
             val scaledWidth = width / scale

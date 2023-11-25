@@ -107,7 +107,7 @@ class UnihexFontTypeTest {
 
         assertEquals(code.width, 1.5f)
         assertEquals(code.uvStart, Vec2(0.0f, 0.0f))
-        assertEquals(code.uvEnd, Vec2(0.1875f, 1.0f))
+        assertEquals(code.uvEnd, Vec2(0.18749f, 1.0f))
 
         assertEquals(remaining, intArrayOf(13))
         val data = texture.data.buffer.data.toByteArray()

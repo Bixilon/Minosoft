@@ -95,25 +95,25 @@ class BitmapFontTypeTest {
     fun `load basic with default options`() {
         val font = load(intArrayOf(1, 2, 3), intArrayOf(7, 4, 6), chars = arrayOf(intArrayOf('a'.code, 'b'.code, 'c'.code)))
 
-        font.assert('a', 7, Vec2(0.0068125f, 0), Vec2(0.0546875f, 1.0f))
-        font.assert('b', 3, Vec2(0.077125f, 0), Vec2(0.0859375f, 1.0f))
-        font.assert('c', 4, Vec2(0.1474375f, 0.0), Vec2(0.15625f, 1.0f))
+        font.assert('a', 7, Vec2(0.0078025f, 0), Vec2(0.0546775f, 1.0f))
+        font.assert('b', 3, Vec2(0.078115f, 0), Vec2(0.0859275f, 1.0f))
+        font.assert('c', 4, Vec2(0.1484275f, 0.0), Vec2(0.15624f, 1.0f))
     }
 
     fun `multiple rows`() {
         val font = load(IntArray(64) { it % 3 }, IntArray(64) { (it + 2) % 4 }, chars = arrayOf(IntArray(16) { 'A'.code + it }, IntArray(16) { 'A'.code + 16 + it }, IntArray(16) { 'A'.code + 32 + it }, IntArray(16) { 'A'.code + 48 + it }))
 
-        font.assert('A', 3, Vec2(0.0f, 0), Vec2(0.0234375f, 0.249f))
-        font.assert('P', 2, Vec2(0.9365f, 0.0), Vec2(0.953125f, 0.249f))
+        font.assert('A', 3, Vec2(0.0f, 0), Vec2(0.0234275f, 0.24999f))
+        font.assert('P', 2, Vec2(0.93749f, 0.0), Vec2(0.953115f, 0.24999f))
 
-        font.assert('Q', 2, Vec2(0.0068125f, 0.25f), Vec2(0.015625f, 0.499f))
-        font.assert('a', 1, Vec2(0.014625f, 0.5f), Vec2(0.0078125f, 0.749f))
-        font.assert('q', 3, Vec2(0.0f, 0.75f), Vec2(0.0234375f, 1.0f))
+        font.assert('Q', 2, Vec2(0.0078025f, 0.24999f), Vec2(0.015615f, 0.49999f))
+        font.assert('a', 1, Vec2(0.015615f, 0.49999f), Vec2(0.0078025f, 0.74999f))
+        font.assert('q', 3, Vec2(0.0f, 0.74999f), Vec2(0.0234275f, 1.0f))
     }
 
     fun `12 px height`() {
         val font = load(intArrayOf(1, 2), intArrayOf(6, 7), width = 8, height = 12, ascent = 10, arrayOf(intArrayOf('ä'.code, 'ö'.code), intArrayOf(), intArrayOf()))
 
-        font.assert('ä', 6, Vec2(0.0068125f, 0.0f), Vec2(0.046875f, 0.33233336f), height = 12)
+        font.assert('ä', 6, Vec2(0.0078025f, 0.0f), Vec2(0.046865f, 0.33332333f), height = 12)
     }
 }
