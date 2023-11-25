@@ -227,7 +227,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         val selected = serverListViewFX.selectionModel.selectedItem
         serverListViewFX.items.clear()
 
-        for (server in serverType!!.servers) {
+        for (server in serverType!!.servers.toList()) {
             updateServer(server)
         }
 
