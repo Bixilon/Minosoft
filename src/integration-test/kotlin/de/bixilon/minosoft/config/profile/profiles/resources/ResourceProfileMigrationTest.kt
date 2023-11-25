@@ -27,7 +27,7 @@ class ResourceProfileMigrationTest {
         val data = mapOf(
             "source" to mapOf(
                 "pixlyzer" to "https://gitlab.bixilon.de/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false",
-                "minosoft-meta" to "https://gitlab.bixilon.de/bixilon/minosoft-meta-bin/-/raw/master/\${hashPrefix}/\${fullHash}?ref_type=heads",
+                "minosoft_meta" to "https://gitlab.bixilon.de/bixilon/minosoft-meta-bin/-/raw/master/\${hashPrefix}/\${fullHash}?ref_type=heads",
             )
         )
         val tree = Jackson.MAPPER.valueToTree<ObjectNode>(data)
@@ -43,7 +43,7 @@ class ResourceProfileMigrationTest {
         val data = mapOf(
             "source" to mapOf(
                 "pixlyzer" to "https://custom.bixilon.de/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false",
-                "minosoft-meta" to "https://custom.bixilon.de/bixilon/minosoft-meta-bin/-/raw/master/\${hashPrefix}/\${fullHash}?ref_type=heads",
+                "minosoft_meta" to "https://custom.bixilon.de/bixilon/minosoft-meta-bin/-/raw/master/\${hashPrefix}/\${fullHash}?ref_type=heads",
             )
         )
         val tree = Jackson.MAPPER.valueToTree<ObjectNode>(data)
@@ -55,7 +55,7 @@ class ResourceProfileMigrationTest {
                 "pixlyzer" to listOf(
                     "https://custom.bixilon.de/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false",
                 ),
-                "minosoft-meta" to listOf(
+                "minosoft_meta" to listOf(
                     "https://custom.bixilon.de/bixilon/minosoft-meta-bin/-/raw/master/\${hashPrefix}/\${fullHash}?ref_type=heads",
                 ),
             )

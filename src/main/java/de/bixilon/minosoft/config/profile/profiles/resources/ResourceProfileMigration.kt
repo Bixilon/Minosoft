@@ -31,7 +31,7 @@ object ResourceProfileMigration {
             array.add(it)
             source.replace("pixlyzer", array)
         }
-        source.remove("minosoft-meta")?.asText()?.let {
+        source.remove("minosoft_meta")?.asText()?.let {
             if (it == "https://gitlab.bixilon.de/bixilon/minosoft-meta-bin/-/raw/master/\${hashPrefix}/\${fullHash}?ref_type=heads") return@let
             val array = Jackson.MAPPER.createArrayNode()
             array.add(it)
