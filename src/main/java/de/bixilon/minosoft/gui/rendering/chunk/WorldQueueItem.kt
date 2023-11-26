@@ -32,6 +32,9 @@ class WorldQueueItem(
     val sectionPosition = Vec3i(chunkPosition.x, sectionHeight, chunkPosition.y)
     var mesh: ChunkMeshes? = null
 
+    var distance = 0
+    var sort = 0
+
     override fun equals(other: Any?): Boolean {
         if (other is WorldQueueItem) {
             return chunkPosition == other.chunkPosition && sectionHeight == other.sectionHeight

@@ -31,9 +31,6 @@ class FramebufferManager(
     fun init() {
         world.init()
         gui.init()
-        for (error in context.system.getErrors()) {
-            println()
-        }
 
         context.connection.events.listen<ResizeWindowEvent> {
             world.framebuffer.resize(it.size)
@@ -42,9 +39,6 @@ class FramebufferManager(
     }
 
     fun postInit() {
-        for (error in context.system.getErrors()) {
-            println()
-        }
         world.postInit()
         gui.postInit()
     }
