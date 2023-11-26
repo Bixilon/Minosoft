@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text.name
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -36,7 +37,7 @@ class EntityNameFeature(renderer: EntityRenderer<*>) : BillboardTextFeature(rend
     override val renderInvisible get() = true
 
     init {
-        renderer.entity.data.observe<ChatComponent?>(Entity.CUSTOM_NAME_DATA) { delta = 0.0f }
+        renderer.entity::customName.observe(this) { delta = 0.0f }
     }
 
     override fun update(millis: Long, delta: Float) {
