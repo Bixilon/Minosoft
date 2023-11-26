@@ -169,7 +169,7 @@ abstract class PlayerEntity(
 
         private val ABSORPTION_HEARTS_DATA = EntityDataField("PLAYER_ABSORPTION_HEARTS")
         private val SCORE_DATA = EntityDataField("PLAYER_SCORE")
-        private val SKIN_PARTS_DATA = EntityDataField("PLAYER_SKIN_PARTS_FLAGS")
+        val SKIN_PARTS_DATA = EntityDataField("PLAYER_SKIN_PARTS_FLAGS")
         private val MAIN_ARM_DATA = EntityDataField("PLAYER_SKIN_MAIN_HAND")
         private val LEFT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_LEFT_SHOULDER_DATA")
         private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")

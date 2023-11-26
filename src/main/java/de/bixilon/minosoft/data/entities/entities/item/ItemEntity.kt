@@ -40,7 +40,7 @@ class ItemEntity(connection: PlayConnection, entityType: EntityType, data: Entit
 
     companion object : EntityFactory<ItemEntity> {
         override val identifier: ResourceLocation = minecraft("item")
-        private val ITEM_DATA = EntityDataField("ITEM_ITEM")
+        val ITEM_DATA = EntityDataField("ITEM_ITEM")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ItemEntity {
             return ItemEntity(connection, entityType, data, position, rotation)

@@ -13,7 +13,18 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries.legacy
 
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], priority = Int.MAX_VALUE, timeOut = 15000L)
-class `1_8_9` : LegacyLoadingTest("1.8.9")
+class `1_8_9` : LegacyLoadingTest("1.8.9") {
+
+    fun `entity data`() {
+        assertEquals(registries.getEntityDataIndex(Entity.FLAGS_DATA), 0)
+        assertEquals(registries.getEntityDataIndex(ItemEntity.ITEM_DATA), 10)
+        assertEquals(registries.getEntityDataIndex(PlayerEntity.SKIN_PARTS_DATA), 10)
+    }
+}
