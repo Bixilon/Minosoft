@@ -43,6 +43,8 @@ class OpenGLFontTextureArray(
 
     override fun upload(latch: AbstractLatch?) {
         this.handle = OpenGLTextureUtil.createTextureArray(0)
+        // glTexParameteriv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_RGBA, intArrayOf(GL_LUMINANCE, GL_LUMINANCE, GL_LUMINANCE, GL_LUMINANCE)) // TODO: not working?
+
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_COMPRESSED_LUMINANCE_ALPHA, RESOLUTION, RESOLUTION, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
 
         for (texture in textures) {
@@ -62,6 +64,7 @@ class OpenGLFontTextureArray(
     }
 
     override fun use(shader: NativeShader, name: String) {
+        if (state != TextureArrayStates.UPLOADED) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
         shader.use()
         activate()
 

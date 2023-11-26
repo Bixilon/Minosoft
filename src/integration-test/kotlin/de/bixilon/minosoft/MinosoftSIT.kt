@@ -66,10 +66,10 @@ internal object MinosoftSIT {
 
         val worker = TaskWorker()
         MinosoftBoot.register(worker)
-        worker.minusAssign(BootTasks.PROFILES)
-        worker.minusAssign(BootTasks.LAN_SERVERS)
-        worker.minusAssign(BootTasks.MODS)
-        worker.minusAssign(BootTasks.CLI)
+        worker -= BootTasks.PROFILES
+        worker -= BootTasks.LAN_SERVERS
+        worker -= BootTasks.MODS
+        worker -= BootTasks.CLI
         worker.work(MinosoftBoot.LATCH)
         MinosoftBoot.LATCH.dec()
         MinosoftBoot.LATCH.await()

@@ -53,7 +53,7 @@ class OpenGLTextureArray(
 
 
     private fun upload(resolution: Int, textures: List<Texture>): Int {
-        val textureId = OpenGLTextureUtil.createTextureArray(mipmaps)
+        val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
 
         for (level in 0..mipmaps) {
             glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA8, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
@@ -70,7 +70,7 @@ class OpenGLTextureArray(
             texture.data = TextureData.NULL
         }
 
-        return textureId
+        return handle
     }
 
 
@@ -98,6 +98,7 @@ class OpenGLTextureArray(
     }
 
     override fun use(shader: NativeShader, name: String) {
+        if (state != TextureArrayStates.UPLOADED) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
         shader.use()
         activate()
 

@@ -96,6 +96,7 @@ class OpenGLDynamicTextureArray(
     }
 
     override fun unsafeUse(shader: NativeShader, name: String) {
+        if (handle <= 0) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
         shader.use()
         activate()
         shader.setTexture("$name[$index]", index)

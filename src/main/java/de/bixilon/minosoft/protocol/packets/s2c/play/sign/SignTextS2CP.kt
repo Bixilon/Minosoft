@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.sign
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.sign.SignBlockEntity
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -30,16 +29,8 @@ class SignTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         buffer.readBlockPosition()
     }
-    val lines: Array<ChatComponent>
+    val lines = Array(SignBlockEntity.LINES) { buffer.readChatComponent() }
 
-
-    init {
-        val lines: MutableList<ChatComponent> = mutableListOf()
-        for (i in 0 until SignBlockEntity.LINES) {
-            lines.add(buffer.readChatComponent())
-        }
-        this.lines = lines.toTypedArray()
-    }
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.getBlockEntity(position)?.unsafeCast<SignBlockEntity>() ?: SignBlockEntity(connection)

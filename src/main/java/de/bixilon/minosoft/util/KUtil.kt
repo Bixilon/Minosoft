@@ -359,7 +359,7 @@ object KUtil {
     }
 
     @Deprecated("kutil 1.25")
-    fun TaskWorker.minusAssign(identifier: Any) {
+    operator fun TaskWorker.minusAssign(identifier: Any) {
         this::class.java.getDeclaredField("tasks").apply { isAccessible = true }.get(this).unsafeCast<MutableMap<Any, WorkerTask>>().remove(identifier)
     }
 }

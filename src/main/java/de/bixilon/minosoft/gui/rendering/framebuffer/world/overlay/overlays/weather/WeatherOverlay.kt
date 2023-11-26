@@ -86,11 +86,8 @@ class WeatherOverlay(private val context: RenderContext) : Overlay {
         mesh.load()
     }
 
-    override fun init() {
-        shader.load()
-    }
-
     override fun postInit() {
+        shader.load()
         shader.use()
         context.textures.static.use(shader)
     }
