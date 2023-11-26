@@ -37,6 +37,13 @@ class FeatureManager(val renderer: EntityRenderer<*>) : Iterable<EntityRenderFea
         }
     }
 
+    fun prepare() {
+        for (feature in features) {
+            if (feature.isInvisible()) continue
+            feature.prepare()
+        }
+    }
+
     fun unload() {
         for (feature in features) {
             feature.unload()

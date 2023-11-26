@@ -53,13 +53,14 @@ class SkeletalInstance(
     fun draw(shader: Shader) {
         shader.use()
 
-        context.skeletal.upload(this, matrix)
+        context.skeletal.upload(this)
         model.mesh.draw()
     }
 
     fun update(time: Long = millis()) {
         transform.reset()
         animation.draw(time)
+        transform.pack(matrix)
     }
 
     fun update(position: Vec3, rotation: Vec3, pivot: Vec3 = Vec3.EMPTY_INSTANCE, matrix: Mat4? = null) {

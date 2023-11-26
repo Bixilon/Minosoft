@@ -36,17 +36,24 @@ class TransformInstance(
         }
     }
 
-    fun pack(buffer: FloatBuffer, parent: Mat4, cache: Array<Mat4>) {
-        val temp = cache[this.id]
-        parent.times(value, temp) // TODO: don't multiply them on the rendering thread
+    fun pack(parent: Mat4) {
+        parent.times(value, value)
+
+        for (child in array) {
+            child.pack(this.value)
+        }
+    }
+
+    fun pack(buffer: FloatBuffer) {
+        val array = value.array
 
         val offset = this.id * Mat4.length
         for (index in 0 until Mat4.length) {
-            buffer.put(offset + index, temp.array[index])
+            buffer.put(offset + index, array[index])
         }
 
-        for (child in array) {
-            child.pack(buffer, temp, cache)
+        for (child in this.array) {
+            child.pack(buffer)
         }
     }
 

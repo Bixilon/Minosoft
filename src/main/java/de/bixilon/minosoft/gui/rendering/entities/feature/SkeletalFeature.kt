@@ -67,6 +67,10 @@ open class SkeletalFeature(
         instance.animation.draw(delta)
     }
 
+    override fun prepare() {
+        instance.transform.pack(instance.matrix)
+    }
+
     override fun draw() {
         var tint = renderer.light.value
         if (renderer is LivingEntityRenderer<*>) {

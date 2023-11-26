@@ -79,6 +79,10 @@ abstract class EntityRenderer<E : Entity>(
         features.update(millis, delta)
     }
 
+    open fun prepare() {
+        features.prepare()
+    }
+
     open fun updateRenderInfo(millis: Long) {
         entity.draw(millis)
         this.distance = (entity.renderInfo.eyePosition - renderer.connection.camera.entity.renderInfo.eyePosition).length2()

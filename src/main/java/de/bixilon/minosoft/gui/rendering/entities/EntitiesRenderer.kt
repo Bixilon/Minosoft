@@ -65,6 +65,7 @@ class EntitiesRenderer(
                 visibility.update(it, millis)
                 if (!it.visible) return@iterate
                 it.update(millis)
+                it.prepare()
                 visibility.collect(it)
             } catch (error: Throwable) {
                 error.printStackTrace()
