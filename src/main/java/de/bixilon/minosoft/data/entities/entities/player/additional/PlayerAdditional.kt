@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.entities.entities.player.additional
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
@@ -40,8 +42,18 @@ class PlayerAdditional(
     var publicKey by observed(publicKey)
     var listed by observed(listed)
 
-    val tabDisplayName: ChatComponent
-        get() = displayName ?: ChatComponent.of(name).let { team?.formatting?.decorate(it) ?: it }
+    var tabDisplayName: ChatComponent = unsafeNull()
+        private set
+
+    private fun updateTabName() {
+        tabDisplayName = displayName ?: ChatComponent.of(name).let { team?.formatting?.decorate(it) ?: it }
+    }
+
+    init {
+        this::name.observe(this) { updateTabName() }
+        this::team.observe(this) { updateTabName() }
+        updateTabName()
+    }
 
     fun merge(data: AdditionalDataUpdate) {
         spareMerge(data)
