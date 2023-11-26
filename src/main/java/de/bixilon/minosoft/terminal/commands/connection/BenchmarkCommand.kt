@@ -27,6 +27,7 @@ import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.entities.item.PrimedTNT
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -38,6 +39,7 @@ import kotlin.math.cbrt
 object BenchmarkCommand : ConnectionCommand {
     override var node = LiteralNode("benchmark").addChild(
         LiteralNode("players", executor = { benchmarkPlayers(it) }).addChild(ArgumentNode("count", parser = IntParser(min = 0, max = 100000), executable = true)),
+        LiteralNode("tnt", executor = { benchmarkTnt(it) }).addChild(ArgumentNode("count", parser = IntParser(min = 0, max = 100000), executable = true)),
     )
 
 
@@ -52,6 +54,7 @@ object BenchmarkCommand : ConnectionCommand {
             val rotation = EntityRotation(random.nextFloat(-179.0f, 179.0f), random.nextFloat(-89.0f, 89.0f))
             val entity = factory.invoke(position, rotation, id)
             entity.startInit()
+            entity.data[Entity.NO_GRAVITY_DATA] = true
             entities += entity
             connection.world.entities.add(random.nextInt(100000, 200000), null, entity)
             // TODO: make them move randomly?
@@ -78,5 +81,12 @@ object BenchmarkCommand : ConnectionCommand {
         val type = stack.connection.registries.entityType[RemotePlayerEntity] ?: return
 
         benchmark(stack.connection, count) { position, rotation, id -> RemotePlayerEntity(stack.connection, type, EntityData(stack.connection, Int2ObjectOpenHashMap()), position, rotation, PlayerAdditional("Dummy $id")) }
+    }
+
+    private fun benchmarkTnt(stack: CommandStack) {
+        val count = stack.get<Int>("count") ?: 1000
+        val type = stack.connection.registries.entityType[PrimedTNT] ?: return
+
+        benchmark(stack.connection, count) { position, rotation, id -> PrimedTNT(stack.connection, type, EntityData(stack.connection, Int2ObjectOpenHashMap()), position, rotation) }
     }
 }
