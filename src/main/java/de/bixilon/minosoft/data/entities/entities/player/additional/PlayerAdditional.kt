@@ -52,6 +52,7 @@ class PlayerAdditional(
     init {
         this::name.observe(this) { updateTabName() }
         this::team.observe(this) { updateTabName() }
+        this::displayName.observe(this) { updateTabName() }
         updateTabName()
     }
 
