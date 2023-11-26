@@ -75,15 +75,18 @@ object MinosoftMeta {
 
         for (entry in this) {
             if (entry.version == "_") {
+                if (previous != null) continue
                 previous = entry
                 continue
             }
             val entryVersion = Versions[entry.version] ?: throw IllegalArgumentException("Unknown meta version ${entry.version}")
             if (entryVersion > version) continue
+
             if (previousVersion != null && previousVersion > entryVersion) {
                 continue
             }
             previousVersion = entryVersion
+            previous = entry
         }
         if (previous == null) return null
 
