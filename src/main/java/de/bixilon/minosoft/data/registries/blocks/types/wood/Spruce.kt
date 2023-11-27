@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.wood
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -42,6 +43,15 @@ interface Spruce {
             override val identifier = minecraft("spruce_door")
 
             override fun build(registries: Registries, settings: BlockSettings) = Door(settings = settings)
+        }
+    }
+
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), Spruce {
+
+        companion object : BlockFactory<Slab> {
+            override val identifier = minecraft("spruce_slab")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
         }
     }
 }

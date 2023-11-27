@@ -20,12 +20,23 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
 import de.bixilon.minosoft.data.registries.blocks.types.bee.HoneyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.brick.*
+import de.bixilon.minosoft.data.registries.blocks.types.building.copper.*
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.end.EndStoneBrick
+import de.bixilon.minosoft.data.registries.blocks.types.building.end.Purpur
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.DoublePlant
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.DarkPrismarine
+import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.Prismarine
+import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.PrismarineBrick
+import de.bixilon.minosoft.data.registries.blocks.types.building.quartz.Quartz
+import de.bixilon.minosoft.data.registries.blocks.types.building.quartz.SmoothQuartz
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.*
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.sand.*
 import de.bixilon.minosoft.data.registries.blocks.types.climbing.ScaffoldingBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.EnderChestBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ShulkerBoxBlock
@@ -36,7 +47,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterFluidBl
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.SlimeBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebBlock
-import de.bixilon.minosoft.data.registries.blocks.types.stone.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.wood.*
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -46,10 +56,54 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 object BlockFactories : DefaultFactory<BlockFactory<*>>(
     AirBlock.Air, AirBlock.VoidAir, AirBlock.CaveAir,
 
-    RockBlock.Stone,
-    RockBlock.Granite, RockBlock.PolishedGranite,
-    RockBlock.Diorite, RockBlock.PolishedDiorite,
-    RockBlock.Andesite, RockBlock.PolishedAndesite,
+    Stone.Block, Stone.Slab,
+    SmoothStone.Block, SmoothStone.Slab,
+    StoneBrick.Block, StoneBrick.Slab,
+    Cobblestone.Block, Cobblestone.Slab,
+    Granite.Block, Granite.Slab,
+    PolishedGranite.Block, PolishedGranite.Slab,
+    Diorite.Block, Diorite.Slab,
+    PolishedDiorite.Block, PolishedDiorite.Slab,
+    Andesite.Block, Andesite.Slab,
+    PolishedAndesite.Block, PolishedAndesite.Slab,
+
+    Sandstone.Block, Sandstone.Slab,
+    CutSandstone.Block, CutSandstone.Slab,
+    SmoothStone.Block, SmoothSandstone.Slab,
+    RedSandstone.Block, RedSandstone.Slab,
+    CutRedSandstone.Block, CutRedSandstone.Slab,
+    SmoothRedSandstone.Block, SmoothRedSandstone.Slab,
+
+    Quartz.Block, Quartz.Slab,
+    SmoothQuartz.Block, SmoothQuartz.Slab,
+
+    Brick.Block, Brick.Slab,
+    NetherBrick.Block, NetherBrick.Slab,
+    MudBrick.Block, MudBrick.Slab,
+    MossyStoneBrick.Block, MossyStoneBrick.Slab,
+    MossyCobblestone.Block, MossyCobblestone.Slab,
+    RedNetherBrick.Block, RedNetherBrick.Slab,
+
+
+    Prismarine.Block, Prismarine.Slab,
+    PrismarineBrick.Block, PrismarineBrick.Slab,
+    DarkPrismarine.Block, DarkPrismarine.Slab,
+
+    EndStoneBrick.Block, EndStoneBrick.Slab,
+    Purpur.Block, Purpur.Slab,
+
+
+    OxidizedCopper.Block, OxidizedCopper.Slab,
+    OxidizedCutCopper.Block, OxidizedCutCopper.Slab,
+    WaxedOxidizedCutCopper.Block, WaxedOxidizedCutCopper.Slab,
+    WeatheredCopper.Block, WeatheredCopper.Slab,
+    WeatheredCutCopper.Block, WeatheredCutCopper.Slab,
+    WaxedWeatheredCutCopper.Block, WaxedWeatheredCutCopper.Slab,
+    ExposedCopper.Block, ExposedCopper.Slab,
+    ExposedCutCopper.Block, ExposedCutCopper.Slab,
+    WaxedExposedCutCopper.Block, WaxedExposedCutCopper.Slab,
+    CutCopper.Block, CutCopper.Slab,
+    WaxedCutCopper.Block, WaxedCutCopper.Slab,
 
     GrassBlock,
 
@@ -67,16 +121,20 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
 
     DoorBlock.IronDoor,
 
-    Oak.Leaves, Oak.Door,
-    Spruce.Leaves, Spruce.Door,
-    Birch.Leaves, Birch.Door,
-    Jungle.Leaves, Jungle.Door,
-    Acacia.Leaves, Acacia.Door,
-    DarkOak.Leaves, DarkOak.Door,
-    Mangrove.Leaves, Mangrove.Door,
-    Cherry.Leaves, Cherry.Door,
-    Azalea.Leaves, Azalea.Door,
-    FloweringAzalea.Leaves, FloweringAzalea.Door,
+    Oak.Leaves, Oak.Door, Oak.Slab,
+    Spruce.Leaves, Spruce.Door, Spruce.Slab,
+    Birch.Leaves, Birch.Door, Birch.Slab,
+    Jungle.Leaves, Jungle.Door, Jungle.Slab,
+    Acacia.Leaves, Acacia.Door, Acacia.Slab,
+    DarkOak.Leaves, DarkOak.Door, DarkOak.Slab,
+    Mangrove.Leaves, Mangrove.Door, Mangrove.Slab,
+    Cherry.Leaves, Cherry.Door, Cherry.Slab,
+    Azalea.Leaves, Azalea.Door, Azalea.Slab,
+    FloweringAzalea.Leaves, FloweringAzalea.Door, FloweringAzalea.Slab,
+    Bamboo.Leaves, Bamboo.Door, Bamboo.Slab,
+    BambooMosaic.Leaves, BambooMosaic.Door, BambooMosaic.Slab,
+    Crimson.Leaves, Crimson.Door, Crimson.Slab,
+    Warped.Leaves, Warped.Door, Warped.Slab,
 
     SnowBlock, SnowLayerBlock,
     FernBlock.DeadBush, FernBlock.Grass, FernBlock.Fern,

@@ -18,6 +18,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.blocks.BlockTest
 import de.bixilon.minosoft.data.registries.blocks.shapes.collision.context.EmptyCollisionContext
 import de.bixilon.minosoft.data.registries.blocks.state.manager.SimpleStateManager
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
@@ -27,14 +28,14 @@ import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["block"])
-class StoneTest : BlockTest<RockBlock.Stone>() {
+class StoneTest : BlockTest<Stone.Block>() {
 
     init {
         StoneTest0 = this
     }
 
     fun getStone() {
-        super.retrieveBlock(RockBlock.Stone.identifier)
+        super.retrieveBlock(Stone.Block.identifier)
     }
 
     fun testOutlineShape() {

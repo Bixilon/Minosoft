@@ -50,7 +50,7 @@ class DirectedProperty(
                 return value
             }
 
-        fun of(shape: AbstractVoxelShape, skylightEnters: Boolean, filtersLight: Boolean): LightProperties {
+        fun of(shape: AbstractVoxelShape, skylightEnters: Boolean = true, filtersLight: Boolean = false): LightProperties {
             val directions = BooleanArray(Directions.SIZE)
 
             for ((index, direction) in Directions.VALUES.withIndex()) {

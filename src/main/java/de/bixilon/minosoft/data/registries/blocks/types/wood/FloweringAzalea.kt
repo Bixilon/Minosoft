@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.wood
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
+import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -37,6 +38,15 @@ interface FloweringAzalea {
             override val identifier = minecraft("flowering_azalea_door")
 
             override fun build(registries: Registries, settings: BlockSettings) = Door(settings = settings)
+        }
+    }
+
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.WoodSlab(identifier, settings), FloweringAzalea {
+
+        companion object : BlockFactory<Slab> {
+            override val identifier = minecraft("flowering_azalea_slab")
+
+            override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
         }
     }
 }

@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.primitives.BooleanP
 import de.bixilon.minosoft.data.registries.blocks.properties.primitives.IntProperty
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.SnowyBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
@@ -36,7 +37,7 @@ object BlockProperties {
     val STAIR_DIRECTIONAL = EnumProperty("shape", Shapes).register()
     val SLAB_HALF = EnumProperty("half", Halves).register()
     val STAIR_HALF = EnumProperty("half", Halves, Halves.set(Halves.UPPER, Halves.LOWER))
-    val SLAB_TYPE = EnumProperty("type", Halves).register()
+    val SLAB_TYPE = SlabBlock.HALF.register()
     val FLUID_LEVEL = FluidBlock.LEVEL.register()
     val MOISTURE_LEVEL = IntProperty("moisture").register()
     val HONEY_LEVEL = IntProperty("honey_level").register()

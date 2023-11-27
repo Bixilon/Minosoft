@@ -26,7 +26,7 @@ open class AdvancedBlockState(
     val collisionShape: AbstractVoxelShape?,
     val outlineShape: AbstractVoxelShape?,
     val lightProperties: LightProperties,
-    @Deprecated("pixlyzer") val solidRenderer: Boolean,
+    @Deprecated("pixlyzer") val solidRenderer: Boolean = true,
 ) : PropertyBlockState(block, properties, luminance) {
 
     constructor(block: Block, settings: BlockStateSettings) : this(block, settings.properties ?: emptyMap(), settings.luminance, settings.collisionShape, settings.outlineShape, settings.lightProperties, settings.solidRenderer)

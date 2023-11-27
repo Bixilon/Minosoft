@@ -17,9 +17,9 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumnBlock
-import de.bixilon.minosoft.data.registries.blocks.types.stone.RockBlock
 import de.bixilon.minosoft.test.IT
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
@@ -71,7 +71,7 @@ class WaterFluidTest {
     }
 
     fun stone() {
-        val state = IT.REGISTRIES.block[RockBlock.Stone]!!.states.default
+        val state = IT.REGISTRIES.block[Stone.Block]!!.states.default
         assertEquals(this.water.getHeight(state), 0.0f)
     }
 }

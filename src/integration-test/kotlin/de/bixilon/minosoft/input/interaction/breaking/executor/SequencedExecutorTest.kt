@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.input.interaction.breaking.executor
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.registries.blocks.types.stone.RockBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
 import de.bixilon.minosoft.input.interaction.breaking.BreakHandler
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import org.testng.Assert.assertEquals
@@ -27,7 +27,7 @@ class SequencedExecutorTest {
     fun testSequenceId() {
         val connection = createConnection()
         val executor = SequencedExecutor(BreakHandler(connection.camera.interactions))
-        val state = connection.registries.block[RockBlock.Stone]!!.states.default
+        val state = connection.registries.block[Stone.Block]!!.states.default
         assertEquals(1, executor.start(Vec3i(1, 1, 1), state))
         assertEquals(2, executor.finish())
         assertEquals(3, executor.start(Vec3i(1, 1, 2), state))
@@ -37,7 +37,7 @@ class SequencedExecutorTest {
     fun testRevert() {
         val connection = createConnection(1)
         val executor = SequencedExecutor(BreakHandler(connection.camera.interactions))
-        val state = connection.registries.block[RockBlock.Stone]!!.states.default
+        val state = connection.registries.block[Stone.Block]!!.states.default
 
         connection.world[Vec3i(1, 1, 1)] = state
 
@@ -55,7 +55,7 @@ class SequencedExecutorTest {
     fun testAcknowledge() {
         val connection = createConnection()
         val executor = SequencedExecutor(BreakHandler(connection.camera.interactions))
-        val state = connection.registries.block[RockBlock.Stone]!!.states.default
+        val state = connection.registries.block[Stone.Block]!!.states.default
 
         executor.start(Vec3i(1, 1, 1), state)
 
