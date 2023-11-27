@@ -40,8 +40,8 @@ object RenderUtil {
     }
 
     fun Vec2.fixUVStart(): Vec2 {
-        if (x > UV_ADD) x -= UV_ADD
-        if (y > UV_ADD) y -= UV_ADD
+        if (x < 1.0f - UV_ADD && x > 0.0f) x += UV_ADD
+        if (y < 1.0f - UV_ADD && y > 0.0f) y += UV_ADD
 
         return this
     }
