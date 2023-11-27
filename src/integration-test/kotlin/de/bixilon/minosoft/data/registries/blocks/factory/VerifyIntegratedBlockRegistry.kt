@@ -169,6 +169,7 @@ object VerifyIntegratedBlockRegistry {
         if (error.isEmpty()) {
             return
         }
+        error.removePrefix("\n")
         Log.ERROR_PRINT_STREAM.println(error)
         throw AssertionError("Does not match, see above!")
     }

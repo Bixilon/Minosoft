@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
@@ -43,8 +44,9 @@ class BlockStateApplyTest {
         val modelName = (if (block is CustomModel) block.getModelName(version) else block.identifier)!!.blockState()
         assets.push(modelName, state)
 
+        val data = assets.getOrNull(block.identifier.blockState())?.readJsonObject()!!
 
-        return loader.block.loadState(block) ?: throw NullPointerException("empty block model!")
+        return DirectBlockModel.deserialize(loader.block, block, data) ?: throw NullPointerException("empty block model!")
     }
 
 

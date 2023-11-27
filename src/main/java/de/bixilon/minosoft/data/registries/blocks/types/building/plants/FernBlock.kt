@@ -67,10 +67,10 @@ abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) 
 
     open class ShortGrass(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : Grass(identifier, settings) {
 
-        companion object : BlockFactory<Grass> {
+        companion object : BlockFactory<ShortGrass> {
             override val identifier = minecraft("short_grass")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Grass(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = ShortGrass(settings = settings)
         }
     }
 
