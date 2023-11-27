@@ -47,7 +47,7 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.items.tool.properties.requirement.ToolRequirement
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
@@ -116,19 +116,19 @@ open class PixLyzerBlock(
     }
 
 
-    companion object : ResourceLocationCodec<Block>, PixLyzerBlockFactory<Block>, MultiClassFactory<Block> {
+    companion object : IdentifierCodec<Block>, PixLyzerBlockFactory<Block>, MultiClassFactory<Block> {
         private val NULL_OFFSET_XYZ = Vec3i(0, 0, 0).getWorldOffset(RandomOffsetTypes.XYZ)
         private val NULL_OFFSET_XZ = Vec3i(0, 0, 0).getWorldOffset(RandomOffsetTypes.XZ)
         private val ITEM_FIELD = PixLyzerBlock::item.jvmField
         override val ALIASES: Set<String> = setOf("Block")
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Block {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Block {
             check(registries != null) { "Registries is null!" }
 
             val className = data["class"].toString()
             val factory = PixLyzerBlockFactories[className] ?: PixLyzerBlock
 
-            return factory.build(resourceLocation, registries, data)
+            return factory.build(identifier, registries, data)
         }
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PixLyzerBlock {

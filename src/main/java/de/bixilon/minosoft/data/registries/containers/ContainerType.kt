@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.container.types.UnknownContainer
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 
 data class ContainerType(
     override val identifier: ResourceLocation,
@@ -28,11 +28,11 @@ data class ContainerType(
         return identifier.toString()
     }
 
-    companion object : ResourceLocationCodec<ContainerType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): ContainerType {
+    companion object : IdentifierCodec<ContainerType> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): ContainerType {
             return ContainerType(
-                identifier = resourceLocation,
-                factory = DefaultContainerFactories[resourceLocation] ?: UnknownContainer,
+                identifier = identifier,
+                factory = DefaultContainerFactories[identifier] ?: UnknownContainer,
             )
         }
     }

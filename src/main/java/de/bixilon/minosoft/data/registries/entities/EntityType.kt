@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.pixlyzer.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fixEntityAttribute
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -63,16 +63,16 @@ data class EntityType(
         return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityData, uuid, versionId)
     }
 
-    companion object : ResourceLocationCodec<EntityType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): EntityType? {
+    companion object : IdentifierCodec<EntityType> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): EntityType? {
             check(registries != null) { "Registries is null!" }
-            val factory = DefaultEntityFactories[resourceLocation]
+            val factory = DefaultEntityFactories[identifier]
 
             data["meta", "data"]?.toJsonObject()?.let {
                 val fields: MutableMap<String, EntityDataField> = mutableMapOf()
-                val dataClass = DefaultEntityFactories.ABSTRACT_ENTITY_DATA_CLASSES[resourceLocation]?.companionObject ?: if (factory != null) factory::class else null
+                val dataClass = DefaultEntityFactories.ABSTRACT_ENTITY_DATA_CLASSES[identifier]?.companionObject ?: if (factory != null) factory::class else null
                 if (dataClass == null) {
-                    Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find entity data class for $resourceLocation, fields $it" }
+                    Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find entity data class for $identifier, fields $it" }
                     return@let
                 }
                 for (member in dataClass.members) {
@@ -95,7 +95,7 @@ data class EntityType(
                 for ((fieldName, index) in it) {
                     val fieldType = fields[fieldName]
                     if (fieldType == null) {
-                        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find entity data $fieldName for $resourceLocation" }
+                        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Can not find entity data $fieldName for $identifier" }
                         continue
                     }
                     registries.entityDataIndexMap[fieldType] = index.toInt()
@@ -107,7 +107,7 @@ data class EntityType(
             }
 
             if (factory == null) {
-                throw NullPointerException("Can not find entity factory for $resourceLocation")
+                throw NullPointerException("Can not find entity factory for $identifier")
             }
 
             val attributes: MutableMap<AttributeType, Double> = mutableMapOf()
@@ -124,7 +124,7 @@ data class EntityType(
             }
 
             return EntityType(
-                identifier = resourceLocation,
+                identifier = identifier,
                 translationKey = data["translation_key"]?.toResourceLocation(),
                 width = data["width"].unsafeCast(),
                 height = data["height"].unsafeCast(),

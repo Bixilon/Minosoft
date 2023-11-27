@@ -16,15 +16,15 @@ package de.bixilon.minosoft.data.entities
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 
 class EntityObjectType(
     override val identifier: ResourceLocation,
 ) : RegistryItem() {
 
-    companion object : ResourceLocationCodec<EntityObjectType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): EntityObjectType {
-            return EntityObjectType(resourceLocation)
+    companion object : IdentifierCodec<EntityObjectType> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): EntityObjectType {
+            return EntityObjectType(identifier)
         }
     }
 }

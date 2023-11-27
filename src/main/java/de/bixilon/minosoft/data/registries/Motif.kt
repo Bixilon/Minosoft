@@ -16,7 +16,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 
 data class Motif(
     override val identifier: ResourceLocation,
@@ -28,12 +28,12 @@ data class Motif(
         return identifier.toString()
     }
 
-    companion object : ResourceLocationCodec<Motif> {
+    companion object : IdentifierCodec<Motif> {
         const val DEFAULT_SIZE = 16
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Motif {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Motif {
             return Motif(
-                identifier = resourceLocation,
+                identifier = identifier,
                 width = data["width"]?.toInt() ?: DEFAULT_SIZE,
                 height = data["height"]?.toInt() ?: DEFAULT_SIZE,
             )

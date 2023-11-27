@@ -15,16 +15,16 @@ package de.bixilon.minosoft.data.registries.enchantment
 
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 
 class PixLyzerEnchantment(
     override val identifier: ResourceLocation,
 ) : Enchantment() {
     override val injectable: Boolean get() = true
 
-    companion object : ResourceLocationCodec<Enchantment> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Enchantment {
-            return PixLyzerEnchantment(resourceLocation)
+    companion object : IdentifierCodec<Enchantment> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Enchantment {
+            return PixLyzerEnchantment(identifier)
         }
     }
 }

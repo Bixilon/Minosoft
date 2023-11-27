@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.gui.rendering.particle.DefaultParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
@@ -41,18 +41,18 @@ data class ParticleType(
         return ParticleData(this)
     }
 
-    companion object : ResourceLocationCodec<ParticleType> {
+    companion object : IdentifierCodec<ParticleType> {
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): ParticleType {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): ParticleType {
             val textures: MutableList<ResourceLocation> = mutableListOf()
             data["render"]?.toJsonObject()?.get("textures")?.listCast<String>()?.let {
                 for (texture in it) {
                     textures += texture.toResourceLocation().prefix("particle/").texture()
                 }
             }
-            val factory = DefaultParticleFactory[resourceLocation]
+            val factory = DefaultParticleFactory[identifier]
             return ParticleType(
-                identifier = resourceLocation,
+                identifier = identifier,
                 textures = textures,
                 overrideLimiter = data["override_limiter"]?.toBoolean() ?: false,
                 factory = factory,

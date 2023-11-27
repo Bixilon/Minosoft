@@ -17,7 +17,7 @@ import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 
 class DamageType(
     override val identifier: ResourceLocation,
@@ -27,10 +27,10 @@ class DamageType(
 ) : RegistryItem() {
 
 
-    companion object : ResourceLocationCodec<DamageType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): DamageType {
+    companion object : IdentifierCodec<DamageType> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): DamageType {
             return DamageType(
-                identifier = resourceLocation,
+                identifier = identifier,
                 exhaustion = data["exhaustion"]?.toDouble() ?: 0.0,
                 messageId = data["message_id"]?.toString(),
                 scaling = data["scaling"]?.toString(),

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.item.items.DurableItem
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.item.stack.StackableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -38,10 +38,10 @@ open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registri
     override var tintProvider: TintProvider? = null
 
 
-    companion object : ResourceLocationCodec<Item>, PixLyzerItemFactory<Item>, MultiClassFactory<Item> {
+    companion object : IdentifierCodec<Item>, PixLyzerItemFactory<Item>, MultiClassFactory<Item> {
         override val ALIASES = setOf("Item", "AirBlockItem")
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Item {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Item {
             check(registries != null) { "Registries is null!" }
 
             val className = data["class"]?.toString()
@@ -53,7 +53,7 @@ open class PixLyzerItem(resourceLocation: ResourceLocation, registries: Registri
                     PixLyzerItem
                 }
             }
-            return factory.build(resourceLocation, registries, data)
+            return factory.build(identifier, registries, data)
         }
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): Item {

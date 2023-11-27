@@ -16,17 +16,17 @@ package de.bixilon.minosoft.data.registries.entities.variants
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 
 class CatVariant(
     resourceLocation: ResourceLocation,
     data: JsonObject,
 ) : AbstractEntityVariant(resourceLocation, data) {
 
-    companion object : ResourceLocationCodec<CatVariant> {
+    companion object : IdentifierCodec<CatVariant> {
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): CatVariant {
-            return CatVariant(resourceLocation, data)
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): CatVariant {
+            return CatVariant(identifier, data)
         }
     }
 }

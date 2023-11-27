@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.effects.properties.categories.Categor
 import de.bixilon.minosoft.data.registries.effects.properties.categories.StatusEffectCategories
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.Colored
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -34,12 +34,12 @@ class PixlyzerStatusEffectType(
         return identifier.toString()
     }
 
-    companion object : ResourceLocationCodec<StatusEffectType> {
+    companion object : IdentifierCodec<StatusEffectType> {
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): PixlyzerStatusEffectType {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): PixlyzerStatusEffectType {
 
             return PixlyzerStatusEffectType(
-                identifier = resourceLocation,
+                identifier = identifier,
                 category = data["category"]?.unsafeCast<String>()?.let { return@let StatusEffectCategories[it] } ?: StatusEffectCategories.NEUTRAL,
                 color = data["color"]?.toInt()?.asRGBColor() ?: ChatColors.WHITE,
             )

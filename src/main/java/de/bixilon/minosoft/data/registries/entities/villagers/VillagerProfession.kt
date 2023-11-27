@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.entities.villagers
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 
 data class VillagerProfession(
     override val identifier: ResourceLocation,
@@ -27,10 +27,10 @@ data class VillagerProfession(
         return identifier.toString()
     }
 
-    companion object : ResourceLocationCodec<VillagerProfession> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): VillagerProfession {
+    companion object : IdentifierCodec<VillagerProfession> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): VillagerProfession {
             return VillagerProfession(
-                identifier = resourceLocation,
+                identifier = identifier,
             )
         }
     }

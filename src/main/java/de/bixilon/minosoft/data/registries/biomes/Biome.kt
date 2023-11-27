@@ -18,7 +18,7 @@ import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.tint.TintManager.Companion.jsonTint
@@ -48,14 +48,13 @@ data class Biome(
         return identifier.toString()
     }
 
-    companion object : ResourceLocationCodec<Biome> {
+    companion object : IdentifierCodec<Biome> {
 
         private fun getColorMapCoordinate(value: Float): Int {
             return ((1.0 - value.clamp(0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
         }
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Biome {
-            check(registries != null) { "Registries is null!" }
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Biome {
             val effects = data["effects"].toJsonObject() // nbt data
             val skyColor = (data["sky_color"] ?: effects?.get("sky_color"))?.jsonTint()
             val fogColor = (data["fog_color"] ?: effects?.get("fog_color"))?.jsonTint()
@@ -63,7 +62,7 @@ data class Biome(
             val waterFogColor = (data["water_fog_color"] ?: effects?.get("water_fog_color"))?.jsonTint()
 
             return Biome(
-                identifier = resourceLocation,
+                identifier = identifier,
                 temperature = data["temperature"]?.toFloat() ?: 0.0f,
                 downfall = data["downfall"]?.toFloat() ?: 0.0f,
                 skyColor = skyColor,

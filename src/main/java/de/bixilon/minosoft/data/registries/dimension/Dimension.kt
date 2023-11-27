@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.dimension
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 
 data class Dimension(
     override val identifier: ResourceLocation,
@@ -26,11 +26,11 @@ data class Dimension(
         return identifier.toString()
     }
 
-    companion object : ResourceLocationCodec<Dimension> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Dimension {
+    companion object : IdentifierCodec<Dimension> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Dimension {
             return Dimension(
-                identifier = resourceLocation,
-                properties = DimensionProperties.deserialize(resourceLocation, data)
+                identifier = identifier,
+                properties = DimensionProperties.deserialize(identifier, data)
             )
         }
     }

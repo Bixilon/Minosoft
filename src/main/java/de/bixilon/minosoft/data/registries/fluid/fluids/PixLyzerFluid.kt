@@ -15,17 +15,17 @@ package de.bixilon.minosoft.data.registries.fluid.fluids
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class PixLyzerFluid(resourceLocation: ResourceLocation) : Fluid(resourceLocation) {
 
     override fun getVelocityMultiplier(connection: PlayConnection): Double = 1.0
 
-    companion object : ResourceLocationCodec<Fluid> {
+    companion object : IdentifierCodec<Fluid> {
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): PixLyzerFluid {
-            return PixLyzerFluid(resourceLocation)
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): PixLyzerFluid {
+            return PixLyzerFluid(identifier)
         }
     }
 }

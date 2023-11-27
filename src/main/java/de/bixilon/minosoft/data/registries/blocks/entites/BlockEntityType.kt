@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 data class BlockEntityType<T : BlockEntity>(
@@ -34,11 +34,11 @@ data class BlockEntityType<T : BlockEntity>(
         return factory.build(connection)
     }
 
-    companion object : ResourceLocationCodec<BlockEntityType<*>> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockEntityType<*>? {
+    companion object : IdentifierCodec<BlockEntityType<*>> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): BlockEntityType<*>? {
             // ToDo: Fix resource location
             check(registries != null)
-            val factory = DefaultBlockDataFactory[resourceLocation] ?: return null // ToDo
+            val factory = DefaultBlockDataFactory[identifier] ?: return null // ToDo
 
             val blocks: MutableSet<Block> = mutableSetOf()
 
@@ -47,7 +47,7 @@ data class BlockEntityType<T : BlockEntity>(
             }
 
             return BlockEntityType(
-                identifier = resourceLocation,
+                identifier = identifier,
                 blocks = blocks,
                 factory = factory,
             )

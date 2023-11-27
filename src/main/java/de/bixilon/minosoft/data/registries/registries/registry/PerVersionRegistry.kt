@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.Versions
 import java.util.*
@@ -34,7 +34,7 @@ class PerVersionRegistry<E, R : AbstractRegistry<E>>(private val registryCreator
         throw IllegalArgumentException("Can not find a registry for version $version")
     }
 
-    fun initialize(data: Map<String, Any>, codec: ResourceLocationCodec<E>?) {
+    fun initialize(data: Map<String, Any>, codec: IdentifierCodec<E>?) {
         check(!this::versions.isInitialized) { "Already initialized!" }
 
         val versions: SortedMap<Int, R> = sortedMapOf({ t, t2 -> t2 - t })

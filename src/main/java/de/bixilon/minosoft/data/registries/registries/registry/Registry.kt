@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -30,7 +30,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
 open class Registry<T : RegistryItem>(
     override var parent: AbstractRegistry<T>? = null,
-    val codec: ResourceLocationCodec<T>? = null,
+    val codec: IdentifierCodec<T>? = null,
     val integrated: IntegratedRegistry<T>? = null,
     val metaType: MetaTypes = MetaTypes.NONE,
     var flattened: Boolean = false,

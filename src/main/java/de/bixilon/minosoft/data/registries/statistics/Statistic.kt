@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class Statistic(
@@ -30,8 +30,8 @@ open class Statistic(
         return identifier.toString()
     }
 
-    companion object : ResourceLocationCodec<Statistic> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Statistic {
+    companion object : IdentifierCodec<Statistic> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Statistic {
             val translationKey = data["translation_id"]?.toResourceLocation()
             val unit = StatisticUnits[data["unit"]!!]!!
 
@@ -41,7 +41,7 @@ open class Statistic(
                     custom += value.toResourceLocation()
                 }
                 return OtherStatistic(
-                    resourceLocation = resourceLocation,
+                    resourceLocation = identifier,
                     translationKey = translationKey,
                     unit = unit,
                     custom = custom,
@@ -49,7 +49,7 @@ open class Statistic(
             }
 
             return Statistic(
-                identifier = resourceLocation,
+                identifier = identifier,
                 translationKey = translationKey,
                 unit = unit,
             )

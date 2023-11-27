@@ -18,7 +18,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import java.util.*
@@ -40,10 +40,10 @@ data class Material(
         return identifier.toString()
     }
 
-    companion object : ResourceLocationCodec<Material> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Material {
+    companion object : IdentifierCodec<Material> {
+        override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Material {
             return Material(
-                identifier = resourceLocation,
+                identifier = identifier,
                 color = TintManager.getJsonColor(data["color"]?.toInt() ?: 0),
                 pushReaction = data["push_reaction"].nullCast<String>()?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
                 blockMotion = data["blocks_motion"]?.toBoolean() ?: false,
