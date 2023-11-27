@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -37,6 +38,7 @@ class OpenGLNativeShader(
     private val vertex: ResourceLocation,
     private val geometry: ResourceLocation?,
     private val fragment: ResourceLocation,
+    val system: OpenGLRenderSystem = context.system.unsafeCast(),
 ) : NativeShader {
     override var loaded: Boolean = false
         private set
@@ -98,8 +100,6 @@ class OpenGLNativeShader(
             glDeleteShader(program)
         }
         loaded = true
-
-        context.system.nativeShaders += this
     }
 
     override fun unload() {
@@ -107,7 +107,6 @@ class OpenGLNativeShader(
         glDeleteProgram(this.handler)
         loaded = false
         this.handler = -1
-        context.system.nativeShaders -= this
     }
 
     override fun reload() {

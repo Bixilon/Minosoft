@@ -50,7 +50,6 @@ class OpenGLRenderSystem(
     private val context: RenderContext,
 ) : RenderSystem {
     private var thread: Thread? = null
-    override val nativeShaders: MutableSet<NativeShader> = mutableSetOf()
     override val shaders: MutableSet<Shader> = mutableSetOf()
     private val capabilities: MutableSet<RenderingCapabilities> = RenderingCapabilities.set()
     override lateinit var vendor: OpenGLVendor
@@ -84,7 +83,7 @@ class OpenGLRenderSystem(
 
             check(value is OpenGLNativeShader) { "Can not use non OpenGL shader in OpenGL render system!" }
             check(value.loaded) { "Shader not loaded!" }
-            check(value in nativeShaders) { "Shader not part of this context!" }
+            check(this === value.system) { "Shader not part of this context!" }
 
             value.unsafeUse()
 

@@ -41,7 +41,6 @@ import java.nio.FloatBuffer
 class DummyRenderSystem(
     private val context: RenderContext,
 ) : RenderSystem {
-    override val nativeShaders: MutableSet<NativeShader> = mutableSetOf()
     override val shaders: MutableSet<Shader> = mutableSetOf()
     override lateinit var vendor: GPUVendor
     override var shader: NativeShader? = null

@@ -33,7 +33,6 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import java.nio.FloatBuffer
 
 interface RenderSystem {
-    val nativeShaders: MutableSet<NativeShader>
     val shaders: MutableSet<Shader>
     val vendor: GPUVendor
     var shader: NativeShader?
