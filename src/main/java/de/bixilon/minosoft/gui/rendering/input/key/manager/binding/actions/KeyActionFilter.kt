@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.input.key.manager.InputManager
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingFilterState
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.KeyBindingState
@@ -94,6 +93,9 @@ interface KeyActionFilter {
 
 
     object DoublePress : KeyActionFilter {
+        const val PRESS_MAX_DELAY = 300
+        const val DELAY_BETWEEN_PRESSED = 500
+
 
         override fun check(filter: KeyBindingFilterState, codes: Set<KeyCodes>, input: InputManager, name: ResourceLocation, state: KeyBindingState, code: KeyCodes, pressed: Boolean, millis: Long) {
             if (!pressed) {
@@ -110,11 +112,11 @@ interface KeyActionFilter {
                 return
             }
 
-            if (millis - previous > RenderConstants.DOUBLE_PRESS_KEY_PRESS_MAX_DELAY) {
+            if (millis - previous > PRESS_MAX_DELAY) {
                 filter.satisfied = false
                 return
             }
-            if (millis - state.lastChange <= RenderConstants.DOUBLE_PRESS_DELAY_BETWEEN_PRESSED) {
+            if (millis - state.lastChange <= DELAY_BETWEEN_PRESSED) {
                 filter.satisfied = false
                 return
             }

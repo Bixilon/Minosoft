@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.registries.chat.TypeProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 
 open class InternalChatMessage(
     val raw: ChatComponent,
@@ -33,9 +32,10 @@ open class InternalChatMessage(
         raw.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
     }
 
-    override val text: ChatComponent = BaseComponent(RenderConstants.INTERNAL_MESSAGES_PREFIX, raw)
+    override val text: ChatComponent = BaseComponent(PREFIX, raw)
 
     companion object {
         val TYPE = ChatMessageType(minosoft("internal_message"), TypeProperties("%s", listOf(ChatParameter.CONTENT), mapOf()), narration = null, position = ChatTextPositions.CHAT)
+        const val PREFIX = "§f[§a§lINTERNAL§f] "
     }
 }

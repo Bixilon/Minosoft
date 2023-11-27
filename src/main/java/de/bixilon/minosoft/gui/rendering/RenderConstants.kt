@@ -15,15 +15,11 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 
 object RenderConstants {
-    val EXPERIENCE_BAR_LEVEL_COLOR = "#80ff20".asColor()
-
     const val COLORMAP_SIZE = 255
 
-    const val DEBUG_MESSAGES_PREFIX = "§f[§e§lDEBUG§f] "
-    const val INTERNAL_MESSAGES_PREFIX = "§f[§a§lINTERNAL§f] "
 
     val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
 
@@ -35,10 +31,7 @@ object RenderConstants {
     const val MAXIMUM_QUEUE_TIME_PER_FRAME = 20L
 
 
-    val DEBUG_TEXTURE_RESOURCE_LOCATION = minosoft("textures/debug.png")
-
-    const val DOUBLE_PRESS_KEY_PRESS_MAX_DELAY = 300
-    const val DOUBLE_PRESS_DELAY_BETWEEN_PRESSED = 500
+    val DEBUG_TEXTURE_RESOURCE_LOCATION = minosoft("debug").texture()
 
 
     const val DEFAULT_LINE_WIDTH = 1.0f / 128.0f
@@ -48,6 +41,5 @@ object RenderConstants {
 
     const val DISABLE_GUI_CACHE = false
 
-    const val OPENGL_DEBUG_MODE = false
     const val DIRTY_BUFFER_UNBIND = true
 }

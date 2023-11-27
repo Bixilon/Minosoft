@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
@@ -66,7 +66,7 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
 
         if (level > 0) {
             // level
-            val text = TextElement(guiRenderer, TextComponent(level).apply { color = RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR }, background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false))
+            val text = TextElement(guiRenderer, TextComponent(level).apply { color = LEVEL_COLOR }, background = null, properties = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false))
 
             text.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, text.size.x), -TEXT_PROPERTIES.lineHeight + 1), consumer, options)
         }
@@ -95,5 +95,6 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
         val ATLAS = minecraft("hud/hotbar/experience")
         private val TEXT_PROPERTIES = TextRenderProperties(HorizontalAlignments.CENTER, shadow = false)
         private val SIZE = Vec2(182, 5)
+        val LEVEL_COLOR = "#80ff20".asColor()
     }
 }

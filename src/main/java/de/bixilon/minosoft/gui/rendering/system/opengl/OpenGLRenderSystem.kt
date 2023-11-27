@@ -18,7 +18,6 @@ import de.bixilon.kutil.concurrent.lock.thread.ThreadMissmatchException
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -135,7 +134,7 @@ class OpenGLRenderSystem(
                 glViewport(0, 0, it.size.x, it.size.y)
             }
         }
-        if (RenderConstants.OPENGL_DEBUG_MODE) {
+        if (DEBUG_MODE) {
             glEnable(GL_DEBUG_OUTPUT)
             glDebugMessageCallback({ source, type, id, severity, length, message, userParameter ->
                 Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity, length=$length, message=$message, userParameter=$userParameter" }
@@ -327,6 +326,7 @@ class OpenGLRenderSystem(
     }
 
     companion object : RenderSystemFactory {
+        const val DEBUG_MODE = false
 
         override fun create(context: RenderContext) = OpenGLRenderSystem(context)
 

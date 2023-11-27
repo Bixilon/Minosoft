@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Atlas.Companion.get
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
@@ -30,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Compani
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.AbstractButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarExperienceBarElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
@@ -69,7 +69,7 @@ class EnchantmentButtonElement(
 
     fun update(disabled: Boolean, cost: Int, enchantment: Enchantment?, level: Int) {
         _disabled = disabled || cost <= 0
-        levelText.text = TextComponent(cost).color(RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR)
+        levelText.text = TextComponent(cost).color(HotbarExperienceBarElement.LEVEL_COLOR)
         textElement._chatComponent = if (enchantment == null) ChatComponent.EMPTY else TextComponent(enchantment.identifier.toMinifiedString() + " $level").color(ChatColors.BLUE)
         textElement.forceSilentApply()
 

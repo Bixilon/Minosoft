@@ -16,6 +16,10 @@ package de.bixilon.minosoft.data.chat.message.internal
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 
-class DebugChatMessage(message: ChatComponent) : InternalChatMessage(BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { this.setFallbackColor(ChatColors.BLUE) }))
+class DebugChatMessage(message: ChatComponent) : InternalChatMessage(BaseComponent(PREFIX, ChatComponent.of(message).apply { this.setFallbackColor(ChatColors.BLUE) })) {
+
+    companion object {
+        const val PREFIX = "§f[§e§lDEBUG§f] "
+    }
+}
