@@ -37,7 +37,7 @@ object BlockProperties {
     val STAIR_DIRECTIONAL = EnumProperty("shape", Shapes).register()
     val SLAB_HALF = EnumProperty("half", Halves).register()
     val STAIR_HALF = EnumProperty("half", Halves, Halves.set(Halves.UPPER, Halves.LOWER))
-    val SLAB_TYPE = SlabBlock.HALF.register()
+    val SLAB_TYPE = SlabBlock.TYPE.register()
     val FLUID_LEVEL = FluidBlock.LEVEL.register()
     val MOISTURE_LEVEL = IntProperty("moisture").register()
     val HONEY_LEVEL = IntProperty("honey_level").register()
