@@ -11,10 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.building.stone
+package de.bixilon.minosoft.data.registries.blocks.types.building.copper
 
 import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.HardnessBlock
 
-interface Stone : HardnessBlock {
-    override val hardness get() = 1.5f
+interface Copper : HardnessBlock {
+    override val hardness get() = 3.0f
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.input.interaction.breaking
 
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
-import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.input.interaction.KeyHandlerUtil.awaitTicks
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
@@ -32,7 +32,7 @@ class BreakHandlerInputTest {
         val connection = createConnection(1)
         val player = createPlayer(connection)
         val handler = BreakHandler(connection.camera.interactions)
-        BreakHandlerTest.createTarget(connection, Stone.Block.identifier, 1.0)
+        BreakHandlerTest.createTarget(connection, StoneBlock.Block.identifier, 1.0)
 
 
         handler.press()
@@ -44,7 +44,7 @@ class BreakHandlerInputTest {
         val connection = createConnection(1)
         val player = createPlayer(connection)
         val handler = BreakHandler(connection.camera.interactions)
-        BreakHandlerTest.createTarget(connection, Stone.Block.identifier, 1.0)
+        BreakHandlerTest.createTarget(connection, StoneBlock.Block.identifier, 1.0)
 
         Thread.currentThread().priority = Thread.MAX_PRIORITY
 
@@ -62,7 +62,7 @@ class BreakHandlerInputTest {
         val connection = createConnection(1)
         val player = createPlayer(connection)
         val handler = BreakHandler(connection.camera.interactions)
-        BreakHandlerTest.createTarget(connection, Stone.Block.identifier, 1.0)
+        BreakHandlerTest.createTarget(connection, StoneBlock.Block.identifier, 1.0)
 
 
         Thread.currentThread().priority = Thread.MAX_PRIORITY

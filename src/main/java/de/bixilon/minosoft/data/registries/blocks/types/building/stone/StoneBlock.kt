@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.building.quartz
+package de.bixilon.minosoft.data.registries.blocks.types.building.stone
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
@@ -21,21 +21,22 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface Quartz {
+interface StoneBlock : Stone {
 
-    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), Quartz {
+    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), StoneBlock {
 
         companion object : BlockFactory<Block> {
-            override val identifier = minecraft("quartz_block")
+            override val identifier = minecraft("stone")
 
             override fun build(registries: Registries, settings: BlockSettings) = Block(settings = settings)
         }
     }
 
-    class Slab(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), Quartz {
+    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), StoneBlock {
+        override val hardness get() = 2.0f
 
         companion object : BlockFactory<Slab> {
-            override val identifier = minecraft("quartz_slab")
+            override val identifier = minecraft("stone_slab")
 
             override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
         }

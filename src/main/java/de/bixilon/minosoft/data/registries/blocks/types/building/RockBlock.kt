@@ -27,7 +27,6 @@ import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class RockBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), PickaxeRequirement, FullOpaqueBlock, BlockStateBuilder, BlockWithItem<Item> {
     override val item: Item = this::item.inject(identifier)
-    override val hardness: Float get() = 1.5f
 
     override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
         return BlockState(this, settings.luminance)

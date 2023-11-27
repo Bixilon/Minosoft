@@ -31,7 +31,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBloc
 import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.DarkPrismarine
 import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.Prismarine
 import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.PrismarineBrick
-import de.bixilon.minosoft.data.registries.blocks.types.building.quartz.Quartz
+import de.bixilon.minosoft.data.registries.blocks.types.building.quartz.QuartzBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.quartz.SmoothQuartz
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.snow.SnowLayerBlock
@@ -56,7 +56,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 object BlockFactories : DefaultFactory<BlockFactory<*>>(
     AirBlock.Air, AirBlock.VoidAir, AirBlock.CaveAir,
 
-    Stone.Block, Stone.Slab,
+    StoneBlock.Block, StoneBlock.Slab,
     SmoothStone.Block, SmoothStone.Slab,
     StoneBrick.Block, StoneBrick.Slab,
     Cobblestone.Block, Cobblestone.Slab,
@@ -69,12 +69,12 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
 
     Sandstone.Block, Sandstone.Slab,
     CutSandstone.Block, CutSandstone.Slab,
-    SmoothStone.Block, SmoothSandstone.Slab,
+    SmoothSandstone.Block, SmoothSandstone.Slab,
     RedSandstone.Block, RedSandstone.Slab,
     CutRedSandstone.Block, CutRedSandstone.Slab,
     SmoothRedSandstone.Block, SmoothRedSandstone.Slab,
 
-    Quartz.Block, Quartz.Slab,
+    QuartzBlock.Block, QuartzBlock.Slab,
     SmoothQuartz.Block, SmoothQuartz.Slab,
 
     Brick.Block, Brick.Slab,

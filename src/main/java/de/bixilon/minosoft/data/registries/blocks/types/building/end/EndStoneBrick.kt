@@ -17,13 +17,17 @@ import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.HardnessBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_15
 
-interface EndStoneBrick {
+interface EndStoneBrick : HardnessBlock {
+    override val hardness get() = 3.0f
 
     open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), EndStoneBrick {
+        override val hardness = if (settings.version >= V_1_15) super.hardness else 0.8f
 
         companion object : BlockFactory<Block> {
             override val identifier = minecraft("end_stone_bricks")
@@ -33,6 +37,7 @@ interface EndStoneBrick {
     }
 
     class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), EndStoneBrick {
+        override val hardness = if (settings.version >= V_1_15) super.hardness else 0.8f
 
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("end_stone_brick_slab")

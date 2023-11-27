@@ -19,7 +19,7 @@ import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -63,7 +63,7 @@ class ChunkS2CPTest {
         assertNull(blocks[5])
         // rest is null
 
-        assertEquals(blocks[2]!![0, 12, 7]?.block?.identifier, Stone.Block.identifier)
+        assertEquals(blocks[2]!![0, 12, 7]?.block?.identifier, StoneBlock.Block.identifier)
         assertNull(blocks[2]!![1, 12, 7])
     }
 

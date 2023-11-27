@@ -11,32 +11,34 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.building.copper
+package de.bixilon.minosoft.data.registries.blocks.types.building.quartz
 
 import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.HardnessBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface ExposedCutCopper : Copper {
+interface QuartzBlock : HardnessBlock {
+    override val hardness get() = 0.8f
 
-
-    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), ExposedCutCopper {
+    open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), QuartzBlock {
 
         companion object : BlockFactory<Block> {
-            override val identifier = minecraft("exposed_cut_copper")
+            override val identifier = minecraft("quartz_block")
 
             override fun build(registries: Registries, settings: BlockSettings) = Block(settings = settings)
         }
     }
 
-    class Slab(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), ExposedCutCopper {
+    class Slab(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), QuartzBlock {
+        override val hardness get() = 2.0f
 
         companion object : BlockFactory<Slab> {
-            override val identifier = minecraft("exposed_cut_copper_slab")
+            override val identifier = minecraft("quartz_slab")
 
             override fun build(registries: Registries, settings: BlockSettings) = Slab(settings = settings)
         }

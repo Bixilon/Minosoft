@@ -17,11 +17,13 @@ import de.bixilon.minosoft.data.registries.blocks.factory.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.types.building.RockBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.SlabBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.HardnessBlock
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface CutRedSandstone {
+interface CutRedSandstone : HardnessBlock {
+    override val hardness get() = 0.8f
 
     open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), CutRedSandstone {
 
@@ -33,7 +35,8 @@ interface CutRedSandstone {
     }
 
     class Slab(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : SlabBlock.AbstractStoneSlab(identifier, settings), CutRedSandstone {
-
+        override val hardness get() = 2.0f
+        
         companion object : BlockFactory<Slab> {
             override val identifier = minecraft("cut_red_sandstone_slab")
 

@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.WoolBlock
-import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pvp.CobwebBlock
 import de.bixilon.minosoft.data.registries.effects.mining.MiningEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
@@ -291,27 +291,27 @@ class BreakHandlerTest {
     }
 
     fun haste1() {
-        breakBlock(Stone.Block.identifier, WoodenTool.WoodenPickaxe, haste = 1, ticks = 18)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, WoodenTool.WoodenPickaxe, haste = 1, ticks = 18)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun haste1BadTool() {
-        breakBlock(Stone.Block.identifier, haste = 1, ticks = 109)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, haste = 1, ticks = 109)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
     }
 
     fun haste2() {
-        breakBlock(Stone.Block.identifier, WoodenTool.WoodenPickaxe, haste = 2, ticks = 16)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, WoodenTool.WoodenPickaxe, haste = 2, ticks = 16)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun haste3() {
-        breakBlock(Stone.Block.identifier, WoodenTool.WoodenPickaxe, haste = 3, ticks = 14)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, WoodenTool.WoodenPickaxe, haste = 3, ticks = 14)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun efficiency1() {
-        breakBlock(Stone.Block.identifier, WoodenTool.WoodenPickaxe, efficiency = 1, ticks = 13)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, WoodenTool.WoodenPickaxe, efficiency = 1, ticks = 13)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun efficiency2() {
-        breakBlock(Stone.Block.identifier, GoldenTool.GoldenPickaxe, efficiency = 2, ticks = 4)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, GoldenTool.GoldenPickaxe, efficiency = 2, ticks = 4)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun efficiency3() {
@@ -323,43 +323,43 @@ class BreakHandlerTest {
     }
 
     fun air() {
-        breakBlock(Stone.Block.identifier, onGround = false, ticks = 751)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, onGround = false, ticks = 751)!!.assert(productivity = BlockBreakProductivity.INEFFECTIVE)
     }
 
     fun air2() {
-        breakBlock(Stone.Block.identifier, DiamondTool.DiamondPickaxe, onGround = false, ticks = 30)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, DiamondTool.DiamondPickaxe, onGround = false, ticks = 30)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun water() {
         todo()
-        breakBlock(Stone.Block.identifier, DiamondTool.DiamondPickaxe, inWater = true, ticks = Int.MAX_VALUE)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE) // TODO
+        breakBlock(StoneBlock.Block.identifier, DiamondTool.DiamondPickaxe, inWater = true, ticks = Int.MAX_VALUE)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE) // TODO
     }
 
     fun waterAquaAffinity() {
         todo()
-        breakBlock(Stone.Block.identifier, DiamondTool.DiamondPickaxe, inWater = true, aquaAffinity = 1, ticks = Int.MAX_VALUE)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE) // TODO
+        breakBlock(StoneBlock.Block.identifier, DiamondTool.DiamondPickaxe, inWater = true, aquaAffinity = 1, ticks = Int.MAX_VALUE)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE) // TODO
     }
 
     fun waterAir() {
         todo()
-        breakBlock(Stone.Block.identifier, DiamondTool.DiamondPickaxe, inWater = true, onGround = false, ticks = Int.MAX_VALUE)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE) // TODO
+        breakBlock(StoneBlock.Block.identifier, DiamondTool.DiamondPickaxe, inWater = true, onGround = false, ticks = Int.MAX_VALUE)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE) // TODO
     }
 
 
     fun miningFatigue1() {
-        breakBlock(Stone.Block.identifier, GoldenTool.GoldenPickaxe, miningFatigue = 1, ticks = 43)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, GoldenTool.GoldenPickaxe, miningFatigue = 1, ticks = 43)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun miningFatigue2() {
-        breakBlock(Stone.Block.identifier, GoldenTool.GoldenPickaxe, miningFatigue = 2, ticks = 1390)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, GoldenTool.GoldenPickaxe, miningFatigue = 2, ticks = 1390)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun miningFatigue3() {
-        breakBlock(Stone.Block.identifier, GoldenTool.GoldenPickaxe, miningFatigue = 3, ticks = 4631)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, GoldenTool.GoldenPickaxe, miningFatigue = 3, ticks = 4631)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun miningFatigue4() {
-        breakBlock(Stone.Block.identifier, GoldenTool.GoldenPickaxe, miningFatigue = 4, ticks = 4631)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
+        breakBlock(StoneBlock.Block.identifier, GoldenTool.GoldenPickaxe, miningFatigue = 4, ticks = 4631)!!.assert(productivity = BlockBreakProductivity.EFFECTIVE)
     }
 
     fun sapling() {
@@ -367,7 +367,7 @@ class BreakHandlerTest {
     }
 
     fun stonk() { // hypixel skyblock
-        assertNull(breakBlock(Stone.Block.identifier, GoldenTool.GoldenPickaxe, efficiency = 6, haste = 2, ticks = 0))
+        assertNull(breakBlock(StoneBlock.Block.identifier, GoldenTool.GoldenPickaxe, efficiency = 6, haste = 2, ticks = 0))
     }
 
     fun packetCancel() {

@@ -38,7 +38,6 @@ import de.bixilon.minosoft.protocol.versions.Version
 
 abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockStateBuilder, OutlinedBlock, CollidableBlock, BlockWithItem<Item>, WaterloggableBlock {
     override val item: Item = this::item.inject(identifier)
-    override val hardness get() = 2.0f
 
     override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
         val half = settings.properties?.get(HALF) ?: throw IllegalArgumentException("Half not set!")
@@ -58,107 +57,109 @@ abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) 
         val HALF = EnumProperty("type", Halves)
     }
 
-    abstract class WoodSlab(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), AxeRequirement
+    abstract class WoodSlab(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), AxeRequirement {
+        override val hardness get() = 2.0f
+    }
     abstract class AbstractStoneSlab(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), PickaxeRequirement
 
 
     /*
     class PetrifiedOak(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class Blackstone(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class PolishedBlackstoneBrick(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class PolishedBlackstone(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class Tuff(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class PolishedTuff(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class TuffBrick(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class CobbleDeepslate(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class PolishedDeepslate(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class DeepslateTile(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 
     class DeepslateBrick(identifier: ResourceLocation = this.identifier, settings: BlockSettings) : AbstractStoneSlab(identifier, settings) {
 
-        companion object : BlockFactory<Stone> {
+        companion object : BlockFactory<StoneBlock> {
             override val identifier = minecraft("stone_slab")
 
-            override fun build(registries: Registries, settings: BlockSettings) = Stone(settings = settings)
+            override fun build(registries: Registries, settings: BlockSettings) = StoneBlock(settings = settings)
         }
     }
 

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface PolishedGranite {
+interface PolishedGranite : Stone {
 
     open class Block(identifier: ResourceLocation = Companion.identifier, settings: BlockSettings) : RockBlock(identifier, settings), FlatteningRenamedModel, PolishedGranite {
         override val legacyModelName = minecraft("smooth_granite")

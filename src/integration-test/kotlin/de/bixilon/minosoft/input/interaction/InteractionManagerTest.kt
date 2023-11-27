@@ -15,7 +15,7 @@ package de.bixilon.minosoft.input.interaction
 
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.physics.PhysicsTestUtil.createPlayer
-import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Stone
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.input.interaction.InteractionTestUtil.lookAtPig
 import de.bixilon.minosoft.input.interaction.breaking.BreakHandlerTest.Companion.createTarget
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
@@ -54,7 +54,7 @@ class InteractionManagerTest {
         val connection = createConnection(1)
         val player = createPlayer(connection)
 
-        createTarget(connection, Stone.Block.identifier, 1.0)
+        createTarget(connection, StoneBlock.Block.identifier, 1.0)
 
         connection.camera.interactions.tryAttack(true)
         connection.assertPacket(PlayerActionC2SP::class.java)
