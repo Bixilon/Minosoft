@@ -74,9 +74,6 @@ public final class ProtocolDefinition {
 
     public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
 
-    public static final int TICKS_PER_DAY = 24000;
-    public static final float TICKS_PER_DAYf = (float) TICKS_PER_DAY;
-
     public static final byte LIGHT_LEVELS = 16;
     public static final byte MAX_LIGHT_LEVEL = LIGHT_LEVELS - 1;
     public static final int MAX_LIGHT_LEVEL_I = MAX_LIGHT_LEVEL;

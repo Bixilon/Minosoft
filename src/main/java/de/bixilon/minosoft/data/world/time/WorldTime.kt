@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,21 +13,26 @@
 
 package de.bixilon.minosoft.data.world.time
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.abs
 
 class WorldTime(
     time: Int = 0,
     age: Long = 0L,
 ) {
-    val time = abs(time) % ProtocolDefinition.TICKS_PER_DAY
+    val time = abs(time) % TICKS_PER_DAY
     val cycling = time >= 0
 
     val age = abs(age)
 
-    val moonPhase = MoonPhases[(this.age / ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size).toInt()] // ToDo: Verify
+    val moonPhase = MoonPhases[(this.age / TICKS_PER_DAY % MoonPhases.VALUES.size).toInt()] // ToDo: Verify
     val phase = DayPhases.of(this.time)
     val progress = phase.getProgress(this.time)
 
-    val day = (this.age + 6000) / ProtocolDefinition.TICKS_PER_DAY // day changes at midnight (18k)
+    val day = (this.age + 6000) / TICKS_PER_DAY // day changes at midnight (18k)
+
+
+    companion object {
+        const val TICKS_PER_DAY = 24000
+        const val TICKS_PER_DAYf = TICKS_PER_DAY.toFloat()
+    }
 }

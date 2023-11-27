@@ -18,9 +18,9 @@ import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.EntityRotation.Companion.CIRCLE_DEGREE
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.time.DayPhases
+import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 import kotlin.math.pow
 
@@ -38,7 +38,7 @@ class SunRenderer(
         // 180: night (13k-23k)
 
 
-        return ((time.time / ProtocolDefinition.TICKS_PER_DAYf) - 0.25f) * CIRCLE_DEGREE
+        return ((time.time / WorldTime.TICKS_PER_DAYf) - 0.25f) * CIRCLE_DEGREE
     }
 
     override fun calculateIntensity(): Float {

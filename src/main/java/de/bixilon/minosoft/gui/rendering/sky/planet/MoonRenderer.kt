@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 class MoonRenderer(
@@ -48,7 +47,7 @@ class MoonRenderer(
     override fun calculateAngle(): Float {
         val time = sky.context.connection.world.time
 
-        return ((time.time / ProtocolDefinition.TICKS_PER_DAYf) - 0.75f) * 360.0f
+        return ((time.time / WorldTime.TICKS_PER_DAYf) - 0.75f) * 360.0f
     }
 
     override fun calculateIntensity(): Float {
