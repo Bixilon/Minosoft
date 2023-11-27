@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWit
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.outline.OutlinedBlock
+import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -58,8 +59,9 @@ abstract class FernBlock(identifier: ResourceLocation, settings: BlockSettings) 
         override val legacyModelName get() = minecraft("tall_grass")
         override val tintProvider: TintProvider? = null
 
-        companion object : BlockFactory<Grass> {
+        companion object : BlockFactory<Grass>, AliasedIdentified {
             override val identifier = minecraft("grass")
+            override val identifiers = setOf(minecraft("short_grass"))
 
             override fun build(registries: Registries, settings: BlockSettings) = Grass(settings = settings)
         }

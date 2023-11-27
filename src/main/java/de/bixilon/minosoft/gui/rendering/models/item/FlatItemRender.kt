@@ -17,6 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.BlockVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
@@ -27,14 +29,22 @@ import de.bixilon.minosoft.gui.rendering.models.util.CuboidUtil
 import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
-class FlatItemRender(val texture: Texture) : ItemRender {
+class FlatItemRender(
+    val layers: Array<Texture>,
+    override val particle: Texture?,
+) : ItemRender {
 
     override fun render(gui: GUIRenderer, offset: Vec2, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2, stack: ItemStack, tints: IntArray?) {
-        ImageElement(gui, texture, size = size).render(offset, consumer, options)
+        for ((index, layer) in layers.withIndex()) {
+            val tint = tints?.get(index)?.let { RGBColor(it shl 8) } ?: ChatColors.WHITE
+            ImageElement(gui, layer, size = size, tint = tint).render(offset, consumer, options)
+        }
     }
 
     override fun render(mesh: BlockVertexConsumer, stack: ItemStack, tints: IntArray?) {
-        mesh.addQuad(POSITIONS, UV, texture.shaderId.buffer(), (tints?.get(0) ?: 0xFFFFFF).buffer())
+        for ((index, layer) in layers.withIndex()) {
+            mesh.addQuad(POSITIONS, UV, layer.shaderId.buffer(), (tints?.get(index) ?: 0xFFFFFF).buffer())
+        }
         // TODO: items have depth
         // TODO: light, ...
     }

@@ -19,9 +19,9 @@ import de.bixilon.minosoft.gui.rendering.models.block.BlockModel
 import de.bixilon.minosoft.gui.rendering.models.raw.display.DisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.raw.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 
 class ItemModel(
     val display: Map<DisplayPositions, ModelDisplay>? = null,
@@ -30,9 +30,20 @@ class ItemModel(
 
     fun load(textures: TextureManager): ItemModelPrototype? {
         if (this.textures == null) return null
-        val texture = this.textures["layer0", "particle"]?.toResourceLocation()?.texture() ?: return null
+        val particle = this.textures["particle"]?.let { textures.static.create(it.toResourceLocation().texture()) }
 
-        return ItemModelPrototype(textures.static.create(texture))
+        val layers: MutableList<IndexedValue<Texture>> = mutableListOf()
+        for ((key, texture) in this.textures) {
+            if (!key.startsWith("layer")) continue
+            val index = key.removePrefix("layer").toInt()
+            layers += IndexedValue(index, textures.static.create(texture.toResourceLocation().texture()))
+        }
+        if (layers.isEmpty()) return null
+
+        layers.sortBy { it.index }
+        val array = layers.map { it.value }.toTypedArray()
+
+        return ItemModelPrototype(array, particle)
     }
 
     companion object {
@@ -46,4 +57,5 @@ class ItemModel(
             return ItemModel(display, textures)
         }
     }
+
 }

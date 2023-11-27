@@ -147,26 +147,30 @@ class PlayInByteBuffer : InByteBuffer {
         return readNBTTag(versionId < V_14W28B, versionId < V_23W31A)
     }
 
+    private fun readLegacyItemStack(): ItemStack? {
+        val id = readShort().toInt()
+        if (id <= ProtocolDefinition.AIR_BLOCK_ID) {
+            return null
+        }
+        val count = readUnsignedByte()
+        var meta = 0
+        if (!connection.version.flattened) {
+            meta = readUnsignedShort()
+        }
+        val nbt = readNBT()?.toMutableJsonObject()
+        val item = connection.registries.item.getOrNull(id shl 16 or meta) ?: return null // TODO: only if item is not an ItemWithMeta
+        return ItemStackUtil.of(
+            item = item,
+            connection = connection,
+            count = count,
+            meta = meta,
+            nbt = nbt ?: mutableMapOf(),
+        )
+    }
+
     fun readItemStack(): ItemStack? {
         if (versionId < V_1_13_2_PRE1) {
-            val id = readShort().toInt()
-            if (id <= ProtocolDefinition.AIR_BLOCK_ID) {
-                return null
-            }
-            val count = readUnsignedByte()
-            var meta = 0
-            if (!connection.version.flattened) {
-                meta = readUnsignedShort()
-            }
-            val nbt = readNBT()?.toMutableJsonObject()
-            val item = connection.registries.item.getOrNull(id shl 16 or meta) ?: return null // TODO: only if item is not an ItemWithMeta
-            return ItemStackUtil.of(
-                item = item,
-                connection = connection,
-                count = count,
-                meta = meta,
-                nbt = nbt ?: mutableMapOf(),
-            )
+            return readLegacyItemStack()
         }
 
         return readOptional {

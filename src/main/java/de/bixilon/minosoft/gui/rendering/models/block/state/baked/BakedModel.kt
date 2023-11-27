@@ -32,7 +32,7 @@ class BakedModel(
     val faces: Array<Array<BakedFace>>,
     val properties: Array<SideProperties?>,
     val display: Map<DisplayPositions, ModelDisplay>?,
-    val particle: Texture?,
+    override val particle: Texture?,
 ) : BlockRender {
 
     init {
