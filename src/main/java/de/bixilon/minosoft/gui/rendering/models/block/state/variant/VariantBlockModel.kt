@@ -31,6 +31,9 @@ interface VariantBlockModel : DirectBlockModel {
         private fun parseVariant(block: Block, variant: String): BlockVariant {
             val properties: MutableMap<BlockProperty<*>, Any> = mutableMapOf()
             for (pair in variant.split(',')) {
+                val equals = pair.indexOf('=')
+                if (equals <= 0) continue
+
                 val (key, rawValue) = pair.split('=', limit = 2)
 
                 try {

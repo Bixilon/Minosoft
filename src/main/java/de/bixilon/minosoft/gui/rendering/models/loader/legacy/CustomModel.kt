@@ -13,10 +13,22 @@
 
 package de.bixilon.minosoft.gui.rendering.models.loader.legacy
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader.Companion.blockState
 import de.bixilon.minosoft.protocol.versions.Version
 
 interface CustomModel {
+
+    fun loadModel(loader: BlockLoader, version: Version): BlockModelPrototype? {
+        val name = getModelName(version)?.blockState() ?: return null
+        return loader.loadState(this.unsafeCast(), name)
+    }
+
     fun getModelName(version: Version) = modelName
-    val modelName: ResourceLocation? get() = null
+    val modelName: ResourceLocation? get() = this.nullCast<Identified>()?.identifier
 }

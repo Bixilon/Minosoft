@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.building
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.blocks.light.DirectedProperty
 import de.bixilon.minosoft.data.registries.blocks.light.OpaqueProperty
@@ -37,11 +38,18 @@ import de.bixilon.minosoft.data.registries.item.items.tool.pickaxe.PickaxeRequir
 import de.bixilon.minosoft.data.registries.shapes.voxel.AbstractVoxelShape
 import de.bixilon.minosoft.data.registries.shapes.voxel.VoxelShape
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.models.block.BlockModelPrototype
 import de.bixilon.minosoft.gui.rendering.models.block.state.DirectBlockModel
+import de.bixilon.minosoft.gui.rendering.models.block.state.apply.BlockStateApply
+import de.bixilon.minosoft.gui.rendering.models.block.state.variant.BlockVariant
+import de.bixilon.minosoft.gui.rendering.models.block.state.variant.PropertyVariantBlockModel
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader
+import de.bixilon.minosoft.gui.rendering.models.loader.BlockLoader.Companion.blockState
+import de.bixilon.minosoft.gui.rendering.models.loader.legacy.CustomModel
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 import de.bixilon.minosoft.protocol.versions.Version
 
-abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockStateBuilder, OutlinedBlock, CollidableBlock, BlockWithItem<Item>, WaterloggableBlock, ModelChooser {
+abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) : Block(identifier, settings), BlockStateBuilder, OutlinedBlock, CollidableBlock, BlockWithItem<Item>, WaterloggableBlock, CustomModel, ModelChooser {
     override val item: Item = this::item.inject(identifier)
 
     override fun register(version: Version, list: MapPropertyList) {
@@ -49,6 +57,16 @@ abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) 
         if (!version.flattened) {
             list += HALF
         }
+    }
+
+    override fun loadModel(loader: BlockLoader, version: Version): BlockModelPrototype? {
+        if (version.flattened) return super.loadModel(loader, version)
+        val doubleFile = ResourceLocation(identifier.namespace, identifier.path.removeSuffix("_slab") + "_double_slab")
+
+        val double = loader.loadState(this, doubleFile.blockState()) ?: return null
+        val single = super.loadModel(loader, version) ?: return null
+
+        return StonePrototype(single.model, double.model)
     }
 
     override fun bakeModel(context: RenderContext, model: DirectBlockModel) {
@@ -82,6 +100,22 @@ abstract class SlabBlock(identifier: ResourceLocation, settings: BlockSettings) 
         private val TOP_SHAPE = VoxelShape(0.0, 0.5, 0.0, 1.0, 1.0, 1.0)
         val TYPE = EnumProperty("type", Halves)
         val HALF = EnumProperty("half", Halves) // <1.13
+    }
+
+    private class StonePrototype(single: DirectBlockModel, val double: DirectBlockModel) : BlockModelPrototype(single) {
+
+        override fun bake(context: RenderContext, block: Block) {
+            if (block !is SlabBlock) return
+
+            block.bakeModel(context, model)
+            if (double is PropertyVariantBlockModel) {
+                // butt ugly hack
+                if (double.variants.size != 1) return
+                val map = double.variants.unsafeCast<MutableMap<BlockVariant, BlockStateApply>>()
+                map.remove(emptyMap())?.let { map[mapOf(HALF to Halves.DOUBLE)] = it }
+            }
+            block.bakeModel(context, double)
+        }
     }
 
     abstract class WoodSlab(identifier: ResourceLocation, settings: BlockSettings) : SlabBlock(identifier, settings), AxeRequirement {

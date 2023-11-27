@@ -31,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.models.block.state.render.BlockRender
 import de.bixilon.minosoft.gui.rendering.models.loader.legacy.ModelChooser
 import java.util.*
 
-class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
+open class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
     override fun render(position: BlockPosition, offset: FloatArray, mesh: BlockVertexConsumer, random: Random?, state: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?, entity: BlockEntity?) = prototype()
     override fun render(mesh: BlockVertexConsumer, state: BlockState, tints: IntArray?) = prototype()
     override fun getParticleTexture(random: Random?, position: Vec3i) = prototype()
@@ -42,7 +42,7 @@ class BlockModelPrototype(val model: DirectBlockModel) : BlockRender {
 
     private fun prototype(): Nothing = throw IllegalStateException("prototype")
 
-    fun bake(context: RenderContext, block: Block) {
+    open fun bake(context: RenderContext, block: Block) {
         if (block !is ModelChooser) {
             return ModelChooser.fallback(model, block)
         }

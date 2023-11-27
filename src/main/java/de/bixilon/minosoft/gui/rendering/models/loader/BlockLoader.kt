@@ -55,26 +55,32 @@ class BlockLoader(private val loader: ModelLoader) {
         return model
     }
 
-    fun loadState(block: Block): DirectBlockModel? {
-        val file = (if (block is CustomModel) block.getModelName(version) else block.identifier)?.blockState() ?: return null
+    fun loadState(block: Block, file: ResourceLocation): BlockModelPrototype? {
         val data = assets.getOrNull(file)?.readJsonObject() ?: return null
 
-        return DirectBlockModel.deserialize(this, block, data)
+        val model = DirectBlockModel.deserialize(this, block, data)
+        return model?.load(loader.context.textures)
+    }
+
+    fun loadState(block: Block): BlockModelPrototype? {
+        if (block is CustomModel) {
+            return block.loadModel(this, version)
+        }
+        return loadState(block, block.identifier.blockState())
     }
 
     fun load(latch: AbstractLatch?) {
         loader.context.connection.registries.block.async {
             if (it.model != null) return@async // model already set
-            val model: DirectBlockModel
+            val prototype: BlockModelPrototype
             try {
-                model = loadState(it) ?: return@async
+                prototype = loadState(it) ?: return@async
             } catch (error: Exception) {
                 Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Can not load block model for block $it: $error" }
                 Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { error }
                 return@async
             }
 
-            val prototype = model.load(loader.context.textures)
             it.model = prototype
         }
     }
