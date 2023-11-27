@@ -123,7 +123,7 @@ class OpenGLRenderSystem(
             vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor
             else -> OtherOpenGLVendor
         }
-        if (context.preferQuads && vendor.strictSpecification) {
+        if (context.preferQuads && vendor.strict) {
             throw IllegalStateException("Your GPU driver strictly follows the open gl specification. The setting `prefer_quads` is not working!")
         }
 
