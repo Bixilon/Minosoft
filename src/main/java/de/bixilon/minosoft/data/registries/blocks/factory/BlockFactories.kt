@@ -137,7 +137,7 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
     Warped.Leaves, Warped.Door, Warped.Slab,
 
     SnowBlock, SnowLayerBlock,
-    FernBlock.DeadBush, FernBlock.Grass, FernBlock.Fern,
+    FernBlock.DeadBush, FernBlock.Grass, FernBlock.ShortGrass, FernBlock.Fern,
     DoublePlant.Sunflower, DoublePlant.Lilac, DoublePlant.TallGrass, DoublePlant.LargeFern, DoublePlant.RoseBush, DoublePlant.Peony, DoublePlant.UpperBlock,
 
 
