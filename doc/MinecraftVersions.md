@@ -64,5 +64,27 @@ All packets in `packets` are by default in `PLAY` state. If you need to specify 
 }
 ```
 
+The packet id is index aware, the packet id is inferred by the index. All ids are mapped in code to their corresponding classes. All names/ids are not automatically generated,
+it makes no sense to do so. Names are just decided on what it actually does, not how mojang, wiki.vg or anybody else calls them.
+
 ---
 Note: Do not check for `protocol_id` (especially in entity data or packets), this data is not reliable (because snapshot ids are that much higher)! Use version ids.
+
+## How to support newer protocol versions
+
+There are quite some steps to make a new minecraft version/snapshot work:
+
+1. Generate all pixlyzer data (this is the first step, because it is the base for the next steps). PixLyzer generates an deobfuscated jar that you will need later on.
+   All mappings for the newer version should the be pushed to (gitlab.bixilon.de, github.com and gitlab.com). Minosoft will download them from there.
+2. Run the `assets_properties_generator` util python script, it will create the assets index (including pixlyzer data). The generated json file is automatically put into the resources folder,
+   it is shipped with minosoft.
+3. Use Burger, wiki.vg or the deobfuscated jar to generate a network diff
+   (may use a java decompiler and a diff tool like meld, you can also just diff the bytecode class files, the second option may be harder first, but will be easier once you are used to it)
+   between the latest supported version and the version you are trying to support (probably the next snapshot).
+   Packet Ids may have shifted, you manually need to put the new data to `src/main/resources/minosoft/mapping/versions.json`. Assign a new version id (that is higher than the previous one).
+   Now create a new constant with that version id at `de.bixilon.minosoft.protocol.protocol.ProtocolVersions`. You will use that constant to compare 2 versions.
+   Now implement all the packet changes from the previous diff (either add new packets at `DefaultPackets.kt` or adjust the packet classes accordingly. up to you, keep things organized).
+   For an example take a look at commit 853d7692d1c5281f88998d5bc5df5b51a490bc07.
+4. Run integration tests (it may fail on the latest version, might need to implement missing block properties) and fire up a minecraft server and join it.
+5. If there are no exceptions there is a good chance that everything works
+6. Commit and push :)
