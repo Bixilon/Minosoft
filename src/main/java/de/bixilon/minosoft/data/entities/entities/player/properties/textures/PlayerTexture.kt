@@ -38,6 +38,7 @@ open class PlayerTexture(
         url.checkWeb()
     }
 
+    @JsonIgnore
     fun getHash(): String {
         when (url.host) {
             "textures.minecraft.net" -> {

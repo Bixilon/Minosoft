@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.vanilla.DefaultSkinProvider
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.isBlack
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import java.io.ByteArrayInputStream
@@ -92,6 +93,29 @@ class SkinManager(private val textures: TextureManager) {
 
             64 -> data // skin
             else -> throw IllegalSkinError("Can not detect skin format: ${data.size}")
+        }
+    }
+
+    companion object {
+
+        fun PlayerSkin.isReallyWide(): Boolean {
+            val data = this.texture.data?.buffer ?: return true
+
+            return data.isReallyWide()
+        }
+
+        private fun TextureBuffer.isReallyWide(): Boolean {
+            // check if normal pixel is not black
+            if (this[40, 16].isBlack()) return true // left arm slim
+            if (this[32, 48].isBlack()) return true // right arm slim
+
+            if (!this[52, 20].isBlack()) return true // left arm wide
+            if (!this[53, 31].isBlack()) return true // left arm wide
+
+            if (!this[44, 52].isBlack()) return true // right arm wide
+            if (!this[45, 63].isBlack()) return true // right arm wide
+
+            return false
         }
     }
 }
