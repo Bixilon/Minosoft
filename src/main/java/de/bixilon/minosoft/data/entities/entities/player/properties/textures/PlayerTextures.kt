@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,12 +24,12 @@ import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import java.util.*
 
 data class PlayerTextures(
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) val name: String?,
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) val uuid: UUID?,
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) val date: Date?,
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) val skin: SkinPlayerTexture?,
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) val cape: PlayerTexture?,
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) val elytra: PlayerTexture?,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val name: String? = null,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val uuid: UUID? = null,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val date: Date? = null,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val skin: SkinPlayerTexture? = null,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val cape: PlayerTexture? = null,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val elytra: PlayerTexture? = null,
 ) {
 
     companion object {

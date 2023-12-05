@@ -73,6 +73,6 @@ open class PlayerTexture(
     }
 
     companion object {
-        private const val MAX_TEXTURE_SIZE = 64 * 64 * 3 + 100 // width * height * rgb + some padding
+        private const val MAX_TEXTURE_SIZE = 64 * 64 * 4 + 100 // width * height * rgba + some padding. Note: normal textures are compressed, so they are roughly 2kb in size
     }
 }

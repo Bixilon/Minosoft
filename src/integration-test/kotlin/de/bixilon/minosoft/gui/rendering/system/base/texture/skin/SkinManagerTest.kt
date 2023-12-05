@@ -14,12 +14,27 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.skin
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.url.URLUtil.toURL
+import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTextures
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.SkinPlayerTexture
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinMetadata
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTextureManager
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
+import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.*
 import org.testng.annotations.Test
+import java.util.*
 
 @Test(groups = ["rendering", "textures"], enabled = false) // TODO: flip skin correctly
 class SkinManagerTest {
@@ -54,5 +69,26 @@ class SkinManagerTest {
     fun `check if skin is really wide on a wide skin`() {
         val slim = SkinManager::class.java.getResourceAsStream("/skins/182f56f61cb8ec6e8938a5b7b515d209be55bb91e9969ba7bf9521293834cda2.png")!!.readAllBytes().readSkin()
         assertTrue(isReallyWide.invoke(SkinManager, slim) as Boolean)
+    }
+
+    fun `load dynamic texture correctly`() {
+        val context = RenderContext::class.java.allocate()
+        val textures = DummyTextureManager(context)
+
+        val skins = SkinManager(textures)
+        val player = RemotePlayerEntity::class.java.allocate()
+        player::connection.forceSet(createConnection())
+        player.connection.world.entities.add(null, UUID(1L, 2L), player)
+        player::additional.forceSet(PlayerAdditional("name_him"))
+
+        val data = SkinManager::class.java.getResourceAsStream("/skins/5065405b55a729be5a442832b895d4352b3fdcc61c8c57f4b8abad64344194d3.png")!!.readAllBytes()
+
+        val properties = PlayerProperties(PlayerTextures(skin = SkinPlayerTexture("https://127.0.0.1".toURL(), metadata = SkinMetadata(SkinModel.SLIM)).apply { this::data.forceSet(data) }))
+
+        val skin = skins.getSkin(player, properties, false, false)
+        assertEquals(skin?.model, SkinModel.SLIM)
+        assertEquals(skin?.texture?.state, DynamicTextureState.LOADED)
+        val buffer = skin?.texture?.data?.buffer!!
+        assertEquals(buffer.getRGBA(9, 0), 0x0F00FA_FF)
     }
 }
