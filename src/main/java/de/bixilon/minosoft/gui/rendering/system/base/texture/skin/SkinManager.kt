@@ -30,13 +30,13 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import java.io.ByteArrayInputStream
 import java.util.*
 
-class SkinManager(private val textureManager: TextureManager) {
+class SkinManager(private val textures: TextureManager) {
     lateinit var default: DefaultSkinProvider
         private set
     private var skin: PlayerSkin? = null
 
     fun initialize(account: Account, assets: AssetsManager) {
-        default = DefaultSkinProvider(this.textureManager.dynamic, assets)
+        default = DefaultSkinProvider(this.textures.dynamic, assets)
         default.initialize()
         skin = getSkin(account.uuid, account.properties, fetch = true, async = false)
     }
@@ -57,7 +57,7 @@ class SkinManager(private val textureManager: TextureManager) {
 
     private fun getSkin(uuid: UUID, properties: PlayerProperties?, async: Boolean = true): PlayerSkin? {
         val texture = properties?.textures?.skin ?: return default[uuid]
-        return PlayerSkin(textureManager.dynamic.push(texture.getHash(), async) { texture.read().readSkin() }, default[uuid]?.texture, texture.metadata.model)
+        return PlayerSkin(textures.dynamic.push(texture.getHash(), async) { texture.read().readSkin() }, default[uuid]?.texture, texture.metadata.model)
     }
 
     fun getSkin(player: PlayerEntity, properties: PlayerProperties? = null, fetch: Boolean = true, async: Boolean = true): PlayerSkin? {
@@ -76,16 +76,22 @@ class SkinManager(private val textureManager: TextureManager) {
 
     private fun ByteArray.readSkin(): TextureBuffer {
         val data = ByteArrayInputStream(this).readTexture()
-        if (data.size.y != 32) return data
+        if (data.size.x != 64) throw IllegalSkinError("Width of skin must be 64 pixels: ${data.size}")
+        return when (data.size.y) {
+            32 -> {
+                // <1.8 legacy skin
+                val next = RGBA8Buffer(Vec2i(64))
+                next.put(data, Vec2i.EMPTY_INSTANCE, Vec2i.EMPTY_INSTANCE, data.size)
 
-        val next = RGBA8Buffer(Vec2i(64))
-        next.put(data, Vec2i.EMPTY_INSTANCE, Vec2i.EMPTY_INSTANCE, data.size)
+                next.put(next, Vec2i(0, 16), Vec2i(16, 48), Vec2i(16, 16))// leg [0, 16][16,16] to left leg [16, 48]
+                next.put(next, Vec2i(40, 16), Vec2i(32, 48), Vec2i(16, 16)) // arm [40, 16] to left arm [32, 48]
 
-        next.put(next, Vec2i(0, 16), Vec2i(16, 48), Vec2i(16, 16))// leg [0, 16][16,16] to left leg [16, 48]
-        next.put(next, Vec2i(40, 16), Vec2i(32, 48), Vec2i(16, 16)) // arm [40, 16] to left arm [32, 48]
+                // TODO: flip every texture part
+                return data
+            }
 
-        // TODO: flip every texture part
-
-        return next
+            64 -> data // skin
+            else -> throw IllegalSkinError("Can not detect skin format: ${data.size}")
+        }
     }
 }

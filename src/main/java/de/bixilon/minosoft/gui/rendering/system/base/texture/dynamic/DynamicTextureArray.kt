@@ -24,6 +24,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
 
@@ -70,7 +73,14 @@ abstract class DynamicTextureArray(
     }
 
     private fun DynamicTexture.load(index: Int, creator: () -> TextureBuffer) {
-        val buffer = creator.invoke()
+        val buffer = try {
+            creator.invoke()
+        } catch (error: Throwable) {
+            Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Could not load dynamic texture (index=$index, identifier=${this.identifier}): $error" }
+            error.printStackTrace()
+            this.state = DynamicTextureState.ERROR
+            return
+        }
 
         this.data = MipmapTextureData(buffer, mipmaps)
         if (Thread.currentThread() == context.thread) {
@@ -147,7 +157,7 @@ abstract class DynamicTextureArray(
         for ((index, reference) in textures.withIndex()) {
             if (reference == null) continue
             val texture = reference.get()
-            if (texture != null) continue // not gced yet, keep it for now
+            if (texture != null && texture.state != DynamicTextureState.ERROR) continue // not gced yet, keep it for now
             textures[index] = null
         }
         lock.unlock()

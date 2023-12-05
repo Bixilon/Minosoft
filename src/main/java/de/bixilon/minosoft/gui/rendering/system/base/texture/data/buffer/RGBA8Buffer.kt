@@ -58,6 +58,9 @@ class RGBA8Buffer(
 
     override fun getRGBA(x: Int, y: Int): Int {
         val stride = stride(x, y)
+        if (stride > data.capacity()) {
+            throw IllegalArgumentException("Can not access pixel at ($x,$y), exceeds size: $size")
+        }
         return (this[stride + 0] shl 24) or (this[stride + 1] shl 16) or (this[stride + 2] shl 8) or (this[stride + 3] shl 0)
     }
 

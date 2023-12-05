@@ -11,15 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
+package de.bixilon.minosoft.gui.rendering.system.base.texture.skin
 
-enum class DynamicTextureState {
-    WAITING,
-    LOADING,
-    LOADED,
-    ERROR,
-
-    @Deprecated("unrechable", level = DeprecationLevel.ERROR)
-    UNLOADED,
-    ;
-}
+class IllegalSkinError(message: String? = null) : Exception(message)
