@@ -15,6 +15,7 @@ package de.bixilon.minosoft.commands.parser.minecraft.time
 
 import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParseError
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -44,7 +45,7 @@ internal class TimeParserTest {
     @Test
     fun testDaysUnit() {
         val reader = CommandReader("89d")
-        assertEquals(TimeParser().parse(reader), 89 * ProtocolDefinition.TICKS_PER_DAY)
+        assertEquals(TimeParser().parse(reader), 89 * WorldTime.TICKS_PER_DAY)
     }
 
     @Test
