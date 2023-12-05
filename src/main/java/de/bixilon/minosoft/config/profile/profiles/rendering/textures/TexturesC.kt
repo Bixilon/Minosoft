@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.textures
 
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
@@ -22,4 +23,10 @@ class TexturesC(profile: RenderingProfile) {
      * Weather to use mipmaps for all static textures
      */
     var mipmaps by IntDelegate(profile, 4, arrayOf(0..4))
+
+    /**
+     * Font texture can be compressed on the gpu which massively reduces vram usage.
+     * It may not work with all drivers well, so disable it when font is just black.
+     */
+    var compressedFont by BooleanDelegate(profile, true)
 }

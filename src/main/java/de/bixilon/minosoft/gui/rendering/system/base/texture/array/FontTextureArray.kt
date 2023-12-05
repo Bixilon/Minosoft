@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 abstract class FontTextureArray(
     val context: RenderContext,
     val resolution: Int,
+    val compressed: Boolean,
 ) : TextureArray {
     protected val textures: MutableSet<Texture> = mutableSetOf()
     private val lock = SimpleLock()

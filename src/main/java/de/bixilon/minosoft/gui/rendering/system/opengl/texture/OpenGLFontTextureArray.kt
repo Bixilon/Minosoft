@@ -35,7 +35,8 @@ import java.nio.ByteBuffer
 
 class OpenGLFontTextureArray(
     context: RenderContext,
-) : FontTextureArray(context, RESOLUTION) {
+    compressed: Boolean,
+) : FontTextureArray(context, RESOLUTION, compressed) {
     val index = context.system.unsafeCast<OpenGLRenderSystem>().textureBindingIndex++
     private var handle = -1
     private var textureIndex = 0
@@ -43,9 +44,10 @@ class OpenGLFontTextureArray(
 
     override fun upload(latch: AbstractLatch?) {
         this.handle = OpenGLTextureUtil.createTextureArray(0)
+        val format = if (compressed) GL_COMPRESSED_LUMINANCE_ALPHA else GL_RGBA8
         // glTexParameteriv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_RGBA, intArrayOf(GL_LUMINANCE, GL_LUMINANCE, GL_LUMINANCE, GL_LUMINANCE)) // TODO: not working?
 
-        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_COMPRESSED_LUMINANCE_ALPHA, RESOLUTION, RESOLUTION, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, RESOLUTION, RESOLUTION, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
 
         for (texture in textures) {
             val renderData = texture.renderData as OpenGLTextureData

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 
-class DummyFontTextureArray(context: RenderContext) : FontTextureArray(context, 1024) {
+class DummyFontTextureArray(context: RenderContext) : FontTextureArray(context, 1024, false) {
     override fun load(latch: AbstractLatch) {
         for (texture in textures) {
             texture.renderData = DummyTextureRenderData
