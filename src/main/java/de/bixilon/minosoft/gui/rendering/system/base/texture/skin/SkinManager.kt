@@ -105,15 +105,16 @@ class SkinManager(private val textures: TextureManager) {
         }
 
         private fun TextureBuffer.isReallyWide(): Boolean {
-            // check if normal pixel is not black
-            if (this[40, 16].isBlack()) return true // left arm slim
-            if (this[32, 48].isBlack()) return true // right arm slim
+            // check if pixel at arm (wide, not slim) is black. If not, its a wide skinn
+            if (!this[50, 16].isBlack()) return true // left arm slim
+            if (!this[42, 48].isBlack()) return true // right arm slim
 
-            if (!this[52, 20].isBlack()) return true // left arm wide
-            if (!this[53, 31].isBlack()) return true // left arm wide
+            // check 2 pixels of left arm slim, if they are black, the skin is either true black or broken
+            if (this[52, 20].isBlack()) return true // left arm wide
+            if (this[53, 31].isBlack()) return true // left arm wide
 
-            if (!this[44, 52].isBlack()) return true // right arm wide
-            if (!this[45, 63].isBlack()) return true // right arm wide
+            if (this[44, 52].isBlack()) return true // right arm wide
+            if (this[45, 63].isBlack()) return true // right arm wide
 
             return false
         }

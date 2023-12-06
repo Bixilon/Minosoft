@@ -83,11 +83,7 @@ abstract class DynamicTextureArray(
         }
 
         this.data = MipmapTextureData(buffer, mipmaps)
-        if (Thread.currentThread() == context.thread) {
-            upload(index, this)
-        } else {
-            context.queue += { upload(index, this) }
-        }
+        upload(index, this)
     }
 
     fun pushRaw(identifier: Any, async: Boolean = true, creator: () -> ByteArray): DynamicTexture {

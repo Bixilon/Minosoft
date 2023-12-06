@@ -46,6 +46,10 @@ class OpenGLDynamicTextureArray(
     private var handle = -1
 
     override fun upload(index: Int, texture: DynamicTexture) {
+        if (Thread.currentThread() != context.thread) {
+            context.queue += { upload(index, texture) }
+            return
+        }
         glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
 
         unsafeUpload(index, texture)

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 
 class DummyDynamicTextureArray(context: RenderContext) : DynamicTextureArray(context, 1, 0) {
     override fun createTexture(identifier: Any, index: Int) = DummyDynamicTexture
@@ -25,5 +26,8 @@ class DummyDynamicTextureArray(context: RenderContext) : DynamicTextureArray(con
     override fun unsafeUse(shader: NativeShader, name: String) = Unit
     override fun activate() = Unit
     override fun upload() = Unit
-    override fun upload(index: Int, texture: DynamicTexture) = Unit
+    override fun upload(index: Int, texture: DynamicTexture) {
+
+        texture.state = DynamicTextureState.LOADED
+    }
 }

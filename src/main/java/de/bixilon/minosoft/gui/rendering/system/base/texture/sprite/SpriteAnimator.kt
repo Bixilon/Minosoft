@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBu
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 
-class SpriteAnimator(val renderSystem: RenderSystem) {
+class SpriteAnimator(val system: RenderSystem) {
     val animations: MutableList<TextureAnimation> = mutableListOf()
     val size: Int
         get() = animations.size
@@ -32,7 +32,7 @@ class SpriteAnimator(val renderSystem: RenderSystem) {
 
     fun init() {
         check(animations.size < MAX_ANIMATED_TEXTURES) { "Can not have more than $MAX_ANIMATED_TEXTURES animated textures!" }
-        uniformBuffer = renderSystem.createIntUniformBuffer(IntArray(animations.size * INTS_PER_ANIMATED_TEXTURE))
+        uniformBuffer = system.createIntUniformBuffer(IntArray(animations.size * INTS_PER_ANIMATED_TEXTURE))
         uniformBuffer.init()
         initialized = true
         recalculate()
