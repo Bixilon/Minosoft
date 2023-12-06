@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.world.audio
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
-@Deprecated("")
+@Deprecated("use world.audio")
 interface WorldAudioPlayer : AbstractAudioPlayer {
     val audioPlayer: AbstractAudioPlayer?
 

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.particle
 
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 
-@Deprecated("")
+@Deprecated("use world.particle")
 interface WorldParticleRenderer : AbstractParticleRenderer {
     val particleRenderer: AbstractParticleRenderer?
 

@@ -20,7 +20,6 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.properties.rendering.RandomDisplayTickable
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -28,8 +27,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
 import de.bixilon.minosoft.data.world.audio.WorldAudioPlayer
-import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
-import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLightUtil.hasSkyLight
@@ -57,10 +55,10 @@ import java.util.*
  */
 class World(
     val connection: PlayConnection,
-) : BiomeAccessor, WorldAudioPlayer, WorldParticleRenderer {
+) : WorldAudioPlayer, WorldParticleRenderer {
     val lock = SimpleLock()
     val random = Random()
-    var cacheBiomeAccessor: NoiseBiomeAccessor? = null
+    val biomes = WorldBiomes(this)
     val chunks = ChunkManager(this, 1000, 100)
     val entities = WorldEntities()
     var hardcore by observed(false)
@@ -147,14 +145,6 @@ class World(
     @JvmName("set2")
     fun set(position: BlockPosition, entity: BlockEntity?) {
         chunks[position.chunkPosition]?.set(position.inChunkPosition, entity) // TODO: fire event if needed
-    }
-
-    override fun getBiome(blockPosition: BlockPosition): Biome? {
-        return chunks[blockPosition.chunkPosition]?.getBiome(blockPosition.inChunkPosition)
-    }
-
-    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
-        return this.chunks[Vec2i(x shr 4, z shr 4)]?.getBiome(x and 0x0F, y, z and 0x0F)
     }
 
     fun tick() {

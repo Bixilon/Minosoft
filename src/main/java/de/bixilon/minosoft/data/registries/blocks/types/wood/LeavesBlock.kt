@@ -47,7 +47,7 @@ abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings
     override val tintProvider: TintProvider? = null
 
     override fun initTint(manager: TintManager) {
-        this::tintProvider.forceSet(manager.foliageTintCalculator)
+        this::tintProvider.forceSet(manager.foliage)
     }
 
     override fun buildState(version: Version, settings: BlockStateSettings): BlockState {

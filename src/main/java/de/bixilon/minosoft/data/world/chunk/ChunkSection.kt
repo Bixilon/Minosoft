@@ -19,7 +19,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
@@ -67,7 +67,7 @@ class ChunkSection(
         }
     }
 
-    fun buildBiomeCache(neighbours: Array<Chunk>, biomeAccessor: NoiseBiomeAccessor) {
+    fun buildBiomeCache(neighbours: Array<Chunk>, noise: NoiseBiomeAccessor) {
         val chunkPositionX = chunk.chunkPosition.x
         val chunkPositionZ = chunk.chunkPosition.y
         val blockOffset = Vec3i.of(chunk.chunkPosition, sectionHeight)
@@ -76,7 +76,7 @@ class ChunkSection(
         val z = blockOffset.z
         val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
         for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            biomes[index] = biomeAccessor.getBiome(x + (index and 0x0F), y + ((index shr 8) and 0x0F), z + ((index shr 4) and 0x0F), chunkPositionX, chunkPositionZ, chunk, neighbours)
+            biomes[index] = noise.get(x + (index and 0x0F), y + ((index shr 8) and 0x0F), z + ((index shr 4) and 0x0F), chunkPositionX, chunkPositionZ, chunk, neighbours)
         }
         this.biomes.setData(biomes.cast())
     }

@@ -21,6 +21,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.biome.WorldBiomes
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
@@ -48,6 +49,7 @@ object LightTestingUtil {
         val world = objenesis.newInstance(World::class.java)
         world::dimension.forceSet(DataObserver(DimensionProperties(skyLight = true)))
         world::connection.forceSet(createConnection())
+        world::biomes.forceSet(WorldBiomes(world))
 
         return world
     }

@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
@@ -428,7 +428,7 @@ class ChunkManagerTest {
 
     fun noBiomeCache() {
         val manager = create()
-        manager.world.cacheBiomeAccessor = null
+        manager.world.biomes.noise = null
         val matrix = manager.createMatrix()
 
         val chunk = matrix[1][1]
@@ -438,7 +438,7 @@ class ChunkManagerTest {
     fun noiseBiomeCache() {
         val manager = create()
         val biome = Biome(minosoft("test"), 0.0f, 0.0f, null, null, null, null, null)
-        manager.world.cacheBiomeAccessor = NoiseBiomeAccessor(manager.world.connection, 0L)
+        manager.world.biomes.noise = VoronoiBiomeAccessor(manager.world.connection, 0L)
         val source = SpatialBiomeArray(Array(1024) { biome })
         val matrix = manager.createMatrix(source)
 
@@ -446,7 +446,7 @@ class ChunkManagerTest {
         assertEquals(chunk.getOrPut(0)!!.biomes.count, 4096)
         assertEquals(chunk.getOrPut(0)!!.biomes[0], biome)
 
-        assertEquals(manager.world.getBiome(BlockPosition(5, 5, 5)), biome)
+        assertEquals(manager.world.biomes.getBiome(BlockPosition(5, 5, 5)), biome)
         assertEquals(chunk.getBiome(BlockPosition(5, 5, 5)), biome)
     }
 }

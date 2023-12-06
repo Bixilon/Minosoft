@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
@@ -70,19 +70,19 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
         remove(getIndex(offset))
     }
 
-    fun completeSection(neighbours: Array<Chunk>, section: ChunkSection, sectionHeight: SectionHeight, biomeCacheAccessor: NoiseBiomeAccessor?) {
+    fun completeSection(neighbours: Array<Chunk>, section: ChunkSection, sectionHeight: SectionHeight, noise: NoiseBiomeAccessor?) {
         section.neighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, sectionHeight)
-        if (biomeCacheAccessor != null) {
-            section.buildBiomeCache(neighbours, biomeCacheAccessor)
+        if (noise != null) {
+            section.buildBiomeCache(neighbours, noise)
         }
     }
 
     private fun complete(neighbours: Array<Chunk>) {
-        val biomeCacheAccessor = chunk.world.cacheBiomeAccessor
+        val noise = chunk.world.biomes.noise
         for ((index, section) in chunk.sections.withIndex()) {
             if (section == null) continue
             val sectionHeight = index + chunk.minSection
-            completeSection(neighbours, section, sectionHeight, biomeCacheAccessor)
+            completeSection(neighbours, section, sectionHeight, noise)
         }
         chunk.light.recalculate(false)
         chunk.light.propagateFromNeighbours(fireEvent = false, fireSameChunkEvent = false)

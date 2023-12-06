@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.data.types.GlobalPositionEntityDataType
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -114,7 +115,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         connection.world.dimension = dimension
         connection.world.name = world
-        connection.world.cacheBiomeAccessor?.hashedSeed = hashedSeed
+        connection.world.biomes.noise = NoiseBiomeAccessor.get(connection, hashedSeed)
 
         connection.state = PlayConnectionStates.SPAWNING
         if (dimensionChange) {

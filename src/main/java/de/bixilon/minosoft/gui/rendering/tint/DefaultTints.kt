@@ -28,10 +28,10 @@ import de.bixilon.minosoft.gui.rendering.tint.tints.redstone.RedstoneWireTintCal
 object DefaultTints {
 
     fun init(manager: TintManager) {
-        manager.applyTo(setOf(MinecraftBlocks.POTTED_FERN), manager.grassTintCalculator)
+        manager.applyTo(setOf(MinecraftBlocks.POTTED_FERN), manager.grass)
         manager.applyTo(setOf(MinecraftBlocks.REDSTONE_WIRE), RedstoneWireTintCalculator)
         manager.applyTo(setOf(MinecraftBlocks.WATER_CAULDRON, MinecraftBlocks.CAULDRON), WaterTintProvider)
-        manager.applyTo(setOf(MinecraftBlocks.SUGAR_CANE), SugarCaneTintCalculator(manager.grassTintCalculator))
+        manager.applyTo(setOf(MinecraftBlocks.SUGAR_CANE), SugarCaneTintCalculator(manager.grass))
         manager.applyTo(setOf(MinecraftBlocks.ATTACHED_MELON_STEM, MinecraftBlocks.ATTACHED_PUMPKIN_STEM), StaticTintProvider(0xE0C71C))
         manager.applyTo(setOf(MinecraftBlocks.MELON_STEM, MinecraftBlocks.PUMPKIN_STEM), StemTintCalculator)
         manager.applyTo(setOf(MinecraftBlocks.LILY_PAD), StaticTintProvider(block = 0x208030, item = 0x71C35C))

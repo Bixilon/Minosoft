@@ -11,30 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome.accessor
+package de.bixilon.minosoft.data.world.biome.accessor.noise
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.math.simple.DoubleMath.square
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class NoiseBiomeAccessor(
-    private val connection: PlayConnection,
-    var hashedSeed: Long = 0L,
-) {
-    private val world = connection.world
-    private var fastNoise = false
+open class VoronoiBiomeAccessor(
+    connection: PlayConnection,
+    seed: Long = 0L,
+) : NoiseBiomeAccessor(connection, seed) {
 
-    init {
-        val profile = connection.profiles.rendering
-        profile.performance::fastBiomeNoise.observe(this, true) { fastNoise = it }
-    }
-
-    fun getBiome(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {
+    override fun get(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {
         val biomeY = if (world.dimension.supports3DBiomes) y else 0
 
         if (fastNoise) {
@@ -44,7 +36,7 @@ class NoiseBiomeAccessor(
             return source.data[(biomeY and 0x0F) shr 2 and 0x3F shl 4 or ((z and 0x0F) shr 2 and 0x03 shl 2) or ((x and 0x0F) shr 2 and 0x03)]
         }
 
-        return getBiome(hashedSeed, x, biomeY, z, chunkPositionX, chunkPositionZ, chunk, neighbours)
+        return getBiome(seed, x, biomeY, z, chunkPositionX, chunkPositionZ, chunk, neighbours)
     }
 
 
@@ -156,17 +148,17 @@ class NoiseBiomeAccessor(
         ret = next(ret, y)
         ret = next(ret, z)
 
-        val xFractionSalt = distribute(ret)
+        val xSalt = distribute(ret)
 
         ret = next(ret, seed)
 
-        val yFractionSalt = distribute(ret)
+        val ySalt = distribute(ret)
 
         ret = next(ret, seed)
 
-        val zFractionSalt = distribute(ret)
+        val zSalt = distribute(ret)
 
-        return (xFraction + xFractionSalt).square() + (yFraction + yFractionSalt).square() + (zFraction + zFractionSalt).square()
+        return (xFraction + xSalt).square() + (yFraction + ySalt).square() + (zFraction + zSalt).square()
     }
 
     private fun distribute(seed: Long): Double {

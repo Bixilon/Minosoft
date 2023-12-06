@@ -30,6 +30,7 @@ import de.bixilon.minosoft.data.language.lang.LanguageList
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.WorldTestUtil.createWorld
 import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
+import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
 import de.bixilon.minosoft.protocol.versions.Versions
@@ -93,7 +94,7 @@ object ConnectionTestUtil {
         CAMERA.forceSet(connection, ConnectionCamera(connection))
         connection.camera.init()
         if (worldSize > 0) {
-            connection.world.initialize(worldSize)
+            connection.world.initialize(worldSize) { DummyBiomeSource(null) }
         }
         return connection
     }

@@ -120,7 +120,7 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         override val tintProvider: TintProvider? = null
 
         override fun initTint(manager: TintManager) {
-            this::tintProvider.forceSet(TallGrassTintCalculator(manager.grassTintCalculator))
+            this::tintProvider.forceSet(TallGrassTintCalculator(manager.grass))
         }
 
         companion object : BlockFactory<TallGrass> {
@@ -135,7 +135,7 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         override val tintProvider: TintProvider? = null
 
         override fun initTint(manager: TintManager) {
-            this::tintProvider.forceSet(TallGrassTintCalculator(manager.grassTintCalculator))
+            this::tintProvider.forceSet(TallGrassTintCalculator(manager.grass))
         }
 
         companion object : BlockFactory<LargeFern> {
@@ -173,7 +173,7 @@ abstract class DoublePlant(identifier: ResourceLocation, settings: BlockSettings
         }
 
         override fun initTint(manager: TintManager) {
-            this::tintProvider.forceSet(TallGrassTintCalculator(manager.grassTintCalculator)) // TODO: only tint if lower block is tinted
+            this::tintProvider.forceSet(TallGrassTintCalculator(manager.grass)) // TODO: only tint if lower block is tinted
         }
 
         private class Model : PickedBlockRender {

@@ -28,12 +28,12 @@ import de.bixilon.minosoft.gui.rendering.tint.tints.plants.FoliageTintCalculator
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class TintManager(val connection: PlayConnection) {
-    val grassTintCalculator = GrassTintCalculator()
-    val foliageTintCalculator = FoliageTintCalculator()
+    val grass = GrassTintCalculator()
+    val foliage = FoliageTintCalculator()
 
     fun init(assetsManager: AssetsManager) {
-        grassTintCalculator.init(assetsManager)
-        foliageTintCalculator.init(assetsManager)
+        grass.init(assetsManager)
+        foliage.init(assetsManager)
 
         for (block in connection.registries.block) {
             if (block !is TintedBlock) continue
@@ -61,7 +61,8 @@ class TintManager(val connection: PlayConnection) {
     fun getParticleTint(state: BlockState, x: Int, y: Int, z: Int): Int? {
         if (state.block !is TintedBlock) return null
         val tintProvider = state.block.tintProvider ?: return null
-        val biome = connection.world.getBiome(x, y, z)
+        // TODO: cache chunk
+        val biome = connection.world.biomes.getBiome(x, y, z)
         return tintProvider.getParticleColor(state, biome, x, y, z)
     }
 

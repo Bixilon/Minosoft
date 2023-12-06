@@ -52,7 +52,7 @@ class Chunk(
     val light = ChunkLight(this)
     val minSection = world.dimension.minSection
     val maxSection = world.dimension.maxSection
-    val cacheBiomes = world.cacheBiomeAccessor != null
+    val cacheBiomes = world.biomes.noise != null
 
     val neighbours = ChunkNeighbours(this)
 
@@ -187,7 +187,7 @@ class Chunk(
             section.blocks.unsafeSetSection(section)
             val neighbours = this.neighbours.get()
             if (neighbours != null) {
-                this.neighbours.completeSection(neighbours, section, sectionHeight, world.cacheBiomeAccessor)
+                this.neighbours.completeSection(neighbours, section, sectionHeight, world.biomes.noise)
             }
 
             sections[index] = section
@@ -230,11 +230,10 @@ class Chunk(
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
         val y = y.clamp(world.dimension.minY, world.dimension.maxY)
-        if (cacheBiomes) {
-            val section = this[y.sectionHeight] ?: return connection.world.cacheBiomeAccessor?.getBiome((chunkPosition.x shl 4) or x, y, (chunkPosition.y shl 4) or z, chunkPosition.x, chunkPosition.y, this, this.neighbours.get())
-            return section.biomes[x, y.inSectionHeight, z]
+        if (!cacheBiomes) {
+            return biomeSource.getBiome(x, y, z)
         }
-        return biomeSource.getBiome(x and 0x0F, y, z and 0x0F)
+        return connection.world.biomes.getBiome(x, y, z, this)
     }
 }
 

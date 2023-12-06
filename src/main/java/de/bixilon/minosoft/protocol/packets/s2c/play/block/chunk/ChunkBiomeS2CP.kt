@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -23,7 +24,7 @@ class ChunkBiomeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val data = buffer.readArray { ChunkBiomeData(buffer.readLongChunkPosition(), buffer.readByteArray()) }
 
 
-    class ChunkBiomeData(
+    data class ChunkBiomeData(
         val position: Vec2i,
         val data: ByteArray,
     )
@@ -33,7 +34,15 @@ class ChunkBiomeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         return Vec2i(long.toInt(), (long shr 32).toInt())
     }
 
-    // TODO: handle
+    override fun handle(connection: PlayConnection) {
+        if (data.isEmpty()) return
+
+        for ((position, data) in data) {
+            val chunk = connection.world.chunks[position] ?: continue
+            // TODO: handle
+        }
+        connection.world.biomes.resetCache()
+    }
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Chunk biome (data=$data)" }

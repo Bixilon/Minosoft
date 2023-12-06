@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,12 +14,14 @@
 package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
+import de.bixilon.minosoft.test.ITUtil.allocate
 import org.objenesis.ObjenesisStd
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = ["biome"])
-class NoiseBiomeAccessorTest {
+class VoronoiBiomeAccessorTest {
     private val OBJENESIS = ObjenesisStd()
 
     fun testBiomeNoise1() {
@@ -51,7 +53,7 @@ class NoiseBiomeAccessorTest {
     }
 
     private fun calculate(x: Int, y: Int, z: Int, seed: Long): Vec3i {
-        val accessor = OBJENESIS.newInstance(NoiseBiomeAccessor::class.java)
+        val accessor = VoronoiBiomeAccessor::class.java.allocate()
         return accessor.getBiomePosition(seed, x, y, z)
     }
 }

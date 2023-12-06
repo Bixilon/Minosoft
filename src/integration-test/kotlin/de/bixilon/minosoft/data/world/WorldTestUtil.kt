@@ -20,6 +20,8 @@ import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.biome.WorldBiomes
+import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -48,14 +50,16 @@ object WorldTestUtil {
         world::entities.forceSet(WorldEntities())
         world::view.forceSet(TEST_WORLD_VIEW)
         world::time.forceSet(DataObserver(WorldTime()))
+        world::biomes.forceSet(WorldBiomes(world))
 
         return world
     }
 
-    fun World.initialize(size: Int) {
+    fun World.initialize(size: Int, biome: (ChunkPosition) -> BiomeSource) {
         for (x in -size..size) {
             for (z in -size..size) {
-                chunks.create(ChunkPosition(x, z))
+                val position = ChunkPosition(x, z)
+                chunks.create(position, biome.invoke(position))
             }
         }
     }

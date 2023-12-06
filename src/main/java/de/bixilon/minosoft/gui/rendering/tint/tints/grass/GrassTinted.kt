@@ -20,6 +20,6 @@ import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 interface GrassTinted : TintedBlock {
 
     override fun initTint(manager: TintManager) {
-        this::class.java.getDeclaredField("tintProvider").forceSet(this, manager.grassTintCalculator)
+        this::class.java.getDeclaredField("tintProvider").forceSet(this, manager.grass)
     }
 }
