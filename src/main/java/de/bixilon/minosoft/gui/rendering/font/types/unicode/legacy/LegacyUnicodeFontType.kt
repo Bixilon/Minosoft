@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.properties.FontProperties
 import de.bixilon.minosoft.gui.rendering.font.types.PostInitFontType
 import de.bixilon.minosoft.gui.rendering.font.types.factory.FontTypeFactory
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture

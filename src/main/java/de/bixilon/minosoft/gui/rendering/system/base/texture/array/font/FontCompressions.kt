@@ -11,16 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture.array.font
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic.OpenGLDynamicTextureArray
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.enums.ValuesEnum.Companion.names
 
-class OpenGLTextureManager(val context: RenderContext) : TextureManager() {
-    private val config = context.connection.profiles.rendering.textures
-    override val static = OpenGLTextureArray(context, true, config.mipmaps)
-    override val dynamic = OpenGLDynamicTextureArray(context, context.system.unsafeCast(), resolution = 64, mipmaps = config.mipmaps)
-    override val font = OpenGLFontTextureArray(context, config.fontCompression)
+enum class FontCompressions {
+    NONE,
+    ALPHA,
+    COMPRESSED_ALPHA,
+    ;
+
+    companion object : ValuesEnum<FontCompressions> {
+        override val VALUES = values()
+        override val NAME_MAP = names()
+    }
 }

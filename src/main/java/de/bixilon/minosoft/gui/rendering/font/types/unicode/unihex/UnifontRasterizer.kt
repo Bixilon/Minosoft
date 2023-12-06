@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 import de.bixilon.minosoft.gui.rendering.font.renderer.code.CodePointRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex.UnifontTexture.Companion.isPixelSet
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
 
 class UnifontRasterizer(
     private val array: FontTextureArray,

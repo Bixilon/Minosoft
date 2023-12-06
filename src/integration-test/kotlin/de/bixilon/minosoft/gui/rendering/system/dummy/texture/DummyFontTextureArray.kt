@@ -17,10 +17,12 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontCompressions
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
 
-class DummyFontTextureArray(context: RenderContext) : FontTextureArray(context, 1024, false) {
+class DummyFontTextureArray(context: RenderContext) : FontTextureArray(context, 1024, FontCompressions.NONE) {
+
     override fun load(latch: AbstractLatch) {
         for (texture in textures) {
             texture.renderData = DummyTextureRenderData

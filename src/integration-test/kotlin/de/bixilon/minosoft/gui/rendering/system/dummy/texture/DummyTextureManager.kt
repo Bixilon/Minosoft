@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.dummy.texture
 
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
 
 class DummyTextureManager(val context: RenderContext) : TextureManager() {
     override val dynamic = DummyDynamicTextureArray(context)

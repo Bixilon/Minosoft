@@ -19,9 +19,10 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
-import de.bixilon.minosoft.gui.rendering.system.base.texture.array.FontTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontCompressions
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
@@ -31,11 +32,12 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.opengl.GL30.*
+import org.lwjgl.opengl.GL33.GL_TEXTURE_SWIZZLE_RGBA
 import java.nio.ByteBuffer
 
 class OpenGLFontTextureArray(
     context: RenderContext,
-    compressed: Boolean,
+    compressed: FontCompressions,
 ) : FontTextureArray(context, RESOLUTION, compressed) {
     val index = context.system.unsafeCast<OpenGLRenderSystem>().textureBindingIndex++
     private var handle = -1
@@ -44,8 +46,14 @@ class OpenGLFontTextureArray(
 
     override fun upload(latch: AbstractLatch?) {
         this.handle = OpenGLTextureUtil.createTextureArray(0)
-        val format = if (compressed) GL_COMPRESSED_LUMINANCE_ALPHA else GL_RGBA8
-        // glTexParameteriv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_RGBA, intArrayOf(GL_LUMINANCE, GL_LUMINANCE, GL_LUMINANCE, GL_LUMINANCE)) // TODO: not working?
+        val format = when (compression) {
+            FontCompressions.NONE -> GL_RGBA8
+            FontCompressions.ALPHA -> GL_ALPHA8
+            FontCompressions.COMPRESSED_ALPHA -> GL_COMPRESSED_ALPHA
+        }
+        if (compression != FontCompressions.NONE) {
+            glTexParameteriv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_RGBA, intArrayOf(GL_ONE, GL_ONE, GL_ONE, GL_ALPHA))
+        }
 
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, RESOLUTION, RESOLUTION, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
 

@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.textures
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.EnumDelegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontCompressions
 
 class TexturesC(profile: RenderingProfile) {
 
@@ -28,5 +29,5 @@ class TexturesC(profile: RenderingProfile) {
      * Font texture can be compressed on the gpu which massively reduces vram usage.
      * It may not work with all drivers well, so disable it when font is just black.
      */
-    var compressedFont by BooleanDelegate(profile, true)
+    var fontCompression by EnumDelegate(profile, FontCompressions.COMPRESSED_ALPHA, FontCompressions)
 }

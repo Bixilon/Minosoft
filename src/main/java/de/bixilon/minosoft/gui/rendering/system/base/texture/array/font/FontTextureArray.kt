@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.array
+package de.bixilon.minosoft.gui.rendering.system.base.texture.array.font
 
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
@@ -20,12 +20,14 @@ import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 abstract class FontTextureArray(
     val context: RenderContext,
     val resolution: Int,
-    val compressed: Boolean,
+    val compression: FontCompressions,
 ) : TextureArray {
     protected val textures: MutableSet<Texture> = mutableSetOf()
     private val lock = SimpleLock()
