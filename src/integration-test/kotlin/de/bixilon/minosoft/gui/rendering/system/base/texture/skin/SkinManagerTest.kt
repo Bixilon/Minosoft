@@ -96,6 +96,6 @@ class SkinManagerTest {
         assertEquals(skin?.texture?.state, DynamicTextureState.LOADED)
         val buffer = skin?.texture?.data?.buffer!!
         // assertEquals(buffer.getRGBA(9, 0), 0x0F00FA_FF)
-        assertEquals(buffer.getRGBA(9, 0), 0xD000FA_FF.toInt()) // TODO: wrong? should be the value above
+        assertEquals(buffer.getRGBA(9, 0), 0x0D00FA_FF) // TODO: wrong? should be the value above
     }
 }
