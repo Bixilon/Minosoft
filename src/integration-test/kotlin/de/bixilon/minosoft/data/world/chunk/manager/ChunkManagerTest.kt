@@ -194,7 +194,7 @@ class ChunkManagerTest {
             BlockSectionDataProvider(null).apply { this[3, 3, 3] = StoneTest0.state },
             BlockSectionDataProvider(null).apply { this[3, 3, 3] = StoneTest0.state },
             BlockSectionDataProvider(null).apply { this[3, 3, 3] = StoneTest0.state },
-            null, null, null, null, null, null, null, null, null, null, null, null, null,
+            null, null, null,
         ),
             blockEntities = emptyMap(),
             biomeSource = DummyBiomeSource(null)
@@ -437,9 +437,9 @@ class ChunkManagerTest {
 
     fun noiseBiomeCache() {
         val manager = create()
-        val biome = Biome(minosoft("test"), 0.0f, 0.0f, null, null, null, null, null)
-        manager.world.biomes.noise = VoronoiBiomeAccessor(manager.world.connection, 0L)
-        val source = SpatialBiomeArray(Array(1024) { biome })
+        val biome = Biome(minosoft("test"), 0.0f, 0.0f)
+        manager.world.biomes.noise = VoronoiBiomeAccessor(manager.world, 0L)
+        val source = SpatialBiomeArray(Array(SpatialBiomeArray.SIZE) { biome })
         val matrix = manager.createMatrix(source)
 
         val chunk = matrix[1][1]

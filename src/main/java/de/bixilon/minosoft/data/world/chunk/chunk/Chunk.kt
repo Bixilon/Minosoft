@@ -231,7 +231,7 @@ class Chunk(
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
         val y = y.clamp(world.dimension.minY, world.dimension.maxY)
         if (!cacheBiomes) {
-            return biomeSource.getBiome(x, y, z)
+            return biomeSource.get(x, y, z)
         }
         return connection.world.biomes.getBiome(x, y, z, this)
     }

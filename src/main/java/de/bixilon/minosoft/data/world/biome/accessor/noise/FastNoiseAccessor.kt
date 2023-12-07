@@ -11,18 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome.source
+package de.bixilon.minosoft.data.world.biome.accessor.noise
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 
-class XZBiomeArray(private val biomes: Array<Biome?>) : BiomeSource {
+class FastNoiseAccessor(world: World) : NoiseBiomeAccessor(world, 0L) {
 
-    init {
-        check(biomes.size == ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { "Biome array size does not match the xz block count!" }
-    }
+    override fun get(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
+        val biomeY = if (world.dimension.supports3DBiomes) y else 0
 
-    override fun get(x: Int, y: Int, z: Int): Biome? {
-        return biomes[(x and 0x0F) or ((z and 0x0F) shl 4)]
+        val source = chunk.biomeSource
+        if (source !is SpatialBiomeArray) return null
+
+        return source.get(x, biomeY, z) // TODO: this is really dirty hack
     }
 }

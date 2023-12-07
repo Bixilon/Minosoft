@@ -14,13 +14,17 @@
 package de.bixilon.minosoft.data.world.biome
 
 import de.bixilon.kotlinglm.func.common.clamp
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.noise.FastNoiseAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 
 class WorldBiomes(val world: World) : BiomeAccessor {
     var noise: NoiseBiomeAccessor? = null
@@ -28,6 +32,7 @@ class WorldBiomes(val world: World) : BiomeAccessor {
             field = value
             resetCache()
         }
+
 
     operator fun get(position: BlockPosition) = getBiome(position)
     override fun getBiome(position: BlockPosition) = getBiome(position.x, position.y, position.z)
@@ -39,10 +44,24 @@ class WorldBiomes(val world: World) : BiomeAccessor {
     }
 
     fun getBiome(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
-        val noise = this.noise ?: return chunk.biomeSource.getBiome(x, y, z)
+        val noise = this.noise ?: return chunk.biomeSource.get(x, y, z)
         chunk[y.sectionHeight]?.let { return it.biomes[x, y, z] } // access cache
 
         return noise.get(x, y, z, chunk)
+    }
+
+    fun updateNoise(seed: Long) {
+        val connection = world.connection
+        val fast = connection.profiles.rendering.performance.fastBiomeNoise
+        noise = when {
+            connection.version < V_19W36A -> null
+            fast -> FastNoiseAccessor(world)
+            else -> VoronoiBiomeAccessor(world, seed)
+        }
+    }
+
+    fun init() {
+        world.connection.profiles.rendering.performance::fastBiomeNoise.observe(this) { updateNoise(noise?.seed ?: 0L) }
     }
 
 

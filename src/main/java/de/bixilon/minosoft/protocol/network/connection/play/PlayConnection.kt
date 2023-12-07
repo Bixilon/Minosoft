@@ -18,6 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.kutil.latch.CallbackLatch
@@ -147,9 +148,10 @@ class PlayConnection(
         }
         network::state.observe(this) { state ->
             when (state) {
-                ProtocolStates.HANDSHAKE, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
+                ProtocolStates.HANDSHAKE, ProtocolStates.STATUS -> Broken("Invalid state!")
                 ProtocolStates.LOGIN -> {
                     this.state = PlayConnectionStates.LOGGING_IN
+                    world.biomes.init()
                     this.network.send(StartC2SP(this.player, this.sessionId))
                 }
 

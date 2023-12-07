@@ -18,17 +18,17 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 
 @Deprecated("use world.audio")
 interface WorldAudioPlayer : AbstractAudioPlayer {
-    val audioPlayer: AbstractAudioPlayer?
+    val audio: AbstractAudioPlayer?
 
     override fun playSound(sound: ResourceLocation, position: Vec3d?, volume: Float, pitch: Float) {
-        audioPlayer?.playSound(sound, position, volume, pitch)
+        audio?.playSound(sound, position, volume, pitch)
     }
 
     override fun stopAllSounds() {
-        audioPlayer?.stopAllSounds()
+        audio?.stopAllSounds()
     }
 
     override fun stopSound(sound: ResourceLocation) {
-        audioPlayer?.stopSound(sound)
+        audio?.stopSound(sound)
     }
 }

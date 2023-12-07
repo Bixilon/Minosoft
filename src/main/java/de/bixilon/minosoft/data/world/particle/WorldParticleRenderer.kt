@@ -17,13 +17,13 @@ import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 
 @Deprecated("use world.particle")
 interface WorldParticleRenderer : AbstractParticleRenderer {
-    val particleRenderer: AbstractParticleRenderer?
+    val particle: AbstractParticleRenderer?
 
     override fun addParticle(particle: Particle) {
-        particleRenderer?.addParticle(particle)
+        this.particle?.addParticle(particle)
     }
 
     override fun removeAllParticles() {
-        particleRenderer?.removeAllParticles()
+        particle?.removeAllParticles()
     }
 }

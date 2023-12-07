@@ -70,7 +70,7 @@ class ConnectionUtil(
         }
         Log.log(LogMessageType.CHAT_OUT) { trimmed }
         if (!connection.version.requiresSignedChat) {
-            return connection.sendPacket(ChatMessageC2SP(trimmed))
+            return connection.network.send(ChatMessageC2SP(trimmed))
         }
 
         val keyManagement = connection.player.keyManagement
@@ -78,7 +78,7 @@ class ConnectionUtil(
         try {
             val key = keyManagement.key
             if (key == null) {
-                connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.now(), salt = 0, signature = null, false, Acknowledgement.EMPTY))
+                connection.network.send(SignedChatMessageC2SP(message.encodeNetwork(), time = Instant.now(), salt = 0, signature = null, false, Acknowledgement.EMPTY))
                 return
             }
             sendSignedMessage(key, trimmed)
@@ -101,7 +101,7 @@ class ConnectionUtil(
             null
         }
 
-        connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = time, salt = salt, signature = signature, false, acknowledgement))
+        connection.network.send(SignedChatMessageC2SP(message.encodeNetwork(), time = time, salt = salt, signature = signature, false, acknowledgement))
     }
 
     fun sendCommand(command: String, stack: CommandStack) {
@@ -112,7 +112,7 @@ class ConnectionUtil(
         ChatUtil.validateChatMessage(connection, trimmed)
         val time = Instant.now()
         if (stack.size == 0) {
-            connection.sendPacket(CommandC2SP(trimmed, time, 0L, emptyMap(), false, Acknowledgement.EMPTY)) // TODO: remove
+            connection.network.send(CommandC2SP(trimmed, time, 0L, emptyMap(), false, Acknowledgement.EMPTY)) // TODO: remove
             Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Command $trimmed failed to parse!" }
             throw IllegalArgumentException("Empty command stack! Did the command fail to parse?")
         }
@@ -130,7 +130,7 @@ class ConnectionUtil(
                 signature = stack.sign(signer, privateKey.private, salt, time)
             }
 
-            connection.sendPacket(CommandC2SP(trimmed, time, salt, signature, false, acknowledgement))
+            connection.network.send(CommandC2SP(trimmed, time, salt, signature, false, acknowledgement))
         } finally {
             keyManagement.release()
         }
@@ -139,8 +139,8 @@ class ConnectionUtil(
     fun prepareSpawn() {
         connection.player.items.reset()
         connection.player.physics.reset()
-        connection.world.audioPlayer?.stopAllSounds()
-        connection.world.particleRenderer?.removeAllParticles()
+        connection.world.audio?.stopAllSounds()
+        connection.world.particle?.removeAllParticles()
         connection.player.items.opened?.let {
             connection.player.items.opened = null
             connection.events.fire(ContainerCloseEvent(connection, it))

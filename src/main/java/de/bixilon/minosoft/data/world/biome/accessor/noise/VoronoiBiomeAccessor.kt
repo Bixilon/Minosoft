@@ -13,34 +13,34 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor.noise
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.math.simple.DoubleMath.square
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class VoronoiBiomeAccessor(
-    connection: PlayConnection,
+class VoronoiBiomeAccessor(
+    world: World,
     seed: Long = 0L,
-) : NoiseBiomeAccessor(connection, seed) {
+) : NoiseBiomeAccessor(world, seed) {
 
-    override fun get(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {
+    override fun get(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
         val biomeY = if (world.dimension.supports3DBiomes) y else 0
 
-        if (fastNoise) {
-            val source = chunk.biomeSource
-            if (source !is SpatialBiomeArray) return null
-
-            return source.data[(biomeY and 0x0F) shr 2 and 0x3F shl 4 or ((z and 0x0F) shr 2 and 0x03 shl 2) or ((x and 0x0F) shr 2 and 0x03)]
-        }
-
-        return getBiome(seed, x, biomeY, z, chunkPositionX, chunkPositionZ, chunk, neighbours)
+        return getBiome(seed, x, biomeY, z, chunk)
     }
 
+    private fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
+        val offset = getBiomeOffset(seed, x, y, z)
+        val biomeX = x + unpackX(offset)
+        val biomeY = y + unpackY(offset)
+        val biomeZ = z + unpackZ(offset)
 
-    fun getBiomePosition(seed: Long, x: Int, y: Int, z: Int): Vec3i {
+        val biomeChunk = chunk.neighbours.trace(biomeX shr 2, biomeZ shr 2)
+
+        return biomeChunk?.biomeSource?.get(biomeX and 0x0F, biomeY, biomeZ and 0x0F)
+    }
+
+    private fun getBiomeOffset(seed: Long, x: Int, y: Int, z: Int): Int {
         val m = x - 2
         val n = y - 2
         val o = z - 2
@@ -98,45 +98,10 @@ open class VoronoiBiomeAccessor(
         if (s and 0x01 != 0) {
             biomeZ++
         }
-        return Vec3i(biomeX, biomeY, biomeZ)
+
+        return pack(biomeX - x, biomeY - y, biomeZ - z)
     }
 
-    private fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {
-        val position = getBiomePosition(seed, x, y, z)
-
-        var biomeChunk: Chunk? = null
-        val biomeChunkX = position.x shr 2
-        val biomeChunkZ = position.z shr 2
-
-        if (neighbours == null) {
-            return world.chunks[Vec2i(biomeChunkX, biomeChunkZ)]?.biomeSource?.getBiome(position)
-        }
-
-        val deltaChunkX = biomeChunkX - chunkPositionX
-        val deltaChunkZ = biomeChunkZ - chunkPositionZ
-
-        when (deltaChunkX) {
-            0 -> when (deltaChunkZ) {
-                0 -> biomeChunk = chunk
-                -1 -> biomeChunk = neighbours[3]
-                1 -> biomeChunk = neighbours[4]
-            }
-
-            -1 -> when (deltaChunkZ) {
-                0 -> biomeChunk = neighbours[1]
-                -1 -> biomeChunk = neighbours[0]
-                1 -> biomeChunk = neighbours[2]
-            }
-
-            1 -> when (deltaChunkZ) {
-                0 -> biomeChunk = neighbours[6]
-                -1 -> biomeChunk = neighbours[5]
-                1 -> biomeChunk = neighbours[7]
-            }
-        }
-
-        return biomeChunk?.biomeSource?.getBiome(position)
-    }
 
     private fun calculateFiddle(seed: Long, x: Int, y: Int, z: Int, xFraction: Double, yFraction: Double, zFraction: Double): Double {
         var ret = seed
@@ -177,5 +142,23 @@ open class VoronoiBiomeAccessor(
 
     private fun next(seed: Long, salt: Long): Long {
         return next(seed) + salt
+    }
+
+    companion object {
+        const val XZ_BITS = 6
+        const val XZ_MASK = (1 shl XZ_BITS) - 1
+        const val XZ_NEG = XZ_MASK shr 1
+
+        const val Y_BITS = 14
+        const val Y_MASK = (1 shl Y_BITS) - 1
+        const val Y_NEG = Y_MASK shr 1
+
+        inline fun pack(x: Int, y: Int, z: Int): Int {
+            return ((x + XZ_NEG) and XZ_MASK) or (((z + XZ_NEG) and XZ_MASK) shl XZ_BITS) or (((y + Y_NEG) and Y_MASK) shl (XZ_BITS + XZ_BITS))
+        }
+
+        inline fun unpackX(packed: Int): Int = (packed and XZ_MASK) - XZ_NEG
+        inline fun unpackY(packed: Int): Int = ((packed shr (XZ_BITS + XZ_BITS)) and Y_MASK) - Y_NEG
+        inline fun unpackZ(packed: Int): Int = ((packed shr XZ_BITS) and XZ_MASK) - XZ_NEG
     }
 }

@@ -72,8 +72,8 @@ class World(
     var name: ResourceLocation? by observed(null)
 
 
-    override var audioPlayer: AbstractAudioPlayer? = null
-    override var particleRenderer: AbstractParticleRenderer? = null
+    override var audio: AbstractAudioPlayer? = null
+    override var particle: AbstractParticleRenderer? = null
 
     var occlusion by observed(0)
 

@@ -13,37 +13,14 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor.noise
 
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 
 abstract class NoiseBiomeAccessor(
-    connection: PlayConnection,
+    val world: World,
     val seed: Long = 0L,
 ) {
-    protected val world = connection.world
-    protected var fastNoise = false
 
-    init {
-        val profile = connection.profiles.rendering
-        profile.performance::fastBiomeNoise.observe(this, true) { fastNoise = it }
-    }
-
-    abstract fun get(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome?
-
-    fun get(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
-        val neighbours = chunk.neighbours.get() ?: return null
-        return get((chunk.chunkPosition.x shl 4) or x, y, (chunk.chunkPosition.y shl 4) or z, chunk.chunkPosition.x, chunk.chunkPosition.y, chunk, neighbours)
-    }
-
-
-    companion object {
-
-        fun get(connection: PlayConnection, seed: Long): NoiseBiomeAccessor? = when {
-            connection.version < V_19W36A -> null
-            else -> VoronoiBiomeAccessor(connection, seed)
-        }
-    }
+    abstract fun get(x: Int, y: Int, z: Int, chunk: Chunk): Biome?
 }

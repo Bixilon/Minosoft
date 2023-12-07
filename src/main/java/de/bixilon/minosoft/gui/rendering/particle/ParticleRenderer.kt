@@ -130,7 +130,7 @@ class ParticleRenderer(
         transparentShader.load()
         translucentShader.load()
 
-        connection.world.particleRenderer = this
+        connection.world.particle = this
 
         particleTask = RepeatedTask(ProtocolDefinition.TICK_TIME, maxDelay = ProtocolDefinition.TICK_TIME / 2) {
             if (!context.state.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {

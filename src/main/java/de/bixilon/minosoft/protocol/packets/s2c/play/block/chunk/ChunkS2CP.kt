@@ -32,7 +32,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.light.ChunkLightS2CP
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A
@@ -155,7 +154,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     fun PlayInByteBuffer.readBiomeArray(): Array<Biome> {
         val length = when {
             versionId >= ProtocolVersions.V_20W28A -> readVarInt()
-            versionId >= V_19W36A -> ProtocolDefinition.BLOCKS_PER_SECTION / 4 // 1024, 4x4 blocks
+            versionId >= V_19W36A -> SpatialBiomeArray.SIZE
             else -> Broken("")
         }
 

@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.data.types.GlobalPositionEntityDataType
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.difficulty.Difficulties
 import de.bixilon.minosoft.modding.event.events.DimensionChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -180,7 +179,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         connection.world.entities.clear(connection, local = true)
         connection.world.entities.add(entityId, null, playerEntity)
-        connection.world.biomes.noise = NoiseBiomeAccessor.get(connection, hashedSeed)
+        connection.world.biomes.updateNoise(hashedSeed)
         connection.world.border.reset()
 
         if (connection.version < V_1_20_2_PRE1) {

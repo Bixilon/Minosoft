@@ -86,7 +86,7 @@ class WorldBiomesTest {
 
     fun `ensure caching is done with noise`() {
         val source = CounterSource(b1)
-        val world = create({ FastNoiseAccessor(it) }) { source }
+        val world = create({ FastNoiseAccessor(it.world) }) { source }
         val chunk = world.chunks[0, 0]!!
         chunk.getOrPut(0)
 
@@ -116,7 +116,7 @@ class WorldBiomesTest {
         val fallback: Biome?,
     ) : BiomeSource {
 
-        override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+        override fun get(x: Int, y: Int, z: Int): Biome? {
             if (x != position.x || y != position.y || z != position.z) return fallback
             return biome
         }
@@ -124,14 +124,14 @@ class WorldBiomesTest {
 
     private class CounterSource(val biome: Biome?) : BiomeSource {
         var counter = 0
-        override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+        override fun get(x: Int, y: Int, z: Int): Biome? {
             counter++
             return biome
         }
     }
 
     private class VerifyPositionSource(val biome: Biome?) : BiomeSource {
-        override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+        override fun get(x: Int, y: Int, z: Int): Biome? {
             if (x < 0 || x > 15) throw IllegalArgumentException("Invalid x: $x")
             if (y < 0 || y > 255) throw IllegalArgumentException("Invalid y: $y")
             if (z < 0 || z > 15) throw IllegalArgumentException("Invalid z: $z")
@@ -140,10 +140,10 @@ class WorldBiomesTest {
         }
     }
 
-    private class FastNoiseAccessor(connection: PlayConnection) : NoiseBiomeAccessor(connection, 0L) {
+    private class FastNoiseAccessor(world: World) : NoiseBiomeAccessor(world, 0L) {
 
-        override fun get(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {
-            return chunk.biomeSource.getBiome(x, y, z)
+        override fun get(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
+            return chunk.biomeSource.get(x, y, z)
         }
     }
 }

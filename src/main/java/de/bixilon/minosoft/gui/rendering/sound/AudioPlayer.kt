@@ -119,7 +119,7 @@ class AudioPlayer(
             }
         }
         initialized = true
-        connection.world.audioPlayer = this
+        connection.world.audio = this
         latch.dec()
     }
 

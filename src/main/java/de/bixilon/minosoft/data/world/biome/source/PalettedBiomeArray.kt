@@ -24,7 +24,7 @@ class PalettedBiomeArray(
 ) : BiomeSource {
     private val mask = (1 shl edgeBits) - 1
 
-    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+    override fun get(x: Int, y: Int, z: Int): Biome? {
         val container = containers.getOrNull(y.sectionHeight - lowestSection) ?: return null
 
         val index = ((((y.inSectionHeight and mask) shl edgeBits) or (z and mask)) shl edgeBits) or (x and mask)

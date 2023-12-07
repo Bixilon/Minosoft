@@ -73,7 +73,7 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
     fun completeSection(neighbours: Array<Chunk>, section: ChunkSection, sectionHeight: SectionHeight, noise: NoiseBiomeAccessor?) {
         section.neighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, sectionHeight)
         if (noise != null) {
-            section.buildBiomeCache(neighbours, noise)
+            section.buildBiomeCache(noise)
         }
     }
 
@@ -118,34 +118,32 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
     }
 
     fun trace(offset: Vec2i): Chunk? {
-        if (offset.x == 0 && offset.y == 0) {
-            return chunk
+        return trace(offset.x, offset.y)
+    }
+
+    fun trace(offsetX: Int, offsetZ: Int): Chunk? = when {
+        offsetX == 0 -> when {
+            offsetZ == 0 -> chunk
+            offsetZ < 0 -> neighbours[3]?.neighbours?.trace(offsetX, offsetZ + 1)
+            offsetZ > 0 -> neighbours[4]?.neighbours?.trace(offsetX, offsetZ - 1)
+            else -> Broken()
         }
 
-        val chunk = when {
-            offset.x > 0 -> {
-                offset.x--
-                this[6]
-            }
-
-            offset.x < 0 -> {
-                offset.x++
-                this[1]
-            }
-
-            offset.y > 0 -> {
-                offset.y--
-                this[4]
-            }
-
-            offset.y < 0 -> {
-                offset.y++
-                this[3]
-            }
-
-            else -> Broken("Can not get chunk from offset: $offset")
+        offsetX < 0 -> when {
+            offsetZ == 0 -> neighbours[1]?.neighbours?.trace(offsetX + 1, offsetZ)
+            offsetZ < 0 -> neighbours[0]?.neighbours?.trace(offsetX + 1, offsetZ + 1)
+            offsetZ > 0 -> neighbours[2]?.neighbours?.trace(offsetX + 1, offsetZ - 1)
+            else -> Broken()
         }
-        return chunk?.neighbours?.trace(offset)
+
+        offsetX > 0 -> when {
+            offsetZ == 0 -> neighbours[6]?.neighbours?.trace(offsetX - 1, offsetZ)
+            offsetZ < 0 -> neighbours[5]?.neighbours?.trace(offsetX - 1, offsetZ + 1)
+            offsetZ > 0 -> neighbours[7]?.neighbours?.trace(offsetX - 1, offsetZ - 1)
+            else -> Broken()
+        }
+
+        else -> Broken()
     }
 
     fun traceBlock(offset: Vec3i, origin: Vec3i, blockPosition: Vec3i = origin + offset): BlockState? {

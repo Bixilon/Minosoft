@@ -44,7 +44,7 @@ object BlockDestroyedHandler : WorldEventHandler {
     }
 
     private fun addBlockBreakParticles(connection: PlayConnection, position: Vec3i, state: BlockState) {
-        val particleRenderer = connection.world.particleRenderer ?: return
+        val particleRenderer = connection.world.particle ?: return
         val type = connection.registries.particleType[BlockDustParticle] ?: return
         if (state.block !is OutlinedBlock) return
         val shape = state.block.getOutlineShape(connection, position, state) ?: return
