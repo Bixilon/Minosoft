@@ -14,6 +14,12 @@ package de.bixilon.minosoft.protocol.protocol
 
 @Suppress("UNUSED")
 object ProtocolVersions {
+    const val V_1_20_4 = 931
+    const val V_1_20_4_RC1 = 930
+    @Deprecated("Same PVN as 1.20.4", level = DeprecationLevel.ERROR) const val V_1_20_3 = 929
+    const val V_1_20_3_RC1 = 928
+    const val V_1_20_3_PRE4 = 927
+    const val V_1_20_3_PRE3 = 926
     const val V_1_20_3_PRE2 = 925
     const val V_1_20_3_PRE1 = 924
     const val V_23W46A = 923

@@ -46,6 +46,9 @@ class ResourcepackC2SP(
         DECLINED,
         FAILED_DOWNLOAD,
         ACCEPTED,
+
+        // all below added in 1.20.3-pre1
+        DOWNLOADED, // TODO: added in 1.20.3-pre3
         INVALID_URL,
         FAILED_RELOAD,
         DISCARDED,

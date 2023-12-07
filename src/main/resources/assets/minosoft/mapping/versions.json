@@ -1,4 +1,30 @@
 {
+  "931": {
+    "name": "1.20.4",
+    "protocol_id": 765,
+    "packets": 924,
+    "type": "release"
+  },
+  "930": {
+    "name": "1.20.4-rc1",
+    "protocol_id": 10737419903,
+    "packets": 924
+  },
+  "928": {
+    "name": "1.20.3-rc1",
+    "protocol_id": 10737419902,
+    "packets": 924
+  },
+  "927": {
+    "name": "1.20.3-pre4",
+    "protocol_id": 10737419901,
+    "packets": 924
+  },
+  "926": {
+    "name": "1.20.3-pre3",
+    "protocol_id": 1073741990,
+    "packets": 924
+  },
   "925": {
     "name": "1.20.3-pre2",
     "protocol_id": 1073741989,
