@@ -15,12 +15,14 @@ package de.bixilon.minosoft.data.world.chunk.manager
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.stone.StoneTest0
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.biome.source.DummyBiomeSource
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.chunk.ChunkPrototype
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
@@ -31,13 +33,13 @@ import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkCreateUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.ChunkUnloadUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.NeighbourChangeUpdate
 import de.bixilon.minosoft.data.world.chunk.update.chunk.prototype.PrototypeChangeUpdate
-import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
@@ -191,9 +193,9 @@ class ChunkManagerTest {
         manager[ChunkPosition(0, 1)]!![3, 16, 3] = StoneTest0.state
 
         manager[ChunkPosition(0, 0)] = ChunkPrototype(blocks = arrayOf(
-            BlockSectionDataProvider(null).apply { this[3, 3, 3] = StoneTest0.state },
-            BlockSectionDataProvider(null).apply { this[3, 3, 3] = StoneTest0.state },
-            BlockSectionDataProvider(null).apply { this[3, 3, 3] = StoneTest0.state },
+            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[getIndex(3, 3, 3)] = StoneTest0.state },
+            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[getIndex(3, 3, 3)] = StoneTest0.state },
+            arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION).apply { this[getIndex(3, 3, 3)] = StoneTest0.state },
             null, null, null,
         ),
             blockEntities = emptyMap(),
@@ -399,7 +401,7 @@ class ChunkManagerTest {
             fired++
         }
 
-        manager.set(ChunkPosition(1, 1), ChunkPrototype(blocks = Array(16) { if (it == 0) BlockSectionDataProvider(null) else null }), false)
+        manager.set(ChunkPosition(1, 1), ChunkPrototype(blocks = Array(16) { if (it == 0) arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION) else null }), false)
 
         assertNotNull(manager[ChunkPosition(1, 1)])
 
@@ -443,8 +445,10 @@ class ChunkManagerTest {
         val matrix = manager.createMatrix(source)
 
         val chunk = matrix[1][1]
-        assertEquals(chunk.getOrPut(0)!!.biomes.count, 4096)
-        assertEquals(chunk.getOrPut(0)!!.biomes[0], biome)
+        val section = chunk.getOrPut(0)!!.biomes
+        assertEquals(section[3, 3, 3], biome)
+        assertEquals(section[3, 3, 3], biome)
+        assertEquals(section[0], biome)
 
         assertEquals(manager.world.biomes.getBiome(BlockPosition(5, 5, 5)), biome)
         assertEquals(chunk.getBiome(BlockPosition(5, 5, 5)), biome)

@@ -19,8 +19,10 @@ import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkS2CP
@@ -35,6 +37,10 @@ class ChunkS2CPTest {
         val steam = ChunkS2CPTest::class.java.getResourceAsStream("/packets/chunk/$name.mbf")
         val mbf = MBFBinaryReader(steam!!).readMBF()
         registries.update(version, mbf.data.unsafeCast())
+    }
+
+    private operator fun Array<BlockState?>.get(x: Int, y: Int, z: Int): BlockState? {
+        return this[getIndex(x, y, z)]
     }
 
     private fun read(name: String, version: String, connection: PlayConnection = createConnection(version = version), dimension: DimensionProperties): ChunkS2CP {

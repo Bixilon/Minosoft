@@ -15,20 +15,18 @@ package de.bixilon.minosoft.data.world.chunk.chunk
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class ChunkPrototype(
-    var blocks: Array<BlockSectionDataProvider?>? = null,
+    var blocks: Array<Array<BlockState?>?>? = null,
     var blockEntities: Map<Vec3i, JsonObject>? = null,
     var biomeSource: BiomeSource? = null,
     var light: Array<ByteArray?>? = null,
@@ -53,28 +51,23 @@ class ChunkPrototype(
 
         val dimension = connection.world.dimension
 
-        val sections: Array<ChunkSection?> = arrayOfNulls(dimension.sections)
 
         val light = this.light
-        for ((index, provider) in blocks.withIndex()) {
-            if (provider == null) continue
-            val section = ChunkSection(index + dimension.minSection, null, provider)
-            SECTION[provider] = section
+        val chunk = Chunk(connection, position, biomeSource)
+
+        for ((index, blockData) in blocks.withIndex()) {
+            if (blockData == null) continue
+            val section = ChunkSection(index + dimension.minSection, chunk)
+            section.blocks.setData(blockData)
 
             if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
                 light?.get(index)?.let { section.light.light = it }
             }
 
-            sections[index] = section
+            chunk.sections[index] = section
         }
-        this.blockEntities.update(dimension.minSection, sections, null, connection)
+        this.blockEntities.update(dimension.minSection, chunk, null, connection)
 
-        val chunk = Chunk(connection, position, sections, biomeSource)
-
-        for (section in sections) {
-            if (section == null) continue
-            section.updateChunk(chunk)
-        }
         if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
             this.topLight?.let { chunk.light.top.update(it) }
             this.bottomLight?.let { chunk.light.bottom.update(it) }
@@ -84,7 +77,7 @@ class ChunkPrototype(
         return chunk
     }
 
-    private fun Array<BlockSectionDataProvider?>.update(chunk: Chunk, replace: Boolean, affected: IntOpenHashSet) {
+    private fun Array<Array<BlockState?>?>.update(chunk: Chunk, replace: Boolean, affected: IntOpenHashSet) {
         for ((index, provider) in this.withIndex()) {
             var section = chunk.sections[index]
             val sectionHeight = index - chunk.minSection
@@ -101,16 +94,15 @@ class ChunkPrototype(
             } else {
                 section.blockEntities.clear()
             }
-            SECTION.forceSet(provider, section)
 
-            section.blocks = provider
+            section.blocks.setData(provider)
             affected += sectionHeight
         }
     }
 
-    private fun Map<Vec3i, JsonObject>?.update(minSection: Int, sections: Array<ChunkSection?>, affected: IntOpenHashSet?, connection: PlayConnection) {
+    private fun Map<Vec3i, JsonObject>?.update(minSection: Int, chunk: Chunk, affected: IntOpenHashSet?, connection: PlayConnection) {
         val position = Vec3i()
-        for ((index, section) in sections.withIndex()) {
+        for ((index, section) in chunk.sections.withIndex()) {
             if (section == null || section.blocks.isEmpty) continue
             val blocks = section.blocks
             val sectionHeight = (index + minSection)
@@ -142,7 +134,7 @@ class ChunkPrototype(
     fun updateChunk(chunk: Chunk, replace: Boolean): IntOpenHashSet? {
         val affected = IntOpenHashSet()
         this.blocks?.update(chunk, replace, affected)
-        this.blockEntities?.update(chunk.minSection, chunk.sections, affected, chunk.connection)
+        this.blockEntities?.update(chunk.minSection, chunk, affected, chunk.connection)
 
         this.biomeSource?.let { chunk.biomeSource = it } // TODO: invalidate cache
 
@@ -154,9 +146,5 @@ class ChunkPrototype(
 
         if (affected.isEmpty()) return null
         return affected
-    }
-
-    private companion object {
-        private val SECTION = BlockSectionDataProvider::section.jvmField
     }
 }

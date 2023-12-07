@@ -23,36 +23,25 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 open class SectionDataProvider<T>(
     var lock: Lock?,
-    data: Array<T>? = null,
     val checkSize: Boolean = false,
-    calculateInitial: Boolean = true,
 ) : Iterable<T> {
-    protected var data: Array<Any?>? = data?.unsafeCast()
+    protected var data: Array<Any?>? = null
         private set
     var count: Int = 0
         private set
     val isEmpty: Boolean
         get() = count == 0
-    lateinit var minPosition: Vec3i
+    var minPosition = Vec3i(ProtocolDefinition.CHUNK_SECTION_SIZE)
         private set
-    lateinit var maxPosition: Vec3i
+    var maxPosition = Vec3i.EMPTY
         private set
-
-    init {
-        if (data != null && calculateInitial) {
-            recalculate()
-        } else {
-            minPosition = Vec3i(ProtocolDefinition.CHUNK_SECTION_SIZE)
-            maxPosition = Vec3i.EMPTY
-        }
-    }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun get(index: Int): T {
+    open operator fun get(index: Int): T {
         return data?.get(index) as T
     }
 
-    operator fun get(x: Int, y: Int, z: Int): T {
+    open operator fun get(x: Int, y: Int, z: Int): T {
         return get(ChunkSection.getIndex(x, y, z))
     }
 
@@ -193,13 +182,6 @@ open class SectionDataProvider<T>(
         lock?.unlock()
     }
 
-    fun copy(): SectionDataProvider<T> {
-        lock?.acquire()
-        val clone = SectionDataProvider<T>(null, data?.clone()?.unsafeCast())
-        lock?.release()
-
-        return clone
-    }
 
     fun clear() {
         lock?.lock()

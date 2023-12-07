@@ -14,19 +14,14 @@ package de.bixilon.minosoft.data.world.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.array.ArrayUtil.cast
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import de.bixilon.minosoft.data.world.container.biome.BiomeSectionDataProvider
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 /**
@@ -34,12 +29,12 @@ import java.util.*
  */
 class ChunkSection(
     val sectionHeight: Int,
-    chunk: Chunk? = null,
-    var blocks: BlockSectionDataProvider = BlockSectionDataProvider(chunk?.lock),
-    var biomes: SectionDataProvider<Biome> = SectionDataProvider(chunk?.lock, checkSize = false),
-    var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(chunk?.lock, checkSize = true),
+    val chunk: Chunk,
 ) {
-    val chunk: Chunk = chunk ?: unsafeNull()
+    var blocks = BlockSectionDataProvider(chunk.lock, this)
+    var biomes = BiomeSectionDataProvider(chunk.lock, this)
+    var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(chunk.lock, checkSize = true)
+
     var light = SectionLight(this)
     var neighbours: Array<ChunkSection?>? = null
 
@@ -66,14 +61,6 @@ class ChunkSection(
         }
     }
 
-    fun buildBiomeCache(noise: NoiseBiomeAccessor) {
-        val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
-        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            biomes[index] = noise.get(index and 0x0F, (index shr 8) and 0x0F, (index shr 4) and 0x0F, chunk)
-        }
-        this.biomes.setData(biomes.cast())
-    }
-
 
     fun clear() {
         blocks.clear()
@@ -81,16 +68,7 @@ class ChunkSection(
         blockEntities.clear()
     }
 
-    fun updateChunk(chunk: Chunk) {
-        CHUNK[this] = chunk
-        blocks.lock = chunk.lock
-        // biomes?
-        blockEntities.lock = chunk.lock
-    }
-
     companion object {
-        private val CHUNK = ChunkSection::chunk.jvmField
-
         inline val Vec3i.index: Int
             get() = getIndex(x, y, z)
 

@@ -90,9 +90,11 @@ class WorldBiomesTest {
         val chunk = world.chunks[0, 0]!!
         chunk.getOrPut(0)
 
-        assertEquals(source.counter, 4096)
+        assertEquals(source.counter, 0) // biomes ore on demand
         assertEquals(world.biomes[1, 2, 3], b1)
-        assertEquals(source.counter, 4096)
+        assertEquals(source.counter, 1)
+        assertEquals(world.biomes[1, 2, 3], b1)
+        assertEquals(source.counter, 1) // don't query again
         assertTrue(chunk.cacheBiomes)
         assertEquals(chunk[0]!!.biomes[1, 2, 3], b1)
     }

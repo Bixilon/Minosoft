@@ -161,7 +161,7 @@ class ChunkManager(val world: World, chunkCapacity: Int = 0, prototypeCapacity: 
     fun create(position: ChunkPosition, biome: BiomeSource = DummyBiomeSource(null)): Chunk {
         if (!world.isValidPosition(position)) throw IllegalArgumentException("Chunk position $position is not valid!")
         chunks.lock.lock()
-        val chunk = chunks.unsafe.getOrPut(position) { Chunk(world.connection, position, arrayOfNulls(world.dimension.sections), biome) }
+        val chunk = chunks.unsafe.getOrPut(position) { Chunk(world.connection, position, biome) }
         val updates = onChunkCreate(chunk)
         chunks.lock.unlock()
 

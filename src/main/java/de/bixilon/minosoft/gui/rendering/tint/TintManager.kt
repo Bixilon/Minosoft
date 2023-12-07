@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -47,10 +46,11 @@ class TintManager(val connection: PlayConnection) {
         DefaultTints.init(this)
     }
 
-    fun getBlockTint(state: BlockState, biome: Biome?, x: Int, y: Int, z: Int): IntArray? {
+    fun getBlockTint(state: BlockState, chunk: Chunk?, x: Int, y: Int, z: Int): IntArray? {
         if (state.block !is TintedBlock) return null
         val tintProvider = state.block.tintProvider ?: return null
         val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
+        val biome = chunk?.getBiome(x, y, z)
 
         for (tintIndex in tints.indices) {
             tints[tintIndex] = tintProvider.getBlockColor(state, biome, x, y, z, tintIndex)
@@ -68,10 +68,6 @@ class TintManager(val connection: PlayConnection) {
 
     fun getParticleTint(blockState: BlockState, position: Vec3i): Int? {
         return getParticleTint(blockState, position.x, position.y, position.z)
-    }
-
-    fun getBlockTint(blockState: BlockState, biome: Biome? = null, blockPosition: Vec3i): IntArray? {
-        return getBlockTint(blockState, biome, blockPosition.x, blockPosition.y, blockPosition.z)
     }
 
     fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, x: Int, y: Int, z: Int): Int? {

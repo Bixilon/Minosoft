@@ -72,9 +72,6 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
 
     fun completeSection(neighbours: Array<Chunk>, section: ChunkSection, sectionHeight: SectionHeight, noise: NoiseBiomeAccessor?) {
         section.neighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, sectionHeight)
-        if (noise != null) {
-            section.buildBiomeCache(noise)
-        }
     }
 
     private fun complete(neighbours: Array<Chunk>) {

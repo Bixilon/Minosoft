@@ -28,7 +28,6 @@ import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.update.block.ChunkLocalBlockUpdate
 import de.bixilon.minosoft.data.world.chunk.update.block.SingleBlockUpdate
-import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider.Companion.unsafeSetSection
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
@@ -44,7 +43,6 @@ import java.util.*
 class Chunk(
     val connection: PlayConnection,
     val chunkPosition: ChunkPosition,
-    var sections: Array<ChunkSection?>,
     var biomeSource: BiomeSource,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
     val lock = ThreadLock()
@@ -53,6 +51,7 @@ class Chunk(
     val minSection = world.dimension.minSection
     val maxSection = world.dimension.maxSection
     val cacheBiomes = world.biomes.noise != null
+    var sections: Array<ChunkSection?> = arrayOfNulls(world.dimension.sections)
 
     val neighbours = ChunkNeighbours(this)
 
@@ -184,7 +183,6 @@ class Chunk(
         var section = sections[index] // get another time, it might have changed already
         if (section == null) {
             section = ChunkSection(sectionHeight, chunk = this)
-            section.blocks.unsafeSetSection(section)
             val neighbours = this.neighbours.get()
             if (neighbours != null) {
                 this.neighbours.completeSection(neighbours, section, sectionHeight, world.biomes.noise)
