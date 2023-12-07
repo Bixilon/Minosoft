@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.world.biome.accessor.noise
 import de.bixilon.kutil.math.simple.DoubleMath.square
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 
 class VoronoiBiomeAccessor(
@@ -41,61 +42,65 @@ class VoronoiBiomeAccessor(
     }
 
     private fun getBiomeOffset(seed: Long, x: Int, y: Int, z: Int): Int {
-        val m = x - 2
-        val n = y - 2
-        val o = z - 2
+        // all xyz coordinates are from 0..15
 
-        val p = m shr 2
-        val q = n shr 2
-        val r = o shr 2
+        // target biome can also be on the negative side, offset by -2
+        val cX = x - 2
+        val cY = y - 2
+        val cZ = z - 2
 
-        val d = (m and 0x03) / 4.0
-        val e = (n and 0x03) / 4.0
-        val f = (o and 0x03) / 4.0
+        // array source
+        val sX = cX shr 2
+        val sY = cY shr 2
+        val sZ = cZ shr 2
 
-        var s = 0
-        var g = Double.POSITIVE_INFINITY
+        // in array
+        val iX = (cX and 0x03) / 4.0
+        val iY = (cY and 0x03) / 4.0
+        val iZ = (cZ and 0x03) / 4.0
 
-        for (i in 0 until 8) {
-            var u = p
-            var xFraction = d
-            if (i and 0x04 != 0) {
-                u++
-                xFraction -= 1.0
+        var minXYZ = 0
+        var minDistance = Double.POSITIVE_INFINITY
+
+        for (xyz in 0 until 2 * 2 * 2) {
+            var uX = sX
+            var offsetX = iX
+            if (xyz and 0x04 != 0) {
+                uX++
+                offsetX -= 1.0
             }
 
-            var v = q
-            var yFraction = e
-            if (i and 0x02 != 0) {
-                v++
-                yFraction -= 1.0
+            var uY = sY
+            var offsetY = iY
+            if (xyz and 0x02 != 0) {
+                uY++
+                offsetY -= 1.0
             }
 
-            var w = r
-            var zFraction = f
-            if (i and 0x01 != 0) {
-                w++
-                zFraction -= 1.0
+            var uZ = sZ
+            var offsetZ = iZ
+            if (xyz and 0x01 != 0) {
+                uZ++
+                offsetZ -= 1.0
             }
 
 
-            val d3 = calculateFiddle(seed, u, v, w, xFraction, yFraction, zFraction)
-            if (g > d3) {
-                s = i
-                g = d3
-            }
+            val distance = noiseDistance(seed, uX, uY, uZ, offsetX, offsetY, offsetZ)
+            if (distance > minDistance) continue
+            minXYZ = xyz
+            minDistance = distance
         }
 
-        var biomeX = p
-        if (s and 0x04 != 0) {
+        var biomeX = sX
+        if (minXYZ and 0x04 != 0) {
             biomeX++
         }
-        var biomeY = q
-        if (s and 0x02 != 0) {
+        var biomeY = sY
+        if (minXYZ and 0x02 != 0) {
             biomeY++
         }
-        var biomeZ = r
-        if (s and 0x01 != 0) {
+        var biomeZ = sZ
+        if (minXYZ and 0x01 != 0) {
             biomeZ++
         }
 
@@ -103,32 +108,32 @@ class VoronoiBiomeAccessor(
     }
 
 
-    private fun calculateFiddle(seed: Long, x: Int, y: Int, z: Int, xFraction: Double, yFraction: Double, zFraction: Double): Double {
-        var ret = seed
+    private fun noiseDistance(seed: Long, x: Int, y: Int, z: Int, offsetX: Double, offsetY: Double, offsetZ: Double): Double {
+        var ret = mix(seed, x, y, z)
 
-        ret = next(ret, x)
-        ret = next(ret, y)
-        ret = next(ret, z)
-        ret = next(ret, x)
-        ret = next(ret, y)
-        ret = next(ret, z)
+        val noiseX = nextNoiseOffset(ret); ret = next(ret, seed)
+        val noiseY = nextNoiseOffset(ret); ret = next(ret, seed)
+        val noiseZ = nextNoiseOffset(ret)
 
-        val xSalt = distribute(ret)
-
-        ret = next(ret, seed)
-
-        val ySalt = distribute(ret)
-
-        ret = next(ret, seed)
-
-        val zSalt = distribute(ret)
-
-        return (xFraction + xSalt).square() + (yFraction + ySalt).square() + (zFraction + zSalt).square()
+        return (offsetX + noiseX).square() + (offsetY + noiseY).square() + (offsetZ + noiseZ).square()
     }
 
-    private fun distribute(seed: Long): Double {
-        val d = Math.floorMod(seed shr 24, 1024L).toInt() / 1024.0
-        return (d - 0.5) * 0.9
+    private fun mix(seed: Long, x: Int, y: Int, z: Int): Long {
+        var mixed = seed
+        mixed = next(mixed, x)
+        mixed = next(mixed, y)
+        mixed = next(mixed, z)
+        mixed = next(mixed, x)
+        mixed = next(mixed, y)
+        mixed = next(mixed, z)
+        return mixed
+    }
+
+    private fun nextNoiseOffset(seed: Long): Double {
+        val floor = Math.floorMod(seed shr 24, SpatialBiomeArray.SIZE.toLong()).toInt()
+        val double = (floor - (SpatialBiomeArray.SIZE / 2)) / SpatialBiomeArray.SIZE.toDouble()
+
+        return double * 0.9
     }
 
     // https://en.wikipedia.org/wiki/Linear_congruential_generator
