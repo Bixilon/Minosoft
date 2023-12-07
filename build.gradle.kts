@@ -26,11 +26,11 @@ import java.nio.charset.StandardCharsets
 
 
 plugins {
-    kotlin("jvm") version "1.9.20"
+    kotlin("jvm") version "1.9.21"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.2.1"
-    id("com.github.ben-manes.versions") version "0.49.0"
+    id("com.github.ben-manes.versions") version "0.50.0"
 }
 
 fun getProperty(name: String): String {
@@ -335,13 +335,13 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 dependencies {
     implementation("org.slf4j", "slf4j-api", "2.0.9")
     implementation("com.google.guava", "guava", "32.1.3-jre")
-    implementation("dnsjava", "dnsjava", "3.5.2")
+    implementation("dnsjava", "dnsjava", "3.5.3")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.24.1")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.4.7")
-    implementation("com.github.luben", "zstd-jni", "1.5.5-10", classifier = zstdNatives)
-    implementation("org.apache.commons", "commons-lang3", "3.13.0")
+    implementation("com.github.oshi", "oshi-core", "6.4.8")
+    implementation("com.github.luben", "zstd-jni", "1.5.5-11", classifier = zstdNatives)
+    implementation("org.apache.commons", "commons-lang3", "3.14.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
     implementation("it.unimi.dsi", "fastutil-core", "8.5.12")
