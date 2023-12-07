@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 
@@ -45,7 +46,7 @@ class WorldBiomes(val world: World) : BiomeAccessor {
 
     fun getBiome(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
         val noise = this.noise ?: return chunk.biomeSource.get(x, y, z)
-        chunk[y.sectionHeight]?.let { return it.biomes[x, y, z] } // access cache
+        chunk[y.sectionHeight]?.let { return it.biomes[x, y.inSectionHeight, z] } // access cache
 
         return noise.get(x, y, z, chunk)
     }
