@@ -43,10 +43,11 @@ class EntityPositionInfo(
     val chunk: Chunk?,
     val block: BlockState?,
     val velocityBlock: BlockState?,
-    val biome: Biome?,
 ) {
+    val biome: Biome? get() = chunk?.getBiome(inChunkPosition)
+
     companion object {
-        val EMPTY = EntityPositionInfo(0, ChunkPosition.EMPTY, 0, BlockPosition.EMPTY, BlockPosition.EMPTY, InChunkSectionPosition.EMPTY, InChunkPosition.EMPTY, null, null, null, null)
+        val EMPTY = EntityPositionInfo(0, ChunkPosition.EMPTY, 0, BlockPosition.EMPTY, BlockPosition.EMPTY, InChunkSectionPosition.EMPTY, InChunkPosition.EMPTY, null, null, null)
 
 
         fun of(physics: EntityPhysics<*>, previous: EntityPositionInfo = EMPTY): EntityPositionInfo {
@@ -73,9 +74,8 @@ class EntityPositionInfo(
 
             val block = chunk?.get(inChunkPosition)
             val velocityBlock = chunk?.get(velocityPosition.inChunkPosition)
-            val biome = chunk?.getBiome(blockPosition.inChunkPosition)
 
-            return EntityPositionInfo(revision, chunkPosition, sectionHeight, blockPosition, eyePosition, inChunkPosition, inSectionPosition, chunk, block, velocityBlock, biome)
+            return EntityPositionInfo(revision, chunkPosition, sectionHeight, blockPosition, eyePosition, inChunkPosition, inSectionPosition, chunk, block, velocityBlock)
         }
     }
 }
