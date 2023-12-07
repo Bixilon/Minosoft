@@ -94,6 +94,17 @@ class VoronoiBiomeAccessorTest {
         assertEquals(calculate(8, 15, 4, -987654321987654319L), Vec3i(1, 4, 0))
     }
 
+    //   fun `benchmark 1`() {
+    //       val accessor = VoronoiBiomeAccessor::class.java.allocate()
+    //       val time = measureNanoTime {
+    //           for (i in 0 until 20000000) {
+    //               val index = accessor.getBiomeOffset(-987654321987654319L, 8, 15, 4) as Int
+    //               assertEquals(index, 0x1FF46D8)
+    //           }
+    //       }
+    //       println(time.formatNanos())
+    //   }
+
     private fun calculate(x: Int, y: Int, z: Int, seed: Long): Vec3i {
         val accessor = VoronoiBiomeAccessor::class.java.allocate()
         val index = getBiomeOffset.invoke(accessor, seed, x, y, z) as Int

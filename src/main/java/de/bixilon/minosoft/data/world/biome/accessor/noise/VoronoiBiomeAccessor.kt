@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor.noise
 
-import de.bixilon.kutil.math.simple.DoubleMath.square
+import de.bixilon.kutil.math.simple.FloatMath.square
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
@@ -41,7 +41,7 @@ class VoronoiBiomeAccessor(
         return biomeChunk?.biomeSource?.get(biomeX and 0x0F, biomeY, biomeZ and 0x0F)
     }
 
-    private fun getBiomeOffset(seed: Long, x: Int, y: Int, z: Int): Int {
+    fun getBiomeOffset(seed: Long, x: Int, y: Int, z: Int): Int {
         // all xyz coordinates are from 0..15
 
         // target biome can also be on the negative side, offset by -2
@@ -55,33 +55,33 @@ class VoronoiBiomeAccessor(
         val sZ = cZ shr 2
 
         // in array
-        val iX = (cX and 0x03) / 4.0
-        val iY = (cY and 0x03) / 4.0
-        val iZ = (cZ and 0x03) / 4.0
+        val iX = (cX and 0x03) / 4.0f
+        val iY = (cY and 0x03) / 4.0f
+        val iZ = (cZ and 0x03) / 4.0f
 
         var minXYZ = 0
-        var minDistance = Double.POSITIVE_INFINITY
+        var minDistance = Float.POSITIVE_INFINITY
 
         for (xyz in 0 until 2 * 2 * 2) {
             var uX = sX
             var offsetX = iX
             if (xyz and 0x04 != 0) {
                 uX++
-                offsetX -= 1.0
+                offsetX -= 1.0f
             }
 
             var uY = sY
             var offsetY = iY
             if (xyz and 0x02 != 0) {
                 uY++
-                offsetY -= 1.0
+                offsetY -= 1.0f
             }
 
             var uZ = sZ
             var offsetZ = iZ
             if (xyz and 0x01 != 0) {
                 uZ++
-                offsetZ -= 1.0
+                offsetZ -= 1.0f
             }
 
 
@@ -108,7 +108,7 @@ class VoronoiBiomeAccessor(
     }
 
 
-    private fun noiseDistance(seed: Long, x: Int, y: Int, z: Int, offsetX: Double, offsetY: Double, offsetZ: Double): Double {
+    private fun noiseDistance(seed: Long, x: Int, y: Int, z: Int, offsetX: Float, offsetY: Float, offsetZ: Float): Float {
         var ret = mix(seed, x, y, z)
 
         val noiseX = nextNoiseOffset(ret); ret = next(ret, seed)
@@ -120,29 +120,30 @@ class VoronoiBiomeAccessor(
 
     private fun mix(seed: Long, x: Int, y: Int, z: Int): Long {
         var mixed = seed
-        mixed = next(mixed, x)
-        mixed = next(mixed, y)
-        mixed = next(mixed, z)
-        mixed = next(mixed, x)
-        mixed = next(mixed, y)
-        mixed = next(mixed, z)
+
+        val xL = x.toLong()
+        val yL = y.toLong()
+        val zL = z.toLong()
+
+        mixed = next(mixed, xL)
+        mixed = next(mixed, yL)
+        mixed = next(mixed, zL)
+        mixed = next(mixed, xL)
+        mixed = next(mixed, yL)
+        mixed = next(mixed, zL)
         return mixed
     }
 
-    private fun nextNoiseOffset(seed: Long): Double {
-        val floor = Math.floorMod(seed shr 24, SpatialBiomeArray.SIZE.toLong()).toInt()
-        val double = (floor - (SpatialBiomeArray.SIZE / 2)) / SpatialBiomeArray.SIZE.toDouble()
+    private fun nextNoiseOffset(seed: Long): Float {
+        val floor = Math.floorMod((seed shr 24), SpatialBiomeArray.SIZE.toLong()).toInt()
 
-        return double * 0.9
+        // return ((floor - (SpatialBiomeArray.SIZE / 2)) / SpatialBiomeArray.SIZE.toDouble()) * 0.9
+        return (1.0f / 1137.0f) * floor + (-0.45f) // roughly equivalent and minimal faster
     }
 
     // https://en.wikipedia.org/wiki/Linear_congruential_generator
     private fun next(seed: Long): Long {
         return seed * (seed * 6364136223846793005L + 1442695040888963407L)
-    }
-
-    private fun next(seed: Long, salt: Int): Long {
-        return next(seed) + salt
     }
 
     private fun next(seed: Long, salt: Long): Long {
