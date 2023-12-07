@@ -14,13 +14,14 @@
 package de.bixilon.minosoft.config.profile.storage
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.config.profile.test.TestProfile
 
 class ProfileIOManagerTest {
 
 
     companion object {
-        private val SAVE = ProfileIOManager::class.java.getDeclaredField("save").apply { isAccessible = true }
+        private val SAVE = ProfileIOManager::class.java.getFieldOrNull("save")!!
 
         fun ProfileIOManager.isSaveQueued(storage: FileStorage): Boolean {
             val queue = SAVE.get(ProfileIOManager).unsafeCast<MutableSet<FileStorage>>()

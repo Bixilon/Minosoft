@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -44,10 +45,10 @@ import org.testng.annotations.Test
 
 @Test(groups = ["rendering"])
 class WorldRendererPipelineTest {
-    private val elements = WorldRendererPipeline::class.java.getDeclaredField("elements").apply { isAccessible = true }
+    private val elements = WorldRendererPipeline::class.java.getFieldOrNull("elements")!!
     val WorldRendererPipeline.elements: Array<PipelineElement> get() = this@WorldRendererPipelineTest.elements.get(this).unsafeCast()
 
-    private val pipeline = RendererManager::class.java.getDeclaredField("pipeline").apply { isAccessible = true }
+    private val pipeline = RendererManager::class.java.getFieldOrNull("pipeline")!!
     val RendererManager.pipeline: RendererPipeline get() = this@WorldRendererPipelineTest.pipeline.get(this).unsafeCast()
 
 

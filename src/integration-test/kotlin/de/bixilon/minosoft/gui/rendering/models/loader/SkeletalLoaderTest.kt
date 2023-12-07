@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.assets.MemoryAssetsManager
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -64,9 +65,9 @@ class SkeletalLoaderTest {
     }
 
     private fun SkeletalLoader.getRegisteredModel(name: ResourceLocation): SkeletalModel {
-        val map = SkeletalLoader::class.java.getDeclaredField("registered").apply { isAccessible = true }.get(this).unsafeCast<Map<ResourceLocation, Any>>()
+        val map = SkeletalLoader::class.java.getFieldOrNull("registered")!!.get(this).unsafeCast<Map<ResourceLocation, Any>>()
         val registered = map[name] ?: throw IllegalArgumentException("Can not find model!")
-        return registered::class.java.getDeclaredField("model").apply { isAccessible = true }.get(registered).unsafeCast()
+        return registered::class.java.getFieldOrNull("model")!!.get(registered).unsafeCast()
     }
 
     fun `load dummy model from file`() {

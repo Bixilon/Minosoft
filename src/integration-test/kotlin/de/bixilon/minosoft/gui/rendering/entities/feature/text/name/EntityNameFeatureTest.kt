@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -43,7 +44,7 @@ import org.testng.annotations.Test
 
 @Test(groups = ["entities", "rendering"])
 class EntityNameFeatureTest {
-    private val updateName = EntityNameFeature::class.java.getDeclaredMethod("updateName").apply { isAccessible = true }
+    private val updateName = EntityNameFeature::class.java.getDeclaredMethod("updateName").apply { setUnsafeAccessible() }
 
     private fun create(entity: EntityFactory<*>): EntityNameFeature {
         val renderer = create().create(entity)

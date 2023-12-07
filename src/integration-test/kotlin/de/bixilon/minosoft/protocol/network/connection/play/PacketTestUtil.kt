@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 
@@ -29,7 +30,7 @@ object PacketTestUtil {
             throw AssertionError("Packet class expected: $expected, but found $found")
         }
         for (field in found::class.java.declaredFields) {
-            field.isAccessible = true
+            field.setUnsafeAccessible()
             val gotValue = field.get(found)
             val expectedValue = field.get(expected)
             if (gotValue != expectedValue) {

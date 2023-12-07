@@ -18,6 +18,7 @@ import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
 import de.bixilon.kutil.latch.ParentLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.modding.loader.error.*
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
 import de.bixilon.minosoft.modding.loader.mod.ModMain
@@ -238,6 +239,6 @@ object ModLoader {
 
 
     private val MOD_MAIN = ModMain::class.java
-    private val ASSETS_MANAGER_FIELD = MOD_MAIN.getDeclaredField("assets").apply { isAccessible = true }
-    private val LOGGER_FIELD = MOD_MAIN.getDeclaredField("logger").apply { isAccessible = true }
+    private val ASSETS_MANAGER_FIELD = MOD_MAIN.getFieldOrNull("assets")!!
+    private val LOGGER_FIELD = MOD_MAIN.getFieldOrNull("logger")!!
 }

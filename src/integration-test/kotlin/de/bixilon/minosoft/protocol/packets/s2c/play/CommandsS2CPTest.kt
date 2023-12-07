@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.nodes.NamedNode
 import de.bixilon.minosoft.commands.nodes.RootNode
@@ -24,7 +25,7 @@ import org.testng.annotations.Test
 
 @Test(groups = ["packet"])
 class CommandsS2CPTest {
-    private val children = CommandNode::class.java.getDeclaredField("children").apply { isAccessible = true }
+    private val children = CommandNode::class.java.getFieldOrNull("children")!!
     private val RootNode.children: List<CommandNode> get() = this@CommandsS2CPTest.children.get(this).unsafeCast()
 
     fun vanilla_op_1_19_3() {

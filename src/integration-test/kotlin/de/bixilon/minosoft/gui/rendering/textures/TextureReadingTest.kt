@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
@@ -29,8 +30,8 @@ class TextureReadingTest {
     private val GRAY_RGB = TextureReadingTest::class.java.getResourceAsStream("/texture_reading/gray_rgb.png")!!.readAllBytes()
     private val SAND = TextureReadingTest::class.java.getResourceAsStream("/texture_reading/sand.png")!!.readAllBytes()
 
-    private val READ_1 = TextureUtil::class.java.getDeclaredMethod("readTexture1", InputStream::class.java, TextureBufferFactory::class.java).apply { isAccessible = true }
-    private val READ_2 = TextureUtil::class.java.getDeclaredMethod("readTexture2", InputStream::class.java, TextureBufferFactory::class.java).apply { isAccessible = true }
+    private val READ_1 = TextureUtil::class.java.getDeclaredMethod("readTexture1", InputStream::class.java, TextureBufferFactory::class.java).apply { setUnsafeAccessible() }
+    private val READ_2 = TextureUtil::class.java.getDeclaredMethod("readTexture2", InputStream::class.java, TextureBufferFactory::class.java).apply { setUnsafeAccessible() }
 
     private fun TextureBuffer.assertGray() {
         assertEquals(size, Vec2i(16, 16))

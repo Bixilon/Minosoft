@@ -18,6 +18,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -83,7 +84,7 @@ data class EntityType(
                     if (!Modifier.isStatic(field.modifiers)) {
                         continue
                     }
-                    field.isAccessible = true
+                    field.setUnsafeAccessible()
                     if (field.type != EntityDataField::class.java) {
                         continue
                     }

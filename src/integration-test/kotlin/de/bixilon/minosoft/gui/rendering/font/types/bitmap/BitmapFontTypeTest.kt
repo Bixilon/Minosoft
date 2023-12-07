@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.types.bitmap
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.gui.rendering.font.types.empty.EmptyCodeRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
@@ -28,7 +29,7 @@ import kotlin.reflect.full.companionObject
 
 @Test(groups = ["font"])
 class BitmapFontTypeTest {
-    private val LOAD = BitmapFontType::class.companionObject!!.java.getDeclaredMethod("load", Texture::class.java, Int::class.java, Int::class.java, Array<IntStream>::class.java).apply { isAccessible = true }
+    private val LOAD = BitmapFontType::class.companionObject!!.java.getDeclaredMethod("load", Texture::class.java, Int::class.java, Int::class.java, Array<IntStream>::class.java).apply { setUnsafeAccessible() }
 
     private fun createTexture(start: IntArray, end: IntArray, width: Int, height: Int, rows: Int): Texture {
         check(start.size == end.size)

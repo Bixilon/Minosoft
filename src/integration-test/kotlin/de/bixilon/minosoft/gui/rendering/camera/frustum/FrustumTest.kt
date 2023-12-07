@@ -17,6 +17,8 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.registries.shapes.aabb.AABB
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.WorldOffset
@@ -28,8 +30,8 @@ import org.testng.annotations.Test
 
 @Test(groups = ["frustum", "rendering"])
 class FrustumTest {
-    private val CAMERA = Frustum::class.java.getDeclaredField("camera").apply { isAccessible = true }
-    private val RECALCULATE = Frustum::class.java.getDeclaredMethod("recalculate", Mat4::class.java).apply { isAccessible = true }
+    private val CAMERA = Frustum::class.java.getFieldOrNull("camera")!!
+    private val RECALCULATE = Frustum::class.java.getDeclaredMethod("recalculate", Mat4::class.java).apply { setUnsafeAccessible() }
 
     private fun create(matrix: Mat4, offset: Vec3i = Vec3i.EMPTY): Frustum {
         val worldOffset = WorldOffset::class.java.allocate()

@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -38,9 +39,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.Assert.assertEquals
 
 object InteractionTestUtil {
-    private val PRESS = KeyHandler::class.java.getDeclaredMethod("onPress").apply { isAccessible = true }
-    private val TICK = KeyHandler::class.java.getDeclaredMethod("onTick").apply { isAccessible = true }
-    private val RELEASE = KeyHandler::class.java.getDeclaredMethod("onRelease").apply { isAccessible = true }
+    private val PRESS = KeyHandler::class.java.getDeclaredMethod("onPress").apply { setUnsafeAccessible() }
+    private val TICK = KeyHandler::class.java.getDeclaredMethod("onTick").apply { setUnsafeAccessible() }
+    private val RELEASE = KeyHandler::class.java.getDeclaredMethod("onRelease").apply { setUnsafeAccessible() }
 
     private val pig = EntityType(Pig.identifier, minecraft(""), 1.0f, 1.0f, mapOf(), Pig, null)
 

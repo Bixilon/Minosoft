@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.assets.MemoryAssetsManager
 import de.bixilon.minosoft.assets.TestAssetsManager.box
 import de.bixilon.minosoft.gui.rendering.models.block.element.ModelElement
@@ -27,7 +28,7 @@ import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ModelTestUtil {
-    private val cache = BlockLoader::class.java.getDeclaredField("cache").apply { isAccessible = true }
+    private val cache = BlockLoader::class.java.getFieldOrNull("cache")!!
 
     fun createLoader(): ModelLoader {
         val instance = IT.OBJENESIS.newInstance(ModelLoader::class.java)

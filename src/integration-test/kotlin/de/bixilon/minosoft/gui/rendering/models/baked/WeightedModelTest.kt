@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModelTestUtil.createFaces
@@ -32,7 +33,7 @@ import java.util.*
 
 @Test(groups = ["models"])
 class WeightedModelTest {
-    private val getModel = WeightedBlockRender::class.java.getDeclaredMethod("getModel", Random::class.java, BlockPosition::class.java).apply { isAccessible = true }
+    private val getModel = WeightedBlockRender::class.java.getDeclaredMethod("getModel", Random::class.java, BlockPosition::class.java).apply { setUnsafeAccessible() }
 
     fun `evenly distributed weight`() {
         val model = WeightedBlockStateApply(listOf(

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.manager
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.file.watcher.FileWatcherService
@@ -75,7 +76,7 @@ object ProfileManagers : DefaultFactory<StorageProfileManager<*>>(
     fun load(latch: AbstractLatch?) {
         ignoreAll { migrateLegacyProfiles() }
         if (RunConfiguration.PROFILES_HOT_RELOADING) {
-            FileWatcherService.start() // TODO: kutil 1.25: remove kutil race condition
+            DefaultThreadPool += { FileWatcherService.start() }
         }
         val worker = UnconditionalWorker()
         var first: Throwable? = null

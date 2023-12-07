@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.input.key.manager
 
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfile
 import de.bixilon.minosoft.data.registries.identified.Namespaces
@@ -30,11 +32,11 @@ import de.bixilon.minosoft.test.IT
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
 
 object InputTestUtil {
-    private val profile = BindingsManager::class.java.getDeclaredField("profile").apply { isAccessible = true }
-    private val bindings = BindingsManager::class.java.getDeclaredField("bindings").apply { isAccessible = true }
-    private val onKey = InputManager::class.java.getDeclaredMethod("onKey", KeyCodes::class.java, KeyChangeTypes::class.java).apply { isAccessible = true }
-    private val onChar = InputManager::class.java.getDeclaredMethod("onChar", Int::class.java).apply { isAccessible = true }
-    private val times = InputManager::class.java.getDeclaredField("times").apply { isAccessible = true }
+    private val profile = BindingsManager::class.java.getFieldOrNull("profile")!!
+    private val bindings = BindingsManager::class.java.getFieldOrNull("bindings")!!
+    private val onKey = InputManager::class.java.getDeclaredMethod("onKey", KeyCodes::class.java, KeyChangeTypes::class.java).apply { setUnsafeAccessible() }
+    private val onChar = InputManager::class.java.getDeclaredMethod("onChar", Int::class.java).apply { setUnsafeAccessible() }
+    private val times = InputManager::class.java.getFieldOrNull("times")!!
 
 
     fun create(): InputManager {

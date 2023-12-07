@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.modding.loader
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import org.xeustechnologies.jcl.JarClassLoader
 import org.xeustechnologies.jcl.JarResources
 import org.xeustechnologies.jcl.JclJarEntry
@@ -22,13 +23,9 @@ import java.util.jar.JarInputStream
 
 object LoaderUtil {
     const val MANIFEST = "manifest.json"
-    private val contentsField = JarResources::class.java.getDeclaredField("jarEntryContents")
-    private val classpathResourcesField = JarClassLoader::class.java.getDeclaredField("classpathResources")
+    private val contentsField = JarResources::class.java.getFieldOrNull("jarEntryContents")!!
+    private val classpathResourcesField = JarClassLoader::class.java.getFieldOrNull("classpathResources")!!
 
-    init {
-        contentsField.isAccessible = true
-        classpathResourcesField.isAccessible = true
-    }
 
     val JarResources.contents: MutableMap<String, JclJarEntry>
         get() = contentsField.get(this).unsafeCast()

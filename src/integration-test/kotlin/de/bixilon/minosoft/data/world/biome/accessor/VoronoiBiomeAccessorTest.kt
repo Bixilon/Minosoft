@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.test.ITUtil.allocate
 import org.testng.Assert.assertEquals
@@ -21,7 +22,7 @@ import org.testng.annotations.Test
 
 @Test(groups = ["biome"])
 class VoronoiBiomeAccessorTest {
-    private val getBiomeOffset = VoronoiBiomeAccessor::class.java.getDeclaredMethod("getBiomeOffset", Long::class.java, Int::class.java, Int::class.java, Int::class.java).apply { isAccessible = true }
+    private val getBiomeOffset = VoronoiBiomeAccessor::class.java.getDeclaredMethod("getBiomeOffset", Long::class.java, Int::class.java, Int::class.java, Int::class.java).apply { setUnsafeAccessible() }
 
     // Those values are actually undefined, the getBiomeOffset method only allows values from 0 to 15
     @Test(enabled = false)

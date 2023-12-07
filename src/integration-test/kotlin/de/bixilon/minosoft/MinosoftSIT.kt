@@ -14,6 +14,7 @@
 package de.bixilon.minosoft
 
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
+import de.bixilon.kutil.environment.Environment
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.minusAssign
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -42,8 +42,7 @@ internal object MinosoftSIT {
         RunConfiguration.VERBOSE_LOGGING = true
         RunConfiguration.APPLICATION_NAME = "Minosoft it"
 
-        val isCi = (System.getenv("GITHUB_ACTIONS") ?: System.getenv("TRAVIS") ?: System.getenv("CIRCLECI") ?: System.getenv("GITLAB_CI")) != null // TODO: kutil 1.25 Environment.isInCI()
-        if (isCi) {
+        if (Environment.isInCI()) {
             RunConfiguration::HOME_DIRECTORY.forceSet(Path.of("./it"))
         }
         RunConfiguration::CONFIG_DIRECTORY.forceSet(Path.of(System.getProperty("java.io.tmpdir"), "minosoft").resolve("conf"))

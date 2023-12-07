@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.models.ModelTestUtil.bake
@@ -31,7 +32,7 @@ import org.testng.annotations.Test
 
 @Test(groups = ["models"])
 class LightIndexTest {
-    private val lightIndex = BakedFace::class.java.getDeclaredField("lightIndex").apply { isAccessible = true }
+    private val lightIndex = BakedFace::class.java.getFieldOrNull("lightIndex")!!
 
     private fun BakedModel.assertLight(direction: Directions, self: Boolean) {
         val faces = this.faces[direction.ordinal]

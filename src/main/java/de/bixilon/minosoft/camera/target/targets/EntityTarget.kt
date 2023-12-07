@@ -15,6 +15,7 @@ package de.bixilon.minosoft.camera.target.targets
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.string.StringUtil.toSnakeCase
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
@@ -82,7 +83,7 @@ class EntityTarget(
                     if (method.parameterCount > 0) {
                         continue
                     }
-                    method.isAccessible = true
+                    method.setUnsafeAccessible()
                     val name = method.name.toSnakeCase().removePrefix("get_").removePrefix("is_").removePrefix("has_")
                     if (values.containsKey(name)) {
                         continue

@@ -17,6 +17,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ThreadPoolRunnable
 import de.bixilon.kutil.file.FileUtil.slashPath
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.terminal.RunConfiguration
 import java.io.FileOutputStream
@@ -83,9 +84,7 @@ object FreezeDumpUtil {
     }
 
     private fun createThreadPoolDump(): String {
-        val tasks = ThreadPool::class.java.getDeclaredField("queue")
-        tasks.isAccessible = true
-
+        val tasks = ThreadPool::class.java.getFieldOrNull("queue")!!
 
         val queue = tasks.get(DefaultThreadPool) as PriorityBlockingQueue<ThreadPoolRunnable>
 

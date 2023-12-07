@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.buffer.ByteBufferUtil.toByteArray
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex.UnihexFontType.Companion.fromHex
 import de.bixilon.minosoft.test.IT.OBJENESIS
@@ -28,8 +30,8 @@ import kotlin.reflect.full.companionObject
 
 @Test(groups = ["font"])
 class UnihexFontTypeTest {
-    private val textureRemaining = UnifontTexture::class.java.getDeclaredField("remaining").apply { isAccessible = true }
-    val readUnihex = UnihexFontType::class.companionObject!!.java.getDeclaredMethod("readUnihex", InputStream::class.java, Int2ObjectOpenHashMap::class.java).apply { isAccessible = true }
+    private val textureRemaining = UnifontTexture::class.java.getFieldOrNull("remaining")!!
+    val readUnihex = UnihexFontType::class.companionObject!!.java.getDeclaredMethod("readUnihex", InputStream::class.java, Int2ObjectOpenHashMap::class.java).apply { setUnsafeAccessible() }
 
     fun `from hex`() {
         assertEquals('0'.code.fromHex(), 0x00)
@@ -101,7 +103,7 @@ class UnihexFontTypeTest {
 
         val textures = ArrayList<UnifontTexture>()
         textures += texture
-        rasterizer::class.java.getDeclaredField("textures").apply { isAccessible = true }.set(rasterizer, textures)
+        rasterizer::class.java.getFieldOrNull("textures")!!.set(rasterizer, textures)
 
         val code = rasterizer.add(pixels) as UnicodeCodeRenderer
 

@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.WorldBiomes
@@ -116,5 +117,5 @@ object WorldTestUtil {
         recalculateLight(heightmap = true) // yah, might break the result, don't use fill if you want to test light
     }
 
-    private val DATA = SectionDataProvider::class.java.getDeclaredField("data").apply { isAccessible = true }
+    private val DATA = SectionDataProvider::class.java.getFieldOrNull("data")!!
 }

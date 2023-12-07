@@ -18,7 +18,9 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
@@ -56,8 +58,8 @@ import java.io.File
 
 object JavaFXUtil {
     private const val DEFAULT_STYLE = "resource:minosoft:eros/style.css"
-    private val SHOWING_FIELD = Window::class.java.getDeclaredField("showing").apply { isAccessible = true }
-    private val MARK_INVALID_METHOD = BooleanPropertyBase::class.java.getDeclaredMethod("markInvalid").apply { isAccessible = true }
+    private val SHOWING_FIELD = Window::class.java.getFieldOrNull("showing")!!
+    private val MARK_INVALID_METHOD = BooleanPropertyBase::class.java.getDeclaredMethod("markInvalid").apply { setUnsafeAccessible() }
     private val stages = StageList()
     lateinit var JAVA_FX_THREAD: Thread
     lateinit var MINOSOFT_LOGO: Image

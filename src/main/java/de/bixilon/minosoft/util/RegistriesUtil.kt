@@ -18,6 +18,7 @@ import de.bixilon.kutil.collections.primitive.Clearable
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.reflection.generic.GenericUtil
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.Parentable
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
@@ -30,7 +31,7 @@ object RegistriesUtil {
 
     init {
         for (field in Registries::class.java.declaredFields) {
-            field.isAccessible = true
+            field.setUnsafeAccessible()
             if (Clearable::class.java.isAssignableFrom(field.type)) {
                 clearable += field
             }

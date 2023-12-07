@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -32,9 +33,9 @@ import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 
-val times = InputManager::class.java.getDeclaredField("times").apply { isAccessible = true }
-val keysPressed = InputManager::class.java.getDeclaredField("pressed").apply { isAccessible = true }
-val bindingsPressed = BindingsManager::class.java.getDeclaredField("pressed").apply { isAccessible = true }
+val times = InputManager::class.java.getFieldOrNull("times")!!
+val keysPressed = InputManager::class.java.getFieldOrNull("pressed")!!
+val bindingsPressed = BindingsManager::class.java.getFieldOrNull("pressed")!!
 val name = minosoft("dummy")
 
 val InputManager.times: Object2LongMap<KeyCodes> get() = de.bixilon.minosoft.gui.rendering.input.key.manager.binding.actions.times.get(this).unsafeCast()

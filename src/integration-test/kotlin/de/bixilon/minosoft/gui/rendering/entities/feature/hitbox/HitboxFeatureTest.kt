@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.hitbox
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.gui.rendering.entities.EntityRendererTestUtil.create
@@ -29,7 +30,7 @@ import org.testng.annotations.Test
 
 @Test(groups = ["entities", "rendering"])
 class HitboxFeatureTest {
-    private val mesh = MeshedFeature::class.java.getDeclaredField("mesh").apply { isAccessible = true }
+    private val mesh = MeshedFeature::class.java.getFieldOrNull("mesh")!!
 
     val HitboxFeature.mesh: LineMesh? get() = this@HitboxFeatureTest.mesh.get(this).unsafeCast()
 

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.versions.registries.pixlyzer
 
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.versions.VersionTypes
 import de.bixilon.minosoft.protocol.versions.Versions
@@ -25,7 +27,7 @@ class Latest : PixLyzerLoadingTest("tba") {
 
     @Test(priority = -20)
     override fun loadVersion() {
-        val id = Versions::class.java.getDeclaredField("id").apply { isAccessible = true }.get(Versions) as Int2ObjectOpenHashMap<Version>
+        val id = Versions::class.java.getFieldOrNull("id")!!.apply { setUnsafeAccessible() }.get(Versions) as Int2ObjectOpenHashMap<Version>
         var highest = 0
         for ((id, _) in id) {
             if (id < highest) continue

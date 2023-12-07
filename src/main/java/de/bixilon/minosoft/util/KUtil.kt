@@ -29,8 +29,6 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
-import de.bixilon.kutil.concurrent.worker.task.TaskWorker
-import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -356,10 +354,5 @@ object KUtil {
         stream.write(data)
         stream.close()
         println("Packet dumped to $path")
-    }
-
-    @Deprecated("kutil 1.25")
-    operator fun TaskWorker.minusAssign(identifier: Any) {
-        this::class.java.getDeclaredField("tasks").apply { isAccessible = true }.get(this).unsafeCast<MutableMap<Any, WorkerTask>>().remove(identifier)
     }
 }

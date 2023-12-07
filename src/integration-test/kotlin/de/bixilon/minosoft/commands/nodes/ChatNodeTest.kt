@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.Suggestion
 import de.bixilon.minosoft.commands.util.CommandReader
@@ -52,8 +53,8 @@ class ChatNodeTest {
         connection::events.forceSet(EventMaster())
         val util = ConnectionUtil::class.java.allocate()
         util::signer.forceSet(DummyMessageSigner)
-        util::class.java.getDeclaredField("connection").apply { isAccessible = true }.forceSet(util, connection)
-        util::class.java.getDeclaredField("random").apply { isAccessible = true }.forceSet(util, SecureRandom())
+        util::class.java.getFieldOrNull("connection")!!.forceSet(util, connection)
+        util::class.java.getFieldOrNull("random")!!.forceSet(util, SecureRandom())
         connection::util.forceSet(util)
         connection::network.forceSet(TestNetwork())
         connection.commands = root

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities.feature.text.name
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
@@ -33,8 +34,8 @@ import org.testng.annotations.Test
 
 @Test(groups = ["entities", "rendering"])
 class EntityScoreFeatureTest {
-    private val updateScore = EntityScoreFeature::class.java.getDeclaredMethod("updateScore").apply { isAccessible = true }
-    private val updateNameOffset = EntityScoreFeature::class.java.getDeclaredMethod("updateNameOffset").apply { isAccessible = true }
+    private val updateScore = EntityScoreFeature::class.java.getDeclaredMethod("updateScore").apply { setUnsafeAccessible() }
+    private val updateNameOffset = EntityScoreFeature::class.java.getDeclaredMethod("updateNameOffset").apply { setUnsafeAccessible() }
 
     private fun createScore(): EntityScoreFeature {
         val renderer = create().create(RemotePlayerEntity).unsafeCast<PlayerRenderer<*>>()

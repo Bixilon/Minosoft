@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.tint.tints.grass
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
 interface GrassTinted : TintedBlock {
 
     override fun initTint(manager: TintManager) {
-        this::class.java.getDeclaredField("tintProvider").forceSet(this, manager.grass)
+        this::class.java.getFieldOrNull("tintProvider")!!.forceSet(this, manager.grass)
     }
 }

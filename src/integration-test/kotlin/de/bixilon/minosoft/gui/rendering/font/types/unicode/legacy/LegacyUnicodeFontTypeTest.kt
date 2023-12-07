@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.legacy
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
@@ -29,7 +30,7 @@ class LegacyUnicodeFontTypeTest {
     private val LOAD_PAGE = LegacyUnicodeFontType::class.companionObject!!.java.getDeclaredMethod("loadPage", Int::class.java, Texture::class.java, Array<UnicodeCodeRenderer>::class.java, InputStream::class.java)
 
     init {
-        LOAD_PAGE.isAccessible = true
+        LOAD_PAGE.setUnsafeAccessible()
     }
 
     private fun load(sizes: ByteArray): Array<UnicodeCodeRenderer?> {

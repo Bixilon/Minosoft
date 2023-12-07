@@ -15,15 +15,12 @@ package de.bixilon.minosoft.input.interaction
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.time.TimeUtil.millis
 import org.testng.SkipException
 
 object KeyHandlerUtil {
-    private val FIELD = KeyHandler::class.java.getDeclaredField("task")
-
-    init {
-        FIELD.isAccessible = true
-    }
+    private val FIELD = KeyHandler::class.java.getFieldOrNull("task")!!
 
     private fun KeyHandler.getTask(): RepeatedTask {
         return FIELD.get(this).unsafeCast() ?: throw IllegalStateException("Not pressed!")
