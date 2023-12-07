@@ -44,9 +44,8 @@ class ChunkSection(
     var neighbours: Array<ChunkSection?>? = null
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int, random: Random) {
-        if (blockEntities.isEmpty) {
-            return
-        }
+        if (blockEntities.isEmpty) return
+
         val offset = Vec3i.of(chunkPosition, sectionHeight)
         val position = Vec3i()
 

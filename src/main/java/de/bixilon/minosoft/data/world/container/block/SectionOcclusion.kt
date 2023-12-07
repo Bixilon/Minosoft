@@ -26,6 +26,7 @@ class SectionOcclusion(
     private val provider: BlockSectionDataProvider,
 ) {
     private var occlusion = EMPTY
+    private var calculate = false
 
     fun clear(notify: Boolean) {
         update(EMPTY, notify)
@@ -39,6 +40,8 @@ class SectionOcclusion(
     }
 
     fun recalculate(notify: Boolean) {
+        if (!calculate) return
+
         if (provider.isEmpty) {
             clear(notify)
             return
@@ -180,10 +183,14 @@ class SectionOcclusion(
         if (`in` == out) {
             return false
         }
-        return occlusion[CubeDirections.getIndex(`in`, out)]
+        return isOccluded(CubeDirections.getIndex(`in`, out))
     }
 
     fun isOccluded(index: Int): Boolean {
+        if (!calculate) {
+            calculate = true
+            recalculate(false)
+        }
         return occlusion[index]
     }
 
