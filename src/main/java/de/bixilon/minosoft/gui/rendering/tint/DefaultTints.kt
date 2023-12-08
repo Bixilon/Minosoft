@@ -29,6 +29,7 @@ object DefaultTints {
 
     fun init(manager: TintManager) {
         manager.applyTo(setOf(MinecraftBlocks.POTTED_FERN), manager.grass)
+        manager.applyTo(setOf(MinecraftBlocks.VINE), manager.foliage) // TODO: inventory color #48b518
         manager.applyTo(setOf(MinecraftBlocks.REDSTONE_WIRE), RedstoneWireTintCalculator)
         manager.applyTo(setOf(MinecraftBlocks.WATER_CAULDRON, MinecraftBlocks.CAULDRON), WaterTintProvider)
         manager.applyTo(setOf(MinecraftBlocks.SUGAR_CANE), SugarCaneTintCalculator(manager.grass))
