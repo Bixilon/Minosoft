@@ -17,6 +17,7 @@ package de.bixilon.minosoft.data.registries.blocks.properties
 abstract class BlockProperty<T>(
     val name: String,
 ) : Iterable<T> {
+    private val hashCode = name.hashCode()
 
     override fun toString(): String {
         return name
@@ -25,11 +26,12 @@ abstract class BlockProperty<T>(
     abstract fun parse(value: Any): T
 
     override fun hashCode(): Int {
-        return name.hashCode()
+        return hashCode
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is BlockProperty<*>) return false
+        if (hashCode != other.hashCode) return false
         return other.name == name
     }
 }
