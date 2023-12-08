@@ -35,7 +35,6 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
-import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.side.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -93,13 +92,7 @@ class FluidSectionMesher(
                             return true
                         }
 
-                        return FaceCulling.canCull(state, FaceProperties(Vec2.EMPTY, Vec2(1.0f), model.transparency), direction, neighbour)
-                    }
-
-                    val topBlock = if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                        neighbours[Directions.O_UP]?.blocks?.let { it[x, 0, z] }
-                    } else {
-                        section.blocks[x, y + 1, z]
+                        return FaceCulling.canCull(state, model.properties, direction, neighbour)
                     }
 
                     val skip = booleanArrayOf(
