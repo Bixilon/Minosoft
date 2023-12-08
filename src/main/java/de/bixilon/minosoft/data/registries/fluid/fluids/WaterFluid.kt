@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.state.PropertyBlockState
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.WaterloggableBlock
+import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.MovementEnchantment
 import de.bixilon.minosoft.data.registries.fluid.Fluid
@@ -139,8 +140,8 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries) = WaterFluid()
 
-
         fun BlockState.isWaterlogged(): Boolean {
+            if (block is PixLyzerBlock && !block.waterloggable) return false
             if (this.block !is WaterloggableBlock) return false
             if (this !is PropertyBlockState) return false
             return properties[BlockProperties.WATERLOGGED]?.toBoolean() ?: return false

@@ -24,6 +24,8 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactories
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperty
 import de.bixilon.minosoft.data.registries.blocks.settings.BlockSettings
 import de.bixilon.minosoft.data.registries.blocks.state.AdvancedBlockState
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -74,6 +76,8 @@ open class PixLyzerBlock(
     val requiresTool: Boolean
     val replaceable: Boolean
     override val item: Item = unsafeNull()
+    var waterloggable: Boolean = true
+        private set
 
     init {
         val state = data["states"]?.asAnyMap()!!.iterator().next().value.asJsonObject()
@@ -83,6 +87,11 @@ open class PixLyzerBlock(
         replaceable = data["replaceable"]?.toBoolean() ?: material?.replaceable ?: false
 
         ITEM_FIELD.inject<RegistryItem>(data["item"])
+    }
+
+    override fun updateStates(states: Set<BlockState>, default: BlockState, properties: Map<BlockProperty<*>, Array<Any>>) {
+        super.updateStates(states, default, properties)
+        waterloggable = BlockProperties.WATERLOGGED in properties
     }
 
     override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
