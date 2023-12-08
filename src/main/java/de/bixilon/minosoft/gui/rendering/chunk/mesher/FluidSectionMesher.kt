@@ -104,7 +104,7 @@ class FluidSectionMesher(
 
                     val skip = booleanArrayOf(
                         isSideCovered(Directions.DOWN), /* ToDo */
-                        fluid.matches(topBlock),
+                        isSideCovered(Directions.UP),
                         isSideCovered(Directions.NORTH),
                         isSideCovered(Directions.SOUTH),
                         isSideCovered(Directions.WEST),
