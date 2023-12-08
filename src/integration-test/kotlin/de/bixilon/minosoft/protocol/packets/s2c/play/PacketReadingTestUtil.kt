@@ -22,10 +22,14 @@ import java.io.FileNotFoundException
 object PacketReadingTestUtil {
 
     fun <T : S2CPacket> read(name: String, version: String, connection: PlayConnection = ConnectionTestUtil.createConnection(version = version), constructor: (PlayInByteBuffer) -> T): T {
+        if (connection.version.name != version) throw IllegalStateException("Version mismatch: $version vs ${connection.version}")
         val data = PacketReadingTestUtil::class.java.getResourceAsStream("/packets/$name.bin")?.readAllBytes() ?: throw FileNotFoundException("Can not find packet blob $name")
 
         val buffer = PlayInByteBuffer(data, connection)
 
-        return constructor.invoke(buffer)
+        val packet = constructor.invoke(buffer)
+        if (buffer.pointer != buffer.size) throw IllegalArgumentException("buffer underflow!")
+
+        return packet
     }
 }
