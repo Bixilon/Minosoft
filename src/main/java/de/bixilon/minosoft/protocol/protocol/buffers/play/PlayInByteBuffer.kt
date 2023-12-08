@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol.buffers.play
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.enums.ValuesEnum
@@ -404,5 +405,10 @@ class PlayInByteBuffer : InByteBuffer {
         val name = readResourceLocation() // TODO: readRegistryItem?
         val attenuation = readOptional { readFloat() }
         return PlayedSound(name, attenuation)
+    }
+
+    fun readLongChunkPosition(): Vec2i {
+        val long = readLong()
+        return Vec2i(long.toInt(), (long shr 32).toInt())
     }
 }

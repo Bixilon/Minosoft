@@ -37,11 +37,6 @@ class ChunkBiomeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val data: ByteArray,
     )
 
-    private fun PlayInByteBuffer.readLongChunkPosition(): Vec2i {
-        val long = readLong()
-        return Vec2i(long.toInt(), (long shr 32).toInt())
-    }
-
     override fun handle(connection: PlayConnection) {
         if (data.isEmpty()) return
 
