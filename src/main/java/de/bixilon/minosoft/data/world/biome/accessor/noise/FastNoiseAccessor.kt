@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.world.biome.accessor.noise
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 
 class FastNoiseAccessor(world: World) : NoiseBiomeAccessor(world, 0L) {
@@ -23,9 +22,6 @@ class FastNoiseAccessor(world: World) : NoiseBiomeAccessor(world, 0L) {
     override fun get(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
         val biomeY = if (world.dimension.supports3DBiomes) y else 0
 
-        val source = chunk.biomeSource
-        if (source !is SpatialBiomeArray) return null
-
-        return source.get(x, biomeY, z) // TODO: this is really dirty hack
+        return chunk.biomeSource.get(x, biomeY, z) // TODO: this is really dirty hack
     }
 }
