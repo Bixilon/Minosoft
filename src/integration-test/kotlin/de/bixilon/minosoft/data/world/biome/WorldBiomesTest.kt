@@ -124,9 +124,9 @@ class WorldBiomesTest {
         assertEquals(world.biomes[1, 2, 3], b1) // cache is still the old one
 
         world.biomes.resetCache()
-        assertEquals(source.counter, 0)
-        assertEquals(world.biomes[1, 2, 3], b2)
         assertEquals(source.counter, 1)
+        assertEquals(world.biomes[1, 2, 3], b2)
+        assertEquals(source.counter, 2)
     }
 
 
