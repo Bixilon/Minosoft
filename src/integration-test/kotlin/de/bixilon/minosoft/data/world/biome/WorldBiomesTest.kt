@@ -112,6 +112,24 @@ class WorldBiomesTest {
     }
 
 
+    fun `ensure caching is properly cleared`() {
+        val source = CounterSource(b1)
+        val world = create({ FastNoiseAccessor(it.world) }) { source }
+        val chunk = world.chunks[0, 0]!!
+        chunk.getOrPut(0)
+
+        assertEquals(world.biomes[1, 2, 3], b1)
+        assertEquals(source.counter, 1)
+        source.biome = b2
+        assertEquals(world.biomes[1, 2, 3], b1) // cache is still the old one
+
+        world.biomes.resetCache()
+        assertEquals(source.counter, 0)
+        assertEquals(world.biomes[1, 2, 3], b2)
+        assertEquals(source.counter, 1)
+    }
+
+
     private class PositionedSource(
         val position: InChunkPosition,
         val biome: Biome?,
@@ -124,7 +142,7 @@ class WorldBiomesTest {
         }
     }
 
-    private class CounterSource(val biome: Biome?) : BiomeSource {
+    private class CounterSource(var biome: Biome?) : BiomeSource {
         var counter = 0
         override fun get(x: Int, y: Int, z: Int): Biome? {
             counter++

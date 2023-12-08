@@ -65,7 +65,6 @@ class WorldBiomes(val world: World) : BiomeAccessor {
         world.connection.profiles.rendering.performance::fastBiomeNoise.observe(this) { updateNoise(noise?.seed ?: 0L) }
     }
 
-
     fun resetCache() {
         world.lock.lock()
         for ((_, chunk) in world.chunks.chunks.unsafe) {

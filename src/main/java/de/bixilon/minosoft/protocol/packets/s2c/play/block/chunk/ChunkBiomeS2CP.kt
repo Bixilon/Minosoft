@@ -13,6 +13,14 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.cast.CastUtil.cast
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
+import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
+import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
@@ -37,9 +45,17 @@ class ChunkBiomeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         if (data.isEmpty()) return
 
+        // TODO: Test implementation
         for ((position, data) in data) {
             val chunk = connection.world.chunks[position] ?: continue
-            // TODO: handle
+            val source = chunk.biomeSource.nullCast<SpatialBiomeArray>() ?: continue
+            val buffer = PlayInByteBuffer(data, connection)
+            for (sectionIndex in (0 until chunk.sections.size)) {
+                val biomeContainer: PalettedContainer<Biome?> = PalettedContainerReader.read(buffer, buffer.connection.registries.biome.unsafeCast(), paletteFactory = BiomePaletteFactory)
+
+                if (biomeContainer.isEmpty) continue
+                source.data[sectionIndex] = biomeContainer.unpack<Biome>().cast()
+            }
         }
         connection.world.biomes.resetCache()
     }
