@@ -55,6 +55,8 @@ interface TextureBuffer {
     fun getB(x: Int, y: Int): Int
     fun getA(x: Int, y: Int): Int
 
+    fun getRGB(x: Int, y: Int): Int
+
     fun getRGBA(x: Int, y: Int): Int
     fun setRGBA(x: Int, y: Int, value: Int)
     fun setRGBA(x: Int, y: Int, red: Int, green: Int, blue: Int, alpha: Int)

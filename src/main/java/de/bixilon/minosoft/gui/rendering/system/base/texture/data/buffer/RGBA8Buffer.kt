@@ -58,10 +58,12 @@ class RGBA8Buffer(
 
     override fun getRGBA(x: Int, y: Int): Int {
         val stride = stride(x, y)
-        if (stride > data.capacity()) {
-            throw IllegalArgumentException("Can not access pixel at ($x,$y), exceeds size: $size")
-        }
         return (this[stride + 0] shl 24) or (this[stride + 1] shl 16) or (this[stride + 2] shl 8) or (this[stride + 3] shl 0)
+    }
+
+    override fun getRGB(x: Int, y: Int): Int {
+        val stride = stride(x, y)
+        return (this[stride + 0] shl 16) or (this[stride + 1] shl 8) or this[stride + 2]
     }
 
     override fun getR(x: Int, y: Int) = this[stride(x, y) + 0]
@@ -70,6 +72,7 @@ class RGBA8Buffer(
     override fun getA(x: Int, y: Int) = this[stride(x, y) + 3]
 
     private fun stride(x: Int, y: Int): Int {
+        if (x >= size.x || y >= size.y) throw IllegalArgumentException("Can not access pixel at ($x,$y), exceeds size: $size")
         return ((size.x * y) + x) * bytes
     }
 }

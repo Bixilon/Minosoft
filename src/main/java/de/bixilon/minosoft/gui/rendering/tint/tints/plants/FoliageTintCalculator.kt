@@ -13,29 +13,23 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints.plants
 
-import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
-import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readRGBArray
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.tint.TintProvider
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.gui.rendering.tint.tints.ColorMapTint
 
-class FoliageTintCalculator : TintProvider {
-    private lateinit var colorMap: IntArray
-
-    fun init(assetsManager: AssetsManager) {
-        colorMap = ignoreAll { assetsManager["minecraft:colormap/foliage".toResourceLocation().texture()].readRGBArray() } ?: IntArray(256)
-    }
+class FoliageTintCalculator : ColorMapTint(FILE) {
 
     fun getBlockColor(biome: Biome?, y: Int): Int {
-        if (biome == null) {
-            return FALLBACK_COLOR
-        }
+        if (biome == null) return FALLBACK_COLOR
+        val map = this.map ?: return FALLBACK_COLOR
+
         // ToDo: Override
-        return colorMap[biome.downfallColorMapCoordinate shl 8 or biome.getClampedTemperature(y)]
+        val temperature = modifyTemperature(biome.temperature, y)
+        return map[biome.downfallIndex shl 8 or temperature]
     }
 
     override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
@@ -51,6 +45,19 @@ class FoliageTintCalculator : TintProvider {
     }
 
     companion object {
+        private val FILE = minecraft("colormap/foliage").texture()
         private const val FALLBACK_COLOR = 0x48B518
+
+        // not sure if that is accurate or relevant
+        private const val SEA_LEVEL = 62
+        private const val SEA_LEVEL_MODIFIER = 0.00166667f
+
+
+        fun modifyTemperature(temperature: Float, height: Int): Int {
+            val modifier = maxOf(1, height - SEA_LEVEL) * SEA_LEVEL_MODIFIER
+            val modified = (temperature + modifier).clamp(0.0f, 1.0f)
+
+            return getIndex(modified)
+        }
     }
 }

@@ -11,32 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering
+package de.bixilon.minosoft.data.registries.versions.registries.pixlyzer
 
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import org.testng.annotations.Test
 
-object RenderConstants {
-    val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
-
-
-    const val FRUSTUM_CULLING_ENABLED = true
-    const val OCCLUSION_CULLING_ENABLED = true
-    const val SHOW_FPS_IN_WINDOW_TITLE = true
-
-    const val MAXIMUM_QUEUE_TIME_PER_FRAME = 20L
-
-
-    val DEBUG_TEXTURE_RESOURCE_LOCATION = minosoft("debug").texture()
-
-
-    const val DEFAULT_LINE_WIDTH = 1.0f / 128.0f
-
-
-    const val UV_ADD = 0.00001f
-
-    const val DISABLE_GUI_CACHE = false
-
-    const val DIRTY_BUFFER_UNBIND = true
-}
+@Test(groups = ["pixlyzer"], dependsOnGroups = ["version"], priority = Int.MAX_VALUE, timeOut = 15000L)
+class `1_20_4` : PixLyzerLoadingTest("1.20.4")

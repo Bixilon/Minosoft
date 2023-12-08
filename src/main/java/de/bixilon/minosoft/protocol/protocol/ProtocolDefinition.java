@@ -68,9 +68,6 @@ public final class ProtocolDefinition {
 
     public static final float VELOCITY_NETWORK_DIVIDER = 8000.0f;
 
-    public static final int SEA_LEVEL_HEIGHT = 62;
-
-    public static final float HEIGHT_SEA_LEVEL_MODIFIER = 0.00166667f;
 
     public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
 

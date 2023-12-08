@@ -62,6 +62,11 @@ class RGB8Buffer(
         return (this[stride + 0] shl 24) or (this[stride + 1] shl 16) or (this[stride + 2] shl 8) or 0xFF
     }
 
+    override fun getRGB(x: Int, y: Int): Int {
+        val stride = stride(x, y)
+        return (this[stride + 0] shl 16) or (this[stride + 1] shl 8) or this[stride + 2]
+    }
+
 
     override fun getR(x: Int, y: Int) = this[stride(x, y) + 0]
     override fun getG(x: Int, y: Int) = this[stride(x, y) + 1]
@@ -70,6 +75,7 @@ class RGB8Buffer(
 
 
     private fun stride(x: Int, y: Int): Int {
+        if (x >= size.x || y >= size.y) throw IllegalArgumentException("Can not access pixel at ($x,$y), exceeds size: $size")
         return ((size.x * y) + x) * bytes
     }
 }

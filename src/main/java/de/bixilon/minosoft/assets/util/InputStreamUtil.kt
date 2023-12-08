@@ -21,9 +21,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.util.json.Jackson
-import de.matthiasmann.twl.utils.PNGDecoder
 import org.kamranzafar.jtar.TarInputStream
-import org.lwjgl.BufferUtils
 import java.io.InputStream
 import java.util.zip.ZipInputStream
 
@@ -50,13 +48,7 @@ object InputStreamUtil {
     }
 
     fun InputStream.readJsonObject(close: Boolean = true): JsonObject {
-        try {
-            return Jackson.MAPPER.readValue(this, Jackson.JSON_MAP_TYPE)
-        } finally {
-            if (close) {
-                this.close()
-            }
-        }
+        return readJson(close = close, reader = Jackson.MAP_READER)
     }
 
     inline fun <reified T> InputStream.readJson(close: Boolean = true): T {
@@ -89,7 +81,7 @@ object InputStreamUtil {
         }
     }
 
-    fun InputStream.readArchive(): Map<String, ByteArray> {
+    fun InputStream.readTarArchive(): Map<String, ByteArray> {
         val content: MutableMap<String, ByteArray> = mutableMapOf()
         val stream = TarInputStream(this)
         while (true) {
@@ -109,21 +101,6 @@ object InputStreamUtil {
 
         }
         return content
-    }
-
-    fun InputStream.readRGBArray(): IntArray {
-        val decoder = PNGDecoder(this)
-
-        val buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGB.numComponents)
-        decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGB.numComponents, PNGDecoder.Format.RGB)
-        buffer.flip()
-        val colors = IntArray(decoder.width * decoder.height)
-
-        for (i in colors.indices) {
-            colors[i] = ((buffer.get().toInt() and 0xFF) shl 16) or ((buffer.get().toInt() and 0xFF) shl 8) or (buffer.get().toInt() and 0xFF)
-        }
-
-        return colors
     }
 
     fun InputStream.readMBFMap(): Map<Any, Any> {

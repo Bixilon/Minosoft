@@ -13,48 +13,33 @@
 
 package de.bixilon.minosoft.gui.rendering.tint.tints.grass
 
-import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
-import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readRGBArray
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.GrassColorModifiers
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.tint.TintProvider
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.gui.rendering.tint.tints.ColorMapTint
 
-class GrassTintCalculator : TintProvider {
-    private lateinit var colorMap: IntArray
+class GrassTintCalculator : ColorMapTint(FILE) {
 
-    fun init(assetsManager: AssetsManager) {
-        colorMap = ignoreAll { assetsManager["minecraft:colormap/grass".toResourceLocation().texture()].readRGBArray() } ?: IntArray(256)
-    }
+    fun getColor(downfallIndex: Int, temperatureIndex: Int): Int {
+        val map = map ?: return FALLBACK
 
-    inline fun getColor(downfall: Int, temperature: Int): Int {
-        return getColor(downfall shl 8 or temperature)
-    }
-
-    fun getColor(colorMapPixelIndex: Int): Int {
-        if (colorMapPixelIndex > colorMap.size) {
-            return 0xFF00FF // ToDo: Is this correct? Was used in my old implementation
-        }
-        val color = colorMap[colorMapPixelIndex]
-        if (color == 0xFFFFFF) {
-            return 0x48B518
-        }
+        val color = map[downfallIndex shl 8 or temperatureIndex]
+        if (color == 0xFFFFFF) return 0x48B518
 
         return color
     }
 
     fun getBlockColor(biome: Biome?): Int {
-        if (biome == null) {
-            return getColor(127, 255)
-        }
-        val color = getColor(biome.colorMapPixelIndex)
+        if (biome == null) return getColor(127, 255)
 
-        return when (biome.grassColorModifier) {
+        val color = getColor(biome.downfallIndex, biome.temperatureIndex)
+
+        return when (biome.grassModifier) {
             null -> color
             GrassColorModifiers.SWAMP -> 0x6A7039 // ToDo: Biome noise is applied here
             GrassColorModifiers.DARK_FOREST -> (color and 0xFEFEFE) + 0x28340A shr 1
@@ -70,5 +55,14 @@ class GrassTintCalculator : TintProvider {
             return Colors.WHITE
         }
         return getBlockColor(biome)
+    }
+
+    override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {
+        return getColor(127, 255) // TODO: verify
+    }
+
+    companion object {
+        val FILE = minecraft("colormap/grass").texture()
+        private const val FALLBACK = 0xFF00FF // ToDo: Is this correct? Was used in my old implementation
     }
 }

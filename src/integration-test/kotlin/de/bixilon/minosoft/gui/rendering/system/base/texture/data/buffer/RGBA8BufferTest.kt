@@ -69,6 +69,12 @@ class RGBA8BufferTest {
         assertEquals(source.getB(3, 3), 0x33)
         assertEquals(source.getA(3, 3), 0x44)
     }
+    fun `get rgb at 3,3`() {
+        val source = RGBA8Buffer(Vec2i(12, 13))
+        source.data.put(156 + 0, 0x11).put(156 + 1, 0x22).put(156 + 2, 0x33).put(156 + 3, 0x44)
+        val rgba = source.getRGB(3, 3)
+        assertEquals(rgba, 0x112233)
+    }
 
 
     fun `put complete texture`() {

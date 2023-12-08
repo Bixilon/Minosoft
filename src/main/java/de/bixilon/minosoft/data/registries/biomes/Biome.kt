@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.biomes
 
-import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -20,9 +19,8 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.tint.TintManager.Companion.jsonTint
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.gui.rendering.tint.tints.ColorMapTint
 
 data class Biome(
     override val identifier: ResourceLocation,
@@ -34,25 +32,14 @@ data class Biome(
     val waterFogColor: RGBColor? = null,
     val precipitation: BiomePrecipitation? = null,
 ) : RegistryItem() {
-    val grassColorModifier = GrassColorModifiers.BIOME_MAP[identifier]
-    val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
-    val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
-    val colorMapPixelIndex = downfallColorMapCoordinate shl 8 or temperatureColorMapCoordinate
+    val grassModifier = GrassColorModifiers.BIOME_MAP[identifier]
 
 
-    fun getClampedTemperature(height: Int): Int {
-        return getColorMapCoordinate((temperature + ((height - ProtocolDefinition.SEA_LEVEL_HEIGHT).clamp(1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER)).clamp(0.0f, 1.0f))
-    }
+    val temperatureIndex = ColorMapTint.getIndex(temperature)
+    val downfallIndex = ColorMapTint.getIndex(downfall * temperature)
 
-    override fun toString(): String {
-        return identifier.toString()
-    }
 
     companion object : IdentifierCodec<Biome> {
-
-        private fun getColorMapCoordinate(value: Float): Int {
-            return ((1.0 - value.clamp(0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
-        }
 
         override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Biome {
             val effects = data["effects"].toJsonObject() // nbt data

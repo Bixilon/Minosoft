@@ -25,7 +25,7 @@ import de.bixilon.minosoft.assets.properties.manager.pack.PackProperties
 import de.bixilon.minosoft.assets.util.FileAssetsTypes
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.HashTypes
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readArchive
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readTarArchive
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readZipArchive
 import de.bixilon.minosoft.assets.util.PathUtil
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
@@ -66,7 +66,7 @@ class JarAssetsManager(
 
 
     private fun tryLoadAssets(): Boolean {
-        val assets = FileAssetsUtil.readOrNull(jarAssetsHash, FileAssetsTypes.GAME, verify = profile.verify)?.let { ByteArrayInputStream(it).readArchive() } ?: return false
+        val assets = FileAssetsUtil.readOrNull(jarAssetsHash, FileAssetsTypes.GAME, verify = profile.verify)?.let { ByteArrayInputStream(it).readTarArchive() } ?: return false
 
         for ((path, data) in assets) {
             this.assets[path.removePrefix("assets/" + Namespaces.MINECRAFT + "/")] = data

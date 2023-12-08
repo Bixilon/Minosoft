@@ -34,7 +34,7 @@ class ChunkMeshingQueue(
 
     @Volatile
     private var working = false
-    private val queue: MutableList<WorldQueueItem> = mutableListOf()
+    private val queue: MutableList<WorldQueueItem> = ArrayList()
     private val set: MutableSet<WorldQueueItem> = HashSet()
 
     private val lock = SimpleLock()

@@ -11,32 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering
+package de.bixilon.minosoft.gui.rendering.tint.tints
 
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import org.testng.Assert.assertEquals
+import org.testng.annotations.Test
 
-object RenderConstants {
-    val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
+@Test(groups = ["biome"])
+class ColorMapTintTest {
 
+    @Test
+    fun `plains color map index`() {
+        val biome = Biome(minecraft("plains"), temperature = 0.8f, downfall = 0.4f)
+        assertEquals(biome.temperatureIndex, 50)
+        assertEquals(biome.downfallIndex, 173)
+    }
 
-    const val FRUSTUM_CULLING_ENABLED = true
-    const val OCCLUSION_CULLING_ENABLED = true
-    const val SHOW_FPS_IN_WINDOW_TITLE = true
-
-    const val MAXIMUM_QUEUE_TIME_PER_FRAME = 20L
-
-
-    val DEBUG_TEXTURE_RESOURCE_LOCATION = minosoft("debug").texture()
-
-
-    const val DEFAULT_LINE_WIDTH = 1.0f / 128.0f
-
-
-    const val UV_ADD = 0.00001f
-
-    const val DISABLE_GUI_CACHE = false
-
-    const val DIRTY_BUFFER_UNBIND = true
+    @Test
+    fun `dessert color map index`() {
+        val biome = Biome(minecraft("dessert"), temperature = 2.0f, downfall = 0.0f)
+        assertEquals(biome.temperatureIndex, 0)
+        assertEquals(biome.downfallIndex, 255)
+    }
 }

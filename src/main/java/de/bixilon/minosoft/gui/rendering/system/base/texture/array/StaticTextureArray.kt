@@ -21,7 +21,7 @@ import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
@@ -31,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.json.Jackson
 import java.util.concurrent.atomic.AtomicInteger
 
 abstract class StaticTextureArray(
@@ -88,8 +87,8 @@ abstract class StaticTextureArray(
 
     private fun readImageProperties(texture: ResourceLocation): ImageProperties? {
         try {
-            val data = context.connection.assetsManager.getOrNull("$texture.mcmeta".toResourceLocation())?.readAsString() ?: return null
-            return Jackson.MAPPER.readValue(data, ImageProperties::class.java)
+            val stream = context.connection.assetsManager.getOrNull("$texture.mcmeta".toResourceLocation()) ?: return null
+            return stream.readJson(reader = ImageProperties.READER)
         } catch (error: Throwable) {
             error.printStackTrace()
         }

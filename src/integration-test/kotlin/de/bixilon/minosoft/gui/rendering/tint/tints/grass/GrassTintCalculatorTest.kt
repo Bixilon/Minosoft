@@ -11,17 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.biomes
+package de.bixilon.minosoft.gui.rendering.tint.tints.grass
 
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import de.bixilon.minosoft.assets.MemoryAssetsManager
+import org.testng.Assert.assertEquals
+import org.testng.annotations.Test
 
-class BiomeTest {
+@Test(groups = ["tint"])
+class GrassTintCalculatorTest {
+    private val map by lazy {
+        val map = GrassTintCalculator()
+        val assets = MemoryAssetsManager()
+        assets.push(GrassTintCalculator.FILE, GrassTintCalculatorTest::class.java.getResourceAsStream("/tint/grass.png")!!.readAllBytes())
+        map.init(assets)
 
-    @Test
-    fun `color map index`() {
-        val biome = Biome(minecraft("plains"), temperature = 0.8f, downfall = 0.4f)
-        assertEquals(biome.colorMapPixelIndex, 44338)
+        return@lazy map
+    }
+
+
+    fun `color of dessert`() {
+        assertEquals(map.getColor(255, 0), 0xBFB755)
     }
 }
