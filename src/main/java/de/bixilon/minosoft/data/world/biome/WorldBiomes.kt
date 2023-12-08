@@ -67,6 +67,13 @@ class WorldBiomes(val world: World) : BiomeAccessor {
 
 
     fun resetCache() {
-        // TODO
+        world.lock.lock()
+        for ((_, chunk) in world.chunks.chunks.unsafe) {
+            for (section in chunk.sections) {
+                if (section == null) continue
+                section.biomes.clear()
+            }
+        }
+        world.lock.unlock()
     }
 }

@@ -25,6 +25,7 @@ object DebugCommand : ConnectionCommand {
         .addChild(LiteralNode("network").addChild(
             LiteralNode("detach", executor = { it.connection.network.detach(); it.connection.util.sendDebugMessage("Now you are alone on the wire...") }),
         ))
+        .addChild(LiteralNode("cache").addChild(LiteralNode("biome", executor = { it.connection.world.biomes.resetCache(); it.connection.util.sendDebugMessage("Biome cache cleared!") })))
 
 
     private fun CommandStack.fly() {

@@ -29,7 +29,6 @@ class PerformanceC(profile: RenderingProfile) {
      * Biomes may not match anymore.
      * If true, chunk receiving is way faster.
      * Only affects 19w36+ (~1.14.4)
-     * ToDo: Requires rejoin to apply
      */
     var fastBiomeNoise by BooleanDelegate(profile, false)
 
