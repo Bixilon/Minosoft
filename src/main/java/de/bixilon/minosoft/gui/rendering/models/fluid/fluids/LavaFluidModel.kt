@@ -27,13 +27,12 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 class LavaFluidModel : FluidModel {
     override var still: Texture = unsafeNull()
     override var flowing: Texture = unsafeNull()
-    override var transparency = TextureTransparencies.OPAQUE
+    override var transparency = TextureTransparencies.OPAQUE // TODO: from texture
     override var properties: FaceProperties = unsafeNull()
 
     override fun load(context: RenderContext) {
         still = context.textures.static.create(context.models.block.fixTexturePath(STILL).texture())
         flowing = context.textures.static.create(context.models.block.fixTexturePath(FLOWING).texture())
-        transparency = still.transparency// TODO: flowing?
         properties = FaceProperties(Vec2.EMPTY, Vec2(1.0f), transparency)
     }
 

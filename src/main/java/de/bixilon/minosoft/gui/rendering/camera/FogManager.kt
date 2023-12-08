@@ -64,7 +64,7 @@ class FogManager(
 
     private fun calculateFog(): Boolean {
         val sky = context.connection.world.dimension.effects
-        var fogStart = if (!context.connection.profiles.rendering.fog.enabled || sky == null || !sky.fog) {
+        var fogStart = if (!context.connection.profiles.rendering.fog.enabled || !sky.fog) {
             Float.MAX_VALUE
         } else {
             (context.connection.world.view.viewDistance - 2.0f) * ProtocolDefinition.SECTION_WIDTH_X  // could be improved? basically view distance in blocks and then the center of that chunk

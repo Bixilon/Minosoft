@@ -95,6 +95,10 @@ class VoronoiBiomeAccessorTest {
         assertEquals(calculate(8, 15, 4, -987654321987654319L), Vec3i(1, 4, 0))
     }
 
+    fun `noise at (9,2,3) seed4`() {
+        assertEquals(calculate(9, 2, 3, -8056379427786075385), Vec3i(2, 1, 0))
+    }
+
     //   fun `benchmark 1`() {
     //       val accessor = VoronoiBiomeAccessor::class.java.allocate()
     //       val time = measureNanoTime {
@@ -109,7 +113,7 @@ class VoronoiBiomeAccessorTest {
     private fun calculate(x: Int, y: Int, z: Int, seed: Long): Vec3i {
         val accessor = VoronoiBiomeAccessor::class.java.allocate()
         val index = getBiomeOffset.invoke(accessor, seed, x, y, z) as Int
-        return Vec3i(VoronoiBiomeAccessor.unpackX(index) + x, VoronoiBiomeAccessor.unpackY(index) + y, VoronoiBiomeAccessor.unpackZ(index) + z)
+        return Vec3i(VoronoiBiomeAccessor.unpackX(index), VoronoiBiomeAccessor.unpackY(index), VoronoiBiomeAccessor.unpackZ(index))
     }
 
     fun `packing positive offset`() {

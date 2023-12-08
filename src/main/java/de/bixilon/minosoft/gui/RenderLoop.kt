@@ -58,7 +58,6 @@ class RenderLoop(
             if (context.state == RenderingStates.PAUSED) {
                 context.window.title = "Minosoft | Paused"
             }
-            //     context.renderer[ChunkRenderer]?.clearChunkCache()
 
             while (context.state == RenderingStates.PAUSED) {
                 Thread.sleep(20L)
