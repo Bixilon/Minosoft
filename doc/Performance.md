@@ -11,7 +11,7 @@ Delegates can cache values (especially maps) and make observers light (at least 
 
 ## Dirty hacks
 
-Sometimes I do dirty hacks (like a default option to disable some unneeded feature such as biome noise).
+Sometimes I do/allow dirty hacks (no proper opengl buffer unbinding, disabling bloated features like biome noise).
 Also some stuff just gets implemented half way and some bugs (e.g. transparency) are a side effect, but they are not major.
 
 
