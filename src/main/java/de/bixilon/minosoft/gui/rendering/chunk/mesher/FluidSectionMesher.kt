@@ -84,14 +84,9 @@ class FluidSectionMesher(
                     val fluid = state.getFluid() ?: continue
 
                     val model = fluid.model ?: continue
-                    val height = fluid.getHeight(state)
-
-                    position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
-                    tint = tints.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE
 
 
                     fun isSideCovered(direction: Directions): Boolean {
-                        val neighbourPosition = position + direction
                         val neighbour = direction.getBlock(x, y, z, section, neighbours) ?: return false
 
                         if (fluid.matches(neighbour)) {
@@ -116,9 +111,11 @@ class FluidSectionMesher(
                         isSideCovered(Directions.EAST),
                     )
 
-                    if (skip.isTrue) {
-                        continue
-                    }
+                    if (skip.isTrue) continue
+
+                    position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
+                    val height = fluid.getHeight(state)
+                    tint = tints.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE
 
                     val cornerHeights = floatArrayOf(
                         getCornerHeight(chunk, chunkPosition, position, fluid),
