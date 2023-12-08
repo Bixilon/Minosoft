@@ -68,13 +68,13 @@ class CloudRenderer(
     }
 
     private fun canSkip(): Boolean {
-        if (!sky.effects.clouds) return false
-        if (!sky.profile.clouds.enabled) return false
-        if (cloudLayers.isEmpty()) return false
-        if (connection.profiles.block.viewDistance < 3) return false
-        if ((connection.camera.entity.physics.position.y + 10) < connection.world.dimension.minY) return false
+        if (!sky.effects.clouds) return true
+        if (!sky.profile.clouds.enabled) return true
+        if (cloudLayers.isEmpty()) return true
+        if (connection.profiles.block.viewDistance < 3) return true
+        if ((connection.camera.entity.physics.position.y + 10) < connection.world.dimension.minY) return true
 
-        return true
+        return false
     }
 
     private fun getCloudHeight(index: Int): IntRange {

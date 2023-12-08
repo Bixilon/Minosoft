@@ -167,6 +167,7 @@ open class EntityPhysics<E : Entity>(val entity: E) : BasicPhysicsEntity(), Abst
             adjusted = adjustMovementForSneaking(adjusted)
         }
         val collisionMovement = collide(adjusted)
+        // TODO: prevent moving into unloaded chunks
 
         forceMove(collisionMovement)
         val vertical = updateCollision(adjusted, collisionMovement)
