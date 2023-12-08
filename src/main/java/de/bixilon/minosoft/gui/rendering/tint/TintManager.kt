@@ -19,6 +19,8 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.pixlyzer.PixLyzerItem
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
@@ -77,9 +79,17 @@ class TintManager(val connection: PlayConnection) {
         return provider.getFluidTint(fluid, biome, height, x, y, z)
     }
 
+    private fun Item.getTintProvider(): TintProvider? {
+        if (this is TintedBlock && tintProvider != null) return tintProvider
+        if (this::class.java == Item::class.java && this !is PixLyzerItem) return null
+        // TODO: dirty hack: get block
+        val block = connection.registries.block[identifier] ?: return null
+        if (block !is TintedBlock) return null
+        return block.tintProvider
+    }
+
     fun getItemTint(stack: ItemStack): IntArray? {
-        if (stack.item.item !is TintedBlock) return null
-        val tintProvider = stack.item.item.tintProvider ?: return null
+        val tintProvider = stack.item.item.getTintProvider() ?: return null
         val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
 
         for (tintIndex in tints.indices) {

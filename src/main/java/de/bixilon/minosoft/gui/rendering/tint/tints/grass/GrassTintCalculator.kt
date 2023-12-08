@@ -58,7 +58,7 @@ class GrassTintCalculator : ColorMapTint(FILE) {
     }
 
     override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {
-        return getColor(127, 255) // TODO: verify
+        return getColor(173, 50) // TODO: plains, verify
     }
 
     companion object {
