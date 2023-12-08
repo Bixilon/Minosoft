@@ -31,8 +31,8 @@ import org.testng.annotations.Test
 @Test(groups = ["packet"])
 class SignedChatMessageS2CPTest {
 
-    private fun connection(): PlayConnection {
-        val connection = createConnection()
+    private fun connection(version: String): PlayConnection {
+        val connection = createConnection(version = version)
         connection::language.forceSet(LanguageList(mutableListOf()))
         connection::tabList.forceSet(TabList())
         connection.registries.messageType[0] = ChatMessageType(minecraft("dummy"), TypeProperties("test", emptyList(), emptyMap()), null, ChatTextPositions.CHAT)
@@ -41,9 +41,15 @@ class SignedChatMessageS2CPTest {
     }
 
     fun vanilla_23w40a() {
-        val packet = PacketReadingTestUtil.read("signed_chat_message/vanilla_23w40a", "23w40a", connection(), constructor = ::SignedChatMessageS2CP)
+        val packet = PacketReadingTestUtil.read("signed_chat_message/vanilla_23w40a", "23w40a", connection("23w40a"), constructor = ::SignedChatMessageS2CP)
         assertEquals(packet.message.message, "abc")
         assertEquals(packet.message.sender, UnknownMessageSender("a21a6c65-bbd4-48ca-9d79-e07139e1780d".toUUID()))
+    }
+
+    fun `vanilla 1_20_4`() {
+        val packet = PacketReadingTestUtil.read("signed_chat_message/vanilla_1_20_4", "1.20.4", connection("1.20.4"), constructor = ::SignedChatMessageS2CP)
+        assertEquals(packet.message.message, "very signed message")
+        assertEquals(packet.message.sender, UnknownMessageSender("24f0d4a2-1787-4761-aeef-39c90824e746".toUUID()))
     }
 }
 
