@@ -24,7 +24,7 @@ void discard_alpha() {
 }
 
 void set_alpha_transparent() {
-    if (foutColor.a < 0.3f) {
+    if (foutColor.a < 0.6f) {
         discard;
     } else {
         foutColor.a = 1.0f;
