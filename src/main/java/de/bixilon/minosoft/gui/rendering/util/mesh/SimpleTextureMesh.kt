@@ -28,7 +28,7 @@ open class SimpleTextureMesh(context: RenderContext, primitiveType: PrimitiveTyp
         data.add(position.array)
         data.add(uv.array)
         data.add(texture.renderData.shaderTextureId.buffer())
-        data.add((tintColor?.rgba ?: Colors.WHITE).buffer())
+        data.add((tintColor?.rgba ?: Colors.WHITE_RGBA).buffer())
     }
 
 

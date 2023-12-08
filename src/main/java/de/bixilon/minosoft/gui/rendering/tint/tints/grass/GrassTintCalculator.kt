@@ -52,7 +52,7 @@ class GrassTintCalculator : ColorMapTint(FILE) {
 
     override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
         if (blockState.block is GrassBlock) { // dirt particles
-            return Colors.WHITE
+            return Colors.WHITE_RGB
         }
         return getBlockColor(biome)
     }

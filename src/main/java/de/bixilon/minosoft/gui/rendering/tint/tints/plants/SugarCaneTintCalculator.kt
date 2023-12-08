@@ -27,6 +27,6 @@ class SugarCaneTintCalculator(val grassTintCalculator: GrassTintCalculator) : Ti
     }
 
     override fun getItemColor(stack: ItemStack, tintIndex: Int): Int {
-        return Colors.WHITE
+        return Colors.WHITE_RGB
     }
 }

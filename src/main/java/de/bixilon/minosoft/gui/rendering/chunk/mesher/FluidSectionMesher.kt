@@ -108,7 +108,7 @@ class FluidSectionMesher(
 
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     val height = fluid.getHeight(state)
-                    tint = tints.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE
+                    tint = tints.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE_RGB
 
                     val cornerHeights = floatArrayOf(
                         getCornerHeight(chunk, chunkPosition, position, fluid),

@@ -19,13 +19,13 @@ import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 
 interface TintProvider {
-    fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int = Colors.WHITE
+    fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int = Colors.WHITE_RGB
 
     fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
         return getBlockColor(blockState, biome, x, y, z, 0)
     }
 
-    fun getItemColor(stack: ItemStack, tintIndex: Int): Int = Colors.WHITE
+    fun getItemColor(stack: ItemStack, tintIndex: Int): Int = Colors.WHITE_RGB
 
-    fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, x: Int, y: Int, z: Int): Int = Colors.WHITE
+    fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, x: Int, y: Int, z: Int): Int = Colors.WHITE_RGB
 }
