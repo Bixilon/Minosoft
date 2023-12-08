@@ -61,7 +61,8 @@ class TintManager(val connection: PlayConnection) {
     fun getParticleTint(state: BlockState, x: Int, y: Int, z: Int): Int? {
         if (state.block !is TintedBlock) return null
         val tintProvider = state.block.tintProvider ?: return null
-        // TODO: cache chunk
+
+        // TODO: cache chunk of particle
         val biome = connection.world.biomes.getBiome(x, y, z)
         return tintProvider.getParticleColor(state, biome, x, y, z)
     }
@@ -71,8 +72,9 @@ class TintManager(val connection: PlayConnection) {
     }
 
     fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, x: Int, y: Int, z: Int): Int? {
+        val provider = fluid.model?.tint ?: return null
         val biome = chunk.getBiome(x and 0x0F, y, z and 0x0F)
-        return fluid.model?.tint?.getFluidTint(fluid, biome, height, x, y, z)
+        return provider.getFluidTint(fluid, biome, height, x, y, z)
     }
 
     fun getItemTint(stack: ItemStack): IntArray? {
