@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 object DisplayNameAction : AbstractAction {
 
     override fun read(buffer: PlayInByteBuffer, entry: AdditionalDataUpdate) {
-        entry.displayName = buffer.readOptional { buffer.readChatComponent() }
+        entry.displayName = buffer.readOptional { buffer.readNbtChatComponent() }
         entry.hasDisplayName = entry.displayName != null
     }
 }
