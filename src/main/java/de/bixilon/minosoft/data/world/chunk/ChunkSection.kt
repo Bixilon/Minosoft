@@ -31,11 +31,11 @@ class ChunkSection(
     val sectionHeight: Int,
     val chunk: Chunk,
 ) {
-    var blocks = BlockSectionDataProvider(chunk.lock, this)
-    var biomes = BiomeSectionDataProvider(chunk.lock, this)
-    var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(chunk.lock, checkSize = true)
+    val blocks = BlockSectionDataProvider(chunk.lock, this)
+    val biomes = BiomeSectionDataProvider(chunk.lock, this)
+    val blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(chunk.lock, checkSize = true)
 
-    var light = SectionLight(this)
+    val light = SectionLight(this)
     var neighbours: Array<ChunkSection?>? = null
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int, random: Random) {
