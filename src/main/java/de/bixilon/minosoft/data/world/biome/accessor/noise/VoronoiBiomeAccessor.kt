@@ -32,9 +32,9 @@ class VoronoiBiomeAccessor(
 
     private fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
         val offset = getBiomeOffset(seed, x, y, z) // TODO: minecraft supplies absolut values here, hence the biome noise is broken
-        val biomeX = x + unpackX(offset)
-        val biomeY = y + unpackY(offset)
-        val biomeZ = z + unpackZ(offset)
+        val biomeX = unpackX(offset)
+        val biomeY = unpackY(offset)
+        val biomeZ = unpackZ(offset)
 
         val biomeChunk = chunk.neighbours.trace(biomeX shr 4, biomeZ shr 4)
 
@@ -104,7 +104,7 @@ class VoronoiBiomeAccessor(
             biomeZ++
         }
 
-        return pack(biomeX - x, biomeY - y, biomeZ - z)
+        return pack(biomeX, biomeY, biomeZ)
     }
 
 
