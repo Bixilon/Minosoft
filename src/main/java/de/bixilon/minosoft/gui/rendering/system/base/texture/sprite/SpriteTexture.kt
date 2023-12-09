@@ -57,7 +57,7 @@ class SpriteTexture(private val original: Texture) : Texture {
 
         for (i in 0 until animationProperties.frameCount) {
             val buffer = original.create(size)
-            buffer.put(original, Vec2i(0, size.y), Vec2i.EMPTY, size)
+            buffer.put(original, Vec2i(0, i * size.y), Vec2i.EMPTY, size)
 
             val splitTexture = MemoryTexture(size, mipmaps = this.original.mipmaps, buffer = buffer)
 
