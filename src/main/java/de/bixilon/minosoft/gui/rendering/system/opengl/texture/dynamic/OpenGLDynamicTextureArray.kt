@@ -67,7 +67,8 @@ class OpenGLDynamicTextureArray(
                 // clear first
                 glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, empty)
             }
-            buffer.data.flip()
+            buffer.data.position(0)
+            buffer.data.limit(buffer.data.capacity())
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
         }
     }

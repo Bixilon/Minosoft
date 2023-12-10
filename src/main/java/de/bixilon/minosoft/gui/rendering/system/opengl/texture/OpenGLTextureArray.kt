@@ -63,7 +63,8 @@ class OpenGLTextureArray(
             val renderData = texture.renderData as OpenGLTextureData
             for ((level, buffer) in texture.data.collect().withIndex()) {
                 if (level > this.mipmaps) break
-                buffer.data.flip()
+                buffer.data.position(0)
+                buffer.data.limit(buffer.data.capacity())
                 glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
             }
 
