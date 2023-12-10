@@ -116,8 +116,8 @@ class WorldEntities : Iterable<Entity> {
             idEntityMap.put(entityId, entity)
             lock.unlock()
             return
-
         }
+        entities -= entity
         entityIdMap.removeInt(entity)
         val uuid = entityUUIDMap.remove(entity)
         if (uuid != null) {
