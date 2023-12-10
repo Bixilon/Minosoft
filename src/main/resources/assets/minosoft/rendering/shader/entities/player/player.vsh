@@ -26,8 +26,7 @@ uniform uint uSkinParts;
 
 flat out uint finAllowTransparency;
 
-out vec4 finTintColor;
-
+#include "minosoft:tint"
 #include "minosoft:skeletal/vertex"
 #include "minosoft:color"
 #include "minosoft:animation"

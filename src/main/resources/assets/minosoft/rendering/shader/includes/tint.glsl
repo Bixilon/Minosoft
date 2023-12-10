@@ -11,25 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+#ifndef INCLUDE_MINOSOFT_TINT
+#define INCLUDE_MINOSOFT_TINT
 
-#define TRANSPARENT
+#ifdef SHADER_TYPE_VERTEX
+out vec4 finTintColor;
+#endif
 
-out vec4 foutColor;
+#ifdef SHADER_TYPE_FRAGMENT
+in vec4 finTintColor;
 
-uniform float uFlashProgress;
 
-in vec4 finFlashColor;
-
-#include "minosoft:tint"
-#include "minosoft:texture"
-#include "minosoft:alpha"
-#include "minosoft:fog"
-#include "minosoft:animation"
-
-void main() {
-    applyTexel();
-    applyTint();
-
-    foutColor = mix(foutColor, finFlashColor, uFlashProgress);
+void applyTint() {
+    if (finTintColor.a <= 0.0f) discard;
+    foutColor *= finTintColor;
 }
+#endif
+
+
+#endif

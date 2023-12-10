@@ -13,8 +13,6 @@
 
 #version 330 core
 
-#define NO_TINT_COLOR
-
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinMinUV;
 layout (location = 2) in vec2 vinMaxUV;
@@ -23,7 +21,6 @@ layout (location = 3) in float vinIndexLayerAnimation;
 layout (location = 4) in float vinScale;
 layout (location = 5) in float vinTintColor;
 layout (location = 6) in float vinLight;
-
 
 
 #include "minosoft:light"

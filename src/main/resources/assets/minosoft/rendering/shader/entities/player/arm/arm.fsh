@@ -19,6 +19,7 @@
 out vec4 foutColor;
 
 
+#include "minosoft:tint"
 #include "minosoft:texture"
 #include "minosoft:alpha"
 #include "minosoft:fog"
@@ -29,6 +30,7 @@ flat in uint finAllowTransparency;
 void main() {
     if (finTintColor.a == 0.0f) discard;
     applyTexel();
+    applyTint();
     if (finAllowTransparency > 0u) {
         if (foutColor.a < 0.5f) discard;
     }

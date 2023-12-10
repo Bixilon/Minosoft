@@ -27,6 +27,7 @@ out vec4 finFlashColor;
 
 out vec3 finFragmentPosition;
 
+#include "minosoft:tint"
 #include "minosoft:animation"
 #include "minosoft:color"
 

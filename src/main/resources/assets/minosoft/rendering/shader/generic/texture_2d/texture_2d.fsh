@@ -18,10 +18,12 @@ out vec4 foutColor;
 
 in vec2 finUV;
 
+#include "minosoft:tint"
 #include "minosoft:texture"
 #include "minosoft:alpha"
 #include "minosoft:animation"
 
 void main() {
     applyTexel();
+    applyTint();
 }

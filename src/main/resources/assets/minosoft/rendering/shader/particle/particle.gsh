@@ -36,6 +36,9 @@ in Vertex
 } ginVertex[];
 
 
+#include "minosoft:tint"
+
+
 void emit(vec3 offset, vec2 uv) {
     vec3 pointPosition = gl_in[0].gl_Position.xyz;
 

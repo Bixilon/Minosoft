@@ -15,10 +15,12 @@
 
 out vec4 foutColor;
 
+#include "minosoft:tint"
 #include "minosoft:texture"
 #include "minosoft:alpha"
 #include "minosoft:animation"
 
 void main() {
     applyTexel();
+    applyTint();
 }

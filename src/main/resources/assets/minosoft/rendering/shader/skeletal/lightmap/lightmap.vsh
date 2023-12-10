@@ -20,6 +20,7 @@ layout (location = 3) in float vinIndexLayerAnimation;// texture index (0xF00000
 
 out vec3 finFragmentPosition;
 
+#include "minosoft:tint"
 #include "minosoft:animation"
 #include "minosoft:light"
 #include "minosoft:skeletal/vertex"

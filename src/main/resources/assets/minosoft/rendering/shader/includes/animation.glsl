@@ -35,17 +35,10 @@ layout(std140) uniform uSpriteBuffer
 flat out uint finAnimationArray1; out vec3 finAnimationPosition1;
 flat out uint finAnimationArray2; out vec3 finAnimationPosition2;
 out float finAnimationInterpolation;
-
-// TODO: remove
-#ifndef NO_TINT_COLOR
-out vec4 finTintColor;
-#endif
 #elif defined SHADER_TYPE_FRAGMENT
 flat in uint finAnimationArray1; in vec3 finAnimationPosition1;
 flat in uint finAnimationArray2; in vec3 finAnimationPosition2;
 in float finAnimationInterpolation;
-
-in vec4 finTintColor;// TODO: remove
 #endif
 
 
@@ -70,7 +63,7 @@ vec4 getAnimationTexture() {
 }
 
 void applyTexel() {
-    vec4 texel = getAnimationTexture() * finTintColor;
+    vec4 texel = getAnimationTexture();
     foutColor = texel;
 
     #ifdef TRANSPARENT

@@ -13,6 +13,8 @@
 
 #version 330 core
 
+#define POSITIVE_INFINITY 1.0f / 0.0f
+
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
 layout (location = 2) in float vinPartTransformNormal; // part(0x1FD0000) transform (0x7F000), normal (0xFFF)
@@ -28,13 +30,9 @@ uniform mat4 uTransform;
 
 flat out uint finAllowTransparency;
 
-out vec4 finTintColor;
 
+#include "minosoft:tint"
 #include "minosoft:color"
-
-
-#define POSITIVE_INFINITY 1.0f / 0.0f
-
 #include "minosoft:skeletal/shade"
 #include "minosoft:animation"
 

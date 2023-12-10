@@ -22,6 +22,7 @@ out vec3 finFragmentPosition;
 
 uniform mat4 uViewProjectionMatrix;
 
+#include "minosoft:tint"
 #include "minosoft:color"
 #include "minosoft:light"
 #include "minosoft:animation"
