@@ -112,8 +112,11 @@ class WorldEntities : Iterable<Entity> {
             lock.unlock()
             return
         }
-        if (entity !is LocalPlayerEntity) {
-            entities -= entity
+        if (entity is LocalPlayerEntity) {
+            idEntityMap.put(entityId, entity)
+            lock.unlock()
+            return
+
         }
         entityIdMap.removeInt(entity)
         val uuid = entityUUIDMap.remove(entity)
