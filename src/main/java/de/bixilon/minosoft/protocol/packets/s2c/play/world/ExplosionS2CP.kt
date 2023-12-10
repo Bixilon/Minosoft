@@ -44,7 +44,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val destruct = if (buffer.versionId >= V_23W45A) buffer.readEnum(DestructionTypes) else null
     val particle = if (buffer.versionId >= V_23W45A) buffer.readParticleData() else null
     val emitter = if (buffer.versionId >= V_23W45A) buffer.readParticleData() else null
-    val sound = if (buffer.versionId >= V_23W45A) buffer.readSound() else null
+    val sound = if (buffer.versionId >= V_23W45A) buffer.readNamedSound() else null
 
     override fun check(connection: PlayConnection) {
         require(power <= 100.0f) {

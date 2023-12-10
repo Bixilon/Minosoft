@@ -402,7 +402,11 @@ class PlayInByteBuffer : InByteBuffer {
         if (id != 0) {
             return PlayedSound(connection.registries.soundEvent[id - 1])
         }
-        val name = readResourceLocation() // TODO: readRegistryItem?
+        return readNamedSound()
+    }
+
+    fun readNamedSound(): PlayedSound {
+        val name = readResourceLocation()
         val attenuation = readOptional { readFloat() }
         return PlayedSound(name, attenuation)
     }
