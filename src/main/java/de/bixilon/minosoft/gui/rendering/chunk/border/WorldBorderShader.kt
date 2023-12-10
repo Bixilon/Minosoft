@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,23 +18,20 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.camera.FogManager
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.shader.types.CameraPositionShader
-import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
-import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
+import de.bixilon.minosoft.gui.rendering.shader.types.*
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class WorldBorderShader(
     override val native: NativeShader,
-) : Shader(), TextureShader, ViewProjectionShader, FogShader, CameraPositionShader {
+) : Shader(), TextureShader, ViewProjectionShader, FogShader, CameraPositionShader, TintedShader {
     override var textures: TextureManager by textureManager()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
     override var cameraPosition: Vec3 by cameraPosition()
     override var fog: FogManager by fog()
 
-    var tintColor by uniform("uTintColor", ChatColors.BLACK)
+    override var tint by uniform("uTintColor", ChatColors.BLACK)
 
-    var textureIndexLayer by uniform("uIndexLayer", 0, NativeShader::setUInt)
+    var textureIndexLayer by uniform("uIndexLayerAnimation", 0, NativeShader::setUInt)
     var textureOffset by uniform("uTextureOffset", 0.0f)
 }

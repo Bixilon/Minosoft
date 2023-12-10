@@ -22,15 +22,11 @@ uniform mat4 uViewProjectionMatrix;
 uniform mat4 uMatrix;
 uniform uint uTintColor;
 
-
-flat out uint finTextureIndex;
-out vec3 finTextureCoordinates;
 out vec3 finFragmentPosition;
-
-out vec4 finTintColor;
 
 
 #include "minosoft:color"
+#include "minosoft:animation"
 
 void main() {
     vec4 position = uMatrix * vec4(vinPosition, 0.0f, 1.0f);
@@ -38,7 +34,5 @@ void main() {
     finTintColor = getRGBAColor(floatBitsToUint(vinTint)) * getRGBColor(uTintColor);
     finFragmentPosition = position.xyz;
 
-    uint indexLayerAnimation = floatBitsToUint(vinIndexLayerAnimation);
-    finTextureIndex = indexLayerAnimation >> 28u;
-    finTextureCoordinates = vec3(vinUV, ((indexLayerAnimation >> 12) & 0xFFFFu));
+    setTexture(vinUV, vinIndexLayerAnimation);
 }

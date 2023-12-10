@@ -20,20 +20,18 @@ layout (location = 3) in float vinOffsetMultiplicator;
 layout (location = 4) in float vinAlphaMultiplicator;
 
 
-flat out uint finTextureIndex;
-out vec3 finTextureCoordinates;
-
 uniform float uIntensity;
 uniform float uOffset;
-uniform uint uIndexLayer;
+uniform uint uIndexLayerAnimation;
 
+#include "minosoft:animation"
 
 void main() {
     gl_Position = vec4(vinPosition, 1.0f);
 
-    finTextureIndex = uIndexLayer >> 28u;
-    finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));
     float offset = vinOffset + (uOffset * vinOffsetMultiplicator);
 
-    finTextureCoordinates.y += offset;
+    vec2 uv = vinUV;
+    uv.y += offset;
+    setTexture(uv, uIndexLayerAnimation);
 }

@@ -44,25 +44,25 @@ class SpriteAnimator(val system: RenderSystem) {
         val deltaLastDraw = currentTime - lastRun
         lastRun = currentTime
 
-        for (textureAnimation in animations) {
-            var currentFrame = textureAnimation.getCurrentFrame()
-            textureAnimation.currentTime += deltaLastDraw
+        for (animation in animations) {
+            var currentFrame = animation.getCurrentFrame()
+            animation.currentTime += deltaLastDraw
 
-            if (textureAnimation.currentTime >= currentFrame.animationTime) {
-                currentFrame = textureAnimation.getAndSetNextFrame()
-                textureAnimation.currentTime = 0L
+            if (animation.currentTime >= currentFrame.animationTime) {
+                currentFrame = animation.getAndSetNextFrame()
+                animation.currentTime = 0L
             }
 
-            val nextFrame = textureAnimation.getNextFrame()
+            val nextFrame = animation.getNextFrame()
 
-            val interpolation = if (textureAnimation.animationProperties.interpolate) {
-                (textureAnimation.currentTime * 100) / currentFrame.animationTime
+            val interpolation = if (animation.animationProperties.interpolate) {
+                (animation.currentTime * 100) / currentFrame.animationTime
             } else {
                 0L
             }
 
 
-            val arrayOffset = textureAnimation.texture.renderData.animationData * INTS_PER_ANIMATED_TEXTURE
+            val arrayOffset = animation.texture.renderData.animationData * INTS_PER_ANIMATED_TEXTURE
 
             uniformBuffer.data[arrayOffset] = currentFrame.texture.renderData.shaderTextureId
             uniformBuffer.data[arrayOffset + 1] = nextFrame.texture.renderData.shaderTextureId

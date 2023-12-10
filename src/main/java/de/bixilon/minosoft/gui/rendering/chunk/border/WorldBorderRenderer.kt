@@ -89,7 +89,7 @@ class WorldBorderRenderer(
         val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
         shader.textureOffset = 1.0f - textureOffset
 
-        shader.tintColor = calculateColor()
+        shader.tint = calculateColor()
     }
 
 

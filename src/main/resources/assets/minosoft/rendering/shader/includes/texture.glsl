@@ -10,13 +10,43 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+#ifndef INCLUDE_MINOSOFT_TEXTURE
+#define INCLUDE_MINOSOFT_TEXTURE
 
 
 uniform sampler2DArray uTextures[10];
 
 // ToDo: Those methods are just stupid and workaround an opengl crash with mesa drivers
 
+
+vec4 getTexture(uint textureId, vec3 uv, uint mipmapLevel) {
+    float lod = float(mipmapLevel);
+    #if defined __NVIDIA || defined __AMD
+    return textureLod(uTextures[textureId], uv, lod);
+    #else
+    switch (textureId) {
+        case 1u: return textureLod(uTextures[1], uv, lod);
+        case 2u: return textureLod(uTextures[2], uv, lod);
+        case 3u: return textureLod(uTextures[3], uv, lod);
+        case 4u: return textureLod(uTextures[4], uv, lod);
+        case 5u: return textureLod(uTextures[5], uv, lod);
+        case 6u: return textureLod(uTextures[6], uv, lod);
+        case 7u: return textureLod(uTextures[7], uv, lod);
+        case 8u: return textureLod(uTextures[8], uv, lod);
+        case 9u: return textureLod(uTextures[9], uv, lod);
+    }
+    return textureLod(uTextures[0], uv, lod);
+    #endif
+}
+
+vec4 getTexture(uint textureId, vec3 uv, int mipmapLevel) {
+    return getTexture(textureId, uv, uint(mipmapLevel));
+}
+
 vec4 getTexture(uint textureId, vec3 uv) {
+    #ifdef FIXED_MIPMAP_LEVEL
+    return getTexture(textureId, uv, FIXED_MIPMAP_LEVEL);
+    #else
     #if defined __NVIDIA || defined __AMD
     return texture(uTextures[textureId], uv);
     #else
@@ -29,28 +59,10 @@ vec4 getTexture(uint textureId, vec3 uv) {
         case 6u: return texture(uTextures[6], uv);
         case 7u: return texture(uTextures[7], uv);
         case 8u: return texture(uTextures[8], uv);
-case 9u: return texture(uTextures[9], uv);
+        case 9u: return texture(uTextures[9], uv);
     }
     return texture(uTextures[0], uv);
     #endif
-}
-
-vec4 getTexture(uint textureId, vec3 uv, float mipmapLevel) {
-    #if defined __NVIDIA || defined __AMD
-    return textureLod(uTextures[textureId], uv, mipmapLevel);
-    #else
-    switch (textureId) {
-        case 1u: return textureLod(uTextures[1], uv, mipmapLevel);
-        case 2u: return textureLod(uTextures[2], uv, mipmapLevel);
-        case 3u: return textureLod(uTextures[3], uv, mipmapLevel);
-        case 4u: return textureLod(uTextures[4], uv, mipmapLevel);
-        case 5u: return textureLod(uTextures[5], uv, mipmapLevel);
-        case 6u: return textureLod(uTextures[6], uv, mipmapLevel);
-        case 7u: return textureLod(uTextures[7], uv, mipmapLevel);
-        case 8u: return textureLod(uTextures[8], uv, mipmapLevel);
-case 9u: return textureLod(uTextures[9], uv, mipmapLevel);
-    }
-    return textureLod(uTextures[0], uv, mipmapLevel);
     #endif
 }
-
+#endif

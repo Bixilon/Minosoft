@@ -15,17 +15,15 @@
 
 out vec4 foutColor;
 
-flat in uint finTextureIndex;
-in vec3 finTextureCoordinates;
-
 uniform vec4 uTintColor;
 
 #include "minosoft:texture"
+#include "minosoft:alpha"
+#include "minosoft:animation"
 
 
 void main() {
-    foutColor = getTexture(finTextureIndex, finTextureCoordinates) * uTintColor;
-    if (foutColor.a == 0.0f) {
-        discard;
-    }
+    applyTexel();
+    foutColor *= uTintColor;
+    discard_alpha();
 }

@@ -18,13 +18,11 @@ layout (location = 1) in float vinUVIndex;
 layout (location = 2) in float vinWidth;
 
 uniform mat4 uViewProjectionMatrix;
-uniform uint uIndexLayer;
+uniform uint uIndexLayerAnimation;
 uniform float uTextureOffset;
 
 uniform vec3 uCameraPosition;
 
-flat out uint finTextureIndex;
-out vec3 finTextureCoordinates;
 out vec3 finFragmentPosition; // fog
 
 #define DENSITY 2.0f
@@ -33,6 +31,7 @@ out vec3 finFragmentPosition; // fog
 #include "minosoft:uv"
 #include "minosoft:color"
 #include "minosoft:light"
+#include "minosoft:animation"
 
 void main() {
     vec3 position = vinPosition;
@@ -43,15 +42,13 @@ void main() {
     }
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0f);
 
-    finTextureIndex = uIndexLayer >> 28u;
 
     vec2 uv = CONST_UV[floatBitsToUint(vinUVIndex)];
     uv.x *= (vinWidth / DENSITY); // TODO: insert width
     uv.y *= (HEIGHT / DENSITY);
 
-    finTextureCoordinates = vec3(uv, ((uIndexLayer >> 12u) & 0xFFFFu));
-    finTextureCoordinates.x += uTextureOffset;
-    finTextureCoordinates.y += uTextureOffset;
+    uv.x += uTextureOffset; uv.y += uTextureOffset;
 
+    setTexture(uv, uIndexLayerAnimation);
     finFragmentPosition = position.xyz;
 }

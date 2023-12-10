@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,14 +29,14 @@ abstract class ArrayCrashSection<T>(
             builder.append(intent)
             builder.append('#')
             builder.append(index)
-            builder.append('\n')
+            builder.appendLine()
             format(entry, builder, intent + CrashReportUtil.INTENT)
             builder.removeTrailingNewline()
-            builder.append('\n')
+            builder.appendLine()
         }
     }
 
     fun StringBuilder.appendProperty(intent: String, name: String, value: Any?) {
-        append(intent).append(name).append(": ").append(value).append('\n')
+        append(intent).append(name).append(": ").append(value).appendLine()
     }
 }

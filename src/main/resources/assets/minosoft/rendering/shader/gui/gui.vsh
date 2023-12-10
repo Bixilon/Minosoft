@@ -18,17 +18,13 @@ layout (location = 1) in vec2 vinUV;
 layout (location = 2) in float vinIndexLayerAnimation;
 layout (location = 3) in float vinTintColor;
 
-#include "minosoft:animation/header_vertex"
 
 #include "minosoft:color"
-#include "minosoft:animation/buffer"
-
-
-#include "minosoft:animation/main_vertex"
+#include "minosoft:animation"
 
 void main() {
     gl_Position = vec4(vinPosition.xy, 0.0f, 1.0f);
     finTintColor = getRGBAColor(floatBitsToUint(vinTintColor));
 
-    run_animation();
+    setTexture(vinUV, vinIndexLayerAnimation);
 }

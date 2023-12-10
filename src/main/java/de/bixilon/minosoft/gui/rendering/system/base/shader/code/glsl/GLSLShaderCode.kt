@@ -44,11 +44,12 @@ class GLSLShaderCode(
                 val remaining = lineReader.peekRemaining() ?: continue
                 fun pushLine() {
                     code.append(remaining)
-                    code.append('\n')
+                    code.appendLine()
                 }
 
                 when {
                     remaining.startsWith("#include ") -> {
+                        // TODO: Don't include multiple times, cache include
                         val reader = GLSLStringReader(remaining.removePrefix("#include "))
                         reader.skipWhitespaces()
 
@@ -56,10 +57,17 @@ class GLSLShaderCode(
 
                         val includeCode = GLSLShaderCode(context, context.connection.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
 
-                        code.append('\n')
+                        code.appendLine()
+                        code.append("// ").append(STAR).appendLine()
+                        code.append("// Begin included from $include:\n")
+                        code.append("// ").append(STAR).appendLine()
                         code.append(includeCode.code)
-                        code.append('\n')
+                        code.appendLine()
+                        code.append("// ").append(STAR).appendLine()
+                        code.append("// End include from $include:\n")
+                        code.append("// ").append(STAR).appendLine()
                     }
+
                     remaining.startsWith("#version") -> {
                         pushLine()
 
@@ -68,7 +76,7 @@ class GLSLShaderCode(
                             code.append(name)
                             code.append(' ')
                             code.append(value)
-                            code.append('\n')
+                            code.appendLine()
                         }
                     }
 
@@ -82,4 +90,8 @@ class GLSLShaderCode(
 
             return code.toString()
         }
+
+    private companion object {
+        val STAR = "*".repeat(100)
+    }
 }

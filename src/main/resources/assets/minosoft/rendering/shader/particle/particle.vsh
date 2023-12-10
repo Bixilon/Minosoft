@@ -13,9 +13,11 @@
 
 #version 330 core
 
+#define NO_TINT_COLOR
+
 layout (location = 0) in vec3 vinPosition;
-layout (location = 1) in vec2 vinMinUVCoordinates;
-layout (location = 2) in vec2 vinMaxUVCoordinates;
+layout (location = 1) in vec2 vinMinUV;
+layout (location = 2) in vec2 vinMaxUV;
 layout (location = 3) in float vinIndexLayerAnimation;
 
 layout (location = 4) in float vinScale;
@@ -23,60 +25,33 @@ layout (location = 5) in float vinTintColor;
 layout (location = 6) in float vinLight;
 
 
-#include "minosoft:animation/buffer"
 
 #include "minosoft:light"
 
 
 out Vertex
 {
-    uint textureIndex1;
-    uint textureLayer1;
-    uint textureIndex2;
-    uint textureLayer2;
-    float interpolation;
-    vec2 minUVCoordinates;
-    vec2 maxUVCoordinates;
+    vec2 minUV;
+    vec2 maxUV;
+    float layer1;
+    float layer2;
 
     float scale;
     vec4 tintColor;
 } ginVertex;
 
 #include "minosoft:color"
+#include "minosoft:animation"
 
 void main() {
     gl_Position = vec4(vinPosition, 1.0f);
 
-    ginVertex.maxUVCoordinates = vinMaxUVCoordinates;
-    ginVertex.minUVCoordinates = vinMinUVCoordinates;
+    ginVertex.maxUV = vinMaxUV;
+    ginVertex.minUV = vinMinUV;
 
     ginVertex.scale = vinScale;
     ginVertex.tintColor = getRGBAColor(floatBitsToUint(vinTintColor)) * getLight(floatBitsToUint(vinLight) & 0xFFu);
 
-
-    uint indexLayerAnimation = floatBitsToUint(vinIndexLayerAnimation);
-    uint animationIndex = indexLayerAnimation & 0xFFFu;
-
-    if (animationIndex == 0u) {
-        ginVertex.textureIndex1 = indexLayerAnimation >> 28u;
-        ginVertex.textureLayer1 = ((indexLayerAnimation >> 12) & 0xFFFFu);
-
-        ginVertex.interpolation = 0.0f;
-        return;
-    }
-
-    uvec4 data = uAnimationData[animationIndex - 1u];
-    uint texture1 = data.x;
-    uint texture2 = data.y;
-    uint interpolation = data.z;
-
-
-
-    ginVertex.textureIndex1 = texture1 >> 28u;
-    ginVertex.textureLayer1 = (texture1 >> 12) & 0xFFFFu;
-
-    ginVertex.textureIndex2 = texture2 >> 28u;
-    ginVertex.textureLayer2 = (texture2 >> 12) & 0xFFFFu;
-
-    ginVertex.interpolation = interpolation / 100.0f;
+    setTexture(vec2(0.0f, 0.0f), vinIndexLayerAnimation);
+    ginVertex.layer1 = finAnimationPosition1.z; ginVertex.layer2 = finAnimationPosition2.z;
 }

@@ -13,6 +13,8 @@
 
 #version 330 core
 
+#define DISTANCE_MULTIPLIER 0.03f
+
 out vec4 foutColor;
 
 uniform vec3 uCloudsColor;
@@ -20,7 +22,6 @@ uniform vec3 uCloudsColor;
 flat in float finBrightness;
 
 
-#define DISTANCE_MULTIPLIER 0.03f
 #include "minosoft:fog"
 
 void main() {

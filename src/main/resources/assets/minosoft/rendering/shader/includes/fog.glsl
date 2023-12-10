@@ -11,6 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+#define FOG
+
 in vec3 finFragmentPosition;
 
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,5 +17,19 @@ import de.bixilon.minosoft.config.StaticConfiguration
 class ShaderLoadingException : Exception {
     constructor()
     constructor(message: String) : super(message)
-    constructor(message: String, code: String) : super(message + if (StaticConfiguration.DEBUG_MODE) "\n\n\n" + code else "")
+    constructor(message: String, code: String) : super(message + if (StaticConfiguration.DEBUG_MODE) "\n\n\n" + code.mapLines() else "")
+
+
+    companion object {
+        private fun String.mapLines(): String {
+            val result = StringBuilder()
+            for ((index, line) in this.lineSequence().withIndex()) {
+                result.append('[').append(index + 1).append("] ")
+                result.append(line)
+                result.appendLine()
+            }
+
+            return result.toString()
+        }
+    }
 }

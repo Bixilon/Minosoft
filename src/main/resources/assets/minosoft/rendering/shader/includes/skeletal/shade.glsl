@@ -11,6 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 #define DEGREE_90 1.5707964f
+#define NO_TINT_COLOR
 
 float decodeNormalPart(uint data) {
     if (data < 8u) return (data / 8.0f) - 1.0f;

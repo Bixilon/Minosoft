@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,6 @@ class PlanetShader(
     override val native: NativeShader,
 ) : Shader(), TextureShader {
     var matrix: Mat4 by uniform("uMatrix", Mat4())
-    var tintColor: Vec4 by uniform("uTintColor", Vec4())
+    var tintColor: Vec4 by uniform("uTintColor", Vec4(1.0f))
     override var textures: TextureManager by textureManager(animated = false)
-
 }

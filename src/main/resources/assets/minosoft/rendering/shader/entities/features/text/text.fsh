@@ -13,25 +13,16 @@
 
 #version 330 core
 
+#define FIXED_MIPMAP_LEVEL 0
+
 out vec4 foutColor;
 
-
-flat in uint finTextureIndex;
-in vec3 finTextureCoordinates;
-
-in vec4 finTintColor;
-
-#define TRANSPARENT
 
 #include "minosoft:texture"
 #include "minosoft:alpha"
 #include "minosoft:fog"
+#include "minosoft:animation"
 
 void main() {
-    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates, 0.0f);
-    discard_if_0(texelColor.a);
-
-    foutColor = texelColor * finTintColor;
-
-    set_fog();
+    applyTexel();
 }

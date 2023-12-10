@@ -34,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.queue.loading.MeshUnloadingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.meshing.ChunkMeshingQueue
 import de.bixilon.minosoft.gui.rendering.chunk.queue.queue.ChunkQueueMaster
 import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkShader
-import de.bixilon.minosoft.gui.rendering.chunk.shader.ChunkTextShader
 import de.bixilon.minosoft.gui.rendering.chunk.util.ChunkRendererChangeListener
 import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
@@ -65,7 +64,7 @@ class ChunkRenderer(
     val visibilityGraph = context.camera.visibilityGraph
     private val shader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it, false) }
     private val transparentShader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it, true) }
-    private val textShader = renderSystem.createShader(minosoft("chunk/text")) { ChunkTextShader(it) }
+    private val textShader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it, true) }
     val lock = SimpleLock()
     val world: World = connection.world
 
@@ -103,6 +102,7 @@ class ChunkRenderer(
     override fun postInit(latch: AbstractLatch) {
         shader.load()
         transparentShader.load()
+        textShader.native.defines["FIXED_MIPMAP_LEVEL"] = 0
         textShader.load()
 
 

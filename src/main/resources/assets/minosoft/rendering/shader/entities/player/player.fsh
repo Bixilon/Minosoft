@@ -13,28 +13,24 @@
 
 #version 330 core
 
-out vec4 foutColor;
-
 #define FOG
+#define DISABLE_ALPHA_DISCARD
+
+out vec4 foutColor;
 
 
 #include "minosoft:texture"
 #include "minosoft:alpha"
 #include "minosoft:fog"
-
-in vec4 finTintColor;
+#include "minosoft:animation"
 
 flat in uint finAllowTransparency;
 
-flat in uint finTextureIndex;
-in vec3 finTextureCoordinates;
-
 void main() {
     if (finTintColor.a == 0.0f) discard;
-    foutColor = getTexture(finTextureIndex, finTextureCoordinates) * finTintColor;
+    applyTexel();
     if (finAllowTransparency > 0u) {
         if (foutColor.a < 0.5f) discard;
     }
     foutColor.a = 1.0f;
-    set_fog();
 }

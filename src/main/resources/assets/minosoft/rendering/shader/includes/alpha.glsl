@@ -11,22 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+#ifndef INCLUDE_MINOSOFT_ALPHA
+#define INCLUDE_MINOSOFT_ALPHA
+
 void discard_if_0(float value) {
+    #ifndef DISABLE_ALPHA_DISCARD
     if (value <= 0.0f) {
         discard;
     }
+    #endif
 }
 
 void discard_alpha() {
+    #ifndef DISABLE_ALPHA_DISCARD
     if (foutColor.a <= 0.0f) {
         discard;
     }
+    #endif
 }
 
 void set_alpha_transparent() {
+    #ifndef DISABLE_ALPHA_DISCARD
     if (foutColor.a < 0.6f) {
         discard;
     } else {
         foutColor.a = 1.0f;
     }
+    #endif
 }
+
+#endif

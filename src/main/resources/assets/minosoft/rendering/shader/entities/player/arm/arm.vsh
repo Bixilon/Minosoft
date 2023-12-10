@@ -20,16 +20,13 @@ layout (location = 2) in float vinPartTransformNormal; // part(0x1FD0000) transf
 out vec3 finFragmentPosition;
 
 
-uniform uint uIndexLayer;
+uniform uint uIndexLayerAnimation;
 uniform uint uTintColor;
 uniform uint uSkinParts;
 
 uniform mat4 uTransform;
 
 flat out uint finAllowTransparency;
-
-flat out uint finTextureIndex;
-out vec3 finTextureCoordinates;
 
 out vec4 finTintColor;
 
@@ -39,6 +36,7 @@ out vec4 finTintColor;
 #define POSITIVE_INFINITY 1.0f / 0.0f
 
 #include "minosoft:skeletal/shade"
+#include "minosoft:animation"
 
 
 void run_skeletal(uint inTransformNormal, vec3 inPosition) {
@@ -63,6 +61,5 @@ void main() {
     run_skeletal(partTransformNormal, vinPosition);
     finTintColor *= getRGBColor(uTintColor & 0xFFFFFFu);
 
-    finTextureIndex = uIndexLayer >> 28u;
-    finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));
+    setTexture(vinUV, uIndexLayerAnimation);
 }

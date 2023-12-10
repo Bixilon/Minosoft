@@ -13,18 +13,16 @@
 
 #version 330 core
 
+#define FOG
+
 out vec4 foutColor;
 
-#include "minosoft:animation/header_fragment"
 
 #include "minosoft:texture"
 #include "minosoft:alpha"
 #include "minosoft:fog"
-
-#define FOG// for animation/main_fragment
-
-#include "minosoft:animation/main_fragment"
+#include "minosoft:animation"
 
 void main() {
-    run_animation();
+    applyTexel();
 }

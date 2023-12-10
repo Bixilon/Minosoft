@@ -46,12 +46,13 @@ class OpenGLNativeShader(
     private var handler = -1
     private val uniformLocations: Object2IntOpenHashMap<String> = Object2IntOpenHashMap()
 
-    private fun load(resourceLocation: ResourceLocation, shaderType: Int): Int {
-        val code = GLSLShaderCode(context, context.connection.assetsManager[resourceLocation].readAsString())
+    private fun load(file: ResourceLocation, type: ShaderType): Int {
+        val code = GLSLShaderCode(context, context.connection.assetsManager[file].readAsString())
 
         code.defines += defines
+        code.defines["SHADER_TYPE_${type.name}"] = ""
 
-        val program = glCreateShader(shaderType)
+        val program = glCreateShader(type.native)
         if (program.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
         }
@@ -62,7 +63,7 @@ class OpenGLNativeShader(
         glCompileShader(program)
 
         if (glGetShaderi(program, GL_COMPILE_STATUS) == GL_FALSE) {
-            throw ShaderLoadingException(getShaderInfoLog(program), glsl)
+            throw ShaderLoadingException("Can not load shader: $file\n:" + getShaderInfoLog(program), glsl)
         }
 
         return program
@@ -78,12 +79,12 @@ class OpenGLNativeShader(
         val programs = IntArrayList(3)
 
 
-        programs += load(vertex, GL_VERTEX_SHADER)
+        programs += load(vertex, ShaderType.VERTEX)
         try {
-            geometry?.let { programs += load(it, GL_GEOMETRY_SHADER) }
+            geometry?.let { programs += load(it, ShaderType.GEOMETRY) }
         } catch (_: FileNotFoundException) {
         }
-        programs += load(fragment, GL_FRAGMENT_SHADER)
+        programs += load(fragment, ShaderType.FRAGMENT)
 
         for (program in programs) {
             glAttachShader(handler, program)
@@ -208,6 +209,11 @@ class OpenGLNativeShader(
     override val log: String
         get() = TODO()
 
+
+    override fun toString(): String {
+        return "OpenGLShader: $vertex:$geometry:$fragment"
+    }
+
     private companion object {
 
         fun getShaderInfoLog(shader: Int): String {
@@ -217,5 +223,14 @@ class OpenGLNativeShader(
         fun getProgramInfoLog(program: Int): String {
             return glGetProgramInfoLog(program)
         }
+    }
+
+    private enum class ShaderType(
+        val native: Int,
+    ) {
+        GEOMETRY(GL_GEOMETRY_SHADER),
+        VERTEX(GL_VERTEX_SHADER),
+        FRAGMENT(GL_FRAGMENT_SHADER),
+        COMPUTE(GL_COMPUTE_SHADER),
     }
 }

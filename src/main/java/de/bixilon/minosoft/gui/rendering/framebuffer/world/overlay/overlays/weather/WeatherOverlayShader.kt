@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,5 +25,5 @@ class WeatherOverlayShader(
 
     var intensity by uniform("uIntensity", 0.0f)
     var offset by uniform("uOffset", 0.0f)
-    var textureIndexLayer by uniform("uIndexLayer", 0, NativeShader::setUInt)
+    var textureIndexLayer by uniform("uIndexLayerAnimation", 0, NativeShader::setUInt)
 }

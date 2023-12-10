@@ -26,14 +26,11 @@ uniform uint uSkinParts;
 
 flat out uint finAllowTransparency;
 
-flat out uint finTextureIndex;
-out vec3 finTextureCoordinates;
-
 out vec4 finTintColor;
 
 #include "minosoft:skeletal/vertex"
 #include "minosoft:color"
-
+#include "minosoft:animation"
 
 #define POSITIVE_INFINITY 1.0f / 0.0f
 
@@ -49,6 +46,5 @@ void main() {
     run_skeletal(partTransformNormal, vinPosition);
     finTintColor *= getRGBColor(uTintColor & 0xFFFFFFu);
 
-    finTextureIndex = uIndexLayer >> 28u;
-    finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));
+    setTexture(vinUV, uIndexLayer);
 }

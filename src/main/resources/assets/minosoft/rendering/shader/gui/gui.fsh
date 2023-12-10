@@ -13,17 +13,14 @@
 
 #version 330 core
 
-out vec4 foutColor;
+#define FIXED_MIPMAP_LEVEL 0
 
-#include "minosoft:animation/header_fragment"
+out vec4 foutColor;
 
 #include "minosoft:texture"
 #include "minosoft:alpha"
-
-#define MIPMAP_LEVEL 0.0f
-
-#include "minosoft:animation/main_fragment"
+#include "minosoft:animation"
 
 void main() {
-    run_animation();
+    applyTexel();
 }

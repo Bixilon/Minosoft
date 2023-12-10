@@ -18,20 +18,18 @@ layout (location = 1) in vec2 vinUV;
 layout (location = 2) in float vinTransformNormal; // transform (0x7F000), normal (0xFFF)
 layout (location = 3) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
 
-#include "minosoft:animation/header_vertex"
+out vec3 finFragmentPosition;
+
+#include "minosoft:animation"
+#include "minosoft:light"
 #include "minosoft:skeletal/vertex"
 
-
-#include "minosoft:animation/buffer"
-#include "minosoft:animation/main_vertex"
-
 uniform uint uLight;
-#include "minosoft:light"
 
 
 void main() {
     run_skeletal(floatBitsToUint(vinTransformNormal), vinPosition);
-    run_animation();
+    setTexture(vinUV, vinIndexLayerAnimation);
 
     finTintColor *= getLight(uLight & 0xFFu);
 }

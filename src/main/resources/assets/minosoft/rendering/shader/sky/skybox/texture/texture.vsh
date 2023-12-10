@@ -17,18 +17,16 @@ layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in uint uvIndex;
 
 uniform mat4 uSkyViewProjectionMatrix;
-uniform uint uIndexLayer;
-
-flat out uint finTextureIndex;
-out vec3 finTextureCoordinates;
+uniform uint uIndexLayerAnimation;
 
 #include "minosoft:uv"
 #include "minosoft:color"
 #include "minosoft:light"
+#include "minosoft:animation"
 
 void main() {
     gl_Position = uSkyViewProjectionMatrix * vec4(vinPosition, 1.0f);
 
-    finTextureIndex = uIndexLayer >> 28u;
-    finTextureCoordinates = vec3(CONST_UV[uvIndex] * 20.0f, ((uIndexLayer >> 12) & 0xFFFFu));
+    vec2 uv = CONST_UV[uvIndex] * 20.0f;
+    setTexture(uv, uIndexLayerAnimation);
 }

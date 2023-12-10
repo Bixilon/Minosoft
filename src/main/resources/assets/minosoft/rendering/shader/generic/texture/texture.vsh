@@ -18,18 +18,15 @@ layout (location = 1) in vec2 vinUV;
 layout (location = 2) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
 layout (location = 3) in float vinTintColor;// Light (0xFF000000); 3 bytes color (0x00FFFFFF)
 
-#include "minosoft:animation/header_vertex"
-
-#include "minosoft:animation/buffer"
 #include "minosoft:color"
+#include "minosoft:animation"
 
 uniform mat4 uViewProjectionMatrix;
 
-#include "minosoft:animation/main_vertex"
 
 void main() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
     finTintColor = getRGBColor(floatBitsToUint(vinTintColor) & 0xFFFFFFu);
 
-    run_animation();
+    setTexture(vinUV, vinIndexLayerAnimation);
 }

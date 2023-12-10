@@ -40,14 +40,14 @@ object FreezeDumpUtil {
         val builder = StringBuilder()
 
         builder.append("--- Freeze dump ----")
-        builder.append('\n')
-        builder.append('\n')
+        builder.appendLine()
+        builder.appendLine()
         builder.append("-- Thread dump --")
-        builder.append('\n')
+        builder.appendLine()
         builder.append(createThreadDump())
-        builder.append('\n')
+        builder.appendLine()
         builder.append("-- Pool --")
-        builder.append('\n')
+        builder.appendLine()
         builder.append(createThreadPoolDump())
 
 

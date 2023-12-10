@@ -13,28 +13,21 @@
 
 #version 330 core
 
+#define TRANSPARENT
+
 out vec4 foutColor;
 
 uniform float uFlashProgress;
 
-flat in uint finTextureIndex;
-in vec3 finTextureCoordinates;
-
-in vec4 finTintColor;
 in vec4 finFlashColor;
-
-#define TRANSPARENT
 
 #include "minosoft:texture"
 #include "minosoft:alpha"
 #include "minosoft:fog"
+#include "minosoft:animation"
 
 void main() {
-    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates, 0.0f);
-    discard_if_0(texelColor.a);
+    applyTexel();
 
-    foutColor = texelColor * finTintColor;
     foutColor = mix(foutColor, finFlashColor, uFlashProgress);
-
-    set_fog();
 }
