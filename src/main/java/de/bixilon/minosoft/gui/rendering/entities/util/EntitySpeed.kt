@@ -25,7 +25,7 @@ class EntitySpeed(val entity: Entity) {
     private val interpolator = Interpolator(0.0f, FloatInterpolation::interpolateLinear)
     private var position0 = Vec3d.EMPTY
     private var length2 = 0.0f
-    private var age = 0
+    private var age = -1
 
     val value: Float get() = interpolator.value
 
@@ -67,6 +67,9 @@ class EntitySpeed(val entity: Entity) {
 
         val previous = this.length2
         updateLength2()
+        if (age < 0 || delta <= 0.0f) {
+            length2 = 0.0f // don't move when initializing
+        }
 
         val rapid = when {
             previous < SPEED_THRESHOLD && length2 > SPEED_THRESHOLD -> true // start
