@@ -60,11 +60,19 @@ class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         val text: Array<ChatComponent> = Array(LINES) { EmptyComponent },
     ) {
 
+        private fun parseText(line: Any?, connection: PlayConnection): ChatComponent {
+            if (line is String && line.startsWith("\"")) {
+                // TODO: minecraft 1.20.4 wraps it in "???
+                return ChatComponent.of(line.removeSurrounding("\""))
+            }
+            return ChatComponent.of(line, translator = connection.language)
+        }
+
         fun update(data: JsonObject, connection: PlayConnection) {
             update(data["color"], data["has_glowing_text"])
             data["messages"]?.asJsonList()?.let {
                 for ((index, line) in it.withIndex()) {
-                    this.text[index] = ChatComponent.of(line, translator = connection.language)
+                    this.text[index] = parseText(line, connection)
                 }
             }
         }

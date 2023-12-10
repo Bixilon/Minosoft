@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.block.sign
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.language.lang.Language
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.test.IT
@@ -67,5 +68,27 @@ class SignBlockEntityTest {
         assertFalse(entity.back.glowing)
         assertEquals(entity.back.color, ChatColors.BLUE)
         assertEquals(entity.back.text, arrayOf(ChatComponent.of("This is the back"), ChatComponent.of("text"), ChatComponent.of("of"), ChatComponent.of("this sign.")))
+    }
+    fun `nbt 1_20_4`() {
+        val nbt = mapOf(
+            "is_waxed" to 1.toByte(),
+            "front_text" to mapOf(
+                "has_glowing_text" to 1.toByte(),
+                "color" to "red",
+                "messages" to listOf(
+                    "\"Very long line\"",
+                    "\"\"",
+                    "\"\"",
+                    "\"\"",
+                )
+            ),
+        )
+        val entity = create()
+        entity.updateNBT(nbt)
+
+        assertTrue(entity.waxed)
+        assertTrue(entity.front.glowing)
+        assertEquals(entity.front.color, ChatColors.RED)
+        assertEquals(entity.front.text, arrayOf(TextComponent("Very long line"), ChatComponent.of(""), ChatComponent.of(""), ChatComponent.of("")))
     }
 }
