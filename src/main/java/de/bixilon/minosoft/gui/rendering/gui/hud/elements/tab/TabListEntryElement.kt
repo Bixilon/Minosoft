@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.gui.rendering.font.renderer.element.TextRenderProperties
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -51,7 +52,7 @@ class TabListEntryElement(
     private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2(8, 8), parent = this)
 
     // private val skinElement = ImageElement(guiRenderer, guiRenderer.context.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
-    private val nameElement = TextElement(guiRenderer, "", background = null, parent = this)
+    private val nameElement = TextElement(guiRenderer, "", background = null, properties = TextRenderProperties(allowNewLine = false), parent = this)
     private lateinit var pingElement: AtlasImageElement
 
     private var displayName: ChatComponent = item.tabDisplayName
