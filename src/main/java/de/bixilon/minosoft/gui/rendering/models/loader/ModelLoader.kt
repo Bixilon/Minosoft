@@ -34,20 +34,28 @@ class ModelLoader(
     val item = ItemLoader(this)
     val skeletal = SkeletalLoader(this)
 
+    fun loadRegistry(latch: AbstractLatch) {
+        val start = nanos()
 
-    fun load(latch: AbstractLatch) {
+        fluids.load(latch)
+        block.load(latch)
+        item.load(latch)
+
+        val time = nanos() - start
+
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all registry models in ${time.formatNanos()}!" }
+    }
+
+    fun loadDynamic(latch: AbstractLatch) {
         val start = nanos()
 
         DefaultBlockEntityModels.load(this, latch)
         DefaultEntityModels.load(this, latch)
-        fluids.load(latch)
-        block.load(latch)
-        item.load(latch)
         skeletal.load(latch)
 
         val time = nanos() - start
 
-        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all models in ${time.formatNanos()}!" }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded all dynamic models in ${time.formatNanos()}!" }
     }
 
     fun bake(latch: AbstractLatch) {

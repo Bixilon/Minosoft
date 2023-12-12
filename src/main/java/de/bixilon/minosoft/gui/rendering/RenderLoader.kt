@@ -76,7 +76,9 @@ object RenderLoader {
         textures.dynamic.upload(initLatch)
         textures.initializeSkins(connection)
         textures.loadDefaultTextures()
-        font = FontManager.create(this, initLatch)
+
+        initLatch.inc(); runAsync { font = FontManager.create(this, initLatch); initLatch.dec() }
+        initLatch.inc(); runAsync { models.loadRegistry(latch); initLatch.dec() }
 
 
         framebuffer.init()
@@ -90,7 +92,7 @@ object RenderLoader {
         // Wait for init stage to complete
         initLatch.dec()
         initLatch.await()
-        models.load(latch)
+        models.loadDynamic(latch)
 
         renderer[GUIRenderer]?.atlas?.load() // TODO: remove this
 
