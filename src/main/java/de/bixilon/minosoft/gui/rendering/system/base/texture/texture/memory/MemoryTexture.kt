@@ -32,7 +32,7 @@ class MemoryTexture(
 ) : Texture {
     override lateinit var array: TextureArrayProperties
     override lateinit var renderData: TextureRenderData
-    override var transparency: TextureTransparencies = TextureTransparencies.OPAQUE
+    override var transparency: TextureTransparencies = buffer.getTransparency()
         private set
     override var data: TextureData = createData(mipmaps, buffer)
 
