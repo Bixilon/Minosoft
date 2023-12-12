@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.models.loader
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.collections.iterator.async.AsyncIterator.Companion.async
+import de.bixilon.kutil.collections.iterator.async.ConcurrentIterator
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat
@@ -70,15 +71,16 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun load(latch: AbstractLatch?) {
-        loader.context.connection.registries.block.async {
-            if (it.model != null) return@async // model already set
+        val iterator = ConcurrentIterator(loader.context.connection.registries.block.spliterator(), priority = ThreadPool.HIGH)
+        iterator.iterate {
+            if (it.model != null) return@iterate // model already set
             val prototype: BlockModelPrototype
             try {
-                prototype = loadState(it) ?: return@async
+                prototype = loadState(it) ?: return@iterate
             } catch (error: Exception) {
                 Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Can not load block model for block $it: $error" }
                 Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { error }
-                return@async
+                return@iterate
             }
 
             it.model = prototype
@@ -87,11 +89,12 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun bake(latch: AbstractLatch?) {
         val context = loader.context
-        for (block in loader.context.connection.registries.block) {
-            val prototype = block.model.nullCast<BlockModelPrototype>() ?: continue
-            block.model = null
+        val iterator = ConcurrentIterator(loader.context.connection.registries.block.spliterator(), priority = ThreadPool.HIGH)
+        iterator.iterate {
+            val prototype = it.model.nullCast<BlockModelPrototype>() ?: return@iterate
+            it.model = null
 
-            prototype.bake(context, block)
+            prototype.bake(context, it)
         }
     }
 
