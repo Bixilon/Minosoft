@@ -21,17 +21,12 @@ import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.pool.runnable.SimplePoolRunnable
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteAnimator
-import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
-import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import java.util.concurrent.atomic.AtomicInteger
 
 abstract class StaticTextureArray(
     val context: RenderContext,
@@ -42,7 +37,7 @@ abstract class StaticTextureArray(
     protected val other: MutableSet<Texture> = mutableSetOf()
     private val lock = SimpleLock()
 
-    val animator = SpriteAnimator(context.system)
+    val animator = SpriteAnimator(context)
     var state: TextureArrayStates = TextureArrayStates.DECLARED
         protected set
 
@@ -65,17 +60,11 @@ abstract class StaticTextureArray(
         }
     }
 
-    open fun create(resourceLocation: ResourceLocation, mipmaps: Boolean = true, properties: Boolean = true, factory: (mipmaps: Int) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture {
+    open fun create(resourceLocation: ResourceLocation, mipmaps: Boolean = true, factory: (mipmaps: Int) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture {
         lock.lock()
         named[resourceLocation]?.let { lock.unlock(); return it }
+        val texture = factory.invoke(if (mipmaps) this.mipmaps else 0)
 
-        // load .mcmeta
-        val properties = if (properties) readImageProperties(resourceLocation) ?: ImageProperties.DEFAULT else ImageProperties.DEFAULT // TODO: That kills performance
-        val default = factory.invoke(if (mipmaps) this.mipmaps else 0)
-
-        val texture = if (properties.animation == null) default else SpriteTexture(default)
-
-        texture.properties = properties
         named[resourceLocation] = texture
         lock.unlock()
         if (async) {
@@ -83,16 +72,6 @@ abstract class StaticTextureArray(
         }
 
         return texture
-    }
-
-    private fun readImageProperties(texture: ResourceLocation): ImageProperties? {
-        try {
-            val stream = context.connection.assetsManager.getOrNull("$texture.mcmeta".toResourceLocation()) ?: return null
-            return stream.readJson(reader = ImageProperties.READER)
-        } catch (error: Throwable) {
-            error.printStackTrace()
-        }
-        return null
     }
 
     abstract fun findResolution(size: Vec2i): Vec2i
@@ -107,7 +86,7 @@ abstract class StaticTextureArray(
         }
     }
 
-    protected abstract fun load(animationIndex: AtomicInteger, textures: Collection<Texture>)
+    protected abstract fun load(textures: Collection<Texture>)
 
     fun load(latch: AbstractLatch) {
         val latch = latch.child(0)
@@ -115,9 +94,8 @@ abstract class StaticTextureArray(
         load(latch, other)
         latch.await()
 
-        val animationIndex = AtomicInteger()
-        load(animationIndex, named.values)
-        load(animationIndex, other)
+        load(named.values)
+        load(other)
 
         state = TextureArrayStates.LOADED
     }

@@ -23,19 +23,16 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
-import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
-import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.opengl.GL13.*
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import java.nio.ByteBuffer
-import java.util.concurrent.atomic.AtomicInteger
 
 class OpenGLTextureArray(
     context: RenderContext,
@@ -82,7 +79,7 @@ class OpenGLTextureArray(
             handles[index] = upload(RESOLUTIONS[index], textures)
             total += textures.size
         }
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${named.size} textures containing ${animator.animations.size} animated ones, split into $total layers!" }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${named.size} textures containing ${animator.size} animated ones, split into $total layers!" }
 
         animator.init()
         state = TextureArrayStates.UPLOADED
@@ -129,7 +126,7 @@ class OpenGLTextureArray(
         return -1
     }
 
-    private fun load(animationIndex: AtomicInteger, arrayId: Int, texture: Texture) {
+    private fun load(arrayId: Int, texture: Texture) {
         val resolution = RESOLUTIONS[arrayId]
         val pixel = PIXEL[arrayId]
         val size = texture.size
@@ -137,29 +134,28 @@ class OpenGLTextureArray(
         val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2(size) / resolution
         val array = TextureArrayProperties(uvEnd, resolution, pixel)
 
-        if (texture !is SpriteTexture) {
+        val animationProperties = texture.properties.animation
+        if (animationProperties == null) {
             this.resolution[arrayId] += texture
             texture.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, -1)
             texture.array = array
             return
         }
 
-        val animationIndex = animationIndex.getAndIncrement()
-        val animation = TextureAnimation(texture)
-        animator.animations += animation
+        val (frames, animation) = animator.create(texture, animationProperties)
 
-        texture.renderData = OpenGLTextureData(-1, -1, uvEnd, animationIndex)
-        for (split in texture.splitTextures) {
-            split.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, animationIndex)
+        texture.renderData = OpenGLTextureData(-1, -1, uvEnd, animation.animationData)
+
+        for (split in animation.textures) {
+            split.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, animation.animationData)
             split.array = array
             this.resolution[arrayId] += split
         }
-        for (frame in texture.properties.animation!!.frames) {
-            frame.texture = texture.splitTextures[frame.index]
-        }
+
+        texture.updateAnimation(frames.size, animation)
     }
 
-    override fun load(animationIndex: AtomicInteger, textures: Collection<Texture>) {
+    override fun load(textures: Collection<Texture>) {
         for (texture in textures) {
             if (texture.size.x > MAX_RESOLUTION || texture.size.y > MAX_RESOLUTION) {
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Texture $texture exceeds max resolution ($MAX_RESOLUTION): ${texture.size}" }
@@ -171,7 +167,7 @@ class OpenGLTextureArray(
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find texture array for $arrayId" }
                 continue
             }
-            load(animationIndex, arrayId, texture)
+            load(arrayId, texture)
         }
     }
 

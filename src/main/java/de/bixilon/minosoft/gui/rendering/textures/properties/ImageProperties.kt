@@ -13,17 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.textures.properties
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.util.json.Jackson
 
 data class ImageProperties(
     val texture: TextureProperties = TextureProperties(),
     val animation: AnimationProperties? = null,
 ) {
-
-    fun postInit(texture: Texture) {
-        animation?.postInit(texture)
-    }
 
 
     companion object {

@@ -22,11 +22,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import java.util.concurrent.atomic.AtomicInteger
 
 class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(context, false, 0) {
 
-    override fun load(animationIndex: AtomicInteger, textures: Collection<Texture>) {
+    override fun load(textures: Collection<Texture>) {
         for (texture in textures) {
             texture.renderData = DummyTextureRenderData
             texture.array = TextureArrayProperties(null, 1024, 1.0f / 1024)
@@ -39,8 +38,8 @@ class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(conte
         animator.init()
     }
 
-    override fun create(resourceLocation: ResourceLocation, mipmaps: Boolean, properties: Boolean, factory: (mipmaps: Int) -> Texture): Texture {
-        return super.create(resourceLocation, mipmaps, properties) { DummyTexture() }
+    override fun create(resourceLocation: ResourceLocation, mipmaps: Boolean, factory: (mipmaps: Int) -> Texture): Texture {
+        return super.create(resourceLocation, mipmaps) { DummyTexture() }
     }
 
     override fun findResolution(size: Vec2i) = size

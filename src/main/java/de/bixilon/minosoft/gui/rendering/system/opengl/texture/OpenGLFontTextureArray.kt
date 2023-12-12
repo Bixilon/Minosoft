@@ -85,7 +85,7 @@ class OpenGLFontTextureArray(
 
     private fun load(texture: Texture) {
         if (texture.state != TextureStates.LOADED) texture.load(context)
-        texture.properties = ImageProperties.DEFAULT
+        texture.updateProperties(ImageProperties.DEFAULT)
         val pixel = 1.0f / resolution
         val size = texture.size
 

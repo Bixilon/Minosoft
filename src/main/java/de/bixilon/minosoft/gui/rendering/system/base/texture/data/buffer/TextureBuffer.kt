@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import example.jonathan2520.SRGBAverager
 import java.nio.ByteBuffer
 
@@ -70,6 +71,22 @@ interface TextureBuffer {
                 setRGBA(targetOffset.x + x, targetOffset.y + y, rgba)
             }
         }
+    }
+
+    fun getTransparency(): TextureTransparencies {
+        var transparency = TextureTransparencies.OPAQUE
+        for (y in 0 until size.y) {
+            for (x in 0 until size.x) {
+                val alpha = getA(x, y)
+                if (alpha == 0x00) {
+                    transparency = TextureTransparencies.TRANSPARENT
+                } else if (alpha < 0xFF) {
+                    transparency = TextureTransparencies.TRANSLUCENT
+                    break
+                }
+            }
+        }
+        return transparency
     }
 }
 

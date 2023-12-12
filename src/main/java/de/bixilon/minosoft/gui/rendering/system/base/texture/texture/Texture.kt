@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.data.MipmapTextureD
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 interface Texture : ShaderTexture {
@@ -30,7 +31,8 @@ interface Texture : ShaderTexture {
     val state: TextureStates
     val size: Vec2i
     val transparency: TextureTransparencies
-    var properties: ImageProperties
+    val properties: ImageProperties
+    val animation: TextureAnimation? get() = null
 
     var renderData: TextureRenderData
 
@@ -56,4 +58,7 @@ interface Texture : ShaderTexture {
         if (mipmaps <= 0) return TextureData(buffer)
         return MipmapTextureData(buffer, mipmaps)
     }
+
+    fun updateAnimation(size: Vec2i, animation: TextureAnimation) = Unit
+    fun updateProperties(properties: ImageProperties) = Unit
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,61 +13,64 @@
 
 package de.bixilon.minosoft.gui.rendering.textures.properties
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 data class AnimationProperties(
     val interpolate: Boolean = false,
-    var width: Int = -1,
-    var height: Int = -1,
-    @JsonProperty("frametime") private val frameTime: Int = 1,
-    @JsonProperty("frames") private val _frames: List<Any> = emptyList(),
+    val width: Int = -1,
+    val height: Int = -1,
+    @JsonProperty("frametime") val frameTime: Int = 1,
+    val frames: List<Any> = emptyList(),
 ) {
-    @JsonIgnore
-    private var initialized = false
 
-    @JsonIgnore
-    lateinit var frames: Array<AnimationFrame>
-        private set
 
-    @JsonIgnore
-    var frameCount = -1
-        private set
+    fun create(size: Vec2i): FrameData {
+        val width = size.x
+        val height = if (height <= 0) size.x else height // they are squares?
+        val count = size.y / height
 
-    fun postInit(texture: Texture) {
-        if (initialized) {
-            error("")
-        }
-        if (width == -1) {
-            width = texture.size.x
-        }
-        if (height == -1) {
-            height = texture.size.x // That's correct!
-        }
+        val frames: MutableList<Frame> = mutableListOf()
 
-        frameCount = texture.size.y / height
-
-        val frames: MutableList<AnimationFrame> = mutableListOf()
-
-        if (_frames.isEmpty()) {
-            for (i in 0 until frameCount) {
-                frames += AnimationFrame(i, frameTime)
+        if (this.frames.isEmpty()) {
+            // automatic
+            for (i in 0 until count) {
+                frames += Frame(DEFAULT_FRAME_TIME, i)
             }
         } else {
-            for (frame in _frames) {
-                if (frame is Number) {
-                    frames += AnimationFrame(frame.toInt(), frameTime)
-                    continue
+            for (frame in this.frames) {
+                when (frame) {
+                    is Number -> frames += Frame(DEFAULT_FRAME_TIME, frame.toInt())
+                    is Map<*, *> -> {
+                        frames += Frame(ticksToSeconds(frame["time"].toInt()), frame["index"].toInt())
+                    }
                 }
-                check(frame is Map<*, *>) { "Invalid frame: $frame" }
-
-                frames += AnimationFrame(frame["index"]!!.toInt(), frame["time"]?.toInt() ?: frameTime)
             }
         }
 
-        this.frames = frames.toTypedArray()
-        initialized = true
+        return FrameData(frames, count, Vec2i(width, height))
+    }
+
+    data class FrameData(
+        val frames: List<Frame>,
+        val textures: Int,
+        val size: Vec2i,
+    )
+
+    data class Frame(
+        val time: Float,
+        val texture: Int,
+    )
+
+    companion object {
+        val DEFAULT_FRAME_TIME = ticksToSeconds(1)
+
+
+        private fun ticksToSeconds(ticks: Int): Float {
+            val millis = ticks * ProtocolDefinition.TICK_TIME
+            return millis / 1000.0f
+        }
     }
 }

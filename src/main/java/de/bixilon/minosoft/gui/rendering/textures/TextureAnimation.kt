@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,37 +13,61 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.sprite.SpriteTexture
+import de.bixilon.kutil.array.ArrayUtil.isIndex
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 
-data class TextureAnimation(
-    val texture: SpriteTexture,
+class TextureAnimation(
+    val animationData: Int,
+    val frames: Array<AnimationFrame>,
+    val interpolate: Boolean,
+    val textures: Array<Texture>,
 ) {
-    var currentFrameIndex = 0
-    var currentTime = 0L
+    private val totalTime = frames.getTotalTime()
+    private var frame = frames.first()
+    private var time = 0.0f
 
-    val animationProperties = texture.properties.animation!!
+    var frame1: Texture = frame.texture
+        private set
+    var frame2: Texture = frame.next().texture
+        private set
+    var progress = 0.0f
+        private set
 
-    fun getCurrentFrame(): AnimationFrame {
-        return animationProperties.frames[currentFrameIndex]
+    init {
+        if (frames.isEmpty() || totalTime <= 0.0f) throw IllegalArgumentException("Invalid texture animation!")
     }
 
-    fun getAndSetNextFrame(): AnimationFrame {
-        currentFrameIndex = getNextIndex()
-        currentTime = 0L
-
-        return animationProperties.frames[currentFrameIndex]
-    }
-
-    fun getNextFrame(): AnimationFrame {
-        return animationProperties.frames[getNextIndex()]
-    }
-
-    private fun getNextIndex(): Int {
-        return if (currentFrameIndex == animationProperties.frames.size - 1) {
-            0
-        } else {
-            currentFrameIndex + 1
+    private fun Array<AnimationFrame>.getTotalTime(): Float {
+        var total = 0.0f
+        for (frame in this) {
+            total += frame.time
         }
+
+        return total
     }
+
+
+    fun update(delta: Float) {
+        val delta = delta % totalTime
+        var frame = this.frame
+        var left = this.time + delta
+        while (left >= frame.time) {
+            left -= frame.time
+            frame = frame.next()
+        }
+        this.time = left
+        this.frame1 = frame.texture
+        this.frame2 = frame.next().texture
+        this.progress = if (left == 0.0f) 0.0f else left / frame.time
+    }
+
+    private fun AnimationFrame.next(): AnimationFrame {
+        var next = index + 1
+        if (!frames.isIndex(next)) {
+            next = 0
+        }
+        return frames[next]
+    }
+
 }

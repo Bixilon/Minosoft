@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 
@@ -78,4 +79,6 @@ class RGB8Buffer(
         if (x >= size.x || y >= size.y) throw IllegalArgumentException("Can not access pixel at ($x,$y), exceeds size: $size")
         return ((size.x * y) + x) * bytes
     }
+
+    override fun getTransparency() = TextureTransparencies.OPAQUE
 }

@@ -120,7 +120,6 @@ object RenderLoader {
         window::focused.observeRendering(this) { state = it.decide(RenderingStates.RUNNING, RenderingStates.SLOW) }
 
         window::iconified.observeRendering(this) { state = it.decide(RenderingStates.PAUSED, RenderingStates.RUNNING) }
-        profile.animations::sprites.observe(this, true) { textures.static.animator.enabled = it }
 
 
         input.init()

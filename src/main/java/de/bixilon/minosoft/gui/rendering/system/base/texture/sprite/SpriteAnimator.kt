@@ -13,74 +13,109 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.sprite
 
-import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.array.ArrayUtil.cast
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.time.TimeUtil.nanos
+import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
+import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
+import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class SpriteAnimator(val system: RenderSystem) {
-    val animations: MutableList<TextureAnimation> = mutableListOf()
-    val size: Int
-        get() = animations.size
-    private lateinit var uniformBuffer: IntUniformBuffer
-    var lastRun = 0L
-
-    var initialized = false
-        private set
-    var enabled = true
+class SpriteAnimator(val context: RenderContext) {
+    private val animations: MutableList<TextureAnimation> = ArrayList()
+    private var buffer: IntUniformBuffer? = null
+    private var enabled = true
+    private var previous = 0L
+    val size get() = animations.size
 
     fun init() {
         check(animations.size < MAX_ANIMATED_TEXTURES) { "Can not have more than $MAX_ANIMATED_TEXTURES animated textures!" }
-        uniformBuffer = system.createIntUniformBuffer(IntArray(animations.size * INTS_PER_ANIMATED_TEXTURE))
-        uniformBuffer.init()
-        initialized = true
-        recalculate()
-        uniformBuffer.upload()
+        buffer = createBuffer()
+        upload()
+        context.profile.animations::sprites.observe(this, true) { enabled = it }
     }
 
-    private fun recalculate() {
-        val currentTime = millis()
-        val deltaLastDraw = currentTime - lastRun
-        lastRun = currentTime
+    private fun createBuffer(): IntUniformBuffer {
+        if (buffer != null) throw IllegalStateException("Already initialized")
+        val buffer = context.system.createIntUniformBuffer(IntArray(animations.size * INTS_PER_ANIMATED_TEXTURE))
+        buffer.init()
 
+        return buffer
+    }
+
+    private fun upload() {
+        val buffer = this.buffer ?: throw NullPointerException("Buffer not initialized!")
+        buffer.upload()
+    }
+
+    fun update() {
+        val nanos = nanos()
+        val delta = nanos - previous
+        update(delta)
+        previous = nanos
+    }
+
+    fun update(animation: TextureAnimation, first: Texture, second: Texture, progress: Float) {
+        // TODO: Is that opengl specific?
+        val buffer = buffer!!
+        val offset = animation.animationData * INTS_PER_ANIMATED_TEXTURE
+        buffer.data[offset + 0] = first.renderData.shaderTextureId
+        buffer.data[offset + 1] = second.renderData.shaderTextureId
+        buffer.data[offset + 2] = (progress * 100.0f).toInt()
+    }
+
+    private fun update(delta: Long) {
+        val seconds = delta / 1_000_00 / 1_000_0.0f // nano -> 10 milli -> seconds
         for (animation in animations) {
-            var currentFrame = animation.getCurrentFrame()
-            animation.currentTime += deltaLastDraw
+            animation.update(seconds)
 
-            if (animation.currentTime >= currentFrame.animationTime) {
-                currentFrame = animation.getAndSetNextFrame()
-                animation.currentTime = 0L
-            }
-
-            val nextFrame = animation.getNextFrame()
-
-            val interpolation = if (animation.animationProperties.interpolate) {
-                (animation.currentTime * 100) / currentFrame.animationTime
-            } else {
-                0L
-            }
-
-
-            val arrayOffset = animation.texture.renderData.animationData * INTS_PER_ANIMATED_TEXTURE
-
-            uniformBuffer.data[arrayOffset] = currentFrame.texture.renderData.shaderTextureId
-            uniformBuffer.data[arrayOffset + 1] = nextFrame.texture.renderData.shaderTextureId
-            uniformBuffer.data[arrayOffset + 2] = interpolation.toInt()
+            update(animation, animation.frame1, animation.frame2, animation.progress)
         }
-    }
-
-    fun draw() {
-        if (!initialized || !enabled) {
-            return
-        }
-        recalculate()
-        uniformBuffer.upload()
+        upload()
     }
 
 
     fun use(shader: NativeShader, bufferName: String = "uSpriteBuffer") {
-        uniformBuffer.use(shader, bufferName)
+        buffer!!.use(shader, bufferName)
+    }
+
+    fun create(texture: Texture, properties: AnimationProperties): Pair<AnimationProperties.FrameData, TextureAnimation> {
+        val data = properties.create(texture.size)
+
+        val source = texture.data.buffer
+
+        val textures: Array<Texture> = arrayOfNulls<Texture?>(data.textures).cast()
+        for (i in 0 until data.textures) {
+            val buffer = source.create(data.size)
+            buffer.put(source, Vec2i(0, i * data.size.y), Vec2i.EMPTY, data.size)
+
+            textures[i] = MemoryTexture(size = data.size, texture.properties, texture.mipmaps, buffer)
+        }
+
+        val frames: Array<AnimationFrame> = arrayOfNulls<AnimationFrame?>(properties.frames.size).cast()
+
+        for ((index, frame) in data.frames.withIndex()) {
+            var sprite = textures.getOrNull(frame.texture)
+            if (sprite == null) {
+                Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Animation is referencing invalid frame: $texture (frame=${frame.texture})" }
+                sprite = textures.first()
+            }
+            frames[index] = AnimationFrame(index, frame.time, sprite)
+        }
+
+        val animation = TextureAnimation(animations.size, frames, properties.interpolate, textures)
+        this.animations += animation
+
+        return Pair(data, animation)
     }
 
     companion object {

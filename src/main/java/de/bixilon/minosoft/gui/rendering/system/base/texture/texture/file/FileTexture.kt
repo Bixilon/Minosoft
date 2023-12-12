@@ -14,9 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file
 
 import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 interface FileTexture : Texture {
     val resourceLocation: ResourceLocation
@@ -25,5 +28,19 @@ interface FileTexture : Texture {
         load(context.connection.assetsManager)
     }
 
-    fun load(assetsManager: AssetsManager)
+    fun load(assets: AssetsManager)
+
+
+    companion object {
+
+        fun AssetsManager.readImageProperties(texture: ResourceLocation): ImageProperties? {
+            try {
+                val stream = this.getOrNull("$texture.mcmeta".toResourceLocation()) ?: return null
+                return stream.readJson(reader = ImageProperties.READER)
+            } catch (error: Throwable) {
+                error.printStackTrace()
+            }
+            return null
+        }
+    }
 }

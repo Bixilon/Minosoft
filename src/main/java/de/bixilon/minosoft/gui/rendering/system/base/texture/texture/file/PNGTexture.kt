@@ -21,7 +21,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.TextureData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.TextureRenderData
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.FileTexture.Companion.readImageProperties
+import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.logging.Log
@@ -35,6 +38,7 @@ class PNGTexture(
     override var mipmaps: Int,
 ) : FileTexture {
     override lateinit var renderData: TextureRenderData
+    override var animation: TextureAnimation? = null
 
     override lateinit var array: TextureArrayProperties
     override var state: TextureStates = TextureStates.DECLARED
@@ -49,47 +53,49 @@ class PNGTexture(
     override lateinit var data: TextureData
 
 
-    @Synchronized
-    override fun load(assetsManager: AssetsManager) {
-        if (state == TextureStates.LOADED) {
-            return
-        }
+    private fun updateImageProperties(assets: AssetsManager) {
+        properties = assets.readImageProperties(resourceLocation) ?: return
+    }
 
-        val buffer = try {
-            assetsManager[resourceLocation].readTexture()
+    @Synchronized
+    override fun load(assets: AssetsManager) {
+        if (state == TextureStates.LOADED) return
+
+        updateImageProperties(assets)
+        val buffer = readTexture(assets)
+
+        val data = createData(mipmaps, buffer)
+
+        this.size = data.size
+        this.transparency = buffer.getTransparency()
+        this.data = data
+
+        state = TextureStates.LOADED
+    }
+
+    override fun toString(): String {
+        return resourceLocation.toString()
+    }
+
+    private fun readTexture(assets: AssetsManager): TextureBuffer {
+        try {
+            return assets[resourceLocation].readTexture()
         } catch (error: Throwable) {
             state = TextureStates.ERRORED
             Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Can not load texture $resourceLocation: $error" }
             if (error !is FileNotFoundException) {
                 Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { error }
             }
-            assetsManager[RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION].readTexture()
+            return assets[RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION].readTexture()
         }
-        val data = createData(mipmaps, buffer)
-
-        this.size = data.size
-        transparency = TextureTransparencies.OPAQUE
-        for (y in 0 until data.size.y) {
-            for (x in 0 until data.size.x) {
-                val alpha = data.buffer.getA(x, y)
-                if (alpha == 0x00) {
-                    transparency = TextureTransparencies.TRANSPARENT
-                } else if (alpha < 0xFF) {
-                    transparency = TextureTransparencies.TRANSLUCENT
-                    break
-                }
-            }
-        }
-
-        this.data = data
-
-        properties.postInit(this)
-
-        state = TextureStates.LOADED
     }
 
+    override fun updateAnimation(size: Vec2i, animation: TextureAnimation) {
+        this.animation = animation
+        this.size = size
+    }
 
-    override fun toString(): String {
-        return resourceLocation.toString()
+    override fun updateProperties(properties: ImageProperties) {
+        this.properties = properties
     }
 }
