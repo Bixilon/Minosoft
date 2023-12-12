@@ -134,25 +134,21 @@ class OpenGLTextureArray(
         val uvEnd = if (size.x == resolution && size.y == resolution) null else Vec2(size) / resolution
         val array = TextureArrayProperties(uvEnd, resolution, pixel)
 
-        val animationProperties = texture.properties.animation
-        if (animationProperties == null) {
+        val animation = texture.animation
+        if (animation == null) {
             this.resolution[arrayId] += texture
             texture.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, -1)
             texture.array = array
             return
         }
 
-        val (frames, animation) = animator.create(texture, animationProperties)
-
         texture.renderData = OpenGLTextureData(-1, -1, uvEnd, animation.animationData)
 
-        for (split in animation.textures) {
-            split.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, animation.animationData)
-            split.array = array
-            this.resolution[arrayId] += split
+        for (sprite in animation.sprites) {
+            sprite.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, animation.animationData)
+            sprite.array = array
+            this.resolution[arrayId] += sprite
         }
-
-        texture.updateAnimation(frames.size, animation)
     }
 
     override fun load(textures: Collection<Texture>) {

@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
-import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -85,7 +84,6 @@ class OpenGLFontTextureArray(
 
     private fun load(texture: Texture) {
         if (texture.state != TextureStates.LOADED) texture.load(context)
-        texture.updateProperties(ImageProperties.DEFAULT)
         val pixel = 1.0f / resolution
         val size = texture.size
 

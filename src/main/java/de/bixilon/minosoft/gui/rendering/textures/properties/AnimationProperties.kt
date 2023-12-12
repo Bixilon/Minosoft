@@ -33,16 +33,17 @@ data class AnimationProperties(
         val count = size.y / height
 
         val frames: MutableList<Frame> = mutableListOf()
+        val frameTime = ticksToSeconds(this.frameTime)
 
         if (this.frames.isEmpty()) {
             // automatic
             for (i in 0 until count) {
-                frames += Frame(DEFAULT_FRAME_TIME, i)
+                frames += Frame(frameTime, i)
             }
         } else {
             for (frame in this.frames) {
                 when (frame) {
-                    is Number -> frames += Frame(DEFAULT_FRAME_TIME, frame.toInt())
+                    is Number -> frames += Frame(frameTime, frame.toInt())
                     is Map<*, *> -> {
                         frames += Frame(ticksToSeconds(frame["time"].toInt()), frame["index"].toInt())
                     }
@@ -65,8 +66,6 @@ data class AnimationProperties(
     )
 
     companion object {
-        val DEFAULT_FRAME_TIME = ticksToSeconds(1)
-
 
         private fun ticksToSeconds(ticks: Int): Float {
             val millis = ticks * ProtocolDefinition.TICK_TIME

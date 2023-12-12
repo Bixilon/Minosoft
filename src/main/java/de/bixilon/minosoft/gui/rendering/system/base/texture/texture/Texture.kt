@@ -58,7 +58,4 @@ interface Texture : ShaderTexture {
         if (mipmaps <= 0) return TextureData(buffer)
         return MipmapTextureData(buffer, mipmaps)
     }
-
-    fun updateAnimation(size: Vec2i, animation: TextureAnimation) = Unit
-    fun updateProperties(properties: ImageProperties) = Unit
 }

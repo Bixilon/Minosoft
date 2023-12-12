@@ -20,12 +20,13 @@ import de.bixilon.kutil.time.TimeUtil.nanos
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.memory.MemoryTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationProperties
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY_INSTANCE
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -88,31 +89,29 @@ class SpriteAnimator(val context: RenderContext) {
         buffer!!.use(shader, bufferName)
     }
 
-    fun create(texture: Texture, properties: AnimationProperties): Pair<AnimationProperties.FrameData, TextureAnimation> {
-        val data = properties.create(texture.size)
+    fun create(texture: Texture, source: TextureBuffer, properties: AnimationProperties): Pair<AnimationProperties.FrameData, TextureAnimation> {
+        val data = properties.create(source.size)
 
-        val source = texture.data.buffer
-
-        val textures: Array<Texture> = arrayOfNulls<Texture?>(data.textures).cast()
+        val sprites: Array<Texture> = arrayOfNulls<Texture?>(data.textures).cast()
         for (i in 0 until data.textures) {
             val buffer = source.create(data.size)
-            buffer.put(source, Vec2i(0, i * data.size.y), Vec2i.EMPTY, data.size)
+            buffer.put(source, Vec2i(0, i * buffer.size.y), Vec2i.EMPTY_INSTANCE, data.size)
 
-            textures[i] = MemoryTexture(size = data.size, texture.properties, texture.mipmaps, buffer)
+            sprites[i] = MemoryTexture(size = data.size, texture.properties, texture.mipmaps, buffer)
         }
 
-        val frames: Array<AnimationFrame> = arrayOfNulls<AnimationFrame?>(properties.frames.size).cast()
+        val frames: Array<AnimationFrame> = arrayOfNulls<AnimationFrame?>(data.frames.size).cast()
 
         for ((index, frame) in data.frames.withIndex()) {
-            var sprite = textures.getOrNull(frame.texture)
+            var sprite = sprites.getOrNull(frame.texture)
             if (sprite == null) {
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Animation is referencing invalid frame: $texture (frame=${frame.texture})" }
-                sprite = textures.first()
+                sprite = sprites.first()
             }
             frames[index] = AnimationFrame(index, frame.time, sprite)
         }
 
-        val animation = TextureAnimation(animations.size, frames, properties.interpolate, textures)
+        val animation = TextureAnimation(animations.size, frames, properties.interpolate, sprites)
         this.animations += animation
 
         return Pair(data, animation)

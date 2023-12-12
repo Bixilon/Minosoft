@@ -79,6 +79,14 @@ class TextureAnimationTest {
     fun `draw 3,0 frames`() {
         val animation = create()
         animation.update(3.0f)
+        assertSame(animation.frame1, c)
+        assertSame(animation.frame2, a)
+        assertEquals(animation.progress, 0.75f)
+    }
+
+    fun `draw 3,5 frames`() {
+        val animation = create()
+        animation.update(3.5f)
         assertSame(animation.frame1, a)
         assertSame(animation.frame2, b)
         assertEquals(animation.progress, 0.0f)
@@ -104,13 +112,10 @@ class TextureAnimationTest {
         val animation = create()
         animation.update(1.0f)
         animation.update(1.0f)
-        animation.update(0.2f)
-        animation.update(0.3f)
+        animation.update(0.5f)
         assertSame(animation.frame1, c)
         assertSame(animation.frame2, a)
         assertEquals(animation.progress, 0.5f)
     }
-
-    // TODO: update twice
 }
 

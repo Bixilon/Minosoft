@@ -26,7 +26,7 @@ class AnimationPropertiesTest {
         val json = """{
   "animation": {
     "interpolate": true,
-    "frametime": 1,
+    "frametime": 4,
     "frames": [
       {
         "index": 2,
@@ -41,9 +41,9 @@ class AnimationPropertiesTest {
         val data = properties.animation!!.create(Vec2i(16, 64))
         assertEquals(data, AnimationProperties.FrameData(listOf(
             AnimationProperties.Frame(0.1f, 2),
-            AnimationProperties.Frame(0.05f, 1),
-            AnimationProperties.Frame(0.05f, 2),
-            AnimationProperties.Frame(0.05f, 3),
+            AnimationProperties.Frame(0.2f, 1),
+            AnimationProperties.Frame(0.2f, 2),
+            AnimationProperties.Frame(0.2f, 3),
         ), 4, Vec2i(16, 16)))
 
     }

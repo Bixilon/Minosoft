@@ -21,7 +21,7 @@ class TextureAnimation(
     val animationData: Int,
     val frames: Array<AnimationFrame>,
     val interpolate: Boolean,
-    val textures: Array<Texture>,
+    val sprites: Array<Texture>,
 ) {
     private val totalTime = frames.getTotalTime()
     private var frame = frames.first()
@@ -56,6 +56,7 @@ class TextureAnimation(
             left -= frame.time
             frame = frame.next()
         }
+        this.frame = frame
         this.time = left
         this.frame1 = frame.texture
         this.frame2 = frame.next().texture

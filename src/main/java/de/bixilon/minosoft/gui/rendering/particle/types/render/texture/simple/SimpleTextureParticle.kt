@@ -36,7 +36,7 @@ abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d
         }
         // calculate next texture
         val nextTextureResourceLocation = data.type.textures[age / (maxAge / totalTextures + 1)]
-        if (texture?.nullCast<FileTexture>()?.resourceLocation == nextTextureResourceLocation) {
+        if (texture?.nullCast<FileTexture>()?.file == nextTextureResourceLocation) {
             return
         }
         texture = connection.rendering?.context?.textures?.static?.get(nextTextureResourceLocation)
