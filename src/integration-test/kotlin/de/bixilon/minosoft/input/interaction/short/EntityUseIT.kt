@@ -39,7 +39,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityEmpty
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInteractPositionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.testng.annotations.Test
 
 @Test(groups = ["interaction"], dependsOnGroups = ["item", "block"])
@@ -49,7 +48,7 @@ class EntityUseIT {
 
     fun testAirOnPig() {
         val connection = InteractionTestUtil.createConnection()
-        val entity = Pig(connection, this.pig, EntityData(connection, Int2ObjectOpenHashMap()), Vec3d.EMPTY, EntityRotation.EMPTY)
+        val entity = Pig(connection, this.pig, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
         connection.world.entities.add(10, null, entity)
         connection.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
         val use = connection.camera.interactions.use
@@ -64,7 +63,7 @@ class EntityUseIT {
 
     fun testCoalOnPig() {
         val connection = InteractionTestUtil.createConnection()
-        val entity = Pig(connection, this.pig, EntityData(connection, Int2ObjectOpenHashMap()), Vec3d.EMPTY, EntityRotation.EMPTY)
+        val entity = Pig(connection, this.pig, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
         connection.world.entities.add(10, null, entity)
         connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
         connection.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
@@ -82,7 +81,7 @@ class EntityUseIT {
 
     fun testCoalOnPig2() {
         val connection = InteractionTestUtil.createConnection()
-        val entity = Pig(connection, this.pig, EntityData(connection, Int2ObjectOpenHashMap()), Vec3d.EMPTY, EntityRotation.EMPTY)
+        val entity = Pig(connection, this.pig, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
         connection.world.entities.add(10, null, entity)
         connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)
         connection.camera.target::target.forceSet(DataObserver(EntityTarget(Vec3d.EMPTY, 1.0, Directions.DOWN, entity)))
@@ -100,7 +99,7 @@ class EntityUseIT {
 
     fun testCoalOnPig3() {
         val connection = InteractionTestUtil.createConnection()
-        val entity = Pig(connection, this.pig, EntityData(connection, Int2ObjectOpenHashMap()), Vec3d.EMPTY, EntityRotation.EMPTY)
+        val entity = Pig(connection, this.pig, EntityData(connection), Vec3d.EMPTY, EntityRotation.EMPTY)
         connection.world.entities.add(10, null, entity)
         connection.player.items.inventory[EquipmentSlots.MAIN_HAND] = ItemStack(CoalTest0.item)
         connection.player.items.inventory[EquipmentSlots.OFF_HAND] = ItemStack(CoalTest0.item)

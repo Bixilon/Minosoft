@@ -32,7 +32,7 @@ interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegis
 
     fun getId(value: T): Int
 
-    fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): T?
+    fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): T?
 
     fun update(data: List<JsonObject>, version: Version, registries: Registries?) = Unit
     fun update(data: Map<String, Any>?, version: Version, registries: Registries?) = Unit

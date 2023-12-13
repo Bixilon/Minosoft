@@ -103,7 +103,7 @@ open class Registry<T : RegistryItem>(
         for ((name, value) in data) {
             check(value is Map<*, *>)
             val id = value["id"]?.toInt()?.let { if (metaType != MetaTypes.NONE && !flattened) metaType.modify(it, value["meta"]?.toInt() ?: 0) else it }
-            addItem(name.toResourceLocation(), id, value.unsafeCast(), version, registries)
+            add(name.toResourceLocation(), id, value.unsafeCast(), version, registries)
         }
     }
 
@@ -113,7 +113,7 @@ open class Registry<T : RegistryItem>(
             val id = entry["id"]?.toInt()
 
             val entryData = entry["element"]?.toJsonObject() ?: entry
-            addItem(name, id, entryData, version, registries)
+            add(name, id, entryData, version, registries)
         }
     }
 
@@ -128,16 +128,24 @@ open class Registry<T : RegistryItem>(
         return codec.deserialize(registries, identifier, data)
     }
 
-    override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): T? {
+    override fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): T? {
         val item = deserialize(identifier, data, version, registries) ?: return null
 
+        add(identifier, id, item)
+
+        return item
+    }
+
+    fun add(identifier: ResourceLocation, id: Int?, item: T) {
         if (id != null) {
             idValueMap[id] = item
             valueIdMap[item] = id
         }
         resourceLocationMap[identifier] = item
+    }
 
-        return item
+    fun add(id: Int?, item: T) {
+        add(item.identifier, id, item)
     }
 
     open fun postInit(registries: Registries) {

@@ -50,9 +50,9 @@ data class EntityType(
     override val translationKey: ResourceLocation?,
     val width: Float,
     val height: Float,
-    val attributes: Map<AttributeType, Double>,
+    val attributes: Map<AttributeType, Double> = emptyMap(),
     val factory: EntityFactory<out Entity>,
-    val spawnEgg: SpawnEggItem?,
+    val spawnEgg: SpawnEggItem? = null,
     var modelFactory: RegisteredEntityModelFactory<*>? = null,
 ) : RegistryItem(), Translatable {
 

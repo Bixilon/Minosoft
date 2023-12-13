@@ -49,7 +49,7 @@ class RecipeRegistry(
         return idValueMap[id] ?: parent?.getOrNull(id)
     }
 
-    override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): Recipe? {
+    override fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): Recipe? {
         TODO("Not yet implemented")
     }
 

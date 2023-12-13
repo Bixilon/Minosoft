@@ -37,8 +37,8 @@ class BlockEntityTypeRegistry(
         return super.get(any)
     }
 
-    override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): BlockEntityType<*>? {
-        val item = super.addItem(identifier, id, data, version, registries) ?: return null
+    override fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): BlockEntityType<*>? {
+        val item = super.add(identifier, id, data, version, registries) ?: return null
 
         for (block in item.blocks) {
             blockTypeMap[block] = item

@@ -71,7 +71,7 @@ class ItemLoader(private val loader: ModelLoader) {
     }
 
     fun bake(latch: AbstractLatch?) {
-        for (item in loader.context.connection.registries.item) {
+        for (item in loader.context.connection.registries.item) { // TODO: ConcurrentIterator
             val prototype = item.model.nullCast<ItemModelPrototype>() ?: continue
 
             item.model = prototype.bake()

@@ -97,7 +97,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         TODO("Not yet implemented")
     }
 
-    override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?) = Broken()
+    override fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?) = Broken()
 
     override fun optimize() {
         idMap.trim()

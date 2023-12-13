@@ -71,7 +71,7 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun load(latch: AbstractLatch?) {
-        val iterator = ConcurrentIterator(loader.context.connection.registries.block.spliterator(), priority = ThreadPool.HIGH)
+        val iterator = ConcurrentIterator(loader.context.connection.registries.block.spliterator(), priority = ThreadPool.HIGH) // TODO: ConcurrentIterator
         iterator.iterate {
             if (it.model != null) return@iterate // model already set
             val prototype: BlockModelPrototype
@@ -89,7 +89,7 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun bake(latch: AbstractLatch?) {
         val context = loader.context
-        val iterator = ConcurrentIterator(loader.context.connection.registries.block.spliterator(), priority = ThreadPool.HIGH)
+        val iterator = ConcurrentIterator(loader.context.connection.registries.block.spliterator(), priority = ThreadPool.HIGH) // TODO: ConcurrentIterator
         iterator.iterate {
             val prototype = it.model.nullCast<BlockModelPrototype>() ?: return@iterate
             it.model = null

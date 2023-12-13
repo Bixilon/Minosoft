@@ -69,7 +69,7 @@ class ResourceLocationRegistry(
         }
     }
 
-    override fun addItem(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?) = Broken()
+    override fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?) = Broken()
 
     fun addItem(resourceLocation: ResourceLocation, id: Int) {
         idValueMap[id] = resourceLocation
