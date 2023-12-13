@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.entities
 
-import de.bixilon.kutil.collections.iterator.async.ConcurrentIterator
+import de.bixilon.kutil.collections.iterator.AsyncIteration.async
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
@@ -48,10 +48,9 @@ class EntityTicker(val entities: WorldEntities) {
 
 
     fun tick() {
-        val iterator = ConcurrentIterator(entities.entities.spliterator(), priority = ThreadPool.HIGH)
-        iterator.iterate {
+        entities.entities.async(priority = ThreadPool.HIGH) {
             if (it.attachment.vehicle != null) {
-                return@iterate
+                return@async
             }
             tickEntity(it)
         }

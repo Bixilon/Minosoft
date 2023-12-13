@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.loader
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.collections.iterator.async.ConcurrentIterator
+import de.bixilon.kutil.collections.iterator.AsyncIteration.async
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.latch.AbstractLatch
@@ -71,16 +71,15 @@ class BlockLoader(private val loader: ModelLoader) {
     }
 
     fun load(latch: AbstractLatch?) {
-        val iterator = ConcurrentIterator(loader.context.connection.registries.block.spliterator(), priority = ThreadPool.HIGH) // TODO: ConcurrentIterator
-        iterator.iterate {
-            if (it.model != null) return@iterate // model already set
+        loader.context.connection.registries.block.async(priority = ThreadPool.HIGH) {
+            if (it.model != null) return@async // model already set
             val prototype: BlockModelPrototype
             try {
-                prototype = loadState(it) ?: return@iterate
+                prototype = loadState(it) ?: return@async
             } catch (error: Exception) {
                 Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Can not load block model for block $it: $error" }
                 Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { error }
-                return@iterate
+                return@async
             }
 
             it.model = prototype
@@ -89,9 +88,8 @@ class BlockLoader(private val loader: ModelLoader) {
 
     fun bake(latch: AbstractLatch?) {
         val context = loader.context
-        val iterator = ConcurrentIterator(loader.context.connection.registries.block.spliterator(), priority = ThreadPool.HIGH) // TODO: ConcurrentIterator
-        iterator.iterate {
-            val prototype = it.model.nullCast<BlockModelPrototype>() ?: return@iterate
+        loader.context.connection.registries.block.async(priority = ThreadPool.HIGH) {
+            val prototype = it.model.nullCast<BlockModelPrototype>() ?: return@async
             it.model = null
 
             prototype.bake(context, it)

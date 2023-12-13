@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.entities
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.collections.iterator.async.ConcurrentIterator
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.collections.spliterator.async.ConcurrentSpliterator
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
@@ -97,7 +97,7 @@ class EntityRendererManager(val renderer: EntitiesRenderer) : Iterable<EntityRen
 
     fun iterate(executor: ((EntityRenderer<*>) -> Unit)) {
         lock.acquire()
-        ConcurrentIterator(renderers.unsafe.values.spliterator(), priority = ThreadPool.HIGHER).iterate(executor)
+        ConcurrentSpliterator(renderers.unsafe.values.spliterator(), priority = ThreadPool.HIGHER).iterate(executor)
         lock.release()
     }
 }
