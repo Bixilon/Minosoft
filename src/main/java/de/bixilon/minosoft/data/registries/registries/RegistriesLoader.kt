@@ -31,22 +31,19 @@ object RegistriesLoader {
     }
 
     private fun Registries.setDefaultParents(version: Version) {
-        equipmentSlot.parent = FallbackRegistries.EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
-        handEquipmentSlot.parent = FallbackRegistries.HAND_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
-        armorEquipmentSlot.parent = FallbackRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
-        armorStandEquipmentSlot.parent = FallbackRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
-        entityDataTypes.parent = FallbackRegistries.ENTITY_DATA_TYPES_REGISTRY.forVersion(version)
-        titleActions.parent = FallbackRegistries.TITLE_ACTIONS_REGISTRY.forVersion(version)
-        entityAnimation.parent = FallbackRegistries.ENTITY_ANIMATION_REGISTRY.forVersion(version)
-        entityActions.parent = FallbackRegistries.ENTITY_ACTIONS_REGISTRY.forVersion(version)
-        entityObjectType.parent = FallbackRegistries.ENTITY_OBJECT_REGISTRY.forVersion(version)
-        messageType.parent = FallbackRegistries.MESSAGE_TYPES_REGISTRY.forVersion(version)
+        equipmentSlot.parent = FallbackRegistries.EQUIPMENT_SLOTS.forVersion(version)
+        entityDataTypes.parent = FallbackRegistries.ENTITY_DATA_TYPES.forVersion(version)
+        titleActions.parent = FallbackRegistries.TITLE_ACTIONS.forVersion(version)
+        entityAnimation.parent = FallbackRegistries.ENTITY_ANIMATION.forVersion(version)
+        entityActions.parent = FallbackRegistries.ENTITY_ACTIONS.forVersion(version)
+        entityObjectType.parent = FallbackRegistries.ENTITY_OBJECT.forVersion(version)
+        messageType.parent = FallbackRegistries.MESSAGE_TYPES.forVersion(version)
 
-        containerType.parent = FallbackRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version)
-        gameEvent.parent = FallbackRegistries.GAME_EVENT_REGISTRY.forVersion(version)
-        worldEvent.parent = FallbackRegistries.WORLD_EVENT_REGISTRY.forVersion(version)
-        blockDataType.parent = FallbackRegistries.BLOCK_DATA_TYPE_REGISTRY.forVersion(version)
+        containerType.parent = FallbackRegistries.CONTAINER_TYPE.forVersion(version)
+        gameEvent.parent = FallbackRegistries.GAME_EVENT.forVersion(version)
+        worldEvent.parent = FallbackRegistries.WORLD_EVENT.forVersion(version)
+        blockDataType.parent = FallbackRegistries.BLOCK_DATA_TYPE.forVersion(version)
         vibrationSource.parent = FallbackRegistries.VIBRATION_SOURCE.forVersion(version)
-        catVariants.parent = FallbackRegistries.CAT_VARIANT_REGISTRY.forVersion(version)
+        catVariants.parent = FallbackRegistries.CAT_VARIANT.forVersion(version)
     }
 }

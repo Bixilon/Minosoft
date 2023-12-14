@@ -1,0 +1,29 @@
+{
+  "0": {
+    "0": "SWING_MAIN_ARM",
+    "1": "TAKE_DAMAGE",
+    "2": "LEAVE_BED",
+    "3": "EAT_FOOD",
+    "4": "CRITICAL_HIT",
+    "5": "ENCHANTED_HIT",
+    "102": "UNKNOWN_1",
+    "104": "START_SNEAKING",
+    "105": "STOP_SNEAKING"
+  },
+  "47": {
+    "0": "SWING_MAIN_ARM",
+    "1": "TAKE_DAMAGE",
+    "2": "LEAVE_BED",
+    "3": "EAT_FOOD",
+    "4": "CRITICAL_HIT",
+    "5": "ENCHANTED_HIT"
+  },
+  "110": [
+    "SWING_MAIN_ARM",
+    "TAKE_DAMAGE",
+    "LEAVE_BED",
+    "SWING_OFF_ARM",
+    "CRITICAL_HIT",
+    "ENCHANTED_HIT"
+  ]
+}

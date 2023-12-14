@@ -1,0 +1,40 @@
+{
+  "0": {
+    "minecraft:chest": {
+      "id": 0
+    },
+    "minecraft:crafting_table": {
+      "id": 1
+    },
+    "minecraft:furnace": {
+      "id": 2
+    },
+    "minecraft:dispenser": {
+      "id": 3
+    },
+    "minecraft:enchanting_table": {
+      "id": 4
+    },
+    "minecraft:brewing_stand": {
+      "id": 5
+    },
+    "minecraft:villager": {
+      "id": 6
+    },
+    "minecraft:beacon": {
+      "id": 7
+    },
+    "minecraft:anvil": {
+      "id": 8
+    },
+    "minecraft:hopper": {
+      "id": 9
+    },
+    "minecraft:dropper": {
+      "id": 9
+    },
+    "minecraft:EntityHorse": {
+      "id": 9
+    }
+  }
+}

@@ -13,9 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.fallback
 
-import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.assets.IntegratedAssets
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
 import de.bixilon.minosoft.data.container.equipment.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityObjectType
@@ -26,7 +25,6 @@ import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.containers.ContainerType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
-import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionRegistry
@@ -39,79 +37,56 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 object FallbackRegistries {
-    private val ENUM_RESOURCE_LOCATION = minosoft("mapping/enums.json")
-    private val REGISTRIES_RESOURCE_LOCATION = minosoft("mapping/default_registries.json")
-    private var initialized = false
+    private val registries: MutableMap<PerVersionRegistry<*, *>, ResourceLocation> = mutableMapOf()
+    private val enums: MutableMap<PerVersionEnumRegistry<*>, ResourceLocation> = mutableMapOf()
 
-    val EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)
-    val HAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)
-    val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)
-    val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)
+    val EQUIPMENT_SLOTS = PerVersionEnumRegistry(EquipmentSlots).register(minecraft("entity/equipment"))
+    val ENTITY_OBJECT = PerVersionRegistry { Registry(codec = EntityObjectType) }.register(minecraft("entity/objects"))
+    val ENTITY_DATA_TYPES = PerVersionEnumRegistry(EntityDataTypes).register(minecraft("entity/data_types"))
+    val ENTITY_ACTIONS = PerVersionEnumRegistry(EntityActionC2SP.EntityActions).register(minecraft("entity/actions"))
+    val ENTITY_ANIMATION = PerVersionEnumRegistry(EntityAnimations).register(minecraft("entity/animations"))
 
-    val ENTITY_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityDataTypes)
+    val CAT_VARIANT: PerVersionRegistry<CatVariant, Registry<CatVariant>> = PerVersionRegistry { Registry(codec = CatVariant) }.register(minecraft("entity/variant/cat"))
 
-    val TITLE_ACTIONS_REGISTRY = PerVersionEnumRegistry(TitleS2CF.TitleActions)
-
-    val ENTITY_ANIMATION_REGISTRY = PerVersionEnumRegistry(EntityAnimations)
-    val ENTITY_ACTIONS_REGISTRY = PerVersionEnumRegistry(EntityActionC2SP.EntityActions)
-
-    val ENTITY_OBJECT_REGISTRY = PerVersionRegistry { Registry(codec = EntityObjectType) }
-
-    val BLOCK_DATA_TYPE_REGISTRY: PerVersionRegistry<BlockDataDataType, Registry<BlockDataDataType>> = PerVersionRegistry { Registry(codec = BlockDataDataType) }
-
-    val DEFAULT_PLUGIN_CHANNELS_REGISTRY: PerVersionRegistry<PluginChannel, Registry<PluginChannel>> = PerVersionRegistry { Registry(codec = PluginChannel) }
-
-    val CONTAINER_TYPE_REGISTRY: PerVersionRegistry<ContainerType, Registry<ContainerType>> = PerVersionRegistry { Registry(codec = ContainerType) }
-
-    val GAME_EVENT_REGISTRY: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
-    val WORLD_EVENT_REGISTRY: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
-
-    val CAT_VARIANT_REGISTRY: PerVersionRegistry<CatVariant, Registry<CatVariant>> = PerVersionRegistry { Registry(codec = CatVariant) }
+    val TITLE_ACTIONS = PerVersionEnumRegistry(TitleS2CF.TitleActions).register(minecraft("title_actions"))
+    val DEFAULT_PLUGIN_CHANNELS: PerVersionRegistry<PluginChannel, Registry<PluginChannel>> = PerVersionRegistry { Registry(codec = PluginChannel) }.register(minecraft("channels"))
+    val MESSAGE_TYPES: PerVersionRegistry<ChatMessageType, Registry<ChatMessageType>> = PerVersionRegistry { Registry(codec = ChatMessageType) }.register(minecraft("message_types"))
+    val VIBRATION_SOURCE: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }.register(minecraft("vibration_source"))
 
 
-    val MESSAGE_TYPES_REGISTRY: PerVersionRegistry<ChatMessageType, Registry<ChatMessageType>> = PerVersionRegistry { Registry(codec = ChatMessageType) }
-    val VIBRATION_SOURCE: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
+    val BLOCK_DATA_TYPE: PerVersionRegistry<BlockDataDataType, Registry<BlockDataDataType>> = PerVersionRegistry { Registry(codec = BlockDataDataType) }.register(minecraft("block_data_types"))
+
+    val CONTAINER_TYPE: PerVersionRegistry<ContainerType, Registry<ContainerType>> = PerVersionRegistry { Registry(codec = ContainerType) }.register(minecraft("container_type"))
+
+    val GAME_EVENT: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }.register(minecraft("game_events"))
+    val WORLD_EVENT: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }.register(minecraft("world_events"))
 
 
     fun load() {
-        check(!initialized) { "Already initialized!" }
-        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading default registries..." }
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loading default registries..." }
+        if (this.registries.isEmpty() || this.enums.isEmpty()) throw IllegalArgumentException("Empty register?")
 
-        val enumJson: Map<ResourceLocation, Any> = IntegratedAssets.DEFAULT[ENUM_RESOURCE_LOCATION].readJson()
+        for ((registry, file) in registries) {
+            val data = IntegratedAssets.DEFAULT[file.prefix("mappings/registries/").suffix(".json")].readJsonObject()
+            registry.initialize(data)
+        }
+        for ((registry, file) in enums) {
+            val data = IntegratedAssets.DEFAULT[file.prefix("mappings/enums/").suffix(".json")].readJsonObject()
+            registry.initialize(data)
+        }
+        this.registries.clear()
+        this.enums.clear()
 
-        EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("equipment_slots")].asJsonObject())
-        HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("hand_equipment_slots")].asJsonObject())
-        ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("armor_equipment_slots")].asJsonObject())
-        ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation.of("armor_stand_equipment_slots")].asJsonObject())
+        Log.log(LogMessageType.LOADING, LogLevels.VERBOSE) { "Loaded default registries!" }
+    }
 
-        ENTITY_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation.of("entity_data_data_types")].asJsonObject()) // ToDo
+    private fun <T : PerVersionRegistry<*, *>> T.register(file: ResourceLocation): T {
+        registries[this] = file
+        return this
+    }
 
-        TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation.of("title_actions")].asJsonObject())
-
-        ENTITY_ANIMATION_REGISTRY.initialize(enumJson[ResourceLocation.of("entity_animations")].asJsonObject())
-        ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation.of("entity_actions")].asJsonObject())
-
-
-        val registriesJson: Map<ResourceLocation, Any> = IntegratedAssets.DEFAULT[REGISTRIES_RESOURCE_LOCATION].readJson()
-
-        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation.of("default_channels")].asJsonObject())
-
-        ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation.of("entity_objects")].asJsonObject())
-
-        BLOCK_DATA_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("block_data_data_types")].asJsonObject())
-
-        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("container_types")].asJsonObject())
-
-        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation.of("game_events")].asJsonObject())
-        WORLD_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation.of("world_events")].asJsonObject())
-
-
-        CAT_VARIANT_REGISTRY.initialize(registriesJson[ResourceLocation.of("variants/cat")].asJsonObject())
-
-        MESSAGE_TYPES_REGISTRY.initialize(registriesJson[minecraft("message_types")].asJsonObject())
-        VIBRATION_SOURCE.initialize(registriesJson[minecraft("vibration_source")].asJsonObject())
-
-        initialized = true
-        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loaded default registries!" }
+    private fun <T : PerVersionEnumRegistry<*>> T.register(file: ResourceLocation): T {
+        enums[this] = file
+        return this
     }
 }

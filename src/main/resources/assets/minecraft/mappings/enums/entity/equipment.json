@@ -1,0 +1,17 @@
+{
+  "0": [
+    "MAIN_HAND",
+    "FEET",
+    "LEGS",
+    "CHEST",
+    "HEAD"
+  ],
+  "49": [
+    "MAIN_HAND",
+    "OFF_HAND",
+    "FEET",
+    "LEGS",
+    "CHEST",
+    "HEAD"
+  ]
+}

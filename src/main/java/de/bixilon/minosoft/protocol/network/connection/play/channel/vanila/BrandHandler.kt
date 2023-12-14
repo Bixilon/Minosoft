@@ -32,13 +32,13 @@ object BrandHandler {
     }
 
     private fun PlayConnection.getBrandChannel(): ResourceLocation {
-        return FallbackRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(version)[DefaultPluginChannels.BRAND]!!.name
+        return FallbackRegistries.DEFAULT_PLUGIN_CHANNELS.forVersion(version)[DefaultPluginChannels.BRAND]!!.name
     }
 
     private fun PlayConnection.sendBrand(channel: ResourceLocation, brand: String) {
         val buffer = PlayOutByteBuffer(this)
         buffer.writeBareByteArray(brand.encodeNetwork())
-        sendPacket(ChannelC2SP(channel, buffer))
+        network.send(ChannelC2SP(channel, buffer))
     }
 
     fun PlayConnection.sendBrand() {

@@ -1,0 +1,48 @@
+{
+  "0": {
+    "minecraft:tabby": {
+      "id": 0,
+      "texture": "entity/cat/tabby"
+    },
+    "minecraft:black": {
+      "id": 1,
+      "texture": "entity/cat/black"
+    },
+    "minecraft:red": {
+      "id": 2,
+      "texture": "entity/cat/red"
+    },
+    "minecraft:siamese": {
+      "id": 3,
+      "texture": "entity/cat/siamese"
+    },
+    "minecraft:british": {
+      "id": 4,
+      "texture": "entity/cat/british_shorthair"
+    },
+    "minecraft:calico": {
+      "id": 5,
+      "texture": "entity/cat/calico"
+    },
+    "minecraft:persian": {
+      "id": 6,
+      "texture": "entity/cat/persian"
+    },
+    "minecraft:ragdoll": {
+      "id": 7,
+      "texture": "entity/cat/ragdoll"
+    },
+    "minecraft:white": {
+      "id": 8,
+      "texture": "entity/cat/white"
+    },
+    "minecraft:jellie": {
+      "id": 9,
+      "texture": "entity/cat/jellie"
+    },
+    "minecraft:all_black": {
+      "id": 10,
+      "texture": "entity/cat/all_black"
+    }
+  }
+}

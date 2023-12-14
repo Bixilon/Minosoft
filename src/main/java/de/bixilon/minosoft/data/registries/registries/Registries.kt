@@ -104,9 +104,6 @@ class Registries(
     val frogVariants: Registry<FrogVariant> = register("frog_variant", Registry(codec = FrogVariant))
 
     val equipmentSlot: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
-    val handEquipmentSlot: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
-    val armorEquipmentSlot: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
-    val armorStandEquipmentSlot: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
 
     val entityDataTypes: EnumRegistry<EntityDataTypes> = EnumRegistry(values = EntityDataTypes, fixer = EntityDataTypesFixer)
 
@@ -169,9 +166,6 @@ class Registries(
         worker += WorkerTask(this::shape.i) { this.shape.load(pixlyzerData["shapes"]?.toJsonObject()) }
 
         worker += WorkerTask(this::equipmentSlot.i) { equipmentSlot.initialize(pixlyzerData["equipment_slots"]) }
-        worker += WorkerTask(this::handEquipmentSlot.i) { handEquipmentSlot.initialize(pixlyzerData["hand_equipment_slots"]) }
-        worker += WorkerTask(this::armorEquipmentSlot.i) { armorEquipmentSlot.initialize(pixlyzerData["armor_equipment_slots"]) }
-        worker += WorkerTask(this::armorStandEquipmentSlot.i) { armorStandEquipmentSlot.initialize(pixlyzerData["armor_stand_equipment_slots"]) }
 
         worker += WorkerTask(this::entityDataTypes.i) { entityDataTypes.initialize(pixlyzerData["entity_data_data_types"]) }
 
