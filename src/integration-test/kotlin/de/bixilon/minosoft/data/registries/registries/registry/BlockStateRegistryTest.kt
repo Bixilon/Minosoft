@@ -26,7 +26,7 @@ import org.testng.annotations.Test
 class BlockStateRegistryTest {
     private val a = BlockState::class.java.allocate().apply { this::block.forceSet(StoneBlock.Block::class.java.allocate()) }
     private val b = BlockState::class.java.allocate().apply { this::block.forceSet(StoneBlock.Block::class.java.allocate()) }
-    private val c = BlockState::class.java.allocate().apply { this::block.forceSet(AirBlock::class.java.allocate()) }
+    private val c = BlockState::class.java.allocate().apply { this::block.forceSet(AirBlock.Air::class.java.allocate()) }
 
     private fun create(): BlockStateRegistry {
         val registry = BlockStateRegistry(true)

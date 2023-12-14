@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class SectionOcclusion(
-    private val provider: BlockSectionDataProvider,
+    val provider: BlockSectionDataProvider,
 ) {
     private var occlusion = EMPTY
     private var calculate = false
