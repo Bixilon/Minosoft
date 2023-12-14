@@ -55,12 +55,6 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         }
     }
 
-    internal operator fun set(id: Int, state: BlockState) {
-        val previous = idMap.put(id, state)
-        if (previous != null) {
-            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Block state $state just replaced $previous (id=$id)" }
-        }
-    }
 
     private fun _get(id: Int): BlockState? {
         return idMap[id] ?: parent.unsafeCast<BlockStateRegistry?>()?._get(id)
@@ -103,6 +97,12 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         idMap.trim()
     }
 
+    operator fun set(id: Int, state: BlockState) {
+        val previous = idMap.put(id, state)
+        if (previous != null) {
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Block state $state just replaced $previous (id=$id)" }
+        }
+    }
     operator fun set(id: Int, meta: Int?, state: BlockState) {
         this[id shl 4 or (meta ?: 0)] = state
     }

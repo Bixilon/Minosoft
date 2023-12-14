@@ -13,7 +13,39 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.air.AirBlock
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.StoneBlock
+import de.bixilon.minosoft.test.ITUtil.allocate
+import org.testng.Assert.assertNull
+import org.testng.Assert.assertSame
 import org.testng.annotations.Test
 
 @Test(groups = ["registry"])
-class BlockStateRegistryTest
+class BlockStateRegistryTest {
+    private val a = BlockState::class.java.allocate().apply { this::block.forceSet(StoneBlock.Block::class.java.allocate()) }
+    private val b = BlockState::class.java.allocate().apply { this::block.forceSet(StoneBlock.Block::class.java.allocate()) }
+    private val c = BlockState::class.java.allocate().apply { this::block.forceSet(AirBlock::class.java.allocate()) }
+
+    private fun create(): BlockStateRegistry {
+        val registry = BlockStateRegistry(true)
+        registry[0] = a
+        registry[1] = b
+        registry[2] = c
+
+        return registry
+    }
+
+    fun `0 is always null`() {
+        assertNull(create().getOrNull(0))
+    }
+
+    fun `air block is always null`() {
+        assertNull(create().getOrNull(2))
+    }
+
+    fun `everything else`() {
+        assertSame(create().getOrNull(1), b)
+    }
+}
