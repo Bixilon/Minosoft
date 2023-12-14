@@ -10,28 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.particle.data
 
-import de.bixilon.minosoft.data.registries.particle.ParticleType
-import de.bixilon.minosoft.data.registries.particle.data.vibration.VibrationSource
+package de.bixilon.minosoft.data.registries.particle.data.vibration
+
+import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-class VibrationParticleData(
-    val source: VibrationSource,
-    val arrival: Int,
-    type: ParticleType,
-) : ParticleData(type) {
+object VibrationSources : DefaultFactory<VibrationFactory<*>>(
+    BlockSource,
+    EntitySource,
+) {
 
-    override fun toString(): String {
-        return "$type: $source in $arrival"
-    }
+    fun read(buffer: PlayInByteBuffer): VibrationSource {
+        val type = buffer.readResourceLocation()
+        val factory = this[type] ?: throw IllegalArgumentException("Can not find vibration source: $type")
 
-    companion object : ParticleDataFactory<VibrationParticleData> {
-
-        override fun read(buffer: PlayInByteBuffer, type: ParticleType): VibrationParticleData {
-            val source = buffer.readVibrationSource()
-            val arrival = buffer.readVarInt()
-            return VibrationParticleData(source, arrival, type)
-        }
+        return factory.read(buffer)
     }
 }

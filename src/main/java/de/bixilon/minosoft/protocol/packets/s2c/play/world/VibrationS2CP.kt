@@ -25,9 +25,6 @@ class VibrationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val arrival: Int = buffer.readVarInt()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(
-            LogMessageType.NETWORK_IN,
-            level = LogLevels.VERBOSE
-        ) { "Vibration signal (sourcePosition=$sourcePosition, target=$target, arrival=$arrival)" }
+        Log.log(LogMessageType.NETWORK_IN, level = LogLevels.VERBOSE) { "Vibration signal (sourcePosition=$sourcePosition, target=$target, arrival=$arrival)" }
     }
 }

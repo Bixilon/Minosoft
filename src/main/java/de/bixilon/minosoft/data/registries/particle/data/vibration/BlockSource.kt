@@ -10,28 +10,24 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.particle.data
 
-import de.bixilon.minosoft.data.registries.particle.ParticleType
-import de.bixilon.minosoft.data.registries.particle.data.vibration.VibrationSource
+package de.bixilon.minosoft.data.registries.particle.data.vibration
+
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-class VibrationParticleData(
-    val source: VibrationSource,
-    val arrival: Int,
-    type: ParticleType,
-) : ParticleData(type) {
+class BlockSource(
+    val position: BlockPosition,
+) : VibrationSource {
 
-    override fun toString(): String {
-        return "$type: $source in $arrival"
-    }
+    companion object : VibrationFactory<BlockSource> {
+        override val identifier = minecraft("block")
 
-    companion object : ParticleDataFactory<VibrationParticleData> {
+        override fun read(buffer: PlayInByteBuffer): BlockSource {
+            val position = buffer.readBlockPosition()
 
-        override fun read(buffer: PlayInByteBuffer, type: ParticleType): VibrationParticleData {
-            val source = buffer.readVibrationSource()
-            val arrival = buffer.readVarInt()
-            return VibrationParticleData(source, arrival, type)
+            return BlockSource(position)
         }
     }
 }

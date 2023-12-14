@@ -28,6 +28,8 @@ import de.bixilon.minosoft.data.entities.entities.player.properties.textures.Pla
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.*
+import de.bixilon.minosoft.data.registries.particle.data.vibration.VibrationSource
+import de.bixilon.minosoft.data.registries.particle.data.vibration.VibrationSources
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.EnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
@@ -375,15 +377,8 @@ class PlayInByteBuffer : InByteBuffer {
         return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_NETWORK_DIVIDER
     }
 
-    fun readVibrationSource(): Any {
-        val type = readResourceLocation()
-        val source: Any = when (type.toString()) { // TODO: dynamic, factories
-            "minecraft:block" -> readBlockPosition()
-            "minecraft:entity" -> readEntityId()
-            else -> error("Unknown vibration source: $type")
-        }
-
-        return source
+    fun readVibrationSource(): VibrationSource {
+        return VibrationSources.read(this)
     }
 
     fun readLegacyBitSet(bytes: Int): BitSet {

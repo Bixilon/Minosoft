@@ -10,28 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.particle.data
 
-import de.bixilon.minosoft.data.registries.particle.ParticleType
-import de.bixilon.minosoft.data.registries.particle.data.vibration.VibrationSource
+package de.bixilon.minosoft.data.registries.particle.data.vibration
+
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_1
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
-class VibrationParticleData(
-    val source: VibrationSource,
-    val arrival: Int,
-    type: ParticleType,
-) : ParticleData(type) {
+class EntitySource(
+    val entityId: Int,
+    val yOffset: Float = 0.0f,
+) : VibrationSource {
 
-    override fun toString(): String {
-        return "$type: $source in $arrival"
-    }
+    companion object : VibrationFactory<EntitySource> {
+        override val identifier = minecraft("entity")
 
-    companion object : ParticleDataFactory<VibrationParticleData> {
+        override fun read(buffer: PlayInByteBuffer): EntitySource {
+            val entityId = buffer.readEntityId()
+            val yOffset = if (buffer.versionId >= V_1_20_1) buffer.readFloat() else 0.0f // TODO: version guessed. Present in 1.20.2
 
-        override fun read(buffer: PlayInByteBuffer, type: ParticleType): VibrationParticleData {
-            val source = buffer.readVibrationSource()
-            val arrival = buffer.readVarInt()
-            return VibrationParticleData(source, arrival, type)
+            return EntitySource(entityId, yOffset)
         }
     }
 }
