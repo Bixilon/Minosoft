@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.particle.data.vibration
 
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_20_2
 import de.bixilon.minosoft.protocol.protocol.buffers.play.PlayInByteBuffer
 
 object VibrationSources : DefaultFactory<VibrationFactory<*>>(
@@ -22,7 +23,7 @@ object VibrationSources : DefaultFactory<VibrationFactory<*>>(
 ) {
 
     fun read(buffer: PlayInByteBuffer): VibrationSource {
-        val type = buffer.readResourceLocation()
+        val type = if (buffer.versionId <= V_1_20_2) buffer.readResourceLocation() else buffer.readRegistryItem(buffer.connection.registries.vibrationSource) // TODO: fix out version
         val factory = this[type] ?: throw IllegalArgumentException("Can not find vibration source: $type")
 
         return factory.read(buffer)

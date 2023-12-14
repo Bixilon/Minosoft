@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.world
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -26,18 +25,8 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val type: ParticleType = if (buffer.versionId < ProtocolVersions.V_14W19A) {
-        buffer.readLegacyRegistryItem(buffer.connection.registries.particleType)!!
-    } else if (buffer.versionId >= ProtocolVersions.V_22W17A) { // ToDo: maybe this was even earlier, should only differ some snapshots
-        buffer.readRegistryItem(buffer.connection.registries.particleType)
-    } else {
-        buffer.connection.registries.particleType[buffer.readInt()]
-    }
-    val longDistance = if (buffer.versionId >= ProtocolVersions.V_14W29A) {
-        buffer.readBoolean()
-    } else {
-        false
-    }
+    val type = buffer.readParticleType()
+    val longDistance = if (buffer.versionId >= ProtocolVersions.V_14W29A) buffer.readBoolean() else false
     val position: Vec3d = if (buffer.versionId < ProtocolVersions.V_1_15_PRE4) {
         Vec3d(buffer.readVec3f())
     } else {
@@ -48,6 +37,12 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val count: Int = buffer.readInt()
     val data: ParticleData = buffer.readParticleData(type)
 
+
+    private fun PlayInByteBuffer.readParticleType() = when {
+        versionId >= ProtocolVersions.V_22W17A -> readRegistryItem(connection.registries.particleType) // ToDo: maybe this was even earlier, should only differ some snapshots
+        versionId >= ProtocolVersions.V_14W19A -> connection.registries.particleType[readInt()]
+        else -> readLegacyRegistryItem(connection.registries.particleType)!!
+    }
 
     override fun handle(connection: PlayConnection) {
         if (!connection.profiles.particle.types.packet) {

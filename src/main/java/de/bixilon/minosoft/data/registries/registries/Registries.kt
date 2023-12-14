@@ -130,6 +130,7 @@ class Registries(
     val containerType: Registry<ContainerType> = Registry(codec = ContainerType)
     val gameEvent: ResourceLocationRegistry = ResourceLocationRegistry()
     val worldEvent: ResourceLocationRegistry = ResourceLocationRegistry()
+    val vibrationSource: ResourceLocationRegistry = ResourceLocationRegistry()
 
     val argumentType: ResourceLocationRegistry = ResourceLocationRegistry()
     val messageType: Registry<ChatMessageType> = register("chat_type", Registry(codec = ChatMessageType))
@@ -183,6 +184,7 @@ class Registries(
         worker += WorkerTask(this::containerType.i) { containerType.update(pixlyzerData["container_types", "container_type"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::gameEvent.i) { gameEvent.update(pixlyzerData["game_events"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::worldEvent.i) { worldEvent.update(pixlyzerData["world_events"]?.toJsonObject(), version, this) }
+        worker += WorkerTask(this::vibrationSource.i) { vibrationSource.update(pixlyzerData["vibration_source"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::argumentType.i) { argumentType.update(pixlyzerData["argument_type"]?.toJsonObject(), version, this) }
         worker += WorkerTask(this::messageType.i) { messageType.update(pixlyzerData["message_types"]?.toJsonObject(), version, this) }
 

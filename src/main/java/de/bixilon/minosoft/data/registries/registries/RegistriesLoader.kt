@@ -46,6 +46,7 @@ object RegistriesLoader {
         gameEvent.parent = FallbackRegistries.GAME_EVENT_REGISTRY.forVersion(version)
         worldEvent.parent = FallbackRegistries.WORLD_EVENT_REGISTRY.forVersion(version)
         blockDataType.parent = FallbackRegistries.BLOCK_DATA_TYPE_REGISTRY.forVersion(version)
+        vibrationSource.parent = FallbackRegistries.VIBRATION_SOURCE.forVersion(version)
         catVariants.parent = FallbackRegistries.CAT_VARIANT_REGISTRY.forVersion(version)
     }
 }

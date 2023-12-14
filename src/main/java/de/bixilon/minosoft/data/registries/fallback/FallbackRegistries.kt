@@ -70,6 +70,7 @@ object FallbackRegistries {
 
 
     val MESSAGE_TYPES_REGISTRY: PerVersionRegistry<ChatMessageType, Registry<ChatMessageType>> = PerVersionRegistry { Registry(codec = ChatMessageType) }
+    val VIBRATION_SOURCE: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
 
 
     fun load() {
@@ -93,21 +94,22 @@ object FallbackRegistries {
 
         val registriesJson: Map<ResourceLocation, Any> = IntegratedAssets.DEFAULT[REGISTRIES_RESOURCE_LOCATION].readJson()
 
-        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation.of("default_channels")].asJsonObject(), PluginChannel)
+        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation.of("default_channels")].asJsonObject())
 
-        ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation.of("entity_objects")].asJsonObject(), EntityObjectType)
+        ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation.of("entity_objects")].asJsonObject())
 
-        BLOCK_DATA_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("block_data_data_types")].asJsonObject(), BlockDataDataType)
+        BLOCK_DATA_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("block_data_data_types")].asJsonObject())
 
-        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("container_types")].asJsonObject(), ContainerType)
+        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation.of("container_types")].asJsonObject())
 
-        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation.of("game_events")].asJsonObject(), null)
-        WORLD_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation.of("world_events")].asJsonObject(), null)
+        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation.of("game_events")].asJsonObject())
+        WORLD_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation.of("world_events")].asJsonObject())
 
 
-        CAT_VARIANT_REGISTRY.initialize(registriesJson[ResourceLocation.of("variants/cat")].asJsonObject(), CatVariant)
+        CAT_VARIANT_REGISTRY.initialize(registriesJson[ResourceLocation.of("variants/cat")].asJsonObject())
 
-        MESSAGE_TYPES_REGISTRY.initialize(registriesJson[minecraft("message_types")].asJsonObject(), ChatMessageType)
+        MESSAGE_TYPES_REGISTRY.initialize(registriesJson[minecraft("message_types")].asJsonObject())
+        VIBRATION_SOURCE.initialize(registriesJson[minecraft("vibration_source")].asJsonObject())
 
         initialized = true
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loaded default registries!" }

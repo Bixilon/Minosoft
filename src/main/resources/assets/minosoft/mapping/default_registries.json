@@ -767,5 +767,15 @@
         }
       }
     }
+  },
+  "minecraft:vibration_source": {
+    "0": {
+      "minecraft:block": {
+        "id": 0
+      },
+      "minecraft:entity": {
+        "id": 1
+      }
+    }
   }
 }
