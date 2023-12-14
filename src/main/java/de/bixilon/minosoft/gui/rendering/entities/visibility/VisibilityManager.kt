@@ -29,6 +29,10 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
     private var _size = 0
     var size: Int = 0
         private set
+    var opaqueSize = 0
+        private set
+    var translucentSize = 0
+        private set
 
     val opaque: ArrayList<EntityRenderFeature> = ArrayList(1000)
     val translucent: ArrayList<EntityRenderFeature> = ArrayList(1000)
@@ -53,7 +57,6 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
     fun reset() {
         opaque.clear()
         translucent.clear()
-        size = 0
         _size = 0
     }
 
@@ -96,6 +99,8 @@ class VisibilityManager(val renderer: EntitiesRenderer) {
         this.translucent.sort()
         this.update = false
         size = _size
+        opaqueSize = opaque.size
+        translucentSize = translucent.size
     }
 
     operator fun get(layer: EntityLayer) = when (layer) {
