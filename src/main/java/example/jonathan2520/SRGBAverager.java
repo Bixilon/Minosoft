@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,25 +29,25 @@ public class SRGBAverager {
             // whatever reason to work. Note that Minecraft's original code
             // would set the color to black; this is added functionality.
 
-            float r = SRGB.decode(c0 & 0xff)
-                    + SRGB.decode(c1 & 0xff)
-                    + SRGB.decode(c2 & 0xff)
-                    + SRGB.decode(c3 & 0xff);
+            float r = SRGB.decode(c0 >> 24 & 0xff)
+                    + SRGB.decode(c1 >> 24 & 0xff)
+                    + SRGB.decode(c2 >> 24 & 0xff)
+                    + SRGB.decode(c3 >> 24 & 0xff);
 
-            float g = SRGB.decode(c0 >> 8 & 0xff)
-                    + SRGB.decode(c1 >> 8 & 0xff)
-                    + SRGB.decode(c2 >> 8 & 0xff)
-                    + SRGB.decode(c3 >> 8 & 0xff);
-
-            float b = SRGB.decode(c0 >> 16 & 0xff)
+            float g = SRGB.decode(c0 >> 16 & 0xff)
                     + SRGB.decode(c1 >> 16 & 0xff)
                     + SRGB.decode(c2 >> 16 & 0xff)
                     + SRGB.decode(c3 >> 16 & 0xff);
 
-            return SRGB.encode(0.25F * r)
-                    | SRGB.encode(0.25F * g) << 8
-                    | SRGB.encode(0.25F * b) << 16
-                    | c0 & 0xff000000;
+            float b = SRGB.decode(c0 >>> 8 & 0xff)
+                    + SRGB.decode(c1 >>> 8 & 0xff)
+                    + SRGB.decode(c2 >>> 8 & 0xff)
+                    + SRGB.decode(c3 >>> 8 & 0xff);
+
+            return SRGB.encode(0.25F * r) << 24
+                    | SRGB.encode(0.25F * g) << 16
+                    | SRGB.encode(0.25F * b) << 8
+                    | c0 & 0x000000ff;
         } else {
             // The general case. Well-defined if at least one alpha value is
             // not zero. If you do try to process all zeros, you get
@@ -56,32 +56,32 @@ public class SRGBAverager {
             // with that, but mind that producing or consuming a NaN causes an
             // extremely slow exception handler to be run on many CPUs.
 
-            float a0 = c0 >>> 24;
-            float a1 = c1 >>> 24;
-            float a2 = c2 >>> 24;
-            float a3 = c3 >>> 24;
+            float a0 = c0 & 0xff;
+            float a1 = c1 & 0xff;
+            float a2 = c2 & 0xff;
+            float a3 = c3 & 0xff;
 
-            float r = a0 * SRGB.decode(c0 & 0xff)
-                    + a1 * SRGB.decode(c1 & 0xff)
-                    + a2 * SRGB.decode(c2 & 0xff)
-                    + a3 * SRGB.decode(c3 & 0xff);
+            float r = a0 * SRGB.decode(c0 >> 24 & 0xff)
+                    + a1 * SRGB.decode(c1 >> 24 & 0xff)
+                    + a2 * SRGB.decode(c2 >> 24 & 0xff)
+                    + a3 * SRGB.decode(c3 >> 24 & 0xff);
 
-            float g = a0 * SRGB.decode(c0 >> 8 & 0xff)
-                    + a1 * SRGB.decode(c1 >> 8 & 0xff)
-                    + a2 * SRGB.decode(c2 >> 8 & 0xff)
-                    + a3 * SRGB.decode(c3 >> 8 & 0xff);
-
-            float b = a0 * SRGB.decode(c0 >> 16 & 0xff)
+            float g = a0 * SRGB.decode(c0 >> 16 & 0xff)
                     + a1 * SRGB.decode(c1 >> 16 & 0xff)
                     + a2 * SRGB.decode(c2 >> 16 & 0xff)
                     + a3 * SRGB.decode(c3 >> 16 & 0xff);
 
+            float b = a0 * SRGB.decode(c0 >> 8 & 0xff)
+                    + a1 * SRGB.decode(c1 >> 8 & 0xff)
+                    + a2 * SRGB.decode(c2 >> 8 & 0xff)
+                    + a3 * SRGB.decode(c3 >> 8 & 0xff);
+
             float a = a0 + a1 + a2 + a3;
 
-            return SRGB.encode(r / a)
-                    | SRGB.encode(g / a) << 8
-                    | SRGB.encode(b / a) << 16
-                    | (int) (0.25F * a + 0.5F) << 24;
+            return SRGB.encode(r / a) << 24
+                    | SRGB.encode(g / a) << 16
+                    | SRGB.encode(b / a) << 8
+                    | (int) (0.25F * a + 0.5F);
         }
     }
 }
