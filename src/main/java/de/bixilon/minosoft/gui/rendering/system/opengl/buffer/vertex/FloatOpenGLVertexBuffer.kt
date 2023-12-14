@@ -21,39 +21,29 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
-import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
 import java.nio.FloatBuffer
 
 class FloatOpenGLVertexBuffer(
     renderSystem: OpenGLRenderSystem,
-    override val structure: MeshStruct,
+    override val struct: MeshStruct,
     data: FloatBuffer,
     override val primitiveType: PrimitiveTypes,
 ) : FloatOpenGLBuffer(renderSystem, data), FloatVertexBuffer {
+    private val vao = OpenGLVAO(renderSystem, struct)
     override var vertices = -1
         private set
-    private var vao = -1
 
     override fun init() {
-        val floatsPerVertex = structure.BYTES_PER_VERTEX / Float.SIZE_BYTES
+        val floatsPerVertex = struct.BYTES_PER_VERTEX / Float.SIZE_BYTES
 
         vertices = buffer.position() / floatsPerVertex
-        vao = glGenVertexArrays()
         super.init()
-        glBindVertexArray(vao)
-
-        super.initialUpload()
         bind()
-
+        super.initialUpload()
         _data = null
 
-
-        for (attribute in structure.attributes) {
-            glVertexAttribPointer(attribute.index, attribute.size, GL_FLOAT, false, structure.BYTES_PER_VERTEX, attribute.stride)
-            glEnableVertexAttribArray(attribute.index)
-        }
+        vao.init()
 
         unbind()
     }
@@ -63,16 +53,12 @@ class FloatOpenGLVertexBuffer(
             return
         }
         super.unbind()
-        glBindVertexArray(0)
+        vao.unbind()
     }
 
     fun bindVao() {
         super.bind()
-        if (renderSystem.boundVao == vao) {
-            return
-        }
-        glBindVertexArray(vao)
-        renderSystem.boundVao = vao
+        vao.bind()
     }
 
     override fun draw() {
@@ -82,13 +68,7 @@ class FloatOpenGLVertexBuffer(
     }
 
     override fun unload() {
-        if (state == RenderableBufferStates.UPLOADED) {
-            glDeleteVertexArrays(vao)
-            if (renderSystem.boundVao == vao) {
-                renderSystem.boundVao = -1
-            }
-            vao = -1
-        }
+        vao.unload()
         super.unload()
     }
 
@@ -103,5 +83,4 @@ class FloatOpenGLVertexBuffer(
                 }
             }
     }
-
 }

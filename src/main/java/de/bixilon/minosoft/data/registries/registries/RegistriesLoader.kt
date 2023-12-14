@@ -26,7 +26,6 @@ object RegistriesLoader {
 
         registries.setDefaultParents(version)
 
-
         return registries
     }
 
