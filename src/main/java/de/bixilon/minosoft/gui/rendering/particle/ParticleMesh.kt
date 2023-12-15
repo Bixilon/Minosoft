@@ -25,7 +25,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(context, ParticleMeshStruct, PrimitiveTypes.POINT, -1, clearOnLoad = false, data = data) {
+class ParticleMesh(context: RenderContext, data: AbstractFloatList) : Mesh(context, ParticleMeshStruct, PrimitiveTypes.POINT, -1, data = data) {
+
+    override fun clear() = Unit
 
     fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBColor, uvMin: FloatArray? = null, uvMax: FloatArray? = null, light: Int) {
         val minTransformedUV = if (uvMin == null) {

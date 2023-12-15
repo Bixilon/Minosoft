@@ -28,23 +28,18 @@ import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 abstract class Mesh(
     val context: RenderContext,
     private val struct: MeshStruct,
-    val quadType: PrimitiveTypes = context.system.quadType,
+    val primitive: PrimitiveTypes = context.system.quadType,
     var initialCacheSize: Int = 10000,
-    val clearOnLoad: Boolean = true,
     data: AbstractFloatList? = null,
-    val onDemand: Boolean = false,
 ) : AbstractVertexConsumer {
     override val order = context.system.legacyQuadOrder
-    private var _data: AbstractFloatList? = data ?: if (onDemand) null else FloatListUtil.direct(initialCacheSize)
-    var data: AbstractFloatList
+    private var _data = data
+    val data: AbstractFloatList
         get() {
-            if (_data == null && onDemand) {
+            if (_data == null) {
                 _data = FloatListUtil.direct(initialCacheSize)
             }
             return _data.unsafeCast()
-        }
-        set(value) {
-            _data = value
         }
 
     protected lateinit var buffer: FloatVertexBuffer
@@ -52,44 +47,47 @@ abstract class Mesh(
     var vertices: Int = -1
         protected set
 
-    var state = MeshStates.PREPARING
+    var state = MeshStates.WAITING
         protected set
 
 
-    fun finish() {
-        if (state != MeshStates.PREPARING) throw IllegalStateException("Mesh is not preparing: $state")
+    fun preload() {
+        if (state != MeshStates.WAITING) throw InvalidMeshState(state)
         val data = this.data
-        buffer = context.system.createVertexBuffer(struct, data, quadType)
-        state = MeshStates.FINISHED
+        buffer = context.system.createVertexBuffer(struct, data, primitive)
+        state = MeshStates.PRELOADED
     }
 
     fun load() {
-        if (state == MeshStates.PREPARING) {
-            finish()
+        if (state == MeshStates.WAITING) {
+            preload()
         }
-        if (state != MeshStates.FINISHED) throw IllegalStateException("Mesh is not finished: $state")
+        if (state != MeshStates.PRELOADED) throw InvalidMeshState(state)
         buffer.init()
-        if (clearOnLoad) {
-            val data = data
-            if (data is DirectArrayFloatList) {
-                data.unload()
-            }
-            _data = null
-        }
+        clear()
+
         vertices = buffer.vertices
         state = MeshStates.LOADED
     }
 
+    protected open fun clear() {
+        val data = data
+        if (data is DirectArrayFloatList) {
+            data.unload()
+        }
+        _data = null
+    }
+
     fun draw() {
-        check(state == MeshStates.LOADED) { "Can not draw $state mesh!" }
+        if (state != MeshStates.LOADED) throw InvalidMeshState(state)
         buffer.draw()
     }
 
     fun unload() {
         when (state) {
             MeshStates.LOADED -> buffer.unload()
-            MeshStates.PREPARING, MeshStates.FINISHED -> _data?.nullCast<DirectArrayFloatList>()?.unload()
-            else -> throw IllegalStateException("Mesh is already unloaded")
+            MeshStates.WAITING, MeshStates.PRELOADED -> _data?.nullCast<DirectArrayFloatList>()?.unload()
+            MeshStates.UNLOADED -> throw InvalidMeshState(state)
         }
         state = MeshStates.UNLOADED
     }
@@ -140,9 +138,12 @@ abstract class Mesh(
     }
 
     enum class MeshStates {
-        PREPARING,
-        FINISHED,
+        WAITING,
+        PRELOADED,
         LOADED,
         UNLOADED,
+        ;
     }
+
+    class InvalidMeshState(state: MeshStates) : Exception("Invalid mesh state: $state")
 }

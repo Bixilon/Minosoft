@@ -25,17 +25,11 @@ open class DummyGUIVertexConsumer : GUIVertexConsumer {
     override val order: RenderOrder get() = MeshOrder.QUAD
     var char = 0
 
-    override fun addCache(cache: GUIMeshCache) {
-        TODO("Not yet implemented")
-    }
+    override fun addCache(cache: GUIMeshCache) = Broken()
 
-    override fun ensureSize(size: Int) {
-        TODO("Not yet implemented")
-    }
+    override fun ensureSize(size: Int) = Broken()
 
-    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) {
-        TODO("Not yet implemented")
-    }
+    override fun addVertex(x: Float, y: Float, texture: ShaderTexture?, u: Float, v: Float, tint: RGBColor, options: GUIVertexOptions?) = Broken()
 
     override fun addVertex(x: Float, y: Float, textureId: Float, u: Float, v: Float, tint: Int, options: GUIVertexOptions?) = Broken()
 
@@ -43,7 +37,5 @@ open class DummyGUIVertexConsumer : GUIVertexConsumer {
         addChar(start, end, this.char++)
     }
 
-    open fun addChar(start: Vec2, end: Vec2, index: Int) {
-        TODO("Abstract")
-    }
+    open fun addChar(start: Vec2, end: Vec2, index: Int): Unit = Broken()
 }

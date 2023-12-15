@@ -117,7 +117,7 @@ class WorldBorderRenderer(
         val mesh = this.borderMesh ?: return
         update()
 
-        if (mesh.state == Mesh.MeshStates.PREPARING) {
+        if (mesh.state == Mesh.MeshStates.WAITING) {
             mesh.load()
         }
         mesh.draw()

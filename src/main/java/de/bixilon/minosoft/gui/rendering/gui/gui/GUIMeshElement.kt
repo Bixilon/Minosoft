@@ -91,7 +91,7 @@ open class GUIMeshElement<T : Element>(
         if (this._mesh != null) throw MemoryLeakException("Mesh to unload is already set!")
         this._mesh = this.mesh
         this.mesh = GUIMesh(context, guiRenderer.halfSize, mesh.data)
-        this.mesh.finish()
+        this.mesh.preload()
     }
 
     fun prepare() = Unit
@@ -112,7 +112,7 @@ open class GUIMeshElement<T : Element>(
         }
         this._mesh = null
 
-        if (this.mesh.state == Mesh.MeshStates.FINISHED) {
+        if (this.mesh.state == Mesh.MeshStates.PRELOADED) {
             mesh.load()
         }
     }

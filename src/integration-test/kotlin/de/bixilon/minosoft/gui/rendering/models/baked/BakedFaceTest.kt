@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.kutil.collections.primitive.floats.HeapArrayFloatList
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.BakedFace
@@ -39,10 +40,10 @@ class BakedFaceTest {
 
     private fun singleMesh(): ChunkMesh {
         val mesh = OBJENESIS.newInstance(ChunkMesh::class.java)
-        mesh::quadType.forceSet(PrimitiveTypes.QUAD)
+        mesh::primitive.forceSet(PrimitiveTypes.QUAD)
         mesh::order.forceSet(MeshOrder.QUAD)
 
-        mesh.data = HeapArrayFloatList(1000)
+        mesh::class.java.getFieldOrNull("_data")!!.forceSet(mesh, HeapArrayFloatList(1000))
 
         mesh::initialCacheSize.forceSet(1000)
 

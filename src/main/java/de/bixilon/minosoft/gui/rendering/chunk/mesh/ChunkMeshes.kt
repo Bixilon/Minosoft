@@ -33,8 +33,8 @@ class ChunkMeshes(
 ) : BlockVertexConsumer {
     val center: Vec3 = Vec3(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)))
     var opaqueMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 100000)
-    var translucentMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 10000, onDemand = true)
-    var textMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 5000 else 50000, onDemand = true)
+    var translucentMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 10000)
+    var textMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 5000 else 50000)
     var blockEntities: ArrayList<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling
@@ -42,9 +42,9 @@ class ChunkMeshes(
     val maxPosition = Vec3i(0)
 
     fun finish() {
-        this.opaqueMesh?.finish()
-        this.translucentMesh?.finish()
-        this.textMesh?.finish()
+        this.opaqueMesh?.preload()
+        this.translucentMesh?.preload()
+        this.textMesh?.preload()
     }
 
     @Synchronized

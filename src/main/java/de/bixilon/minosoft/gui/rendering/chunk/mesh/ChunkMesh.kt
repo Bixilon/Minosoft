@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.shader.ShaderTextur
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class ChunkMesh(context: RenderContext, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(context, ChunkMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand), BlockVertexConsumer, Comparable<ChunkMesh> {
+class ChunkMesh(context: RenderContext, initialCacheSize: Int) : Mesh(context, ChunkMeshStruct, initialCacheSize = initialCacheSize), BlockVertexConsumer, Comparable<ChunkMesh> {
     var distance: Float = 0.0f // Used for sorting
 
     override val order = context.system.quadOrder
