@@ -165,6 +165,9 @@ class CloudRenderer(
         val over = (baseHeight - y)
         if (over > 0.0f) {
             yOffset = -(over / 15.0f).pow(2)
+            if (yOffset < -100.0f) {
+                yOffset = -100.0f
+            }
         }
         shader.yOffset = yOffset
     }
