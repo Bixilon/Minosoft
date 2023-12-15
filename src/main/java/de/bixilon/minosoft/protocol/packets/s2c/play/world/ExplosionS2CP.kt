@@ -41,7 +41,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val power = buffer.readFloat()
     val explodedBlocks: Array<Vec3i> = buffer.readArray((buffer.versionId < V_1_17).decide({ buffer.readInt() }, { buffer.readVarInt() })) { Vec3i(buffer.readByte(), buffer.readByte(), buffer.readByte()) } // ToDo: Find out version
     val velocity = buffer.readVec3f()
-    val destruct = if (buffer.versionId >= V_23W45A) buffer.readEnum(DestructionTypes) else null
+    val destruct = if (buffer.versionId >= V_23W45A) buffer.readEnum(DestructionTypes) else DestructionTypes.DESTROY
     val particle = if (buffer.versionId >= V_23W45A) buffer.readParticleData() else null
     val emitter = if (buffer.versionId >= V_23W45A) buffer.readParticleData() else null
     val sound = if (buffer.versionId >= V_23W45A) buffer.readNamedSound() else null
@@ -94,7 +94,9 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.world.clearBlocks(position.floor, this.explodedBlocks)
+        if (destruct == DestructionTypes.DESTROY) { // TODO: handle DECAY, TRIGGER
+            connection.world.clearBlocks(position.floor, this.explodedBlocks)
+        }
         connection.player.physics.velocity = connection.player.physics.velocity + velocity
 
         connection.events.fire(ExplosionEvent(connection, this))
