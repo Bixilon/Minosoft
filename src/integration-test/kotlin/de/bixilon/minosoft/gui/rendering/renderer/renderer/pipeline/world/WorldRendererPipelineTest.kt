@@ -229,6 +229,6 @@ class WorldRendererPipelineTest {
 
     private object TransparentLayer : RenderLayer {
         override val settings = OpaqueLayer.settings
-        override val priority get() = 2000
+        override val priority get() = 1000
     }
 }
