@@ -29,15 +29,4 @@ void discard_alpha() {
     }
     #endif
 }
-
-void set_alpha_transparent() {
-    #ifndef DISABLE_ALPHA_DISCARD
-    if (foutColor.a < 0.6f) {
-        discard;
-    } else {
-        foutColor.a = 1.0f;
-    }
-    #endif
-}
-
 #endif

@@ -13,7 +13,6 @@
 
 #version 330 core
 
-#define TRANSPARENT
 
 out vec4 foutColor;
 

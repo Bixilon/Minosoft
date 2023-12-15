@@ -66,10 +66,6 @@ void applyTexel() {
     vec4 texel = getAnimationTexture();
     foutColor = texel;
 
-    #ifdef TRANSPARENT
-    set_alpha_transparent();
-    #endif
-
     #ifdef FOG
     set_fog();
     #endif

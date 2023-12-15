@@ -44,7 +44,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
-import de.bixilon.minosoft.gui.rendering.system.base.layer.TransparentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
@@ -62,9 +61,8 @@ class ChunkRenderer(
     private val profile = connection.profiles.block
     override val renderSystem: RenderSystem = context.system
     val visibilityGraph = context.camera.visibilityGraph
-    private val shader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it, false) }
-    private val transparentShader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it, true) }
-    private val textShader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it, true) }
+    private val shader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
+    private val textShader = renderSystem.createShader(minosoft("chunk")) { ChunkShader(it) }
     val lock = SimpleLock()
     val world: World = connection.world
 
@@ -93,7 +91,6 @@ class ChunkRenderer(
 
     override fun registerLayers() {
         layers.register(OpaqueLayer, shader, this::drawBlocksOpaque) { visible.opaque.isEmpty() }
-        layers.register(TransparentLayer, transparentShader, this::drawBlocksTransparent) { visible.transparent.isEmpty() }
         layers.register(TranslucentLayer, shader, this::drawBlocksTranslucent) { visible.translucent.isEmpty() }
         layers.register(TextLayer, textShader, this::drawText) { visible.text.isEmpty() }
         layers.register(BlockEntitiesLayer, shader, this::drawBlockEntities) { visible.blockEntities.isEmpty() }
@@ -101,7 +98,6 @@ class ChunkRenderer(
 
     override fun postInit(latch: AbstractLatch) {
         shader.load()
-        transparentShader.load()
         textShader.native.defines["FIXED_MIPMAP_LEVEL"] = 0
         textShader.load()
 
@@ -227,12 +223,6 @@ class ChunkRenderer(
 
     private fun drawBlocksOpaque() {
         for (mesh in visible.opaque) {
-            mesh.draw()
-        }
-    }
-
-    private fun drawBlocksTransparent() {
-        for (mesh in visible.transparent) {
             mesh.draw()
         }
     }

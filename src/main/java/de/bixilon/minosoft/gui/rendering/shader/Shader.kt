@@ -13,9 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.shader
 
-import de.bixilon.minosoft.gui.rendering.shader.types.TransparentShader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
-import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 abstract class Shader : AbstractShader {
     private val uniforms: MutableMap<String, ShaderUniform<*>> = mutableMapOf()
@@ -26,9 +24,6 @@ abstract class Shader : AbstractShader {
     }
 
     fun load() {
-        if (this is TransparentShader && this.transparent) {
-            native.defines["TRANSPARENT"] = " "
-        }
         native.load()
         native.context.system.shaders += this
         for (uniform in uniforms.values) {

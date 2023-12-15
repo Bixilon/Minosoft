@@ -34,7 +34,6 @@ class ChunkMeshes(
     val center: Vec3 = Vec3(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)))
     var opaqueMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 100000)
     var translucentMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 10000, onDemand = true)
-    var transparentMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 3000 else 20000, onDemand = true)
     var textMesh: ChunkMesh? = ChunkMesh(context, if (smallMesh) 5000 else 50000, onDemand = true)
     var blockEntities: ArrayList<BlockEntityRenderer<*>>? = null
 
@@ -45,7 +44,6 @@ class ChunkMeshes(
     fun finish() {
         this.opaqueMesh?.finish()
         this.translucentMesh?.finish()
-        this.transparentMesh?.finish()
         this.textMesh?.finish()
     }
 
@@ -53,7 +51,6 @@ class ChunkMeshes(
     fun load() {
         this.opaqueMesh?.load()
         this.translucentMesh?.load()
-        this.transparentMesh?.load()
         this.textMesh?.load()
         val blockEntities = this.blockEntities
         if (blockEntities != null) {
@@ -84,7 +81,6 @@ class ChunkMeshes(
 
         if (processMesh(opaqueMesh)) opaqueMesh = null
         if (processMesh(translucentMesh)) translucentMesh = null
-        if (processMesh(transparentMesh)) transparentMesh = null
 
         if (processMesh(textMesh)) textMesh = null
 
@@ -102,7 +98,6 @@ class ChunkMeshes(
     fun unload() {
         opaqueMesh?.unload()
         translucentMesh?.unload()
-        transparentMesh?.unload()
         textMesh?.unload()
 
         val blockEntities = blockEntities
@@ -141,8 +136,7 @@ class ChunkMeshes(
     override fun addVertex(x: Float, y: Float, z: Float, u: Float, v: Float, textureId: Float, lightTint: Float) = Broken()
 
     override fun get(transparency: TextureTransparencies) = when (transparency) {
-        TextureTransparencies.OPAQUE -> opaqueMesh
-        TextureTransparencies.TRANSPARENT -> transparentMesh
         TextureTransparencies.TRANSLUCENT -> translucentMesh
+        else -> opaqueMesh
     }!!
 }

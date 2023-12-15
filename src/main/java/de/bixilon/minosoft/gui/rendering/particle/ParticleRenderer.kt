@@ -30,8 +30,8 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.LayerSettings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.world.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
-import de.bixilon.minosoft.gui.rendering.system.base.layer.TransparentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -49,11 +49,11 @@ class ParticleRenderer(
     override val layers = LayerSettings()
     override val renderSystem: RenderSystem = context.system
     private val profile = connection.profiles.particle
-    private val transparentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, true) }
-    private val translucentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, false) }
+    private val shader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it) }
+    private val translucentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    private var transparentMesh = ParticleMesh(context, BufferedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    private var mesh = ParticleMesh(context, BufferedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
     private var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
 
     private val particlesLock = SimpleLock()
@@ -103,7 +103,7 @@ class ParticleRenderer(
         get() = particles.size
 
     override fun registerLayers() {
-        layers.register(TransparentLayer, transparentShader, this::drawTransparent)
+        layers.register(OpaqueLayer, shader, this::drawTransparent)
         layers.register(TranslucentLayer, translucentShader, this::drawTranslucent)
     }
 
@@ -115,7 +115,7 @@ class ParticleRenderer(
             matrixUpdate = true
         }
 
-        transparentMesh.load()
+        mesh.load()
         translucentMesh.load()
         for (particle in connection.registries.particleType) {
             for (resourceLocation in particle.textures) {
@@ -127,7 +127,7 @@ class ParticleRenderer(
     }
 
     override fun postInit(latch: AbstractLatch) {
-        transparentShader.load()
+        shader.load()
         translucentShader.load()
 
         connection.world.particle = this
@@ -198,8 +198,8 @@ class ParticleRenderer(
         val cameraRight = Vec3(matrix[0][0], matrix[1][0], matrix[2][0])
         val cameraUp = Vec3(matrix[0][1], matrix[1][1], matrix[2][1])
 
-        transparentShader.cameraRight = cameraRight
-        transparentShader.cameraUp = cameraUp
+        shader.cameraRight = cameraRight
+        shader.cameraUp = cameraUp
 
         translucentShader.cameraRight = cameraRight
         translucentShader.cameraUp = cameraUp
@@ -210,14 +210,14 @@ class ParticleRenderer(
             updateShaders()
             matrixUpdate = false
         }
-        transparentMesh.unload()
+        mesh.unload()
         translucentMesh.unload()
     }
 
     override fun prepareDrawAsync() {
-        transparentMesh.data.clear()
+        mesh.data.clear()
         translucentMesh.data.clear()
-        transparentMesh = ParticleMesh(context, transparentMesh.data)
+        mesh = ParticleMesh(context, mesh.data)
         translucentMesh = ParticleMesh(context, translucentMesh.data)
 
         particlesLock.acquire()
@@ -229,7 +229,7 @@ class ParticleRenderer(
             if (particle.dead) {
                 continue
             }
-            particle.addVertex(transparentMesh, translucentMesh, time)
+            particle.addVertex(mesh, translucentMesh, time)
 
             if (index % 1000 == 0) {
                 time = millis()
@@ -245,12 +245,12 @@ class ParticleRenderer(
     }
 
     override fun postPrepareDraw() {
-        transparentMesh.load()
+        mesh.load()
         translucentMesh.load()
     }
 
     private fun drawTransparent() {
-        transparentMesh.draw()
+        mesh.draw()
     }
 
     private fun drawTranslucent() {

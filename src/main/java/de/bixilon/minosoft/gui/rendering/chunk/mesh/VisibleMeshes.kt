@@ -24,12 +24,11 @@ import de.bixilon.minosoft.util.KUtil.format
 class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMeshes? = null) {
     val opaque: ArrayList<ChunkMesh> = ArrayList(previous?.opaque?.size ?: 128)
     val translucent: ArrayList<ChunkMesh> = ArrayList(previous?.translucent?.size ?: 16)
-    val transparent: ArrayList<ChunkMesh> = ArrayList(previous?.transparent?.size ?: 128)
     val text: ArrayList<ChunkMesh> = ArrayList(previous?.text?.size ?: 16)
     val blockEntities: ArrayList<BlockEntityRenderer<*>> = ArrayList(previous?.blockEntities?.size ?: 128)
 
     val sizeString: String
-        get() = "${opaque.size.format()}|${translucent.size.format()}|${transparent.size.format()}|${text.size.format()}|${blockEntities.size.format()}"
+        get() = "${opaque.size.format()}|${translucent.size.format()}|${text.size.format()}|${blockEntities.size.format()}"
 
 
     fun addMesh(mesh: ChunkMeshes) {
@@ -41,10 +40,6 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMesh
         mesh.translucentMesh?.let {
             it.distance = -distance
             translucent += it
-        }
-        mesh.transparentMesh?.let {
-            it.distance = distance
-            transparent += it
         }
         mesh.textMesh?.let {
             it.distance = distance
@@ -60,7 +55,6 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMesh
         val worker = UnconditionalWorker()
         worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { opaque.sort() }
         worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { translucent.sort() }
-        worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { transparent.sort() }
         worker += UnconditionalTask(ThreadPool.Priorities.HIGHER) { text.sort() }
         worker.work()
     }
@@ -69,7 +63,6 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMesh
     fun removeMesh(mesh: ChunkMeshes) {
         mesh.opaqueMesh?.let { opaque -= it }
         mesh.translucentMesh?.let { translucent -= it }
-        mesh.transparentMesh?.let { transparent -= it }
         mesh.textMesh?.let { text -= it }
         mesh.blockEntities?.let { blockEntities -= it }
     }
@@ -77,7 +70,6 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMesh
     fun clear() {
         opaque.clear()
         translucent.clear()
-        transparent.clear()
         text.clear()
         blockEntities.clear()
     }

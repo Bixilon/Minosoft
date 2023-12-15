@@ -18,9 +18,6 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.identified.ResourceLocationUtil.extend
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
-import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer
@@ -38,14 +35,6 @@ object TextureUtil {
 
     fun ResourceLocation.texture(): ResourceLocation {
         return this.extend(prefix = "textures/", suffix = ".png")
-    }
-
-    fun TextureTransparencies.getMesh(mesh: ChunkMeshes): ChunkMesh {
-        return when (this) {
-            TextureTransparencies.OPAQUE -> mesh.opaqueMesh
-            TextureTransparencies.TRANSLUCENT -> mesh.translucentMesh
-            TextureTransparencies.TRANSPARENT -> mesh.transparentMesh
-        }!!
     }
 
     private fun InputStream.readTexture1(factory: TextureBufferFactory<*>?): TextureBuffer {

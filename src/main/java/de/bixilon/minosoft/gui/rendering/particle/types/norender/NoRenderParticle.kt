@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,5 +21,5 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class NoRenderParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData?) : Particle(connection, position, velocity, data) {
 
-    override fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time: Long) = Unit
+    override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: Long) = Unit
 }

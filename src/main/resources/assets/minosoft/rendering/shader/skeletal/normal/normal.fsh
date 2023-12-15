@@ -14,7 +14,6 @@
 #version 330 core
 
 #define FOG
-#define TRANSPARENT
 
 out vec4 foutColor;
 

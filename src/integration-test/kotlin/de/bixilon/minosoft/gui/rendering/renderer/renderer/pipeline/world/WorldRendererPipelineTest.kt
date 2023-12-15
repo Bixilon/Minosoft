@@ -34,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.RenderLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
-import de.bixilon.minosoft.gui.rendering.system.base.layer.TransparentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.settings.RenderSettings
 import de.bixilon.minosoft.gui.rendering.system.dummy.DummyRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.dummy.texture.DummyTexture
@@ -226,5 +225,10 @@ class WorldRendererPipelineTest {
         override val identifier = minosoft(name)
         override val settings = RenderSettings.DEFAULT
         override val priority = priority
+    }
+
+    private object TransparentLayer : RenderLayer {
+        override val settings = OpaqueLayer.settings
+        override val priority get() = 2000
     }
 }

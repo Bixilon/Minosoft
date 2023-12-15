@@ -24,8 +24,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class ChunkShader(
     override val native: NativeShader,
-    override val transparent: Boolean,
-) : Shader(), TextureShader, AnimatedShader, LightShader, TransparentShader, ViewProjectionShader, FogShader {
+) : Shader(), TextureShader, AnimatedShader, LightShader, ViewProjectionShader, FogShader {
     override var textures: TextureManager by textureManager()
     override val lightmap: LightmapBuffer by lightmap()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()

@@ -36,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.mesh.ChunkMeshes
 import de.bixilon.minosoft.gui.rendering.models.block.state.baked.cull.FaceCulling
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotate
@@ -149,7 +148,7 @@ class FluidSectionMesher(
                             }
                         }
 
-                        val meshToUse = texture.transparency.getMesh(mesh)
+                        val meshToUse = mesh[texture.transparency]
 
                         val positions = arrayOf(
                             Vec3(offsetPosition.x, offsetPosition.y + cornerHeights[0], offsetPosition.z),
@@ -222,7 +221,7 @@ class FluidSectionMesher(
                             Vec2(0.5f, (1 - v2) / 2),
                         )
 
-                        val meshToUse = model.flowing.transparency.getMesh(mesh)
+                        val meshToUse = mesh[model.flowing.transparency]
                         val fluidLight = chunk.light[x, offsetY + y, z]
                         addFluidVertices(meshToUse, positions, texturePositions, model.flowing, tint, fluidLight)
                         rendered = true

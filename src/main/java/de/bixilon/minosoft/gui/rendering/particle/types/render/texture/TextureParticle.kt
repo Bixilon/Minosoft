@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,13 +25,13 @@ abstract class TextureParticle(connection: PlayConnection, position: Vec3d, velo
     abstract val texture: Texture?
 
 
-    override fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time: Long) {
+    override fun addVertex(mesh: ParticleMesh, translucentMesh: ParticleMesh, time: Long) {
         val light = light
 
         val texture = texture ?: return
         when {
-            texture.transparency == TextureTransparencies.TRANSLUCENT || color.alpha != 255 -> particleMesh
-            else -> transparentMesh
+            texture.transparency == TextureTransparencies.TRANSLUCENT || color.alpha != 255 -> translucentMesh
+            else -> mesh
         }.addVertex(getCameraPosition(time), scale, texture, color, light = light)
     }
 }
