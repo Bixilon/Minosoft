@@ -13,6 +13,9 @@
 #ifndef INCLUDE_MINOSOFT_TEXTURE
 #define INCLUDE_MINOSOFT_TEXTURE
 
+#ifdef DISABLE_MIPMAPS
+#define FIXED_MIPMAP_LEVEL 0
+#endif
 
 uniform sampler2DArray uTextures[10];
 

@@ -13,7 +13,7 @@
 
 #version 330 core
 
-#define FIXED_MIPMAP_LEVEL 0
+#define DISABLE_MIPMAPS
 
 out vec4 foutColor;
 

@@ -98,7 +98,7 @@ class ChunkRenderer(
 
     override fun postInit(latch: AbstractLatch) {
         shader.load()
-        textShader.native.defines["FIXED_MIPMAP_LEVEL"] = 0
+        textShader.native.defines["DISABLE_MIPMAPS"] = ""
         textShader.load()
 
 
