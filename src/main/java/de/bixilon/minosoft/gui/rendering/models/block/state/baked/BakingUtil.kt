@@ -24,7 +24,7 @@ object BakingUtil {
         val array: Array<Array<T>?> = arrayOfNulls(size)
 
         for ((index, entries) in this.withIndex()) {
-            array[index] = entries.toTypedArray()
+            array[index] = entries.toTypedArray().reversedArray()
         }
 
         return array.cast()
