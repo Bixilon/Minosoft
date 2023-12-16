@@ -24,7 +24,7 @@ internal class SRGBAveragerTest {
 
     @Test
     fun `mix transparent 2`() {
-        assertEquals(0x00, SRGBAverager.average(0xFFFFFF00.toInt(), 0xFFFFFF00.toInt(), 0xFFFFFFFF.toInt(), 0xFFFFFFFF.toInt()))
+        assertEquals(0xFFFFFFFF.toInt(), SRGBAverager.average(0xFFFFFF00.toInt(), 0xFFFFFF00.toInt(), 0xFFFFFFFF.toInt(), 0xFFFFFFFF.toInt()))
     }
 
     @Test
