@@ -19,12 +19,12 @@ package example.jonathan2520;
 
 public class SRGBAverager {
     private static final SRGBTable SRGB = new SRGBTable();
-    private static final float ALPHA_THRESHOLD = 0.6f;
+    private static final float ALPHA_THRESHOLD = 0.5f;
     private static final int ALPHA_THRESHOLD_INT = (int) (0xFF * ALPHA_THRESHOLD);
 
 
     public static int average(int c0, int c1, int c2, int c3) {
-        if ((((c0 | c1 | c2 | c3) ^ (c0 & c1 & c2 & c3)) & 0xff000000) == 0) {
+        if ((((c0 | c1 | c2 | c3) ^ (c0 & c1 & c2 & c3)) & 0x000000ff) == 0) {
             // Alpha values are all equal. Simplifies computation somewhat. It's
             // also a reasonable fallback when all alpha values are zero, in
             // which case the resulting color would normally be undefined.
@@ -68,8 +68,8 @@ public class SRGBAverager {
             int ai = (int) (0.25F * a + 0.5F);
 
             // check if opaque and transparent are mixed, if so check if target alpha is above specific threshold to keep it
-            if ((a == 0) && (a0 == 0xff || a1 == 0xff || a2 == 0xff || a3 == 0xff)) {
-                if (a1 < ALPHA_THRESHOLD_INT) {
+            if ((a == 0) || (a0 == 0xff || a1 == 0xff || a2 == 0xff || a3 == 0xff)) {
+                if (ai < ALPHA_THRESHOLD_INT) {
                     return 0;
                 }
                 ai = 0xff;
