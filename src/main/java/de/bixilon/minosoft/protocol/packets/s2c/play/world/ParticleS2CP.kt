@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.world
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -48,8 +48,21 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (!connection.profiles.particle.types.packet) {
             return
         }
-        if (connection.events.fire(ParticleSpawnEvent(connection, this))) {
-            return
+        val renderer = connection.world.particle ?: return
+
+        fun spawn(position: Vec3d, velocity: Vec3d) {
+            val factory = data.type.factory ?: return
+            renderer += factory.build(connection, position, velocity, data) ?: return
+        }
+
+        if (count <= 1) {
+            return spawn(position, Vec3d(offset * speed))
+        }
+        for (i in 0 until count) {
+            val offset = Vec3d(offset) * { renderer.random.nextGaussian() }
+            val velocity = Vec3d(speed) * { renderer.random.nextGaussian() }
+
+            spawn(position + offset, velocity)
         }
     }
 

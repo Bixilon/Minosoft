@@ -57,7 +57,7 @@ class World(
     val connection: PlayConnection,
 ) : WorldAudioPlayer, WorldParticleRenderer {
     val lock = SimpleLock()
-    val random = Random()
+    override val random = Random()
     val biomes = WorldBiomes(this)
     val chunks = ChunkManager(this, 1000, 100)
     val entities = WorldEntities()

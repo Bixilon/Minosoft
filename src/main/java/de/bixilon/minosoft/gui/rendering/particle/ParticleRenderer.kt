@@ -33,12 +33,14 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
+import java.util.*
 
 
 class ParticleRenderer(
     private val connection: PlayConnection,
     override val context: RenderContext,
 ) : WorldRenderer, AsyncRenderer, SkipAll, AbstractParticleRenderer {
+    override val random = Random()
     override val layers = LayerSettings()
     override val renderSystem: RenderSystem = context.system
     private val profile = connection.profiles.particle
