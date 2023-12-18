@@ -180,7 +180,7 @@ abstract class Particle(
         forceMove(velocity)
     }
 
-    fun tryTick(time: Long) {
+    open fun tryTick(time: Long) {
         if (dead) {
             return
         }

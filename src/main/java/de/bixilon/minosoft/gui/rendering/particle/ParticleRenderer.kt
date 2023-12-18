@@ -14,12 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.schedule.RepeatedTask
-import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -35,10 +31,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.floats.BufferedArrayFloatList
 
 
@@ -53,49 +46,33 @@ class ParticleRenderer(
     private val translucentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    private var mesh = ParticleMesh(context, BufferedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
-    private var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(MAXIMUM_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    var mesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    var translucentMesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
 
-    private val particlesLock = SimpleLock()
-    private var particles: MutableList<Particle> = mutableListOf()
-    private var particleQueueLock = SimpleLock()
-    private var particleQueue: MutableList<Particle> = mutableListOf()
+    val particles = ParticleList(profile.maxAmount)
+    val queue = ParticleQueue(this)
+    val ticker = ParticleTicker(this)
     private var matrixUpdate = true
 
-
-    private lateinit var particleTask: RepeatedTask
 
     override val skipAll: Boolean
         get() = !enabled
 
 
-    private var enabled = true
+    var enabled = true
         set(value) {
             if (!value) {
-                particlesLock.lock()
                 particles.clear()
-                particlesLock.unlock()
-
-                particleQueueLock.lock()
-                particleQueue.clear()
-                particleQueueLock.unlock()
+                queue.clear()
             }
             field = value
         }
-    private var maxAmount = MAXIMUM_AMOUNT
+    var maxAmount = MAXIMUM_AMOUNT
         set(value) {
-            check(value > 1) { "Can not have negative particle max amount" }
-            particlesLock.lock()
-            while (particles.size > value) {
-                particles.removeAt(0)
+            if (value < 0) throw IllegalStateException("Can not set negative amount of particles!")
+            if (value < field) {
+                removeAllParticles()
             }
-            val particlesSize = particles.size
-            particlesLock.unlock()
-            particleQueueLock.lock()
-            while (particlesSize + particleQueue.size > value) {
-                particleQueue.removeAt(0)
-            }
-            particleQueueLock.unlock()
             field = value
         }
 
@@ -107,90 +84,45 @@ class ParticleRenderer(
         layers.register(TranslucentLayer, translucentShader, this::drawTranslucent)
     }
 
+    private fun loadTextures() {
+        for (particle in connection.registries.particleType) {
+            for (file in particle.textures) {
+                context.textures.static.create(file)
+            }
+        }
+    }
+
     override fun init(latch: AbstractLatch) {
         profile::maxAmount.observe(this, true) { maxAmount = minOf(it, MAXIMUM_AMOUNT) }
         profile::enabled.observe(this, true) { enabled = it }
 
-        connection.events.listen<CameraMatrixChangeEvent> {
-            matrixUpdate = true
-        }
+        connection.events.listen<CameraMatrixChangeEvent> { matrixUpdate = true }
 
         mesh.load()
         translucentMesh.load()
-        for (particle in connection.registries.particleType) {
-            for (resourceLocation in particle.textures) {
-                context.textures.static.create(resourceLocation)
-            }
-        }
 
+        loadTextures()
         DefaultParticleBehavior.register(connection, this)
     }
 
     override fun postInit(latch: AbstractLatch) {
         shader.load()
         translucentShader.load()
+        ticker.init()
 
         connection.world.particle = this
-
-        particleTask = RepeatedTask(ProtocolDefinition.TICK_TIME, maxDelay = ProtocolDefinition.TICK_TIME / 2) {
-            if (!context.state.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {
-                return@RepeatedTask
-            }
-            val cameraPosition = connection.player.physics.positionInfo.chunkPosition
-            val particleViewDistance = connection.world.view.particleViewDistance
-
-
-            particlesLock.lock()
-            try {
-                val time = millis()
-                val iterator = particles.iterator()
-                for (particle in iterator) {
-                    if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) { // ToDo: Check fog distance
-                        particle.dead = true
-                        iterator.remove()
-                    } else if (particle.dead) {
-                        iterator.remove()
-                    } else {
-                        particle.tryTick(time)
-                    }
-                }
-
-                particleQueueLock.lock()
-                particles += particleQueue
-                particleQueue.clear()
-                particleQueueLock.unlock()
-            } finally {
-                particlesLock.unlock()
-            }
-        }
-        TaskScheduler += particleTask
-
-        connection::state.observe(this) {
-            if (!it.disconnected) {
-                return@observe
-            }
-            TaskScheduler -= particleTask
-        }
     }
 
     override fun addParticle(particle: Particle) {
         if (!context.state.running || !enabled) {
             return
         }
-        val particleCount = particles.size + particleQueue.size
-        if (particleCount >= maxAmount) {
-            return
-        }
-
         if (!particle.chunkPosition.isInViewDistance(connection.world.view.particleViewDistance, connection.player.physics.positionInfo.chunkPosition)) {
             particle.dead = true
             return
         }
-        particle.tryTick(millis())
 
-        particleQueueLock.lock()
-        particleQueue += particle
-        particleQueueLock.unlock()
+        queue += particle
     }
 
     private fun updateShaders() {
@@ -214,34 +146,16 @@ class ParticleRenderer(
         translucentMesh.unload()
     }
 
-    override fun prepareDrawAsync() {
+    private fun prepareMesh() {
         mesh.data.clear()
         translucentMesh.data.clear()
         mesh = ParticleMesh(context, mesh.data)
         translucentMesh = ParticleMesh(context, translucentMesh.data)
+    }
 
-        particlesLock.acquire()
-
-        val start = millis()
-        var time = start
-        for ((index, particle) in particles.withIndex()) {
-            particle.tryTick(time)
-            if (particle.dead) {
-                continue
-            }
-            particle.addVertex(mesh, translucentMesh, time)
-
-            if (index % 1000 == 0) {
-                time = millis()
-                if (time - start > MAX_FRAME_TIME) {
-                    // particles are heavily lagging out the game, reducing it.
-                    // TODO: introduce slow particle mode and optimize out slow particles
-                    break
-                }
-            }
-        }
-
-        particlesLock.release()
+    override fun prepareDrawAsync() {
+        prepareMesh()
+        ticker.tick(true)
     }
 
     override fun postPrepareDraw() {
@@ -258,18 +172,12 @@ class ParticleRenderer(
     }
 
     override fun removeAllParticles() {
-        particlesLock.lock()
         particles.clear()
-        particlesLock.unlock()
-        particleQueueLock.lock()
-        particleQueue.clear()
-        particleQueueLock.unlock()
+        queue.clear()
     }
-
 
     companion object : RendererBuilder<ParticleRenderer> {
         const val MAXIMUM_AMOUNT = 50000
-        const val MAX_FRAME_TIME = 5
 
         override fun build(connection: PlayConnection, context: RenderContext): ParticleRenderer? {
             if (connection.profiles.particle.skipLoading) {
