@@ -43,9 +43,14 @@ abstract class StaticTextureArray(
 
 
     operator fun get(resourceLocation: ResourceLocation): Texture? {
-        lock.acquire()
+        val state = state
+        if (state != TextureArrayStates.UPLOADED) {
+            lock.acquire()
+        }
         val texture = this.named[resourceLocation]
-        lock.release()
+        if (state != TextureArrayStates.UPLOADED) {
+            lock.release()
+        }
         return texture
     }
 
