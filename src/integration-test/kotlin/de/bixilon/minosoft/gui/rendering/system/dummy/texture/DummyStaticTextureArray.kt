@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 
 class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(context, false, 0) {
 
-    override fun load(textures: Collection<Texture>) {
+    override fun upload(textures: Collection<Texture>) {
         for (texture in textures) {
             texture.renderData = DummyTextureRenderData
             texture.array = TextureArrayProperties(null, 1024, 1.0f / 1024)

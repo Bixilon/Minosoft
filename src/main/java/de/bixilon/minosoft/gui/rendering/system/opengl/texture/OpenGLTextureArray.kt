@@ -126,7 +126,7 @@ class OpenGLTextureArray(
         return -1
     }
 
-    private fun load(arrayId: Int, texture: Texture) {
+    private fun upload(arrayId: Int, texture: Texture) {
         val resolution = RESOLUTIONS[arrayId]
         val pixel = PIXEL[arrayId]
         val size = texture.size
@@ -151,7 +151,9 @@ class OpenGLTextureArray(
         }
     }
 
-    override fun load(textures: Collection<Texture>) {
+    override fun upload(textures: Collection<Texture>) {
+        if (state != TextureArrayStates.LOADED) throw IllegalStateException("Not loaded!")
+
         for (texture in textures) {
             if (texture.size.x > MAX_RESOLUTION || texture.size.y > MAX_RESOLUTION) {
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Texture $texture exceeds max resolution ($MAX_RESOLUTION): ${texture.size}" }
@@ -163,7 +165,7 @@ class OpenGLTextureArray(
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find texture array for $arrayId" }
                 continue
             }
-            load(arrayId, texture)
+            upload(arrayId, texture)
         }
     }
 

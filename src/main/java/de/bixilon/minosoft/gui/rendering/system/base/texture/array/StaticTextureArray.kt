@@ -57,6 +57,7 @@ abstract class StaticTextureArray(
     operator fun plusAssign(texture: Texture) = push(texture)
 
     fun push(texture: Texture) {
+        if (state != TextureArrayStates.DECLARED) throw IllegalStateException("Already loaded!")
         lock.lock()
         other += texture
         lock.unlock()
@@ -66,6 +67,7 @@ abstract class StaticTextureArray(
     }
 
     open fun create(resourceLocation: ResourceLocation, mipmaps: Boolean = true, factory: (mipmaps: Int) -> Texture = { PNGTexture(resourceLocation, mipmaps = it) }): Texture {
+        if (state != TextureArrayStates.DECLARED) throw IllegalStateException("Already loaded!")
         lock.lock()
         named[resourceLocation]?.let { lock.unlock(); return it }
         val texture = factory.invoke(if (mipmaps) this.mipmaps else 0)
@@ -91,17 +93,19 @@ abstract class StaticTextureArray(
         }
     }
 
-    protected abstract fun load(textures: Collection<Texture>)
+    protected abstract fun upload(textures: Collection<Texture>)
 
     fun load(latch: AbstractLatch) {
+        if (state != TextureArrayStates.DECLARED) throw IllegalStateException("Already loaded!")
         val latch = latch.child(0)
         load(latch, named.values)
         load(latch, other)
         latch.await()
-
-        load(named.values)
-        load(other)
-
         state = TextureArrayStates.LOADED
+
+        upload(named.values)
+        upload(other)
+
+        state = TextureArrayStates.UPLOADED
     }
 }
