@@ -78,6 +78,7 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         super.randomTick(connection, blockState, blockPosition, random)
+        val particle = connection.world.particle ?: return
         val above = connection.world[blockPosition + Directions.UP]
 
         if (above != null) { // ToDo: Or is not a full block
@@ -89,7 +90,7 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
                 1.0
             )
 
-            connection.world += LavaParticle(connection, position, lavaParticleType.default())
+            particle += LavaParticle(connection, position, lavaParticleType.default())
         }
     }
 

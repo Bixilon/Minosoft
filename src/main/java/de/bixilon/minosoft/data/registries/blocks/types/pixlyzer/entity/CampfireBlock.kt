@@ -53,6 +53,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     }
 
     fun spawnSmokeParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean, random: Random) {
+        val particle = connection.world.particle ?: return
         val position = Vec3d(blockPosition).horizontalPlus(
             { 0.5 + 3.0.noised(random) },
             random.nextDouble() + random.nextDouble() + 0.5 // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
@@ -60,24 +61,21 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
         val isSignal = isSignal(blockState)
 
-        val particleType = if (isSignal) {
-            signalSmokeParticle
-        } else {
-            cosySmokeParticle
-        }
+        val particleType = if (isSignal) signalSmokeParticle else cosySmokeParticle
 
-        connection.world += CampfireSmokeParticle(connection, position, SMOKE_VELOCITY, particleType.default(), isSignal)
+        particle += CampfireSmokeParticle(connection, position, SMOKE_VELOCITY, particleType.default(), isSignal)
 
         if (extinguished) {
             val position = Vec3d(blockPosition).horizontalPlus(
                 { 0.5 + 4.0.noised(random) },
                 0.5
             )
-            connection.world += SmokeParticle(connection, position, EXTINGUISHED_VELOCITY, smokeParticle.default())
+            particle += SmokeParticle(connection, position, EXTINGUISHED_VELOCITY, smokeParticle.default())
         }
     }
 
     override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
+        val particle = connection.world.particle ?: return
         if (!state.isLit()) {
             return
         }
@@ -88,7 +86,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         if (lavaParticles && random.chance(20)) {
             val position = Vec3d(position) + 0.5
             for (i in 0 until random.nextInt(1) + 1) {
-                connection.world += LavaParticle(connection, position, lavaParticle.default())
+                particle += LavaParticle(connection, position, lavaParticle.default())
             }
         }
     }

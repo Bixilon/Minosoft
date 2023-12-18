@@ -32,9 +32,10 @@ open class TorchBlock(resourceLocation: ResourceLocation, registries: Registries
 
 
     private fun spawnSmokeParticles(connection: PlayConnection, blockPosition: Vec3i) {
+        val particle = connection.world.particle ?: return
         val particlePosition = Vec3d(0.5, 0.7, 0.5) + blockPosition
-        smokeParticle?.let { connection.world += SmokeParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY) }
-        flameParticle?.let { connection.world += it.factory?.build(connection, Vec3d(particlePosition), Vec3d.EMPTY) }
+        smokeParticle?.let { particle += SmokeParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY) }
+        flameParticle?.let { particle += it.factory?.build(connection, Vec3d(particlePosition), Vec3d.EMPTY) }
     }
 
     override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {

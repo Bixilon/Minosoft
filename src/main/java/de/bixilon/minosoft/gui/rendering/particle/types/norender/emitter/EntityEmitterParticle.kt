@@ -42,6 +42,7 @@ class EntityEmitterParticle(
 
 
     fun emitParticles() {
+        val particle = connection.world.particle ?: return
         val position = entity.physics.position
         for (i in 0 until 16) {
             val scale = Vec3(random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f))
@@ -55,8 +56,7 @@ class EntityEmitterParticle(
                 position.y + (entity.type.height * (0.5f + scale.y / 4.0f)),
                 position.z + (entity.type.width * (scale.z / 4.0f)),
             )
-            val particle = particleFactory.build(connection, particlePosition, Vec3d(scale.x, scale.y, scale.z), particleData) // ToDo: Velocity.y is getting added with 0.2
-            connection.world.addParticle(particle ?: continue)
+            particle += particleFactory.build(connection, particlePosition, Vec3d(scale.x, scale.y, scale.z), particleData) ?: continue// ToDo: Velocity.y is getting added with 0.2
         }
     }
 

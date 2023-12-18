@@ -32,27 +32,27 @@ open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Reg
     private val portalParticleType = registries.particleType[PortalParticle]
 
     override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {
-        portalParticleType?.let {
-            for (i in 0 until 4) {
-                val particlePosition = Vec3d(position) + { random.nextDouble() }
-                val velocity = Vec3d.of { (random.nextDouble() - 0.5) * 0.5 }
+        val particle = connection.world.particle ?: return
+        if (portalParticleType == null) return
+        for (i in 0 until 4) {
+            val particlePosition = Vec3d(position) + { random.nextDouble() }
+            val velocity = Vec3d.of { (random.nextDouble() - 0.5) * 0.5 }
 
-                val factor = (random.nextInt(2) * 2 + 1).toDouble()
+            val factor = (random.nextInt(2) * 2 + 1).toDouble()
 
-                if (connection.world[position + Directions.WEST]?.block != this && connection.world[position + Directions.EAST]?.block != this) {
-                    particlePosition.x = position.x + 0.5 + 0.25 * factor
-                    velocity.x = random.nextDouble() * 2.0 * factor
-                } else {
-                    particlePosition.z = position.z + 0.5 + 0.25 * factor
-                    velocity.z = random.nextDouble() * 2.0 * factor
-                }
-                connection.world += PortalParticle(
-                    connection,
-                    particlePosition,
-                    velocity,
-                    it.default(),
-                )
+            if (connection.world[position + Directions.WEST]?.block != this && connection.world[position + Directions.EAST]?.block != this) {
+                particlePosition.x = position.x + 0.5 + 0.25 * factor
+                velocity.x = random.nextDouble() * 2.0 * factor
+            } else {
+                particlePosition.z = position.z + 0.5 + 0.25 * factor
+                velocity.z = random.nextDouble() * 2.0 * factor
             }
+            particle += PortalParticle(
+                connection,
+                particlePosition,
+                velocity,
+                portalParticleType.default(),
+            )
         }
     }
 

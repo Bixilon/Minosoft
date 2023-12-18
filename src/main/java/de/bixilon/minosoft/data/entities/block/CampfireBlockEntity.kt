@@ -64,6 +64,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
 
 
     override fun tick(connection: PlayConnection, state: BlockState, position: Vec3i, random: Random) {
+        val particle = connection.world.particle ?: return
         if (state.block !is CampfireBlock || !state.isLit()) {
             return
         }
@@ -90,7 +91,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             )
 
             for (i in 0 until 4) {
-                connection.world.addParticle(SmokeParticle(connection, position, Vec3d(0.0, 5.0E-4, 0.0)))
+                particle += SmokeParticle(connection, position, Vec3d(0.0, 5.0E-4, 0.0))
             }
         }
     }

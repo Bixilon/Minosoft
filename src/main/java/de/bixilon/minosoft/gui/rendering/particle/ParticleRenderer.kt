@@ -81,8 +81,8 @@ class ParticleRenderer(
         get() = particles.size
 
     override fun registerLayers() {
-        layers.register(OpaqueLayer, shader, this::drawTransparent)
-        layers.register(TranslucentLayer, shader, this::drawTranslucent)
+        layers.register(OpaqueLayer, shader, renderer = { mesh.draw() })
+        layers.register(TranslucentLayer, shader, renderer = { translucentMesh.draw() })
     }
 
     private fun loadTextures() {
@@ -158,14 +158,6 @@ class ParticleRenderer(
     override fun postPrepareDraw() {
         mesh.load()
         translucentMesh.load()
-    }
-
-    private fun drawTransparent() {
-        mesh.draw()
-    }
-
-    private fun drawTranslucent() {
-        translucentMesh.draw()
     }
 
     override fun removeAllParticles() {

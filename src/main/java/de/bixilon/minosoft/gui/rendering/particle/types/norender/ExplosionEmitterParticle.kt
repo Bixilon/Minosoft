@@ -33,14 +33,15 @@ class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3d, data
 
     override fun tick() {
         super.tick()
-        explosionParticleType ?: let {
+        val particle = connection.world.particle ?: return
+        if (explosionParticleType == null) {
             dead = true
             return
         }
         for (i in 0 until 6) {
             val position = position + { (random.nextDouble() - random.nextDouble()) * 4.0 }
 
-            connection.world += ExplosionParticle(connection, position, explosionParticleType.default(), floatAge / MAX_AGE)
+            particle += ExplosionParticle(connection, position, explosionParticleType.default(), floatAge / MAX_AGE)
         }
     }
 

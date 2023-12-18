@@ -61,11 +61,12 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         if (!showParticleNextTick) {
             return
         }
+        val particle = connection.world.particle ?: return
         showParticleNextTick = false
 
 
         noteParticleType?.let {
-            connection.world += NoteParticle(connection, position.toVec3d + Vec3d(0.5, 1.2, 0.5), state.getNote() / 24.0f, it.default())
+            particle += NoteParticle(connection, position.toVec3d + Vec3d(0.5, 1.2, 0.5), state.getNote() / 24.0f, it.default())
         }
     }
 

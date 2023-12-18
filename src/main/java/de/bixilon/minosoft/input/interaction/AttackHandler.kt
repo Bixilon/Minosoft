@@ -74,14 +74,15 @@ class AttackHandler(
         val critical = (cooldown / COOLDOWN.toFloat()) > 0.9f && player.physics.fallDistance != 0.0f && !player.physics.onGround && !player.physics().isClimbing() && (player.physics.submersion[WaterFluid]) <= 0.0f && player.effects[VisionEffect.Blindness] == null && player.attachment.vehicle == null && entity is LivingEntity
         // TODO: use attack speed entity attribute
 
+        val particle = interactions.connection.world.particle ?: return
 
         if (critical) {
-            interactions.connection.world.addParticle(EntityEmitterParticle(interactions.connection, entity, CritParticle))
+            particle += EntityEmitterParticle(interactions.connection, entity, CritParticle)
         }
 
         if (sharpnessLevel > 0) {
             // ToDo: Entity animations
-            interactions.connection.world.addParticle(EntityEmitterParticle(interactions.connection, entity, EnchantedHitParticle))
+            particle += EntityEmitterParticle(interactions.connection, entity, EnchantedHitParticle)
         }
     }
 

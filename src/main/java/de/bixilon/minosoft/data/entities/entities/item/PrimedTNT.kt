@@ -38,7 +38,7 @@ class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: Entity
         super.tick()
 
         val position = physics.position
-        connection.world += SmokeParticle(connection, position + SMOKE_OFFSET, Vec3d.EMPTY)
+        connection.world.particle?.let { it += SmokeParticle(connection, position + SMOKE_OFFSET, Vec3d.EMPTY) }
     }
 
     override fun createPhysics() = PrimedTNTPhysics(this)

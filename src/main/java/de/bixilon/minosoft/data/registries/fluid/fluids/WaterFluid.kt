@@ -79,9 +79,11 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         super.randomTick(connection, blockState, blockPosition, random)
 
+        val particle = connection.world.particle ?: return
+
         // ToDo: if not sill and not falling
         if (random.chance(10)) {
-            connection.world += UnderwaterParticle(connection, blockPosition.toVec3d + { random.nextDouble() })
+            particle += UnderwaterParticle(connection, blockPosition.toVec3d + { random.nextDouble() })
         }
     }
 

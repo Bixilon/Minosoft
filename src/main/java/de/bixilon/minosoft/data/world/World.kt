@@ -37,7 +37,6 @@ import de.bixilon.minosoft.data.world.difficulty.WorldDifficulty
 import de.bixilon.minosoft.data.world.entities.WorldEntities
 import de.bixilon.minosoft.data.world.iterator.WorldIterator
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
-import de.bixilon.minosoft.data.world.particle.WorldParticleRenderer
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
@@ -55,9 +54,9 @@ import java.util.*
  */
 class World(
     val connection: PlayConnection,
-) : WorldAudioPlayer, WorldParticleRenderer {
+) : WorldAudioPlayer {
     val lock = SimpleLock()
-    override val random = Random()
+    val random = Random()
     val biomes = WorldBiomes(this)
     val chunks = ChunkManager(this, 1000, 100)
     val entities = WorldEntities()
@@ -73,7 +72,7 @@ class World(
 
 
     override var audio: AbstractAudioPlayer? = null
-    override var particle: AbstractParticleRenderer? = null
+    var particle: AbstractParticleRenderer? = null
 
     var occlusion by observed(0)
 

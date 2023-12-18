@@ -41,13 +41,14 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
     private val dustParticleType = registries.particleType[DustParticle]
 
     private fun spawnParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, scale: Float) {
-        dustParticleType ?: return
+        val particle = connection.world.particle ?: return
+        if (dustParticleType == null) return
         val direction = blockState.getFacing().inverted
         val mountDirection = getRealFacing(blockState)
 
         val position = (Vec3d(blockPosition) + 0.5).plus((direction.vector * 0.1) + (mountDirection.vector * 0.2))
 
-        connection.world += DustParticle(connection, position, Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, scale, dustParticleType))
+        particle += DustParticle(connection, position, Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, scale, dustParticleType))
     }
 
     override fun randomDisplayTick(connection: PlayConnection, state: BlockState, position: BlockPosition, random: Random) {

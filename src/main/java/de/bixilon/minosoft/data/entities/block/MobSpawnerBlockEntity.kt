@@ -40,12 +40,13 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
     }
 
     private fun spawnParticles(blockPosition: Vec3i, random: Random) {
+        val particle = connection.world.particle ?: return
         if (!isPlayerInRange(blockPosition)) {
             return
         }
         val particlePosition = blockPosition.toVec3d + { random.nextDouble() }
-        smokeParticleType?.let { connection.world += SmokeParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
-        flameParticleType?.let { connection.world += FlameParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
+        smokeParticleType?.let { particle += SmokeParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
+        flameParticleType?.let { particle += FlameParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
     }
 
     override fun setBlockActionData(type: Int, data: Int) {
