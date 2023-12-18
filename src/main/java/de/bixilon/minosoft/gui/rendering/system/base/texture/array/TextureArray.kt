@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 
 interface TextureArray {
     fun upload(latch: AbstractLatch?)
+    fun load(latch: AbstractLatch?)
 
     fun activate()
 

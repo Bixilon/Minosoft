@@ -132,6 +132,7 @@ abstract class DynamicTextureArray(
         return nextIndex
     }
 
+    override fun load(latch: AbstractLatch?) = Unit
     override fun upload(latch: AbstractLatch?) = upload()
 
     private fun grow() {

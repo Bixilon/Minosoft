@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontText
 
 class DummyFontTextureArray(context: RenderContext) : FontTextureArray(context, 1024, FontCompressions.NONE) {
 
-    override fun load(latch: AbstractLatch) {
+    override fun upload(latch: AbstractLatch?) {
         for (texture in textures) {
             texture.renderData = DummyTextureRenderData
             texture.array = TextureArrayProperties(null, 1024, 1.0f / 1024)
@@ -32,7 +32,7 @@ class DummyFontTextureArray(context: RenderContext) : FontTextureArray(context, 
         }
     }
 
-    override fun upload(latch: AbstractLatch?) {
+    override fun load(latch: AbstractLatch?) {
     }
 
     override fun activate() {

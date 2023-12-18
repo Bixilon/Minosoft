@@ -34,7 +34,7 @@ class DummyStaticTextureArray(context: RenderContext) : StaticTextureArray(conte
         }
     }
 
-    override fun upload(latch: AbstractLatch?) {
+    override fun load(latch: AbstractLatch?) {
         animator.init()
     }
 

@@ -73,7 +73,7 @@ object RenderLoader {
         val initLatch = ParentLatch(1, renderLatch)
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.labTime()})..." }
         initLatch.inc(); runAsync { tints.init(connection.assetsManager); initLatch.dec() }
-        textures.dynamic.upload(initLatch)
+        textures.dynamic.load(initLatch); textures.dynamic.upload(initLatch)
         textures.initializeSkins(connection)
         textures.loadDefaultTextures()
 
@@ -98,6 +98,7 @@ object RenderLoader {
 
         // Post init stage
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
+        // TODO: async load both
         textures.static.load(renderLatch)
         textures.font.load(renderLatch)
 

@@ -48,43 +48,6 @@ class OpenGLTextureArray(
         context.system.unsafeCast<OpenGLRenderSystem>().textureBindingIndex += RESOLUTIONS.size
     }
 
-
-    private fun upload(resolution: Int, textures: List<Texture>): Int {
-        val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
-
-        for (level in 0..mipmaps) {
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA8, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
-        }
-
-        for (texture in textures) {
-            val renderData = texture.renderData as OpenGLTextureData
-            for ((level, buffer) in texture.data.collect().withIndex()) {
-                if (level > this.mipmaps) break
-                buffer.data.position(0)
-                buffer.data.limit(buffer.data.capacity())
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
-            }
-
-            texture.data = TextureData.NULL
-        }
-
-        return handle
-    }
-
-
-    override fun upload(latch: AbstractLatch?) {
-        var total = 0
-        for ((index, textures) in resolution.withIndex()) {
-            if (textures.isEmpty()) continue
-            handles[index] = upload(RESOLUTIONS[index], textures)
-            total += textures.size
-        }
-        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${named.size} textures containing ${animator.size} animated ones, split into $total layers!" }
-
-        animator.init()
-        state = TextureArrayStates.UPLOADED
-    }
-
     override fun activate() {
         for ((index, textureId) in handles.withIndex()) {
             if (textureId == -1) {
@@ -126,7 +89,7 @@ class OpenGLTextureArray(
         return -1
     }
 
-    private fun upload(arrayId: Int, texture: Texture) {
+    private fun prepareUpload(arrayId: Int, texture: Texture) {
         val resolution = RESOLUTIONS[arrayId]
         val pixel = PIXEL[arrayId]
         val size = texture.size
@@ -151,6 +114,30 @@ class OpenGLTextureArray(
         }
     }
 
+
+    private fun upload(resolution: Int, textures: List<Texture>): Int {
+        val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
+
+        for (level in 0..mipmaps) {
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA8, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+        }
+
+        for (texture in textures) {
+            val renderData = texture.renderData as OpenGLTextureData
+            for ((level, buffer) in texture.data.collect().withIndex()) {
+                if (level > this.mipmaps) break
+                buffer.data.position(0)
+                buffer.data.limit(buffer.data.capacity())
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
+            }
+
+            texture.data = TextureData.NULL
+        }
+
+        return handle
+    }
+
+
     override fun upload(textures: Collection<Texture>) {
         if (state != TextureArrayStates.LOADED) throw IllegalStateException("Not loaded!")
 
@@ -165,8 +152,22 @@ class OpenGLTextureArray(
                 Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Can not find texture array for $arrayId" }
                 continue
             }
-            upload(arrayId, texture)
+            prepareUpload(arrayId, texture)
         }
+    }
+
+    override fun upload(latch: AbstractLatch?) {
+        super.upload(latch)
+        var total = 0
+        for ((index, textures) in resolution.withIndex()) {
+            if (textures.isEmpty()) continue
+            handles[index] = upload(RESOLUTIONS[index], textures)
+            total += textures.size
+        }
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Loaded ${named.size} textures containing ${animator.size} animated ones, split into $total layers!" }
+
+        animator.init()
+        state = TextureArrayStates.UPLOADED
     }
 
     private companion object {

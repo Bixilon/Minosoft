@@ -95,7 +95,8 @@ class OpenGLFontTextureArray(
 
     }
 
-    override fun load(latch: AbstractLatch) {
+    override fun load(latch: AbstractLatch?) {
+        if (state != TextureArrayStates.DECLARED) throw IllegalStateException("Already loaded!")
         for (texture in textures) {
             load(texture)
         }

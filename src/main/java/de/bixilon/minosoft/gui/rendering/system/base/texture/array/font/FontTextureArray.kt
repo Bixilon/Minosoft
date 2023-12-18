@@ -17,7 +17,6 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
-import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArray
@@ -37,6 +36,7 @@ abstract class FontTextureArray(
     operator fun plusAssign(texture: Texture) = push(texture)
 
     fun push(texture: Texture) {
+        if (state != TextureArrayStates.DECLARED) throw IllegalStateException("Already loaded!")
         if (texture.state != TextureStates.LOADED) {
             DefaultThreadPool += ForcePooledRunnable(priority = HIGH) { texture.load(context) }
         }
@@ -44,6 +44,4 @@ abstract class FontTextureArray(
         textures += texture
         lock.unlock()
     }
-
-    abstract fun load(latch: AbstractLatch)
 }
