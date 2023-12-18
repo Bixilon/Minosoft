@@ -124,7 +124,7 @@ class ParticleRendererTest {
     }
 
 
-    // TODO: queue, maxAmount, auto ticking
+    // TODO: auto ticking (task registering)
 
     private class TestParticle(connection: PlayConnection) : Particle(connection, Vec3d.EMPTY, Vec3d.EMPTY, DATA) {
         var vertices = 0

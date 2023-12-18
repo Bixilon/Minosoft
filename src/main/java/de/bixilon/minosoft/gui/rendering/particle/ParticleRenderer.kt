@@ -43,7 +43,6 @@ class ParticleRenderer(
     override val renderSystem: RenderSystem = context.system
     private val profile = connection.profiles.particle
     private val shader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it) }
-    private val translucentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
     var mesh = ParticleMesh(context, BufferedArrayFloatList(profile.maxAmount * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
@@ -81,7 +80,7 @@ class ParticleRenderer(
 
     override fun registerLayers() {
         layers.register(OpaqueLayer, shader, this::drawTransparent)
-        layers.register(TranslucentLayer, translucentShader, this::drawTranslucent)
+        layers.register(TranslucentLayer, shader, this::drawTranslucent)
     }
 
     private fun loadTextures() {
@@ -107,7 +106,6 @@ class ParticleRenderer(
 
     override fun postInit(latch: AbstractLatch) {
         shader.load()
-        translucentShader.load()
         ticker.init()
 
         connection.world.particle = this
@@ -125,21 +123,18 @@ class ParticleRenderer(
         queue += particle
     }
 
-    private fun updateShaders() {
+    private fun updateShader() {
         val matrix = context.camera.matrixHandler.viewProjectionMatrix
         val cameraRight = Vec3(matrix[0][0], matrix[1][0], matrix[2][0])
         val cameraUp = Vec3(matrix[0][1], matrix[1][1], matrix[2][1])
 
         shader.cameraRight = cameraRight
         shader.cameraUp = cameraUp
-
-        translucentShader.cameraRight = cameraRight
-        translucentShader.cameraUp = cameraUp
     }
 
     override fun prePrepareDraw() {
         if (matrixUpdate) {
-            updateShaders()
+            updateShader()
             matrixUpdate = false
         }
         mesh.unload()

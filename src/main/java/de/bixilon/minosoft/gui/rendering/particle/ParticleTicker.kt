@@ -14,15 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.kutil.concurrent.schedule.RepeatedTask
-import de.bixilon.kutil.concurrent.schedule.TaskScheduler
 import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ParticleTicker(val renderer: ParticleRenderer) {
     private val particles = renderer.particles
@@ -85,27 +82,8 @@ class ParticleTicker(val renderer: ParticleRenderer) {
         particles.lock.unlock()
     }
 
-    private fun unregister() {
-        val task = this.task ?: return
-        TaskScheduler -= task
-        this.task = null
-    }
-
-    private fun register() {
-        if (this.task != null) unregister()
-        val task = RepeatedTask(ProtocolDefinition.TICK_TIME, maxDelay = ProtocolDefinition.TICK_TIME / 2) { tick(false) }
-        this.task = task
-        TaskScheduler += task
-    }
-
-
     fun init() {
-        context.connection::state.observe(this) {
-            unregister()
-            if (it == PlayConnectionStates.PLAYING) {
-                register()
-            }
-        }
+        context.connection.ticker += { tick(false) }
     }
 
     companion object {
