@@ -93,6 +93,7 @@ class ParticleRenderer(
             for ((index, texture) in particle.textures.withIndex()) {
                 loaded[index] = context.textures.static.create(texture)
             }
+            particle.loadedTextures = loaded
         }
     }
 
