@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierC
 import de.bixilon.minosoft.gui.rendering.particle.DefaultParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
@@ -32,6 +33,7 @@ data class ParticleType(
     val overrideLimiter: Boolean = false,
     val factory: ParticleFactory<out Particle>? = null,
 ) : RegistryItem() {
+    var loadedTextures: Array<Texture> = emptyArray()
 
     override fun toString(): String {
         return identifier.toString()

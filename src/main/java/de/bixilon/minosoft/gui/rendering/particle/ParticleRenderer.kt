@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
@@ -29,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.layer.OpaqueLayer
 import de.bixilon.minosoft.gui.rendering.system.base.layer.TranslucentLayer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.chunk.ChunkUtil.isInViewDistance
@@ -87,8 +89,9 @@ class ParticleRenderer(
 
     private fun loadTextures() {
         for (particle in connection.registries.particleType) {
-            for (file in particle.textures) {
-                context.textures.static.create(file)
+            val loaded: Array<Texture> = arrayOfNulls<Texture?>(particle.textures.size).cast()
+            for ((index, texture) in particle.textures.withIndex()) {
+                loaded[index] = context.textures.static.create(texture)
             }
         }
     }

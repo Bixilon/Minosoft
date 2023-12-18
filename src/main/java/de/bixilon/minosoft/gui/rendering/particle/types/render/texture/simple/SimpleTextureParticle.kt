@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.FileTe
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : TextureParticle(connection, position, velocity, data) {
-    override var texture = this.data.type.textures.getOrNull(0)?.let { connection.rendering?.context?.textures?.static?.get(it) }
+    override var texture = this.data.type.loadedTextures.getOrNull(0)
     var spriteDisabled = false
 
 
@@ -35,17 +35,17 @@ abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d
             return
         }
         // calculate next texture
-        val nextTextureResourceLocation = data.type.textures[age / (maxAge / totalTextures + 1)]
-        if (texture?.nullCast<FileTexture>()?.file == nextTextureResourceLocation) {
+        val next = data.type.loadedTextures[age / (maxAge / totalTextures + 1)]
+        if (texture?.nullCast<FileTexture>()?.file == next) {
             return
         }
-        texture = connection.rendering?.context?.textures?.static?.get(nextTextureResourceLocation)
+        texture = next
     }
 
     fun setRandomSprite() {
-        val textures = data.type.textures
+        val textures = data.type.loadedTextures
         if (textures.isEmpty()) return
-        texture = connection.rendering?.context?.textures?.static?.get(textures.random())
+        texture = textures.random()
     }
 
     override fun tick() {
