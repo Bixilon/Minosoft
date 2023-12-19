@@ -22,6 +22,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.loader.ModList
 import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.modding.loader.ModLoadingUtil.construct
+import de.bixilon.minosoft.modding.loader.ModLoadingUtil.postInit
 import de.bixilon.minosoft.modding.loader.ModLoadingUtil.validate
 import de.bixilon.minosoft.modding.loader.error.DuplicateModError
 import de.bixilon.minosoft.modding.loader.error.DuplicateProvidedError
@@ -39,10 +40,6 @@ class LoadingPhase(val name: String) {
     private var latch = SimpleLatch(1)
     var state by observed(PhaseStates.WAITING)
         private set
-
-    private fun MinosoftMod.postInit() {
-        main!!.postInit()
-    }
 
     private fun inject(list: ModList, source: ModSource, latch: AbstractLatch) {
         val mod = MinosoftMod(source, this, ParentLatch(4, latch))
@@ -97,7 +94,7 @@ class LoadingPhase(val name: String) {
         if (files.isEmpty() && additionalSources.isEmpty()) {
             // no mods to load
             state = PhaseStates.COMPLETE
-            this.latch.dec()
+            inner.dec(); this.latch.dec()
             return
         }
         val list = ModList()
