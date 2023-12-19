@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,20 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.loader
+package de.bixilon.minosoft.modding.loader.phase
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
-
-enum class LoadingPhases {
-    PRE_BOOT,
-    BOOT,
-    POST_BOOT,
-    ;
-
-    companion object : ValuesEnum<LoadingPhases> {
-        override val VALUES: Array<LoadingPhases> = values()
-        override val NAME_MAP: Map<String, LoadingPhases> = EnumUtil.getEnumValues(VALUES)
-        val ALL = VALUES.toSet()
-    }
+object DefaultModPhases {
+    val PRE = LoadingPhase("pre")
+    val BOOT = LoadingPhase("boot")
+    val POST = LoadingPhase("post")
 }

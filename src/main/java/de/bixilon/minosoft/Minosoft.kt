@@ -44,8 +44,7 @@ import de.bixilon.minosoft.main.BootTasks
 import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.modding.loader.LoadingPhases
-import de.bixilon.minosoft.modding.loader.ModLoader
+import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
@@ -70,16 +69,15 @@ object Minosoft {
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
 
-        val latch = SimpleLatch(2)
-        DefaultThreadPool += ForcePooledRunnable { ModLoader.initModLoading(); latch.dec() }
+        val latch = SimpleLatch(1)
         assets.await()
         DefaultThreadPool += ForcePooledRunnable { MinosoftPropertiesLoader.load(); latch.dec() }
 
         KUtil.init()
 
         latch.await()
-        ModLoader.load(LoadingPhases.PRE_BOOT)
-        ModLoader.await(LoadingPhases.PRE_BOOT)
+        DefaultModPhases.PRE.load()
+        DefaultModPhases.PRE.await()
 
         if (PlatformInfo.OS == OSTypes.MAC) {
             checkMacOS()
@@ -111,7 +109,7 @@ object Minosoft {
 
         KUtil.initPlayClasses()
         GlobalEventMaster.fire(FinishBootEvent())
-        DefaultThreadPool += { ModLoader.load(LoadingPhases.POST_BOOT) }
+        DefaultThreadPool += { DefaultModPhases.POST.load(); Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO) { "Mod loading completed!" } }
         if (RunConfiguration.DISABLE_EROS) {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Eros is disabled, no gui will show up! Use the cli to connect to servers!" }
         }

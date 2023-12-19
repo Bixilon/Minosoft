@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.modding.loader.mod
 
 import de.bixilon.kutil.latch.SimpleLatch
-import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.ModList
 import de.bixilon.minosoft.modding.loader.mod.manifest.ModManifest
 import de.bixilon.minosoft.modding.loader.mod.manifest.load.LoadM
 import de.bixilon.minosoft.modding.loader.mod.manifest.packages.PackagesM
 import de.bixilon.minosoft.modding.loader.mod.source.ArchiveSource
+import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 internal class MinosoftModTest {
 
     private fun createMod(): MinosoftMod {
-        return MinosoftMod(ArchiveSource(File(".")), LoadingPhases.PRE_BOOT, SimpleLatch(0))
+        return MinosoftMod(ArchiveSource(File(".")), DefaultModPhases.PRE, SimpleLatch(0))
     }
 
     @Test

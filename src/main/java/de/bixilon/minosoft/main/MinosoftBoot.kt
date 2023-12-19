@@ -25,8 +25,7 @@ import de.bixilon.minosoft.data.entities.event.EntityEvents
 import de.bixilon.minosoft.data.registries.fallback.FallbackRegistries
 import de.bixilon.minosoft.data.registries.fallback.tags.FallbackTags
 import de.bixilon.minosoft.datafixer.DataFixer
-import de.bixilon.minosoft.modding.loader.LoadingPhases
-import de.bixilon.minosoft.modding.loader.ModLoader
+import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.versions.VersionLoader
 import de.bixilon.minosoft.terminal.cli.CLI
@@ -48,7 +47,7 @@ object MinosoftBoot {
         worker += WorkerTask(identifier = BootTasks.YGGDRASIL, executor = { YggdrasilUtil.load() })
 
         worker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { IntegratedAssets.OVERRIDE.load(it) })
-        worker += WorkerTask(identifier = BootTasks.MODS, executor = { ModLoader.load(LoadingPhases.BOOT, it) })
+        worker += WorkerTask(identifier = BootTasks.MODS, executor = { DefaultModPhases.BOOT.load(it) })
         worker += WorkerTask(identifier = BootTasks.DATA_FIXER, executor = { DataFixer.load() })
         worker += WorkerTask(identifier = BootTasks.CLI, priority = ThreadPool.LOW, executor = CLI::startThread)
     }

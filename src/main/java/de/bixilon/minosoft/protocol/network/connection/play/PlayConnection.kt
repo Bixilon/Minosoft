@@ -51,8 +51,7 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionCr
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.modding.loader.LoadingPhases
-import de.bixilon.minosoft.modding.loader.ModLoader
+import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.channel.ConnectionChannelHandler
@@ -185,7 +184,7 @@ class PlayConnection(
         check(!wasConnected) { "Connection was already connected!" }
         try {
             state = PlayConnectionStates.WAITING_MODS
-            ModLoader.await(LoadingPhases.BOOT)
+            DefaultModPhases.BOOT.await()
 
             state = PlayConnectionStates.LOADING_ASSETS
             var error: Throwable? = null
