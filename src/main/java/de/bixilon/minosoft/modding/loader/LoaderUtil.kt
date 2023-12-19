@@ -39,11 +39,12 @@ object LoaderUtil {
     }
 
     fun JarClassLoader.load(name: String, data: ByteArray) {
+        val fixed = name.replace('\\', '/').replace(" ", "").replace(":", "") // class loaders just work with /
         val content = this.classpathResources.contents
         val entry = JclJarEntry()
         entry.baseUrl = null
         entry.resourceBytes = data
-        content[name] = entry
+        content[fixed] = entry
     }
 
     fun JarClassLoader.unloadAll() {
