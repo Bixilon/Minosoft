@@ -56,7 +56,7 @@ class DirectoryAssetsManager(
                 scanDirectory(file)
                 continue
             }
-            val path = file.slashPath.removePrefix(basePath).removePrefix("/").toAssetName(false, prefix) ?: continue
+            val path = file.slashPath.removePrefix(basePath).removePrefix(File.separator).toAssetName(false, prefix) ?: continue
             assets += path
         }
     }

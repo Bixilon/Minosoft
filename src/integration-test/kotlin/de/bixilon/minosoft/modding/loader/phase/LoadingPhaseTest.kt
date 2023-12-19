@@ -32,7 +32,7 @@ class LoadingPhaseTest {
         val phase = LoadingPhase(path)
         val rootResources = LoadingPhaseTest::class.java.classLoader.getResource("mods/")
 
-        phase::class.java.getFieldOrNull("path")!!.forceSet(phase, File(rootResources.path.removeSuffix("/") + "/" + path))
+        phase::class.java.getFieldOrNull("path")!!.forceSet(phase, File(rootResources.path.removeSuffix(File.separator) + File.separator + path))
 
         return phase
     }

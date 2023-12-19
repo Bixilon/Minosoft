@@ -19,6 +19,7 @@ import de.bixilon.minosoft.assets.resource.ResourceAssetsManager
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.io.File
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -33,7 +34,7 @@ object ResourcesAssetsUtil {
         }
 
         return when (rootResources.protocol) {
-            "file" -> DirectoryAssetsManager(rootResources.path.removeSuffix("/").removeSuffix(prefix), canUnload, prefix) // Read them directly from the folder
+            "file" -> DirectoryAssetsManager(rootResources.path.removeSuffix(File.separator).removeSuffix(prefix), canUnload, prefix) // Read them directly from the folder
             "jar" -> {
                 val path: String = rootResources.path
                 val jarPath = path.substring(5, path.indexOf("!"))

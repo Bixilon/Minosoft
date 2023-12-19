@@ -22,6 +22,10 @@ import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.modding.loader.LoaderUtil
 import de.bixilon.minosoft.modding.loader.LoaderUtil.load
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
+import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
 import java.io.FileInputStream
 
@@ -58,13 +62,19 @@ class DirectorySource(
 
     companion object {
 
-        fun scanClasses(mod: MinosoftMod, baseDirectory: File, currentDirectory: File) {
-            if (currentDirectory.isFile) {
-                mod.classLoader.load(currentDirectory.path.removePrefix(baseDirectory.path).removePrefix("/"), FileInputStream(currentDirectory).readAllBytes())
+        fun scanClasses(mod: MinosoftMod, base: File, file: File) {
+            if (file.isFile) {
+                if (!file.name.endsWith(".class")) return
+
+                val path = file.path.removePrefix(base.path).removePrefix(File.separator)
+                if (RunConfiguration.VERBOSE_LOGGING) {
+                    Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE) { "Injecting class $path" }
+                }
+                mod.classLoader.load(path, FileInputStream(file).readAllBytes())
             }
-            if (currentDirectory.isDirectory) {
-                for (sub in currentDirectory.listFiles()!!) {
-                    scanClasses(mod, baseDirectory, sub)
+            if (file.isDirectory) {
+                for (sub in file.listFiles()!!) {
+                    scanClasses(mod, base, sub)
                 }
             }
         }
