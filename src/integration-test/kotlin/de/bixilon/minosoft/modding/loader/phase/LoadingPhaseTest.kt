@@ -30,7 +30,9 @@ class LoadingPhaseTest {
     private fun create(path: String): LoadingPhase {
         ModLoader.mods.clear()
         val phase = LoadingPhase(path)
-        phase::class.java.getFieldOrNull("path")!!.forceSet(phase, File("./src/integration-test/resources/mods/$path"))
+        val rootResources = LoadingPhaseTest::class.java.classLoader.getResource("mods/")
+
+        phase::class.java.getFieldOrNull("path")!!.forceSet(phase, File(rootResources.path.removeSuffix("/") + "/" + path))
 
         return phase
     }
