@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager.encodeNetwork
 import de.bixilon.minosoft.util.account.minecraft.key.MinecraftKeyPair
-import de.bixilon.minosoft.util.yggdrasil.YggdrasilException
+import de.bixilon.minosoft.util.signature.SignatureException
 import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import java.nio.charset.StandardCharsets
 import java.security.PublicKey
@@ -60,9 +60,9 @@ class PlayerPublicKey(
 
     fun requireSignature(versionId: Int, uuid: UUID) {
         if (versionId < ProtocolVersions.V_1_19_1_PRE4) {
-            if (!isLegacySignatureCorrect()) throw YggdrasilException()
+            if (!isLegacySignatureCorrect()) throw SignatureException()
         } else {
-            if (!isSignatureCorrect(uuid)) throw YggdrasilException()
+            if (!isSignatureCorrect(uuid)) throw SignatureException()
         }
     }
 

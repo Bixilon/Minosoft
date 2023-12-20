@@ -57,7 +57,7 @@ data class MinecraftPrivateKey(
     @JsonIgnore
     fun requireSignature(uuid: UUID) {
         MinecraftKeyPair.requireSignature(uuid, expiresAt, pair.public, signatureBytesV2)
-        signatureBytes?.let { YggdrasilUtil.requireSignature((expiresAt.toEpochMilli().toString() + pair.publicString).toByteArray(StandardCharsets.US_ASCII), it) }
+        signatureBytes?.let { YggdrasilUtil.require((expiresAt.toEpochMilli().toString() + pair.publicString).toByteArray(StandardCharsets.US_ASCII), it) }
     }
 
     fun getSignature(versionId: Int): ByteArray {

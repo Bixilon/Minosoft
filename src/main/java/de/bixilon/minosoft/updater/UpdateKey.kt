@@ -11,24 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.main
+package de.bixilon.minosoft.updater
 
-enum class BootTasks {
-    PROFILES,
-    LANGUAGE_FILES,
-    VERSIONS,
-    ASSETS_PROPERTIES,
-    DEFAULT_REGISTRIES,
-    LAN_SERVERS,
-    KEYS,
-    STARTUP_PROGRESS,
-    ASSETS_OVERRIDE,
-    CLI,
-    MODS,
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.util.signature.SignatureSigner
 
-    DATA_FIXER,
 
-    JAVAFX,
-    EROS,
-    ;
-}
+object UpdateKey : SignatureSigner(minosoft("updater/release.pub"), "SHA512withRSA")

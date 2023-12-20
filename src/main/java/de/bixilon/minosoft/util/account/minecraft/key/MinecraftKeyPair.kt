@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.minosoft.protocol.protocol.buffers.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
-import de.bixilon.minosoft.util.yggdrasil.YggdrasilException
+import de.bixilon.minosoft.util.signature.SignatureException
 import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import java.security.PublicKey
 import java.time.Instant
@@ -42,7 +42,7 @@ data class MinecraftKeyPair(
 
         fun requireSignature(uuid: UUID, expiresAt: Instant, publicKey: PublicKey, signature: ByteArray) {
             if (!isSignatureCorrect(uuid, expiresAt, publicKey, signature)) {
-                throw YggdrasilException()
+                throw SignatureException()
             }
         }
     }

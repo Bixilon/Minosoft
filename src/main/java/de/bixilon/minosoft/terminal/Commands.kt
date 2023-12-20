@@ -11,24 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.main
+package de.bixilon.minosoft.terminal
 
-enum class BootTasks {
-    PROFILES,
-    LANGUAGE_FILES,
-    VERSIONS,
-    ASSETS_PROPERTIES,
-    DEFAULT_REGISTRIES,
-    LAN_SERVERS,
-    KEYS,
-    STARTUP_PROGRESS,
-    ASSETS_OVERRIDE,
-    CLI,
-    MODS,
+import de.bixilon.minosoft.terminal.commands.*
+import de.bixilon.minosoft.terminal.commands.connection.*
+import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
 
-    DATA_FIXER,
+object Commands {
+    val COMMANDS: List<Command> = listOf(
+        HelpCommand, QuitCommand,
+        ConnectionManageCommand,
+        AccountManageCommand,
+        ReloadCommand,
 
-    JAVAFX,
-    EROS,
-    ;
+        PingCommand, ConnectCommand,
+
+        CrashCommand, DumpCommand,
+
+        AboutCommand, UpdateCommand,
+
+
+        SayCommand,
+        ActionCommand, QueryCommand,
+        DebugCommand, BenchmarkCommand,
+        DisconnectCommand,
+    )
 }

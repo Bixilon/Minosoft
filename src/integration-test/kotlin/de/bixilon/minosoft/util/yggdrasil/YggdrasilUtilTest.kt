@@ -51,6 +51,6 @@ class YggdrasilUtilTest {
         val texture = "ewogICJ0aW1lc3RhbXAiIDogMTY5MDQwMTIzODM2NCwKICAicHJvZmlsZUlkIiA6ICJhODUxNzQ0MDNlNjg0MDgwYWNkODU3MzhlMjI5NGNhZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJEYVJpdmVyc09uZSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS80YjJjMjAwYjA1ZWY4NDhiY2IyZGM2YTBlOGY2OTQ0MWE3YzE3Mzg4Y2FjY2UzNzAxMzg5YTU0OGM2NTdjMzZkIgogICAgfQogIH0KfQ=="
         val signature = ""
 
-        assertThrows { YggdrasilUtil.requireSignature(texture, signature) }
+        assertThrows { YggdrasilUtil.require(texture, signature) }
     }
 }

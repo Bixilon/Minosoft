@@ -11,10 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.properties.general
+package de.bixilon.minosoft.updater
 
-class GeneralP(
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.properties.MinosoftProperties
+import java.net.URL
+
+data class MinosoftUpdate(
+    val id: String,
     val name: String,
     val date: Long,
     val stable: Boolean,
-)
+    val page: URL? = null,
+    val download: DownloadLink? = null,
+    val releaseNotes: ChatComponent? = null,
+) {
+
+    init {
+        verify()
+    }
+
+    private fun verify() {
+        if (MinosoftProperties.general.date >= date) throw Exception("Update is older than the current version!")
+        if (this.download == null) return
+        val builder = StringBuilder()
+        builder.append(id)
+        builder.append(date)
+        page?.let { builder.append(it) }
+        builder.append(download.sha512)
+
+        UpdateKey.require(builder.toString(), download.signature)
+    }
+}

@@ -11,24 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.main
+package de.bixilon.minosoft.updater
 
-enum class BootTasks {
-    PROFILES,
-    LANGUAGE_FILES,
-    VERSIONS,
-    ASSETS_PROPERTIES,
-    DEFAULT_REGISTRIES,
-    LAN_SERVERS,
-    KEYS,
-    STARTUP_PROGRESS,
-    ASSETS_OVERRIDE,
-    CLI,
-    MODS,
+import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.latch.SimpleLatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.minosoft.commands.stack.print.PrintTarget
 
-    DATA_FIXER,
+class UpdateProgress(
+    val progress: AbstractLatch = SimpleLatch(0),
+    var log: PrintTarget? = null,
+) {
+    var stage by observed(UpdateStage.WAITING)
+    var error: Throwable? = null
 
-    JAVAFX,
-    EROS,
-    ;
+    enum class UpdateStage {
+        WAITING,
+        DOWNLOADING,
+        VERIFYING,
+        STORING,
+
+        DONE,
+        FAILED,
+    }
 }

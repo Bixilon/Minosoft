@@ -29,6 +29,7 @@ import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.versions.VersionLoader
 import de.bixilon.minosoft.terminal.cli.CLI
+import de.bixilon.minosoft.updater.UpdateKey
 import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 
 object MinosoftBoot {
@@ -44,7 +45,7 @@ object MinosoftBoot {
 
         worker += WorkerTask(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
 
-        worker += WorkerTask(identifier = BootTasks.YGGDRASIL, executor = { YggdrasilUtil.load() })
+        worker += WorkerTask(identifier = BootTasks.KEYS, executor = { YggdrasilUtil.load(); UpdateKey.load() })
 
         worker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { IntegratedAssets.OVERRIDE.load(it) })
         worker += WorkerTask(identifier = BootTasks.MODS, executor = { DefaultModPhases.BOOT.load(it) })

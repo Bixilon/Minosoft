@@ -31,8 +31,9 @@ object MinosoftPropertiesLoader {
     fun load() {
         val properties = IntegratedAssets.DEFAULT.getOrNull(minosoft("version.json"))?.readJson<MinosoftP>(reader = reader)
         MinosoftProperties = if (properties == null) {
-            Log.log(LogMessageType.OTHER, LogLevels.FATAL) { "Can not load version.json! Did you compile with gradle?" }
-            MinosoftP(GeneralP("unknown", false), null)
+            // it should be fatal, but then users report it as error if they use an ide or ...
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Can not load build info! Do you have git installed and compiled with gradle? Updater will not work." }
+            MinosoftP(GeneralP("unknown", 0L, false), null)
         } else {
             properties
         }

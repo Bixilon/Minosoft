@@ -24,7 +24,7 @@ import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.terminal.commands.Commands
+import de.bixilon.minosoft.terminal.Commands
 import de.bixilon.minosoft.terminal.commands.connection.ConnectionCommand
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -95,7 +95,7 @@ object CLI {
             }
             if (line.isBlank()) continue
 
-            processLine(line)
+            execute(line)
         }
     }
 
@@ -104,7 +104,7 @@ object CLI {
         Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "End of file error in cli thread. Disabling cli." }
     }
 
-    private fun processLine(line: String) {
+    fun execute(line: String) {
         try {
             commands.execute(line, connection)
         } catch (error: ReaderError) {

@@ -13,60 +13,26 @@
 
 package de.bixilon.minosoft.util.yggdrasil
 
-import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.data.registries.identified.Namespaces.mojang
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.security.KeyFactory
-import java.security.PublicKey
-import java.security.Signature
-import java.security.spec.X509EncodedKeySpec
-import java.util.*
+import de.bixilon.minosoft.util.signature.SignatureSigner
 
 
-object YggdrasilUtil {
-    lateinit var PUBLIC_KEY: PublicKey
-        private set
+object YggdrasilUtil : SignatureSigner(mojang("yggdrasil/pubkey.der"), "SHA1withRSA") {
 
-    fun load() {
+    override fun load() {
         if (RunConfiguration.IGNORE_YGGDRASIL) {
-            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Yggdrasil signature checking is disabled. Servers can pretend that they have valid data from mojang!" }
+            Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Yggdrasil signature checking is disabled. Servers can pretend that they have valid data from mojang!" }
             return
         }
-        check(!this::PUBLIC_KEY.isInitialized) { "Already loaded!" }
-        val spec = X509EncodedKeySpec(IntegratedAssets.DEFAULT[mojang("yggdrasil/pubkey.der")].readAllBytes())
-        val keyFactory: KeyFactory = KeyFactory.getInstance("RSA")
-        PUBLIC_KEY = keyFactory.generatePublic(spec)
+        super.load()
     }
 
-    fun verify(data: ByteArray, signature: ByteArray): Boolean {
-        if (RunConfiguration.IGNORE_YGGDRASIL) {
-            return true
-        }
-        val signatureInstance = Signature.getInstance("SHA1withRSA")
-        signatureInstance.initVerify(PUBLIC_KEY)
-        signatureInstance.update(data)
-        return signatureInstance.verify(signature)
-    }
-
-    fun requireSignature(data: ByteArray, signature: ByteArray) {
-        if (!verify(data, signature)) {
-            throw YggdrasilException()
-        }
-    }
-
-    fun verify(data: String, signature: String): Boolean {
-        if (RunConfiguration.IGNORE_YGGDRASIL) {
-            return true
-        }
-        return verify(data.toByteArray(), Base64.getDecoder().decode(signature))
-    }
-
-    fun requireSignature(data: String, signature: String) {
-        if (!verify(data, signature)) {
-            throw YggdrasilException()
-        }
+    override fun verify(data: ByteArray, signature: ByteArray): Boolean {
+        if (RunConfiguration.IGNORE_YGGDRASIL) return true
+        return super.verify(data, signature)
     }
 }

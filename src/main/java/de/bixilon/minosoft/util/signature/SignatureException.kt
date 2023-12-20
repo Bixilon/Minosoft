@@ -11,28 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.util.signature
 
-import de.bixilon.minosoft.terminal.commands.connection.*
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
-
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand, QuitCommand,
-        ConnectionManageCommand,
-        AccountManageCommand,
-        ReloadCommand,
-
-        PingCommand, ConnectCommand,
-
-        CrashCommand, DumpCommand,
-
-        AboutCommand,
-
-
-        SayCommand,
-        ActionCommand, QueryCommand,
-        DebugCommand, BenchmarkCommand,
-        DisconnectCommand,
-    )
-}
+class SignatureException(message: String? = null) : Exception(message)

@@ -32,6 +32,7 @@ import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.assets.IntegratedAssets
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.formatting.FormattingCodes
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -49,6 +50,7 @@ import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.updater.MinosoftUpdater
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
@@ -110,6 +112,8 @@ object Minosoft {
         KUtil.initPlayClasses()
         GlobalEventMaster.fire(FinishBootEvent())
         DefaultThreadPool += { DefaultModPhases.POST.load(); Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO) { "Mod loading completed!" } }
+        checkForUpdates()
+
         if (RunConfiguration.DISABLE_EROS) {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Eros is disabled, no gui will show up! Use the cli to connect to servers!" }
         }
@@ -162,5 +166,13 @@ object Minosoft {
         if (!RunConfiguration.X_START_ON_FIRST_THREAD_SET || !(!RunConfiguration.DISABLE_RENDERING || !RunConfiguration.DISABLE_EROS)) return
         Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using macOS. To use rendering you must not set the jvm argument §9-XstartOnFirstThread§r. Please remove it!" }
         ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
+    }
+
+    fun checkForUpdates() {
+        if (!OtherProfileManager.selected.updater.check) return
+        DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.LOW) {
+            val update = MinosoftUpdater.check() ?: return@ForcePooledRunnable
+            Log.log(LogMessageType.OTHER, LogLevels.INFO) { "A new update is available: ${update.name} (${update.id}). Type \"update\" or click in the gui to update." }
+        }
     }
 }

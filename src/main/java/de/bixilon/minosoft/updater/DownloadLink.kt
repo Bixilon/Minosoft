@@ -11,24 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.main
+package de.bixilon.minosoft.updater
 
-enum class BootTasks {
-    PROFILES,
-    LANGUAGE_FILES,
-    VERSIONS,
-    ASSETS_PROPERTIES,
-    DEFAULT_REGISTRIES,
-    LAN_SERVERS,
-    KEYS,
-    STARTUP_PROGRESS,
-    ASSETS_OVERRIDE,
-    CLI,
-    MODS,
+import java.net.URL
 
-    DATA_FIXER,
-
-    JAVAFX,
-    EROS,
-    ;
-}
+data class DownloadLink(
+    val url: URL,
+    val size: Int,
+    val sha512: String,
+    val signature: String,
+)

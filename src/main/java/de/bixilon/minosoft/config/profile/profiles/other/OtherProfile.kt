@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.other.log.LogC
+import de.bixilon.minosoft.config.profile.profiles.other.updater.UpdaterC
 import de.bixilon.minosoft.config.profile.storage.ProfileStorage
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import org.kordamp.ikonli.Ikon
@@ -42,6 +43,7 @@ class OtherProfile(
     var listenLAN by BooleanDelegate(this, true)
 
     val log = LogC(this)
+    val updater = UpdaterC(this)
 
 
     override fun toString(): String {
