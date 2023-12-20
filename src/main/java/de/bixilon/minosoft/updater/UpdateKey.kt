@@ -17,4 +17,4 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.util.signature.SignatureSigner
 
 
-object UpdateKey : SignatureSigner(minosoft("updater/release.pub"), "SHA512withRSA")
+object UpdateKey : SignatureSigner(minosoft("updater/release.der"), "SHA512withRSA")

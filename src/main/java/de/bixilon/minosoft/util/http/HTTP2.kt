@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -74,13 +74,14 @@ object HTTP2 {
 
     fun <Response> String.get(bodyBuilder: (String) -> Response, headers: Map<String, Any> = emptyMap()): HTTPResponse<Response> {
         val client = HttpClient.newHttpClient()
-        val request = HttpRequest.newBuilder()
+        var request = HttpRequest.newBuilder()
             .uri(URI.create(this))
             .GET()
-            .headers(*headers.headers())
-            .build()
+        if (headers.isNotEmpty()) {
+            request = request.headers(*headers.headers())
+        }
 
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        val response = client.send(request.build(), HttpResponse.BodyHandlers.ofString())
         return HTTPResponse(response.statusCode(), bodyBuilder(response.body()))
     }
 

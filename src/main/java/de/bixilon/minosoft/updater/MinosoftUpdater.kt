@@ -19,7 +19,7 @@ import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.properties.MinosoftProperties
-import de.bixilon.minosoft.util.http.HTTP2.getJson
+import de.bixilon.minosoft.util.http.HTTP2.get
 import de.bixilon.minosoft.util.http.exceptions.HTTPException
 import de.bixilon.minosoft.util.json.Jackson
 import java.net.URL
@@ -40,12 +40,11 @@ object MinosoftUpdater {
 
     fun check(): MinosoftUpdate? {
         val profile = OtherProfileManager.selected.updater
-        return check(profile.url.toURL(), profile.channel)
+        return check(profile.url, profile.channel)
     }
 
 
-    fun check(url: URL, channel: String): MinosoftUpdate? {
-        validateURL(url)
+    fun check(url: String, channel: String): MinosoftUpdate? {
 
         val commit = MinosoftProperties.git?.commit ?: ""
         val version = MinosoftProperties.general.name
@@ -53,26 +52,28 @@ object MinosoftUpdater {
         val os = PlatformInfo.OS
         val arch = PlatformInfo.ARCHITECTURE
 
-        val request = url.toString().formatPlaceholder(
-            "\${COMMIT}" to commit,
-            "\${VERSION}" to version,
-            "\${STABLE}" to stable,
-            "\${OS}" to os,
-            "\${ARCH}" to arch,
-            "\${CHANNEL}" to channel,
+        val request = url.formatPlaceholder(
+            "COMMIT" to commit,
+            "VERSION" to version,
+            "STABLE" to stable,
+            "OS" to os.name.lowercase(),
+            "ARCH" to arch.name.lowercase(),
+            "CHANNEL" to channel.lowercase(),
         )
+
+        validateURL(request.toURL())
         val update = request(request)
         this.update = update
         return update
     }
 
     private fun request(url: String): MinosoftUpdate? {
-        val response = url.getJson()
+        val response = url.get({ it })
 
         return when (response.statusCode) {
             204 -> null
-            200 -> Jackson.MAPPER.convertValue(response.body, MinosoftUpdate::class.java)
-            else -> throw HTTPException(response.statusCode, response.body.toString())
+            200 -> Jackson.MAPPER.readValue(response.body, MinosoftUpdate::class.java)
+            else -> throw HTTPException(response.statusCode, response.body)
         }
     }
 
