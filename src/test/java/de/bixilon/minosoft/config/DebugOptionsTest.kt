@@ -13,20 +13,21 @@
 
 package de.bixilon.minosoft.config
 
-object DebugOptions {
-    const val INFINITE_TORCHES = false
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Test
 
-    const val SIMULATE_TIME = false
+class DebugOptionsTest {
 
-    const val CLOUD_RASTER = false
-
-    const val LIGHTMAP_DEBUG_WINDOW = false
-    const val LIGHT_DEBUG_MODE = false
-
-    const val LOG_RAW_CHAT = false
-
-    const val FORCE_CHEST_ANIMATION = false
-    const val EMPTY_BUFFERS = false
-
-    const val FORCE_CHECK_UPDATES = false
+    @Test
+    fun `check that all debug options are turned off`() {
+        assertFalse(DebugOptions.INFINITE_TORCHES)
+        assertFalse(DebugOptions.SIMULATE_TIME)
+        assertFalse(DebugOptions.CLOUD_RASTER)
+        assertFalse(DebugOptions.LIGHTMAP_DEBUG_WINDOW)
+        assertFalse(DebugOptions.LIGHT_DEBUG_MODE)
+        assertFalse(DebugOptions.LOG_RAW_CHAT)
+        assertFalse(DebugOptions.LIGHT_DEBUG_MODE)
+        assertFalse(DebugOptions.FORCE_CHEST_ANIMATION)
+        assertFalse(DebugOptions.EMPTY_BUFFERS)
+    }
 }
