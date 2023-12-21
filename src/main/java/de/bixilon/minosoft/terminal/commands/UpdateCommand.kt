@@ -75,6 +75,7 @@ object UpdateCommand : Command {
         }),
     )
 
+
     private fun PrintTarget.check() {
         print("Checking for updates...")
         DefaultThreadPool += {

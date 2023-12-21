@@ -17,4 +17,5 @@ class GeneralP(
     val name: String,
     val date: Long,
     val stable: Boolean,
+    val updates: Boolean,
 )

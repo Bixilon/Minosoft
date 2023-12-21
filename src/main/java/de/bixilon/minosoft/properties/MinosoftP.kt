@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,4 +19,18 @@ import de.bixilon.minosoft.properties.git.GitP
 data class MinosoftP(
     val general: GeneralP,
     val git: GitP?,
-)
+) {
+
+    fun canUpdate(): Boolean {
+        val properties = MinosoftProperties
+        if (properties.git != null && (properties.git.dirty || properties.git.branch != "master")) {
+            // clearly self built, not checking for updates
+            return false
+        }
+        if (!properties.general.updates) {
+            // version is from 3rd party stores or self built
+            return false
+        }
+        return true
+    }
+}

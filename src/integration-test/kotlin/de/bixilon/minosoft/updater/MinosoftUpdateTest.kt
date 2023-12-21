@@ -27,7 +27,7 @@ import org.testng.annotations.Test
 class MinosoftUpdateTest {
 
     init {
-        MinosoftProperties = MinosoftP(GeneralP("old", -10L, false), null)
+        MinosoftProperties = MinosoftP(GeneralP("old", -10L, false, false), null)
     }
 
     fun `no download link`() {
@@ -39,6 +39,6 @@ class MinosoftUpdateTest {
     }
 
     fun `older signature`() {
-        assertThrows { MinosoftUpdate("dummy", "Dummy version", -10L, true, null, DownloadLink("https://bixilon.de/secret-update.jar".toURL(), 123, ByteArray(1).sha512()), ChatComponent.of(":)")) }
+        assertThrows { MinosoftUpdate("dummy", "Dummy version", MinosoftProperties.general.date, true, null, DownloadLink("https://bixilon.de/secret-update.jar".toURL(), 123, ByteArray(1).sha512()), ChatComponent.of(":)")) }
     }
 }

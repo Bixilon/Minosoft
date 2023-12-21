@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.forceInit
 import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
+import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.updater.MinosoftUpdater
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
@@ -98,6 +99,7 @@ object Eros {
     }
 
     private fun askForUpdates() {
+        if (!MinosoftProperties.canUpdate()) return
         val profile = OtherProfileManager.selected.updater
         if (!profile.ask) return
         val dialog = ConfirmationDialog(

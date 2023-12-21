@@ -14,6 +14,7 @@
 import de.bixilon.kutil.os.Architectures
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.time.TimeUtil
 import org.ajoberstar.grgit.Commit
 import org.ajoberstar.grgit.Grgit
@@ -50,6 +51,8 @@ val nettyVersion = getProperty("netty.version")
 val jacksonVersion = getProperty("jackson.version")
 val kutilVersion = getProperty("kutil.version")
 val glmVersion = getProperty("glm.version")
+
+val updates = properties["minosoft.updates"]?.toBoolean() ?: false
 
 val os = properties["platform"]?.let { OSTypes[it] } ?: PlatformInfo.OS
 val architecture = properties["architecture"]?.let { Architectures[it] } ?: PlatformInfo.ARCHITECTURE
@@ -457,6 +460,7 @@ val versionJsonTask = tasks.register("versionJson") {
                 "name" to project.version,
                 "date" to TimeUtil.seconds(),
                 "stable" to stable,
+                "updates" to updates,
             )
         )
         try {

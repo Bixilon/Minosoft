@@ -49,17 +49,17 @@ jobs:
       - name: Build
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: assemble
+          arguments: assemble -Pminosoft.updates=true
 
       - name: Test
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: check
+          arguments: check -Pminosoft.updates=true
 
       - name: Package amd64
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: fatJar
+          arguments: fatJar -Pminosoft.updates=true
       - name: Upload amd64 build
         uses: actions/upload-artifact@v3
         with:
@@ -70,7 +70,7 @@ jobs:
         if: ${{ !startsWith(matrix.os, 'windows') }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: fatJar -Parchitecture=aarch64
+          arguments: fatJar -Parchitecture=aarch64 -Pminosoft.updates=true
       - name: Upload aarch64 build
         if: ${{ !startsWith(matrix.os, 'windows') }}
         uses: actions/upload-artifact@v3

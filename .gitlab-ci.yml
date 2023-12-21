@@ -36,14 +36,14 @@ cache:
 
 build:
   stage: build
-  script: ./gradlew --build-cache assemble
+  script: ./gradlew --build-cache assemble -Pminosoft.updates=true
   only:
     - master
     - merge_requests
 
 test:
   stage: test
-  script: ./gradlew check
+  script: ./gradlew check -Pminosoft.updates=true
   only:
     - master
     - merge_requests
@@ -55,7 +55,7 @@ test:
 package:
   stage: package
   script:
-    - ./gradlew fatJar --stacktrace
+    - ./gradlew fatJar --stacktrace -Pminosoft.updates=true
   only:
     - master
   artifacts:

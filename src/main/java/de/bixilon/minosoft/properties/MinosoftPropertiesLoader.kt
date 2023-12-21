@@ -33,7 +33,7 @@ object MinosoftPropertiesLoader {
         MinosoftProperties = if (properties == null) {
             // it should be fatal, but then users report it as error if they use an ide or ...
             Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Can not load build info! Do you have git installed and compiled with gradle? Updater will not work." }
-            MinosoftP(GeneralP("unknown", 0L, false), null)
+            MinosoftP(GeneralP("unknown", 0L, false, false), null)
         } else {
             properties
         }

@@ -43,6 +43,7 @@ object MinosoftUpdater {
     }
 
     fun check(): MinosoftUpdate? {
+        if (!MinosoftProperties.canUpdate()) return null
         val profile = OtherProfileManager.selected.updater
         return check(profile.url, profile.channel)
     }
