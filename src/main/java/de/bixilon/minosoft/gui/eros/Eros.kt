@@ -14,11 +14,14 @@
 package de.bixilon.minosoft.gui.eros
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
+import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
+import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.UpdateAvailableDialog
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener.Companion.javaFX
@@ -32,6 +35,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import javafx.stage.Modality
 import javafx.stage.Window
 
 object Eros {
@@ -93,12 +97,29 @@ object Eros {
         }
     }
 
+    private fun askForUpdates() {
+        val profile = OtherProfileManager.selected.updater
+        if (!profile.ask) return
+        val dialog = SimpleErosConfirmationDialog(
+            title = i18n("updater.ask.title"),
+            header = i18n("updater.ask.header"),
+            description = i18n("updater.ask.description"),
+            cancelButtonText = i18n("updater.ask.no"),
+            confirmButtonText = i18n("updater.ask.yes"),
+            onCancel = { profile.ask = false; profile.check = false },
+            onConfirm = { profile.ask = false; profile.check = true; DefaultThreadPool += { MinosoftUpdater.check() } },
+            modality = Modality.APPLICATION_MODAL,
+        )
+        dialog.show()
+    }
+
     fun start() {
         if (latch.count >= 1) return
         latch.await()
         mainErosController.stage.show()
         initialized = true
         visible = true
+        askForUpdates()
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Eros up!" }
     }
 

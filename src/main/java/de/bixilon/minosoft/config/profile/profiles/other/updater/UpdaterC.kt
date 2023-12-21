@@ -29,7 +29,7 @@ class UpdaterC(profile: OtherProfile) {
     /**
      * Check  for updates
      */
-    var check by BooleanDelegate(profile, true)
+    var check by BooleanDelegate(profile, false)
 
     /**
      * Update channel

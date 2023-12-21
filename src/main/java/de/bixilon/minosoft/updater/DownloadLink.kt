@@ -19,5 +19,4 @@ data class DownloadLink(
     val url: URL,
     val size: Int,
     val sha512: String,
-    val signature: String,
 )

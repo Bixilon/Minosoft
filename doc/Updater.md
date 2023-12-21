@@ -15,7 +15,7 @@ Minosoft fetches a configured url with the following parameters:
 ### Response (v1)
 
 The server internally checks if the user can receive updates for the version or platform. If no update is available, it responds with `204 No content`.
-Otherwise it responds with `200 OK` and returns a json object:
+Otherwise it responds with `200 OK` and returns a json object (with the signature, check below):
 
 ```json
 {
@@ -37,6 +37,7 @@ Otherwise it responds with `200 OK` and returns a json object:
 
 All urls in the response **must** start with `https://` or be a localhost link.
 
+
 ## Update process
 
 When an update is available, it prompts the user the install it. It tries to store the file in the current directory (if possible) or asks the user where to store it.
@@ -46,12 +47,7 @@ The client will refuse to update, if the release date of the next version is low
 
 ## Signature
 
-The signature is created by base64 appending the following strings (in order) together and then using RSA (`SHA512withRSA`) to sign it:
-
-1. Version id
-2. release date (number to string)
-3. Release page (optional)
-4. sha512 hash of the binary
+The first line of the file is the base64 encoded signature of the whole json object.
 
 ## Future
 

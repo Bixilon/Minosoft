@@ -235,3 +235,10 @@ minosoft:updater.available.dismiss=Dismiss
 minosoft:updater.available.later=Update later
 minosoft:updater.available.open=Open in browser
 minosoft:updater.available.update=Update now
+
+
+minosoft:updater.ask.title=Update checking
+minosoft:updater.ask.header=Allow automated checking for updates?
+minosoft:updater.ask.description=Minosoft can automatically check for updates on startup.\nIt is highly recommended to just run the latest version, there is no benefit from running outdated builds. Newer builds will include performance/feature improvements, potentially security updates and bug fixes.\nThe updater will submit data the following data to a server provided by Moritz Zwerger (Bixilon; original author of the program; visit the privacy https://imprint.bixilon.de): current running version, operating system, processor architecture. All requests are completely anonymized, but might be logged.\nMinosoft will prompt you to automatically update, once an update is available. You can always search for updates manually (Main window -> About -> Check for updates). This option can be changed at any time in the configuration files.
+minosoft:updater.ask.no=Disallow update checking
+minosoft:updater.ask.yes=Allow and check now (recommended)

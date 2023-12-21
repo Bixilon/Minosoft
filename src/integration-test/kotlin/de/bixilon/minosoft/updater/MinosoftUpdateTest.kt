@@ -13,21 +13,32 @@
 
 package de.bixilon.minosoft.updater
 
+import de.bixilon.kutil.hash.HashUtil.sha512
+import de.bixilon.kutil.url.URLUtil.toURL
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.properties.MinosoftP
+import de.bixilon.minosoft.properties.MinosoftProperties
+import de.bixilon.minosoft.properties.general.GeneralP
+import org.testng.Assert.assertThrows
 import org.testng.annotations.Test
 
 
-@Test
+@Test(groups = ["updater"])
 class MinosoftUpdateTest {
 
-    fun `invalid signature`() {
-        TODO()
+    init {
+        MinosoftProperties = MinosoftP(GeneralP("old", -10L, false), null)
+    }
+
+    fun `no download link`() {
+        MinosoftUpdate("dummy", "Dummy version", MinosoftProperties.general.date + 1, true, null, null, ChatComponent.of(":)"))
+    }
+
+    fun `correct data`() {
+        MinosoftUpdate("dummy", "Dummy version", MinosoftProperties.general.date + 1, true, null, DownloadLink("https://bixilon.de/secret-update.jar".toURL(), 123, ByteArray(1).sha512()), ChatComponent.of(":)"))
     }
 
     fun `older signature`() {
-        TODO()
-    }
-
-    fun `correct signature`() {
-
+        assertThrows { MinosoftUpdate("dummy", "Dummy version", -10L, true, null, DownloadLink("https://bixilon.de/secret-update.jar".toURL(), 123, ByteArray(1).sha512()), ChatComponent.of(":)")) }
     }
 }

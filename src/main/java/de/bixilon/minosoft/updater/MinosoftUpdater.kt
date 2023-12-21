@@ -49,7 +49,6 @@ object MinosoftUpdater {
 
 
     fun check(url: String, channel: String): MinosoftUpdate? {
-
         val commit = MinosoftProperties.git?.commit ?: ""
         val version = MinosoftProperties.general.name
         val stable = MinosoftProperties.general.stable
@@ -82,9 +81,15 @@ object MinosoftUpdater {
 
         return when (response.statusCode) {
             204 -> null
-            200 -> Jackson.MAPPER.readValue(response.body, MinosoftUpdate::class.java)
+            200 -> parse(response.body)
             else -> throw HTTPException(response.statusCode, response.body)
         }
+    }
+
+    fun parse(data: String): MinosoftUpdate {
+        val (signature, json) = data.split('\n', limit = 2)
+        UpdateKey.require(signature, json)
+        return Jackson.MAPPER.readValue(json, MinosoftUpdate::class.java)
     }
 
     fun download(update: MinosoftUpdate, progress: UpdateProgress) {

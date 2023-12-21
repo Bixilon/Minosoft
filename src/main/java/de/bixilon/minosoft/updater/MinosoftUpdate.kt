@@ -33,13 +33,5 @@ data class MinosoftUpdate(
 
     private fun verify() {
         if (MinosoftProperties.general.date >= date) throw Exception("Update is older than the current version!")
-        if (this.download == null) return
-        val builder = StringBuilder()
-        builder.append(id)
-        builder.append(date)
-        page?.let { builder.append(it) }
-        builder.append(download.sha512)
-
-        UpdateKey.require(builder.toString(), download.signature)
     }
 }

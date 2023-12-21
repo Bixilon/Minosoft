@@ -168,9 +168,23 @@ object Minosoft {
         ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
     }
 
+    private fun enableUpdates() {
+        val profile = OtherProfileManager.selected.updater
+        if (RunConfiguration.DISABLE_EROS) {
+            if (!profile.ask) return
+            Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Automated update checking was §aenabled§r. To disable it, check the config file." }
+            profile.ask = false
+            profile.check = true
+            return
+        }
+        // gui enabled, eros will show the prompt there
+    }
+
     fun checkForUpdates() {
         if (!OtherProfileManager.selected.updater.check) return
         DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.LOW) {
+            enableUpdates()
+            if (!OtherProfileManager.selected.updater.check) return@ForcePooledRunnable
             val update = MinosoftUpdater.check() ?: return@ForcePooledRunnable
             Log.log(LogMessageType.OTHER, LogLevels.INFO) { "A new update is available: ${update.name} (${update.id}). Type \"update\" or click in the gui to update." }
         }
