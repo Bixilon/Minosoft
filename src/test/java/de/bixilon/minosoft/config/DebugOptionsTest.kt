@@ -29,5 +29,6 @@ class DebugOptionsTest {
         assertFalse(DebugOptions.LIGHT_DEBUG_MODE)
         assertFalse(DebugOptions.FORCE_CHEST_ANIMATION)
         assertFalse(DebugOptions.EMPTY_BUFFERS)
+        assertFalse(DebugOptions.FORCE_CHECK_UPDATES)
     }
 }

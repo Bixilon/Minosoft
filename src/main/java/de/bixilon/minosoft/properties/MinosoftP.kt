@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.properties
 
+import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.properties.general.GeneralP
 import de.bixilon.minosoft.properties.git.GitP
 
@@ -22,6 +23,7 @@ data class MinosoftP(
 ) {
 
     fun canUpdate(): Boolean {
+        if (DebugOptions.FORCE_CHECK_UPDATES) return true
         val properties = MinosoftProperties
         if (properties.git != null && (properties.git.dirty || properties.git.branch != "master")) {
             // clearly self built, not checking for updates
