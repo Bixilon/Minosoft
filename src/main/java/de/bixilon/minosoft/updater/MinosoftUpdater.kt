@@ -20,8 +20,12 @@ import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.util.http.HTTP2.get
+import de.bixilon.minosoft.util.http.HTTPResponse
 import de.bixilon.minosoft.util.http.exceptions.HTTPException
 import de.bixilon.minosoft.util.json.Jackson
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.net.URL
 
 object MinosoftUpdater {
@@ -68,7 +72,13 @@ object MinosoftUpdater {
     }
 
     private fun request(url: String): MinosoftUpdate? {
-        val response = url.get({ it })
+        val response: HTTPResponse<String>
+        try {
+            response = url.get({ it })
+        } catch (error: Throwable) {
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Could not check for updates: $error" }
+            return null
+        }
 
         return when (response.statusCode) {
             204 -> null

@@ -86,7 +86,7 @@ object Eros {
                 start()
             }
         }
-        MinosoftUpdater::update.observe(this) {
+        MinosoftUpdater::update.observe(this, true) {
             if (it == null) return@observe
             if (it.id == OtherProfileManager.selected.updater.dismiss) return@observe // TODO: if not searched manually
             UpdateAvailableDialog(it).show()
