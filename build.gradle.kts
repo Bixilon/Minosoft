@@ -14,6 +14,7 @@
 import de.bixilon.kutil.os.Architectures
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
+import de.bixilon.kutil.time.TimeUtil
 import org.ajoberstar.grgit.Commit
 import org.ajoberstar.grgit.Grgit
 import org.ajoberstar.grgit.operation.LogOp
@@ -454,6 +455,7 @@ val versionJsonTask = tasks.register("versionJson") {
         val versionInfo: MutableMap<String, Any> = mutableMapOf(
             "general" to mutableMapOf(
                 "name" to project.version,
+                "date" to TimeUtil.seconds(),
                 "stable" to stable,
             )
         )

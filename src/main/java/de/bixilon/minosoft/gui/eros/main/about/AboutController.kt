@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
-import de.bixilon.minosoft.gui.eros.dialog.SimpleErosWarningDialog
+import de.bixilon.minosoft.gui.eros.dialog.simple.WarningDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -67,7 +67,7 @@ class AboutController : EmbeddedJavaFXController<HBox>() {
             try {
                 val update = MinosoftUpdater.check()
                 if (update == null) {
-                    SimpleErosWarningDialog(i18n("updater.none.title"), i18n("updater.none.header")).show()
+                    WarningDialog(i18n("updater.none.title"), i18n("updater.none.header")).show()
                 }
                 // no else, because eros is observing the update property and opens it automatically
             } catch (error: Throwable) {

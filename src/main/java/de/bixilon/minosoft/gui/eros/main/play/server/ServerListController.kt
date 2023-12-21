@@ -31,11 +31,11 @@ import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.ServerModifyDialog
-import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.ConnectingDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.LoadingDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.VerifyAssetsDialog
+import de.bixilon.minosoft.gui.eros.dialog.simple.ConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
@@ -284,7 +284,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 val type = serverType
                 isDisable = type.readOnly
                 setOnAction {
-                    SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = { type.remove(server) }).show()
+                    ConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = { type.remove(server) }).show()
                 }
                 ctext = TranslatableComponents.GENERAL_DELETE
             },

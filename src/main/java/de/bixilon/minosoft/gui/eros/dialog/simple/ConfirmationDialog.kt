@@ -11,33 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.dialog
+package de.bixilon.minosoft.gui.eros.dialog.simple
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.language.IntegratedLanguage
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Button
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 
-class SimpleErosWarningDialog(
+class ConfirmationDialog(
     val title: Any = DEFAULT_TITLE_TEXT,
     val header: Any = DEFAULT_TITLE_TEXT,
     val description: Any? = null,
-    val ignoreButtonText: Any = DEFAULT_IGNORE_TEXT,
-    val onIgnore: () -> Unit = {},
+    val cancelButtonText: Any = TranslatableComponents.GENERAL_CANCEL,
+    val confirmButtonText: Any = TranslatableComponents.GENERAL_CONFIRM,
+    val onCancel: () -> Unit = {},
+    val onConfirm: () -> Unit,
     val modality: Modality = Modality.WINDOW_MODAL,
 ) : DialogController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var descriptionFX: TextFlow
-    @FXML private lateinit var ignoreButtonFX: Button
+    @FXML private lateinit var cancelButtonFX: Button
+    @FXML private lateinit var confirmButtonFX: Button
 
     public override fun show() {
         JavaFXUtil.runLater {
@@ -49,31 +51,33 @@ class SimpleErosWarningDialog(
     override fun init() {
         headerFX.text = IntegratedLanguage.LANGUAGE.translate(header)
         descriptionFX.text = description?.let { IntegratedLanguage.LANGUAGE.translate(it) } ?: ChatComponent.EMPTY
-        ignoreButtonFX.text = IntegratedLanguage.LANGUAGE.translate(ignoreButtonText).message
+        cancelButtonFX.text = IntegratedLanguage.LANGUAGE.translate(cancelButtonText).message
+        confirmButtonFX.text = IntegratedLanguage.LANGUAGE.translate(confirmButtonText).message
     }
 
     override fun postInit() {
-        stage.setOnCloseRequest {
-            DefaultThreadPool += onIgnore
-        }
+        super.postInit()
 
-        stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
-            if (it.code == KeyCode.ESCAPE) {
-                ignore()
-            }
+        stage.setOnCloseRequest {
+            DefaultThreadPool += onCancel
         }
     }
 
     @FXML
-    fun ignore() {
-        DefaultThreadPool += onIgnore
+    fun confirm() {
+        DefaultThreadPool += onConfirm
+        stage.close()
+    }
+
+    @FXML
+    fun cancel() {
+        DefaultThreadPool += onCancel
         stage.close()
     }
 
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/simple_warning.fxml".toResourceLocation()
-        private val DEFAULT_TITLE_TEXT = "minosoft:general.dialog.warning".toResourceLocation()
-        private val DEFAULT_IGNORE_TEXT = "minosoft:general.ignore".toResourceLocation()
+        private val LAYOUT = "minosoft:eros/dialog/simple/confirmation.fxml".toResourceLocation()
+        private val DEFAULT_TITLE_TEXT = "minosoft:general.dialog.are_you_sure".toResourceLocation()
     }
 }

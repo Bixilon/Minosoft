@@ -32,7 +32,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
-import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
+import de.bixilon.minosoft.gui.eros.dialog.simple.ConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
@@ -203,7 +203,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
 
             it.add(Button("Delete").apply {
                 setOnAction {
-                    SimpleErosConfirmationDialog(onConfirm = {
+                    ConfirmationDialog(onConfirm = {
                         if (profile.selected == account) {
                             profile.selected = null
                         }

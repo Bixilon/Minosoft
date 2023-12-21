@@ -21,8 +21,8 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
-import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.UpdateAvailableDialog
+import de.bixilon.minosoft.gui.eros.dialog.simple.ConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener.Companion.javaFX
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -100,7 +100,7 @@ object Eros {
     private fun askForUpdates() {
         val profile = OtherProfileManager.selected.updater
         if (!profile.ask) return
-        val dialog = SimpleErosConfirmationDialog(
+        val dialog = ConfirmationDialog(
             title = i18n("updater.ask.title"),
             header = i18n("updater.ask.header"),
             description = i18n("updater.ask.description"),

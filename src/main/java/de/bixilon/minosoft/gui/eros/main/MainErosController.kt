@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
-import de.bixilon.minosoft.gui.eros.dialog.SimpleErosWarningDialog
+import de.bixilon.minosoft.gui.eros.dialog.simple.WarningDialog
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -160,7 +160,7 @@ class MainErosController : JavaFXWindowController() {
         val profile = ErosProfileManager.selected.general.accountProfile
         val account = account ?: profile.selected
         if (account == null) {
-            SimpleErosWarningDialog(title = NO_ACCOUNT_WARNING_TITLE, header = NO_ACCOUNT_WARNING_HEADER, description = NO_ACCOUNT_WARNING_DESCRIPTION, ignoreButtonText = NO_ACCOUNT_WARNING_BUTTON, onIgnore = { JavaFXUtil.runLater { activity = ErosMainActivities.ACCOUNT } }).show()
+            WarningDialog(title = NO_ACCOUNT_WARNING_TITLE, header = NO_ACCOUNT_WARNING_HEADER, description = NO_ACCOUNT_WARNING_DESCRIPTION, ignoreButtonText = NO_ACCOUNT_WARNING_BUTTON, onIgnore = { JavaFXUtil.runLater { activity = ErosMainActivities.ACCOUNT } }).show()
             return
         }
 

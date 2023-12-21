@@ -2,7 +2,7 @@
 
 <!--
   ~ Minosoft
-  ~ Copyright (C) 2020-2022 Moritz Zwerger
+  ~ Copyright (C) 2020-2023 Moritz Zwerger
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
   ~
@@ -19,17 +19,16 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" prefHeight="250.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/17.0.2-ea"> <!--fx:controller="de.bixilon.minosoft.gui.eros.dialog.SimpleErosWarningDialog" -->
+<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" prefHeight="230.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17.0.2-ea"> <!--fx:controller="de.bixilon.minosoft.gui.eros.dialog.simple.ConfirmationDialog -->
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
-            <ColumnConstraints hgrow="NEVER"/>
             <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>
         <rowConstraints>
             <RowConstraints vgrow="ALWAYS"/>
-            <RowConstraints/>
+            <RowConstraints vgrow="NEVER"/>
         </rowConstraints>
-        <GridPane GridPane.columnIndex="1">
+        <GridPane>
             <columnConstraints>
                 <ColumnConstraints hgrow="NEVER"/>
                 <ColumnConstraints hgrow="ALWAYS"/>
@@ -38,35 +37,34 @@
                 <rowConstraints>
                     <RowConstraints vgrow="NEVER"/>
                     <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="NEVER"/>
                 </rowConstraints>
                 <GridPane.margin>
-                    <Insets/>
+                    <Insets top="50.0"/>
                 </GridPane.margin>
                 <TextFlow fx:id="descriptionFX" GridPane.rowIndex="1">
                     <GridPane.margin>
-                        <Insets left="5.0" right="5.0"/>
+                        <Insets bottom="20.0" left="5.0" right="5.0" top="10.0"/>
                     </GridPane.margin>
                     <Text text="This is a really important warning, please click on cancel!"/>
                 </TextFlow>
                 <TextFlow fx:id="headerFX" style="-fx-font-size: 30;">
                     <GridPane.margin>
-                        <Insets bottom="20.0" left="5.0" right="5.0" top="40.0"/>
+                        <Insets bottom="10.0" left="5.0" right="5.0"/>
                     </GridPane.margin>
                     <opaqueInsets>
                         <Insets/>
                     </opaqueInsets>
-                    <Text text="I can only warn you!"/>
+                    <Text text="Are you sure?"/>
                 </TextFlow>
-                <Button fx:id="ignoreButtonFX" defaultButton="true" onAction="#ignore" text="Ignore" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-                    <GridPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </GridPane.margin>
-                </Button>
                 <columnConstraints>
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
             </GridPane>
+            <FontIcon iconColor="#e4e44b" iconLiteral="fas-question-circle" iconSize="150">
+                <GridPane.margin>
+                    <Insets left="5.0" right="10.0"/>
+                </GridPane.margin>
+            </FontIcon>
             <rowConstraints>
                 <RowConstraints vgrow="ALWAYS"/>
             </rowConstraints>
@@ -75,18 +73,24 @@
             <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS"/>
                 <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="NEVER"/>
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
+            <Button fx:id="confirmButtonFX" defaultButton="true" onAction="#confirm" text="Confirm" GridPane.columnIndex="2">
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </Button>
+            <Button fx:id="cancelButtonFX" onAction="#cancel" text="Cancel" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </Button>
             <GridPane.margin>
                 <Insets bottom="10.0" right="5.0"/>
             </GridPane.margin>
         </GridPane>
-        <FontIcon styleClass="warning-icon" iconColor="#FFCC00" iconLiteral="fas-exclamation-triangle" iconSize="150">
-            <GridPane.margin>
-                <Insets left="5.0" right="10.0"/>
-            </GridPane.margin>
-        </FontIcon>
     </GridPane>
 </HBox>
