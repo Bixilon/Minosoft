@@ -77,7 +77,7 @@ object MinosoftUpdater {
         }
     }
 
-    fun update(update: MinosoftUpdate, progress: UpdateProgress) {
+    fun download(update: MinosoftUpdate, progress: UpdateProgress) {
         val download = update.download
         if (download == null) {
             progress.log?.print("Update is unavailable for download. Please download it manually!")

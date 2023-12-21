@@ -18,6 +18,8 @@ import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
+import de.bixilon.minosoft.gui.eros.dialog.UpdateAvailableDialog
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener.Companion.javaFX
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -25,6 +27,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.forceInit
 import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
+import de.bixilon.minosoft.updater.MinosoftUpdater
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -82,6 +85,11 @@ object Eros {
                 this.mainErosController.stage.close()
                 start()
             }
+        }
+        MinosoftUpdater::update.observe(this) {
+            if (it == null) return@observe
+            if (it.id == OtherProfileManager.selected.updater.dismiss) return@observe // TODO: if not searched manually
+            UpdateAvailableDialog(it).show()
         }
     }
 

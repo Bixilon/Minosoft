@@ -224,3 +224,14 @@ minosoft:mod.phase=Loading phase
 
 minosoft:mod.depends=Depends
 minosoft:mod.provides=Provides
+
+
+minosoft:updater.none.title=No updates available
+minosoft:updater.none.header=You are already running the latest version!
+minosoft:updater.available.title=Update available
+minosoft:updater.available.header=A new update for Minosoft is available: %1$s (%2$s)
+minosoft:updater.available.no_notes=No release notes available, check the repository for more information.
+minosoft:updater.available.dismiss=Dismiss
+minosoft:updater.available.later=Update later
+minosoft:updater.available.open=Open in browser
+minosoft:updater.available.update=Update now

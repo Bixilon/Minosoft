@@ -47,7 +47,7 @@ object UpdateCommand : Command {
             if (update != null) {
                 DefaultThreadPool += {
                     val progress = UpdateProgress(log = it.print)
-                    MinosoftUpdater.update(update, progress)
+                    MinosoftUpdater.download(update, progress)
                 }
                 return@LiteralNode
             }
@@ -59,7 +59,7 @@ object UpdateCommand : Command {
                 } else {
                     DefaultThreadPool += {
                         val progress = UpdateProgress(log = it.print)
-                        MinosoftUpdater.update(update, progress)
+                        MinosoftUpdater.download(update, progress)
                     }
                 }
             }

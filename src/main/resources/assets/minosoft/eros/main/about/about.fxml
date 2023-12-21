@@ -35,6 +35,7 @@
                 <RowConstraints vgrow="NEVER"/>
                 <RowConstraints vgrow="ALWAYS"/>
                 <RowConstraints vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
             <ImageView fx:id="minosoftLogoFX" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                 <GridPane.margin>
@@ -46,6 +47,11 @@
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                 </GridPane.margin>
             </Pane>
+            <Button fx:id="checkUpdatesFX" maxWidth="Infinity" onAction="#checkUpdates" text="Check updates" GridPane.rowIndex="3">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </Button>
             <Button fx:id="createCrashReportFX" maxWidth="Infinity" onAction="#createCrashReport" text="Create crash report" GridPane.rowIndex="3">
                 <GridPane.margin>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
