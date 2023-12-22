@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.updater
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
@@ -42,8 +43,18 @@ object MinosoftUpdater {
         throw IllegalStateException("Illegal protocol: $url")
     }
 
+    fun check(force: Boolean = false, callback: (MinosoftUpdate?) -> Unit) {
+        if (!MinosoftProperties.canUpdate()) return
+        if (!force) {
+            this.update?.let { callback.invoke(update); return }
+        }
+        DefaultThreadPool += {
+            val update = check()
+            callback.invoke(update)
+        }
+    }
+
     fun check(): MinosoftUpdate? {
-        if (!MinosoftProperties.canUpdate()) return null
         val profile = OtherProfileManager.selected.updater
         return check(profile.url, profile.channel)
     }

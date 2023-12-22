@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.stack.print.PrintTarget
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
@@ -27,14 +26,7 @@ import de.bixilon.minosoft.updater.UpdateProgress
 object UpdateCommand : Command {
     override var node: LiteralNode = LiteralNode("update", executor = { it.print.check() }).addChild(
         LiteralNode("notes", executor = {
-            val update = MinosoftUpdater.update
-            if (update != null) {
-                update.printNotes(it.print)
-                return@LiteralNode
-            }
-            it.print.print("Fetching update release notes...")
-            DefaultThreadPool += {
-                val update = MinosoftUpdater.check()
+            MinosoftUpdater.check { update ->
                 if (update == null) {
                     print("No update available!")
                 } else {
@@ -43,24 +35,14 @@ object UpdateCommand : Command {
             }
         }),
         LiteralNode("update", executor = {
-            val update = MinosoftUpdater.update
-            if (update != null) {
-                DefaultThreadPool += {
-                    val progress = UpdateProgress(log = it.print)
-                    MinosoftUpdater.download(update, progress)
-                }
-                return@LiteralNode
-            }
-            it.print.print("Fetching update details...")
-            DefaultThreadPool += {
-                val update = MinosoftUpdater.check()
+            MinosoftUpdater.check(false) { update ->
                 if (update == null) {
                     print("No update available!")
-                } else {
-                    DefaultThreadPool += {
-                        val progress = UpdateProgress(log = it.print)
-                        MinosoftUpdater.download(update, progress)
-                    }
+                }
+                if (update != null) {
+                    val progress = UpdateProgress(log = it.print)
+                    MinosoftUpdater.download(update, progress)
+                    return@check
                 }
             }
         }),
@@ -78,13 +60,12 @@ object UpdateCommand : Command {
 
     private fun PrintTarget.check() {
         print("Checking for updates...")
-        DefaultThreadPool += {
-            val update = MinosoftUpdater.check()
-            if (update == null) {
+        MinosoftUpdater.check(true) {
+            if (it == null) {
                 print("No update available!")
             } else {
                 print("There is a new update available:")
-                print("Version: ${update.name} (${update.id})")
+                print("Version: ${it.name} (${it.id})")
                 print(BaseComponent("Run ", TextComponent("\"update notes\"").clickEvent(InternalCommandClickEvent("update notes")), " to see the release notes."))
                 print(BaseComponent("Run ", TextComponent("\"update update\"").clickEvent(InternalCommandClickEvent("update update")), " to download and update."))
             }
