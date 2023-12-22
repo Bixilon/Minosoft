@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -252,6 +252,10 @@
 
 .warning-icon, .warning-icon:hover {
     -fx-icon-color: #FFCC00;
+}
+
+.info-icon, .info-icon:hover {
+    -fx-icon-color: #5555ff;
 }
 
 /* context menu */

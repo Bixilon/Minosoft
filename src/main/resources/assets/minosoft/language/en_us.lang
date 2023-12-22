@@ -57,6 +57,8 @@ minosoft:connection.status.state.error=Error in connection!
 minosoft:general.dialog.are_you_sure=Are you sure?
 minosoft:general.dialog.warning=Warning!
 
+minosoft:general.dialog.info=Information!
+
 
 minosoft:modify_server.name.label=Server name
 minosoft:modify_server.name.placeholder=A Minosoft server
@@ -208,6 +210,7 @@ minosoft:menu.pause.exit.confirm=§cClick again to exit
 
 minosoft:main.about.text=Glad that you test my software :)\nThis project is in a really early stage, don't use it on online servers!\nI am looking for contributors :) Please help me and make this usable
 minosoft:main.about.crash=Create crash report
+minosoft:main.about.check_updates=Check for updates
 
 
 minosoft:main.account.please_wait.title=Please wait... - Minosoft

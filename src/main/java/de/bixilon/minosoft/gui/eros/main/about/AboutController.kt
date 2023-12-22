@@ -18,10 +18,11 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.i18n
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
-import de.bixilon.minosoft.gui.eros.dialog.simple.WarningDialog
+import de.bixilon.minosoft.gui.eros.dialog.simple.InfoDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
+import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.updater.MinosoftUpdater
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -53,6 +54,8 @@ class AboutController : EmbeddedJavaFXController<HBox>() {
 
         versionStringFX.text = RunConfiguration.APPLICATION_NAME
         aboutTextFX.text = TEXT
+
+        checkUpdatesFX.isDisable = !MinosoftProperties.canUpdate()
     }
 
     fun createCrashReport() {
@@ -61,16 +64,18 @@ class AboutController : EmbeddedJavaFXController<HBox>() {
     }
 
     fun checkUpdates() {
-        // TODO: Show progress, check button, disable button if not supported,
+        // TODO: Show progress
         checkUpdatesFX.isDisable = true
         DefaultThreadPool += {
             try {
                 val update = MinosoftUpdater.check()
                 if (update == null) {
-                    WarningDialog(i18n("updater.none.title"), i18n("updater.none.header")).show()
+                    InfoDialog(i18n("updater.none.title"), i18n("updater.none.header")).show()
                 }
                 // no else, because eros is observing the update property and opens it automatically
             } catch (error: Throwable) {
+                // TODO: That one is only triggered on server errors
+                error.printStackTrace()
                 error.report()
             }
             JavaFXUtil.runLater { checkUpdatesFX.isDisable = false }
