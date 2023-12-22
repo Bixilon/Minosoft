@@ -29,6 +29,7 @@ enum class DriverHacks {
      * GPUs can't really do quads, its a hack in most drivers. Some of them still disallow using them, when binding to modern context.
      * Will only work and AMD and NVIDIA. Disabled by default.
      */
+    @Deprecated("implement index buffers")
     USE_QUADS_OVER_TRIANGLE,
     ;
 
