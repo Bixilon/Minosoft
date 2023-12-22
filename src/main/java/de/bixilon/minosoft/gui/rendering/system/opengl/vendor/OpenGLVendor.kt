@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 
 import de.bixilon.minosoft.gui.rendering.system.base.GPUVendor
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 interface OpenGLVendor : GPUVendor {
     val usedVRAM: Long
@@ -30,7 +33,10 @@ interface OpenGLVendor : GPUVendor {
             "nvidia" in vendor -> NvidiaOpenGLVendor
             "intel" in vendor -> IntelOpenGLVendor
             "amd" in vendor || "ati" in vendor -> AMDOpenGLVendor
-            else -> OtherOpenGLVendor
+            else -> {
+                Log.log(LogMessageType.RENDERING, LogLevels.WARN) { "Can not detect gpu type from vendor: $vendor" }
+                OtherOpenGLVendor
+            }
         }
     }
 }
