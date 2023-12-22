@@ -153,7 +153,6 @@ interface RenderSystem {
 
     fun polygonOffset(factor: Float, unit: Float)
 
-
     fun resetBlending() {
         disable(RenderingCapabilities.BLENDING)
         setBlendFunction(BlendingFunctions.ONE, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ZERO)
@@ -165,4 +164,6 @@ interface RenderSystem {
             shader.reload()
         }
     }
+
+    var viewport: Vec2i
 }

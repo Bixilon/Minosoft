@@ -17,8 +17,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
 import org.lwjgl.opengl.ATIMeminfo.GL_VBO_FREE_MEMORY_ATI
 import org.lwjgl.opengl.GL11.glGetInteger
 
-object ATIOpenGLVendor : OpenGLVendor {
-    override val shaderDefine: String = "__ATI"
+object AMDOpenGLVendor : OpenGLVendor {
+    override val shaderDefine: String = "__AMD"
 
     override val availableVRAM: Long
         get() = glGetInteger(GL_VBO_FREE_MEMORY_ATI).toLong() * 1024

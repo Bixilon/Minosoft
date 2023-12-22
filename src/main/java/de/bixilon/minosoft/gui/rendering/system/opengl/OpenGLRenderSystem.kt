@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
@@ -34,10 +33,10 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenG
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureManager
-import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
+import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.OpenGLVendor
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -118,12 +117,7 @@ class OpenGLRenderSystem(
         this.vendorString = glGetString(GL_VENDOR) ?: "UNKNOWN"
         val vendorString = vendorString.lowercase()
 
-        vendor = when {
-            vendorString.contains("nvidia") -> NvidiaOpenGLVendor
-            vendorString.contains("intel") -> MesaOpenGLVendor
-            vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor
-            else -> OtherOpenGLVendor
-        }
+        vendor = OpenGLVendor.of(vendorString)
         if (context.preferQuads && DriverHacks.USE_QUADS_OVER_TRIANGLE !in vendor.hacks) {
             throw IllegalStateException("Your GPU driver does not support the `prefer_quads` config option!")
         }
@@ -131,11 +125,6 @@ class OpenGLRenderSystem(
         this.version = glGetString(GL_VERSION) ?: "UNKNOWN"
         this.gpuType = glGetString(GL_RENDERER) ?: "UNKNOWN"
 
-        context.connection.events.listen<ResizeWindowEvent> {
-            context.queue += {
-                glViewport(0, 0, it.size.x, it.size.y)
-            }
-        }
         if (DEBUG_MODE) {
             glEnable(GL_DEBUG_OUTPUT)
             glDebugMessageCallback({ source, type, id, severity, length, message, userParameter ->
@@ -331,6 +320,13 @@ class OpenGLRenderSystem(
         if (!log) return
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "[OpenGL] ${builder.invoke()}" }
     }
+
+    override var viewport: Vec2i = Vec2i.EMPTY
+        set(value) {
+            if (field == value) return
+            field = Vec2i(value)
+            glViewport(0, 0, viewport.x, viewport.y)
+        }
 
     companion object : RenderSystemFactory {
         const val DEBUG_MODE = false

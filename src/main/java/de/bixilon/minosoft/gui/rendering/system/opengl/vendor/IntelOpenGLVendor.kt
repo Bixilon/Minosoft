@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 
 import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
 
-object MesaOpenGLVendor : OpenGLVendor {
-    override val shaderDefine: String = "__MESA"
+object IntelOpenGLVendor : OpenGLVendor {
+    override val shaderDefine: String = "__INTEL"
 
     override val hacks = DriverHacks.set()
 }

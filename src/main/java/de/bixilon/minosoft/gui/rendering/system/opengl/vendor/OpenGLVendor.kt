@@ -22,4 +22,15 @@ interface OpenGLVendor : GPUVendor {
         get() = -1L
     val maximumVRAM: Long
         get() = -1L
+
+
+    companion object {
+
+        fun of(vendor: String): OpenGLVendor = when {
+            vendor.contains("nvidia") -> NvidiaOpenGLVendor
+            vendor.contains("intel") -> IntelOpenGLVendor
+            vendor.contains("amd") || vendor.contains("ati") -> AMDOpenGLVendor
+            else -> OtherOpenGLVendor
+        }
+    }
 }

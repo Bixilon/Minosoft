@@ -23,11 +23,13 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.gui.rendering.RenderUtil.pause
 import de.bixilon.minosoft.gui.rendering.RenderUtil.runAsync
+import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.font.manager.FontManager
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DebugKeyBindings
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyBindings
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.DefaultRenderer
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
@@ -130,13 +132,13 @@ object RenderLoader {
         input.init()
         DefaultKeyBindings.register(this)
         DebugKeyBindings.register(this)
+        connection.events.listen<ResizeWindowEvent> { system.viewport = it.size }
 
         this::state.observe(this) {
             if (it == RenderingStates.PAUSED || it == RenderingStates.SLOW || it == RenderingStates.STOPPED) {
                 pause()
             }
         }
-
 
         window.postInit()
 
