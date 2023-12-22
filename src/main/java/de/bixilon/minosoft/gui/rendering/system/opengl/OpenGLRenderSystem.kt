@@ -37,6 +37,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshOrder
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -48,6 +49,7 @@ import java.nio.FloatBuffer
 
 class OpenGLRenderSystem(
     private val context: RenderContext,
+    val log: Boolean = RunConfiguration.VERBOSE_LOGGING,
 ) : RenderSystem {
     private var thread: Thread? = null
     override val shaders: MutableSet<Shader> = mutableSetOf()
@@ -322,6 +324,11 @@ class OpenGLRenderSystem(
         if (thread !== current) {
             throw ThreadMissmatchException(thread, current)
         }
+    }
+
+    inline fun log(builder: () -> Any?) {
+        if (!log) return
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "[OpenGL] ${builder.invoke()}" }
     }
 
     companion object : RenderSystemFactory {

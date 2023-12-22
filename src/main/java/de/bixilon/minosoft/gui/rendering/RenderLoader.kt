@@ -69,6 +69,8 @@ object RenderLoader {
         system.init()
         system.reset()
 
+        Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "We are running on ${system.vendorString} (detected ${system.vendor}). Version is ${system.version} and we got an ${system.gpuType}." }
+
         // Init stage
         val initLatch = ParentLatch(1, renderLatch)
         Log.log(LogMessageType.RENDERING, LogLevels.VERBOSE) { "Generating font, gathering textures and loading models (after ${stopwatch.labTime()})..." }

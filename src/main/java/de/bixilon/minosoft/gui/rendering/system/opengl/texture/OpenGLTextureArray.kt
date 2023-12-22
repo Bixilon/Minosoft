@@ -49,6 +49,7 @@ class OpenGLTextureArray(
     }
 
     override fun activate() {
+        context.system.unsafeCast<OpenGLRenderSystem>().log { "Activating static texture array" }
         for ((index, textureId) in handles.withIndex()) {
             if (textureId == -1) {
                 continue
@@ -60,6 +61,7 @@ class OpenGLTextureArray(
 
     override fun use(shader: NativeShader, name: String) {
         if (state != TextureArrayStates.UPLOADED) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
+        context.system.unsafeCast<OpenGLRenderSystem>().log { "Binding static textures to $shader" }
         shader.use()
         activate()
 
@@ -116,6 +118,7 @@ class OpenGLTextureArray(
 
 
     private fun upload(resolution: Int, textures: List<Texture>): Int {
+        context.system.unsafeCast<OpenGLRenderSystem>().log { "Uploading ${resolution}x${resolution} static textures" }
         val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
 
         for (level in 0..mipmaps) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
 abstract class OpenGLRenderableBuffer(
-    protected var renderSystem: OpenGLRenderSystem,
+    protected var system: OpenGLRenderSystem,
     override val type: RenderableBufferTypes,
 ) : RenderableBuffer {
     override var state: RenderableBufferStates = RenderableBufferStates.PREPARING
@@ -34,15 +34,16 @@ abstract class OpenGLRenderableBuffer(
         private set
 
     override fun init() {
+        system.log { "Generated renderable buffer $this" }
         id = glGenBuffers()
     }
 
     override fun bind() {
-        if (renderSystem.boundBuffer == id) {
+        if (system.boundBuffer == id) {
             return
         }
         glBindBuffer(type.gl, id)
-        renderSystem.boundBuffer = id
+        system.boundBuffer = id
     }
 
     override fun unbind() {
@@ -56,15 +57,15 @@ abstract class OpenGLRenderableBuffer(
     override fun unload() {
         check(state == RenderableBufferStates.UPLOADED) { "Buffer is not uploaded: $state" }
         glDeleteBuffers(id)
-        if (renderSystem.boundBuffer == id) {
-            renderSystem.boundBuffer = -1
+        if (system.boundBuffer == id) {
+            system.boundBuffer = -1
         }
         id = -1
         state = RenderableBufferStates.UNLOADED
     }
 
     protected fun finalize() {
-        if (state == RenderableBufferStates.UPLOADED && renderSystem.active) {
+        if (state == RenderableBufferStates.UPLOADED && system.active) {
             throw MemoryLeakException("Buffer has not been unloaded!")
         }
     }

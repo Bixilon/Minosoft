@@ -20,7 +20,6 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfile
 
 class UpdaterC(profile: OtherProfile) {
 
-
     /**
      * The user did not decide whether to check for updates
      */

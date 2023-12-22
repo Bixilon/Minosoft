@@ -61,7 +61,7 @@ class AboutController : EmbeddedJavaFXController<HBox>() {
     }
 
     fun checkUpdates() {
-        // TODO: Show progress
+        // TODO: Show progress, check button, disable button if not supported,
         checkUpdatesFX.isDisable = true
         DefaultThreadPool += {
             try {

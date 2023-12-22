@@ -47,6 +47,7 @@ class OpenGLNativeShader(
     private val uniformLocations: Object2IntOpenHashMap<String> = Object2IntOpenHashMap()
 
     private fun load(file: ResourceLocation, type: ShaderType): Int {
+        system.log { "Loading shader $file" }
         val code = GLSLShaderCode(context, context.connection.assetsManager[file].readAsString())
 
         code.defines += defines

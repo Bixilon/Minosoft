@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRende
 import org.lwjgl.opengl.GL30.*
 
 class OpenGLFramebuffer(
-    val renderSystem: OpenGLRenderSystem,
+    val system: OpenGLRenderSystem,
     var size: Vec2i,
     val color: Boolean,
     val depth: Boolean,
@@ -43,6 +43,7 @@ class OpenGLFramebuffer(
 
     override fun init() {
         check(state != FramebufferState.COMPLETE) { "Framebuffer is complete!" }
+        system.log { "Generated framebuffer buffer $this" }
         id = glGenFramebuffers()
         unsafeBind()
 
@@ -56,7 +57,7 @@ class OpenGLFramebuffer(
         }
 
         if (depth) {
-            val depth = OpenGLRenderbuffer(renderSystem, RenderbufferModes.DEPTH_COMPONENT24, size)
+            val depth = OpenGLRenderbuffer(system, RenderbufferModes.DEPTH_COMPONENT24, size)
             this.depthBuffer = depth
             depth.init()
             attach(depth)
@@ -77,6 +78,7 @@ class OpenGLFramebuffer(
     }
 
     private fun unsafeBind() {
+        system.log { "Binding framebuffer $this" }
         glBindFramebuffer(GL_FRAMEBUFFER, id)
     }
 
@@ -118,7 +120,7 @@ class OpenGLFramebuffer(
     }
 
     protected fun finalize() {
-        if (state == FramebufferState.COMPLETE && renderSystem.active) {
+        if (state == FramebufferState.COMPLETE && system.active) {
             throw MemoryLeakException("Buffer has not been unloaded!")
         }
     }

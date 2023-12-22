@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
@@ -62,6 +63,7 @@ class OpenGLDynamicTextureArray(
         if (data.size.x > resolution || data.size.y > resolution) {
             Log.log(LogMessageType.LOADING, LogLevels.WARN) { "Dynamic texture is too big: $texture" }
         }
+
         for ((level, buffer) in data.collect().withIndex()) {
             if (data.size.x != resolution || data.size.y != resolution) {
                 // clear first
@@ -75,6 +77,7 @@ class OpenGLDynamicTextureArray(
 
     override fun upload() {
         if (handle >= 0) throw MemoryLeakException("Texture was not unloaded!")
+        context.system.unsafeCast<OpenGLRenderSystem>().log { "Uploading dynamic textures" }
         val handle = OpenGLTextureUtil.createTextureArray(mipmaps)
         for (level in 0..mipmaps) {
             glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
@@ -96,12 +99,14 @@ class OpenGLDynamicTextureArray(
     }
 
     override fun activate() {
+        context.system.unsafeCast<OpenGLRenderSystem>().log { "Activating dynamic textures" }
         glActiveTexture(GL_TEXTURE0 + index)
         glBindTexture(GL_TEXTURE_2D_ARRAY, handle)
     }
 
     override fun unsafeUse(shader: NativeShader, name: String) {
         if (handle <= 0) throw IllegalStateException("Texture array is not uploaded yet! Are you trying to load a shader in the init phase?")
+        context.system.unsafeCast<OpenGLRenderSystem>().log { "Binding dynamic textures to $shader" }
         shader.use()
         activate()
         shader.setTexture("$name[$index]", index)
