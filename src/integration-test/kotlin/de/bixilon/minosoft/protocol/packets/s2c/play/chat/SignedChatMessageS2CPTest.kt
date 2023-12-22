@@ -18,7 +18,7 @@ import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.chat.sender.UnknownMessageSender
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
-import de.bixilon.minosoft.data.language.lang.LanguageList
+import de.bixilon.minosoft.data.language.manager.LanguageManager
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.chat.TypeProperties
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
@@ -33,7 +33,7 @@ class SignedChatMessageS2CPTest {
 
     private fun connection(version: String): PlayConnection {
         val connection = createConnection(version = version)
-        connection::language.forceSet(LanguageList(mutableListOf()))
+        connection::language.forceSet(LanguageManager())
         connection::tabList.forceSet(TabList())
         connection.registries.messageType[0] = ChatMessageType(minecraft("dummy"), TypeProperties("test", emptyList(), emptyMap()), null, ChatTextPositions.CHAT)
 

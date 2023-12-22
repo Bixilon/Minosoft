@@ -26,7 +26,7 @@ import de.bixilon.minosoft.config.profile.ProfileTestUtil.createProfiles
 import de.bixilon.minosoft.data.accounts.types.test.TestAccount
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.SignatureKeyManagement
-import de.bixilon.minosoft.data.language.lang.LanguageList
+import de.bixilon.minosoft.data.language.manager.LanguageManager
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.world.WorldTestUtil.createWorld
 import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
@@ -67,7 +67,7 @@ object ConnectionTestUtil {
     private val LEGACY_TAGS = PlayConnection::legacyTags.jvmField
     private val CAMERA = PlayConnection::camera.jvmField
 
-    private val language = LanguageList(mutableListOf())
+    private val language = LanguageManager()
     private val signature = OBJENESIS.newInstance(SignatureKeyManagement::class.java)
 
 

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.modding.dummy
 
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.modding.loader.mod.ModMain
 
 object DummyMod : ModMain() {
@@ -20,11 +22,14 @@ object DummyMod : ModMain() {
     var init = 0
     var postInit = 0
 
+    var flag = "<tba>"
+
     override fun init() {
         init++
     }
 
     override fun postInit() {
         postInit++
+        flag = assets[ResourceLocation("nothin", "flag.txt")].readAsString()
     }
 }

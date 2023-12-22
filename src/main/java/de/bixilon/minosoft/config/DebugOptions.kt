@@ -28,7 +28,7 @@ object DebugOptions {
     const val FORCE_CHEST_ANIMATION = false
     const val EMPTY_BUFFERS = false
 
-    const val FORCE_CHECK_UPDATES = false
+    const val FORCE_CHECK_UPDATES = true
 
     // Add a test to ensure that all options are disabled!!!
 }

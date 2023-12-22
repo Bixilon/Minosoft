@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.language.lang.LanguageFile
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.scoreboard.team.Team
 import de.bixilon.minosoft.data.scoreboard.team.TeamVisibility
@@ -249,7 +250,7 @@ class EntityNameFeatureTest {
     fun `zombie with visible name`() {
         val name = create(Zombie)
         name.isNameVisible(true)
-        name.renderer.renderer.connection.language = LanguageFile("abc", mutableMapOf("key" to "Zombie"))
+        name.renderer.renderer.connection.language = LanguageFile("abc", Namespaces.MINOSOFT, mutableMapOf("key" to "Zombie"))
         name.updateName()
         name.assertText()
     }

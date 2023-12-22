@@ -85,5 +85,6 @@ class LoadingPhaseTest {
         assertEquals(mod::class.java.getFieldOrNull("dummy")!!.get(mod), 1)
         assertEquals(mod::class.java.getFieldOrNull("init")!!.get(mod), 1)
         assertEquals(mod::class.java.getFieldOrNull("postInit")!!.get(mod), 1)
+        assertEquals(mod::class.java.getFieldOrNull("flag")!!.get(mod), "hehe\n")
     }
 }

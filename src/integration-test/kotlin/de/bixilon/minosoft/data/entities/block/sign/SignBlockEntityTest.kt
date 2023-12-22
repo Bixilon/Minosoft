@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.block.sign
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.language.lang.LanguageFile
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -28,7 +29,7 @@ class SignBlockEntityTest {
 
     private fun create(): SignBlockEntity {
         val connection = IT.OBJENESIS.newInstance(PlayConnection::class.java)
-        connection::language.forceSet(LanguageFile("", mutableMapOf()))
+        connection::language.forceSet(LanguageFile("", Namespaces.MINECRAFT, mutableMapOf()))
         return SignBlockEntity(connection)
     }
 
