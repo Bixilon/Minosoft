@@ -35,7 +35,7 @@ class DirectorySource(
 
     override fun process(mod: MinosoftMod) {
         val files = directory.listFiles()!!
-        val assets = DirectoryAssetsManager(directory.path)
+        val assets = DirectoryAssetsManager(directory.toPath())
         assets.load()
 
         for (sub in files) {

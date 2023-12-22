@@ -49,7 +49,7 @@ class SplitDirectorySource(
     }
 
     private fun processResources(mod: MinosoftMod) {
-        val assets = DirectoryAssetsManager(resources.path)
+        val assets = DirectoryAssetsManager(resources.toPath())
         assets.load(ParentLatch(0, mod.latch))
         mod.assetsManager = assets
 

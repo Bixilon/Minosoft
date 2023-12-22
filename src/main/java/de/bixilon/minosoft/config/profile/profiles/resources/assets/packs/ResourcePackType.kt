@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2023 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,9 +16,10 @@ package de.bixilon.minosoft.config.profile.profiles.resources.assets.packs
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
 import de.bixilon.minosoft.assets.file.ZipAssetsManager
+import java.nio.file.Path
 
 enum class ResourcePackType(val creator: (ResourcePack) -> AssetsManager) {
     ZIP({ ZipAssetsManager(it.path) }),
-    DIRECTORY({ DirectoryAssetsManager(it.path) }),
+    DIRECTORY({ DirectoryAssetsManager(Path.of(it.path)) }),
     ;
 }

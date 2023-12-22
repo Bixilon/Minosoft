@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.assets.directory
 
-import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
@@ -27,6 +26,7 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.nio.file.Path
+import kotlin.io.path.relativeTo
 
 
 /**
@@ -34,11 +34,11 @@ import java.nio.file.Path
  */
 
 class DirectoryAssetsManager(
-    private val rootPath: String,
+    private val rootPath: Path,
     private val canUnload: Boolean = true,
     val prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX,
 ) : AssetsManager {
-    private val basePath = File(rootPath).slashPath + "/" + prefix
+    private val basePath = rootPath.resolve(prefix)
     private var assets: MutableSet<ResourceLocation> = ObjectOpenHashSet()
     override var loaded: Boolean = false
         private set
@@ -48,22 +48,23 @@ class DirectoryAssetsManager(
         private set
 
     private val ResourceLocation.filePath: Path
-        get() = Path.of(basePath, namespace, path)
+        get() = basePath.resolve(namespace).resolve(path)
 
-    private fun scanDirectory(directory: File) {
+    private fun scanDirectory(root: Boolean, directory: File) {
         for (file in directory.listFiles() ?: return) {
             if (file.isDirectory) {
-                scanDirectory(file)
+                scanDirectory(false, file)
                 continue
             }
-            val path = file.slashPath.removePrefix(basePath).removePrefix(File.separator).toAssetName(false, prefix) ?: continue
+            if (root) continue // root path just allows folders
+            val path = file.toPath().relativeTo(basePath).toString().removePrefix(File.separator).toAssetName(false, prefix) ?: continue
             assets += path
         }
     }
 
     override fun load(latch: AbstractLatch?) {
         check(!loaded) { "Already loaded!" }
-        scanDirectory(File(basePath))
+        scanDirectory(true, basePath.toFile())
         File("$rootPath/pack.png").let { if (it.exists() && it.isFile) image = FileInputStream(it).readAllBytes() }
         File("$rootPath/pack.mcmeta").let { if (it.exists() && it.isFile) properties = FileInputStream(it).readJson() }
         loaded = true
