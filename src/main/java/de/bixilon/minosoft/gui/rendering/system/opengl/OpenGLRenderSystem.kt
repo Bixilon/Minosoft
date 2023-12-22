@@ -117,7 +117,7 @@ class OpenGLRenderSystem(
         this.vendorString = glGetString(GL_VENDOR) ?: "UNKNOWN"
         val vendorString = vendorString.lowercase()
 
-        vendor = OpenGLVendor.of(vendorString)
+        vendor = OpenGLVendor.of(vendorString.lowercase())
         if (context.preferQuads && DriverHacks.USE_QUADS_OVER_TRIANGLE !in vendor.hacks) {
             throw IllegalStateException("Your GPU driver does not support the `prefer_quads` config option!")
         }

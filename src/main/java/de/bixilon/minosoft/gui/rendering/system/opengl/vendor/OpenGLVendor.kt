@@ -27,9 +27,9 @@ interface OpenGLVendor : GPUVendor {
     companion object {
 
         fun of(vendor: String): OpenGLVendor = when {
-            vendor.contains("nvidia") -> NvidiaOpenGLVendor
-            vendor.contains("intel") -> IntelOpenGLVendor
-            vendor.contains("amd") || vendor.contains("ati") -> AMDOpenGLVendor
+            "nvidia" in vendor -> NvidiaOpenGLVendor
+            "intel" in vendor -> IntelOpenGLVendor
+            "amd" in vendor || "ati" in vendor -> AMDOpenGLVendor
             else -> OtherOpenGLVendor
         }
     }
