@@ -84,12 +84,15 @@ class FluidSectionMesher(
                     val model = fluid.model ?: continue
 
 
+                    val height = fluid.getHeight(state)
+
                     fun isSideCovered(direction: Directions): Boolean {
                         val neighbour = direction.getBlock(x, y, z, section, neighbours) ?: return false
 
                         if (fluid.matches(neighbour)) {
                             return true
                         }
+                        if (direction == Directions.UP && height < 0.99f) return false
 
                         return FaceCulling.canCull(state, model.properties, direction, neighbour)
                     }
@@ -106,7 +109,6 @@ class FluidSectionMesher(
                     if (skip.isTrue) continue
 
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
-                    val height = fluid.getHeight(state)
                     tint = tints.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE_RGB
 
                     val cornerHeights = floatArrayOf(
@@ -118,7 +120,7 @@ class FluidSectionMesher(
 
                     val offsetPosition = Vec3(position - cameraOffset)
 
-                    if (!skip[Directions.O_UP]) {
+                    if (cornerHeights[0] < 1.0f && !skip[Directions.O_UP]) {
                         val velocity = fluid.getVelocity(state, position, chunk)
                         val still = velocity.x == 0.0 && velocity.z == 0.0
                         val texture: Texture
