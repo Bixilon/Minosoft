@@ -44,7 +44,7 @@ class InternalCommandClickEvent(
         override val name: String = "internal_command"
 
         override fun build(json: JsonObject, restricted: Boolean): InternalCommandClickEvent {
-            if (restricted) throw IllegalStateException("Its restricted")
+            if (restricted) throw IllegalAccessError("Using internal command is restricted")
             return InternalCommandClickEvent(json.data.toString())
         }
     }

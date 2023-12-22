@@ -66,4 +66,8 @@ class ChatNode(
         val node = reader.readNode(stack)
         return node?.getSuggestions(reader, stack) ?: emptyList()
     }
+
+    companion object {
+        val CHAT = ChatNode("", allowCLI = false)
+    }
 }

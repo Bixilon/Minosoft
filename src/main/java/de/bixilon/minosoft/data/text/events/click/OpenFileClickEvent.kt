@@ -61,9 +61,7 @@ class OpenFileClickEvent(
         override val name: String = "open_file"
 
         override fun build(json: JsonObject, restricted: Boolean): OpenFileClickEvent {
-            if (restricted) {
-                throw IllegalStateException("Can not use $name action in restricted mode!")
-            }
+            if (restricted) throw IllegalAccessError("Using open file is restricted")
             return OpenFileClickEvent(json.data.toString())
         }
     }

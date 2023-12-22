@@ -59,7 +59,7 @@ class ConnectionUtil(
     }
 
     fun typeChat(message: String) {
-        ChatNode("", allowCLI = false).execute(CommandReader(message), CommandStack(connection))
+        ChatNode.CHAT.execute(CommandReader(message), CommandStack(connection))
     }
 
     fun sendChatMessage(message: String) {
