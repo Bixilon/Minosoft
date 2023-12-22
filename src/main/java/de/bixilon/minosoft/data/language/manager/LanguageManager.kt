@@ -13,21 +13,18 @@
 
 package de.bixilon.minosoft.data.language.manager
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 
 class LanguageManager(
-    private val languages: MutableList<Translator> = synchronizedListOf(),
+    val translators: MutableMap<String, Translator> = mutableMapOf(),
 ) : Translator {
 
-
     override fun translate(key: ResourceLocation?, parent: TextComponent?, restricted: Boolean, vararg data: Any?): ChatComponent? {
-        for (language in languages) {
-            return language.translate(key, parent, restricted, *data) ?: continue
-        }
-        return null
+        if (key == null) return null
+
+        return translators[key.namespace]?.translate(key, parent, restricted, *data)
     }
 }

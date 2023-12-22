@@ -15,7 +15,8 @@ package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
-import de.bixilon.minosoft.data.language.lang.Language
+import de.bixilon.minosoft.data.language.lang.LanguageFile
+import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.chat
 import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
@@ -248,7 +249,7 @@ internal class ChatComponentTest {
 
     @Test
     fun `Nested translations`() {
-        val language = Language("en_US", mutableMapOf(
+        val language = LanguageFile("en_US", Namespaces.MINECRAFT, mutableMapOf(
             "gameMode.changed" to "Dein Spielmodus wurde zu %s geändert",
             "gameMode.creative" to "Kreativmodus",
         ))
@@ -259,7 +260,7 @@ internal class ChatComponentTest {
 
     @Test
     fun `inserted translations`() {
-        val language = Language("en_US", mutableMapOf(
+        val language = LanguageFile("en_US", Namespaces.MINECRAFT, mutableMapOf(
             "death.attack.generic" to "%1\$s starb",
         ))
         val text = ChatComponent.of("""{"translate":"death.attack.generic","with":[{"color":"light_purple","insertion":"Bixilon","clickEvent":{"action":"suggest_command","value":"/tell Bixilon "},"hoverEvent":{"action":"show_entity","contents":{"type":"minecraft:player","id":"1d410d09-750b-3200-993c-47f31b30baf0","name":{"text":"Bixilon"}}},"extra":[{"bold":true,"color":"green","text":"[Admin] "},{"text":"Bixilon"}],"text":""}]}""", translator = language)
@@ -277,7 +278,7 @@ internal class ChatComponentTest {
 
     @Test
     fun `nested translation with legacy entity event`() {
-        val language = Language("en_US", mutableMapOf(
+        val language = LanguageFile("en_US", Namespaces.MINECRAFT, mutableMapOf(
             "chat.type.admin" to "[%s: %s]",
             "commands.kill.successful" to "Killed %s",
         ))

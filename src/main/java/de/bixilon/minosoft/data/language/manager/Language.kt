@@ -11,20 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.language.lang
+package de.bixilon.minosoft.data.language.manager
 
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 
-class LanguageList(
-    private val list: MutableList<Language>,
+class Language(
+    val translators: Array<Translator>,
 ) : Translator {
 
     override fun translate(key: ResourceLocation?, parent: TextComponent?, restricted: Boolean, vararg data: Any?): ChatComponent? {
-        for (language in list) {
-            return language.translate(key, parent, restricted, data) ?: continue
+        for (translator in translators) {
+            return translator.translate(key, parent, restricted, *data) ?: continue
         }
         return null
     }

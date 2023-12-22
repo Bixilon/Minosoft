@@ -17,10 +17,9 @@ import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJsonObject
-import de.bixilon.minosoft.data.language.lang.Language
 import de.bixilon.minosoft.data.language.lang.LanguageData
-import de.bixilon.minosoft.data.language.lang.LanguageList
-import de.bixilon.minosoft.data.language.manager.LanguageManager
+import de.bixilon.minosoft.data.language.lang.LanguageFile
+import de.bixilon.minosoft.data.language.manager.Language
 import de.bixilon.minosoft.data.language.translate.Translated
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.identified.Namespaces
@@ -86,38 +85,38 @@ object LanguageUtil {
     fun loadLanguage(language: String, assetsManager: AssetsManager, json: Boolean, path: ResourceLocation): Translator? {
         val assets = assetsManager.getAllOrNull(ResourceLocation(path.namespace, path.path + language + if (json) ".json" else ".lang")) ?: return null
         if (assets.isEmpty()) return null
-        val languages: MutableList<Language> = mutableListOf()
+        val languages: MutableList<LanguageFile> = mutableListOf()
 
         for (asset in assets) {
             val data = if (json) loadJsonLanguage(asset.readJsonObject()) else loadLanguage(BufferedReader(InputStreamReader(asset, Charsets.UTF_8)))
-            languages += Language(language, data)
+            languages += LanguageFile(language, path.namespace, data)
         }
-
 
         if (languages.size == 1) {
             return languages.first()
         }
-        return LanguageList(languages)
+
+        return Language(languages.toTypedArray())
     }
 
 
-    fun load(language: String, version: Version?, assetsManager: AssetsManager, path: ResourceLocation = ResourceLocation.of("lang/")): Translator {
+    fun load(language: String, version: Version?, assets: AssetsManager, path: ResourceLocation = ResourceLocation.of("lang/")): Translator {
         val name = language.lowercase()
         val json = version != null && version.jsonLanguage
 
-        val languages: MutableList<Translator> = mutableListOf()
+        val translators: MutableList<Translator> = mutableListOf()
 
 
         if (name != FALLBACK_LANGUAGE) {
-            tryCatch(FileNotFoundException::class.java, executor = { languages += loadLanguage(name, assetsManager, json, path) ?: return@tryCatch })
+            tryCatch(FileNotFoundException::class.java, executor = { translators += loadLanguage(name, assets, json, path) ?: return@tryCatch })
         }
-        loadLanguage(FALLBACK_LANGUAGE, assetsManager, json, path)?.let { languages += it }
+        loadLanguage(FALLBACK_LANGUAGE, assets, json, path)?.let { translators += it }
 
-        if (languages.size == 1) {
-            return languages.first()
+        if (translators.size == 1) {
+            return translators.first()
         }
 
-        return LanguageManager(languages)
+        return Language(translators.toTypedArray())
     }
 
 

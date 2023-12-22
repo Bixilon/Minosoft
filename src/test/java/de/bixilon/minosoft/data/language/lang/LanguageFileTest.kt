@@ -22,14 +22,14 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
-class LanguageTest {
+class LanguageFileTest {
 
     private fun create(placeholder: String): Translator {
         val data: LanguageData = mutableMapOf(
             KEY.path to placeholder,
         )
 
-        return Language("test", data)
+        return LanguageFile("test", KEY.namespace, data)
     }
 
     @Test
@@ -112,25 +112,31 @@ class LanguageTest {
 
     @Test
     fun unavailableEmpty() {
-        val language = Language("test", mutableMapOf())
+        val language = LanguageFile("test", KEY.namespace, mutableMapOf())
         assertNull(language.translate(KEY)?.message)
     }
 
     @Test
     fun unavailableForceEmpty() {
-        val language = Language("test", mutableMapOf())
+        val language = LanguageFile("test", KEY.namespace, mutableMapOf())
         assertEquals(language.forceTranslate(KEY).message, "minecraft:key")
     }
 
     @Test
     fun unavailableData() {
-        val language = Language("test", mutableMapOf())
+        val language = LanguageFile("test", KEY.namespace, mutableMapOf())
         assertEquals(language.forceTranslate(KEY, data = arrayOf("data2")).message, "minecraft:key->[data2]")
     }
 
     @Test
     fun fallbackData() {
-        val language = Language("test", mutableMapOf())
+        val language = LanguageFile("test", KEY.namespace, mutableMapOf())
+        assertEquals(language.forceTranslate(KEY, fallback = "falling back %s!", data = arrayOf("data2")).message, "falling back data2!")
+    }
+
+    @Test
+    fun `different namespace`() {
+        val language = LanguageFile("test", "not_that", mutableMapOf())
         assertEquals(language.forceTranslate(KEY, fallback = "falling back %s!", data = arrayOf("data2")).message, "falling back data2!")
     }
 

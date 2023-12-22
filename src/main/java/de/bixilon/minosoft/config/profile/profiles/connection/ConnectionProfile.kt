@@ -36,7 +36,7 @@ class ConnectionProfile(
     override val lock = ProfileLock()
 
     /**
-     * Language for language files.
+     * LanguageFile for language files.
      * Will be sent to the server
      * If unset (null), uses eros language
      */

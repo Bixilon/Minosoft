@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.language
 
 import de.bixilon.minosoft.assets.IntegratedAssets
-import de.bixilon.minosoft.data.language.manager.MultiLanguageManager
+import de.bixilon.minosoft.data.language.manager.LanguageManager
 import de.bixilon.minosoft.data.registries.identified.Namespaces
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.util.logging.Log
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 object IntegratedLanguage {
-    val LANGUAGE = MultiLanguageManager()
+    val LANGUAGE = LanguageManager()
 
 
     fun load(name: String) {

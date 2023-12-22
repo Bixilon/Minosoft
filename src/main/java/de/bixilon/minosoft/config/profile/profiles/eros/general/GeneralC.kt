@@ -29,7 +29,7 @@ import java.util.*
 
 class GeneralC(profile: ErosProfile) {
     /**
-     * Language to use for eros. This is also the fallback language for other profiles
+     * LanguageFile to use for eros. This is also the fallback language for other profiles
      */
     var language: String by StringDelegate(profile, Locale.getDefault()?.fullName ?: LanguageUtil.FALLBACK_LANGUAGE)
 

@@ -10,21 +10,27 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.language.lang
 
-package de.bixilon.minosoft.data.language.manager
-
+import de.bixilon.minosoft.data.language.placeholder.PlaceholderUtil
 import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 
-class MultiLanguageManager(
-    val translators: MutableMap<String, Translator> = mutableMapOf(),
+class LanguageFile(
+    val name: String,
+    val namespace: String,
+    private val data: LanguageData,
 ) : Translator {
 
     override fun translate(key: ResourceLocation?, parent: TextComponent?, restricted: Boolean, vararg data: Any?): ChatComponent? {
-        if (key == null) return null
+        if (key?.namespace != namespace) return null
+        val placeholder = this.data[key.path] ?: return null
+        return PlaceholderUtil.format(placeholder, parent, restricted, *data)
+    }
 
-        return translators[key.namespace]?.translate(key, parent, restricted, *data)
+    override fun toString(): String {
+        return name
     }
 }
