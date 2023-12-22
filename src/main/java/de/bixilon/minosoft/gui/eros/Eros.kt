@@ -91,11 +91,6 @@ object Eros {
                 start()
             }
         }
-        MinosoftUpdater::update.observe(this, true) {
-            if (it == null) return@observe
-            if (it.id == OtherProfileManager.selected.updater.dismiss) return@observe // TODO: if not searched manually
-            UpdateAvailableDialog(it).show()
-        }
     }
 
     private fun askForUpdates() {
@@ -121,6 +116,13 @@ object Eros {
         mainErosController.stage.show()
         initialized = true
         visible = true
+
+        MinosoftUpdater::update.observe(this, true) {
+            if (it == null) return@observe
+            if (it.id == OtherProfileManager.selected.updater.dismiss) return@observe // TODO: if not searched manually
+            UpdateAvailableDialog(it).show()
+        }
+
         askForUpdates()
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Eros up!" }
     }

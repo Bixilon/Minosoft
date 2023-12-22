@@ -78,6 +78,7 @@ object MinosoftUpdater {
 
         validateURL(request.toURL())
         val update = request(request, error)
+        this.update = null // clear first to "reprompt"
         this.update = update
         return update
     }
