@@ -68,7 +68,7 @@ class AboutController : EmbeddedJavaFXController<HBox>() {
         checkUpdatesFX.isDisable = true
         DefaultThreadPool += {
             try {
-                val update = MinosoftUpdater.check()
+                val update = MinosoftUpdater.check(error = true)
                 if (update == null) {
                     InfoDialog(i18n("updater.none.title"), i18n("updater.none.header")).show()
                 }

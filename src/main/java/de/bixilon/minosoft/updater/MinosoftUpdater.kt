@@ -54,13 +54,13 @@ object MinosoftUpdater {
         }
     }
 
-    fun check(): MinosoftUpdate? {
+    fun check(error: Boolean = false): MinosoftUpdate? {
         val profile = OtherProfileManager.selected.updater
-        return check(profile.url, profile.channel)
+        return check(profile.url, profile.channel, error)
     }
 
 
-    fun check(url: String, channel: String): MinosoftUpdate? {
+    fun check(url: String, channel: String, error: Boolean): MinosoftUpdate? {
         val commit = MinosoftProperties.git?.commit ?: ""
         val version = MinosoftProperties.general.name
         val stable = MinosoftProperties.general.stable
@@ -77,17 +77,18 @@ object MinosoftUpdater {
         )
 
         validateURL(request.toURL())
-        val update = request(request)
+        val update = request(request, error)
         this.update = update
         return update
     }
 
-    private fun request(url: String): MinosoftUpdate? {
+    private fun request(url: String, error: Boolean): MinosoftUpdate? {
         val response: HTTPResponse<String>
         try {
             response = url.get({ it })
-        } catch (error: Throwable) {
-            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Could not check for updates: $error" }
+        } catch (exception: Throwable) {
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Could not check for updates: $exception" }
+            if (error) throw exception
             return null
         }
 
