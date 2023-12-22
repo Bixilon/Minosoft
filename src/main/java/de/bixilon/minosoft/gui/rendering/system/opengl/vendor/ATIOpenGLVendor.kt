@@ -13,13 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 
+import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
 import org.lwjgl.opengl.ATIMeminfo.GL_VBO_FREE_MEMORY_ATI
 import org.lwjgl.opengl.GL11.glGetInteger
 
 object ATIOpenGLVendor : OpenGLVendor {
-    override val strict: Boolean = false
     override val shaderDefine: String = "__ATI"
 
     override val availableVRAM: Long
         get() = glGetInteger(GL_VBO_FREE_MEMORY_ATI).toLong() * 1024
+
+
+    override val hacks = DriverHacks.set(
+        DriverHacks.USE_QUADS_OVER_TRIANGLE,
+    )
 }

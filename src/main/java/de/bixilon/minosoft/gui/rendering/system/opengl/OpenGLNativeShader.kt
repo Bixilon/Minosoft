@@ -52,6 +52,9 @@ class OpenGLNativeShader(
 
         code.defines += defines
         code.defines["SHADER_TYPE_${type.name}"] = ""
+        for (hack in system.vendor.hacks) {
+            code.defines[hack.name] = ""
+        }
 
         val program = glCreateShader(type.native)
         if (program.toLong() == MemoryUtil.NULL) {

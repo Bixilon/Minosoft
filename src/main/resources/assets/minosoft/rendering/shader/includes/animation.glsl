@@ -11,6 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+
+#ifndef INCLUDE_MINOSOFT_ANIMATION
+#define INCLUDE_MINOSOFT_ANIMATION
 /*
 * Available defines:
 * - ANIMATED_TEXTURE_COUNT
@@ -121,4 +124,6 @@ void setTexture(vec2 uv, uint animation) {
 void setTexture(vec2 uv, float animation) {
     setTexture(uv, floatBitsToUint(animation));
 }
+#endif
+
 #endif

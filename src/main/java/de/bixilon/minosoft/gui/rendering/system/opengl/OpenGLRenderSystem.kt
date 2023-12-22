@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
+import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader.Companion.shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
@@ -123,8 +124,8 @@ class OpenGLRenderSystem(
             vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor
             else -> OtherOpenGLVendor
         }
-        if (context.preferQuads && vendor.strict) {
-            throw IllegalStateException("Your GPU driver strictly follows the open gl specification. The setting `prefer_quads` is not working!")
+        if (context.preferQuads && DriverHacks.USE_QUADS_OVER_TRIANGLE !in vendor.hacks) {
+            throw IllegalStateException("Your GPU driver does not support the `prefer_quads` config option!")
         }
 
         this.version = glGetString(GL_VERSION) ?: "UNKNOWN"

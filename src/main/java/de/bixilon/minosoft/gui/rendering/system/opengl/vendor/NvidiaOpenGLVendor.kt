@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 
+import de.bixilon.minosoft.gui.rendering.system.base.driver.DriverHacks
 import org.lwjgl.opengl.GL11.glGetInteger
 import org.lwjgl.opengl.NVXGPUMemoryInfo.GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX
 import org.lwjgl.opengl.NVXGPUMemoryInfo.GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX
 
 object NvidiaOpenGLVendor : OpenGLVendor {
-    override val strict: Boolean = false
     override val shaderDefine: String = "__NVIDIA"
 
     override val availableVRAM: Long
@@ -27,4 +27,8 @@ object NvidiaOpenGLVendor : OpenGLVendor {
     override val maximumVRAM: Long
         get() = glGetInteger(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX).toLong() * 1024
 
+    override val hacks = DriverHacks.set(
+        DriverHacks.UNIFORM_ARRAY_AS_ARRAY,
+        DriverHacks.USE_QUADS_OVER_TRIANGLE,
+    )
 }

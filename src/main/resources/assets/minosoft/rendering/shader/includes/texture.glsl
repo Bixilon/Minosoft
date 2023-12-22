@@ -24,7 +24,7 @@ uniform sampler2DArray uTextures[10];
 
 vec4 getTexture(uint textureId, vec3 uv, uint mipmapLevel) {
     float lod = float(mipmapLevel);
-    #if defined __NVIDIA || defined __AMD
+    #ifdef UNIFORM_ARRAY_AS_ARRAY
     return textureLod(uTextures[textureId], uv, lod);
     #else
     switch (textureId) {
@@ -50,7 +50,7 @@ vec4 getTexture(uint textureId, vec3 uv) {
     #ifdef FIXED_MIPMAP_LEVEL
     return getTexture(textureId, uv, FIXED_MIPMAP_LEVEL);
     #else
-    #if defined __NVIDIA || defined __AMD
+    #ifdef UNIFORM_ARRAY_AS_ARRAY
     return texture(uTextures[textureId], uv);
     #else
     switch (textureId) {
