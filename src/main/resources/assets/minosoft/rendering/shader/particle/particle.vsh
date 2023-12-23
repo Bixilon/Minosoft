@@ -30,8 +30,9 @@ out Vertex
 {
     vec2 minUV;
     vec2 maxUV;
-    float layer1;
-    float layer2;
+    uint array1; float layer1;
+    uint array2; float layer2;
+    float interpolation;
 
     float scale;
     vec4 tintColor;
@@ -50,5 +51,7 @@ void main() {
     ginVertex.tintColor = getRGBAColor(floatBitsToUint(vinTintColor)) * getLight(floatBitsToUint(vinLight) & 0xFFu);
 
     setTexture(vec2(0.0f, 0.0f), vinIndexLayerAnimation);
-    ginVertex.layer1 = finAnimationPosition1.z; ginVertex.layer2 = finAnimationPosition2.z;
+    ginVertex.array1 = finAnimationArray1; ginVertex.layer1 = finAnimationPosition1.z;
+    ginVertex.array2 = finAnimationArray2; ginVertex.layer2 = finAnimationPosition2.z;
+    ginVertex.interpolation = finAnimationInterpolation;
 }

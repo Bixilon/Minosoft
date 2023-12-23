@@ -18,10 +18,12 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readAsString
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderContext
+import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLinkingException
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
@@ -46,9 +48,9 @@ class OpenGLNativeShader(
     private var handler = -1
     private val uniformLocations: Object2IntOpenHashMap<String> = Object2IntOpenHashMap()
 
-    private fun load(file: ResourceLocation, type: ShaderType): Int {
-        system.log { "Loading shader $file" }
-        val code = GLSLShaderCode(context, context.connection.assetsManager[file].readAsString())
+    private fun load(file: ResourceLocation, type: ShaderType, code: String?): Int {
+        val code = GLSLShaderCode(context, code ?: context.connection.assetsManager[file].readAsString())
+        system.log { "Compiling shader $file" }
 
         code.defines += defines
         code.defines["SHADER_TYPE_${type.name}"] = ""
@@ -67,14 +69,19 @@ class OpenGLNativeShader(
         glCompileShader(program)
 
         if (glGetShaderi(program, GL_COMPILE_STATUS) == GL_FALSE) {
-            throw ShaderLoadingException("Can not load shader: $file\n:" + getShaderInfoLog(program), glsl)
+            throw ShaderLoadingException("Can not load shader: $file\n:" + glGetShaderInfoLog(program), glsl)
         }
 
         return program
     }
 
     override fun load() {
+        val geometryCode = geometry?.let { catchAll { context.connection.assetsManager[it].readAsString() } }
+        if (geometryCode != null) {
+            defines["HAS_GEOMETRY_SHADER"] = " "
+        }
         handler = glCreateProgram()
+        glUseProgram(handler)
 
         if (handler.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
@@ -82,13 +89,12 @@ class OpenGLNativeShader(
 
         val programs = IntArrayList(3)
 
-
-        programs += load(vertex, ShaderType.VERTEX)
+        programs += load(vertex, ShaderType.VERTEX, null)
         try {
-            geometry?.let { programs += load(it, ShaderType.GEOMETRY) }
+            geometry?.let { programs += load(it, ShaderType.GEOMETRY, geometryCode) }
         } catch (_: FileNotFoundException) {
         }
-        programs += load(fragment, ShaderType.FRAGMENT)
+        programs += load(fragment, ShaderType.FRAGMENT, null)
 
         for (program in programs) {
             glAttachShader(handler, program)
@@ -99,7 +105,7 @@ class OpenGLNativeShader(
         glValidateProgram(handler)
 
         if (glGetProgrami(handler, GL_LINK_STATUS) == GL_FALSE) {
-            throw ShaderLoadingException(getProgramInfoLog(handler))
+            throw ShaderLinkingException("Can not link shaders: $vertex with $geometry with ${fragment}: \n ${glGetProgramInfoLog(handler)}")
         }
         for (program in programs) {
             glDeleteShader(program)
@@ -216,17 +222,6 @@ class OpenGLNativeShader(
 
     override fun toString(): String {
         return "OpenGLShader: $vertex:$geometry:$fragment"
-    }
-
-    private companion object {
-
-        fun getShaderInfoLog(shader: Int): String {
-            return glGetShaderInfoLog(shader)
-        }
-
-        fun getProgramInfoLog(program: Int): String {
-            return glGetProgramInfoLog(program)
-        }
     }
 
     private enum class ShaderType(

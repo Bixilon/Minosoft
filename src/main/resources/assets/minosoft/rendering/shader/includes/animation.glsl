@@ -11,9 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-
 #ifndef INCLUDE_MINOSOFT_ANIMATION
 #define INCLUDE_MINOSOFT_ANIMATION
+
 /*
 * Available defines:
 * - ANIMATED_TEXTURE_COUNT
@@ -23,7 +23,6 @@
 */
 
 // buffer
-
 #ifdef SHADER_TYPE_VERTEX
 layout(std140) uniform uSpriteBuffer
 {
@@ -34,7 +33,17 @@ layout(std140) uniform uSpriteBuffer
 
 // in/out
 
-#ifdef SHADER_TYPE_VERTEX
+#if defined SHADER_TYPE_VERTEX
+#ifdef HAS_GEOMETRY_SHADER
+uint finAnimationArray1; vec3 finAnimationPosition1;
+uint finAnimationArray2; vec3 finAnimationPosition2;
+float finAnimationInterpolation;
+#else
+flat out uint finAnimationArray1; out vec3 finAnimationPosition1;
+flat out uint finAnimationArray2; out vec3 finAnimationPosition2;
+out float finAnimationInterpolation;
+#endif
+#elif defined SHADER_TYPE_GEOMETRY
 flat out uint finAnimationArray1; out vec3 finAnimationPosition1;
 flat out uint finAnimationArray2; out vec3 finAnimationPosition2;
 out float finAnimationInterpolation;

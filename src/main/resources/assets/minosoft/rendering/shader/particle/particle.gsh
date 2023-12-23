@@ -20,16 +20,15 @@ uniform mat4 uViewProjectionMatrix;
 uniform vec3 uCameraRight;
 uniform vec3 uCameraUp;
 
-out vec3 finAnimationPosition1;
-out vec3 finAnimationPosition2;
 out vec4 finTintColor;
 
 in Vertex
 {
     vec2 minUV;
     vec2 maxUV;
-    float layer1;
-    float layer2;
+    uint array1; float layer1;
+    uint array2; float layer2;
+    float interpolation;
 
     float scale;
     vec4 tintColor;
@@ -37,20 +36,24 @@ in Vertex
 
 
 #include "minosoft:tint"
+#include "minosoft:animation"
 
 
 void emit(vec3 offset, vec2 uv) {
     vec3 pointPosition = gl_in[0].gl_Position.xyz;
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition + offset * ginVertex[0].scale, 1.0);
-    finAnimationPosition1 = vec3(uv, ginVertex[0].layer1);
-    finAnimationPosition2 = vec3(uv, ginVertex[0].layer2);
+    finAnimationPosition1.xz = uv;
+    finAnimationPosition2.xz = uv;
 
     EmitVertex();
 }
 
 void main() {
     finTintColor = ginVertex[0].tintColor;
+    finAnimationArray1 = ginVertex[0].array1; finAnimationPosition1.z = ginVertex[0].layer1;
+    finAnimationArray2 = ginVertex[0].array2; finAnimationPosition2.z = ginVertex[0].layer2;
+    finAnimationInterpolation = ginVertex[0].interpolation;
 
 
     emit(-(uCameraRight - uCameraUp), vec2(ginVertex[0].minUV.x, ginVertex[0].minUV.y));
