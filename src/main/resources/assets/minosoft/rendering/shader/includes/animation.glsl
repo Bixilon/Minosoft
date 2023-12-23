@@ -34,22 +34,24 @@ layout(std140) uniform uSpriteBuffer
 // in/out
 
 #if defined SHADER_TYPE_VERTEX
-#ifdef HAS_GEOMETRY_SHADER
-uint finAnimationArray1; vec3 finAnimationPosition1;
-uint finAnimationArray2; vec3 finAnimationPosition2;
-float finAnimationInterpolation;
-#else
-flat out uint finAnimationArray1; out vec3 finAnimationPosition1;
-flat out uint finAnimationArray2; out vec3 finAnimationPosition2;
+uint animationArray1; float animationLayer1;
+uint animationArray2; float animationLayer2;
+float animationInterpolation;
+#ifndef HAS_GEOMETRY_SHADER
+flat out uint finAnimationArray1; out float finAnimationLayer1;
+flat out uint finAnimationArray2; out float finAnimationLayer2;
+out vec2 finAnimationUV;
 out float finAnimationInterpolation;
 #endif
 #elif defined SHADER_TYPE_GEOMETRY
-flat out uint finAnimationArray1; out vec3 finAnimationPosition1;
-flat out uint finAnimationArray2; out vec3 finAnimationPosition2;
+flat out uint finAnimationArray1; out float finAnimationLayer1;
+flat out uint finAnimationArray2; out float finAnimationLayer2;
+out vec2 finAnimationUV;
 out float finAnimationInterpolation;
 #elif defined SHADER_TYPE_FRAGMENT
-flat in uint finAnimationArray1; in vec3 finAnimationPosition1;
-flat in uint finAnimationArray2; in vec3 finAnimationPosition2;
+flat in uint finAnimationArray1; in float finAnimationLayer1;
+flat in uint finAnimationArray2; in float finAnimationLayer2;
+in vec2 finAnimationUV;
 in float finAnimationInterpolation;
 #endif
 
@@ -60,7 +62,7 @@ in float finAnimationInterpolation;
 #include "minosoft:alpha"
 
 vec4 getAnimationTexture() {
-    vec4 texel1 = getTexture(finAnimationArray1, finAnimationPosition1);
+    vec4 texel1 = getTexture(finAnimationArray1, vec3(finAnimationUV, finAnimationLayer1));
     discard_if_0(texel1.a);
 
     float interpolation = finAnimationInterpolation;
@@ -68,7 +70,7 @@ vec4 getAnimationTexture() {
     if (interpolation == 0.0f) { // no animation
         return texel1;
     }
-    vec4 texel2 = getTexture(finAnimationArray2, finAnimationPosition2);
+    vec4 texel2 = getTexture(finAnimationArray2, vec3(finAnimationUV, finAnimationLayer2));
     discard_if_0(texel2.a);
 
     return mix(texel1, texel2, interpolation);
@@ -97,42 +99,54 @@ uint animation_extractArray(uint animation) {
 uint animation_extractLayer(uint animation) {
     return (animation >> 12) & 0xFFFFu;
 }
-vec3 animation_texturePosition(vec2 uv, uint animation) {
-    return vec3(uv, animation_extractLayer(animation));
+
+void animation_notAnimated(uint animation) {
+    animationArray1 = animation_extractArray(animation);
+    animationLayer1 = animation_extractLayer(animation);
+    animationInterpolation = 0.0f;
 }
 
-void animation_notAnimated(vec2 uv, uint animation) {
-    finAnimationArray1 = animation_extractArray(animation);
-    finAnimationPosition1 = animation_texturePosition(uv, animation);
-    finAnimationInterpolation = 0.0f;
-}
-
-void animation_animated(uint animationId, vec2 uv) {
+void animation_animated(uint animationId) {
     uvec4 data = uAnimationData[animationId];
 
     uint texture1 = data.x;
-    finAnimationArray1 = animation_extractArray(texture1);
-    finAnimationPosition1 = animation_texturePosition(uv, texture1);
+    animationArray1 = animation_extractArray(texture1);
+    animationLayer1 = animation_extractLayer(texture1);
 
     uint texture2 = data.y;
-    finAnimationArray2 = animation_extractArray(texture2);
-    finAnimationPosition2 = animation_texturePosition(uv, texture2);
+    animationArray2 = animation_extractArray(texture2);
+    animationLayer2 = animation_extractLayer(texture2);
 
-    finAnimationInterpolation = data.z / 100.0f;
+    animationInterpolation = data.z / 100.0f;
 }
 
-void setTexture(vec2 uv, uint animation) {
+void setTexture(uint animation) {
     uint animationId = animation_extractAnimationId(animation);
     if (animationId == INVALID_ANIMATION) {
-        animation_notAnimated(uv, animation);
+        animation_notAnimated(animation);
         return;
     }
-    animation_animated(animationId, uv);
+    animation_animated(animationId);
+}
+
+void setTexture(float animation) {
+    setTexture(floatBitsToUint(animation));
+}
+
+#ifndef HAS_GEOMETRY_SHADER
+void setTexture(vec2 uv, uint animation) {
+    setTexture(animation);
+    finAnimationUV = uv;
+
+    finAnimationArray1 = animationArray1; finAnimationLayer1 = animationLayer1;
+    finAnimationArray2 = animationArray2; finAnimationLayer2 = animationLayer2;
+    finAnimationInterpolation = animationInterpolation;
 }
 
 void setTexture(vec2 uv, float animation) {
     setTexture(uv, floatBitsToUint(animation));
 }
+#endif
 #endif
 
 #endif

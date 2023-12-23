@@ -26,9 +26,9 @@ in Vertex
 {
     vec2 minUV;
     vec2 maxUV;
-    uint array1; float layer1;
-    uint array2; float layer2;
-    float interpolation;
+    flat uint array1; flat float layer1;
+    flat uint array2; flat float layer2;
+    flat float interpolation;
 
     float scale;
     vec4 tintColor;
@@ -43,16 +43,15 @@ void emit(vec3 offset, vec2 uv) {
     vec3 pointPosition = gl_in[0].gl_Position.xyz;
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition + offset * ginVertex[0].scale, 1.0);
-    finAnimationPosition1.xz = uv;
-    finAnimationPosition2.xz = uv;
+    finAnimationUV = uv;
 
     EmitVertex();
 }
 
 void main() {
     finTintColor = ginVertex[0].tintColor;
-    finAnimationArray1 = ginVertex[0].array1; finAnimationPosition1.z = ginVertex[0].layer1;
-    finAnimationArray2 = ginVertex[0].array2; finAnimationPosition2.z = ginVertex[0].layer2;
+    finAnimationArray1 = ginVertex[0].array1; finAnimationLayer1 = ginVertex[0].layer1;
+    finAnimationArray2 = ginVertex[0].array2; finAnimationLayer2 = ginVertex[0].layer2;
     finAnimationInterpolation = ginVertex[0].interpolation;
 
 
