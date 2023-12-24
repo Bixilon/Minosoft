@@ -31,7 +31,7 @@ class UpdateTeamS2CP(
     val name: String,
     buffer: PlayInByteBuffer,
 ) : TeamsS2CP {
-    val displayName = buffer.readChatComponent()
+    val displayName = buffer.readNbtChatComponent()
     lateinit var prefix: ChatComponent
         private set
     lateinit var suffix: ChatComponent
@@ -75,8 +75,8 @@ class UpdateTeamS2CP(
         }
 
         if (buffer.versionId >= ProtocolVersions.V_18W20A) {
-            prefix = buffer.readChatComponent()
-            suffix = buffer.readChatComponent()
+            prefix = buffer.readNbtChatComponent()
+            suffix = buffer.readNbtChatComponent()
         }
     }
 
