@@ -166,4 +166,10 @@ interface RenderSystem {
     }
 
     var viewport: Vec2i
+
+    fun reportErrors() {
+        val errors = getErrors()
+        if (errors.isEmpty()) return
+        throw Exception(errors.first().toString())
+    }
 }

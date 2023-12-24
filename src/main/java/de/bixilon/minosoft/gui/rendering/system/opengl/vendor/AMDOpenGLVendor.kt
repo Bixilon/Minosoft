@@ -27,4 +27,6 @@ object AMDOpenGLVendor : OpenGLVendor {
     override val hacks = DriverHacks.set(
         DriverHacks.USE_QUADS_OVER_TRIANGLE,
     )
+
+    override fun toString() = "amd"
 }

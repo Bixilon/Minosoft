@@ -81,7 +81,6 @@ class OpenGLNativeShader(
             defines["HAS_GEOMETRY_SHADER"] = " "
         }
         handler = glCreateProgram()
-        glUseProgram(handler)
 
         if (handler.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()

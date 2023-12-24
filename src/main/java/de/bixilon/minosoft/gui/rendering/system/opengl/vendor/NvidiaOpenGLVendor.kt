@@ -31,4 +31,6 @@ object NvidiaOpenGLVendor : OpenGLVendor {
         DriverHacks.UNIFORM_ARRAY_AS_ARRAY,
         DriverHacks.USE_QUADS_OVER_TRIANGLE,
     )
+
+    override fun toString() = "nvidia"
 }

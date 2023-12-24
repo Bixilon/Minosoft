@@ -19,4 +19,6 @@ object OtherOpenGLVendor : OpenGLVendor {
     override val shaderDefine: String = "__OTHER"
 
     override val hacks = DriverHacks.set()
+
+    override fun toString() = "other"
 }

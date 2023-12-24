@@ -19,4 +19,6 @@ object IntelOpenGLVendor : OpenGLVendor {
     override val shaderDefine: String = "__INTEL"
 
     override val hacks = DriverHacks.set()
+
+    override fun toString() = "intel"
 }
