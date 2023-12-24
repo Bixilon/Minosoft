@@ -72,7 +72,10 @@ class FloatOpenGLVertexBuffer(
         super.unload()
     }
 
+    override fun toString() = "FloatOpenGLVertexBuffer(vertices=$vertices, state=$state)"
+
     private companion object {
+
         val PrimitiveTypes.gl: Int
             get() {
                 return when (this) {

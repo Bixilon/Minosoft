@@ -124,4 +124,6 @@ class OpenGLFramebuffer(
             throw MemoryLeakException("Buffer has not been unloaded!")
         }
     }
+
+    override fun toString() = "OpenGLFramebuffer(size=$size, color=$color, depth=$depth, state=$state)"
 }
