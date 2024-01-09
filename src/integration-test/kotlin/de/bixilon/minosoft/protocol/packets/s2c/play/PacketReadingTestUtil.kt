@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket

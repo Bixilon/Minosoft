@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.tint.tints.grass
 
 import de.bixilon.minosoft.assets.MemoryAssetsManager
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
