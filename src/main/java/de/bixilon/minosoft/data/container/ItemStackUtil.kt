@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ object ItemStackUtil {
 
     fun of(item: Item, connection: PlayConnection, count: Int, meta: Int, nbt: MutableMap<String, Any>): ItemStack {
         if (connection.version.flattened) {
-            return of(item, count, connection, durability = meta, nbt = nbt)
+            return of(item, count, connection, nbt = nbt)
         }
         val stack = of(item, count, connection, nbt = nbt)
 
