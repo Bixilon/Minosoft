@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -42,22 +42,23 @@ abstract class SignatureSigner(
         return instance
     }
 
-    open fun verify(data: ByteArray, signature: ByteArray): Boolean {
+    open fun verify(data: ByteArray, signature: ByteArray?): Boolean {
+        if (signature == null) return false
         val instance = createInstance()
         instance.update(data)
         return instance.verify(signature)
     }
 
-    fun require(data: ByteArray, signature: ByteArray) {
+    fun require(data: ByteArray, signature: ByteArray?) {
         if (verify(data, signature)) return
         throw SignatureException()
     }
 
-    fun verify(data: String, signature: String): Boolean {
+    fun verify(data: String, signature: String?): Boolean {
         return verify(data.toByteArray(), Base64.getDecoder().decode(signature))
     }
 
-    fun require(data: String, signature: String) {
+    fun require(data: String, signature: String?) {
         if (verify(data, signature)) return
         throw SignatureException()
     }

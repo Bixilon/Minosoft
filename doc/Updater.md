@@ -29,7 +29,7 @@ Otherwise it responds with `200 OK` and returns a json object (with the signatur
     "url": "https:// where to download it",
     "size": <Update size in Bytes>,
     "sha512": "SHA512 hash of the binary",
-    "signature": "Release signature"
+    "signature": "SHA512withRSA signature of the binary"
   },
   "release_notes": "<Optional text for release notes to show in the client>"
 }
@@ -44,10 +44,6 @@ When an update is available, it prompts the user the install it. It tries to sto
 Once it is downloaded, minosoft asks the user to restart. It will then quit and starts the new jar.
 
 The client will refuse to update, if the release date of the next version is lower than the version currently running (i.e. no downgrades)
-
-## Signature
-
-The first line of the file is the base64 encoded signature of the whole json object.
 
 ## Future
 

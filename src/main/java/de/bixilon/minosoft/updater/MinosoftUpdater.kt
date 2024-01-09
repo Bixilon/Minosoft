@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -101,9 +101,7 @@ object MinosoftUpdater {
     }
 
     fun parse(data: String): MinosoftUpdate {
-        val (signature, json) = data.split('\n', limit = 2)
-        UpdateKey.require(signature, json)
-        return Jackson.MAPPER.readValue(json, MinosoftUpdate::class.java)
+        return Jackson.MAPPER.readValue(data, MinosoftUpdate::class.java)
     }
 
     fun download(update: MinosoftUpdate, progress: UpdateProgress) {
@@ -116,5 +114,6 @@ object MinosoftUpdater {
 
         progress.log?.print("TODO :)")
         progress.stage = UpdateProgress.UpdateStage.FAILED
+        // UpdateKey.require(data, signature)
     }
 }
