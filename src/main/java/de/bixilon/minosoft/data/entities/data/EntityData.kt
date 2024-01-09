@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities.data
 
 import de.bixilon.kutil.bit.BitByte.isBitMask
+import de.bixilon.kutil.cast.CastUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -121,7 +122,9 @@ class EntityData(
     }
 
     inline operator fun <reified V> invoke(field: EntityDataField, default: V, noinline converter: ((Any) -> V)? = null): EntityDataDelegate<V> {
-        val value = this.get(field, default)
-        return EntityDataDelegate(value, field, this, converter)
+        val raw = this.get<Any?>(field, default)
+        val value = if (raw != null) converter?.invoke(raw) ?: raw.cast<V>() else null
+
+        return EntityDataDelegate(value.unsafeCast(), field, this, converter)
     }
 }
