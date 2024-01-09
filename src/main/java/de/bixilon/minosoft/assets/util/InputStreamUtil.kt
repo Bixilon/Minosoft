@@ -81,25 +81,27 @@ object InputStreamUtil {
         }
     }
 
-    fun InputStream.readTarArchive(): Map<String, ByteArray> {
+    fun InputStream.readTarArchive(close: Boolean = true): Map<String, ByteArray> {
         val content: MutableMap<String, ByteArray> = mutableMapOf()
         val stream = TarInputStream(this)
         while (true) {
             val entry = stream.nextEntry ?: break
             content[entry.name] = stream.readAll()
         }
-        close()
+        // TODO: handle exception
+        if (close) close()
         return content
     }
 
-    fun InputStream.readZipArchive(): Map<String, ByteArray> {
+    fun InputStream.readZipArchive(close: Boolean = true): Map<String, ByteArray> {
         val content: MutableMap<String, ByteArray> = mutableMapOf()
         val stream = ZipInputStream(this)
         while (true) {
             val entry = stream.nextEntry ?: break
             content[entry.name] = stream.readAll()
         }
-        close()
+        // TODO: handle exception
+        if (close) close()
         return content
     }
 
