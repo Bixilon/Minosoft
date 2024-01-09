@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.util.http
 
+import java.net.http.HttpHeaders
+
 class HTTPResponse<T>(
     val statusCode: Int,
-    val headers: Map<String, String>,
+    val headers: HttpHeaders,
     val body: T,
 )

@@ -160,7 +160,7 @@ object CommandLineArguments {
         setWindowFactory(namespace.getString("window")?.lowercase() ?: "glfw")
         setRenderApi(namespace.getString("render_api")?.lowercase() ?: "gl")
 
-        RunConfiguration.UPDATE_CHECKING = !namespace.getBoolean("disable_updater")
+        namespace.getBoolean("disable_updater")?.let { RunConfiguration.UPDATE_CHECKING = !it }
     }
 
     private fun setWindowFactory(name: String) {
