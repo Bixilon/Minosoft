@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.modding.loader
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import org.xeustechnologies.jcl.JarClassLoader
 import org.xeustechnologies.jcl.JarResources
 import org.xeustechnologies.jcl.JclJarEntry
@@ -35,7 +36,7 @@ object LoaderUtil {
         get() = classpathResourcesField.get(this).unsafeCast()
 
     fun JarClassLoader.load(entry: JarEntry, stream: JarInputStream) {
-        load(entry.name, stream.readAllBytes())
+        load(entry.name, stream.readAll(false))
     }
 
     fun JarClassLoader.load(name: String, data: ByteArray) {

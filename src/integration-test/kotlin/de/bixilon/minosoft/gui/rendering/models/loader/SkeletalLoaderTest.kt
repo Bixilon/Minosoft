@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.kutil.latch.SimpleLatch
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.minosoft.assets.MemoryAssetsManager
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderContext
@@ -45,7 +46,7 @@ class SkeletalLoaderTest {
         context::textures.forceSet(DummyTextureManager(context))
 
         val manager = MemoryAssetsManager()
-        manager.push(dummyModel, SkeletalLoaderTest::class.java.getResourceAsStream("/model/skeletal/dummy.smodel")!!.readAllBytes())
+        manager.push(dummyModel, SkeletalLoaderTest::class.java.getResourceAsStream("/model/skeletal/dummy.smodel")!!.readAll())
         context.connection.assetsManager.add(manager)
 
 

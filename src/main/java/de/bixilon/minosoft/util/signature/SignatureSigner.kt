@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.util.signature
 
 import de.bixilon.minosoft.assets.IntegratedAssets
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.security.KeyFactory
 import java.security.PublicKey
@@ -30,7 +31,7 @@ abstract class SignatureSigner(
 
     open fun load() {
         if (key != null) throw IllegalStateException("Already loaded!")
-        val spec = X509EncodedKeySpec(IntegratedAssets.DEFAULT[keyPath].readAllBytes())
+        val spec = X509EncodedKeySpec(IntegratedAssets.DEFAULT[keyPath].readAll())
         val keyFactory: KeyFactory = KeyFactory.getInstance("RSA")
         key = keyFactory.generatePublic(spec)
     }

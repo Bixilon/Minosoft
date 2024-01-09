@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.assets.file
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.io.File
@@ -52,11 +53,11 @@ class ZipAssetsManager(
 
     fun push(name: String, stream: ZipInputStream) {
         when (name) {
-            "pack.png" -> image = stream.readAllBytes()
+            "pack.png" -> image = stream.readAll(false)
             "pack.mcmeta" -> properties = stream.readJson(false)
             else -> {
                 val resourceLocation = name.toAssetName(prefix = prefix) ?: return
-                assets[resourceLocation] = stream.readAllBytes()
+                assets[resourceLocation] = stream.readAll(false)
             }
         }
     }

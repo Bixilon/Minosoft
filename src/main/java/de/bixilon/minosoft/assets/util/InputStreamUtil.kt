@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -86,9 +86,9 @@ object InputStreamUtil {
         val stream = TarInputStream(this)
         while (true) {
             val entry = stream.nextEntry ?: break
-            content[entry.name] = stream.readAllBytes()
-
+            content[entry.name] = stream.readAll()
         }
+        close()
         return content
     }
 
@@ -97,13 +97,20 @@ object InputStreamUtil {
         val stream = ZipInputStream(this)
         while (true) {
             val entry = stream.nextEntry ?: break
-            content[entry.name] = stream.readAllBytes()
-
+            content[entry.name] = stream.readAll()
         }
+        close()
         return content
     }
 
     fun InputStream.readMBFMap(): Map<Any, Any> {
-        return MBFBinaryReader(this).readMBF().data.unsafeCast()
+        return this.use { MBFBinaryReader(this).readMBF().data.unsafeCast() }
+    }
+
+    fun InputStream.readAll(close: Boolean = true): ByteArray {
+        if (close) {
+            return use { readAllBytes() }
+        }
+        return readAllBytes()
     }
 }

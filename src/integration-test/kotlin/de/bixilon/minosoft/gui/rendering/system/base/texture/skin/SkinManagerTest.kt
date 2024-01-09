@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -53,7 +53,7 @@ class SkinManagerTest {
 
     @Test(enabled = false)
     fun `automatically detect and fix legacy skin`() {
-        val old = SkinManager::class.java.getResourceAsStream("/skins/7af7c07d1ded61b1d3312685b32e4568ffdda762ec8d808895cc329a93d606e0.png")!!.readAllBytes().readSkin()
+        val old = SkinManager::class.java.getResourceAsStream("/skins/7af7c07d1ded61b1d3312685b32e4568ffdda762ec8d808895cc329a93d606e0.png")!!.readAll().readSkin()
         val expected = SkinManager::class.java.getResourceAsStream("/skins/7af7c07d1ded61b1d3312685b32e4568ffdda762ec8d808895cc329a93d606e0_fixed.png")!!.readTexture()
 
         assertEquals(old.size, Vec2i(64, 64)) // fixed size
@@ -67,12 +67,12 @@ class SkinManagerTest {
     }
 
     fun `check if skin is really wide on a slim skin`() {
-        val slim = SkinManager::class.java.getResourceAsStream("/skins/5065405b55a729be5a442832b895d4352b3fdcc61c8c57f4b8abad64344194d3.png")!!.readAllBytes().readSkin()
+        val slim = SkinManager::class.java.getResourceAsStream("/skins/5065405b55a729be5a442832b895d4352b3fdcc61c8c57f4b8abad64344194d3.png")!!.readAll().readSkin()
         assertFalse(isReallyWide.invoke(SkinManager, slim) as Boolean)
     }
 
     fun `check if skin is really wide on a wide skin`() {
-        val slim = SkinManager::class.java.getResourceAsStream("/skins/180fce54ab949a1eada68bea6be02633a4c15fd0915f097a93fa6d3ca1e04623.png")!!.readAllBytes().readSkin()
+        val slim = SkinManager::class.java.getResourceAsStream("/skins/180fce54ab949a1eada68bea6be02633a4c15fd0915f097a93fa6d3ca1e04623.png")!!.readAll().readSkin()
         assertTrue(isReallyWide.invoke(SkinManager, slim) as Boolean)
     }
 
@@ -88,7 +88,7 @@ class SkinManagerTest {
         player.connection.world.entities.add(null, UUID(1L, 2L), player)
         player::additional.forceSet(PlayerAdditional("name_him"))
 
-        val data = SkinManager::class.java.getResourceAsStream("/skins/5065405b55a729be5a442832b895d4352b3fdcc61c8c57f4b8abad64344194d3.png")!!.readAllBytes()
+        val data = SkinManager::class.java.getResourceAsStream("/skins/5065405b55a729be5a442832b895d4352b3fdcc61c8c57f4b8abad64344194d3.png")!!.readAll()
 
         val properties = PlayerProperties(PlayerTextures(skin = SkinPlayerTexture("https://textures.minecraft.net/abcdef".toURL(), metadata = SkinMetadata(SkinModel.SLIM)).apply { this::data.forceSet(data) }))
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -53,7 +53,6 @@ data class DimensionProperties(
         check(maxSection >= minSection) { "Upper section can not be lower that the lower section ($minSection >= $maxSection)" }
         check(minSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Minimum section out of bounds: $minSection" }
         check(maxSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Maximum section out of bounds: $minSection" }
-
     }
 
 

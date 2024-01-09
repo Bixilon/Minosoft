@@ -110,6 +110,7 @@ object MinosoftUpdater {
         val download = update.download
         if (download == null) {
             progress.log?.print("Update is unavailable for download. Please download it manually!")
+            progress.stage = UpdateProgress.UpdateStage.FAILED
             return
         }
         progress.log?.print("Downloading update...")

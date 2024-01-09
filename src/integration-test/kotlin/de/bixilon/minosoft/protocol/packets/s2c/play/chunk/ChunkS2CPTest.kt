@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -44,7 +44,7 @@ class ChunkS2CPTest {
     }
 
     private fun read(name: String, version: String, connection: PlayConnection = createConnection(version = version), dimension: DimensionProperties): ChunkS2CP {
-        val data = ChunkS2CPTest::class.java.getResourceAsStream("/packets/chunk/$name.bin")!!.readAllBytes()
+        val data = ChunkS2CPTest::class.java.getResourceAsStream("/packets/chunk/$name.bin")!!.readAll()
         connection.world::dimension.forceSet(DataObserver(dimension))
 
         val buffer = PlayInByteBuffer(data, connection)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.MemoryAssetsManager
 import de.bixilon.minosoft.assets.TestAssetsManager.box
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace
@@ -33,7 +34,7 @@ import org.testng.Assert
 import kotlin.math.abs
 
 object BakedModelTestUtil {
-    private val texture = Minosoft::class.java.getResourceAsStream("/assets/minosoft/textures/debug.png")!!.readAllBytes()
+    private val texture = Minosoft::class.java.getResourceAsStream("/assets/minosoft/textures/debug.png")!!.readAll()
     private val connection by lazy { createConnection() }
     private val rendering by lazy {
         val rendering = Rendering(connection)

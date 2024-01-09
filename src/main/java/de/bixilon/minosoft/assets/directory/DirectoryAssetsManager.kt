@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
+import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
@@ -65,7 +66,7 @@ class DirectoryAssetsManager(
     override fun load(latch: AbstractLatch?) {
         check(!loaded) { "Already loaded!" }
         scanDirectory(true, basePath.toFile())
-        File("$rootPath/pack.png").let { if (it.exists() && it.isFile) image = FileInputStream(it).readAllBytes() }
+        File("$rootPath/pack.png").let { if (it.exists() && it.isFile) image = FileInputStream(it).readAll() }
         File("$rootPath/pack.mcmeta").let { if (it.exists() && it.isFile) properties = FileInputStream(it).readJson() }
         loaded = true
     }

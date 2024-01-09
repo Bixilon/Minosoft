@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ object PacketReadingTestUtil {
 
     fun <T : S2CPacket> read(name: String, version: String, connection: PlayConnection = ConnectionTestUtil.createConnection(version = version), constructor: (PlayInByteBuffer) -> T): T {
         if (connection.version.name != version) throw IllegalStateException("Version mismatch: $version vs ${connection.version}")
-        val data = PacketReadingTestUtil::class.java.getResourceAsStream("/packets/$name.bin")?.readAllBytes() ?: throw FileNotFoundException("Can not find packet blob $name")
+        val data = PacketReadingTestUtil::class.java.getResourceAsStream("/packets/$name.bin")?.readAll() ?: throw FileNotFoundException("Can not find packet blob $name")
 
         val buffer = PlayInByteBuffer(data, connection)
 
