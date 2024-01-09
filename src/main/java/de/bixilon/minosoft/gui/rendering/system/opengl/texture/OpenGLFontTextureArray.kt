@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,13 +45,14 @@ class OpenGLFontTextureArray(
 
     override fun upload(latch: AbstractLatch?) {
         this.handle = OpenGLTextureUtil.createTextureArray(0)
+        // Texture alpha format is also available in OpenGL compatibility profile and WebGL but was removed in OpenGL core profile. An alternative is to rely on texture red format and texture swizzle as shown with the following code samples. (see https://www.g-truc.net/post-0734.html)
         val format = when (compression) {
             FontCompressions.NONE -> GL_RGBA8
-            FontCompressions.ALPHA -> GL_ALPHA8
-            FontCompressions.COMPRESSED_ALPHA -> GL_COMPRESSED_ALPHA
+            FontCompressions.ALPHA -> GL_R8
+            FontCompressions.COMPRESSED_ALPHA -> GL_COMPRESSED_RED
         }
         if (compression != FontCompressions.NONE) {
-            glTexParameteriv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_RGBA, intArrayOf(GL_ONE, GL_ONE, GL_ONE, GL_ALPHA))
+            glTexParameteriv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_RGBA, intArrayOf(GL_ONE, GL_ONE, GL_ONE, GL_RED))
         }
 
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, RESOLUTION, RESOLUTION, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
