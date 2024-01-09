@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -111,6 +111,10 @@ object CommandLineArguments {
             addArgument("--render-api")
                 .action(Arguments.store())
                 .help("Render API to use. Defaults to gl")
+
+            addArgument("--disable-updater")
+                .action(Arguments.store())
+                .help("Force disables all update checking")
         }
 
     fun parse(args: Array<String>) {
@@ -155,6 +159,8 @@ object CommandLineArguments {
 
         setWindowFactory(namespace.getString("window")?.lowercase() ?: "glfw")
         setRenderApi(namespace.getString("render_api")?.lowercase() ?: "gl")
+
+        RunConfiguration.UPDATE_CHECKING = !namespace.getBoolean("disable_updater")
     }
 
     private fun setWindowFactory(name: String) {

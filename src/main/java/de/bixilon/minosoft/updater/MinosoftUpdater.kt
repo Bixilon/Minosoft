@@ -20,6 +20,7 @@ import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.properties.MinosoftProperties
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.http.HTTP2.get
 import de.bixilon.minosoft.util.http.HTTPResponse
 import de.bixilon.minosoft.util.http.exceptions.HTTPException
@@ -44,6 +45,7 @@ object MinosoftUpdater {
     }
 
     fun check(force: Boolean = false, callback: (MinosoftUpdate?) -> Unit) {
+        if (!RunConfiguration.UPDATE_CHECKING) return
         if (!MinosoftProperties.canUpdate()) return
         if (!force) {
             this.update?.let { callback.invoke(update); return }
