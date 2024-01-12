@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -134,7 +134,7 @@ when (os) {
             Architectures.ARM -> {
                 lwjglNatives += "-arm64"
                 zstdNatives += "-amd64"
-                 // TODO: javafx for Windows on arm is not yet supported: https://github.com/luben/zstd-jni/issues/277
+                 // TODO: javafx for Windows on arm is not yet supported
             }
              */
 

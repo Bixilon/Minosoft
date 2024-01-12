@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.chat.signature.lastSeen.MessageSignatureData
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.item.items.legacy.ItemWithMeta
+import de.bixilon.minosoft.data.registries.registries.registry.MetaTypes
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -48,17 +50,22 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
         }
     }
 
+    fun writeLegacyItemStack(stack: ItemStack?) {
+        if (stack == null || !stack._valid) {
+            writeShort(-1)
+            return
+        }
+        val item = stack.item.item
+        val id = connection.registries.item.getId(item)
+        writeShort(id shr MetaTypes.ITEM.bits)
+        writeByte(stack.item.count)
+        writeShort(if (item is ItemWithMeta) item.getMeta(id, stack) else 0)
+        writeNBT(stack.getNBT())
+    }
+
     fun writeItemStack(stack: ItemStack?) {
         if (versionId < ProtocolVersions.V_1_13_2_PRE1) {
-            if (stack == null || !stack._valid) {
-                writeShort(-1)
-                return
-            }
-            writeShort(connection.registries.item.getId(stack.item.item))
-            writeByte(stack.item.count)
-            writeShort(stack._durability?.durability ?: 0) // ToDo: This is meta in general and not just durability
-            writeNBT(stack.getNBT())
-            return
+            return writeLegacyItemStack(stack)
         }
         val valid = stack != null && stack._valid
         writeBoolean(valid)
@@ -80,6 +87,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     }
 
     fun writeNBT(nbt: Any?) {
+        if (nbt is Map<*, *> && nbt.isEmpty()) return writeNBT(null)
         return writeNBT(nbt, versionId < ProtocolVersions.V_14W28B, versionId < V_23W31A)
     }
 
