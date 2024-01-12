@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -160,6 +160,7 @@ class ChunkNeighbours(val chunk: Chunk) : Iterable<Chunk?> {
     fun traceBlock(x: Int, y: Int, z: Int, chunkOffset: Vec2i): BlockState? {
         return trace(chunkOffset)?.get(x, y, z)
     }
+
 
     companion object {
         const val COUNT = 8

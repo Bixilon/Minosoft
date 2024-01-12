@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.world.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.data.world.container.biome.BiomeSectionDataProvider
 import de.bixilon.minosoft.data.world.container.block.BlockSectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 
 /**
@@ -66,6 +68,57 @@ class ChunkSection(
         blocks.clear()
         biomes.clear()
         blockEntities.clear()
+    }
+
+
+    fun traceBlock(x: Int, y: Int, z: Int, direction: Directions) = when (direction) {
+        Directions.DOWN -> {
+            if (y == 0) {
+                neighbours?.get(Directions.O_DOWN)?.blocks?.let { it[x, ProtocolDefinition.SECTION_MAX_Y, z] }
+            } else {
+                blocks[x, y - 1, z]
+            }
+        }
+
+        Directions.UP -> {
+            if (y == ProtocolDefinition.SECTION_MAX_Y) {
+                neighbours?.get(Directions.O_UP)?.blocks?.let { it[x, 0, z] }
+            } else {
+                blocks[x, y + 1, z]
+            }
+        }
+
+        Directions.NORTH -> {
+            if (z == 0) {
+                neighbours?.get(Directions.O_NORTH)?.blocks?.let { it[x, y, ProtocolDefinition.SECTION_MAX_Z] }
+            } else {
+                blocks[x, y, z - 1]
+            }
+        }
+
+        Directions.SOUTH -> {
+            if (z == ProtocolDefinition.SECTION_MAX_Z) {
+                neighbours?.get(Directions.O_SOUTH)?.blocks?.let { it[x, y, 0] }
+            } else {
+                blocks[x, y, z + 1]
+            }
+        }
+
+        Directions.WEST -> {
+            if (x == 0) {
+                neighbours?.get(Directions.O_WEST)?.blocks?.let { it[ProtocolDefinition.SECTION_MAX_X, y, z] }
+            } else {
+                blocks[x - 1, y, z]
+            }
+        }
+
+        Directions.EAST -> {
+            if (x == ProtocolDefinition.SECTION_MAX_X) {
+                neighbours?.get(Directions.O_EAST)?.blocks?.let { it[0, y, z] }
+            } else {
+                blocks[x + 1, y, z]
+            }
+        }
     }
 
     companion object {

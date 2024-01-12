@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,10 +22,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.registries.blocks.state.BlockState
-import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.get
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 enum class Directions(
     val vector: Vec3i,
@@ -59,60 +56,6 @@ enum class Directions(
     operator fun get(axis: Axes): Int {
         return vector[axis]
     }
-
-    @Deprecated("outsource")
-    fun getBlock(x: Int, y: Int, z: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): BlockState? {
-        return when (this) {
-            DOWN -> {
-                if (y == 0) {
-                    neighbours[Directions.O_DOWN]?.blocks?.let { it[x, ProtocolDefinition.SECTION_MAX_Y, z] }
-                } else {
-                    section.blocks[x, y - 1, z]
-                }
-            }
-
-            UP -> {
-                if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                    neighbours[Directions.O_UP]?.blocks?.let { it[x, 0, z] }
-                } else {
-                    section.blocks[x, y + 1, z]
-                }
-            }
-
-            NORTH -> {
-                if (z == 0) {
-                    neighbours[Directions.O_NORTH]?.blocks?.let { it[x, y, ProtocolDefinition.SECTION_MAX_Z] }
-                } else {
-                    section.blocks[x, y, z - 1]
-                }
-            }
-
-            SOUTH -> {
-                if (z == ProtocolDefinition.SECTION_MAX_Z) {
-                    neighbours[Directions.O_SOUTH]?.blocks?.let { it[x, y, 0] }
-                } else {
-                    section.blocks[x, y, z + 1]
-                }
-            }
-
-            WEST -> {
-                if (x == 0) {
-                    neighbours[Directions.O_WEST]?.blocks?.let { it[ProtocolDefinition.SECTION_MAX_X, y, z] }
-                } else {
-                    section.blocks[x - 1, y, z]
-                }
-            }
-
-            EAST -> {
-                if (x == ProtocolDefinition.SECTION_MAX_X) {
-                    neighbours[Directions.O_EAST]?.blocks?.let { it[0, y, z] }
-                } else {
-                    section.blocks[x + 1, y, z]
-                }
-            }
-        }
-    }
-
 
     companion object : ValuesEnum<Directions> {
         const val O_DOWN = 0 // Directions.DOWN.ordinal
