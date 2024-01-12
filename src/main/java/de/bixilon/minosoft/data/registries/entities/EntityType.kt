@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,6 +32,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
 import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fixEntityAttribute
+import de.bixilon.minosoft.datafixer.rls.EntityTypeFixer.fixEntityType
 import de.bixilon.minosoft.gui.rendering.entities.factory.RegisteredEntityModelFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -67,7 +68,7 @@ data class EntityType(
     companion object : IdentifierCodec<EntityType> {
         override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): EntityType? {
             check(registries != null) { "Registries is null!" }
-            val factory = DefaultEntityFactories[identifier]
+            val factory = DefaultEntityFactories[identifier.fixEntityType()]
 
             data["meta", "data"]?.toJsonObject()?.let {
                 val fields: MutableMap<String, EntityDataField> = mutableMapOf()
