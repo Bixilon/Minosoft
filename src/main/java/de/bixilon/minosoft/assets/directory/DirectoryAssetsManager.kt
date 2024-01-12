@@ -58,7 +58,7 @@ class DirectoryAssetsManager(
                 continue
             }
             if (root) continue // root path just allows folders
-            val path = file.toPath().relativeTo(basePath).toString().removePrefix(File.separator).toAssetName(false, prefix) ?: continue
+            val path = file.toPath().relativeTo(basePath).toString().replace("\\", "/").removePrefix("/").toAssetName(false, prefix) ?: continue
             assets += path
         }
     }

@@ -32,7 +32,7 @@ class UpdaterC(profile: OtherProfile) {
 
     /**
      * Update channel
-     * If automatic, it chooses either stable or beta matching the current executed version
+     * If set to `auto`, it will download the update from the same branch as the running version
      */
     var channel by StringDelegate(profile, "auto")
 
