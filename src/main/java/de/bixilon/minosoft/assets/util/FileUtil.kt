@@ -72,6 +72,7 @@ object FileUtil {
         throw IOException("Can not find temporary file after ${AssetsOptions.MAX_FILE_CHECKING} tries!")
     }
 
+    @Deprecated("kutil 1.26")
     fun InputStream.copy(vararg output: OutputStream, digest: MessageDigest?) {
         val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
 

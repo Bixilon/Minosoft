@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectReader
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.bixilon.kutil.buffer.BufferDefinition
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.ExceptionUtil.ignoreAll
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.util.json.Jackson
@@ -27,6 +28,7 @@ import java.util.zip.ZipInputStream
 
 object InputStreamUtil {
 
+    @Deprecated("kutil 1.26")
     fun InputStream.readAsString(close: Boolean = true): String {
         val builder = StringBuilder()
 
@@ -89,7 +91,7 @@ object InputStreamUtil {
             content[entry.name] = stream.readAll()
         }
         // TODO: handle exception
-        if (close) close()
+        if (close) ignoreAll { close() }
         return content
     }
 
@@ -101,7 +103,7 @@ object InputStreamUtil {
             content[entry.name] = stream.readAll()
         }
         // TODO: handle exception
-        if (close) close()
+        if (close) ignoreAll { close() }
         return content
     }
 
@@ -109,6 +111,7 @@ object InputStreamUtil {
         return this.use { MBFBinaryReader(this).readMBF().data.unsafeCast() }
     }
 
+    @Deprecated("kutil 1.26")
     fun InputStream.readAll(close: Boolean = true): ByteArray {
         if (close) {
             return use { readAllBytes() }
