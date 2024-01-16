@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.protocol.address.ServerAddress
@@ -82,10 +83,8 @@ class NettyClient(
     }
 
     override fun setupEncryption(encrypt: Cipher, decrypt: Cipher) {
+        if (encrypted) throw IllegalStateException("Already encrypted!")
         val channel = requireChannel()
-        if (encrypted) {
-            throw IllegalStateException("Already encrypted!")
-        }
         channel.pipeline().addBefore(LengthEncoder.NAME, PacketEncryptor.NAME, PacketEncryptor(encrypt))
         channel.pipeline().addBefore(LengthDecoder.NAME, PacketDecryptor.NAME, PacketDecryptor(decrypt))
         encrypted = true
@@ -133,19 +132,17 @@ class NettyClient(
     override fun forceSend(packet: C2SPacket) {
         val channel = getChannel() ?: return
 
-        packet.log((connection.nullCast<PlayConnection>()?.profiles?.other ?: OtherProfileManager.selected).log.reducedProtocolLog)
+        val profile = connection.nullCast<PlayConnection>()?.profiles?.other ?: OtherProfileManager.selected
+        val reduced = profile.log.reducedProtocolLog
+        packet.log(reduced)
         channel.writeAndFlush(packet)
     }
 
 
-    override fun channelRead0(context: ChannelHandlerContext?, message: Any?) {
-    }
+    override fun channelRead0(context: ChannelHandlerContext?, message: Any?) = Unit
 
     override fun channelActive(context: ChannelHandlerContext) {
-        try {
-            context.channel().config().setOption(ChannelOption.TCP_NODELAY, true)
-        } catch (_: Throwable) {
-        }
+        catchAll { context.channel().config().setOption(ChannelOption.TCP_NODELAY, true) }
         context.channel().config().isAutoRead = true
         this.channel = context.channel()
         connected = true
@@ -176,11 +173,7 @@ class NettyClient(
     }
 
     private fun requireChannel(): Channel {
-        val channel = this.channel
-        if (!connected || channel == null) {
-            throw IllegalStateException("Not connected!")
-        }
-        return channel
+        return getChannel() ?: throw IllegalStateException("Not connected!")
     }
 
     private fun getChannel(): Channel? {
