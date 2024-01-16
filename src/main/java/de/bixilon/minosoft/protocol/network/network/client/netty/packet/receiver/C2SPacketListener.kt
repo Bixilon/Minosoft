@@ -11,22 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline
+package de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver
 
-import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.PacketReceiver
-import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.QueuedS2CP
-import io.netty.channel.ChannelHandlerContext
-import io.netty.channel.SimpleChannelInboundHandler
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 
-class ClientPacketHandler(
-    private val receiver: PacketReceiver,
-) : SimpleChannelInboundHandler<QueuedS2CP<*>>() {
+fun interface C2SPacketListener {
 
-    override fun channelRead0(context: ChannelHandlerContext, queued: QueuedS2CP<*>) {
-        receiver.onReceive(queued.type, queued.packet)
-    }
-
-    companion object {
-        const val NAME = "client_packet_handler"
-    }
+    /**
+     * Called for every packet that is received from the server before it is handled.
+     * Depending on the time it takes to call all onReceive methods, serious network latency can be introduced.
+     * @return true, if the packet should be instantly discarded and not handled, false if not.
+     */
+    fun onReceive(packet: S2CPacket): Boolean
 }

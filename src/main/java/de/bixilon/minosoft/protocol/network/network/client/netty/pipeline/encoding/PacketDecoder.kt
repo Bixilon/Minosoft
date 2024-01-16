@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.Netw
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketReadException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.UnknownPacketIdException
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.implementation.PacketNotImplementedException
-import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.QueuedS2CP
+import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.QueuedS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.DefaultPacketMapping
 import de.bixilon.minosoft.protocol.protocol.buffers.InByteBuffer

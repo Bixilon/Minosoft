@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,12 +40,7 @@ class RenderLoop(
     init {
         var paused = false
         context::state.observe(this) {
-            paused = if (paused) {
-                // context.queue.clear() // TODO: That might cause bugs and memory leaks
-                false
-            } else {
-                it == RenderingStates.PAUSED
-            }
+            paused = if (paused) false else it == RenderingStates.PAUSED
         }
         context.profile.performance::slowRendering.observe(this) { this.slowRendering = it }
     }

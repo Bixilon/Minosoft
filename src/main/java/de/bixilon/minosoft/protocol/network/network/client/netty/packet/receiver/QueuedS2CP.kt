@@ -11,22 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline
+package de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver
 
-import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.PacketReceiver
-import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.QueuedS2CP
-import io.netty.channel.ChannelHandlerContext
-import io.netty.channel.SimpleChannelInboundHandler
+import de.bixilon.minosoft.protocol.packets.registry.PacketType
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 
-class ClientPacketHandler(
-    private val receiver: PacketReceiver,
-) : SimpleChannelInboundHandler<QueuedS2CP<*>>() {
-
-    override fun channelRead0(context: ChannelHandlerContext, queued: QueuedS2CP<*>) {
-        receiver.onReceive(queued.type, queued.packet)
-    }
-
-    companion object {
-        const val NAME = "client_packet_handler"
-    }
-}
+data class QueuedS2CP<T : S2CPacket>(
+    val type: PacketType,
+    val packet: T,
+)

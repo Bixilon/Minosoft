@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.protocol.network.network.client
 
 import de.bixilon.minosoft.protocol.address.ServerAddress
+import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.PacketReceiver
+import de.bixilon.minosoft.protocol.network.network.client.netty.packet.sender.PacketSender
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import javax.crypto.Cipher
@@ -21,10 +23,13 @@ import javax.crypto.Cipher
 interface ClientNetwork {
     val connected: Boolean
     val encrypted: Boolean
+    val detached: Boolean
 
     var state: ProtocolStates
-    var receive: Boolean
     val compressionThreshold: Int
+
+    val receiver: PacketReceiver
+    val sender: PacketSender
 
     fun connect(address: ServerAddress, native: Boolean)
     fun disconnect()
@@ -33,7 +38,8 @@ interface ClientNetwork {
     fun setupEncryption(encrypt: Cipher, decrypt: Cipher)
     fun setupCompression(threshold: Int)
 
-    fun pauseSending(pause: Boolean)
+    fun send(packet: C2SPacket) = sender.send(packet)
+    fun forceSend(packet: C2SPacket)
 
-    fun send(packet: C2SPacket)
+    fun handleError(error: Throwable)
 }

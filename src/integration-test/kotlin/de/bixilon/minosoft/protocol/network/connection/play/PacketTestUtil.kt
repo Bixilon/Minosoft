@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
+import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 
@@ -24,8 +26,9 @@ object PacketTestUtil {
         return network.unsafeCast()
     }
 
-    fun PlayConnection.assertPacket(expected: C2SPacket) {
-        val found = test().take() ?: throw AssertionError("Expected packet $expected, but found [null]!")
+    fun ClientNetwork.assertPacket(expected: C2SPacket) {
+        if (this !is TestNetwork) Broken("Not testing")
+        val found = take() ?: throw AssertionError("Expected packet $expected, but found [null]!")
         if (found::class.java != expected::class.java) {
             throw AssertionError("Packet class expected: $expected, but found $found")
         }
@@ -39,11 +42,20 @@ object PacketTestUtil {
         }
     }
 
-    fun PlayConnection.assertNoPacket() {
-        val packet = test().take()
+    fun ClientNetwork.assertNoPacket() {
+        if (this !is TestNetwork) Broken("Not testing")
+        val packet = take()
         if (packet != null) {
             throw AssertionError("Expected no packet, but found $packet")
         }
+    }
+
+    fun PlayConnection.assertPacket(expected: C2SPacket) {
+        test().assertPacket(expected)
+    }
+
+    fun PlayConnection.assertNoPacket() {
+        test().assertNoPacket()
     }
 
     @Deprecated("use assertPacket and assertNoPacket")
@@ -52,12 +64,17 @@ object PacketTestUtil {
         assertNoPacket()
     }
 
-    fun <T : C2SPacket> PlayConnection.assertPacket(type: Class<T>): T {
-        val packet = test().take() ?: throw AssertionError("Expected packet of type $type, but found [null]!")
+    fun <T : C2SPacket> ClientNetwork.assertPacket(type: Class<T>): T {
+        if (this !is TestNetwork) Broken("Not testing")
+        val packet = take() ?: throw AssertionError("Expected packet of type $type, but found [null]!")
         val clazz = packet::class.java
         if (type.isAssignableFrom(clazz)) {
             return packet.unsafeCast()
         }
         throw AssertionError("Expected packet of type $type, but found found $packet!")
+    }
+
+    fun <T : C2SPacket> PlayConnection.assertPacket(type: Class<T>): T {
+        return test().assertPacket(type)
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.protocol.address.ServerAddress
@@ -27,6 +26,8 @@ import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.Pack
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.ciritical.CriticalNetworkException
 import de.bixilon.minosoft.protocol.network.network.client.netty.natives.NioNatives
 import de.bixilon.minosoft.protocol.network.network.client.netty.natives.TransportNatives
+import de.bixilon.minosoft.protocol.network.network.client.netty.packet.receiver.PacketReceiver
+import de.bixilon.minosoft.protocol.network.network.client.netty.packet.sender.PacketSender
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression.PacketDeflater
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.compression.PacketInflater
 import de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encryption.PacketDecryptor
@@ -50,6 +51,8 @@ import javax.crypto.Cipher
 class NettyClient(
     val connection: Connection,
 ) : SimpleChannelInboundHandler<Any>(), ClientNetwork {
+    override val sender = PacketSender(this)
+    override val receiver = PacketReceiver(this, connection)
     private var address: ServerAddress? = null
     override var connected by observed(false)
         private set
@@ -58,14 +61,8 @@ class NettyClient(
     override var encrypted: Boolean = false
         private set
     private var channel: Channel? = null
-    private val packetQueue: MutableList<C2SPacket> = mutableListOf() // Used for pause sending
-    private var sendingPaused = false
-    private var detached = false
-    override var receive = true
-        set(value) {
-            channel?.config()?.isAutoRead = value
-            field = value
-        }
+    override var detached = false
+        private set
 
     override fun connect(address: ServerAddress, native: Boolean) {
         this.address = address
@@ -133,24 +130,7 @@ class NettyClient(
         channel?.close()
     }
 
-    override fun pauseSending(pause: Boolean) {
-        this.sendingPaused = pause
-        if (!sendingPaused) {
-            DefaultThreadPool += {
-                for (packet in packetQueue) {
-                    send(packet)
-                }
-            }
-        }
-    }
-
-    override fun send(packet: C2SPacket) {
-        // TODO: packet listener
-        if (detached) return
-        if (sendingPaused) {
-            packetQueue += packet
-            return
-        }
+    override fun forceSend(packet: C2SPacket) {
         val channel = getChannel() ?: return
 
         packet.log((connection.nullCast<PlayConnection>()?.profiles?.other ?: OtherProfileManager.selected).log.reducedProtocolLog)
@@ -166,7 +146,7 @@ class NettyClient(
             context.channel().config().setOption(ChannelOption.TCP_NODELAY, true)
         } catch (_: Throwable) {
         }
-        context.channel().config().isAutoRead = this.receive
+        context.channel().config().isAutoRead = true
         this.channel = context.channel()
         connected = true
     }
@@ -177,7 +157,7 @@ class NettyClient(
         connected = false
     }
 
-    fun handleError(error: Throwable) {
+    override fun handleError(error: Throwable) {
         var cause = error
         if (cause is DecoderException) {
             cause = error.cause ?: cause
