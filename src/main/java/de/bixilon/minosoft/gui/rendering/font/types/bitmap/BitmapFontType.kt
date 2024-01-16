@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -81,8 +81,8 @@ class BitmapFontType(
         private fun load(file: ResourceLocation, height: Int, ascent: Int, chars: List<String>, context: RenderContext): BitmapFontType? {
             if (chars.isEmpty() || height <= 0) return null
             val texture = PNGTexture(file, 0)
-            context.textures.font += texture
             texture.load(context) // force load it, we need to calculate the width of every char
+            context.textures.font += texture // TODO: convert to font array size and remove empty lines
 
             return load(texture, texture.size.y / chars.size, ascent, chars.codePoints())
         }

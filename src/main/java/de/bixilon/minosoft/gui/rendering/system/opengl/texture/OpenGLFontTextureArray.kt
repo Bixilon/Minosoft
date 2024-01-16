@@ -60,7 +60,8 @@ class OpenGLFontTextureArray(
         for (texture in textures) {
             val renderData = texture.renderData as OpenGLTextureData
             val buffer = texture.data.buffer
-            buffer.data.flip()
+            buffer.data.position(0)
+            buffer.data.limit(buffer.data.capacity())
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
         }
 

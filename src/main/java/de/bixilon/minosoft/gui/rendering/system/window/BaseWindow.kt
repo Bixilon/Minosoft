@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -86,7 +86,8 @@ interface BaseWindow {
         val decoder = PNGDecoder(assetsManager[SystemUtil.ICON])
         val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
         decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
-        data.flip()
+        data.position(0)
+        data.limit(data.capacity())
         setIcon(Vec2i(decoder.width, decoder.height), data)
     }
 
