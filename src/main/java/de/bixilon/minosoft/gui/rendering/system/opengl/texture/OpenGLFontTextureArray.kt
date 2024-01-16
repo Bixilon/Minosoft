@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.array.TextureArrayS
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontCompressions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.array.font.FontTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.file.PNGTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glFormat
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.glType
@@ -62,6 +63,9 @@ class OpenGLFontTextureArray(
             val buffer = texture.data.buffer
             buffer.data.position(0)
             buffer.data.limit(buffer.data.capacity())
+            if (compression != FontCompressions.NONE && texture is PNGTexture) {
+                buffer.data.copyAlphaToRGB()
+            }
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, renderData.index, buffer.size.x, buffer.size.y, 1, buffer.glFormat, buffer.glType, buffer.data)
         }
 
@@ -108,5 +112,17 @@ class OpenGLFontTextureArray(
 
     private companion object {
         const val RESOLUTION = 1024
+
+
+        private fun ByteBuffer.copyAlphaToRGB() {
+            val pixels = this.limit() / 4
+            for (index in 0 until pixels) {
+                val offset = index * 4
+                val alpha = this[offset + 3]
+                this.put(offset + 0, alpha)
+                this.put(offset + 1, alpha)
+                this.put(offset + 2, alpha)
+            }
+        }
     }
 }
