@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,6 +55,7 @@ import de.bixilon.minosoft.data.registries.shapes.ShapeRegistry
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
+import de.bixilon.minosoft.datafixer.rls.EntityTypeFixer
 import de.bixilon.minosoft.datafixer.rls.RegistryFixer.fixRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
@@ -117,7 +118,7 @@ class Registries(
     val blockState = BlockStateRegistry(false)
 
     val entityDataIndexMap: MutableMap<EntityDataField, Int> = mutableMapOf()
-    val entityType: Registry<EntityType> = register("entity_type", Registry(codec = EntityType))
+    val entityType: Registry<EntityType> = register("entity_type", Registry(codec = EntityType, fixer = EntityTypeFixer))
     val entityObjectType: Registry<EntityObjectType> = register("entity_object_type", Registry(codec = EntityObjectType))
     val damageType: Registry<DamageType> = register("damage_type", Registry(codec = DamageType))
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.IdentifierCodec
+import de.bixilon.minosoft.datafixer.rls.ResourceLocationFixer
 import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -34,6 +35,7 @@ open class Registry<T : RegistryItem>(
     val integrated: IntegratedRegistry<T>? = null,
     val metaType: MetaTypes = MetaTypes.NONE,
     var flattened: Boolean = false,
+    private val fixer: ResourceLocationFixer? = null,
 ) : AbstractRegistry<T> {
     protected val idValueMap: Int2ObjectOpenHashMap<T> = Int2ObjectOpenHashMap()
     protected val valueIdMap: Object2IntOpenHashMap<T> = Object2IntOpenHashMap()
@@ -60,7 +62,8 @@ open class Registry<T : RegistryItem>(
     }
 
     open operator fun get(resourceLocation: ResourceLocation): T? {
-        return resourceLocationMap[resourceLocation] ?: parent?.get(resourceLocation)
+        val fixed = fixer?.fix(resourceLocation) ?: resourceLocation
+        return resourceLocationMap[fixed] ?: parent?.get(fixed)
     }
 
     open operator fun set(any: Any, value: T) {
@@ -129,7 +132,7 @@ open class Registry<T : RegistryItem>(
     }
 
     override fun add(identifier: ResourceLocation, id: Int?, data: JsonObject, version: Version, registries: Registries?): T? {
-        val item = deserialize(identifier, data, version, registries) ?: return null
+        val item = deserialize(fixer?.fix(identifier) ?: identifier, data, version, registries) ?: return null
 
         add(identifier, id, item)
 
