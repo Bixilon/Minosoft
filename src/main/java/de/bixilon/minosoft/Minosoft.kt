@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -70,6 +70,7 @@ object Minosoft {
         DefaultThreadPool += ForcePooledRunnable { KUtil.initBootClasses() }
         CommandLineArguments.parse(args)
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "We are running on ${PlatformInfo.OS.name.lowercase()} with an ${PlatformInfo.ARCHITECTURE.name.lowercase()} cpu. Java version is ${Runtime.version()}!" }
 
         val latch = SimpleLatch(1)
         assets.await()
