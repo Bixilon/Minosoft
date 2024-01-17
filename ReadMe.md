@@ -8,12 +8,15 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 (This is not a classical clone of minecraft, it completely re implements it!)  
 (This software is not affiliated with Mojang AB, the original developer of Minecraft)
 
-<h2>Notice: I am *not* responsible for anti cheat banned accounts, this project is heavily in development!</h2>
+<h2>Notice: I am *not* responsible for anti cheat banned accounts, this project ~~is heavily in development~~!</h2>
+
+This project is not actively developed anymore. This is due to time reasons and newer minecraft updates are getting larger and larger and I honestly can't keep up.
+I will still bring up fixes from time to time, might do some changes but don't accept too much. I am still happy to receive feedback and contributions are always welcome.
 
 ## Feature overview
 
 - Rendering
-- Connect with any version to any server  (1.7 - 1.20.3)
+- Connect with any version to any server  (1.7 - 1.20.4)
 - [Bleeding edge performance (e.g. incredible start time)](/doc/Performance.md)
 - Free (as far as we consider original minecraft as free) and open source
 - Easy use of multiple accounts
@@ -76,7 +79,7 @@ I always try to add support for the newest version of minecraft. Mostly it is pr
 
 ### Supported versions
 
-Almost all versions (and snapshots!) between 1.7 and the latest one (1.20.3 as of writing this) are supported.  
+Almost all versions (and snapshots!) between 1.7 and the latest one (1.20.4 as of writing this) are supported.  
 I plan to maintain Minosoft to at least version 1.20, so stay tuned, and support for older protocols will not be dropped as newer protocols are added. It is still recommended using the latest stable version.  
 See [Version support](/doc/VersionSupport.md) for more details.
 

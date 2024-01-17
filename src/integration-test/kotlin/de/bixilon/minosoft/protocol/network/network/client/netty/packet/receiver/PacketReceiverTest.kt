@@ -80,7 +80,6 @@ class PacketReceiverTest {
 
         override fun log(reducedLog: Boolean) = Unit
 
-
         override fun handle(connection: Connection) {
             handled++
             if (!handle) throw Exception("Testing...")
