@@ -13,14 +13,20 @@
 
 package de.bixilon.minosoft.updater
 
+import com.google.common.io.Files
+import de.bixilon.kutil.array.ByteArrayUtil.toHex
+import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.hash.HashUtil
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
+import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.copy
 import de.bixilon.minosoft.util.http.HTTP2.get
 import de.bixilon.minosoft.util.http.HTTPResponse
 import de.bixilon.minosoft.util.http.exceptions.HTTPException
@@ -28,7 +34,11 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.io.File
+import java.io.FileOutputStream
 import java.net.URL
+import java.security.MessageDigest
+import java.security.SignatureException
 
 object MinosoftUpdater {
     var update: MinosoftUpdate? by observed(null)
@@ -110,13 +120,36 @@ object MinosoftUpdater {
         val download = update.download
         if (download == null) {
             progress.log?.print("Update is unavailable for download. Please download it manually!")
-            progress.stage = UpdateProgress.UpdateStage.FAILED
+            progress.error = IllegalAccessError("Unavailable...")
             return
         }
         progress.log?.print("Downloading update...")
 
-        progress.log?.print("TODO :)")
-        progress.stage = UpdateProgress.UpdateStage.FAILED
-        // UpdateKey.require(data, signature)
+        try {
+            val stream = download.url.openStream()
+            val digest = MessageDigest.getInstance(HashUtil.SHA_512)
+            val temp = FileUtil.createTempFile()
+            val signature = UpdateKey.createInstance()
+            stream.copy(FileOutputStream(temp), digest = digest, signature = signature)
+            if (digest.digest().toHex() != download.sha512) throw SignatureException("Hash mismatch of downloaded file: Expected ${download.sha512}, got ${digest.digest().toHex()}")
+            if (!signature.verify(download.signature.fromBase64())) throw SignatureException("Signature of downloaded file mismatches!")
+
+            progress.log?.print("Moving temporary file to final destination")
+
+            // move to current directory
+            val output = File(("./Minosoft-${update.id}.jar"))
+            Files.move(temp, output)
+            progress.log?.print("Success, file saved to $output")
+
+            // TODO: restart minosoft
+        } catch (error: Throwable) {
+            if (progress.log == null) {
+                error.printStackTrace()
+            } else {
+                progress.log?.print(error)
+            }
+            progress.error = error
+            throw error
+        }
     }
 }

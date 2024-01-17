@@ -14,13 +14,10 @@
 package de.bixilon.minosoft.assets.util
 
 import com.github.luben.zstd.ZstdInputStream
-import de.bixilon.kutil.buffer.BufferDefinition
-import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil
 import java.io.*
+import java.nio.file.Files
 import java.nio.file.Path
-import java.security.MessageDigest
 
 object FileUtil {
 
@@ -60,31 +57,6 @@ object FileUtil {
 
 
     fun createTempFile(): File {
-        var file: File
-
-        for (i in 0 until AssetsOptions.MAX_FILE_CHECKING) {
-            file = RunConfiguration.TEMPORARY_FOLDER.resolve(KUtil.RANDOM.randomString(32)).toFile()
-            if (!file.exists()) {
-                return file
-            }
-        }
-
-        throw IOException("Can not find temporary file after ${AssetsOptions.MAX_FILE_CHECKING} tries!")
-    }
-
-    @Deprecated("kutil 1.26")
-    fun InputStream.copy(vararg output: OutputStream, digest: MessageDigest?) {
-        val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
-
-        while (true) {
-            val length = read(buffer, 0, buffer.size)
-            if (length < 0) {
-                break
-            }
-            for (stream in output) {
-                stream.write(buffer, 0, length)
-            }
-            digest?.update(buffer, 0, length)
-        }
+        return Files.createTempFile(RunConfiguration.TEMPORARY_FOLDER, "", "").toFile()
     }
 }

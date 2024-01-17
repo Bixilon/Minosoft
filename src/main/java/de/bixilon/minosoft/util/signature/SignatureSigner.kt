@@ -36,7 +36,7 @@ abstract class SignatureSigner(
         key = keyFactory.generatePublic(spec)
     }
 
-    protected fun createInstance(): Signature {
+    fun createInstance(): Signature {
         val instance = Signature.getInstance(algorithm)
         instance.initVerify(key)
 

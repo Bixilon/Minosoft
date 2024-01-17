@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,23 +15,11 @@ package de.bixilon.minosoft.updater
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.SimpleLatch
-import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.commands.stack.print.PrintTarget
 
 class UpdateProgress(
     val progress: AbstractLatch = SimpleLatch(0),
     var log: PrintTarget? = null,
 ) {
-    var stage by observed(UpdateStage.WAITING)
     var error: Throwable? = null
-
-    enum class UpdateStage {
-        WAITING,
-        DOWNLOADING,
-        VERIFYING,
-        STORING,
-
-        DONE,
-        FAILED,
-    }
 }
