@@ -20,11 +20,13 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.hash.HashUtil
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.PlatformInfo
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.properties.MinosoftProperties
+import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.copy
 import de.bixilon.minosoft.util.http.HTTP2.get
@@ -138,10 +140,12 @@ object MinosoftUpdater {
 
             // move to current directory
             val output = File(("./Minosoft-${update.id}.jar"))
-            Files.move(temp, output)
+            Files.move(temp, output) // TODO: might be possible to tamper jar? in the meantime
             progress.log?.print("Success, file saved to $output")
 
-            // TODO: restart minosoft
+            start(output)
+            progress.log?.print("Started new process, exiting")
+            ShutdownManager.shutdown()
         } catch (error: Throwable) {
             if (progress.log == null) {
                 error.printStackTrace()
@@ -151,5 +155,14 @@ object MinosoftUpdater {
             progress.error = error
             throw error
         }
+    }
+
+    fun start(jar: File) {
+        val arguments: MutableList<String> = mutableListOf()
+        arguments += System.getProperty("java.home") + File.separator + "bin" + File.separator + "java"
+        arguments += "-jar"
+        arguments += jar.absolutePath.toString()
+        arguments += CommandLineArguments.ARGUMENTS
+        ProcessBuilder(arguments).start()
     }
 }
