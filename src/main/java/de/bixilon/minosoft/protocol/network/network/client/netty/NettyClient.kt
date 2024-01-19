@@ -84,9 +84,9 @@ class NettyClient(
 
     override fun setupEncryption(encrypt: Cipher, decrypt: Cipher) {
         if (encrypted) throw IllegalStateException("Already encrypted!")
-        val channel = requireChannel()
-        channel.pipeline().addBefore(LengthEncoder.NAME, PacketEncryptor.NAME, PacketEncryptor(encrypt))
-        channel.pipeline().addBefore(LengthDecoder.NAME, PacketDecryptor.NAME, PacketDecryptor(decrypt))
+        val pipeline = requireChannel().pipeline()
+        pipeline.addBefore(LengthEncoder.NAME, PacketEncryptor.NAME, PacketEncryptor(encrypt))
+        pipeline.addBefore(LengthDecoder.NAME, PacketDecryptor.NAME, PacketDecryptor(decrypt))
         encrypted = true
     }
 
@@ -95,23 +95,19 @@ class NettyClient(
         val pipeline = channel.pipeline()
         if (threshold < 0) {
             // disable
-            if (pipeline.get(PacketDeflater.NAME) != null) {
-                channel.pipeline().remove(PacketDeflater.NAME)
-            }
-            if (pipeline.get(PacketInflater.NAME) != null) {
-                channel.pipeline().remove(PacketInflater.NAME)
-            }
+            pipeline.remove(PacketDeflater.NAME)
+            pipeline.remove(PacketInflater.NAME)
         } else {
             // enable or update
-            val inflater = channel.pipeline()[PacketInflater.NAME]?.nullCast<PacketInflater>()
+            val inflater = pipeline[PacketInflater.NAME]?.nullCast<PacketInflater>()
             if (inflater == null) {
-                channel.pipeline().addAfter(LengthDecoder.NAME, PacketInflater.NAME, PacketInflater(connection.version!!.maxPacketLength))
+                pipeline.addAfter(LengthDecoder.NAME, PacketInflater.NAME, PacketInflater(connection.version!!.maxPacketLength))
             }
-            val deflater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
-            if (deflater != null) {
-                deflater.threshold = threshold
+            val deflater = pipeline[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
+            if (deflater == null) {
+                pipeline.addAfter(LengthEncoder.NAME, PacketDeflater.NAME, PacketDeflater(threshold))
             } else {
-                channel.pipeline().addAfter(LengthEncoder.NAME, PacketDeflater.NAME, PacketDeflater(threshold))
+                deflater.threshold = threshold
             }
         }
     }
