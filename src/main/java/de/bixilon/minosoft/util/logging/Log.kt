@@ -29,12 +29,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.concurrent.LinkedBlockingQueue
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 
-@OptIn(ExperimentalContracts::class)
 object Log {
     var ASYNC_LOGGING = true
     private val MINOSOFT_START_TIME = millis()
@@ -119,42 +115,71 @@ object Log {
         return setLevel.ordinal < level.ordinal
     }
 
-    fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any?, vararg formatting: Any) {
-        if (skipLogging(type, level)) {
-            return
+    private fun formatMessage(message: Any?, vararg formatting: Any) = when (message) {
+        is ChatComponent -> message
+        is TextFormattable -> ChatComponent.of(message.toText())
+        is Throwable -> {
+            val stringWriter = StringWriter()
+            message.printStackTrace(PrintWriter(stringWriter))
+            ChatComponent.of(stringWriter.toString(), ignoreJson = true)
         }
-        val formattedMessage = when (message) {
-            is ChatComponent -> message
-            is TextFormattable -> ChatComponent.of(message.toText())
-            is Throwable -> {
-                val stringWriter = StringWriter()
-                message.printStackTrace(PrintWriter(stringWriter))
-                ChatComponent.of(stringWriter.toString(), ignoreJson = true)
-            }
 
-            is String -> {
-                if (message.isBlank()) {
-                    return
-                }
-                if (formatting.isNotEmpty()) {
-                    ChatComponent.of(message.format(*formatting), ignoreJson = true)
-                } else {
-                    ChatComponent.of(message, ignoreJson = true)
-                }
-            }
-
+        is String -> when {
+            message.isBlank() -> ChatComponent.EMPTY
+            formatting.isNotEmpty() -> ChatComponent.of(message.format(*formatting), ignoreJson = true)
             else -> ChatComponent.of(message, ignoreJson = true)
         }
 
-        QueuedMessage(
-            message = formattedMessage,
-            time = millis(),
-            type = type,
-            level = level,
-            thread = Thread.currentThread(),
-            prefix = additionalPrefix,
-        ).queue()
+        else -> ChatComponent.of(message, ignoreJson = true)
     }
+
+    @JvmStatic
+    fun logInternal(type: LogMessageType, level: LogLevels, prefix: ChatComponent?, message: Any?, vararg formatting: Any) {
+        val formatted = formatMessage(message, *formatting)
+        if (formatted.length <= 0) return
+
+        QueuedMessage(message = formatted, time = millis(), type = type, level = level, thread = Thread.currentThread(), prefix = prefix).queue()
+    }
+
+    @JvmStatic
+    fun log(type: LogMessageType, level: LogLevels, prefix: ChatComponent?, message: Any?, vararg formatting: Any) {
+        if (skipLogging(type, level)) return
+        logInternal(type, level, prefix, message, formatting)
+    }
+
+    @JvmStatic
+    fun log(type: LogMessageType, level: LogLevels, prefix: ChatComponent?, message: Any?) {
+        if (skipLogging(type, level)) return
+        logInternal(type, level, prefix, message)
+    }
+
+    @JvmStatic
+    fun log(type: LogMessageType, level: LogLevels, message: Any?) {
+        if (skipLogging(type, level)) return
+        logInternal(type, level, null, message)
+    }
+
+
+    inline fun log(type: LogMessageType, level: LogLevels, prefix: ChatComponent?, builder: () -> Any?, vararg formatting: Any) {
+        if (skipLogging(type, level)) return
+        logInternal(type, level, prefix, builder.invoke(), *formatting)
+    }
+
+    inline fun log(type: LogMessageType, level: LogLevels, prefix: ChatComponent?, builder: () -> Any?) {
+        if (skipLogging(type, level)) return
+        logInternal(type, level, prefix, builder.invoke())
+    }
+
+    inline fun log(type: LogMessageType, level: LogLevels, builder: () -> Any?) {
+        if (skipLogging(type, level)) return
+        logInternal(type, level, null, builder.invoke())
+    }
+
+    inline fun log(type: LogMessageType, builder: () -> Any?) {
+        if (skipLogging(type, LogLevels.INFO)) return
+        logInternal(type, LogLevels.INFO, null, builder.invoke())
+    }
+
 
     private fun QueuedMessage.queue() {
         if (!ASYNC_LOGGING) {
@@ -162,38 +187,6 @@ object Log {
             return
         }
         QUEUE += this
-    }
-
-    @JvmStatic
-    inline fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any?) {
-        contract {
-            callsInPlace(messageBuilder, InvocationKind.AT_MOST_ONCE)
-        }
-        if (skipLogging(type, level)) {
-            return
-        }
-        log(type, level, additionalPrefix, messageBuilder.invoke())
-    }
-
-    @JvmStatic
-    inline fun log(type: LogMessageType, level: LogLevels, messageBuilder: () -> Any?) {
-        contract {
-            callsInPlace(messageBuilder, InvocationKind.AT_MOST_ONCE)
-        }
-        log(type, level = level, additionalPrefix = null, messageBuilder = messageBuilder)
-    }
-
-    inline fun log(type: LogMessageType, level: LogLevels, message: Any?) {
-        log(type, level, null, message)
-    }
-
-
-    @JvmStatic
-    fun log(type: LogMessageType, messageBuilder: () -> Any?) {
-        contract {
-            callsInPlace(messageBuilder, InvocationKind.AT_MOST_ONCE)
-        }
-        log(type, additionalPrefix = null, messageBuilder = messageBuilder)
     }
 
     fun await() {
