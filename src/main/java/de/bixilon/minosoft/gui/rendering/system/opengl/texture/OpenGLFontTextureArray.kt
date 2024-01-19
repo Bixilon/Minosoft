@@ -120,8 +120,8 @@ class OpenGLFontTextureArray(
                 val offset = index * 4
                 val alpha = this[offset + 3]
                 this.put(offset + 0, alpha)
-                this.put(offset + 1, alpha)
-                this.put(offset + 2, alpha)
+                // this.put(offset + 1, alpha)
+                // this.put(offset + 2, alpha)
             }
         }
     }
