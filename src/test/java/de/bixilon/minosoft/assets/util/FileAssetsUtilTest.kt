@@ -13,11 +13,24 @@
 
 package de.bixilon.minosoft.assets.util
 
-import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.assets.util.FileAssetsUtil.normalizePath
+import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
+import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
-object AssetsOptions {
-    const val MAX_FILE_CHECKING = 10
-    const val SEPARATOR = '/'
-    var PATH = RunConfiguration.HOME_DIRECTORY.resolve("assets/")
-    var COMPRESS_ASSETS = true
+
+class FileAssetsUtilTest {
+
+    @Test
+    fun `windows path with backslashes`() {
+        val path = "\\\\test\\folder\\with\\some\\file\\in\\it.abc"
+        assertEquals(path.normalizePath(), "test/folder/with/some/file/in/it.abc")
+    }
+
+    @Test
+    fun `windows get asset name`() {
+        val path = "assets\\minecraft\\folder\\file.png"
+        assertEquals(path.normalizePath().toAssetName(), ResourceLocation("minecraft", "folder/file.png"))
+    }
 }

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.assets.file
 
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.assets.util.FileAssetsUtil.normalizePath
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
@@ -56,7 +57,7 @@ class ZipAssetsManager(
             "pack.png" -> image = stream.readAll(false)
             "pack.mcmeta" -> properties = stream.readJson(false)
             else -> {
-                val resourceLocation = name.toAssetName(prefix = prefix) ?: return
+                val resourceLocation = name.normalizePath().toAssetName(prefix = prefix) ?: return
                 assets[resourceLocation] = stream.readAll(false)
             }
         }

@@ -136,6 +136,18 @@ object FileAssetsUtil {
     }
 
 
+    fun String.normalizePath(): String {
+        var string = this.replace('\\', AssetsOptions.SEPARATOR)
+        if (File.separatorChar != AssetsOptions.SEPARATOR) {
+            string = string.replace(File.separatorChar, AssetsOptions.SEPARATOR)
+        }
+        while (string.startsWith(AssetsOptions.SEPARATOR)) {
+            string = string.substring(1)
+        }
+
+        return string
+    }
+
     fun String.toAssetName(verifyPrefix: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX): ResourceLocation? {
         if (verifyPrefix && !startsWith("$prefix/")) {
             return null

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.assets.directory
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
+import de.bixilon.minosoft.assets.util.FileAssetsUtil.normalizePath
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
@@ -58,7 +59,7 @@ class DirectoryAssetsManager(
                 continue
             }
             if (root) continue // root path just allows folders
-            val path = file.toPath().relativeTo(basePath).toString().replace("\\", "/").removePrefix("/").toAssetName(false, prefix) ?: continue
+            val path = file.toPath().relativeTo(basePath).toString().normalizePath().toAssetName(false, prefix) ?: continue
             assets += path
         }
     }

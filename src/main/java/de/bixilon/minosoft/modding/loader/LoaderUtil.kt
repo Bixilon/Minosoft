@@ -15,6 +15,7 @@ package de.bixilon.minosoft.modding.loader
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.minosoft.assets.util.FileAssetsUtil.normalizePath
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import org.xeustechnologies.jcl.JarClassLoader
 import org.xeustechnologies.jcl.JarResources
@@ -40,7 +41,7 @@ object LoaderUtil {
     }
 
     fun JarClassLoader.load(name: String, data: ByteArray) {
-        val fixed = name.replace('\\', '/').replace(" ", "").replace(":", "") // class loaders just work with /
+        val fixed = name.normalizePath().replace(" ", "").replace(":", "") // class loaders just work with /
         val content = this.classpathResources.contents
         val entry = JclJarEntry()
         entry.baseUrl = null
