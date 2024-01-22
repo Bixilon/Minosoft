@@ -447,7 +447,7 @@ fun loadGit() {
         stable = true
         tag.name
     } else {
-        commit.id.substring(0, 9)
+        commit.id.substring(0, 10)
     }
     if (!git.status().isClean) {
         nextVersion += "-dirty"

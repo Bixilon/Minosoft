@@ -12,7 +12,8 @@
 # This software is not affiliated with Mojang AB, the original developer of Minecraft.
 #
 
-VERSION=$(git rev-parse --short HEAD)
+VERSION=$(git rev-parse HEAD)
+VERSION=${VERSION:0:10}
 
 curl \
   --form-string "stable=false" \
