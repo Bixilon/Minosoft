@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.modding.loader.phase
 
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.AbstractLatch
 import de.bixilon.kutil.latch.AbstractLatch.Companion.child
@@ -110,7 +111,7 @@ class LoadingPhase(val name: String) {
         worker.work(inner)
 
         state = PhaseStates.VALIDATING
-        worker = UnconditionalWorker()
+        worker = UnconditionalWorker(autoWork = false)
         for (mod in list) {
             worker += {
                 try {
@@ -125,9 +126,9 @@ class LoadingPhase(val name: String) {
         }
         worker.work(inner)
 
-        val sorted = list.sorted().toMutableList()
+        val sorted = list.sorted().toSynchronizedList()
         state = PhaseStates.CONSTRUCTING
-        worker = UnconditionalWorker()
+        worker = UnconditionalWorker(autoWork = false)
         for (mod in sorted) {
             worker += {
                 try {
@@ -144,7 +145,7 @@ class LoadingPhase(val name: String) {
         worker.work(inner)
 
         state = PhaseStates.POST_INIT
-        worker = UnconditionalWorker()
+        worker = UnconditionalWorker(autoWork = false)
         for (mod in sorted) {
             worker += {
                 try {
