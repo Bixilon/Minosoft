@@ -88,7 +88,7 @@ object InputStreamUtil {
         val stream = TarInputStream(this)
         while (true) {
             val entry = stream.nextEntry ?: break
-            content[entry.name] = stream.readAll()
+            content[entry.name] = stream.readAll(false)
         }
         // TODO: handle exception
         if (close) ignoreAll { close() }
@@ -100,7 +100,7 @@ object InputStreamUtil {
         val stream = ZipInputStream(this)
         while (true) {
             val entry = stream.nextEntry ?: break
-            content[entry.name] = stream.readAll()
+            content[entry.name] = stream.readAll(false)
         }
         // TODO: handle exception
         if (close) ignoreAll { close() }
