@@ -15,9 +15,6 @@
 VERSION=$(git rev-parse --short HEAD)
 
 curl \
-  --form-string "stable=false" \
-  --form-string "page=" \
-  --form-string "release_notes=$(git log -1 --pretty=%B)" \
-  --form-string "channel=master" \
+  -X POST \
   -H "Authorization: Bearer $MINOSOFT_TOKEN" \
-  "$MINOSOFT_API/api/v1/releases/create/$VERSION"
+  "$MINOSOFT_API/api/v1/releases/release/$VERSION"

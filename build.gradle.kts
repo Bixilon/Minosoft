@@ -11,6 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+import de.bixilon.kutil.array.ByteArrayUtil.toHex
+import de.bixilon.kutil.base64.Base64Util.fromBase64
+import de.bixilon.kutil.base64.Base64Util.toBase64
+import de.bixilon.kutil.buffer.BufferDefinition
+import de.bixilon.kutil.hash.HashUtil
 import de.bixilon.kutil.os.Architectures
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
@@ -24,7 +29,20 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.FileInputStream
+import java.io.IOException
+import java.net.URI
+import java.net.URLEncoder
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpRequest.BodyPublishers
+import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
+import java.security.KeyFactory
+import java.security.MessageDigest
+import java.security.Signature
+import java.security.spec.PKCS8EncodedKeySpec
+import java.util.stream.Collectors
 
 
 plugins {
@@ -429,7 +447,7 @@ fun loadGit() {
         stable = true
         tag.name
     } else {
-        commit.abbreviatedId
+        commit.id.substring(0, 9)
     }
     if (!git.status().isClean) {
         nextVersion += "-dirty"
@@ -525,4 +543,50 @@ task("assetsProperties", type = JavaExec::class) {
     classpath(project.configurations.runtimeClasspath.get(), tasks["jar"])
     standardOutput = System.out
     mainClass.set("de.bixilon.minosoft.assets.properties.version.generator.AssetsPropertiesGenerator")
+}
+
+task("upload") {
+    dependsOn("fatJar")
+    doLast {
+        val path = "${project.name}-fat-${os.name.lowercase()}-${architecture.name.lowercase()}-${project.version}.jar"
+        val file = File("build/libs/$path")
+        val key = KeyFactory.getInstance("RSA").generatePrivate(PKCS8EncodedKeySpec(System.getenv("RELEASE_KEY").fromBase64()))
+
+        val digest = MessageDigest.getInstance(HashUtil.SHA_512)
+        val sign = Signature.getInstance("SHA512withRSA")
+        sign.initSign(key)
+        val stream = FileInputStream(file)
+
+        val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
+        var length: Int
+        while (true) {
+            length = stream.read(buffer, 0, buffer.size)
+            if (length < 0) {
+                break
+            }
+            digest.update(buffer, 0, length)
+            sign.update(buffer, 0, length)
+        }
+        val sha512 = digest.digest().toHex()
+        val signature = sign.sign().toBase64()
+
+        stream.close()
+
+        val data = mapOf(
+            "size" to file.length(),
+            "sha512" to sha512,
+            "signature" to signature,
+            "os" to os.name.lowercase(),
+            "architecture" to architecture.name.lowercase(),
+        )
+        val url = System.getenv("MINOSOFT_API") + "/api/v1/releases/upload/${project.version}?"
+        val client = HttpClient.newHttpClient()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(data.entries.stream().map { it.key + "=" + URLEncoder.encode(it.value.toString(), StandardCharsets.UTF_8) }.collect(Collectors.joining("&", url, ""))))
+            .header("Authorization", "Bearer " + System.getenv("MINOSOFT_TOKEN"))
+            .PUT(BodyPublishers.ofFile(file.toPath()))
+
+        val response = client.send(request.build(), HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() != 200) throw IOException("Could not upload: $response")
+    }
 }
