@@ -66,9 +66,7 @@ test:
 package:
   stage: package
   script:
-    - ./gradlew fatJar --stacktrace -Pminosoft.updates=true
-    - apk add git curl
-    - ./release/upload.sh
+    - ./gradlew fatJar upload --stacktrace -Pminosoft.updates=true
   only:
     - master
   artifacts:
