@@ -66,6 +66,7 @@ test:
 package:
   stage: package
   script:
+    - git status
     - ./gradlew fatJar upload --stacktrace -Pminosoft.updates=true
   only:
     - master
