@@ -78,6 +78,7 @@ publish:
   stage: publish
   image: alpine:latest
   script:
+    - apk add git curl
     - ./release/release.sh
   only:
     - master
