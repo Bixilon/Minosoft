@@ -465,11 +465,15 @@ val versionJsonTask = tasks.register("versionJson") {
 
     doFirst {
         fun generateGit(git: Grgit, commit: Commit): Map<String, Any> {
+            val status = git.status()
+            if (!status.isClean) {
+                println(status)
+            }
             return mapOf(
                 "branch" to git.branch.current().name,
                 "commit" to commit.id,
                 "commit_short" to commit.abbreviatedId,
-                "dirty" to !git.status().isClean,
+                "dirty" to !status.isClean,
             )
         }
 
