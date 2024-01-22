@@ -11,6 +11,7 @@
 #
 # This software is not affiliated with Mojang AB, the original developer of Minecraft.
 #
+set -e
 
 VERSION=$(git rev-parse HEAD)
 VERSION=${VERSION:0:10}
