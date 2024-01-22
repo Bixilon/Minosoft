@@ -1,4 +1,4 @@
-image: openjdk:11-jdk-slim
+image: azul/zulu-openjdk-alpine:11-latest
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
@@ -8,9 +8,11 @@ before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle_home
 
 stages:
+  - create
   - build
   - test
   - package
+  - publish
 
 
 cache:
@@ -34,6 +36,15 @@ cache:
     paths:
       - ./it
 
+create:
+  stage: create
+  image: alpine:latest
+  script:
+    - apk add git curl
+    - ./release/create.sh
+  only:
+    - master
+
 build:
   stage: build
   script: ./gradlew --build-cache assemble -Pminosoft.updates=true
@@ -56,9 +67,19 @@ package:
   stage: package
   script:
     - ./gradlew fatJar --stacktrace -Pminosoft.updates=true
+    - apk add git curl
+    - ./release/upload.sh
   only:
     - master
   artifacts:
     paths:
       - build/libs/minosoft-fat-*.jar
     expire_in: 1 days
+
+publish:
+  stage: publish
+  image: alpine:latest
+  script:
+    - ./release/release.sh
+  only:
+    - master
