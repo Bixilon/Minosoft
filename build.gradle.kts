@@ -470,7 +470,7 @@ val versionJsonTask = tasks.register("versionJson") {
                 println(status)
             }
             return mapOf(
-                "branch" to git.branch.current().name,
+                "branch" to (System.getenv()["CI_COMMIT_BRANCH"] ?: git.branch.current().name),
                 "commit" to commit.id,
                 "commit_short" to commit.abbreviatedId,
                 "dirty" to !status.isClean,
