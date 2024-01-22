@@ -49,6 +49,10 @@ object RunConfiguration {
 
     val TEMPORARY_FOLDER: Path = Path.of(System.getProperty("java.io.tmpdir") ?: "$HOME_DIRECTORY/tmp/", "/minosoft/")
 
+    init {
+        TEMPORARY_FOLDER.toFile().mkdirs() // bad, io on init
+    }
+
     val X_START_ON_FIRST_THREAD_SET = System.getenv("JAVA_STARTED_ON_FIRST_THREAD_${ProcessHandle.current().pid()}") == "1"
 
     var APPLICATION_NAME = "Minosoft"
