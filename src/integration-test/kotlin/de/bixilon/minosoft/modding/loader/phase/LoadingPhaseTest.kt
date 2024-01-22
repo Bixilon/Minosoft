@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -85,6 +85,6 @@ class LoadingPhaseTest {
         assertEquals(mod::class.java.getFieldOrNull("dummy")!!.get(mod), 1)
         assertEquals(mod::class.java.getFieldOrNull("init")!!.get(mod), 1)
         assertEquals(mod::class.java.getFieldOrNull("postInit")!!.get(mod), 1)
-        assertEquals(mod::class.java.getFieldOrNull("flag")!!.get(mod), "hehe\n")
+        assertEquals(mod::class.java.getFieldOrNull("flag")!!.get(mod).unsafeCast<String>().replace("\n", "").replace("\r", ""), "hehe")
     }
 }
