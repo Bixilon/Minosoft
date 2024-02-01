@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.util.signature
 
+import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.IntegratedAssets
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import java.security.KeyFactory
 import java.security.PublicKey

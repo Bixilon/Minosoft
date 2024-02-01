@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kotlinglm.pow
 import de.bixilon.kutil.observer.DataObserver
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
 import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.packFormat
@@ -51,21 +51,21 @@ object ConnectionTestUtil {
         reference()
     }
 
-    private val LANGUAGE = PlayConnection::language.jvmField
-    private val SEQUENCE = PlayConnection::sequence.jvmField
-    private val ACCOUNT = PlayConnection::account.jvmField
-    private val VERSION = PlayConnection::version.jvmField
-    private val REGISTRIES = PlayConnection::registries.jvmField
-    private val WORLD = PlayConnection::world.jvmField
-    private val PLAYER = PlayConnection::player.jvmField
-    private val NETWORK = PlayConnection::network.jvmField
-    private val EVENTS = PlayConnection::events.jvmField
-    private val PROFILES = PlayConnection::profiles.jvmField
-    private val ASSETS_MANAGER = PlayConnection::assetsManager.jvmField
-    private val STATE = PlayConnection::state.jvmField
-    private val TAGS = PlayConnection::tags.jvmField
-    private val LEGACY_TAGS = PlayConnection::legacyTags.jvmField
-    private val CAMERA = PlayConnection::camera.jvmField
+    private val LANGUAGE = PlayConnection::language.jvmField.field
+    private val SEQUENCE = PlayConnection::sequence.jvmField.field
+    private val ACCOUNT = PlayConnection::account.jvmField.field
+    private val VERSION = PlayConnection::version.jvmField.field
+    private val REGISTRIES = PlayConnection::registries.jvmField.field
+    private val WORLD = PlayConnection::world.jvmField.field
+    private val PLAYER = PlayConnection::player.jvmField.field
+    private val NETWORK = PlayConnection::network.jvmField.field
+    private val EVENTS = PlayConnection::events.jvmField.field
+    private val PROFILES = PlayConnection::profiles.jvmField.field
+    private val ASSETS_MANAGER = PlayConnection::assetsManager.jvmField.field
+    private val STATE = PlayConnection::state.jvmField.field
+    private val TAGS = PlayConnection::tags.jvmField.field
+    private val LEGACY_TAGS = PlayConnection::legacyTags.jvmField.field
+    private val CAMERA = PlayConnection::camera.jvmField.field
 
     private val language = LanguageManager()
     private val signature = OBJENESIS.newInstance(SignatureKeyManagement::class.java)
@@ -73,25 +73,25 @@ object ConnectionTestUtil {
 
     fun createConnection(worldSize: Int = 0, light: Boolean = false, version: String? = null): PlayConnection {
         val connection = OBJENESIS.newInstance(PlayConnection::class.java)
-        LANGUAGE.forceSet(connection, language)
+        LANGUAGE.set(connection, language)
         val version = if (version == null) IT.VERSION else Versions[version] ?: throw IllegalArgumentException("Can not find version: $version")
-        SEQUENCE.forceSet(connection, AtomicInteger(1))
-        ACCOUNT.forceSet(connection, TestAccount)
-        VERSION.forceSet(connection, version)
-        REGISTRIES.forceSet(connection, Registries())
+        SEQUENCE.set(connection, AtomicInteger(1))
+        ACCOUNT.set(connection, TestAccount)
+        VERSION.set(connection, version)
+        REGISTRIES.set(connection, Registries())
         connection.registries.updateFlattened(version.flattened)
         connection.registries.parent = if (version == IT.VERSION) IT.REGISTRIES else ITUtil.loadRegistries(version)
-        WORLD.forceSet(connection, createWorld(connection, light, (worldSize * 2 + 1).pow(2)))
-        PLAYER.forceSet(connection, LocalPlayerEntity(connection.account, connection, signature))
+        WORLD.set(connection, createWorld(connection, light, (worldSize * 2 + 1).pow(2)))
+        PLAYER.set(connection, LocalPlayerEntity(connection.account, connection, signature))
         connection.player.startInit()
-        NETWORK.forceSet(connection, TestNetwork(connection))
-        EVENTS.forceSet(connection, EventMaster())
-        PROFILES.forceSet(connection, profiles)
-        ASSETS_MANAGER.forceSet(connection, ConnectionAssetsManager(AssetsManagerProperties(PackProperties(version.packFormat))))
-        STATE.forceSet(connection, DataObserver(PlayConnectionStates.PLAYING))
-        TAGS.forceSet(connection, TagManager())
-        LEGACY_TAGS.forceSet(connection, FALLBACK_TAGS)
-        CAMERA.forceSet(connection, ConnectionCamera(connection))
+        NETWORK.set(connection, TestNetwork(connection))
+        EVENTS.set(connection, EventMaster())
+        PROFILES.set(connection, profiles)
+        ASSETS_MANAGER.set(connection, ConnectionAssetsManager(AssetsManagerProperties(PackProperties(version.packFormat))))
+        STATE.set(connection, DataObserver(PlayConnectionStates.PLAYING))
+        TAGS.set(connection, TagManager())
+        LEGACY_TAGS.set(connection, FALLBACK_TAGS)
+        CAMERA.set(connection, ConnectionCamera(connection))
         connection.camera.init()
         if (worldSize > 0) {
             connection.world.initialize(worldSize) { DummyBiomeSource(null) }

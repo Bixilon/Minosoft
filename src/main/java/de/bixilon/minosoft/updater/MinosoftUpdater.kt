@@ -21,6 +21,7 @@ import de.bixilon.kutil.hash.HashUtil
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.kutil.stream.InputStreamUtil.copy
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.util.FileUtil
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.copy
 import de.bixilon.minosoft.util.http.HTTP2.get
 import de.bixilon.minosoft.util.http.HTTPResponse
 import de.bixilon.minosoft.util.http.exceptions.HTTPException

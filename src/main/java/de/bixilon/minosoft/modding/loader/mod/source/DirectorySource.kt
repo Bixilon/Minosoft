@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding.loader.mod.source
 
+import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent

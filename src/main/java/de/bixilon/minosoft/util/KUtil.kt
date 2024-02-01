@@ -21,7 +21,6 @@ import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kotlinglm.vec4.Vec4t
-import de.bixilon.kutil.buffer.BufferDefinition
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -30,7 +29,6 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.runnable.ForcePooledRunnable
 import de.bixilon.kutil.concurrent.schedule.TaskScheduler
-import de.bixilon.kutil.exception.ExceptionUtil
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
@@ -71,11 +69,7 @@ import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
 import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
-import java.security.MessageDigest
 import java.security.SecureRandom
-import java.security.Signature
 import java.util.*
 import javax.net.ssl.SSLContext
 
@@ -360,30 +354,5 @@ object KUtil {
         stream.write(data)
         stream.close()
         println("Packet dumped to $path")
-    }
-
-
-    @Deprecated("kutil 1.26")
-    fun InputStream.copy(vararg output: OutputStream, digest: MessageDigest? = null, signature: Signature? = null, closeIn: Boolean = true, closeOut: Boolean = true) {
-        val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
-
-        while (true) {
-            val length = read(buffer, 0, buffer.size)
-            if (length < 0) {
-                break
-            }
-            for (stream in output) {
-                stream.write(buffer, 0, length)
-            }
-            digest?.update(buffer, 0, length)
-            signature?.update(buffer, 0, length)
-        }
-
-        if (closeIn) ExceptionUtil.ignoreAll { close() }
-        if (closeOut) {
-            for (stream in output) {
-                ExceptionUtil.ignoreAll { stream.close() }
-            }
-        }
     }
 }

@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.skin
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.assets.MemoryAssetsManager
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties

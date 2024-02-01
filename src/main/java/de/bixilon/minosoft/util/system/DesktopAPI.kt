@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.util.system
 
+import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.IntegratedAssets
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import java.awt.Taskbar
 import java.awt.Toolkit
 import java.io.File

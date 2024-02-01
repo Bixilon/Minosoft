@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.collections.spliterator.SpliteratorUtil.collect
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import org.testng.Assert.*
 import org.testng.annotations.Test
-import java.util.*
 
 @Test(groups = ["registry"])
 class RegistryTest {
@@ -114,14 +114,6 @@ class RegistryTest {
         assertEquals(secondList.toSet(), setOf(c, d))
     }
 
-
-    @Deprecated("kutil 1.25")
-    fun <T> Spliterator<T>.collect(): List<T> {
-        val list: MutableList<T> = mutableListOf()
-        forEachRemaining { list += it }
-
-        return list
-    }
     // TODO: codec, spliterating
 
     private class Entry(override val identifier: ResourceLocation) : RegistryItem() {

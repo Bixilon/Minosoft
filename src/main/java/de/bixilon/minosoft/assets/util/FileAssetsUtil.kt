@@ -17,10 +17,10 @@ import com.github.luben.zstd.ZstdInputStream
 import com.github.luben.zstd.ZstdOutputStream
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
 import de.bixilon.kutil.file.FileUtil.createParent
+import de.bixilon.kutil.stream.InputStreamUtil.copy
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.HashTypes.Companion.hashType
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.copy
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

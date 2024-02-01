@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.assets.directory
 
 import de.bixilon.kutil.latch.AbstractLatch
+import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.normalizePath
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.util.InputStreamUtil.readJson
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet

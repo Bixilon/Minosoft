@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGB8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.RGBA8Buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.data.buffer.TextureBuffer

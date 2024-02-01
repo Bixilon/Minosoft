@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.MemoryAssetsManager
 import de.bixilon.minosoft.assets.TestAssetsManager.box
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.models.block.element.face.ModelFace

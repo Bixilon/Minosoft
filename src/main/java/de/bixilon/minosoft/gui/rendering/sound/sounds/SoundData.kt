@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sound.sounds
 
+import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL10.AL_FORMAT_MONO16
 import org.lwjgl.openal.AL10.AL_FORMAT_STEREO16

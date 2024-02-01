@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -242,12 +242,12 @@ abstract class Entity(
 
 
     override fun init() {
-        DEFAULT_AABB.forceSet(this, createDefaultAABB())
-        PHYSICS.forceSet(this, createPhysics())
+        DEFAULT_AABB.set(this, createDefaultAABB())
+        PHYSICS.set(this, createPhysics())
         forceTeleport(initialPosition)
         forceRotate(initialRotation)
         if (!RunConfiguration.DISABLE_RENDERING) {
-            RENDER_INFO[this] = EntityRenderInfo(this)
+            RENDER_INFO.set(this, EntityRenderInfo(this))
         }
     }
 
@@ -262,9 +262,9 @@ abstract class Entity(
 
 
     companion object {
-        private val RENDER_INFO = Entity::renderInfo.jvmField
-        private val DEFAULT_AABB = Entity::defaultAABB.jvmField
-        private val PHYSICS = Entity::class.java.getFieldOrNull("physics")!!
+        private val RENDER_INFO = Entity::renderInfo.jvmField.field
+        private val DEFAULT_AABB = Entity::defaultAABB.jvmField.field
+        private val PHYSICS = Entity::class.java.getFieldOrNull("physics")!!.field
 
         val FLAGS_DATA = EntityDataField("ENTITY_FLAGS")
         val AIR_SUPPLY_DATA = EntityDataField("ENTITY_AIR_SUPPLY")

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.modding.loader
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.stream.InputStreamUtil.readAll
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.normalizePath
-import de.bixilon.minosoft.assets.util.InputStreamUtil.readAll
 import org.xeustechnologies.jcl.JarClassLoader
 import org.xeustechnologies.jcl.JarResources
 import org.xeustechnologies.jcl.JclJarEntry

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
+import de.bixilon.kutil.hex.HexUtil.fromHex
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
@@ -79,15 +80,6 @@ class UnihexFontType(
             return UnihexFontType(rasterized)
         }
 
-        fun Int.fromHex(): Int {
-            return this - when (this) {
-                in '0'.code..'9'.code -> '0'.code
-                in 'a'.code..'f'.code -> 'a'.code - 0x0A
-                in 'A'.code..'F'.code -> 'A'.code - 0x0A
-                else -> throw IllegalArgumentException("Invalid hex char: ${toChar()}!")
-            }
-        }
-
         private fun InputStream.readHexInt(): Int {
             var value = 0
             while (true) {
@@ -95,6 +87,7 @@ class UnihexFontType(
                 if (byte < 0 || byte == '\n'.code) return -1
                 if (byte == ':'.code) break // separator
                 val hex = byte.fromHex()
+                if (hex < 0) throw IllegalArgumentException("Invalid hex char: ${byte.toChar()}!")
 
                 value = (value shl 4) or hex
             }
@@ -110,6 +103,8 @@ class UnihexFontType(
                 if (byte < 0) break
                 if (byte == '\n'.code) break // separator
                 val hex = byte.fromHex()
+                if (hex < 0) throw IllegalArgumentException("Invalid hex char: ${byte.toChar()}!")
+
 
                 if (index % 2 == 0) {
                     // most significant bits

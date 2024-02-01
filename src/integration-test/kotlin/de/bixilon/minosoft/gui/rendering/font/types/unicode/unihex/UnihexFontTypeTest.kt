@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,14 +15,14 @@ package de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.buffer.ByteBufferUtil.toByteArray
+import de.bixilon.kutil.buffer.ByteBufferUtil.readRemaining
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.unsafe.UnsafeUtil.setUnsafeAccessible
 import de.bixilon.minosoft.gui.rendering.font.types.unicode.UnicodeCodeRenderer
-import de.bixilon.minosoft.gui.rendering.font.types.unicode.unihex.UnihexFontType.Companion.fromHex
 import de.bixilon.minosoft.test.IT.OBJENESIS
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import org.testng.Assert.*
+import org.testng.Assert.assertEquals
+import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -32,19 +32,6 @@ import kotlin.reflect.full.companionObject
 class UnihexFontTypeTest {
     private val textureRemaining = UnifontTexture::class.java.getFieldOrNull("remaining")!!
     val readUnihex = UnihexFontType::class.companionObject!!.java.getDeclaredMethod("readUnihex", InputStream::class.java, Int2ObjectOpenHashMap::class.java).apply { setUnsafeAccessible() }
-
-    fun `from hex`() {
-        assertEquals('0'.code.fromHex(), 0x00)
-        assertEquals('9'.code.fromHex(), 0x09)
-
-        assertEquals('a'.code.fromHex(), 0x0A)
-        assertEquals('A'.code.fromHex(), 0x0A)
-
-        assertEquals('f'.code.fromHex(), 0x0F)
-        assertEquals('F'.code.fromHex(), 0x0F)
-
-        assertThrows { 'z'.code.fromHex() }
-    }
 
     fun `read unihex`() {
         val data = "0E01DB:555580000001A2382241A238140588380001B31808A1913020A9BB100001AAAA\n298B:0000000E0808080808080808080E000E"
@@ -112,7 +99,7 @@ class UnihexFontTypeTest {
         assertEquals(code.uvEnd, Vec2(0.18749f, 1.0f))
 
         assertEquals(remaining, intArrayOf(13))
-        val data = texture.data.buffer.data.toByteArray()
+        val data = texture.data.buffer.data.readRemaining()
 
 
         for (index in 0 until 48) {

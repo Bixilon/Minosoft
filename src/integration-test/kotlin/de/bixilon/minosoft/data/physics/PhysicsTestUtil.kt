@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.FloatUtil
 import de.bixilon.kutil.primitive.FloatUtil.matches
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.camera.ConnectionCamera
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
@@ -42,17 +42,17 @@ object PhysicsTestUtil {
     const val MATCH_EXACTLY = true
     val VALUE_MARGIN = if (MATCH_EXACTLY) 0.0 else DoubleUtil.DEFAULT_MARGIN
 
-    private val PLAYER_ATTRIBUTES = LocalPlayerEntity::attributes.jvmField
-    private val CONNECTION_PLAYER = PlayConnection::player.jvmField
-    private val CONNECTION_CAMERA = PlayConnection::camera.jvmField
+    private val PLAYER_ATTRIBUTES = LocalPlayerEntity::attributes.jvmField.field
+    private val CONNECTION_PLAYER = PlayConnection::player.jvmField.field
+    private val CONNECTION_CAMERA = PlayConnection::camera.jvmField.field
 
 
     fun createPlayer(connection: PlayConnection = createConnection(light = false)): LocalPlayerEntity {
         val player = LocalPlayerEntity(connection.account, connection, SignatureKeyManagement(connection, connection.account))
-        PLAYER_ATTRIBUTES.forceSet(player, EntityAttributes(player.type.attributes))
+        PLAYER_ATTRIBUTES.set(player, EntityAttributes(player.type.attributes))
         player.startInit()
-        CONNECTION_PLAYER.forceSet(connection, player)
-        CONNECTION_CAMERA.forceSet(connection, ConnectionCamera(connection))
+        CONNECTION_PLAYER.set(connection, player)
+        CONNECTION_CAMERA.set(connection, ConnectionCamera(connection))
         connection.camera.init()
         connection.world.entities.remove(0)
         connection.world.entities.add(0, null, player)
