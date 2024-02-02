@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
@@ -35,6 +36,6 @@ abstract class PixLyzerBlockWithEntity<T : BlockEntity>(resourceLocation: Resour
     override fun createBlockEntity(connection: PlayConnection) = blockEntity?.factory?.build(connection)
 
     private companion object {
-        val FACTORY_FIELD = PixLyzerBlockWithEntity<*>::blockEntity.jvmField
+        val FACTORY_FIELD = PixLyzerBlockWithEntity<*>::blockEntity.jvmField.field
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
+import de.bixilon.kutil.reflection.wrapper.ObjectField
 import de.bixilon.minosoft.data.registries.identified.Identified
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -24,14 +25,16 @@ import kotlin.reflect.KProperty
 
 abstract class RegistryItem : Identified {
     open val injectable: Boolean get() = true
-    private val injects: MutableMap<Field, List<Any>> = if (injectable) hashMapOf() else unsafeNull()
+    private val injects: MutableMap<ObjectField, List<Any>> = if (injectable) hashMapOf() else unsafeNull()
 
     fun <T : RegistryItem> KProperty<T?>.inject(vararg keys: Any?): T {
         return this.jvmField.inject(*keys)
     }
 
-    fun <T : RegistryItem> Field.inject(vararg keys: Any?): T {
+    fun <T : RegistryItem> ObjectField.inject(vararg keys: Any?): T {
         if (!injectable) throw IllegalStateException("Not injectable")
+        if (keys.isEmpty()) return unsafeNull()
+
         val list: MutableList<Any> = ArrayList(keys.size)
         for (key in keys) {
             if (key == null) continue
@@ -40,21 +43,26 @@ abstract class RegistryItem : Identified {
         if (list.isEmpty()) return unsafeNull()
         injects[this] = list
         return unsafeNull()
+
+    }
+
+    fun <T : RegistryItem> Field.inject(vararg keys: Any?): T {
+        return this.field.inject(*keys)
     }
 
     fun inject(registries: Registries) {
-        if (!injectable) {
-            return
-        }
+        if (!injectable || injects.isEmpty()) return
+
         for ((field, keys) in injects) {
             var value: Any? = null
             for (key in keys) {
-                value = registries[field.type as Class<out RegistryItem>]?.get(key) ?: continue
+                val registry = registries[field.type as Class<out RegistryItem>] ?: continue
+                value = registry[key] ?: continue
                 break
             }
-            value ?: continue
+            if (value == null) continue
 
-            field.forceSet(this, value)
+            field.set(this, value)
         }
 
         INJECTS_FIELD.set(this, null)
@@ -79,6 +87,6 @@ abstract class RegistryItem : Identified {
     }
 
     companion object {
-        private val INJECTS_FIELD = RegistryItem::injects.jvmField
+        private val INJECTS_FIELD = RegistryItem::injects.jvmField.field
     }
 }

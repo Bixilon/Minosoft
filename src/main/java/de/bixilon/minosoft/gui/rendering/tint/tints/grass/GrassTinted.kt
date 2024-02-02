@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.tint.tints.grass
 
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
-import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
+import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 
 interface GrassTinted : TintedBlock {
 
     override fun initTint(manager: TintManager) {
-        this::class.java.getFieldOrNull("tintProvider")!!.forceSet(this, manager.grass)
+        this::class.java.getUnsafeField("tintProvider").forceSet(this, manager.grass)
     }
 }
