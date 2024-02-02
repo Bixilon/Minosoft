@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.wood
 
-import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
+import de.bixilon.kutil.reflection.ReflectionUtil.field
+import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
@@ -47,7 +48,7 @@ abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings
     override val tintProvider: TintProvider? = null
 
     override fun initTint(manager: TintManager) {
-        this::tintProvider.forceSet(manager.foliage)
+        TINT_PROVIDER.set(this, manager.foliage)
     }
 
     override fun buildState(version: Version, settings: BlockStateSettings): BlockState {
@@ -73,6 +74,7 @@ abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings
     }
 
     companion object {
+        private val TINT_PROVIDER = LeavesBlock::tintProvider.jvmField.field
         val LIGHT_PROPERTIES = CustomLightProperties(true, false, true)
     }
 }
