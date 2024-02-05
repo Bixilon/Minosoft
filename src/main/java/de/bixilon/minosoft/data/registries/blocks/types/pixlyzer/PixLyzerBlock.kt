@@ -22,7 +22,6 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.reflection.ReflectionUtil.field
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactories
 import de.bixilon.minosoft.data.registries.blocks.factory.PixLyzerBlockFactory
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -129,7 +128,7 @@ open class PixLyzerBlock(
     companion object : IdentifierCodec<Block>, PixLyzerBlockFactory<Block>, MultiClassFactory<Block> {
         private val NULL_OFFSET_XYZ = Vec3i(0, 0, 0).getWorldOffset(RandomOffsetTypes.XYZ)
         private val NULL_OFFSET_XZ = Vec3i(0, 0, 0).getWorldOffset(RandomOffsetTypes.XZ)
-        private val ITEM_FIELD = PixLyzerBlock::item.jvmField.field
+        private val ITEM_FIELD = PixLyzerBlock::item.field
         override val ALIASES: Set<String> = setOf("Block")
 
         override fun deserialize(registries: Registries?, identifier: ResourceLocation, data: Map<String, Any>): Block {

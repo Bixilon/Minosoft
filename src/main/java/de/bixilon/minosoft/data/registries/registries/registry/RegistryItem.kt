@@ -87,6 +87,6 @@ abstract class RegistryItem : Identified {
     }
 
     companion object {
-        private val INJECTS_FIELD = RegistryItem::injects.jvmField.field
+        private val INJECTS_FIELD = RegistryItem::injects.field
     }
 }

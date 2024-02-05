@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.entity
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.field
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
@@ -36,6 +35,6 @@ abstract class PixLyzerBlockWithEntity<T : BlockEntity>(resourceLocation: Resour
     override fun createBlockEntity(connection: PlayConnection) = blockEntity?.factory?.build(connection)
 
     private companion object {
-        val FACTORY_FIELD = PixLyzerBlockWithEntity<*>::blockEntity.jvmField.field
+        val FACTORY_FIELD = PixLyzerBlockWithEntity<*>::blockEntity.field
     }
 }

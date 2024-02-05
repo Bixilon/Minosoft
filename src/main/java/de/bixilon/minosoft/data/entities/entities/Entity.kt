@@ -21,7 +21,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityAnimations
@@ -262,8 +261,8 @@ abstract class Entity(
 
 
     companion object {
-        private val RENDER_INFO = Entity::renderInfo.jvmField.field
-        private val DEFAULT_AABB = Entity::defaultAABB.jvmField.field
+        private val RENDER_INFO = Entity::renderInfo.field
+        private val DEFAULT_AABB = Entity::defaultAABB.field
         private val PHYSICS = Entity::class.java.getFieldOrNull("physics")!!.field
 
         val FLAGS_DATA = EntityDataField("ENTITY_FLAGS")

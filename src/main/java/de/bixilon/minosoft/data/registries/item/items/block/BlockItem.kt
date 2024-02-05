@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.item.items.block
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.field
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -45,6 +44,6 @@ abstract class BlockItem<T : Block>(identifier: ResourceLocation) : Item(identif
 
 
     private companion object {
-        private val BLOCK_FIELD = BlockItem<*>::block.jvmField.field
+        private val BLOCK_FIELD = BlockItem<*>::block.field
     }
 }

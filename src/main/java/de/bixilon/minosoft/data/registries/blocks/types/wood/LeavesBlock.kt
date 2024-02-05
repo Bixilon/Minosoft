@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.blocks.types.wood
 
 import de.bixilon.kutil.reflection.ReflectionUtil.field
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
@@ -74,7 +73,7 @@ abstract class LeavesBlock(identifier: ResourceLocation, settings: BlockSettings
     }
 
     companion object {
-        private val TINT_PROVIDER = LeavesBlock::tintProvider.jvmField.field
+        private val TINT_PROVIDER = LeavesBlock::tintProvider.field
         val LIGHT_PROPERTIES = CustomLightProperties(true, false, true)
     }
 }

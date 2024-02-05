@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.item.items.block.legacy
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.field
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -53,7 +52,7 @@ open class PixLyzerBlockItem(
 
     companion object : PixLyzerItemFactory<PixLyzerBlockItem>, MultiClassFactory<PixLyzerBlockItem> {
         override val ALIASES = setOf("BlockItem", "AliasedBlockItem")
-        private val BLOCK_FIELD = PixLyzerBlockItem::block.jvmField.field
+        private val BLOCK_FIELD = PixLyzerBlockItem::block.field
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PixLyzerBlockItem {
             return PixLyzerBlockItem(resourceLocation, registries, data)

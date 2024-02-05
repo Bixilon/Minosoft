@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.network.connection.play
 import de.bixilon.kotlinglm.pow
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.field
-import de.bixilon.kutil.reflection.ReflectionUtil.jvmField
 import de.bixilon.minosoft.assets.connection.ConnectionAssetsManager
 import de.bixilon.minosoft.assets.minecraft.MinecraftPackFormat.packFormat
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
@@ -51,21 +50,21 @@ object ConnectionTestUtil {
         reference()
     }
 
-    private val LANGUAGE = PlayConnection::language.jvmField.field
-    private val SEQUENCE = PlayConnection::sequence.jvmField.field
-    private val ACCOUNT = PlayConnection::account.jvmField.field
-    private val VERSION = PlayConnection::version.jvmField.field
-    private val REGISTRIES = PlayConnection::registries.jvmField.field
-    private val WORLD = PlayConnection::world.jvmField.field
-    private val PLAYER = PlayConnection::player.jvmField.field
-    private val NETWORK = PlayConnection::network.jvmField.field
-    private val EVENTS = PlayConnection::events.jvmField.field
-    private val PROFILES = PlayConnection::profiles.jvmField.field
-    private val ASSETS_MANAGER = PlayConnection::assetsManager.jvmField.field
-    private val STATE = PlayConnection::state.jvmField.field
-    private val TAGS = PlayConnection::tags.jvmField.field
-    private val LEGACY_TAGS = PlayConnection::legacyTags.jvmField.field
-    private val CAMERA = PlayConnection::camera.jvmField.field
+    private val LANGUAGE = PlayConnection::language.field
+    private val SEQUENCE = PlayConnection::sequence.field
+    private val ACCOUNT = PlayConnection::account.field
+    private val VERSION = PlayConnection::version.field
+    private val REGISTRIES = PlayConnection::registries.field
+    private val WORLD = PlayConnection::world.field
+    private val PLAYER = PlayConnection::player.field
+    private val NETWORK = PlayConnection::network.field
+    private val EVENTS = PlayConnection::events.field
+    private val PROFILES = PlayConnection::profiles.field
+    private val ASSETS_MANAGER = PlayConnection::assetsManager.field
+    private val STATE = PlayConnection::state.field
+    private val TAGS = PlayConnection::tags.field
+    private val LEGACY_TAGS = PlayConnection::legacyTags.field
+    private val CAMERA = PlayConnection::camera.field
 
     private val language = LanguageManager()
     private val signature = OBJENESIS.newInstance(SignatureKeyManagement::class.java)
