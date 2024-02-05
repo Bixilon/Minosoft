@@ -119,6 +119,7 @@ class PlayConnection(
         this::error.observe(this) {
             if (errored || it == null) return@observe
             ERRORED_CONNECTIONS += this
+            cleanupErrors()
             state = PlayConnectionStates.ERROR
             error.report()
             errored = true
@@ -273,6 +274,13 @@ class PlayConnection(
             result += ERRORED_CONNECTIONS.toSynchronizedSet()
 
             return result.toTypedArray()
+        }
+
+        private fun cleanupErrors() {
+            while (ERRORED_CONNECTIONS.size > 5) {
+                // we just keep 5 connections here, they are for crash reports
+                ERRORED_CONNECTIONS.iterator().remove()
+            }
         }
     }
 }
