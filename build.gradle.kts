@@ -431,6 +431,9 @@ tasks.test {
 var git: Grgit? = null
 var commit: Commit? = null
 
+
+fun Commit.shortId() = id.substring(0, 10)
+
 fun loadGit() {
     val git: Grgit
     try {
@@ -447,10 +450,12 @@ fun loadGit() {
         stable = true
         tag.name
     } else {
-        commit.id.substring(0, 10)
+        commit.shortId()
     }
-    if (!git.status().isClean) {
+    val status = git.status()
+    if (!status.isClean) {
         nextVersion += "-dirty"
+        println(status)
     }
     if (project.version != nextVersion) {
         project.version = nextVersion
@@ -466,13 +471,10 @@ val versionJsonTask = tasks.register("versionJson") {
     doFirst {
         fun generateGit(git: Grgit, commit: Commit): Map<String, Any> {
             val status = git.status()
-            if (!status.isClean) {
-                println(status)
-            }
             return mapOf(
                 "branch" to (System.getenv()["CI_COMMIT_BRANCH"] ?: git.branch.current().name),
                 "commit" to commit.id,
-                "commit_short" to commit.abbreviatedId,
+                "commit_short" to commit.shortId(),
                 "dirty" to !status.isClean,
             )
         }

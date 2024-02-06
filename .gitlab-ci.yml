@@ -63,6 +63,7 @@ test:
     reports:
       junit: build/test-results/**/TEST-*.xml
 
+# TODO: upload release in the publish step?
 package:
   stage: package
   script:
