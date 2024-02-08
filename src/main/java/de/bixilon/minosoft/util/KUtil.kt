@@ -36,7 +36,6 @@ import de.bixilon.kutil.primitive.IntUtil.checkInt
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.kutil.time.Cooldown
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.config.profile.manager.ProfileManagers
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -216,20 +215,13 @@ object KUtil {
     }
 
     fun Any?.autoType(): Any? {
-        if (this == null) {
-            return null
-        }
-        if (this is Number) {
-            return this
-        }
+        if (this == null) return null
+        if (this is Number) return this
+
         val string = this.toString()
 
-        if (string == "true") {
-            return true
-        }
-        if (string == "false") {
-            return false
-        }
+        if (string == "true") return true
+        if (string == "false") return false
 
         string.checkInt()?.let { return it }
 
@@ -290,10 +282,6 @@ object KUtil {
         val prefixed = OutByteBuffer()
         prefixed.writeByteArray(this)
         return prefixed.toArray()
-    }
-
-    fun Cooldown.setTicks(ticks: Int) {
-        set(ticks * ProtocolDefinition.TICK_TIME)
     }
 
     fun init() {
