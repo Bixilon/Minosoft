@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val nodes = buffer.readArray { buffer.readCommandNode() }.build()
-    val rootNode = nodes[buffer.readVarInt()].nullCast<ConnectionNode>()
+    val rootNode = buffer.readVarInt().let { if (nodes.isEmpty()) null else nodes[it] }.nullCast<ConnectionNode?>()
 
 
     override fun handle(connection: PlayConnection) {
