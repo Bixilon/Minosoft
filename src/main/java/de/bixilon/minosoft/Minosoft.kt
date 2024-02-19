@@ -46,6 +46,7 @@ import de.bixilon.minosoft.main.MinosoftBoot
 import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
+import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
@@ -182,6 +183,7 @@ object Minosoft {
     }
 
     fun checkForUpdates() {
+        if (!MinosoftProperties.canUpdate()) return
         if (!OtherProfileManager.selected.updater.check) return
         DefaultThreadPool += ForcePooledRunnable(priority = ThreadPool.LOW) {
             enableUpdates()
