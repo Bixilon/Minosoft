@@ -49,7 +49,7 @@ plugins {
     kotlin("jvm") version "1.9.21"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit.service") version "5.2.1"
+    id("org.ajoberstar.grgit.service") version "5.2.2"
     id("com.github.ben-manes.versions") version "0.51.0"
 }
 
@@ -219,7 +219,7 @@ testing {
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("de.bixilon:kotlin-glm:$glmVersion")
-                implementation("it.unimi.dsi:fastutil-core:8.5.12")
+                implementation("it.unimi.dsi:fastutil-core:8.5.13")
 
                 implementation("de.bixilon:mbf-kotlin:1.0.2") { exclude("com.github.luben", "zstd-jni") }
 
@@ -361,7 +361,7 @@ dependencies {
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.25.1")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.4.11")
+    implementation("com.github.oshi", "oshi-core", "6.4.12")
     implementation("com.github.luben", "zstd-jni", "1.5.5-11", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.14.0")
     implementation("org.kamranzafar", "jtar", "2.3")
