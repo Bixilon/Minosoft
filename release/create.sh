@@ -21,4 +21,4 @@ curl \
   --form-string "release_notes=$(git log -1 --pretty=%B)" \
   --form-string "channel=master" \
   -H "Authorization: Bearer $MINOSOFT_TOKEN" \
-  "$MINOSOFT_API/api/v1/releases/create/$VERSION"
+  "$MINOSOFT_API/api/v1/releases/create/$VERSION" || exit 1
