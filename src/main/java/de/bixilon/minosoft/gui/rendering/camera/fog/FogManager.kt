@@ -94,13 +94,17 @@ class FogManager(
         val progress = delta / INTERPOLATE_DURATION.toFloat()
         state.start = interpolateLinear(progress, interpolation.start, options?.start ?: 0.0f)
         state.end = interpolateLinear(progress, interpolation.end, options?.end ?: 0.0f)
-        var color: RGBColor? = interpolateSine(progress, interpolation.color ?: Colors.TRANSPARENT, options?.color ?: Colors.TRANSPARENT)
+
+        val sourceColor = interpolation.color ?: options?.color ?: Colors.TRANSPARENT
+        val targetColor = options?.color ?: RGBColor(sourceColor.red, sourceColor.green, sourceColor.blue, 0x00)
+        var color: RGBColor? = interpolateSine(progress, sourceColor, targetColor)
         if (color == Colors.TRANSPARENT) {
             color = null
         }
         state.color = color
         if (progress >= 1.0f) {
             interpolation.change = 1L // this avoid further interpolations with the same data
+            interpolation.color = options?.color
         }
 
         state.revision++
