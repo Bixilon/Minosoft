@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.world.biome.accessor.noise.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.noise.VoronoiBiomeAccessor
 import de.bixilon.minosoft.data.world.chunk.chunk.Chunk
 import de.bixilon.minosoft.data.world.positions.BlockPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 
@@ -46,7 +45,7 @@ class WorldBiomes(val world: World) : BiomeAccessor {
 
     fun getBiome(x: Int, y: Int, z: Int, chunk: Chunk): Biome? {
         val noise = this.noise ?: return chunk.biomeSource.get(x, y, z)
-        chunk[y.sectionHeight]?.let { return it.biomes[x, y.inSectionHeight, z] } // access cache
+        chunk[y.sectionHeight]?.let { return it.biomes[x, y, z] } // access cache
 
         return noise.get(x, y, z, chunk)
     }
