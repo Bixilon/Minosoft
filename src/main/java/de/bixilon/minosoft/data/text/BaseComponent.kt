@@ -266,7 +266,8 @@ class BaseComponent : ChatComponent, Iterable<ChatComponent> {
     }
 
     private fun JsonObject.with(translator: Translator?, parent: TextComponent, restricted: Boolean): Array<ChatComponent>? {
-        val with = this["with"]?.toJsonList() ?: return null
+        val raw = this["with"]
+        val with = raw?.toJsonList()?.iterator() ?: raw.nullCast<IntArray>()?.iterator() ?: return null
         val parts: MutableList<ChatComponent> = mutableListOf()
         for (part in with) {
             if (part == null) continue
