@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -58,7 +58,7 @@ class BaseComponent : ChatComponent, Iterable<ChatComponent> {
         val clickEvent = json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restricted) } ?: parent?.clickEvent
         val hoverEvent = json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restricted) } ?: parent?.hoverEvent
 
-        val text = json["text"]?.nullCast<String>() ?: ""
+        val text = json["text", ""]?.nullCast<String>() ?: ""
 
         val component = TextComponent(
             message = text,

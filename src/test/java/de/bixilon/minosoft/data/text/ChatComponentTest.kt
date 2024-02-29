@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -287,14 +287,33 @@ internal class ChatComponentTest {
         val hover = EntityHoverEvent("0d2dc333-f629-4b59-bdf9-074f58b99c06".toUUID(), minecraft("item"), name = TextComponent("item.item.slimeball"))
 
         val expected = BaseComponent(
-                TextComponent("[").color(ChatColors.GRAY).italic(),
-                TextComponent("Bixilon").color(ChatColors.GRAY).italic(),
-                TextComponent(": ").color(ChatColors.GRAY).italic(),
+            TextComponent("[").color(ChatColors.GRAY).italic(),
+            TextComponent("Bixilon").color(ChatColors.GRAY).italic(),
+            TextComponent(": ").color(ChatColors.GRAY).italic(),
             BaseComponent(
                 TextComponent("Killed ").color(ChatColors.GRAY).italic(),
                 TextComponent("item.item.slimeball").color(ChatColors.GRAY).italic().hoverEvent(hover),
             ),
-                TextComponent("]").color(ChatColors.GRAY).italic(),
+            TextComponent("]").color(ChatColors.GRAY).italic(),
+        )
+        assertEquals(text, expected)
+    }
+
+    @Test
+    fun `nbt solo text`() {
+        val language = LanguageFile("en_US", Namespaces.MINECRAFT, mutableMapOf(
+            "chat.type.admin" to "[%s: %s]"
+        ))
+        val text = ChatComponent.of("""{"with":[{"color":"red","extra":[{"color":"red","text":"[Admins] "},{"":"Bixilon"},{"":""}],"insertion":"Bixilon"," text":""},{"text":"test"}],"color":"gray","italic":1,"translate":"chat.type.admin"}""", translator = language)
+        val expected = BaseComponent(
+            TextComponent("[").color(ChatColors.GRAY).italic(),
+            BaseComponent(
+                TextComponent("[Admins] ").color(ChatColors.RED).italic(),
+                TextComponent("Bixilon").color(ChatColors.RED).italic(),
+            ),
+            TextComponent(": ").color(ChatColors.GRAY).italic(),
+            TextComponent("test").color(ChatColors.GRAY).italic(),
+            TextComponent("]").color(ChatColors.GRAY).italic(),
         )
         assertEquals(text, expected)
     }
