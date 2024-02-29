@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.water.BubbleColumnBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.PixLyzerBlock
 import de.bixilon.minosoft.data.registries.blocks.types.pixlyzer.snow.PowderSnowBlock
+import de.bixilon.minosoft.data.registries.blocks.types.properties.hardness.UnbreakableBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.item.BlockWithItem
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.shape.collision.CollidableBlock
@@ -100,7 +101,7 @@ object VerifyIntegratedBlockRegistry {
     }
 
     private fun compareHardness(pixlyzer: Block, integrated: Block, errors: StringBuilder) {
-        if (pixlyzer.hardness == integrated.hardness) {
+        if (pixlyzer.hardness == integrated.hardness || (pixlyzer.hardness < 0.0f && integrated is UnbreakableBlock)) {
             return
         }
 

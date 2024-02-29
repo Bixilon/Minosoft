@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,6 +26,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.building.dirt.GrassBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.door.DoorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.end.EndStoneBrick
 import de.bixilon.minosoft.data.registries.blocks.types.building.end.Purpur
+import de.bixilon.minosoft.data.registries.blocks.types.building.nether.Netherrack
+import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSand
+import de.bixilon.minosoft.data.registries.blocks.types.building.nether.SoulSoil
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.DoublePlant
 import de.bixilon.minosoft.data.registries.blocks.types.building.plants.FernBlock
 import de.bixilon.minosoft.data.registries.blocks.types.building.prismarine.DarkPrismarine
@@ -55,6 +58,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 
 object BlockFactories : DefaultFactory<BlockFactory<*>>(
     AirBlock.Air, AirBlock.VoidAir, AirBlock.CaveAir,
+    Bedrock,
 
     StoneBlock.Block, StoneBlock.Slab,
     SmoothStone.Block, SmoothStone.Slab,
@@ -143,6 +147,8 @@ object BlockFactories : DefaultFactory<BlockFactory<*>>(
 
     WoodenChestBlock.Chest, WoodenChestBlock.TrappedChest, EnderChestBlock,
     ShulkerBoxBlock, ShulkerBoxBlock.White, ShulkerBoxBlock.Orange, ShulkerBoxBlock.Magenta, ShulkerBoxBlock.LightBlue, ShulkerBoxBlock.Yellow, ShulkerBoxBlock.Lime, ShulkerBoxBlock.Pink, ShulkerBoxBlock.Gray, ShulkerBoxBlock.LightGray, ShulkerBoxBlock.Cyan, ShulkerBoxBlock.Purple, ShulkerBoxBlock.Blue, ShulkerBoxBlock.Brown, ShulkerBoxBlock.Green, ShulkerBoxBlock.Green, ShulkerBoxBlock.Red, ShulkerBoxBlock.Black,
+
+    Netherrack, SoulSand, SoulSoil,
 ) {
 
     fun build(name: ResourceLocation, registries: Registries, settings: BlockSettings): Block? {

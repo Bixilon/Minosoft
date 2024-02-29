@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,8 +26,8 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_NORTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_SOUTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_UP
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.building.stone.Bedrock
 import de.bixilon.minosoft.data.registries.blocks.types.fluid.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.properties.offset.OffsetBlock
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -46,7 +46,7 @@ class SolidSectionMesher(
     val context: RenderContext,
 ) {
     private val profile = context.connection.profiles.block.rendering
-    private val bedrock = context.connection.registries.block[MinecraftBlocks.BEDROCK]?.states?.default
+    private val bedrock = context.connection.registries.block[Bedrock]?.states?.default
     private val tints = context.tints
     private var fastBedrock = false
 
