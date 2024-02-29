@@ -81,7 +81,7 @@ void applyTexel() {
     foutColor = texel;
 
     #ifdef FOG
-    set_fog();
+    fog_set();
     #endif
 }
 

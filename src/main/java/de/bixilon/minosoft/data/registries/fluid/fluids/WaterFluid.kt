@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,12 +32,16 @@ import de.bixilon.minosoft.data.registries.identified.AliasedIdentified
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.rendering.camera.fog.FogOptions
+import de.bixilon.minosoft.gui.rendering.camera.fog.FoggedFluid
 import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.WaterFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle
 import de.bixilon.minosoft.gui.rendering.tint.TintedBlock
 import de.bixilon.minosoft.gui.rendering.tint.tints.fluid.WaterTintProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.input.MovementInput
@@ -47,7 +51,7 @@ import de.bixilon.minosoft.physics.parts.input.InputPhysics.applyMovementInput
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resourceLocation), FluidEnterHandler, FluidCollisionHandler, TintedBlock {
+class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resourceLocation), FluidEnterHandler, FluidCollisionHandler, TintedBlock, FoggedFluid {
     override val priority: Int get() = 0
     override val tintProvider get() = WaterTintProvider
 
@@ -134,6 +138,10 @@ class WaterFluid(resourceLocation: ResourceLocation = identifier) : Fluid(resour
 
     override fun onEnter(physics: EntityPhysics<*>, height: Double) {
         onCollision(physics, height)
+    }
+
+    override fun getFogOptions(world: World, position: EntityPositionInfo): FogOptions {
+        return FogOptions(start = 5.0f, end = 10.0f, color = position.biome?.waterFogColor)
     }
 
     companion object : FluidFactory<WaterFluid>, AliasedIdentified {

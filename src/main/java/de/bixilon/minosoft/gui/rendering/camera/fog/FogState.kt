@@ -11,16 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.shader.types
+package de.bixilon.minosoft.gui.rendering.camera.fog
 
-import de.bixilon.minosoft.gui.rendering.camera.fog.FogManager
-import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
-import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
-interface FogShader : AbstractShader, CameraPositionShader {
-    var fog: FogManager
+data class FogState(
+    var enabled: Boolean = true,
+    var start: Float = 0.0f,
+    var end: Float = 0.0f,
+    var color: RGBColor? = null,
+) {
+    var revision = -1
 
-    fun fog(default: FogManager = native.context.camera.fogManager): ShaderUniform<FogManager> {
-        return uniform("fog", default) { native, _, value -> value.use(native) }
+
+    fun flags(): Int {
+        var flags = 0
+        if (enabled) {
+            flags = flags or FogFlags.ENABLE.mask
+        }
+        if (color != null) {
+            flags = flags or FogFlags.USE_COLOR.mask
+        }
+
+        return flags
     }
 }

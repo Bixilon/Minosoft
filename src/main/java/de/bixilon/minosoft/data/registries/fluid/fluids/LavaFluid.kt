@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,11 +27,16 @@ import de.bixilon.minosoft.data.registries.identified.Namespaces.minecraft
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.rendering.camera.fog.FogOptions
+import de.bixilon.minosoft.gui.rendering.camera.fog.FoggedFluid
 import de.bixilon.minosoft.gui.rendering.models.fluid.fluids.LavaFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.physics.EntityPositionInfo
 import de.bixilon.minosoft.physics.entities.EntityPhysics
 import de.bixilon.minosoft.physics.entities.living.LivingEntityPhysics
 import de.bixilon.minosoft.physics.input.MovementInput
@@ -39,7 +44,7 @@ import de.bixilon.minosoft.physics.parts.input.InputPhysics.applyMovementInput
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
-open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Fluid(identifier), FluidCollisionHandler {
+open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Fluid(identifier), FluidCollisionHandler, FoggedFluid {
     private val lavaParticleType: ParticleType = unsafeNull()
     override val priority: Int get() = 1
 
@@ -75,7 +80,6 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
         return other is LavaFluid
     }
 
-
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         super.randomTick(connection, blockState, blockPosition, random)
         val particle = connection.world.particle ?: return
@@ -103,9 +107,12 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
         return LavaFluidModel()
     }
 
+    override fun getFogOptions(world: World, position: EntityPositionInfo) = FOG_OPTIONS
+
     companion object : FluidFactory<LavaFluid>, AliasedIdentified {
         override val identifier = minecraft("lava")
         override val identifiers = setOf(minecraft("flowing_lava"))
+        private val FOG_OPTIONS = FogOptions(start = 0.2f, end = 1.0f, color = RGBColor(0.6f, 0.1f, 0.0f))
         const val FRICTION = 0.5
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries) = LavaFluid()

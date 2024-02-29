@@ -21,46 +21,58 @@ uniform float uFogStart = 60.0f * 60.0f;
 uniform float uFogEnd = 75.0f * 75.0f;
 uniform float uFogDistance = 15.0f * 15.0f;
 uniform vec4 uFogColor;
-uniform bool uUseFogColor = false;
+uniform uint uFogFlags = 0u;
+
+
+#define FOG_ENABLE 0x01u << 0u
+#define FOG_USE_COLOR 0x01u << 1u
 
 #ifndef DISTANCE_MULTIPLIER
-    #define DISTANCE_MULTIPLIER 1.0f
+#define DISTANCE_MULTIPLIER 1.0f
 #endif
 
-float calulate_fog_alpha(float distance2) {
-    if (distance2 < uFogStart) {
-        return 1.0f;
-    }
-    if (distance2 > uFogEnd) {
-        return 0.0f;
-    }
+float fog_alpha_from_distance(float distance2) {
+    if (distance2 < uFogStart) return 1.0f;
+    if (distance2 > uFogEnd) return 0.0f;
 
-    return pow(1.0f - (distance2 - uFogStart) / uFogDistance, 2);
+    float alpha = 1.0f - (distance2 - uFogStart) / uFogDistance;
+
+    return alpha * alpha;
 }
 
-float calculate_fog() {
-    if (uFogStart > 10000.0f) {
-        return 1.0f;
-    };
-    #ifdef FOG_SPHERE
-    vec3 distance_vec3 = finFragmentPosition.xyz - uCameraPosition.xyz;
-    float distance = dot(distance_vec3, distance_vec3);
-    #else
-    vec2 distance_vec2 = finFragmentPosition.xz - uCameraPosition.xz;
-    float distance = dot(distance_vec2, distance_vec2);
-    #endif
-    return calulate_fog_alpha(distance * DISTANCE_MULTIPLIER);
+float fog_calculate_distance() {
+    vec3 distance = finFragmentPosition.xyz - uCameraPosition.xyz;
+    distance.y /= 2.0f;// increase possible distance on y axis
+    return dot(distance, distance);
 }
 
-void set_fog() {
-    float alpha = calculate_fog();
-    if (uUseFogColor) {
-        foutColor.rgb = mix(uFogColor.rgb, foutColor.rgb, foutColor.a * alpha);
-        foutColor.a = 1.0f;
+
+float fog_calculate_alpha() {
+    if (uFogStart > 10000.0f) return 1.0f;
+
+    float distance = fog_calculate_distance();
+    return fog_alpha_from_distance(distance * DISTANCE_MULTIPLIER);
+}
+
+void fog_mix_alpha(float alpha) {
+    if (alpha <= 0.0f) discard;
+    foutColor.a = foutColor.a * alpha;
+}
+
+void fog_mix_color(float alpha) {
+    foutColor.rgb = mix(uFogColor.rgb, foutColor.rgb, foutColor.a * alpha);
+    foutColor.a = 1.0f;
+}
+
+void fog_set() {
+    if ((uFogFlags & FOG_ENABLE) == 0u) return;
+
+    float alpha = fog_calculate_alpha();
+
+
+    if ((uFogFlags & FOG_USE_COLOR) != 0u) {
+        fog_mix_color(alpha);
     } else {
-        if (alpha <= 0.0f) {
-            discard;
-        }
-        foutColor.a = foutColor.a * alpha;
+        fog_mix_alpha(alpha);
     }
 }
