@@ -31,7 +31,7 @@ class FogManager(
     private val player = context.connection.player
 
     private var interpolation = FogInterpolationStart()
-    private val state = FogState()
+    val state = FogState()
     private var options: FogOptions? = null
 
 
