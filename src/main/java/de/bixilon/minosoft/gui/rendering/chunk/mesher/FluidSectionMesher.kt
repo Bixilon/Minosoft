@@ -39,6 +39,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotate
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -65,8 +66,7 @@ class FluidSectionMesher(
     fun mesh(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbourChunks: Array<Chunk>, neighbours: Array<ChunkSection?>, mesh: ChunkMeshes) {
         val blocks = section.blocks
 
-        var position: Vec3i
-        var rendered = false
+        var position = Vec3i.EMPTY
         var tint: Int
 
         val cameraOffset = context.camera.offset.offset
@@ -108,9 +108,10 @@ class FluidSectionMesher(
 
                     if (skip.isTrue) continue
 
-                    position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
-                    tint = tints.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE_RGB
+                    var rendered = false
+                    position.x = offsetX + x; position.y = offsetY + y; position.z = offsetZ + z
 
+                    tint = tints.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE_RGB
                     val cornerHeights = floatArrayOf(
                         getCornerHeight(chunk, chunkPosition, position, fluid),
                         getCornerHeight(chunk, chunkPosition, position + Directions.EAST, fluid),
@@ -120,7 +121,7 @@ class FluidSectionMesher(
 
                     val offsetPosition = Vec3(position - cameraOffset)
 
-                    if (cornerHeights[0] < 1.0f && !skip[Directions.O_UP]) {
+                    if (cornerHeights[0] <= 1.0f && !skip[Directions.O_UP]) {
                         val velocity = fluid.getVelocity(state, position, chunk)
                         val still = velocity.x == 0.0 && velocity.z == 0.0
                         val texture: Texture
