@@ -42,7 +42,7 @@ float fog_alpha_from_distance(float distance2) {
 
 float fog_calculate_distance() {
     vec3 distance = finFragmentPosition.xyz - uCameraPosition.xyz;
-    distance.y /= 2.0f;// increase possible distance on y axis
+    distance.y *= 0.7f;// increase possible distance on y axis
     return dot(distance, distance);
 }
 

@@ -19,7 +19,7 @@ import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.dimension.effects.DefaultDimensionEffects
 import de.bixilon.minosoft.data.registries.dimension.effects.DimensionEffects
-import de.bixilon.minosoft.data.registries.dimension.effects.OverworldEffects
+import de.bixilon.minosoft.data.registries.dimension.effects.minecraft.OverworldEffects
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation

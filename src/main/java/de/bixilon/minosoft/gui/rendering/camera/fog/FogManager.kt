@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera.fog
 
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.data.registries.dimension.effects.FogEffects
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation.interpolateSine
 import de.bixilon.minosoft.data.text.formatting.color.Colors
@@ -31,7 +32,7 @@ class FogManager(
 
     private var interpolation = FogInterpolationStart()
     private val state = FogState()
-    private var options = FogOptions()
+    private var options: FogOptions? = null
 
 
     private var shaderRevision = -1
@@ -44,28 +45,32 @@ class FogManager(
         updateShaders()
     }
 
-    private fun getOptions(): FogOptions {
+    private fun getOptions(effects: FogEffects): FogOptions? {
         val fluid = player.physics.submersion.eye
 
         return when {
             fluid is FoggedFluid -> fluid.getFogOptions(context.connection.world, player.physics.positionInfo)
             player.effects[VisionEffect.Blindness] != null -> VisionEffect.Blindness.FOG_OPTIONS
+            // TODO: void fog (if under minY)
+            // TODO: powder snow
             else -> {
-                val fogStart = (context.connection.world.view.viewDistance - 2.0f) * ProtocolDefinition.SECTION_WIDTH_X  // could be improved? basically view distance in blocks and then the center of that chunk
-                FogOptions(fogStart, fogStart + 15.0f, null)
+                val end = (context.connection.world.view.viewDistance - 1.0f) * ProtocolDefinition.SECTION_WIDTH_X
+                val distance = end / 10.0f
+
+                FogOptions(effects.start * (end - distance), end)
             }
         }
     }
 
     private fun update() {
-        val sky = context.connection.world.dimension.effects
-        val enabled = sky.fog && context.connection.profiles.rendering.fog.enabled
+        val effects = context.connection.world.dimension.effects.fog
+        val enabled = effects != null && context.connection.profiles.rendering.fog.enabled
         if (state.enabled != enabled) {
             state.revision++
         }
         if (!state.enabled) return
 
-        val options = getOptions()
+        val options = getOptions(effects!!)
         if (this.options == options) {
             return
         }
@@ -87,9 +92,9 @@ class FogManager(
     private fun interpolate(time: Long = millis()) {
         val delta = time - interpolation.change
         val progress = delta / INTERPOLATE_DURATION.toFloat()
-        state.start = interpolateLinear(progress, interpolation.start, options.start)
-        state.end = interpolateLinear(progress, interpolation.end, options.end)
-        var color: RGBColor? = interpolateSine(progress, interpolation.color ?: Colors.TRANSPARENT, options.color ?: Colors.TRANSPARENT)
+        state.start = interpolateLinear(progress, interpolation.start, options?.start ?: 0.0f)
+        state.end = interpolateLinear(progress, interpolation.end, options?.end ?: 0.0f)
+        var color: RGBColor? = interpolateSine(progress, interpolation.color ?: Colors.TRANSPARENT, options?.color ?: Colors.TRANSPARENT)
         if (color == Colors.TRANSPARENT) {
             color = null
         }

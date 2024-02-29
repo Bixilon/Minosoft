@@ -18,5 +18,5 @@ import de.bixilon.minosoft.physics.EntityPositionInfo
 
 interface FoggedFluid {
 
-    fun getFogOptions(world: World, position: EntityPositionInfo): FogOptions
+    fun getFogOptions(world: World, position: EntityPositionInfo): FogOptions?
 }

@@ -107,7 +107,7 @@ open class LavaFluid(identifier: ResourceLocation = Companion.identifier) : Flui
         return LavaFluidModel()
     }
 
-    override fun getFogOptions(world: World, position: EntityPositionInfo) = FOG_OPTIONS
+    override fun getFogOptions(world: World, position: EntityPositionInfo) = FOG_OPTIONS // TODO: check for fire resistance
 
     companion object : FluidFactory<LavaFluid>, AliasedIdentified {
         override val identifier = minecraft("lava")

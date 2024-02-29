@@ -11,19 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.block.rendering
+package de.bixilon.minosoft.data.registries.dimension.effects
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
-import de.bixilon.minosoft.config.profile.profiles.block.rendering.entities.EntitiesC
-
-class RenderingC(profile: BlockProfile) {
-
-    /**
-     * This option tries to do its best to fix any occurring [Moiré Patterns](https://en.wikipedia.org/wiki/Moir%C3%A9_pattern).
-     * If set position based random block models are enabled
-     */
-    var antiMoirePattern by BooleanDelegate(profile, true)
-
-    val entities = EntitiesC(profile)
-}
+data class FogEffects(
+    val start: Float = 1.0f,
+)
