@@ -103,7 +103,7 @@ class FogManager(
         }
         state.color = color
         if (progress >= 1.0f) {
-            interpolation.change = 1L // this avoid further interpolations with the same data
+            interpolation.change = -1L // this avoid further interpolations with the same data
             interpolation.color = options?.color
         }
 
