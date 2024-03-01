@@ -27,8 +27,9 @@ in vec4 finFlashColor;
 #include "minosoft:animation"
 
 void main() {
-    applyTexel();
+    applyDefaults();
     applyTint();
+    applyTexel();
 
     foutColor = mix(foutColor, finFlashColor, uFlashProgress);
 }

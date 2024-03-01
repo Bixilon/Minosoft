@@ -25,6 +25,7 @@ out vec4 foutColor;
 #include "minosoft:animation"
 
 void main() {
+    applyDefaults();
     applyTint();
     applyTexel();
 }

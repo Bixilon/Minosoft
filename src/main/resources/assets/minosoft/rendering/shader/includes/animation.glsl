@@ -78,7 +78,7 @@ vec4 getAnimationTexture() {
 
 void applyTexel() {
     vec4 texel = getAnimationTexture();
-    foutColor = texel;
+    foutColor *= texel;
 
     #ifdef FOG
     fog_set();

@@ -69,7 +69,7 @@ class OpenGLNativeShader(
         glCompileShader(program)
 
         if (glGetShaderi(program, GL_COMPILE_STATUS) == GL_FALSE) {
-            throw ShaderLoadingException("Can not load shader: $file\n:" + glGetShaderInfoLog(program), glsl)
+            throw ShaderLoadingException("Can not load shader: $file:\n" + glGetShaderInfoLog(program), glsl)
         }
 
         return program
@@ -129,7 +129,7 @@ class OpenGLNativeShader(
         val location = uniformLocations.getOrPut(uniformName) {
             val location = glGetUniformLocation(handler, uniformName)
             if (location < 0) {
-                throw IllegalArgumentException("No uniform named $uniformName in $this")
+                throw IllegalArgumentException("No uniform named $uniformName in $this, maybe you use something that has been optimized out? Check your shader code!")
             }
             return@getOrPut location
         }

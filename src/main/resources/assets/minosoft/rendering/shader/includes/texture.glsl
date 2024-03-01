@@ -68,4 +68,9 @@ vec4 getTexture(uint textureId, vec3 uv) {
     #endif
     #endif
 }
+
+void applyDefaults() {
+    foutColor = vec4(1.0f);
+}
+
 #endif

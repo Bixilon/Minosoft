@@ -29,8 +29,9 @@ flat in uint finAllowTransparency;
 
 void main() {
     if (finTintColor.a == 0.0f) discard;
-    applyTexel();
+    applyDefaults();
     applyTint();
+    applyTexel();
     if (finAllowTransparency > 0u) {
         if (foutColor.a < 0.5f) discard;
     }

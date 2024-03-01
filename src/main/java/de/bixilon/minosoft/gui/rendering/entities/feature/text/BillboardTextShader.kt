@@ -33,5 +33,6 @@ class BillboardTextShader(
     override var cameraPosition: Vec3 by cameraPosition()
     override var fog: FogManager by fog()
     var matrix: Mat4 by uniform("uMatrix", Mat4())
+
     override var tint by uniform("uTintColor", ChatColors.WHITE) { shader, name, value -> shader.setUInt(name, value.rgb) }
 }

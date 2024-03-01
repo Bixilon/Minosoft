@@ -23,6 +23,7 @@ in vec2 finUV;
 #include "minosoft:animation"
 
 void main() {
-    applyTexel();
+    applyDefaults();
     applyTint();
+    applyTexel();
 }
