@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,5 +21,4 @@ object CameraDefinition {
     const val NEAR_PLANE = 0.01f
     const val FAR_PLANE = World.MAX_RENDER_DISTANCE * ProtocolDefinition.SECTION_LENGTH.toFloat()
     val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
-
 }

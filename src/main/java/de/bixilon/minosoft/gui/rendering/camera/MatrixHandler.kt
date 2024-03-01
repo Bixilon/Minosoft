@@ -165,8 +165,8 @@ class MatrixHandler(
 
     private fun updateFront(front: Vec3) {
         this.front = front
-        this.right = (front cross CAMERA_UP_VEC3).normalize()
-        this.up = (this.right cross front).normalize()
+        this.right = (front cross CAMERA_UP_VEC3).normalizeAssign()
+        this.up = (this.right cross front).normalizeAssign()
     }
 
     private fun updateShaders(cameraPosition: Vec3) {
