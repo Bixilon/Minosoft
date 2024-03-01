@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -95,7 +95,12 @@ class MatrixHandler(
     }
 
     private fun calculateProjectionMatrix(fov: Float, screenDimensions: Vec2 = context.window.sizef) {
-        projectionMatrix = GLM.perspective(fov.rad, screenDimensions.x / screenDimensions.y, NEAR_PLANE, FAR_PLANE)
+        val fog = camera.fogManager.state
+        var far = FAR_PLANE
+        if (fog.enabled) {
+            far = fog.end * (1.0f / 0.7f) + 2.0f // y axis is weighted differently
+        }
+        projectionMatrix = GLM.perspective(fov.rad, screenDimensions.x / screenDimensions.y, NEAR_PLANE, maxOf(far, 5.0f))
     }
 
     fun init() {
