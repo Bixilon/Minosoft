@@ -14,11 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.camera
 
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 object CameraDefinition {
     const val NEAR_PLANE = 0.01f
-    const val FAR_PLANE = World.MAX_RENDER_DISTANCE * ProtocolDefinition.SECTION_LENGTH.toFloat()
     val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
 }
