@@ -56,10 +56,10 @@ class MatrixHandler(
     var zoom = 0.0f
         set(value) {
             field = value
-            upToDate = false
+            invalidate()
         }
 
-    private var upToDate = false
+    private var invalid = false
 
     var viewMatrix = Mat4()
         private set
@@ -105,7 +105,7 @@ class MatrixHandler(
     fun init() {
         connection.events.listen<ResizeWindowEvent> {
             calculateProjectionMatrix(calculateFOV(), Vec2(it.size))
-            upToDate = false
+            invalidate()
         }
         draw() // set initial values
     }
@@ -120,7 +120,7 @@ class MatrixHandler(
         context.camera.offset.draw()
         val matrixPosition = Vec3(eyePosition - context.camera.offset.offset)
         val front = view.front
-        if (upToDate && matrixPosition == this.matrixPosition && front == this.front && fov == previousFOV && shaking.isEmpty) {
+        if (!invalid && matrixPosition == this.matrixPosition && front == this.front && fov == previousFOV && shaking.isEmpty) {
             return
         }
         this.matrixPosition = matrixPosition
@@ -153,7 +153,7 @@ class MatrixHandler(
         )
 
         updateShaders(useMatrixPosition)
-        upToDate = true
+        invalid = false
     }
 
     private fun updateViewProjectionMatrix() {
@@ -178,6 +178,6 @@ class MatrixHandler(
     }
 
     fun invalidate() {
-        upToDate = false
+        invalid = true
     }
 }
