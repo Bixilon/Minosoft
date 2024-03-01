@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.kutil.base64.Base64Util.toBase64
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.LongUtil.toLong
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_19_1_PRE4
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager.encodeNetwork
 import de.bixilon.minosoft.util.account.minecraft.key.MinecraftKeyPair
@@ -58,17 +58,17 @@ class PlayerPublicKey(
         return MinecraftKeyPair.isSignatureCorrect(uuid, expiresAt, publicKey, signature)
     }
 
+    fun isSignatureCorrect(versionId: Int, uuid: UUID): Boolean {
+        return if (versionId < V_1_19_1_PRE4) isLegacySignatureCorrect() else isSignatureCorrect(uuid)
+    }
+
     fun requireSignature(versionId: Int, uuid: UUID) {
-        if (versionId < ProtocolVersions.V_1_19_1_PRE4) {
-            if (!isLegacySignatureCorrect()) throw SignatureException()
-        } else {
-            if (!isSignatureCorrect(uuid)) throw SignatureException()
-        }
+        if (!isSignatureCorrect(versionId, uuid)) throw SignatureException()
     }
 
     fun validate(versionId: Int, uuid: UUID) {
         if (isExpired()) {
-            throw IllegalStateException("Key is expired!")
+            throw SignatureException("Key is expired!")
         }
         requireSignature(versionId, uuid)
     }
