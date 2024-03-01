@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,8 @@ import de.bixilon.minosoft.data.entities.entities.player.properties.textures.met
 import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderContext
-import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition
+import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.FALLBACK_FAR_PLANE
+import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.NEAR_PLANE
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer.Companion.SKIN
 import de.bixilon.minosoft.gui.rendering.entities.renderer.living.player.PlayerRenderer.Companion.SLIM
@@ -52,7 +53,7 @@ class ArmRenderer(override val context: RenderContext) : Renderer, Drawable {
 
     override fun postInit(latch: AbstractLatch) {
         shader.load()
-        context.connection.events.listen<ResizeWindowEvent> { perspective = GLM.perspective(60.0f.rad, it.size.aspect, CameraDefinition.NEAR_PLANE, CameraDefinition.FAR_PLANE) }
+        context.connection.events.listen<ResizeWindowEvent> { perspective = GLM.perspective(60.0f.rad, it.size.aspect, NEAR_PLANE, FALLBACK_FAR_PLANE) }
     }
 
     private fun registerModels() {

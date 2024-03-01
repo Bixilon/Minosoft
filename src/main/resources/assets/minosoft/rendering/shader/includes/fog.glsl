@@ -60,7 +60,7 @@ void fog_mix_alpha(float alpha) {
 }
 
 void fog_mix_color(float alpha) {
-    foutColor.rgb = mix(uFogColor.rgb, foutColor.rgb, foutColor.a * alpha);// uFogColor.a *
+    foutColor.rgb = mix(uFogColor.rgb, foutColor.rgb, foutColor.a * alpha);// multiply with uFogColor.a to interpolate when fog color is unset?
     foutColor.a = 1.0f;
 }
 

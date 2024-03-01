@@ -17,5 +17,6 @@ import de.bixilon.kotlinglm.vec3.Vec3
 
 object CameraDefinition {
     const val NEAR_PLANE = 0.01f
+    const val FALLBACK_FAR_PLANE = 100.0f
     val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
 }
