@@ -78,6 +78,7 @@ class FogManager(
         save()
         this.options = options
         state.revision++
+        context.camera.matrixHandler.invalidate()
     }
 
     private fun save() {
@@ -108,6 +109,7 @@ class FogManager(
         }
 
         state.revision++
+        context.camera.matrixHandler.invalidate()
     }
 
 

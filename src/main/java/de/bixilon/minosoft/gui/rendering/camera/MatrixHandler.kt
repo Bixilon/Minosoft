@@ -127,9 +127,7 @@ class MatrixHandler(
         this.matrixPosition = matrixPosition
         this.front = front
         val cameraBlockPosition = eyePosition.blockPosition
-        if (fov != previousFOV) {
-            calculateProjectionMatrix(fov)
-        }
+        calculateProjectionMatrix(fov)
         previousFOV = fov
 
         updateFront(front)
@@ -178,5 +176,9 @@ class MatrixHandler(
                 shader.cameraPosition = cameraPosition
             }
         }
+    }
+
+    fun invalidate() {
+        upToDate = false
     }
 }
