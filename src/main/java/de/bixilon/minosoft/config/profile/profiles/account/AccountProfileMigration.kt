@@ -14,15 +14,23 @@
 package de.bixilon.minosoft.config.profile.profiles.account
 
 import com.fasterxml.jackson.databind.node.ObjectNode
-import de.bixilon.minosoft.config.profile.storage.StorageProfileManager
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.data.registries.identified.Namespaces.minosoft
+import de.bixilon.minosoft.util.KUtil.toMap
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-object AccountProfileManager : StorageProfileManager<AccountProfile>() {
-    override val type get() = AccountProfile
-    override val latestVersion get() = 2
+object AccountProfileMigration {
+    private val MOJANG_ACCOUNT = minosoft("mojang_account")
 
-
-    override fun migrate(version: Int, data: ObjectNode) = when (version) {
-        1 -> AccountProfileMigration.migrate1(data)
-        else -> Unit
+    fun migrate1(data: ObjectNode) {
+        val entries = data["entries"]?.nullCast<ObjectNode>()?.toMap() ?: return
+        val remove: MutableSet<String> = mutableSetOf()
+        for ((id, entry) in entries) {
+            if (entry.get("type").asText().toResourceLocation() != MOJANG_ACCOUNT) {
+                continue
+            }
+            remove += id
+        }
+        entries -= remove
     }
 }

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.util
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 import de.bixilon.jiibles.AnyString
 import de.bixilon.jiibles.Table
 import de.bixilon.jiibles.TableStyles
@@ -33,7 +35,9 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.DoubleUtil
 import de.bixilon.kutil.primitive.DoubleUtil.matches
 import de.bixilon.kutil.primitive.IntUtil.checkInt
+import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
+import de.bixilon.kutil.reflection.ReflectionUtil.getUnsafeField
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
@@ -74,6 +78,7 @@ import javax.net.ssl.SSLContext
 
 
 object KUtil {
+    private val OBJECT_NODE_CHILDREN = ObjectNode::class.java.getUnsafeField("_children").field
     val NULL_UUID = UUID(0L, 0L)
     val RANDOM = Random()
     val EMPTY_BYTE_ARRAY = ByteArray(0)
@@ -344,4 +349,6 @@ object KUtil {
         stream.close()
         println("Packet dumped to $path")
     }
+
+    fun ObjectNode.toMap(): HashMap<String, JsonNode> = OBJECT_NODE_CHILDREN[this]
 }

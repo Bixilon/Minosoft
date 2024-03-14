@@ -63,7 +63,6 @@ minosoft:server_list.refresh.text2=información
 
 minosoft:main.account.no_account_selected=Sin cuenta seleccionada
 
-minosoft:main.account.type.mojang=Mojang
 minosoft:main.account.type.microsoft=Microsoft
 minosoft:main.account.type.offline=Offline
 
@@ -81,16 +80,6 @@ minosoft:main.account.add.offline.username.label=Usuario
 minosoft:main.account.add.offline.username.placeholder=Usuario ejemplo
 minosoft:main.account.add.offline.add_button=Añadir
 minosoft:main.account.add.offline.cancel_button=Cancelar
-
-minosoft:main.account.add.mojang.title=Añadir cuenta de Mojang
-minosoft:main.account.add.mojang.header=Añadir cuenta de Mojang
-minosoft:main.account.add.mojang.description=Introduze tu email (o nombre de usuario para cuentas antiguas) y tu contraseña
-minosoft:main.account.add.mojang.email.label=E-mail
-minosoft:main.account.add.mojang.email.placeholder=user@ejemplo.es
-minosoft:main.account.add.mojang.password.label=Contraseña
-minosoft:main.account.add.mojang.password.placeholder=****
-minosoft:main.account.add.mojang.add_button=Añadir
-minosoft:main.account.add.mojang.cancel_button=Cancelar
 
 minosoft:main.account.add.microsoft.title=Añadir cuenta de Microsoft
 
