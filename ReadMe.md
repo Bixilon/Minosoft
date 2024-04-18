@@ -67,7 +67,7 @@ AFK Pooling, Hit boxes, particles, ...
 ![Hypixel Lobby](doc/img/hypixel_lobby.png)  
 Lobby of hypixel.net with entities.
 
-![Rendering](doc/img/sunset.png)
+![Rendering](doc/img/sunset.png)  
 A beautiful sunset
 
 ![Eros](doc/img/eros.png)  
