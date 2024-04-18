@@ -1,8 +1,8 @@
 # Minosoft
 
-[<img src="https://img.shields.io/matrix/minosoft:matrix.org?style=for-the-badge">](https://matrix.to/#/#minosoft:matrix.org)
-<img src="https://img.shields.io/gitlab/pipeline-status/bixilon/minosoft?branch=master&gitlab_url=https%3A%2F%2Fgitlab.bixilon.de&style=for-the-badge">
-<img src="https://img.shields.io/badge/license-GPLv3-brightgreen?style=for-the-badge">
+[<img src="https://shields-io.bixilon.de/matrix/minosoft:matrix.org?style=for-the-badge">](https://matrix.to/#/#minosoft:matrix.org)
+<img src="https://shields-io.bixilon.de/gitlab/pipeline-status/bixilon/minosoft?branch=master&gitlab_url=https%3A%2F%2Fgitlab.bixilon.de&style=for-the-badge">
+<img src="https://shields-io.bixilon.de/badge/license-GPLv3-brightgreen?style=for-the-badge">
 
 Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
 (This is not a classical clone of minecraft, it completely re implements it!)  

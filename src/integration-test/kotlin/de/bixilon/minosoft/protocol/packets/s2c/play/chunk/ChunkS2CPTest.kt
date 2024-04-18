@@ -18,6 +18,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.stream.InputStreamUtil.readAll
+import de.bixilon.kutil.time.TimeUtil.nanos
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.state.BlockState
@@ -104,7 +106,6 @@ class ChunkS2CPTest {
         assertEquals(blocks[3]!![0, 11, 0]!!.block.identifier, MinecraftBlocks.DIRT)
     }
 
-    @Test(groups = ["packet"])
     fun cuberite_1_12_2() {
         val packet = read("cuberite_1_12_2", "1.12.2", dimension = DimensionProperties(light = true, skyLight = true, minY = 0, height = 256))
         assertEquals(packet.position, Vec2i(0, 0))
@@ -120,5 +121,13 @@ class ChunkS2CPTest {
         assertEquals(blocks[3]!![1, 11, 0]!!.block.identifier, MinecraftBlocks.DIRT)
         assertEquals(blocks[4]!![4, 3, 4]!!.block.identifier, MinecraftBlocks.STONE)
     }
-}
 
+//    fun benchmark() {
+//        val start = nanos()
+//        for (i in 0 until 10000) {
+//            hypixel1_19_3()
+//        }
+//        val end = nanos()
+//        println("Took ${(end-start).formatNanos()}")
+//    }
+}
