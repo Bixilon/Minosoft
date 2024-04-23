@@ -28,6 +28,9 @@ import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import org.lwjgl.opengl.GL11.GL_FALSE
@@ -129,7 +132,11 @@ class OpenGLNativeShader(
         val location = uniformLocations.getOrPut(uniformName) {
             val location = glGetUniformLocation(handler, uniformName)
             if (location < 0) {
-                throw IllegalArgumentException("No uniform named $uniformName in $this, maybe you use something that has been optimized out? Check your shader code!")
+                val error = "No uniform named $uniformName in $this, maybe you use something that has been optimized out? Check your shader code!"
+                if (!context.profile.advanced.allowUniformErrors) {
+                    throw IllegalArgumentException(error)
+                }
+                Log.log(LogMessageType.RENDERING, LogLevels.WARN, error)
             }
             return@getOrPut location
         }

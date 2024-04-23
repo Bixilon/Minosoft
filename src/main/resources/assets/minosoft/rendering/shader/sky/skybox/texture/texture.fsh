@@ -23,6 +23,7 @@ uniform vec4 uTintColor;
 #include "minosoft:animation"
 
 void main() {
+    applyDefaults();
+    foutColor.rgb *= uTintColor.rgb;
     applyTexel();
-    foutColor *= uTintColor;
 }

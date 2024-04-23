@@ -23,7 +23,8 @@ uniform vec4 uTintColor;
 
 
 void main() {
-    applyTexel();
+    applyDefaults();
     foutColor *= uTintColor;
     discard_alpha();
+    applyTexel();
 }
