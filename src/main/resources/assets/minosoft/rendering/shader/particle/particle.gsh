@@ -21,6 +21,7 @@ uniform vec3 uCameraRight;
 uniform vec3 uCameraUp;
 
 out vec4 finTintColor;
+out vec3 finFragmentPosition;
 
 in Vertex
 {
@@ -41,8 +42,9 @@ in Vertex
 
 void emit(vec3 offset, vec2 uv) {
     vec3 pointPosition = gl_in[0].gl_Position.xyz;
+    finFragmentPosition = pointPosition + (offset * ginVertex[0].scale);
 
-    gl_Position = uViewProjectionMatrix * vec4(pointPosition + offset * ginVertex[0].scale, 1.0);
+    gl_Position = uViewProjectionMatrix * vec4(finFragmentPosition, 1.0f);
     finAnimationUV = uv;
 
     EmitVertex();
