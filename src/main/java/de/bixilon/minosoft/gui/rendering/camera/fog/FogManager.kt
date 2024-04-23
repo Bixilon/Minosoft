@@ -68,7 +68,8 @@ class FogManager(
         if (state.enabled != enabled) {
             state.revision++
         }
-        if (!state.enabled) return
+        state.enabled = enabled
+        if (!enabled) return
 
         val options = getOptions(effects!!)
         if (this.options == options) {
