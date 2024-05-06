@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,8 +17,7 @@ import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.stack.print.PrintTarget
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.events.click.InternalCommandClickEvent
+import de.bixilon.minosoft.terminal.CommandUtil.commandText
 import de.bixilon.minosoft.updater.MinosoftUpdate
 import de.bixilon.minosoft.updater.MinosoftUpdater
 import de.bixilon.minosoft.updater.UpdateProgress
@@ -66,8 +65,8 @@ object UpdateCommand : Command {
             } else {
                 print("There is a new update available:")
                 print("Version: ${it.name} (${it.id})")
-                print(BaseComponent("Run ", TextComponent("\"update notes\"").clickEvent(InternalCommandClickEvent("update notes")), " to see the release notes."))
-                print(BaseComponent("Run ", TextComponent("\"update update\"").clickEvent(InternalCommandClickEvent("update update")), " to download and update."))
+                print(BaseComponent("Run ", commandText("update notes"), " to see the release notes."))
+                print(BaseComponent("Run ", commandText("update update"), " to download and update."))
             }
         }
     }
