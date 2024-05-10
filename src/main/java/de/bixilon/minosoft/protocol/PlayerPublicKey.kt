@@ -36,13 +36,11 @@ class PlayerPublicKey(
 
     constructor(nbt: JsonObject) : this(Instant.ofEpochMilli(nbt["expires_at"].toLong()), CryptManager.getPlayerPublicKey(nbt["key"].toString()), nbt["signature"].toString().fromBase64())
 
-    fun toNbt(): JsonObject {
-        return mapOf(
-            "expires_at" to expiresAt.epochSecond,
-            "key" to publicKey.encoded.toBase64(),
-            "signature" to signature.toBase64(),
-        )
-    }
+    fun toNbt() = mapOf(
+        "expires_at" to expiresAt.epochSecond,
+        "key" to publicKey.encoded.toBase64(),
+        "signature" to signature.toBase64(),
+    )
 
     fun isExpired(): Boolean {
         return expiresAt.isAfter(Instant.now())

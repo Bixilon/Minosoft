@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,9 +29,11 @@ import org.lwjgl.opengl.GL30.*
 class OpenGLFramebuffer(
     val system: OpenGLRenderSystem,
     var size: Vec2i,
+    var scale: Float,
     val color: Boolean,
     val depth: Boolean,
 ) : Framebuffer {
+    private var scaled = size
     override var state: FramebufferState = FramebufferState.PREPARING
         private set
 
@@ -43,21 +45,23 @@ class OpenGLFramebuffer(
 
     override fun init() {
         check(state != FramebufferState.COMPLETE) { "Framebuffer is complete!" }
+        if (scale <= 0.0f) throw IllegalArgumentException("Invalid scale: $scale")
+        if (size.x <= 0 || size.y <= 0) throw IllegalArgumentException("Invalid framebuffer size: $size")
         system.log { "Generated framebuffer buffer $this" }
         id = glGenFramebuffers()
         unsafeBind()
 
-        glViewport(0, 0, size.x, size.y)
+        this.scaled = if (scale == 1.0f) size else Vec2i(size.x * scale, size.y * scale)
 
         if (color) {
-            val colorTexture = OpenGLFramebufferColorTexture(size)
+            val colorTexture = OpenGLFramebufferColorTexture(scaled)
             this.colorTexture = colorTexture
             colorTexture.init()
             attach(colorTexture)
         }
 
         if (depth) {
-            val depth = OpenGLRenderbuffer(system, RenderbufferModes.DEPTH_COMPONENT24, size)
+            val depth = OpenGLRenderbuffer(system, RenderbufferModes.DEPTH_COMPONENT24, scaled)
             this.depthBuffer = depth
             depth.init()
             attach(depth)
@@ -75,6 +79,7 @@ class OpenGLFramebuffer(
     fun bind() {
         check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
         unsafeBind()
+        system.viewport = scaled
     }
 
     private fun unsafeBind() {
@@ -108,12 +113,14 @@ class OpenGLFramebuffer(
         depthTexture?.bind(1)
     }
 
-    override fun resize(size: Vec2i) {
-        if (size == this.size) {
+    override fun resize(size: Vec2i, scale: Float) {
+        if (size.x <= 0 || size.y <= 0) throw IllegalArgumentException("Invalid framebuffer size: $size")
+        if (size == this.size && this.scale == scale) {
             return
         }
         colorTexture?.unload()
         depthBuffer?.unload()
+        this.scale = scale
         this.size = size
         delete()
         init()

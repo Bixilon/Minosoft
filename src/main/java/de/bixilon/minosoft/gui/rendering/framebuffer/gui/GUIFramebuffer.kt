@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.gui
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMesh
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
@@ -28,4 +30,15 @@ class GUIFramebuffer(
     override val framebuffer: Framebuffer = context.system.createFramebuffer(color = true, depth = false)
     override val mesh = FramebufferMesh(context)
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT
+
+    private var scale = 1.0f
+
+    override fun init() {
+        super.init()
+        context.connection.profiles.rendering.quality.resolution::guiScale.observe(this, instant = true) { this.scale = it }
+    }
+
+    override fun resize(size: Vec2i) {
+        super.resize(size, this.scale)
+    }
 }

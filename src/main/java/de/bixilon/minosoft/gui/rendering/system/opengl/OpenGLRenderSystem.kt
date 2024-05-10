@@ -98,6 +98,7 @@ class OpenGLRenderSystem(
             }
             if (value == null) {
                 glBindFramebuffer(GL_FRAMEBUFFER, 0)
+                viewport = context.window.size
             } else {
                 check(value is OpenGLFramebuffer) { "Can not use non OpenGL framebuffer!" }
                 value.bind()
@@ -238,7 +239,7 @@ class OpenGLRenderSystem(
     override fun readPixels(start: Vec2i, end: Vec2i): TextureBuffer {
         val size = Vec2i(end.x - start.x, end.y - start.y)
         val buffer = RGB8Buffer(size)
-        glReadPixels(start.x, start.y, end.x, end.y, GL_RGB8, GL_UNSIGNED_BYTE, buffer.data)
+        glReadPixels(start.x, start.y, end.x, end.y, GL_RGB8, GL_UNSIGNED_BYTE, buffer.data) // TODO: This is somehow through a GL_INVALID_ENUM error
         return buffer
     }
 
@@ -258,8 +259,8 @@ class OpenGLRenderSystem(
         return IntOpenGLUniformBuffer(this, uniformBufferBindingIndex++, data)
     }
 
-    override fun createFramebuffer(color: Boolean, depth: Boolean): OpenGLFramebuffer {
-        return OpenGLFramebuffer(this, context.window.size, color, depth)
+    override fun createFramebuffer(color: Boolean, depth: Boolean, scale: Float): OpenGLFramebuffer {
+        return OpenGLFramebuffer(this, context.window.size, scale, color, depth)
     }
 
     override fun createTextureManager(): OpenGLTextureManager {

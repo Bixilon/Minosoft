@@ -11,22 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.buffer.frame
+package de.bixilon.minosoft.config.profile.profiles.rendering.quality
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
+import de.bixilon.minosoft.config.profile.profiles.rendering.quality.resolution.ResolutionC
 
-interface Framebuffer {
-    val state: FramebufferState
-
-    fun init()
-    fun delete()
-
-    fun attach(renderbuffer: Renderbuffer)
-    fun attach(texture: FramebufferTexture)
-
-    fun bindTexture()
-
-    fun resize(size: Vec2i, scale: Float = 1.0f)
+class QualityC(profile: RenderingProfile) {
+    val resolution = ResolutionC(profile)
 }
