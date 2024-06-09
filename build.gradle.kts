@@ -46,7 +46,7 @@ import java.util.stream.Collectors
 
 
 plugins {
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "2.0.0"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit.service") version "5.2.2"
@@ -84,7 +84,7 @@ repositories {
 
 buildscript {
     dependencies {
-        classpath("de.bixilon", "kutil", "1.21")
+        classpath("de.bixilon", "kutil", kutilVersion)
     }
 }
 
@@ -558,6 +558,7 @@ task("upload") {
         val file = File("build/libs/$path")
         val key = KeyFactory.getInstance("RSA").generatePrivate(PKCS8EncodedKeySpec(System.getenv("RELEASE_KEY").fromBase64()))
 
+        // TODO: get from kutil 1.26
         val digest = MessageDigest.getInstance(HashUtil.SHA_512)
         val sign = Signature.getInstance("SHA512withRSA")
         sign.initSign(key)
