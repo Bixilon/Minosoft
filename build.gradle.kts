@@ -84,7 +84,7 @@ repositories {
 
 buildscript {
     dependencies {
-        classpath("de.bixilon", "kutil", kutilVersion)
+        classpath("de.bixilon", "kutil", "1.26.2")
     }
 }
 
@@ -214,14 +214,14 @@ testing {
             dependencies {
                 implementation(project())
 
-                implementation("org.objenesis:objenesis:3.3")
+                implementation("org.objenesis:objenesis:3.4")
 
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("de.bixilon:kotlin-glm:$glmVersion")
                 implementation("it.unimi.dsi:fastutil-core:8.5.13")
 
-                implementation("de.bixilon:mbf-kotlin:1.0.2") { exclude("com.github.luben", "zstd-jni") }
+                implementation("de.bixilon:mbf-kotlin:1.0.3") { exclude("com.github.luben", "zstd-jni") }
 
                 jacksonCore("core")
                 jacksonCore("databind")
@@ -359,14 +359,14 @@ dependencies {
     implementation("com.google.guava", "guava", "33.0.0-jre")
     implementation("dnsjava", "dnsjava", "3.5.3")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
-    implementation("org.jline", "jline", "3.25.1")
+    implementation("org.jline", "jline", "3.26.1")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.4.12")
-    implementation("com.github.luben", "zstd-jni", "1.5.5-11", classifier = zstdNatives)
+    implementation("com.github.oshi", "oshi-core", "6.6.1")
+    implementation("com.github.luben", "zstd-jni", "1.5.6-3", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.14.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
-    implementation("it.unimi.dsi", "fastutil-core", "8.5.12")
+    implementation("it.unimi.dsi", "fastutil-core", "8.5.13")
     implementation("org.xeustechnologies", "jcl-core", "2.8")
 
 
@@ -385,7 +385,7 @@ dependencies {
     implementation("de.bixilon", "kutil", kutilVersion)
     implementation("de.bixilon", "jiibles", "1.1.1")
     implementation("de.bixilon", "kotlin-glm", glmVersion)
-    implementation("de.bixilon", "mbf-kotlin", "1.0.2") { exclude("com.github.luben", "zstd-jni") }
+    implementation("de.bixilon", "mbf-kotlin", "1.0.3") { exclude("com.github.luben", "zstd-jni") }
     implementation("de.bixilon.javafx", "javafx-svg", "0.3.1") { exclude("org.openjfx", "javafx-controls") }
 
     // netty
@@ -402,7 +402,7 @@ dependencies {
     lwjgl("stb")
 
     // kotlin
-    implementation(kotlin("reflect", "1.9.20"))
+    implementation(kotlin("reflect", "2.0.0"))
 
 
     // platform specific
@@ -514,6 +514,7 @@ java {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
     kotlinOptions.languageVersion = "2.0"
+    kotlinOptions { freeCompilerArgs += "-Xskip-prerelease-check"; freeCompilerArgs += "-Xallow-unstable-dependencies" }
 }
 
 tasks.withType<JavaCompile> {
