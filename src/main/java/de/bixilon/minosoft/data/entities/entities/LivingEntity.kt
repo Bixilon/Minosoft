@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.container.equipment.EntityEquipment
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
@@ -50,7 +51,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     override val canRaycast: Boolean get() = super.canRaycast && health > 0.0
     override val name: ChatComponent? get() = super.name
 
-    private var flags by data(FLAGS_DATA, 0x00)
+    private var flags by data(FLAGS_DATA, 0x00) { it.toInt() }
     private fun getLivingEntityFlag(bitMask: Int): Boolean {
         return flags.isBitMask(bitMask)
     }

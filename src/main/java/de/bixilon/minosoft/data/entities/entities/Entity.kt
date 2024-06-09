@@ -19,6 +19,7 @@ import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.reflection.ReflectionUtil.field
 import de.bixilon.kutil.reflection.ReflectionUtil.getFieldOrNull
 import de.bixilon.kutil.time.TimeUtil.millis
@@ -52,7 +53,7 @@ abstract class Entity(
     private var initialPosition: Vec3d,
     private var initialRotation: EntityRotation,
 ) : Initializable, EntityAttachable {
-    private var flags: Int by data(FLAGS_DATA, 0x00)
+    private var flags: Int by data(FLAGS_DATA, 0x00) { it.toInt() }
     protected val random = Random()
     val id: Int?
         get() = connection.world.entities.getId(this)

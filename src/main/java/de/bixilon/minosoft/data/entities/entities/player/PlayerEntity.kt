@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -110,7 +110,7 @@ abstract class PlayerEntity(
         data.observe(SKIN_PARTS_DATA) { raw: Any? -> updateSkinParts(raw?.toInt() ?: 0xFF) }
     }
 
-    private var _mainArm by data(MAIN_ARM_DATA, 0x01)
+    private var _mainArm by data(MAIN_ARM_DATA, 0x01) { it.toInt() }
 
     @get:SynchronizedEntityData
     open val mainArm: Arms
