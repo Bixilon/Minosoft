@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,37 +28,32 @@ import kotlin.reflect.KProperty0
 
 object JavaFXDelegate {
 
-    private fun checkErosState() {
+    internal fun checkErosState() {
         if (RunConfiguration.DISABLE_EROS) {
             throw IllegalStateException("Eros is disabled!")
         }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<V>.observeFX(owner: Any, instant: Boolean = false, observer: (V) -> Unit) {
         checkErosState()
         this.observe(owner, instant) { JavaFXUtil.runLater { observer(it) } }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<Set<V>>.observeSetFX(owner: Any, instant: Boolean = false, observer: (SetChange<V>) -> Unit) {
         checkErosState()
         this.observeSet(owner, instant) { JavaFXUtil.runLater { observer(it) } }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<List<V>>.observeListFX(owner: Any, instant: Boolean = false, observer: (ListChange<V>) -> Unit) {
         checkErosState()
         this.observeList(owner, instant) { JavaFXUtil.runLater { observer(it) } }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <K, V> KProperty0<Map<K, V>>.observeMapFX(owner: Any, instant: Boolean = false, observer: (MapChange<K, V>) -> Unit) {
         checkErosState()
         this.observeMap(owner, instant) { JavaFXUtil.runLater { observer(it) } }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <K, V> KProperty0<AbstractBiMap<K, V>>.observeBiMapFX(owner: Any, instant: Boolean = false, observer: (MapChange<K, V>) -> Unit) {
         checkErosState()
         this.observeBiMap(owner, instant) { JavaFXUtil.runLater { observer(it) } }

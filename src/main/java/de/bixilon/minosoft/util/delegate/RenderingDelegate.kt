@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,7 +32,7 @@ object RenderingDelegate {
         return Rendering.currentContext ?: throw IllegalStateException("Can only be registered in a render context!")
     }
 
-    private fun <V> runInContext(context: RenderContext, value: V, runnable: (V) -> Unit) {
+    internal fun <V> runInContext(context: RenderContext, value: V, runnable: (V) -> Unit) {
         val changeContext = Rendering.currentContext
         if (changeContext === context) {
             runnable(value)
@@ -41,27 +41,22 @@ object RenderingDelegate {
         }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<V>.observeRendering(owner: Any, instant: Boolean = false, context: RenderContext = requireContext(), observer: (V) -> Unit) {
         this.observe(owner, instant) { runInContext(context, it, observer) }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<Set<V>>.observeSetRendering(owner: Any, instant: Boolean = false, context: RenderContext = requireContext(), observer: (SetChange<V>) -> Unit) {
         this.observeSet(owner, instant) { runInContext(context, it, observer) }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<List<V>>.observeListRendering(owner: Any, instant: Boolean = false, context: RenderContext = requireContext(), observer: (ListChange<V>) -> Unit) {
         this.observeList(owner, instant) { runInContext(context, it, observer) }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <K, V> KProperty0<Map<K, V>>.observeMapRendering(owner: Any, instant: Boolean = false, context: RenderContext = requireContext(), observer: (MapChange<K, V>) -> Unit) {
         this.observeMap(owner, instant) { runInContext(context, it, observer) }
     }
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <K, V> KProperty0<AbstractBiMap<K, V>>.observeBiMapRendering(owner: Any, instant: Boolean = false, context: RenderContext = requireContext(), observer: (MapChange<K, V>) -> Unit) {
         this.observeBiMap(owner, instant) { runInContext(context, it, observer) }
     }
