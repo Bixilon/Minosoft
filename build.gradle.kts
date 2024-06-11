@@ -526,7 +526,10 @@ application {
     mainClass.set("de.bixilon.minosoft.Minosoft")
 }
 
+var destination: File? = null
+
 val fatJar = task("fatJar", type = Jar::class) {
+    destination = destinationDirectory.get().asFile
     archiveBaseName.set("${project.name}-fat-${os.name.lowercase()}-${architecture.name.lowercase()}")
     manifest {
         attributes["Implementation-Title"] = project.name.capitalized()
@@ -556,9 +559,9 @@ task("assetsProperties", type = JavaExec::class) {
 task("upload") {
     dependsOn("fatJar")
     doLast {
-        val path = "${project.name}-fat-${os.name.lowercase()}-${architecture.name.lowercase()}-${project.version}.jar"
-        val file = File("build/libs/$path")
-        if (!file.exists()) throw FileNotFoundException("Release file to upload was not found???: $file, available: ${file.parentFile.listFiles()}")
+        val base = (destination ?: File("build/libs"))
+        val file = base.resolve("${project.name}-fat-${os.name.lowercase()}-${architecture.name.lowercase()}-${project.version}.jar")
+        if (!file.exists()) throw FileNotFoundException("Release file to upload was not found???: $file, available: ${base.listFiles()}")
         val key = KeyFactory.getInstance("RSA").generatePrivate(PKCS8EncodedKeySpec(System.getenv("RELEASE_KEY").fromBase64()))
 
         val digest = MessageDigest.getInstance(HashUtil.SHA_512)
