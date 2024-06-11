@@ -14,12 +14,12 @@
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
 import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.kutil.base64.Base64Util.toBase64
-import de.bixilon.kutil.buffer.BufferDefinition
 import de.bixilon.kutil.hash.HashUtil
 import de.bixilon.kutil.os.Architectures
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.stream.InputStreamUtil.copy
 import de.bixilon.kutil.time.TimeUtil
 import org.ajoberstar.grgit.Commit
 import org.ajoberstar.grgit.Grgit
@@ -30,6 +30,7 @@ import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.net.URI
 import java.net.URLEncoder
@@ -557,24 +558,15 @@ task("upload") {
     doLast {
         val path = "${project.name}-fat-${os.name.lowercase()}-${architecture.name.lowercase()}-${project.version}.jar"
         val file = File("build/libs/$path")
+        if (!file.exists()) throw FileNotFoundException("Release file to upload was not found???: $file, available: ${file.parentFile.listFiles()}")
         val key = KeyFactory.getInstance("RSA").generatePrivate(PKCS8EncodedKeySpec(System.getenv("RELEASE_KEY").fromBase64()))
 
-        // TODO: get from kutil 1.26
         val digest = MessageDigest.getInstance(HashUtil.SHA_512)
         val sign = Signature.getInstance("SHA512withRSA")
         sign.initSign(key)
         val stream = FileInputStream(file)
+        stream.copy(digest = digest, signature = sign)
 
-        val buffer = ByteArray(BufferDefinition.DEFAULT_BUFFER_SIZE)
-        var length: Int
-        while (true) {
-            length = stream.read(buffer, 0, buffer.size)
-            if (length < 0) {
-                break
-            }
-            digest.update(buffer, 0, length)
-            sign.update(buffer, 0, length)
-        }
         val sha512 = digest.digest().toHex()
         val signature = sign.sign().toBase64()
 
