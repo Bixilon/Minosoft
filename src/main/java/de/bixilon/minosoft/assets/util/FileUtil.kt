@@ -45,6 +45,7 @@ object FileUtil {
         return readFile(path.toFile(), compressed)
     }
 
+    @Deprecated("kutil 1.26.3")
     fun File.mkdirParent() {
         val parent = this.parentFile
         if (parent.exists()) {
