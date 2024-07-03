@@ -100,7 +100,7 @@ class RenderLoop(
             context.camera.draw()
 
             // handle opengl context tasks, but limit it per frame
-            context.queue.timeWork(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
+            context.queue.workTimeLimited(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
 
             if (context.state == RenderingStates.STOPPED) {
                 context.window.close()

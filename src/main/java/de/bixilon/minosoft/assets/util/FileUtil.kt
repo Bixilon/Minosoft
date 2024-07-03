@@ -16,7 +16,10 @@ package de.bixilon.minosoft.assets.util
 import com.github.luben.zstd.ZstdInputStream
 import de.bixilon.minosoft.terminal.RunConfiguration
 import javafx.scene.image.Image
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -45,18 +48,6 @@ object FileUtil {
     fun readFile(path: Path, compressed: Boolean = true): InputStream {
         return readFile(path.toFile(), compressed)
     }
-
-    @Deprecated("kutil 1.26.3")
-    fun File.mkdirParent() {
-        val parent = this.parentFile
-        if (parent.exists()) {
-            return
-        }
-        if (!parent.mkdirs()) {
-            throw IOException("Can not create parent of $this")
-        }
-    }
-
 
     fun createTempFile(): File {
         return Files.createTempFile(RunConfiguration.TEMPORARY_FOLDER, "", "").toFile()

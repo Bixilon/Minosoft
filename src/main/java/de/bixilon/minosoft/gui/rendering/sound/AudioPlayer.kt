@@ -234,7 +234,7 @@ class AudioPlayer(
             if (session.established || session.error != null) {
                 break
             }
-            queue.work()
+            queue.workBlocking(500L)
             calculateAvailableSources()
             while (!enabled) {
                 Thread.sleep(1L)
@@ -242,7 +242,6 @@ class AudioPlayer(
                     break
                 }
             }
-            Thread.sleep(1L)
         }
     }
 

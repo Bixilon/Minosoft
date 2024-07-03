@@ -8,6 +8,8 @@ hs_err_pid*.log
 .gradle
 .gradle_home
 
+.kotlin/
+
 # Ignore Gradle build output directory
 build
 

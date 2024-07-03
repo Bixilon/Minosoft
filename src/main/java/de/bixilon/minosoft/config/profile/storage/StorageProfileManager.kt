@@ -22,12 +22,12 @@ import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.file.FileUtil.mkdirParent
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
 import de.bixilon.kutil.stream.InputStreamUtil.readAsString
-import de.bixilon.minosoft.assets.util.FileUtil.mkdirParent
 import de.bixilon.minosoft.config.profile.ProfileType
 import de.bixilon.minosoft.config.profile.ProfileUtil.isValidName
 import de.bixilon.minosoft.config.profile.profiles.Profile
