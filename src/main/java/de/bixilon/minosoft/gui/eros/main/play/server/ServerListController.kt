@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -59,6 +59,7 @@ import javafx.scene.Node
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ListView
+import javafx.scene.control.Tooltip
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.Pane
 
@@ -109,7 +110,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     return@setOnMouseClicked
                 }
                 val card = controller.item ?: return@setOnMouseClicked
-                if (!card.canConnect(accountProfile.selected ?: return@setOnMouseClicked)) {
+                if (card.canConnect(accountProfile.selected) != null) {
                     return@setOnMouseClicked
                 }
 
@@ -334,13 +335,20 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     isDisable = true
                     connect(serverCard)
                 }
+
+                isDisable = true // temp state
                 val selected = account.selected
-                isDisable = selected != null && !serverCard.canConnect(selected)
                 // ToDo: Also disable, if currently connecting
                 ctext = CONNECT
-                serverCard.ping::state.observeFX(serverCard) { isDisable = selected == null || !serverCard.canConnect(selected) }
+                serverCard.ping::state.observeFX(serverCard, instant = true) {
+                    val error = serverCard.canConnect(selected)
+                    isDisable = error != null
+                    val tooltip = if (error == null) null else Tooltip().apply { ctext = error; styleClass += "tooltip-error" }
+                    Tooltip.install(serverInfoFX, tooltip) // can not add to the button, because java fx sucks. disabled nodes don't get click/hover events
+                }
             },
         )
+
 
         serverInfoFX.update(serverCard, SERVER_INFO_PROPERTIES, actions)
     }
@@ -422,7 +430,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
             TranslatableComponents.GENERAL_EMPTY to { " " },
 
-            "minosoft:server_info.remote_version".toResourceLocation() to { it.ping.serverVersion ?: "unknown" },
+            "minosoft:server_info.remote_version".toResourceLocation() to { it.ping.serverVersion ?: "§cunknown\nPlease force a specific version!" },
             "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping.status?.serverBrand },
             "minosoft:server_info.players_online".toResourceLocation() to { it.ping.status?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
             "minosoft:server_info.ping".toResourceLocation() to { it.ping.pong?.latency?.formatNanos() },

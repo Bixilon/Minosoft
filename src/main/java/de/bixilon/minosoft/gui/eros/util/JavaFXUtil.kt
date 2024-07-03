@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,6 +45,7 @@ import javafx.scene.control.Alert
 import javafx.scene.control.Labeled
 import javafx.scene.control.TableColumnBase
 import javafx.scene.control.TextField
+import javafx.scene.control.Tooltip
 import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -161,6 +162,12 @@ object JavaFXUtil {
         }
 
     var Labeled.ctext: Any?
+        get() = this.text
+        set(value) {
+            this.text = IntegratedLanguage.LANGUAGE.translate(value).message
+        }
+
+    var Tooltip.ctext: Any?
         get() = this.text
         set(value) {
             this.text = IntegratedLanguage.LANGUAGE.translate(value).message

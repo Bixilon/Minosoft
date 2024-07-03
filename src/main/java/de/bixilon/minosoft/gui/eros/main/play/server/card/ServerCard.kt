@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2023 Moritz Zwerger
+ * Copyright (C) 2020-2024 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -44,14 +44,13 @@ class ServerCard(
     }
 
 
-    fun canConnect(account: Account): Boolean {
-        if (server in account.connections) {
-            return false
-        }
+    fun canConnect(account: Account?): ConnectError? {
+        if (account == null) return ConnectError.NO_ACCOUNT
+        if (server in account.connections) return ConnectError.ALREADY_CONNECTED
         if (server.forcedVersion == null && ping.serverVersion == null) {
-            return false
+            return ConnectError.UNKNOWN_VERSION
         }
-        return true
+        return null
     }
 
 

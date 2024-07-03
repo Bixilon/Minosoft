@@ -86,6 +86,9 @@ minosoft:server_list.button.edit=Edit
 minosoft:server_list.refresh.header=Refresh
 minosoft:server_list.refresh.text1=Get the latest
 minosoft:server_list.refresh.text2=information
+minosoft:server_list.error.no_account=You don't have an account selected!\nPlease click on the minosoft icon in the right top corner.
+minosoft:server_list.error.already_connected=You are already connected with the selected account. Please choose a different one!
+minosoft:server_list.error.unknown_version=The server is using an version that minosoft does not support (yet)!\nPlease edit the server and try forcing a different version.\nFeel free to add that version to minosoft (PR)
 
 
 
