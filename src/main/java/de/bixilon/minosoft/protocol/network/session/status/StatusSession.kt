@@ -52,7 +52,10 @@ class StatusSession(
         this::error.observe(this) {
             if (it == null) return@observe
             terminate()
-            reset()
+            status = null
+            ping = null
+            pong = null
+            serverVersion = null
             state = StatusSessionStates.ERROR
         }
         GlobalEventMaster.fire(StatusSessionCreateEvent(this))

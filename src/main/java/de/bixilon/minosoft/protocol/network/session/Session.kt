@@ -27,7 +27,6 @@ abstract class Session {
 
     var error: Throwable? by observed(null)
 
-
     abstract fun terminate()
 
     companion object {
