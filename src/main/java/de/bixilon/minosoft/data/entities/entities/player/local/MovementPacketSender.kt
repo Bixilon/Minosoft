@@ -50,7 +50,7 @@ class MovementPacketSender(
         if (this.sprinting == sprinting) {
             return
         }
-        session.network.send(EntityActionC2SP(player, session, sprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))
+        session.connection.send(EntityActionC2SP(player, session, sprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))
         this.sprinting = sprinting
     }
 
@@ -58,7 +58,7 @@ class MovementPacketSender(
         if (this.sneaking == sneaking) {
             return
         }
-        session.network.send(EntityActionC2SP(player, session, sneaking.decide(EntityActionC2SP.EntityActions.START_SNEAKING, EntityActionC2SP.EntityActions.STOP_SNEAKING)))
+        session.connection.send(EntityActionC2SP(player, session, sneaking.decide(EntityActionC2SP.EntityActions.START_SNEAKING, EntityActionC2SP.EntityActions.STOP_SNEAKING)))
         this.sneaking = sneaking
     }
 
@@ -70,7 +70,7 @@ class MovementPacketSender(
             return
         }
         this.flying = flying
-        session.network.send(ToggleFlyC2SP(abilities))
+        session.connection.send(ToggleFlyC2SP(abilities))
     }
 
     private fun sendMovement(position: Vec3d, rotation: EntityRotation, onGround: Boolean) {
@@ -87,7 +87,7 @@ class MovementPacketSender(
             onGround != this.onGround -> GroundChangeC2SP(onGround)
             else -> null
         }
-        packet?.let { session.network.send(it) }
+        packet?.let { session.connection.send(it) }
 
         if (sendPosition) {
             this.lastPacket = 0
@@ -111,17 +111,17 @@ class MovementPacketSender(
     }
 
     private fun sendVehicle(vehicle: Entity) {
-        session.network.send(RotationC2SP(player.physics.rotation, player.physics.onGround))
-        session.network.send(VehicleInputC2SP(physics.input.sideways, physics.input.forwards, player.input.jump, player.input.sneak))
+        session.connection.send(RotationC2SP(player.physics.rotation, player.physics.onGround))
+        session.connection.send(VehicleInputC2SP(physics.input.sideways, physics.input.forwards, player.input.jump, player.input.sneak))
         if (vehicle == player || !vehicle.clientControlled) {
             return
         }
-        session.network.send(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
+        session.connection.send(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
         sendSprinting(player.isSprinting)
     }
 
     fun sendPositionRotation() {
-        session.network.send(PositionRotationC2SP(physics.position, physics.eyeY, physics.rotation, physics.onGround))
+        session.connection.send(PositionRotationC2SP(physics.position, physics.eyeY, physics.rotation, physics.onGround))
     }
 
     override fun tick() {

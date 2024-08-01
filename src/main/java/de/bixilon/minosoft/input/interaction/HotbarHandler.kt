@@ -35,7 +35,7 @@ class HotbarHandler(
             return
         }
         session.player.items.hotbar = slot
-        slotLimiter += { session.network.send(HotbarSlotC2SP(slot)) }
+        slotLimiter += { session.connection.send(HotbarSlotC2SP(slot)) }
     }
 
     private fun canSwap(): Boolean {
@@ -53,7 +53,7 @@ class HotbarHandler(
         val main = inventory[EquipmentSlots.MAIN_HAND]
         val off = inventory[EquipmentSlots.OFF_HAND]
 
-        session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.SWAP_ITEMS_IN_HAND))
+        session.connection.send(PlayerActionC2SP(PlayerActionC2SP.Actions.SWAP_ITEMS_IN_HAND))
 
         if (main == null && off == null) {
             // both are air, we can't swap

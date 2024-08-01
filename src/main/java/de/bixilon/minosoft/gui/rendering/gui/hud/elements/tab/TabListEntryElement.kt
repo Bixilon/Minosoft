@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
@@ -32,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.util.KUtil.nullCompare
 import java.util.*
 
@@ -80,7 +82,7 @@ class TabListEntryElement(
 
     init {
         background = ColorElement(guiRenderer, size, RGBColor(120, 120, 120, 130))
-        DefaultThreadPool += { skinElement.texture = context.textures.skins.getSkin(uuid, item.properties, fetch = guiRenderer.session.network.encrypted, async = false)?.texture }
+        DefaultThreadPool += { skinElement.texture = context.textures.skins.getSkin(uuid, item.properties, fetch = guiRenderer.session.connection.nullCast<NetworkConnection>()?.client?.encrypted == true, async = false)?.texture }
         forceSilentApply()
     }
 

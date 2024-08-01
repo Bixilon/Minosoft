@@ -48,8 +48,8 @@ class SignatureKeyManagement(
 
     private fun registerRefresh(millis: Int) {
         runLater(millis) {
-            val connected = session.connection.nullCast<NetworkConnection>()?.state != null
-            if (session.error != null || (session.established && !connected) || (connected && !session.network.encrypted)) {
+            val connection = session.connection.nullCast<NetworkConnection>() ?: return@runLater
+            if (session.error != null || (session.established && !connection.active) || (connection.active && !connection.client!!.encrypted)) {
                 // session is dead
                 return@runLater
             }
@@ -89,16 +89,13 @@ class SignatureKeyManagement(
 
     fun sendSession() {
         val key = key?.playerKey ?: return
-        if (session.version.versionId < ProtocolVersions.V_22W43A) {
+        if (session.version.versionId < ProtocolVersions.V_22W43A) return
+        if (session.connection !is NetworkConnection) return
+        if (session.connection.state != ProtocolStates.PLAY) return
+        if (!session.connection.client!!.encrypted) {
             return
         }
-        if (session.connection !is NetworkConnection || session.connection.state != ProtocolStates.PLAY) {
-            return
-        }
-        if (!session.network.encrypted) {
-            return
-        }
-        session.network.send(SessionDataC2SP(session.sessionId, key))
+        session.connection.send(SessionDataC2SP(session.sessionId, key))
     }
 
     companion object {

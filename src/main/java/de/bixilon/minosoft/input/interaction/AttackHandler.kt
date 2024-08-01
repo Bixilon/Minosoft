@@ -64,7 +64,7 @@ class AttackHandler(
             return
         }
 
-        interactions.session.network.send(EntityAttackC2SP(target.entity.id ?: return, player.isSneaking))
+        interactions.session.connection.send(EntityAttackC2SP(target.entity.id ?: return, player.isSneaking))
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return
         }

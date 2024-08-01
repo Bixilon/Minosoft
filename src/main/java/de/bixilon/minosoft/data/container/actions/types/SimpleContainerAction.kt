@@ -47,7 +47,7 @@ class SimpleContainerAction(
         }
 
         container.floatingItem = floatingItem
-        session.network.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to item), floatingItem))
+        session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to item), floatingItem))
     }
 
     private fun putItem(session: PlaySession, containerId: Int, container: Container, floatingItem: ItemStack) {
@@ -59,7 +59,7 @@ class SimpleContainerAction(
             } else {
                 floatingItem.item._count-- // don't use decrease, item + container is already locked
             }
-            return session.network.send(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.actions.createId(this), slotsOf(), null))
+            return session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.actions.createId(this), slotsOf(), null))
         }
         var target = container[slot]
         val slotType = container.getSlotType(slot)
@@ -93,7 +93,7 @@ class SimpleContainerAction(
             } else {
                 container.floatingItem = null
             }
-            session.network.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to target), container.floatingItem))
+            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to target), container.floatingItem))
             return
         }
         if (target != null && slotType?.canRemove(container, slot, target) != true) {
@@ -109,13 +109,13 @@ class SimpleContainerAction(
         if (count == ContainerCounts.ALL || (!matches && target != null)) {
             container.floatingItem = target
             container[slot] = floatingItem
-            session.network.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to floatingItem), target))
+            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to floatingItem), target))
         } else {
             floatingItem.item.count--
             container.floatingItem = floatingItem
             target = floatingItem.copy(count = 1)
             container[slot] = target
-            session.network.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to target), floatingItem))
+            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.actions.createId(this), slotsOf(slot to target), floatingItem))
         }
     }
 

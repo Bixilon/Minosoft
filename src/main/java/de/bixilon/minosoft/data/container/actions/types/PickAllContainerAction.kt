@@ -67,7 +67,7 @@ class PickAllContainerAction(
                 return
             }
             container.floatingItem = floating
-            session.network.send(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.actions.createId(this), changes, floating))
+            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.actions.createId(this), changes, floating))
         } finally {
             container.commit()
         }

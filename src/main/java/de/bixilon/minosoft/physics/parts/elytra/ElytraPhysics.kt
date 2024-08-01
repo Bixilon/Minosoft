@@ -35,7 +35,7 @@ object ElytraPhysics {
     private fun LocalPlayerPhysics.startElytraFalling() {
         entity.isFlyingWithElytra = true
         val id = entity.session.world.entities.getId(entity) ?: return
-        entity.session.network.send(EntityActionC2SP(id, EntityActionC2SP.EntityActions.START_ELYTRA_FLYING))
+        entity.session.connection.send(EntityActionC2SP(id, EntityActionC2SP.EntityActions.START_ELYTRA_FLYING))
     }
 
     private fun LocalPlayerPhysics.canStartElytraFlight(): Boolean {

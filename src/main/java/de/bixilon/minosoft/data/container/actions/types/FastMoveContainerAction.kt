@@ -96,7 +96,7 @@ class FastMoveContainerAction(
                 }
             }
 
-            session.network.send(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.actions.createId(this), changes, null))
+            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.actions.createId(this), changes, null))
         } finally {
             container.commit()
         }

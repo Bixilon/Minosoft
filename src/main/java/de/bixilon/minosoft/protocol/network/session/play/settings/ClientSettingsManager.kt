@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.protocol.network.session.play.settings
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.language.LanguageUtil
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.common.SettingsC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
@@ -66,15 +68,16 @@ class ClientSettingsManager(
     }
 
     private fun canSendSettings(): Boolean {
-        if (session.network.state == ProtocolStates.PLAY) return true
-        if (session.version > V_1_20_2_PRE1 && session.network.state == ProtocolStates.CONFIGURATION) return true
+        // TODO: what if not a NetworkConnection
+        if (session.connection.nullCast<NetworkConnection>()?.state == ProtocolStates.PLAY) return true
+        if (session.version > V_1_20_2_PRE1 && session.connection.nullCast<NetworkConnection>()?.state == ProtocolStates.CONFIGURATION) return true
         return false
     }
 
     fun sendClientSettings() {
         if (!canSendSettings()) return
 
-        session.network.send(SettingsC2SP(
+        session.connection.send(SettingsC2SP(
             locale = language,
             chatColors = session.profiles.gui.chat.chatColors,
             viewDistance = session.profiles.block.viewDistance,

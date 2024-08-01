@@ -26,7 +26,7 @@ object WinGameHandler : GameEventHandler {
         val credits = data.toInt() == 0x01
         session.events.fire(WinGameEvent(session, credits))
         if (!credits) {
-            session.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
+            session.connection.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
         }
     }
 }

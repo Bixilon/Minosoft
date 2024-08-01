@@ -81,7 +81,7 @@ class ShortUseHandler(
         if (result == InteractionResults.INVALID) {
             return true
         }
-        session.network.send(BlockInteractC2SP(
+        session.connection.send(BlockInteractC2SP(
             position = target.blockPosition,
             direction = target.direction,
             cursorPosition = Vec3(target.cursor),
@@ -105,7 +105,7 @@ class ShortUseHandler(
         val entityId = session.world.entities.getId(target.entity) ?: return InteractionResults.IGNORED
         // used in armor stands
         val player = session.player
-        session.network.send(EntityInteractPositionC2SP(entityId, Vec3(target.position), hand, player.isSneaking))
+        session.connection.send(EntityInteractPositionC2SP(entityId, Vec3(target.position), hand, player.isSneaking))
 
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.IGNORED
@@ -125,7 +125,7 @@ class ShortUseHandler(
             // ToDo: return hit.entity.interact(hand) (e.g. equipping saddle)
             return InteractionResults.IGNORED
         } finally {
-            session.world.entities.getId(target.entity)?.let { session.network.send(EntityEmptyInteractC2SP(it, hand, player.isSneaking)) }
+            session.world.entities.getId(target.entity)?.let { session.connection.send(EntityEmptyInteractC2SP(it, hand, player.isSneaking)) }
         }
     }
 

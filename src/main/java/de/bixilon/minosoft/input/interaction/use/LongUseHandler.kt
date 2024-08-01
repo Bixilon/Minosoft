@@ -51,7 +51,7 @@ class LongUseHandler(
             stack.item.item.finishUse(session.player, using.hand, stack, using.tick)
         }
         if (!force) {
-            session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
+            session.connection.send(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
         }
         clearUsing()
     }

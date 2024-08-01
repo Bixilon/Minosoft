@@ -57,7 +57,7 @@ class Rendering(private val session: PlaySession) {
                     audioPlayer.exit()
                 } catch (ignored: Throwable) {
                 }
-                session.network.disconnect()
+                session.terminate()
                 session.error = exception
                 latch.minus(audioLatch.count)
             }
@@ -85,7 +85,7 @@ class Rendering(private val session: PlaySession) {
                 session.events.fire(WindowCloseEvent(context, window = context.window))
             } catch (ignored: Throwable) {
             }
-            session.network.disconnect()
+            session.terminate()
             session.error = exception
         }
     }

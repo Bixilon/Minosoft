@@ -126,7 +126,7 @@ class SignEditorScreen(
     override fun onClose() {
         super.onClose()
         val text = getText()
-        guiRenderer.session.network.send(SignTextC2SP(blockPosition, this.side, text))
+        guiRenderer.session.connection.send(SignTextC2SP(blockPosition, this.side, text))
     }
 
     override fun forceSilentApply() {

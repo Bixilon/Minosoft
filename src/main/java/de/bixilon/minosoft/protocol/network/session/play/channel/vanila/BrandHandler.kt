@@ -38,7 +38,7 @@ object BrandHandler {
     private fun PlaySession.sendBrand(channel: ResourceLocation, brand: String) {
         val buffer = PlayOutByteBuffer(this)
         buffer.writeBareByteArray(brand.encodeNetwork())
-        network.send(ChannelC2SP(channel, buffer))
+        connection.send(ChannelC2SP(channel, buffer))
     }
 
     fun PlaySession.sendBrand() {

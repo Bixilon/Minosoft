@@ -25,7 +25,7 @@ class PingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val payload = buffer.readInt()
 
     override fun handle(session: PlaySession) {
-        session.network.send(PongC2SP(payload))
+        session.connection.send(PongC2SP(payload))
     }
 
     override fun log(reducedLog: Boolean) {

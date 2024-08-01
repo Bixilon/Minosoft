@@ -47,7 +47,7 @@ class CreditsScreen(
 
     override fun onClose() {
         super.onClose()
-        guiRenderer.session.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
+        guiRenderer.session.connection.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
     }
 
     companion object {

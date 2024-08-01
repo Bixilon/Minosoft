@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool.async
 import de.bixilon.kutil.latch.CallbackLatch
@@ -174,7 +175,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             }
 
             session.events.register(JavaFXEventListener.of<KickEvent> { event ->
-                (if (session.network.state == ProtocolStates.LOGIN) KickDialog(
+                val dialog = if (session.connection.unsafeCast<NetworkConnection>().state == ProtocolStates.LOGIN) KickDialog(
                     title = "minosoft:session.login_kick.title".toResourceLocation(),
                     header = "minosoft:session.login_kick.header".toResourceLocation(),
                     description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(server, account),
@@ -184,7 +185,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     header = "minosoft:session.kick.header".toResourceLocation(),
                     description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(server, account),
                     reason = event.reason,
-                )).show()
+                )
+                dialog.show()
             })
             val latch = CallbackLatch(1)
             val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }

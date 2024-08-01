@@ -29,7 +29,7 @@ class CreativeBreaker(
         val sequence = breaking.executor.start(target.blockPosition, target.state)
         breaking.executor.finish()
 
-        session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
+        session.connection.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
         breaking.interactions.swingHand(Hands.MAIN)
         return true
     }

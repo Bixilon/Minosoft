@@ -12,9 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.login
 
-import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.channel.vanila.BrandHandler.sendBrand
 import de.bixilon.minosoft.protocol.packets.c2s.login.ConfigureC2SP
@@ -28,18 +29,18 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 class SuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val uuid: UUID = (buffer.versionId < ProtocolVersions.V_20W12A).decide({ buffer.readUUIDString() }, { buffer.readUUID() })
+    val uuid: UUID = if (buffer.versionId < ProtocolVersions.V_20W12A) buffer.readUUIDString() else buffer.readUUID()
     val name: String = buffer.readString()
     val properties: PlayerProperties? = if (buffer.versionId >= ProtocolVersions.V_22W17A) buffer.readPlayerProperties() else null
 
     override fun handle(session: PlaySession) {
         if (session.version.hasConfigurationState) {
-            session.network.send(ConfigureC2SP())
-            session.network.state = ProtocolStates.CONFIGURATION
+            session.connection.send(ConfigureC2SP())
+            session.connection.unsafeCast<NetworkConnection>().state = ProtocolStates.CONFIGURATION
             session.sendBrand()
             session.settingsManager.sendClientSettings()
         } else {
-            session.network.state = ProtocolStates.PLAY
+            session.connection.unsafeCast<NetworkConnection>().state = ProtocolStates.PLAY
         }
 
         val playerEntity = session.player

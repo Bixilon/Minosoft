@@ -50,7 +50,7 @@ class ResourcepackS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (session.events.fire(event)) {
             return
         }
-        session.network.send(ResourcepackC2SP(uuid, hash, ResourcepackC2SP.ResourcePackStates.SUCCESSFULLY)) // ToDo: This fakes it, to not get kicked on most servers
+        session.connection.send(ResourcepackC2SP(uuid, hash, ResourcepackC2SP.ResourcePackStates.SUCCESSFULLY)) // ToDo: This fakes it, to not get kicked on most servers
     }
 
     override fun log(reducedLog: Boolean) {

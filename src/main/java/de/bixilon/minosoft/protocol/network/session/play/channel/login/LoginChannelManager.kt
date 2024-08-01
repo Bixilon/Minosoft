@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.protocol.network.session.play.channel.login
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.channel.ChannelManager
 import de.bixilon.minosoft.protocol.packets.c2s.login.ChannelC2SP
@@ -54,9 +56,9 @@ class LoginChannelManager(
     }
 
     fun send(messageId: Int, data: ByteArray?) {
-        if (session.network.state != ProtocolStates.LOGIN) {
+        if (session.connection.nullCast<NetworkConnection>()?.state != ProtocolStates.LOGIN) {
             throw IllegalStateException("Not in login!")
         }
-        session.network.send(ChannelC2SP(messageId, data))
+        session.connection.send(ChannelC2SP(messageId, data))
     }
 }

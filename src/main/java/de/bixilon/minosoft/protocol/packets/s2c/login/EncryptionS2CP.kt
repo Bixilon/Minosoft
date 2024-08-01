@@ -14,6 +14,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.login
 
 import com.google.common.primitives.Longs
 import de.bixilon.kutil.base64.Base64Util.toBase64
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -56,12 +58,12 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             signature.update(Longs.toByteArray(salt))
             val signed = signature.sign()
 
-            session.network.send(EncryptionC2SP(encryptedSecretKey, EncryptionSignatureData(salt, signed)))
+            session.connection.send(EncryptionC2SP(encryptedSecretKey, EncryptionSignatureData(salt, signed)))
         } else {
-            session.network.send(EncryptionC2SP(encryptedSecretKey, CryptManager.encryptData(publicKey, nonce)))
+            session.connection.send(EncryptionC2SP(encryptedSecretKey, CryptManager.encryptData(publicKey, nonce)))
         }
 
-        session.network.setupEncryption(encryptCipher, decryptCipher)
+        session.connection.unsafeCast<NetworkConnection>().client!!.setupEncryption(encryptCipher, decryptCipher)
     }
 
     override fun log(reducedLog: Boolean) {

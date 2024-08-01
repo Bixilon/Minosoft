@@ -37,7 +37,7 @@ class SlotSwapContainerAction(
             container[this.sourceId] = target
             container[targetId] = source
 
-            session.network.send(ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.actions.createId(this), slotsOf(sourceId to target, targetId to source), source))
+            session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.actions.createId(this), slotsOf(sourceId to target, targetId to source), source))
 
         } finally {
             container.commit()

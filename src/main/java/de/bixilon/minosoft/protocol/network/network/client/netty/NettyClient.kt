@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.network.network.client.netty
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.exception.ExceptionUtil.catchAll
-import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
@@ -54,8 +53,6 @@ class NettyClient(
     override val connection: NetworkConnection,
     val session: Session,
 ) : SimpleChannelInboundHandler<Any>(), ClientNetwork {
-    @Deprecated("unused")
-    var state = ProtocolStates.HANDSHAKE // TODO
     override val sender = PacketSender(this)
     override val receiver = PacketReceiver(this, session)
     override var compressionThreshold = -1
@@ -64,10 +61,6 @@ class NettyClient(
     private var channel: Channel? = null
     override var detached = false
         private set
-
-    init {
-        connection::state.observe(this) { this.state = it ?: ProtocolStates.HANDSHAKE }
-    }
 
     override fun connect() {
         val natives = if (connection.native) TransportNatives.get() else NioNatives

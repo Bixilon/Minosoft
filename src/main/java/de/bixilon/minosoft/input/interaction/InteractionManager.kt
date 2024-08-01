@@ -73,7 +73,7 @@ class InteractionManager(val camera: SessionCamera) : Tickable {
 
     fun swingHand(hand: Hands) {
         swingArmRateLimiter += {
-            session.network.send(SwingArmC2SP(hand))
+            session.connection.send(SwingArmC2SP(hand))
             session.player.swingHand(hand)
         }
     }

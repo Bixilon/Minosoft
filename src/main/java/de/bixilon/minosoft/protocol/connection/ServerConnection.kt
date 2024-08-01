@@ -23,6 +23,7 @@ interface ServerConnection {
 
     fun connect(session: Session)
     fun disconnect()
+    fun detach()
 
     fun send(packet: C2SPacket)
 }

@@ -30,7 +30,7 @@ class DropHandler(
             session.player.items.inventory.getHotbarSlot()?.item?.decreaseCount()
             PlayerActionC2SP.Actions.DROP_ITEM
         }
-        rateLimiter += { session.network.send(PlayerActionC2SP(type)) }
+        rateLimiter += { session.connection.send(PlayerActionC2SP(type)) }
     }
 
     fun draw() {

@@ -34,7 +34,7 @@ class HeartbeatS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(session: PlaySession) {
-        session.network.send(HeartbeatC2SP(id))
+        session.connection.send(HeartbeatC2SP(id))
     }
 
     override fun log(reducedLog: Boolean) {

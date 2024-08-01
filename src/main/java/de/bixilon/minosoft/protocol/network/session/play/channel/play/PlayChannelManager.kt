@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.protocol.network.session.play.channel.play
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.data.registries.identified.ResourceLocation
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.protocol.network.session.play.channel.ChannelManager
 import de.bixilon.minosoft.protocol.packets.c2s.common.ChannelC2SP
@@ -45,9 +47,10 @@ class PlayChannelManager(
     }
 
     fun send(channel: ResourceLocation, data: ByteArray) {
-        if (session.network.state != ProtocolStates.LOGIN) {
-            throw IllegalStateException("Not in login!")
+        // TODO: Play == ready? what if offline? should not crash
+        if (session.connection.nullCast<NetworkConnection>()?.state != ProtocolStates.PLAY) {
+            throw IllegalStateException("Not in play!")
         }
-        session.network.send(ChannelC2SP(channel, data))
+        session.connection.send(ChannelC2SP(channel, data))
     }
 }

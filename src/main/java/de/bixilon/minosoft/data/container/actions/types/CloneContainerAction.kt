@@ -33,7 +33,7 @@ class CloneContainerAction(
         this.copied = stack
 
         // TODO (1.18.2): use creative inventory packet
-        session.network.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.actions.createId(this), slotsOf(), stack))
+        session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.actions.createId(this), slotsOf(), stack))
 
         container.floatingItem = stack
     }

@@ -25,7 +25,7 @@ object DebugCommand : SessionCommand {
     override var node = LiteralNode("debug")
         .addChild(LiteralNode("allowFly", executor = { it.fly() }, allowArguments = true).addChild(ArgumentNode("value", BooleanParser, executable = true)))
         .addChild(LiteralNode("network").addChild(
-            LiteralNode("detach", executor = { it.session.network.detach(); it.print.sendDebugMessage("Now you are alone on the wire...") }),
+            LiteralNode("detach", executor = { it.session.connection.detach(); it.print.sendDebugMessage("Now you are alone on the wire...") }),
         ))
         .addChild(LiteralNode("cache").addChild(LiteralNode("biome", executor = { it.session.world.biomes.resetCache(); it.print.sendDebugMessage("Biome cache cleared!") })))
 

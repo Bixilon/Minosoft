@@ -86,9 +86,9 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         entity.forceRotate(EntityRotation(yaw, pitch))
 
         if (session.version.versionId >= ProtocolVersions.V_15W42A) {
-            session.network.send(ConfirmTeleportC2SP(teleportId))
+            session.connection.send(ConfirmTeleportC2SP(teleportId))
         }
-        session.network.send(PositionRotationC2SP(position, position.y + entity.physics.eyeHeight, rotation, onGround))
+        session.connection.send(PositionRotationC2SP(position, position.y + entity.physics.eyeHeight, rotation, onGround))
 
         if (session.state == PlaySessionStates.SPAWNING) {
             session.state = PlaySessionStates.PLAYING

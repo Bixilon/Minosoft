@@ -105,7 +105,7 @@ class PlayerInventory(
 
     override fun onOpen() {
         if (session.version < V_17W13B) {
-            session.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.OPEN_INVENTORY))
+            session.connection.send(ClientActionC2SP(ClientActionC2SP.ClientActions.OPEN_INVENTORY))
         }
     }
 

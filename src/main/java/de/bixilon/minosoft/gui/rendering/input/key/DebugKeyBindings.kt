@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyActions
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.RenderContext
 import de.bixilon.minosoft.gui.rendering.input.key.manager.binding.BindingsManager
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
+import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.network.session.play.PlaySession
 import de.bixilon.minosoft.util.KUtil.format
 
@@ -46,8 +48,9 @@ object DebugKeyBindings {
             KeyActions.STICKY to setOf(KeyCodes.KEY_I),
             ignoreConsumer = true,
         )) {
+            val connection = session.connection.nullCast<NetworkConnection>() ?: return@register
             session.util.sendDebugMessage("Pausing incoming packets: ${it.format()}")
-            session.network.receiver.paused = it
+            connection.client!!.receiver.paused = it
         }
 
         register(PAUSE_OUTGOING, KeyBinding(
@@ -55,8 +58,9 @@ object DebugKeyBindings {
             KeyActions.STICKY to setOf(KeyCodes.KEY_O),
             ignoreConsumer = true,
         )) {
+            val connection = session.connection.nullCast<NetworkConnection>() ?: return@register
             session.util.sendDebugMessage("Pausing outgoing packets: ${it.format()}")
-            session.network.sender.paused = it
+            connection.client!!.sender.paused = it
         }
     }
 

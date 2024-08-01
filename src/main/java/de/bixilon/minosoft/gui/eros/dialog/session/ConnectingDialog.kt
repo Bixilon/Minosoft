@@ -66,7 +66,7 @@ class ConnectingDialog(
 
     @FXML
     fun cancel() {
-        session.network.disconnect()
+        session.terminate()
         close()
     }
 

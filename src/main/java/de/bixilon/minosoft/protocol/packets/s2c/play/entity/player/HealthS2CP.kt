@@ -47,7 +47,7 @@ class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
 
             if (session.profiles.session.autoRespawn) {
-                session.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
+                session.connection.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
             }
         }
     }

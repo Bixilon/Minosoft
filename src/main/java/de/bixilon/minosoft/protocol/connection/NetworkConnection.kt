@@ -54,6 +54,10 @@ class NetworkConnection(
         client?.disconnect()
     }
 
+    override fun detach() {
+        client?.detach()
+    }
+
     override fun send(packet: C2SPacket) {
         client?.send(packet)
     }

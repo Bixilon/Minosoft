@@ -126,6 +126,6 @@ class RenderLoop(
         context.window.destroy()
         Log.log(LogMessageType.RENDERING) { "Render window destroyed!" }
         // disconnect
-        context.session.network.disconnect()
+        context.session.terminate()
     }
 }

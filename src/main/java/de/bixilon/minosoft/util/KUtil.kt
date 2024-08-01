@@ -294,7 +294,7 @@ object KUtil {
         URLProtocolStreamHandlers.register("resource", ResourceURLHandler)
         ShutdownManager += {
             for (session in PlaySession.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
-                session.network.disconnect()
+                session.terminate()
             }
         }
         ShutdownManager += {

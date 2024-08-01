@@ -42,7 +42,7 @@ class SurvivalDigger(
 
     private fun cancel(status: BlockDigStatus) {
         breaking.executor.cancel()
-        session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, status.position, sequence = 0))
+        session.connection.send(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, status.position, sequence = 0))
         this.status = null
     }
 
@@ -50,7 +50,7 @@ class SurvivalDigger(
         val sequence = breaking.executor.finish()
         this.status = null
         if (!instant) {
-            session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, status.position, status.direction, sequence))
+            session.connection.send(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, status.position, status.direction, sequence))
             breaking.addCooldown()
         }
         breaking.interactions.swingHand(Hands.MAIN)
@@ -118,7 +118,7 @@ class SurvivalDigger(
         } else {
             nextStatus = BlockDigStatus(target.blockPosition, target.state, slot, productivity, target.direction)
             val sequence = breaking.executor.start(target.blockPosition, target.state)
-            session.network.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
+            session.connection.send(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction, sequence))
         }
 
         if (instant || nextStatus.progress >= 1.0f) {

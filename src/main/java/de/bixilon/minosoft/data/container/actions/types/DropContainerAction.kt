@@ -40,7 +40,7 @@ class DropContainerAction(
         }
 
         val actionId = container.actions.createId(this)
-        session.network.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 4, if (stack) 1 else 0, actionId, slotsOf(slot to item), null))
+        session.connection.send(ContainerClickC2SP(containerId, container.serverRevision, slot, 4, if (stack) 1 else 0, actionId, slotsOf(slot to item), null))
 
         // TODO (1.18.2): use creative inventory packet
         container.commit()

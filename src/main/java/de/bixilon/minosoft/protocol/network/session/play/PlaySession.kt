@@ -55,7 +55,6 @@ import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.phase.DefaultModPhases
 import de.bixilon.minosoft.protocol.connection.NetworkConnection
 import de.bixilon.minosoft.protocol.connection.ServerConnection
-import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.session.Session
 import de.bixilon.minosoft.protocol.network.session.play.channel.DefaultChannelHandlers
 import de.bixilon.minosoft.protocol.network.session.play.channel.SessionChannelHandler
@@ -83,8 +82,6 @@ class PlaySession(
     override val version: Version,
     val profiles: SelectedProfiles = SelectedProfiles(),
 ) : Session() {
-    @Deprecated("connection")
-    val network = NettyClient(connection.unsafeCast(), this)
     val sessionId = KUtil.secureRandomUUID()
     val settingsManager = ClientSettingsManager(this)
     val registries = Registries().apply { updateFlattened(version.flattened) }
@@ -132,16 +129,18 @@ class PlaySession(
         RegistriesFixer.register(this)
         DefaultChannelHandlers.register(this)
 
-        connection.unsafeCast<NetworkConnection>()::state.observe(this) {
-            if (it != null) {
+        connection::active.observe(this) {
+            if (it) {
                 ACTIVE_CONNECTIONS += this
                 ERRORED_CONNECTIONS -= this
 
-                state = PlaySessionStates.HANDSHAKING
-                val address = connection.unsafeCast<NetworkConnection>().address
-                network.send(HandshakeC2SP(address.hostname, address.port, HandshakeC2SP.Actions.PLAY, version.protocolId))
-                // after sending it, switch to next state
-                network.connection.state = ProtocolStates.LOGIN
+                if (connection is NetworkConnection) {
+                    state = PlaySessionStates.HANDSHAKING
+                    val address = connection.unsafeCast<NetworkConnection>().address
+                    connection.send(HandshakeC2SP(address.hostname, address.port, HandshakeC2SP.Actions.PLAY, version.protocolId))
+                    // after sending it, switch to next state
+                    connection.state = ProtocolStates.LOGIN
+                }
             } else {
                 established = true
                 assetsManager.unload()
@@ -152,38 +151,40 @@ class PlaySession(
                 }
             }
         }
-        connection.unsafeCast<NetworkConnection>()::state.observe(this) { state ->
-            when (state) {
-                ProtocolStates.HANDSHAKE, ProtocolStates.STATUS -> Broken("Invalid state!")
-                ProtocolStates.LOGIN -> {
-                    this.state = PlaySessionStates.LOGGING_IN
-                    world.biomes.init()
-                    this.network.send(StartC2SP(this.player, this.sessionId))
-                }
-
-                ProtocolStates.PLAY -> {
-                    this.state = PlaySessionStates.JOINING
-
-                    if (CLI.session == null) {
-                        CLI.session = this
+        if (connection is NetworkConnection) {
+            connection::state.observe(this) { state ->
+                when (state) {
+                    ProtocolStates.STATUS -> Broken("Invalid state!")
+                    ProtocolStates.LOGIN -> {
+                        this.state = PlaySessionStates.LOGGING_IN
+                        world.biomes.init()
+                        connection.send(StartC2SP(this.player, this.sessionId))
                     }
 
-                    events.listen<ChatMessageEvent> {
-                        val additionalPrefix = when (it.message.type.position) {
-                            ChatTextPositions.SYSTEM -> "[SYSTEM] "
-                            ChatTextPositions.HOTBAR -> "[HOTBAR] "
-                            else -> ""
+                    ProtocolStates.PLAY -> {
+                        this.state = PlaySessionStates.JOINING
+
+                        if (CLI.session == null) {
+                            CLI.session = this
                         }
-                        Log.log(LogMessageType.CHAT_IN, level = if (it.message.type.position == ChatTextPositions.HOTBAR) LogLevels.VERBOSE else LogLevels.INFO, prefix = ChatComponent.of(additionalPrefix)) { it.message.text }
                     }
-                }
 
-                else -> Unit
+                    else -> Unit
+                }
             }
         }
         ticker.init()
 
         GlobalEventMaster.fire(PlaySessionCreateEvent(this))
+
+        events.listen<ChatMessageEvent> {
+            val additionalPrefix = when (it.message.type.position) {
+                ChatTextPositions.SYSTEM -> "[SYSTEM] "
+                ChatTextPositions.HOTBAR -> "[HOTBAR] "
+                else -> ""
+            }
+            Log.log(LogMessageType.CHAT_IN, level = if (it.message.type.position == ChatTextPositions.HOTBAR) LogLevels.VERBOSE else LogLevels.INFO, prefix = ChatComponent.of(additionalPrefix)) { it.message.text }
+        }
     }
 
 
@@ -248,7 +249,7 @@ class PlaySession(
 
     private fun establish(latch: AbstractLatch?) {
         latch?.dec() // remove initial value
-        network.connect()
+        connection.connect(this)
         state = PlaySessionStates.ESTABLISHING
     }
 
@@ -265,7 +266,7 @@ class PlaySession(
     }
 
     override fun terminate() {
-        network.disconnect()
+        connection.disconnect()
         state = PlaySessionStates.DISCONNECTED
     }
 

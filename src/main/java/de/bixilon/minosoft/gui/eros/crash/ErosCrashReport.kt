@@ -110,7 +110,7 @@ class ErosCrashReport : JavaFXWindowController() {
             })
             catchAll(executor = {
                 for (session in PlaySession.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
-                    session.network.disconnect()
+                    session.terminate()
                 }
             })
 

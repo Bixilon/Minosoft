@@ -88,7 +88,7 @@ class ItemPickHandler(
         interactions.hotbar.selectSlot(slot)
         val selectedSlot = session.player.items.hotbar + PlayerInventory.HOTBAR_OFFSET
 
-        rateLimiter += { session.network.send(ItemStackCreateC2SP(selectedSlot, stack)) }
+        rateLimiter += { session.connection.send(ItemStackCreateC2SP(selectedSlot, stack)) }
         session.player.items.inventory[selectedSlot] = stack
 
         // ToDo: Use ItemPickC2SP

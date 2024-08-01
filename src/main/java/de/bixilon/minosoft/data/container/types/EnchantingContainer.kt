@@ -99,7 +99,7 @@ class EnchantingContainer(session: PlaySession, type: ContainerType, title: Chat
             throw IllegalStateException("Can not enchant $index!")
         }
         val id = this.id ?: return
-        session.network.send(ContainerButtonC2SP(id, index))
+        session.connection.send(ContainerButtonC2SP(id, index))
     }
 
     private object LapislazuliSlot : SlotType {

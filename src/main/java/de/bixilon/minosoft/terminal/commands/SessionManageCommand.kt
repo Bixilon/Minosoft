@@ -44,7 +44,7 @@ object SessionManageCommand : Command {
             LiteralNode("select").apply {
                 addFilter(false) { stack, sessions ->
                     val session = sessions.first()
-                    if (session.network.connection.state == null) {
+                    if (!session.connection.active) {
                         throw CommandException("Session $session not established anymore!")
                     }
                     CLI.session = session

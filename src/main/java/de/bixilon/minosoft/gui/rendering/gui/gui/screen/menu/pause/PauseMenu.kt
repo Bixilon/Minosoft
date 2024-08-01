@@ -40,11 +40,11 @@ class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
         this += ButtonElement(guiRenderer, "menu.pause.back_to_game".i18n()) { guiRenderer.gui.popOrPause() }
         this += ButtonElement(guiRenderer, "menu.pause.options.debug".i18n()) { guiRenderer.gui.push(DebugMenu) }
-        this += NeutralizedButtonElement(guiRenderer, "menu.pause.disconnect".i18n(), "menu.pause.disconnect.confirm".i18n()) { guiRenderer.session.network.disconnect() }
+        this += NeutralizedButtonElement(guiRenderer, "menu.pause.disconnect".i18n(), "menu.pause.disconnect.confirm".i18n()) { guiRenderer.session.terminate() }
         if (ErosProfileManager.selected.general.hideErosOnceConnected) {
             add(ButtonElement(guiRenderer, "menu.pause.show_eros".i18n()) { JavaFXUtil.runLater { Eros.setVisibility(true) } })
         }
-        this += NeutralizedButtonElement(guiRenderer, "menu.pause.exit".i18n(), "menu.pause.exit.confirm".i18n()) { guiRenderer.session.network.disconnect(); ShutdownManager.shutdown() }
+        this += NeutralizedButtonElement(guiRenderer, "menu.pause.exit".i18n(), "menu.pause.exit.confirm".i18n()) { guiRenderer.session.terminate(); ShutdownManager.shutdown() }
     }
 
     companion object : GUIBuilder<LayoutedGUIElement<PauseMenu>> {

@@ -202,7 +202,7 @@ abstract class Container(
 
         if (!force && session.player.items.opened == this) {
             session.player.items.opened = null
-            session.network.send(CloseContainerC2SP(id))
+            session.connection.send(CloseContainerC2SP(id))
         }
 
         session.events.fire(ContainerCloseEvent(session, this))

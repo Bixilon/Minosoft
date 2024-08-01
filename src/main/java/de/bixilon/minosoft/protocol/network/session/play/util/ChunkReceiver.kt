@@ -53,7 +53,7 @@ class ChunkReceiver(
         val end = nanos()
         val delta = end - start
 
-        session.network.send(NextChunkBatchC2SP(100.0f)) // TODO: calculate size
+        session.connection.send(NextChunkBatchC2SP(100.0f)) // TODO: calculate size
         reset()
     }
 }

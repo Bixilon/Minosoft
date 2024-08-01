@@ -35,7 +35,7 @@ class MoveVehicleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         vehicle.forceTeleport(position)
         vehicle.forceRotate(EntityRotation(yaw, pitch))
-        session.network.send(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
+        session.connection.send(MoveVehicleC2SP(vehicle.physics.position, vehicle.physics.rotation))
     }
 
     override fun log(reducedLog: Boolean) {
